@@ -1,0 +1,26 @@
+# == Schema Information
+#
+# Table name: beers
+#
+#  id             :integer          not null, primary key
+#  beer_name      :string(255)
+#  beer_type      :string(255)
+#  beer_rating    :decimal(, )
+#  number_ratings :integer
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  type: 
+  rating: 9.99
+  number_ratings: 1
+
+two:
+  name: MyString
+  type: 
+  rating: 9.99
+  number_ratings: 1

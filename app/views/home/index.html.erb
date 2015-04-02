@@ -1,0 +1,62 @@
+<%= render 'layouts/header' %> 
+	<div class="container visible-xs">
+		<div class="xs-image-holder">
+			<%= image_tag 'pbu_40_yellow.png', :class => "img-responsive" %>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-11">
+				<div class="page-header"> 
+					<div class="row">
+						<div class="col-xs-12">
+							<h2 class="dark-gray-text">The best beer available in Seattle right now</h2> 
+							<h5 class="last-updated dark-gray-text">Last updated: <%= @time.strftime("%B %e, %Y @ %l:%M%P") %></h5>
+						</div>
+					</div>
+				</div>
+				<% @beers.first(50).each_with_index do |d, n| %>
+				<div class="row each-beer">
+					<div class="col-xs-2 rank-number-area">
+						<h1 class="ranking-number light-orange-text"><%= n + 1 %></h1>
+					</div>
+					<div class="col-xs-10">
+						<div class="row">
+							<div class="col-xs-8 col-md-9">
+								<h4 class="beer-name dark-gray-text"><%= d.beer_name %></h4>
+								<h5 class="beer-type dark-gray-text"><%= d.beer_type %></h5>
+							</div>
+							<div class="col-xs-4 col-md-3 no-padding">
+								<h4 class="beer-rating dark-gray-text">Untappd rating*: <%= d.beer_rating %></h4>
+								<h5 class="number-ratings dark-gray-text"># of ratings*: <%= number_with_delimiter(d.number_ratings, :delimiter => ',') %></h5>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<% @beer_locations = BeerLocation.where(beer_id: d.id).pluck(:location_id) %>
+								<% @location_name = Location.where(id: @beer_locations) %>
+								<h5 class="locations">Currently at: 
+								<% @location_name.each do |b| %>
+									<% if b == @location_name.last %> 
+										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>
+									<% else %>
+										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>,
+									<% end %>
+								<% end %>
+								</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr/>
+				<% end %> 
+			</div>
+			<div class="col-sm-1">
+				<div class="image-holder">
+					<%= image_tag 'pbu_40_yellow.png', :class => "img-responsive" %>
+				</div>
+			</div>
+		</div>
+		<h6>* Data provided by Untappd LLC.
+	</div>
+<%= render 'layouts/footer' %>
