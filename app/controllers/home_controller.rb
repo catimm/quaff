@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   
   def index  
-    @time = Time.now - 30.minutes
+    @time = Time.current - 30.minutes
     @current_beers = BeerLocation.where(beer_is_current: "yes").pluck(:beer_id)
     Rails.logger.debug("Current Beers: #{@current_beers.inspect}")
     @beers = Beer.where(id: @current_beers).order(:beer_rating).order(:number_ratings).reverse
