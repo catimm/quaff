@@ -23,18 +23,25 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 
-# my list of gems
+# enable jquery & json functionality
 gem 'jquery-ui-rails'
 gem 'json'
+# note model setup in rb files
 gem 'annotate', '2.6.5'
+# enable environment variables to be stored in hidden yml file
 gem 'figaro'
+# provide boostrap/css functionality
 gem 'bootstrap-sass', '3.3.3'
 gem 'bootstrap-social-rails', '~> 4.8.0'
 gem 'bootstrap-modal-rails'
 gem 'font-awesome-sass', '~> 4.3.0'
+# run on thin client
 gem 'thin'
+# screen scraping functionality
 gem 'nokogiri'
-
+# devise gem to manage user credentials and invites
+gem 'devise'
+gem 'devise_invitable'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

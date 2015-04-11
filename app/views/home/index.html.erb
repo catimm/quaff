@@ -5,15 +5,57 @@
 		</div>
 	</div>
 	<div class="container">
+		<div class="row app-guide-container">
+			<div class="col-sm-4 app-guide">
+		        <div class="glyph-background">
+		        	<h5 class="glyphicon glyphicon-refresh"></h5>
+		        </div>
+		        <h4 class="dark-gray-text guide-header">Find great beers.</h3> 
+		        <h5 class="light-gray-text">Choose the best beers available, or filter based on location or beer type.</h4>
+			</div>
+			<div class="col-sm-4 app-guide">
+		        <div class="glyph-background">
+		        	<h5 class="glyphicon glyphicon-refresh"></h5>
+		        </div>
+		        <h4 class="dark-gray-text guide-header">Build a drink list.</h3> 
+		        <h5 class="light-gray-text">Add the beers you want to drink to your personal list.</h4>
+			</div>
+			<div class="col-sm-4 app-guide">
+		        <div class="glyph-background">
+		        	<h5 class="glyphicon glyphicon-refresh"></h5>
+		        </div>
+		        <h4 class="dark-gray-text guide-header">Order beers.</h3> 
+		        <h5 class="light-gray-text">Use your drink list at your favorite watering hole to quickly order a beer.</h4>
+			</div>
+			<div class="col-sm-3 app-guide">
+		        <div class="glyph-background">
+		        	<h5 class="glyphicon glyphicon-refresh"></h5>
+		        </div>
+		        <h4 class="dark-gray-text guide-header">Rate beers.</h3> 
+		        <h5 class="light-gray-text">Once you’ve rated enough beers, we can suggest smarter recommendations.</h4>
+			</div>
+			<div class="col-sm-3 app-guide">
+		        <div class="glyph-background">
+		        	<h5 class="glyphicon glyphicon-refresh"></h5>
+		        </div>
+		        <h4 class="dark-gray-text guide-header">Earn rewards.</h3> 
+		        <h5 class="light-gray-text">Every beer you order and rate leads you closer to a beer on us.</h4>
+			</div>
+		</div>
 		<div class="row">
-			<div class="col-sm-11">
+			<div class="col-sm-9">
 				<div class="page-header"> 
 					<div class="row">
-						<div class="col-xs-12">
-							<h2 class="dark-gray-text">The best beer available in Seattle right now</h2> 
-							<h5 class="last-updated dark-gray-text">Last updated: <%= @time.strftime("%B %e, %Y @ %l:%M%P") %></h5>
+						<div class="col-xs-9 best-beer-header">
+							<h3 class="dark-gray-text">The best beer available in Seattle right now</h3> 
+						</div>
+						<div class="col-xs-3 updated">
+							<h5 class="last-updated dark-gray-text">Updated today @ <%= @time.strftime("%l:%M%P") %></h5>
 						</div>
 					</div>
+					<%= link_to "#", :class => "btn btn-info" do %>
+				  		<i class="fa fa-filter"></i>  Filter   <span class="caret"></span>
+				  	<% end -%>
 				</div>
 				<% @beers.first(50).each_with_index do |d, n| %>
 				<div class="row each-beer">
@@ -22,20 +64,47 @@
 					</div>
 					<div class="col-xs-10">
 						<div class="row">
-							<div class="col-xs-8 col-md-9">
+							<div class="col-xs-8 no-padding">
 								<h4 class="beer-name dark-gray-text"><%= d.beer_name %></h4>
-								<h5 class="beer-type dark-gray-text"><%= d.beer_type %></h5>
+								<% if d.tag_one == "new release" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% elsif d.tag_one == "limited release" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% elsif d.tag_one == "rare" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% elsif d.tag_one == "seasonal" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% end %>
+								<h5 class="beer-type light-gray-text">A <%= d.beer_type %> by <span class="dark-gray-text"><%= d.brewery.brewery_name %></span></h5>
+								<div class="row no-padding beer-info">
+									<div class="col-xs-2 no-padding">
+										<h5 class="light-gray-text"><%= d.beer_abv %>% ABV</h5>
+									</div>
+									<div class="col-xs-2 no-padding">
+										<% if d.beer_ibu == 0 %>
+											<h5 class="light-gray-text">IBUs n/a</h5>
+										<% else %>
+											<h5 class="light-gray-text"><%= d.beer_ibu %> IBUs</h5>
+										<% end %>
+									</div>
+								</div>
 							</div>
-							<div class="col-xs-4 col-md-3 no-padding">
-								<h4 class="beer-rating dark-gray-text">Untappd rating*: <%= d.beer_rating %></h4>
-								<h5 class="number-ratings dark-gray-text"># of ratings*: <%= number_with_delimiter(d.number_ratings, :delimiter => ',') %></h5>
+							<div class="col-xs-4 no-padding beer-rating-info">
+								<% if d.beer_rating > 4.25 %>
+									<h4 class="light-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
+								<% elsif d.beer_rating > 3.75 %>
+									<h4 class="light-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></h4>
+								<% elsif d.beer_rating > 3.25 %>
+									<h4 class="light-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></h4>
+								<% end %>
+								<h5 class="beer-rating light-gray-text">(<%= d.beer_rating %>; <%= number_with_delimiter(d.number_ratings, :delimiter => ',') %> ratings)</h5>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-xs-12">
+						<div class="row locations-row">
+							<div class="col-xs-8 beer-locations">
 								<% @beer_locations = BeerLocation.where(beer_id: d.id).pluck(:location_id) %>
 								<% @location_name = Location.where(id: @beer_locations) %>
-								<h5 class="locations">Currently at: 
+								<h5 class="locations">Currently available at: 
 								<% @location_name.each do |b| %>
 									<% if b == @location_name.last %> 
 										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>
@@ -45,18 +114,18 @@
 								<% end %>
 								</h5>
 							</div>
+							<div class="col-xs-4 drink-button-holder">
+								<%= link_to "Add to drink list", new_user_registration_path, class: "btn btn-success add-drink-button" %>
+							</div>
 						</div>
 					</div>
 				</div>
 				<hr/>
 				<% end %> 
 			</div>
-			<div class="col-sm-1">
-				<div class="image-holder">
-					<%= image_tag 'pbu_40_yellow.png', :class => "img-responsive" %>
-				</div>
+			<div class="col-sm-3 no-padding">
+				
 			</div>
 		</div>
-		<h6>* Data provided by Untappd LLC.
 	</div>
 <%= render 'layouts/footer' %>

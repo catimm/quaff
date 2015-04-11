@@ -1,0 +1,26 @@
+# == Schema Information
+#
+# Table name: breweries
+#
+#  id            :integer          not null, primary key
+#  brewery_name  :string(255)
+#  brewery_city  :string(255)
+#  brewery_state :string(255)
+#  brewery_url   :string(255)
+#  created_at    :datetime
+#  updated_at    :datetime
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  brewery_name: MyString
+  brewery_city: MyString
+  brewery_state: MyString
+  brewery_url: MyString
+
+two:
+  brewery_name: MyString
+  brewery_city: MyString
+  brewery_state: MyString
+  brewery_url: MyString

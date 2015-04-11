@@ -9,6 +9,12 @@
 #  number_ratings :integer
 #  created_at     :datetime
 #  updated_at     :datetime
+#  brewery_id     :integer
+#  beer_abv       :decimal(, )
+#  beer_ibu       :integer
+#  beer_image     :string(255)
+#  tag_one        :string(255)
+#  tag_two        :string(255)
 #
 
 require 'test_helper'

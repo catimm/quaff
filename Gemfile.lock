@@ -34,6 +34,7 @@ GEM
     autoprefixer-rails (5.1.5)
       execjs
       json
+    bcrypt (3.1.10-x86-mingw32)
     bootstrap-modal-rails (2.2.5)
       railties (>= 3.1)
     bootstrap-sass (3.3.3)
@@ -50,6 +51,16 @@ GEM
       execjs
     coffee-script-source (1.9.1)
     daemons (1.1.9)
+    devise (3.4.1)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 3.2.6, < 5)
+      responders
+      thread_safe (~> 0.1)
+      warden (~> 1.2.3)
+    devise_invitable (1.4.1)
+      actionmailer (>= 3.2.6, < 5)
+      devise (>= 3.2.0)
     erubis (2.7.0)
     eventmachine (1.0.5)
     execjs (2.4.0)
@@ -77,6 +88,7 @@ GEM
     multi_json (1.11.0)
     nokogiri (1.6.6.2-x86-mingw32)
       mini_portile (~> 0.6.0)
+    orm_adapter (0.5.0)
     pg (0.17.1-x86-mingw32)
     polyglot (0.3.5)
     rack (1.5.2)
@@ -100,6 +112,8 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
+    responders (1.1.2)
+      railties (>= 3.2, < 4.2)
     sass (3.2.19)
     sass-rails (4.0.5)
       railties (>= 4.0.0, < 5.0)
@@ -137,6 +151,8 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    warden (1.2.3)
+      rack (>= 1.0)
 
 PLATFORMS
   x86-mingw32
@@ -147,6 +163,8 @@ DEPENDENCIES
   bootstrap-sass (= 3.3.3)
   bootstrap-social-rails (~> 4.8.0)
   coffee-rails (~> 4.0.0)
+  devise
+  devise_invitable
   figaro
   font-awesome-sass (~> 4.3.0)
   jbuilder (~> 2.0)
