@@ -5,43 +5,6 @@
 		</div>
 	</div>
 	<div class="container">
-		<div class="row app-guide-container">
-			<div class="col-sm-4 app-guide">
-		        <div class="glyph-background">
-		        	<h5 class="glyphicon glyphicon-refresh"></h5>
-		        </div>
-		        <h4 class="dark-gray-text guide-header">Find great beers.</h3> 
-		        <h5 class="light-gray-text">Choose the best beers available, or filter based on location or beer type.</h4>
-			</div>
-			<div class="col-sm-4 app-guide">
-		        <div class="glyph-background">
-		        	<h5 class="glyphicon glyphicon-refresh"></h5>
-		        </div>
-		        <h4 class="dark-gray-text guide-header">Build a drink list.</h3> 
-		        <h5 class="light-gray-text">Add the beers you want to drink to your personal list.</h4>
-			</div>
-			<div class="col-sm-4 app-guide">
-		        <div class="glyph-background">
-		        	<h5 class="glyphicon glyphicon-refresh"></h5>
-		        </div>
-		        <h4 class="dark-gray-text guide-header">Order beers.</h3> 
-		        <h5 class="light-gray-text">Use your drink list at your favorite watering hole to quickly order a beer.</h4>
-			</div>
-			<div class="col-sm-3 app-guide">
-		        <div class="glyph-background">
-		        	<h5 class="glyphicon glyphicon-refresh"></h5>
-		        </div>
-		        <h4 class="dark-gray-text guide-header">Rate beers.</h3> 
-		        <h5 class="light-gray-text">Once you’ve rated enough beers, we can suggest smarter recommendations.</h4>
-			</div>
-			<div class="col-sm-3 app-guide">
-		        <div class="glyph-background">
-		        	<h5 class="glyphicon glyphicon-refresh"></h5>
-		        </div>
-		        <h4 class="dark-gray-text guide-header">Earn rewards.</h3> 
-		        <h5 class="light-gray-text">Every beer you order and rate leads you closer to a beer on us.</h4>
-			</div>
-		</div>
 		<div class="row">
 			<div class="col-sm-9">
 				<div class="page-header"> 
@@ -53,9 +16,50 @@
 							<h5 class="last-updated dark-gray-text">Updated today @ <%= @time.strftime("%l:%M%P") %></h5>
 						</div>
 					</div>
-					<%= link_to "#", :class => "btn btn-info" do %>
-				  		<i class="fa fa-filter"></i>  Filter   <span class="caret"></span>
-				  	<% end -%>
+					<div class="row filter-button-row">
+						<div class="col-xs-2">
+							<%= link_to "Hide filters", "#", class: "btn btn-default", id:"filter-button" %>
+						</div>
+						<div class="col-xs-2 filter-options show" id="first_filter">
+						  <h5 class="filter-heading">Ratings</h5>
+						  <ul>
+						    <li><%= link_to "Highest", "#", :class => "current-selection" %></li>
+						    <li><%= link_to "Best guess", "#", :class => "selection-option" %></li>
+						    <li><%= link_to "My ratings", "#", :class => "selection-option" %></li>
+						  </ul>
+						</div>
+						<div class="col-xs-3 filter-options show">
+							<h5 class="filter-heading">Locations</h5>
+						  	<ul>
+						    	<% @locations.first(5).each do |l| %>
+						    	<li><input type="checkbox" value="C85" name="place" class="input-box"> <%= l.name %></li>
+						    	<% end %>
+						    	<li><%= link_to "More locations", "#" %></li>
+						  	</ul>
+						</div>
+						<div class="col-xs-3 filter-options show">
+							<h5 class="filter-heading">Types</h5>
+						  	<ul>
+						    	<% @beer_types.first(5).each do |bt| %>
+						    	<li><%= check_box_tag "beer_type[]", bt, false, class: 'input-box' %>
+						    		<%= label_tag "beer_type[]", bt %>
+						    	</li>
+						    	<% end %>
+						    	<li><%= link_to "More beer types", "#" %></li>
+						  	</ul>
+						</div>
+						<div class="col-xs-2 filter-options show">
+							<h5 class="filter-heading">ABV</h5>
+						  	<ul>
+							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> < 5% </li>
+							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> 5% - 7%</li>
+							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> 7% - 9%</li>
+							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> 9% - 11%</li>
+							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> > 11% </li>
+							 </ul>
+						</div>
+					</div>
+					
 				</div>
 				<% @beers.first(50).each_with_index do |d, n| %>
 				<div class="row each-beer">
@@ -115,7 +119,7 @@
 								</h5>
 							</div>
 							<div class="col-xs-4 drink-button-holder">
-								<%= link_to "Add to drink list", new_user_registration_path, class: "btn btn-success add-drink-button" %>
+								<%= link_to "Add to drink list", new_user_registration_path, class: "btn btn-info add-drink-button" %>
 							</div>
 						</div>
 					</div>

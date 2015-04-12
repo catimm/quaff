@@ -1,4 +1,5 @@
 class HomeController < ApplicationController
+  has_scope :beer_type
   
   def index  
     @time = Time.current - 30.minutes
@@ -6,6 +7,13 @@ class HomeController < ApplicationController
     Rails.logger.debug("Current Beers: #{@current_beers.inspect}")
     @beers = Beer.where(id: @current_beers).order(:beer_rating).order(:number_ratings).reverse
     Rails.logger.debug("Beer list: #{@beers.inspect}")
+    @location_ids = BeerLocation.where(beer_is_current: "yes").pluck(:location_id)
+    @locations = Location.where(id: @location_ids).order(:name)
+    Rails.logger.debug("Location list: #{@locations.inspect}")
+    @beer_types = @beers.map{|x| x[:beer_type]}.uniq
+    Rails.logger.debug("Beer types: #{@beer_types.inspect}")
+    
+ 
   end
   
   def update

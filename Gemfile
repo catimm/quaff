@@ -42,6 +42,10 @@ gem 'nokogiri'
 # devise gem to manage user credentials and invites
 gem 'devise'
 gem 'devise_invitable'
+# to paginate the results on the page
+gem 'will_paginate'
+# to scope and filter results
+gem 'has_scope'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

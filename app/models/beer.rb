@@ -21,4 +21,7 @@ class Beer < ActiveRecord::Base
   belongs_to :brewery
   has_many :beer_locations
   has_many :locations, through: :beer_locations
+  
+  scope :beer_type, -> beer_type { where(:beer_type => beer_type) }
+
 end
