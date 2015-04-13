@@ -21,7 +21,9 @@ class Beer < ActiveRecord::Base
   belongs_to :brewery
   has_many :beer_locations
   has_many :locations, through: :beer_locations
+  has_many :user_beer_ratings
+  has_many :users, through: :user_beer_ratings
   
-  scope :beer_type, -> beer_type { where(:beer_type => beer_type) }
-
+  default_scope  { order(:beer_rating => :desc) }
+  default_scope  { order(:number_ratings => :desc) }
 end

@@ -22,4 +22,7 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+         
+  has_many :user_beer_ratings
+  has_many :beers, through: :user_beer_ratings
 end

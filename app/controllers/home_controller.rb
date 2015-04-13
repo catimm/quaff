@@ -1,11 +1,12 @@
 class HomeController < ApplicationController
-  has_scope :beer_type
+  helper_method :ratings_sorter
   
   def index  
     @time = Time.current - 30.minutes
     @current_beers = BeerLocation.where(beer_is_current: "yes").pluck(:beer_id)
     Rails.logger.debug("Current Beers: #{@current_beers.inspect}")
-    @beers = Beer.where(id: @current_beers).order(:beer_rating).order(:number_ratings).reverse
+    @beers = Beer.where(id: @current_beers)
+    @beers = @beers.order(ratings_sorter) if params[:ratings_sort].present?
     Rails.logger.debug("Beer list: #{@beers.inspect}")
     @location_ids = BeerLocation.where(beer_is_current: "yes").pluck(:location_id)
     @locations = Location.where(id: @location_ids).order(:name)
@@ -37,6 +38,12 @@ class HomeController < ApplicationController
       Rails.logger.debug("Beer Junction Beers: #{bj_beers.inspect}")
     end
 
+  end
+  
+  private
+  
+  def ratings_sorter
+    Beer.column_names.include?(params[:ratings_sort]) ? params[:ratings_sort] : "beer_rating"
   end
   
 end

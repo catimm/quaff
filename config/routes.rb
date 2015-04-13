@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   
   devise_for :users
+  resources :users
+
   root :to => 'home#index'
   get 'home/update' => 'home#update', :as => 'show_beers'
   # The priority is based upon order of creation: first created -> highest priority.

@@ -123,6 +123,18 @@ body {
     }
   }
 }
+.filter-option {
+  font-size: 13px;
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+.selected {
+  a {
+    font-weight: 600 !important;
+    color: #606060!important ;
+    text-decoration: none !important;
+  }
+}
 .input-box {
   margin: 0 2.5px !important;
 }
@@ -158,12 +170,26 @@ body {
 .beer-rating-info {
   text-align: right;
 }
-.star-rating {
+.user-beer-rating {
+  text-align: center;
+  background: #f7f7f7;
+}
+.user-rating {
+  display: inline-block;
+  margin: 5px 0;
+}
+.crowd-star-rating {
   display: inline-block;
   text-align: right;
+  margin: 10px 0 5px 0;
+}
+.user-star-rating {
+  display: inline-block;
+  text-align: right;
+  margin: 5px 0;
 }
 .beer-rating {
-  margin-bottom: 5px;
+  margin: 0 5px;
   text-align: right;
   display: inline-block;
 }
