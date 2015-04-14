@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   
   devise_for :users
   resources :users
+  resources :beers
 
   root :to => 'home#index'
   get 'home/update' => 'home#update', :as => 'show_beers'

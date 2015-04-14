@@ -44,8 +44,9 @@ gem 'devise'
 gem 'devise_invitable'
 # to paginate the results on the page
 gem 'will_paginate'
-# to scope and filter results
-gem 'has_scope'
+# for filtering functionality and views
+gem 'chosen-rails'
+gem 'filterrific'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

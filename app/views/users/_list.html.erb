@@ -1,0 +1,93 @@
+<div id="filterrific_results">
+				<% beers.each_with_index do |d, n| %>
+				<div class="row each-beer">
+					<div class="col-xs-2 rank-number-area">
+						<h1 class="ranking-number light-orange-text"><%= n + 1 %></h1>
+					</div>
+					<div class="col-xs-10 no-padding">
+						<div class="row">
+							<div class="col-xs-8 no-padding">
+								<h4 class="beer-name dark-gray-text"><%= d.beer_name %></h4>
+								<% if d.tag_one == "new release" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% elsif d.tag_one == "limited release" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% elsif d.tag_one == "rare" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% elsif d.tag_one == "seasonal" %>
+									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
+								<% end %>
+								<h5 class="beer-type light-gray-text">A <%= d.beer_type %> by <span class="dark-gray-text"><%= d.brewery.brewery_name %></span></h5>
+								<div class="row no-padding beer-info">
+									<div class="col-xs-2 no-padding">
+										<h5 class="light-gray-text"><%= d.beer_abv %>% ABV</h5>
+									</div>
+									<div class="col-xs-2 no-padding">
+										<% if d.beer_ibu == 0 %>
+											<h5 class="light-gray-text">IBUs n/a</h5>
+										<% else %>
+											<h5 class="light-gray-text"><%= d.beer_ibu %> IBUs</h5>
+										<% end %>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-4 no-padding beer-rating-info">
+								<h6 class="light-gray-text rating-count"><%= number_with_delimiter(d.number_ratings, :delimiter => ',') %> <span><i class="fa fa-beer"></i> <i class="fa fa-long-arrow-right"></i></span></h6>
+								<% if d.beer_rating > 4.25 %>
+									<h4 class="light-orange-text crowd-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
+								<% elsif d.beer_rating > 3.75 %>
+									<h4 class="light-orange-text crowd-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></h4>
+								<% elsif d.beer_rating > 3.25 %>
+									<h4 class="light-orange-text crowd-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></h4>
+								<% end %>
+								<h6 class="beer-rating light-gray-text">(<%= d.beer_rating %>)</h6>
+							</div>
+							<% @user_rated = UserBeerRating.where(beer_id: d.id, user_id: current_user.id).pluck(:user_beer_rating) %>
+							<% if @user_rated.size > 0 %>
+							<% @ratings_average = (@user_rated.sum / @user_rated.size).to_f %>
+							<div class="col-xs-4 no-padding user-beer-rating">
+								<h6 class="light-gray-text user-rating">you rated it </h6>
+								<% if @ratings_average > 4.25 %>
+									<h4 class="light-orange-text user-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
+								<% elsif @ratings_average > 3.75 %>
+									<h4 class="light-orange-text user-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></h4>
+								<% elsif @ratings_average > 3.25 %>
+									<h4 class="light-orange-text user-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></h4>
+								<% end %>
+								<h6 class="beer-rating light-gray-text">(<%= @ratings_average.round(2) %>; <%= @user_rated.size %> ratings)</h6>
+							</div>
+							<% else %>
+							<div class="col-xs-4 no-padding user-beer-rating">
+								<h6 class="light-gray-text user-rating">bet you rate it </h6>
+
+									<h4 class="light-orange-text user-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
+								<h6 class="beer-rating light-gray-text">(4.50)</h6>
+							</div>
+							<% end %>
+						</div>
+						<div class="row locations-row">
+							<div class="col-xs-8 beer-locations">
+								<% @beer_locations = BeerLocation.where(beer_id: d.id).pluck(:location_id) %>
+								<% @location_name = Location.where(id: @beer_locations) %>
+								<h5 class="locations">Available at: 
+								<% @location_name.each do |b| %>
+									<% if b == @location_name.last %> 
+										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>
+									<% else %>
+										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>,
+									<% end %>
+								<% end %>
+								</h5>
+							</div>
+							<div class="col-xs-4 drink-button-holder no-padding">
+								<%= link_to "rate!", "#", class: "btn btn-warning rate-button" %>
+								<%= link_to "#", class: "btn btn-info add-drink-button" do %>
+								<i class="fa fa-plus-square-o"></i> drink list
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr/>
+				<% end %>
+</div>

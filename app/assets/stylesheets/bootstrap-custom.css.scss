@@ -203,6 +203,12 @@ body {
 .brewery-name {
   margin-top: 0;
 }
+.rating-count {
+  display: inline-block;
+  span {
+    font-size: 14px;
+  }
+}
 .number-ratings {
   margin-top: 0;
 }
@@ -218,7 +224,7 @@ body {
   }
 }
 .beer-locations {
-  width: 458px;
+  width: 512px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -237,7 +243,13 @@ body {
   text-align: right;
 }
 .add-drink-button {
-  width: 80%; 
+  width: 100px; 
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: -5px;
+}
+.rate-button {
+  width: 100px; 
   font-size: 16px;
   font-weight: 500;
   margin-top: -5px;

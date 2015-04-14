@@ -12,6 +12,9 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require chosen-jquery
+//= require chosen-defaults
+//= require filterrific/filterrific-jquery
 //= require bootstrap-sprockets
 //= require bootstrap-modal
 //= require bootstrap-modalmanager

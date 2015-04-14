@@ -17,6 +17,7 @@
                   <% if user_signed_in? %>
 				    <li class="navLinks"><%= link_to "Drink List", user_session_path %></li>
 				    <li class="navLinks"><%= link_to "Ratings", user_session_path %></li>
+				    <li class="navLinks"><%= link_to "Rewards", user_session_path %></li>
 				    <li class="navLinks"> <%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
 				  <% else %>
 		          	<li class="navLinks"> <%= link_to "Log in", new_user_session_path %></li>
