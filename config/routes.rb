@@ -1,11 +1,14 @@
 Rails.application.routes.draw do
   
   devise_for :users
-  resources :users
+  resources :users do
+    resources :drinks   
+  end
   resources :beers
 
   root :to => 'home#index'
   get 'home/update' => 'home#update', :as => 'show_beers'
+  post 'users/update' => 'users#update', :as => 'new_drink'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

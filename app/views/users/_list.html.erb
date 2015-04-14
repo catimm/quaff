@@ -81,9 +81,12 @@
 							</div>
 							<div class="col-xs-4 drink-button-holder no-padding">
 								<%= link_to "rate!", "#", class: "btn btn-warning rate-button" %>
-								<%= link_to "#", class: "btn btn-info add-drink-button" do %>
-								<i class="fa fa-plus-square-o"></i> drink list
-								<% end %>
+								<%= form_for @new_drink, url: new_drink_path do |f| %>
+  									<%= f.hidden_field :beer_id, :value => d.id %>
+									<%= d.submit "#", class: "btn btn-info add-drink-button" do %>
+										<i class="fa fa-plus-square-o"></i> drink list
+									<% end %>
+								<%end %>
 							</div>
 						</div>
 					</div>

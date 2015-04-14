@@ -23,7 +23,13 @@ class UsersController < ApplicationController
       format.html
       format.js
     end
+  @new_drink = DrinkList.new
   end
   
+  def update
+    new_drink = DrinkList.new(:user_id => current_user.id, :beer_id => invited_user.id)
+    new_drink.save!
+    return
+  end
 
 end
