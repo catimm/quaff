@@ -84,7 +84,6 @@ body {
   }
   .updated {
     margin-top: 10px;
-    padding: 0;
     text-align: right;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -147,8 +146,10 @@ body {
 .light-orange-text {
   color: #ffdba9;
 }
+.dark-orange-text {
+  color: #ffc58b;
+}
 .each-beer {
-  height: 100px;
   margin-right: 0;
 }
 .rank-number-area {
@@ -167,8 +168,11 @@ body {
   font-size: 20px;
   display: inline-block;
 }
-.beer-rating-info {
-  text-align: right;
+.beer-location-info {
+  text-align: left;
+  h5 {
+    font-size: 14px;
+  }
 }
 .user-beer-rating {
   text-align: center;
@@ -178,20 +182,16 @@ body {
   display: inline-block;
   margin: 5px 0;
 }
-.crowd-star-rating {
+.star-rating {
   display: inline-block;
   text-align: right;
   margin: 10px 0 5px 0;
 }
-.user-star-rating {
-  display: inline-block;
-  text-align: right;
-  margin: 5px 0;
-}
 .beer-rating {
-  margin: 0 5px;
-  text-align: right;
+  margin: 0;
+  text-align: left;
   display: inline-block;
+  font-size: 13px;
 }
 .beer-type {
   margin-top: 0;
@@ -217,11 +217,33 @@ body {
   div:first-of-type {
     border-right: 1px solid #e7e7e7;
   }
-  h5 {
+  h5, h6 {
     font-size: 13px;
     text-align: center;
     margin: 0;
   }
+}
+.descriptor-row {
+  div:first-of-type {
+    padding-right: 0;
+  }
+}
+.descriptor-text-container {
+  padding: 0 5px;
+}
+.descriptor-text {
+  background: #909090;
+  color: #fff;
+  border-radius: 6px;
+  padding: 5px 7.5px;
+  text-align: center;
+  display: inline-block;
+}
+.space-bar {
+  text-indent: 5px;
+}
+.beer-rating-info-2 {
+  margin-left: -10px;
 }
 .beer-locations {
   width: 512px;
@@ -230,7 +252,7 @@ body {
   text-overflow: ellipsis;
   padding-left: 0;
 }
-.locations-row {
+.ratings-row {
   margin-top: 5px;
 }
 .special-info {
@@ -240,24 +262,27 @@ body {
   margin-bottom: 5px;
 }
 .drink-button-holder {
-  text-align: right;
+  text-align: left;
 }
-.add-drink-button {
-  width: 100px; 
+.add-drink-button, .remove-drink-button {
+  width: 120px; 
   font-size: 16px;
   font-weight: 500;
   margin-top: -5px;
 }
+.remove-drink-button {
+  color: #909090;
+}
 .rate-button {
-  width: 100px; 
+  width: 120px; 
   font-size: 16px;
   font-weight: 500;
   margin-top: -5px;
 }
 //Navbar css style
 .homeNavbar {
-  background: #4780b4 !important;
-  border-color: #9dc2e4;
+  background: #0E2DAA !important;
+  border-color: #83d4eb;
 }
 .navbar {
   a {

@@ -14,7 +14,7 @@
 #  beer_ibu       :integer
 #  beer_image     :string(255)
 #  tag_one        :string(255)
-#  tag_two        :string(255)
+#  descriptors    :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
