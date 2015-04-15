@@ -1,134 +1,75 @@
 <%= render 'layouts/header' %> 
-	<div class="container visible-xs">
-		<div class="xs-image-holder">
-			<%= image_tag 'pbu_40_yellow.png', :class => "img-responsive" %>
-		</div>
-	</div>
 	<div class="container">
-		<div class="row">
-			<div class="col-sm-9">
-				<div class="page-header"> 
-					<div class="row">
-						<div class="col-xs-9 best-beer-header">
-							<h3 class="dark-gray-text">The best beer available in Seattle right now</h3> 
-						</div>
-						<div class="col-xs-3 updated">
-							<h5 class="last-updated dark-gray-text">Updated today @ <%= @time.strftime("%l:%M%P") %></h5>
-						</div>
+		<div class="row header-row">
+			<div class="page-header"> 
+				<div class="row">
+					<div class="col-xs-9 best-beer-header">
+						<h3 class="dark-gray-text">The best beer available in Seattle right now</h3> 
 					</div>
-					<div class="row filter-button-row">
-						<div class="col-xs-2">
-							<%= link_to "Hide filters", "#", class: "btn btn-default", id:"filter-button" %>
-						</div>
-						<div class="col-xs-2 filter-options show" id="first_filter">
-						  <h5 class="filter-heading">Ratings</h5>
-						  <ul>
-						    <li><h5 class="filter-option selected"><%= ratings_sort "Highest", "beer_rating" %></h5></li>
-						    <li><h5 class="filter-option"><%= ratings_sort "Best guess", "best_guess" %></h5></li>
-						    <li><h5 class="filter-option"><%= ratings_sort "My ratings", "user_rating" %></h5></li>
-						  </ul>
-						</div>
-						<div class="col-xs-3 filter-options show">
-							<h5 class="filter-heading">Locations</h5>
-						  	<ul>
-						    	<% @locations.first(5).each do |l| %>
-						    	<li><%= check_box_tag "locations[]", l.name, false, class: 'input-box' %>
-						    		<%= label_tag "locations[]", l.name %>
-						    	</li>
-						    	<% end %>
-						    	<li><%= link_to "More locations", "#" %></li>
-						  	</ul>
-						</div>
-						<div class="col-xs-3 filter-options show">
-							<h5 class="filter-heading">Types</h5>
-						  	<ul>
-						    	<% @beer_types.first(5).each do |bt| %>
-						    	<li><%= check_box_tag "beer_types[]", bt, false, class: 'input-box' %>
-						    		<%= label_tag "beer_types[]", bt %>
-						    	</li>
-						    	<% end %>
-						    	<li><%= link_to "More beer types", "#" %></li>
-						  	</ul>
-						</div>
-						<div class="col-xs-2 filter-options show">
-							<h5 class="filter-heading">ABV</h5>
-						  	<ul>
-							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> < 5% </li>
-							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> 5% - 7%</li>
-							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> 7% - 9%</li>
-							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> 9% - 11%</li>
-							   <li> <input type="checkbox" value="C85" name="place" class="input-box"> > 11% </li>
-							 </ul>
-						</div>
-					</div>
-					
-				</div>
-				<% @beers.first(50).each_with_index do |d, n| %>
-				<div class="row each-beer">
-					<div class="col-xs-2 rank-number-area">
-						<h1 class="ranking-number light-orange-text"><%= n + 1 %></h1>
-					</div>
-					<div class="col-xs-10">
-						<div class="row">
-							<div class="col-xs-8 no-padding">
-								<h4 class="beer-name dark-gray-text"><%= d.beer_name %></h4>
-								<% if d.tag_one == "new release" %>
-									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-								<% elsif d.tag_one == "limited release" %>
-									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-								<% elsif d.tag_one == "rare" %>
-									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-								<% elsif d.tag_one == "seasonal" %>
-									<h5 class="light-orange-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-								<% end %>
-								<h5 class="beer-type light-gray-text">A <%= d.beer_type %> by <span class="dark-gray-text"><%= d.brewery.brewery_name %></span></h5>
-								<div class="row no-padding beer-info">
-									<div class="col-xs-2 no-padding">
-										<h5 class="light-gray-text"><%= d.beer_abv %>% ABV</h5>
-									</div>
-									<div class="col-xs-2 no-padding">
-										<% if d.beer_ibu == 0 %>
-											<h5 class="light-gray-text">IBUs n/a</h5>
-										<% else %>
-											<h5 class="light-gray-text"><%= d.beer_ibu %> IBUs</h5>
-										<% end %>
-									</div>
-								</div>
-							</div>
-							<div class="col-xs-4 no-padding beer-rating-info">
-								<% if d.beer_rating > 4.25 %>
-									<h4 class="light-orange-text crowd-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
-								<% elsif d.beer_rating > 3.75 %>
-									<h4 class="light-orange-text crowd-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></h4>
-								<% elsif d.beer_rating > 3.25 %>
-									<h4 class="light-orange-text crowd-star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></h4>
-								<% end %>
-								<h5 class="beer-rating light-gray-text">(<%= d.beer_rating %>; <%= number_with_delimiter(d.number_ratings, :delimiter => ',') %> ratings)</h5>
-							</div>
-						</div>
-						<div class="row locations-row">
-							<div class="col-xs-8 beer-locations">
-								<% @beer_locations = BeerLocation.where(beer_id: d.id).pluck(:location_id) %>
-								<% @location_name = Location.where(id: @beer_locations) %>
-								<h5 class="locations">Currently available at: 
-								<% @location_name.each do |b| %>
-									<% if b == @location_name.last %> 
-										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>
-									<% else %>
-										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>,
-									<% end %>
-								<% end %>
-								</h5>
-							</div>
-							<div class="col-xs-4 drink-button-holder">
-								<%= link_to "Add to drink list", new_user_registration_path, class: "btn btn-info add-drink-button" %>
-							</div>
-						</div>
+					<div class="col-xs-3 updated">
+						<h5 class="last-updated dark-gray-text">Updated today @ <%= @time.strftime("%l:%M%P") %></h5>
 					</div>
 				</div>
-				<hr/>
-				<% end %> 
 			</div>
+		</div>
+		<div class="row filter-button-row">
+			<div class="col-xs-1"><h6 class="dark-gray-text">Filter by:</h6></div>
+			<div class="col-xs-2 filter-options show" id="first_filter">
+				<h5 class="filter-heading">Ratings</h5>
+			  	<%= form_for_filterrific @filterrific do |f| %>
+					<%= f.select(:sorted_by, 
+						@filterrific.select_options[:sorted_by],
+						{ include_blank: false },
+						{ class: 'chosen-select' })
+				  	%>
+			</div>
+			<div class="col-xs-2 filter-options show">
+				<h5 class="filter-heading">Locations</h5>
+					<%= f.select(:with_any_location_ids,
+						@filterrific.select_options[:with_any_location_ids],
+					    { include_blank: true },
+					    { multiple: true, class: 'chosen-select' })
+					%>
+					<%# add an automated spinner to your form when the list is refreshed %>
+  					<%= render_filterrific_spinner %>
+			</div>
+			<div class="col-xs-2 filter-options show">
+				<h5 class="filter-heading">Types</h5>
+				  	<%= f.select(:with_beer_type,
+						@filterrific.select_options[:with_beer_type],
+					    { include_blank: true },
+					    { multiple: true, class: 'chosen-select' })
+					%>
+					<%# add an automated spinner to your form when the list is refreshed %>
+  					<%= render_filterrific_spinner %>
+			</div>
+			<div class="col-xs-2 filter-options show">
+				<h5 class="filter-heading">ABV Limit</h5>
+				  	<%= f.select(:beer_abv_lte,
+						@filterrific.select_options[:beer_abv_lte],
+					    { include_blank: true },
+					    { class: 'chosen-select' })
+					%>
+					<%# add an automated spinner to your form when the list is refreshed %>
+					<%= render_filterrific_spinner %>
+			</div>
+			<div class="col-xs-2 filter-options show">
+				<h5 class="filter-heading">Special items</h5>
+				  	<%= f.select(:with_special,
+						@filterrific.select_options[:with_special],
+					    { include_blank: true },
+					    { multiple: true, class: 'chosen-select' })
+					%>
+					<%# add an automated spinner to your form when the list is refreshed %>
+					<%= render_filterrific_spinner %>
+			  	<% end %>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-9 no-padding">
+ 				<hr/>
+ 				<%= render( partial: 'home/list', locals: { beers: @beers }) %>
+ 			</div>
 			<div class="col-sm-3 no-padding">
 				
 			</div>

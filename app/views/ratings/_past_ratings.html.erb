@@ -1,0 +1,54 @@
+<div class="row each-beer">
+			<div class="col-xs-2 rank-number-area">
+			</div>
+			<div class="col-xs-10 no-padding">
+				<div class="row">
+					<div class="col-xs-8 no-padding">
+						<h4 class="beer-name dark-gray-text">beer_name</h4>
+						<h5 class="dark-orange-text special-info"><i class="fa fa-tag"></i>d.tag_one</h5>
+						<h5 class="beer-type light-gray-text">
+							An beer_type by <span class="dark-gray-text">brewery_name></span></h5>
+						<div class="row no-padding beer-info">
+							<div class="col-xs-2 no-padding">
+								<h5 class="light-gray-text">beer_abv% ABV</h5>
+							</div>
+							<div class="col-xs-2 no-padding">
+								<h5 class="light-gray-text">beer_ibu IBUs</h5>
+							</div>
+							<div class="col-xs-2 more-info show">
+								<h6 class="light-gray-text"><i class="fa fa-plus-square-o"></i> more</h6>
+							</div>
+							<div class="col-xs-2 less-info hidden">
+								<h6 class="light-gray-text"><i class="fa fa-minus-square-o"></i> less</h6>
+							</div>
+						</div>
+						<div class="row descriptor-row hidden">
+							<div class="col-xs-3">
+								<h6 class="dark-gray-text">Common descriptors:</h6>
+							</div>
+							<div class="col-xs-9 descriptor-text-container">
+								<h6 class="descriptor-text"> descriptor </h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-4 no-padding beer-location-info">
+							<h5 class="locations">You drank this at X on Y date</h5>
+					</div>
+				</div>
+				<div class="row ratings-row">
+					<div class="col-xs-4 no-padding beer-rating-info-1">
+						<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
+						<h6 class="beer-rating light-gray-text">(beer_rating--number_ratings) <span class="light-gray-text space-bar">&nbsp;&nbsp;&nbsp;&nbsp;|</span></h6>
+					</div>
+					<div class="col-xs-4 no-padding beer-rating-info-2">
+						<h6 class="light-gray-text beer-rating"><span class="dark-gray-text">Best guess for you:</span></h6>
+						<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
+						<h6 class="beer-rating light-gray-text">(4.50).</h6>
+					</div>
+					<div class="col-xs-4 drink-button-holder-dl no-padding">
+						<%= link_to "rate!", "#", class: "btn btn-warning rate-button" %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr/>

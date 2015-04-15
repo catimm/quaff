@@ -25,4 +25,6 @@ class User < ActiveRecord::Base
          
   has_many :user_beer_ratings
   has_many :beers, through: :user_beer_ratings
+  has_many :drink_lists
+  has_many :beers, through: :drink_lists
 end

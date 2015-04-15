@@ -1,0 +1,30 @@
+<%= render 'layouts/header' %> 
+	<div class="container">
+		<div class="row current-beers-header">
+			<div class="page-header"> 
+				<h3 class="dark-gray-text">These beers need your attention</h3> 
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-9 no-padding">
+ 				<%= render( partial: 'ratings/need_ratings') %>
+ 			</div>
+			<div class="col-sm-3 no-padding">
+				
+			</div>
+		</div>
+		<div class="row wish-beers-header">
+			<div class="page-header"> 
+				<h3 class="dark-gray-text">Memories of those long gone, good beers</h3> 
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-9 no-padding">
+ 				<%= render( partial: 'ratings/past_ratings') %>
+ 			</div>
+			<div class="col-sm-3 no-padding">
+				
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

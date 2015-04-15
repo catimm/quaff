@@ -5,12 +5,6 @@ class UsersController < ApplicationController
     @new_drink = DrinkList.new
     @time = Time.current - 30.minutes
     @drink_list = DrinkList.where(user_id: current_user.id).pluck(:beer_id)
-    descriptors = Beer.where(id: 1).pluck(:descriptors)[0]
-    Rails.logger.debug("Descriptor list: #{descriptors.inspect}")
-    test_descriptor = descriptors.split(',')
-    Rails.logger.debug("New descriptor list: #{test_descriptor.inspect}")
-    first_descriptor = test_descriptor[0]
-    Rails.logger.debug("first descriptor: #{first_descriptor.inspect}")
     @filterrific = initialize_filterrific(
       Beer,
       params[:filterrific],

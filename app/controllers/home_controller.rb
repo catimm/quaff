@@ -3,16 +3,21 @@ class HomeController < ApplicationController
   
   def index  
     @time = Time.current - 30.minutes
-    @current_beers = BeerLocation.where(beer_is_current: "yes").pluck(:beer_id)
-    Rails.logger.debug("Current Beers: #{@current_beers.inspect}")
-    @beers = Beer.where(id: @current_beers)
-    @beers = @beers.order(ratings_sorter) if params[:ratings_sort].present?
-    Rails.logger.debug("Beer list: #{@beers.inspect}")
-    @location_ids = BeerLocation.where(beer_is_current: "yes").pluck(:location_id)
-    @locations = Location.where(id: @location_ids).order(:name)
-    Rails.logger.debug("Location list: #{@locations.inspect}")
-    @beer_types = @beers.map{|x| x[:beer_type]}.uniq
-    Rails.logger.debug("Beer types: #{@beer_types.inspect}")
+    @filterrific = initialize_filterrific(
+      Beer,
+      params[:filterrific],
+      select_options: {
+        sorted_by: Beer.options_for_sorted_by,
+        with_any_location_ids: Location.options_for_select,
+        with_beer_type: Beer.options_for_beer_type.uniq,
+        beer_abv_lte: Beer.options_for_beer_abv,
+        with_special: Beer.options_for_special_beer.uniq
+      },
+      persistence_id: 'shared_key',
+      default_filter_params: {},
+      available_filters: [],
+    ) or return
+    @beers = @filterrific.find.page(params[:page])
     
  
   end

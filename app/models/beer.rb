@@ -23,6 +23,8 @@ class Beer < ActiveRecord::Base
   has_many :locations, through: :beer_locations
   has_many :user_beer_ratings
   has_many :users, through: :user_beer_ratings
+  has_many :drink_lists
+  has_many :users, through: :drink_lists
   
   filterrific(
   default_filter_params: { sorted_by: 'beer_rating_desc' },
