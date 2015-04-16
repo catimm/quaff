@@ -6,13 +6,13 @@
 					<div class="col-xs-8">
 						<h4 class="beer-name dark-gray-text"><%= d.beer.beer_name %></h4>
 						<% if d.beer.tag_one == "new release" %>
-							<h5 class="dark-orange-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
+							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
 						<% elsif d.beer.tag_one == "limited release" %>
-							<h5 class="dark-orange-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
+							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
 						<% elsif d.beer.tag_one == "rare" %>
-							<h5 class="dark-orange-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
+							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
 						<% elsif d.beer.tag_one == "seasonal" %>
-							<h5 class="dark-orange-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
+							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.beer.tag_one %></h5>
 						<% end %>
 						<h5 class="beer-type light-gray-text">
 							<% if d.beer.beer_type =~ /^[aeiou]/i %>An <% else %> A <% end %>

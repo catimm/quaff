@@ -49,15 +49,9 @@ class Beer < ActiveRecord::Base
       # Descending sort on beers user has rated
         user_ratings = UserBeerRating.arel_table
         # get a reference to the filtered table
-        beers = Beer.arel_table
+        beers_table = Beer.arel_table
         # let AREL generate a complex SQL query
-        where(
-          UserBeerRating \
-            .where(user_ratings[:beer_id].eq(beers[:id])) \
-            .where(user_ratings[:user_id].in([*current_user.id].map(&:to_i))) \
-            .exists
-        )
-      order("beers.beer_rating #{ direction }")
+        where(UserBeerRating.where(user_ratings[:beer_id].eq(beers_table[:id])).where(user_ratings[:user_id].in([*current_user.id].map(&:to_i))).exists).order("beers.beer_rating #{ direction }")
       Rails.logger.debug("user beer ratings: #{@current_beers.inspect}")
     else
       raise(ArgumentError, "Invalid sort option: #{ sort_option.inspect }")
@@ -68,14 +62,9 @@ class Beer < ActiveRecord::Base
     # get a reference to the join table
     beer_locations = BeerLocation.arel_table
     # get a reference to the filtered table
-    beers = Beer.arel_table
+    beers_table = Beer.arel_table
     # let AREL generate a complex SQL query
-    where(
-      BeerLocation \
-        .where(beer_locations[:beer_id].eq(beers[:id])) \
-        .where(beer_locations[:location_id].in([*location_ids].map(&:to_i))) \
-        .exists
-    )
+    where(BeerLocation.where(beer_locations[:beer_id].eq(beers_table[:id])).where(beer_locations[:location_id].in([*location_ids].map(&:to_i))).exists)
   }
   
   scope :with_beer_type, lambda { |beer_type|

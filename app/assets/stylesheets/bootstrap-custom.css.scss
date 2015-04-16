@@ -137,17 +137,23 @@ body {
 .input-box {
   margin: 0 2.5px !important;
 }
-.dark-gray-text {
-  color: #606060;
-}
 .light-gray-text {
   color: #909090;
+}
+.dark-gray-text {
+  color: #606060;
 }
 .light-orange-text {
   color: #ffdba9;
 }
 .dark-orange-text {
   color: #ffc58b;
+}
+.special-tag-text {
+  color: #31b0d5; //light, bright blue color
+}
+.dark-blue-text {
+  color: #4780b4;
 }
 .half-bottom-margin {
   margin-bottom: 5px;
