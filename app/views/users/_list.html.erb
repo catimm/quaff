@@ -99,7 +99,7 @@
 						<% end %>
 					</div>
 					<div class="col-xs-4 drink-button-holder no-padding">
-						<%= link_to "rate!", "#", class: "btn btn-warning rate-button" %>
+						<%= link_to "rate!", "#", class: "btn btn-warning rate-button", data: {toggle: "modal", target: "#rate_beer"} %>
 						<% if @drink_list.present? && @drink_list.include?(d.id) %>
 							<%= link_to new_drink_path(:beer => d.id), class: "btn btn-default remove-drink-button", :remote => true, :method => :post do %>
 								<i class="fa fa-minus-square-o"></i> drink list
@@ -114,5 +114,8 @@
 			</div>
 		</div>
 		<hr/>
+		<div id="rate_beer" class="modal">
+			<%= render( partial: 'layouts/rate_beer') %>
+		</div>
 	<% end %>
 </div>

@@ -9,6 +9,8 @@
 #  beer_descriptors :string(255)
 #  created_at       :datetime
 #  updated_at       :datetime
+#  drank_at         :string(255)
+#  rated_on         :datetime
 #
 
 require 'test_helper'

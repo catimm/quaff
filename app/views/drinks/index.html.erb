@@ -2,7 +2,14 @@
 	<div class="container">
 		<div class="row current-beers-header">
 			<div class="page-header"> 
-				<h3 class="dark-gray-text">Available beers. Get to it!</h3> 
+				<div class="row">
+					<div class="col-xs-6 best-beer-header">
+						<h3 class="dark-gray-text">Available beers. Get to it!</h3> 
+					</div>
+					<div class="col-xs-6 buy-button-holder">
+						<%= link_to "buy beer", "#", class: "btn btn-success buy-button", data: {toggle: "modal", target: "#buy_beer"} %>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -34,5 +41,50 @@
 				
 			</div>
 		</div>
+		<div id="buy_beer" class="modal">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3>Thirsty? You've come to the right place...</h3>
+					</div>
+					<div class="modal-body">
+						<%= form_for @order do |f| %>
+						<div class="row">
+							<div class="col-xs-5">
+								<h4 class="buy-steps">1</h4>
+								<h4 class="buy-step-direction">Choose location</h4>
+							</div>
+							<div class="col-xs-7 drop-down-container">
+								<%= f.select(:drank_at, 
+									options_from_collection_for_select(@current_locations, "id", "name"),
+									{ include_blank: true },
+									{ allow_single_deselect: true, class: 'chosen-select' })
+							  	%>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5">
+								<h4 class="buy-steps">2</h4>
+								<h4 class="buy-step-direction">Choose beer(s)</h4>
+							</div>
+							<div class="col-xs-7 drop-down-container">
+								<%= f.select(:beer_id, 
+									options_from_collection_for_select(@current_list_beers, "id", "beer_name"),
+									{ include_blank: true },
+									{ multiple: true, class: 'chosen-select' })
+							  	%>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-5">
+								<h4 class="buy-steps">3</h4>
+								<h4 class="buy-step-direction">When at counter</h4>
+							</div>
+							<div class="col-xs-7">
+								<%= link_to "buy now", "#", class: "btn btn-success buy-button final" %>
+							</div>
+						</div>	
+						<% end %>
+					</div>
+				</div>
 	</div>
 <%= render 'layouts/footer' %>

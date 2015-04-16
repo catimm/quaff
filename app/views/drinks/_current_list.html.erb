@@ -99,7 +99,7 @@
 						<% end %>
 					</div>
 					<div class="col-xs-4 drink-button-holder-dl no-padding">
-						<%= link_to "rate!", "#", class: "btn btn-warning rate-button" %>
+						<%= link_to "rate!", "#", class: "btn btn-warning rate-button", data: {toggle: "modal", target: "#rate_beer"} %>
 						<%= link_to user_drink_path(current_user.id, d.id), class: "btn btn-default remove-drink-button" do %>
 							<i class="fa fa-minus-square-o"></i> remove
 						<% end %>
@@ -108,4 +108,7 @@
 			</div>
 		</div>
 		<hr/>
+		<div id="rate_beer" class="modal">
+			<%= render( partial: 'layouts/rate_beer') %>
+		</div>
 	<% end %>

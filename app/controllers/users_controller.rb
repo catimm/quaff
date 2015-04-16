@@ -3,6 +3,10 @@ class UsersController < ApplicationController
   
   def show
     @new_drink = DrinkList.new
+    
+    # allow user to rate a beer
+    @user_rating = UserBeerRating.new
+    
     @time = Time.current - 30.minutes
     @drink_list = DrinkList.where(user_id: current_user.id).pluck(:beer_id)
     @filterrific = initialize_filterrific(

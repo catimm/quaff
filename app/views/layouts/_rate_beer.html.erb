@@ -1,0 +1,30 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h3>What'd you think?</h3>
+</div>
+<div class="modal-body">
+	<%= form_for @user_rating do |f| %>
+	<div class="row">
+		<div class="col-xs-3 beer-rating-directions">
+			<h5 class="light-gray-text">choose rating</h5>
+		</div>
+		<div class="col-xs-9 beer-rating-input">
+			<h2 class="light-gray-text star-rating"><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-3 beer-rating-directions">
+			<h5 class="light-gray-text beer-rating-directions">add descriptors</h5>
+		</div>
+		<div class="col-xs-9 beer-rating-input">
+			<%= f.text_field :beer_descriptors, class: "rating-descriptor-field" %>
+			<h6 class="light-gray-text extra-rating-directions">separate each descriptor with a comma (e.g. hoppy, floral, etc.)</h6>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<%= link_to "submit", "#", class: "btn btn-success buy-button final" %>
+		</div>
+	</div>
+	<% end %>
+</div>				

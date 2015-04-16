@@ -1,0 +1,65 @@
+<%= render 'layouts/header' %> 
+	<div class="container">
+		<div class="row current-beers-header">
+			<div class="page-header"> 
+				<h3 class="dark-gray-text">Your rewards</h3> 
+			</div>
+		</div>
+		<div class="row rewards-info">
+			<div class="col-xs-1 number-earned">
+				<h4 class="light-gray-text half-bottom-margin"><span class="dark-orange-text">14</span>/25</h4>
+				<h5 class="light-gray-text half-top-margin">earned</h5>
+			</div>
+			<div class="col-xs-4">
+ 				<div class="row rewards-info">
+ 					<div class="col-xs-6">
+ 						<h4 class="light-gray-text beers-earned"><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i></h4>
+ 						<h4 class="light-gray-text beers-earned"><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i></h4>
+ 						<h4 class="dark-orange-text beers-earned"><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer light-gray-text"></i></h4>
+ 						<h4 class="dark-orange-text beers-earned"><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i></h4>
+ 						<h4 class="dark-orange-text beers-earned"><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i><i class="fa fa-beer"></i></h4>
+ 					</div>
+ 					<div class="col-xs-6">
+ 						<h1 class="number-to-rewards light-orange-text">11</h1>
+ 						<h5 class="light-gray-text">Mugs until <span class="dark-gray-text">Next Reward</span></h5>
+ 					</div>
+ 				</div>
+ 			</div>
+			<div class="col-xs-3 no-padding">
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="page-header"> 
+				<h3 class="dark-gray-text">Your purchase history</h3> 
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-9 no-padding">
+ 				<div class="row each-beer-ratings-page">
+					<div class="col-xs-5">
+						<h5 class="filter-heading">Beer</h5>
+					</div>
+					<div class="col-xs-1 no-padding">
+						<h5 class="filter-heading">Cost</h5>
+					</div>
+					<div class="col-xs-3">
+						<h5 class="filter-heading">Location</h5>
+					</div>
+					<div class="col-xs-3">
+						<h5 class="filter-heading">Date</h5>
+					</div>
+				</div>
+				<hr class="special-line"/>
+ 				<% if @purchased_beers.empty? %>
+ 					<h4 class="light-gray-text">You haven't purchased any beers so you know what needs to be done here, right?</h4>
+ 				<% else %>
+ 					<%= render( partial: 'rewards/purchase_history') %>
+ 				<% end %>
+ 			</div>
+			<div class="col-xs-3 no-padding">
+				
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>
