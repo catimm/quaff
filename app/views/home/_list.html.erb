@@ -49,11 +49,11 @@
 				</div>
 				<div class="row ratings-row">
 					<div class="col-xs-4 no-padding beer-rating-info-1">
-							<% if d.beer_rating > 4.25 %>
+							<% if d.beer_rating.to_i > 4.25 %>
 								<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
-							<% elsif d.beer_rating > 3.75 %>
+							<% elsif d.beer_rating.to_i > 3.75 %>
 								<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></h4>
-							<% elsif d.beer_rating > 3.25 %>
+							<% elsif d.beer_rating.to_i > 3.25 %>
 								<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></h4>
 							<% end %>
 						<h6 class="beer-rating light-gray-text">(<%= d.beer_rating %>--<%= number_with_delimiter(d.number_ratings, :delimiter => ',') %> ratings).</h6>

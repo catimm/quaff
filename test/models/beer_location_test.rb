@@ -8,6 +8,7 @@
 #  beer_is_current :string(255)
 #  created_at      :datetime
 #  updated_at      :datetime
+#  removed_at      :datetime
 #
 
 require 'test_helper'

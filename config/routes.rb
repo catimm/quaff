@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get 'home/update' => 'home#update', :as => 'show_beers'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'drinks/update' => 'drinks#update', :as => 'user_beer_ratings'
+  get 'locations' => 'locations#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

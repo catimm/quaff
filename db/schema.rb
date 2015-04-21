@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150415163828) do
+ActiveRecord::Schema.define(version: 20150419193150) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20150415163828) do
     t.string   "beer_is_current"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "removed_at"
   end
 
   create_table "beers", force: true do |t|
@@ -32,7 +33,7 @@ ActiveRecord::Schema.define(version: 20150415163828) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "brewery_id"
-    t.decimal  "beer_abv"
+    t.float    "beer_abv"
     t.integer  "beer_ibu"
     t.string   "beer_image"
     t.string   "tag_one"
@@ -46,6 +47,9 @@ ActiveRecord::Schema.define(version: 20150415163828) do
     t.string   "brewery_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "alt_name_one"
+    t.string   "alt_name_two"
+    t.string   "alt_name_three"
   end
 
   create_table "drink_lists", force: true do |t|

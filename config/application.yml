@@ -1,0 +1,4 @@
+# Add application configuration variables here, as shown below.
+
+# Mandrill API
+MANDRILL_APIKEY: xAz5_ENXRG84hsuISKQF-A

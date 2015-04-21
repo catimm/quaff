@@ -48,6 +48,8 @@ gem 'will_paginate'
 # for filtering functionality and views
 gem 'chosen-rails'
 gem 'filterrific'
+# for sending email through Mandrill
+gem 'mandrill-api', require: "mandrill"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
