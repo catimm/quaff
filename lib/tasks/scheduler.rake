@@ -1,3 +1,6 @@
+require "#{RAILS_ROOT}/app/helpers/application_helper.rb"
+include ApplicationHelper
+
 desc "Check Pine Box"
 task :check_pine_box => :environment do
   ApplicationHelper.check_pine_box
