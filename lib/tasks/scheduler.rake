@@ -1,4 +1,4 @@
-require "#{RAILS_ROOT}/app/helpers/application_helper.rb"
+require "BestiesCode/app/helpers/application_helper.rb"
 include ApplicationHelper
 
 desc "Check Pine Box"
