@@ -305,5 +305,5 @@ task :check_chucks_cd => :environment do
     if !@new_beer_info.empty?
       BeerUpdates.new_beers_email("Chuck's CD", @new_beer_info).deliver
     end
-  end
 end
+
