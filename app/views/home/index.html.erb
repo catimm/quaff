@@ -1,1 +1,15 @@
-<h4>temp page</h4>
+<%= render 'layouts/header' %> 
+	<div class="container">
+		<div class="row header-row">
+			<div class="page-header"> 
+				<div class="row">
+					<div class="col-xs-9 best-beer-header">
+						<h3 class="dark-gray-text">Temp page</h3> 
+					</div>
+					<div class="col-xs-3 updated">
+						<h5 class="last-updated dark-gray-text">Updated today @ <%= @time.strftime("%l:%M%P") %></h5>
+					</div>
+				</div>
+			</div>
+		</div>
+<%= render 'layouts/footer' %>
