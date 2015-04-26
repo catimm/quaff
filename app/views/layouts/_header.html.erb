@@ -15,6 +15,9 @@
             <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
                 <ul class="nav navbar-nav">
                   <% if user_signed_in? %>
+					<% if can? :edit, Brewery %>
+					  <li class="navLinks"><%= link_to "Breweries", breweries_path %></li>
+					<% end %>
 				    <li class="navLinks"><%= link_to "Find beers", user_session_path %></li>
 				    <li class="navLinks"><%= link_to "Drink List", user_drinks_path(:user_id => current_user.id) %></li>
 				    <li class="navLinks"><%= link_to "Ratings", user_ratings_path(:user_id => current_user.id) %></li>

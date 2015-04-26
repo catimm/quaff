@@ -418,6 +418,54 @@ body {
     font-weight: 200;
   }
 }
+// CSS for Brewwery/Beer update page
+#brewery_all_val {
+  height: 30px;
+  width: 400px;
+}
+.brewery-name-with-id {
+  display: inline-block;
+}
+.brewery-name-header {
+  font-size: 24px;
+}
+.no-overflow {
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+}
+.inputButton {
+    width: 100px;
+}
+.inputButton2 {
+    width: 200px;
+}
+.editButton {
+  width: 100%;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+.need-text {
+  color: red;
+}
+.small-padding {
+  div {
+    padding: 0 5px;
+  }
+}
+
+#new_beer, #new_brewery, #edit_brewery, #edit_beer {
+  input {
+    margin-bottom: 7.5px;
+  }
+  h6 {
+    margin: 5px 0 5px 5px;
+  }
+}
+.formButton {
+  width: 100%;
+  margin-top: 5px;
+}
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 768px) {

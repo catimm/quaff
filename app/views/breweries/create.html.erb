@@ -1,0 +1,28 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row header-row">
+		<div class="page-header">
+			<div class="row">
+				<div class="col-sm-5">
+					<h3><%= @this_brewery.brewery_name %> inventory</h3>
+				</div>
+				<div class="col-sm-7 text-right">
+					<%= form_for :brewery, brewery_path(@breweries) do |f| %>
+						<% options = options_from_collection_for_select(@breweries, 'id', 'brewery_name',
+									{:prompt => 'Choose brewery'}) %>
+						<%= f.select :all_val,  options %>
+						<%= f.submit "Select", class: "btn btn-default btn-success inputButton" %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="beer_list">
+	<% if !@breweries_beers.empty? %>
+		<%= render 'brewery_beers' %>
+	<% else %>
+		<h4>No beers yet associated with this brewery.</h4>
+	<% end %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

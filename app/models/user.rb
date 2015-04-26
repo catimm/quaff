@@ -15,6 +15,7 @@
 #  last_sign_in_ip        :inet
 #  created_at             :datetime
 #  updated_at             :datetime
+#  role_id                :integer
 #
 
 class User < ActiveRecord::Base
@@ -22,9 +23,18 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-         
+  
+  belongs_to :role       
   has_many :user_beer_ratings
   has_many :beers, through: :user_beer_ratings
   has_many :drink_lists
   has_many :beers, through: :drink_lists
+  
+  def admin?
+    self.role.role == "admin"
+  end
+  
+  def regular?
+    self.role.role == "regular"
+  end
 end

@@ -1,0 +1,15 @@
+<%= form_for(@beer) do |f| %>
+	<%= f.hidden_field :brewery_id, :value => @this_brewery.id %>
+	<%= f.hidden_field :form_type, :value => "edit" %>
+	<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %>
+	<%= f.text_field :beer_type, :class => "form-control", placeholder: "Beer type" %>
+	<%= f.text_field :beer_rating, :class => "form-control", placeholder: "Beer rating" %>
+	<%= f.text_field :number_ratings, :class => "form-control", placeholder: "Number of ratings" %>
+	<%= f.text_field :beer_abv, :class => "form-control", placeholder: "Beer ABV" %>
+	<%= f.text_field :beer_ibu, :class => "form-control", placeholder: "Beer IBU" %>
+	<%= f.text_field :beer_image, :class => "form-control", placeholder: "Image URL" %>
+	<%= f.text_field :tag_one, :class => "form-control", placeholder: "Specialty tags" %>
+	<%= f.text_field :descriptors, :class => "form-control", placeholder: "Descriptors [separate with comma]" %>
+	<h6 class="light-gray-text">*separate descriptors with comma</h6>
+	<%= f.submit "Update", class: "btn btn-default btn-success formButton" %>			
+<% end %>

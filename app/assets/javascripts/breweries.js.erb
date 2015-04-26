@@ -1,0 +1,18 @@
+$(function() {
+	$(".edit-brewery-info").on("click", function(){
+		if ($("#edit-brewery-info").hasClass("show")) {
+	    		return	
+	    	} else {
+	    		$("#edit-brewery-info").removeClass("hidden").addClass("show");
+	    		$("#delete-brewery-info").removeClass("show").addClass("hidden");
+	    	}
+	});
+	$(".delete-brewery-info").on("click", function(){
+		if ($("#delete-brewery-info").hasClass("show")) {
+	    		return	
+	    	} else {
+	    		$("#delete-brewery-info").removeClass("hidden").addClass("show");
+	    		$("#edit-brewery-info").removeClass("show").addClass("hidden");
+	    	}
+	});
+});

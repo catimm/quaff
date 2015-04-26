@@ -43,6 +43,7 @@ GEM
     bootstrap-social-rails (4.8.0)
       railties (>= 3.1)
     builder (3.2.2)
+    cancancan (1.10.1)
     chosen-rails (1.4.1)
       coffee-rails (>= 3.2)
       compass-rails (>= 1.1.2)
@@ -185,6 +186,7 @@ DEPENDENCIES
   bootstrap-modal-rails
   bootstrap-sass (= 3.3.3)
   bootstrap-social-rails (~> 4.8.0)
+  cancancan
   chosen-rails
   coffee-rails (~> 4.0.0)
   devise

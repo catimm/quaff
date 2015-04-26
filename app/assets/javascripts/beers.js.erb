@@ -1,0 +1,18 @@
+$(function() {
+	$(".edit-beer-info").on("click", function(){
+		if ($("#edit-beer-info").hasClass("show")) {
+	    		return	
+	    	} else {
+	    		$("#edit-beer-info").removeClass("hidden").addClass("show");
+	    		$("#delete-beer-info").removeClass("show").addClass("hidden");
+	    	}
+	});
+	$(".delete-beer-info").on("click", function(){
+		if ($("#delete-beer-info").hasClass("show")) {
+	    		return	
+	    	} else {
+	    		$("#delete-beer-info").removeClass("hidden").addClass("show");
+	    		$("#edit-beer-info").removeClass("show").addClass("hidden");
+	    	}
+	});
+});
