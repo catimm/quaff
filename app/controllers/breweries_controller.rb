@@ -5,6 +5,7 @@ class BreweriesController < ApplicationController
   def index
     @breweries = Brewery.all.order(:brewery_name)
     @brewery = Brewery.new
+    @brewery_count = @breweries.distinct.count('id')
   end
   
   def new

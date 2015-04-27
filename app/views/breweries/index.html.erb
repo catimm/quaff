@@ -4,7 +4,7 @@
 		<div class="page-header">
 			<div class="row">
 				<div class="col-sm-7">
-					<h3>Breweries currently in the database</h3>
+					<h3><%= @brewery_count %> breweries currently in the database</h3>
 				</div>
 				<div class="col-sm-5 text-right">
 					<%= link_to "Add new brewery", new_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>
