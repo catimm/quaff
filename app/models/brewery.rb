@@ -2,16 +2,13 @@
 #
 # Table name: breweries
 #
-#  id             :integer          not null, primary key
-#  brewery_name   :string
-#  brewery_city   :string
-#  brewery_state  :string
-#  brewery_url    :string
-#  created_at     :datetime
-#  updated_at     :datetime
-#  alt_name_one   :string
-#  alt_name_two   :string
-#  alt_name_three :string
+#  id            :integer          not null, primary key
+#  brewery_name  :string
+#  brewery_city  :string
+#  brewery_state :string
+#  brewery_url   :string
+#  created_at    :datetime
+#  updated_at    :datetime
 #
 
 class Brewery < ActiveRecord::Base

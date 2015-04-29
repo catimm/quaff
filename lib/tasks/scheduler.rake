@@ -48,10 +48,12 @@ task :check_pine_box => :environment do
         @this_beer_name.slice! @this_beer_type
       end
       
-      # check if this brewery already exists in the db
-      @related_brewery = Brewery.where("brewery_name like ? OR alt_name_one like ? OR alt_name_two like ? OR alt_name_three like ?",
-       "%#{@this_brewery_name}%","%#{@this_brewery_name}%", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
-
+      # check if this brewery already exists in the db(s)
+      @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
+      if @related_brewery.empty?
+        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+      end
+      
       # check if beer name already exists in current Pine Box beers
       if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
         # if so, grab this beer's info
@@ -167,9 +169,12 @@ task :check_chucks_85 => :environment do
         @this_beer_name.slice! @this_beer_type
       end
 
-      # check if this brewery already exists in the db
-      @related_brewery = Brewery.where("brewery_name like ? OR alt_name_one like ? OR alt_name_two like ? OR alt_name_three like ?",
-       "%#{@this_brewery_name}%","%#{@this_brewery_name}%", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
+      # check if this brewery already exists in the db(s)
+      @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
+      if @related_brewery.empty?
+        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+      end
+      
       # check if beer name already exists in current Chuck's 85 beers
       if @chucks_85_beer.map{|a| a.beer_name}.include? @this_beer_name
         # if so, grab this beer's info
@@ -284,9 +289,12 @@ task :check_chucks_cd => :environment do
         @this_beer_name.slice! @this_beer_type
       end    
 
-      # check if this brewery already exists in the db
-      @related_brewery = Brewery.where("brewery_name like ? OR alt_name_one like ? OR alt_name_two like ? OR alt_name_three like ?",
-       "%#{@this_brewery_name}%","%#{@this_brewery_name}%", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
+      # check if this brewery already exists in the db(s)
+      @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
+      if @related_brewery.empty?
+        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+      end
+      
       # check if beer name already exists in current Chucks CD beers
       if @chucks_cd_beer.map{|a| a.beer_name}.include? @this_beer_name
         # if so, grab this beer's info
@@ -399,9 +407,12 @@ task :check_beer_junction => :environment do
         @this_beer_name.slice! @this_beer_type
       end
 
-      # check if this brewery already exists in the db
-      @related_brewery = Brewery.where("brewery_name like ? OR alt_name_one like ? OR alt_name_two like ? OR alt_name_three like ?",
-       "%#{@this_brewery_name}%","%#{@this_brewery_name}%", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
+      # check if this brewery already exists in the db(s)
+      @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
+      if @related_brewery.empty?
+        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+      end
+            
       # check if beer name already exists in current Beer Junction beers
       if @beer_junction_beer.map{|a| a.beer_name}.include? @this_beer_name
         # if so, grab this beer's info
@@ -512,9 +523,12 @@ task :check_beveridge_place => :environment do
         @this_beer_name.slice! @this_beer_type
       end
 
-      # check if this brewery already exists in the db
-      @related_brewery = Brewery.where("brewery_name like ? OR alt_name_one like ? OR alt_name_two like ? OR alt_name_three like ?",
-       "%#{@this_brewery_name}%","%#{@this_brewery_name}%", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
+      # check if this brewery already exists in the db(s)
+      @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
+      if @related_brewery.empty?
+        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+      end
+            
       # check if beer name already exists in current location beers
       if @beveridge_place_beer.map{|a| a.beer_name}.include? @this_beer_name
         # if so, grab this beer's info

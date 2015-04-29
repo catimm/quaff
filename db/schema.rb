@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150429203822) do
+ActiveRecord::Schema.define(version: 20150429225749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,9 +54,6 @@ ActiveRecord::Schema.define(version: 20150429203822) do
     t.string   "brewery_url"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "alt_name_one"
-    t.string   "alt_name_two"
-    t.string   "alt_name_three"
   end
 
   create_table "drink_lists", force: :cascade do |t|
