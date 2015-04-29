@@ -1,8 +1,8 @@
 development:
   adapter: postgresql
   database: besties_dev
-  username: postgres
-  password: partake
+  username: carltimm
+  password: 
   pool: 5
   timeout: 5000
   port: 5432
@@ -14,8 +14,8 @@ development:
 test:
   adapter: postgresql
   database: besties_test
-  username: postgres
-  password: partake
+  username: carltimm
+  password: 
   pool: 5
   timeout: 5000
 

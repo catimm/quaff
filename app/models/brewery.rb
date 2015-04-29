@@ -3,15 +3,15 @@
 # Table name: breweries
 #
 #  id             :integer          not null, primary key
-#  brewery_name   :string(255)
-#  brewery_city   :string(255)
-#  brewery_state  :string(255)
-#  brewery_url    :string(255)
+#  brewery_name   :string
+#  brewery_city   :string
+#  brewery_state  :string
+#  brewery_url    :string
 #  created_at     :datetime
 #  updated_at     :datetime
-#  alt_name_one   :string(255)
-#  alt_name_two   :string(255)
-#  alt_name_three :string(255)
+#  alt_name_one   :string
+#  alt_name_two   :string
+#  alt_name_three :string
 #
 
 class Brewery < ActiveRecord::Base

@@ -11,12 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150426023042) do
+ActiveRecord::Schema.define(version: 20150429203822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "beer_locations", force: true do |t|
+  create_table "alt_brewery_names", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "brewery_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "beer_locations", force: :cascade do |t|
     t.integer  "beer_id"
     t.integer  "location_id"
     t.string   "beer_is_current"
@@ -25,7 +32,7 @@ ActiveRecord::Schema.define(version: 20150426023042) do
     t.datetime "removed_at"
   end
 
-  create_table "beers", force: true do |t|
+  create_table "beers", force: :cascade do |t|
     t.string   "beer_name"
     t.string   "beer_type"
     t.decimal  "beer_rating"
@@ -40,7 +47,7 @@ ActiveRecord::Schema.define(version: 20150426023042) do
     t.text     "descriptors"
   end
 
-  create_table "breweries", force: true do |t|
+  create_table "breweries", force: :cascade do |t|
     t.string   "brewery_name"
     t.string   "brewery_city"
     t.string   "brewery_state"
@@ -52,14 +59,14 @@ ActiveRecord::Schema.define(version: 20150426023042) do
     t.string   "alt_name_three"
   end
 
-  create_table "drink_lists", force: true do |t|
+  create_table "drink_lists", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "locations", force: true do |t|
+  create_table "locations", force: :cascade do |t|
     t.string   "name"
     t.string   "homepage"
     t.string   "beerpage"
@@ -68,13 +75,13 @@ ActiveRecord::Schema.define(version: 20150426023042) do
     t.datetime "updated_at"
   end
 
-  create_table "roles", force: true do |t|
+  create_table "roles", force: :cascade do |t|
     t.string   "role"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "user_beer_ratings", force: true do |t|
+  create_table "user_beer_ratings", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
     t.decimal  "user_beer_rating"
@@ -85,7 +92,7 @@ ActiveRecord::Schema.define(version: 20150426023042) do
     t.datetime "rated_on"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"

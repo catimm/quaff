@@ -6,10 +6,10 @@
 #  user_id          :integer
 #  beer_id          :integer
 #  user_beer_rating :decimal(, )
-#  beer_descriptors :string(255)
+#  beer_descriptors :string
 #  created_at       :datetime
 #  updated_at       :datetime
-#  drank_at         :string(255)
+#  drank_at         :string
 #  rated_on         :datetime
 #
 

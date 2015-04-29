@@ -3,9 +3,9 @@
 # Table name: locations
 #
 #  id           :integer          not null, primary key
-#  name         :string(255)
-#  homepage     :string(255)
-#  beerpage     :string(255)
+#  name         :string
+#  homepage     :string
+#  beerpage     :string
 #  last_scanned :datetime
 #  created_at   :datetime
 #  updated_at   :datetime

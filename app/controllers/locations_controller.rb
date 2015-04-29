@@ -62,8 +62,8 @@ class LocationsController < ApplicationController
       # check if this brewery already exists in the db
       @related_brewery = Brewery.where("brewery_name like ? OR alt_name_one like ? OR alt_name_two like ? OR alt_name_three like ?",
        "%#{@this_brewery_name}%","%#{@this_brewery_name}%", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
-      # check if beer name already exists in current location beers
       Rails.logger.debug("Related brewery info: #{@related_brewery.inspect}")
+      # check if beer name already exists in current location beers      
       if @beveridge_place_beer.map{|a| a.beer_name}.include? @this_beer_name
         # if so, grab this beer's info
         @beer_info = @beveridge_place_beer.where(beer_name: @this_beer_name)
