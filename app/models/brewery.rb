@@ -13,5 +13,5 @@
 
 class Brewery < ActiveRecord::Base
   has_many :beers
-
+  has_many :alt_brewery_names
 end

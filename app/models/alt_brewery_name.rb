@@ -10,4 +10,5 @@
 #
 
 class AltBreweryName < ActiveRecord::Base
+  belongs_to :brewery
 end

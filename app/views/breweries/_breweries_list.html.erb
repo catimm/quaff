@@ -23,25 +23,18 @@
 				<h5><%= d.brewery_state %></h5>
 			<% end %>
 		</div>
-		<div class="col-sm-2">
-			<% if d.alt_name_one.blank? %>
+		<div class="col-sm-3">
+			<% @alt_names = AltBreweryName.where(brewery_id: d.id) %>
+			<% if @alt_names.blank? %>
 				<h5 class="need-text no-overflow">[if needed]</h5>
 			<% else %>
-				<h5><%= d.alt_name_one %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-2">
-			<% if d.alt_name_two.blank? %>
-				<h5 class="need-text no-overflow">[if needed]</h5>
-			<% else %>
-				<h5><%= d.alt_name_two %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-1">
-			<% if d.alt_name_three.blank? %>
-				<h5 class="need-text no-overflow">[if needed]</h5>
-			<% else %>
-				<h5><%= d.alt_name_three %></h5>
+				<% @alt_names.each do |n| %>
+					<% if n == @alt_names.last %> 
+						<h5><%= n.name %></h5>
+					<% else %>
+						<h5><%= n.name %>, </h5>
+					<% end %>
+				<% end %>
 			<% end %>
 		</div>
 		<div class="col-sm-1">
