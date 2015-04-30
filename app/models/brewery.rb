@@ -9,6 +9,7 @@
 #  brewery_url   :string
 #  created_at    :datetime
 #  updated_at    :datetime
+#  image         :string
 #
 
 class Brewery < ActiveRecord::Base

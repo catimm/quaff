@@ -10,6 +10,13 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
+			<% if d.image.blank? %>
+				<h5 class="need-text">[need]</h5>
+			<% else %>
+				<%= d.image %>
+			<% end %>
+		</div>
+		<div class="col-sm-1">
 			<% if d.brewery_city.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
@@ -26,7 +33,7 @@
 		<div class="col-sm-3">
 			<% @alt_names = AltBreweryName.where(brewery_id: d.id) %>
 			<% if @alt_names.blank? %>
-				<h5 class="need-text no-overflow">[if needed]</h5>
+				<h5 class="need-text no-overflow">[as needed]</h5>
 			<% else %>
 				<% @alt_names.each do |n| %>
 					<% if n == @alt_names.last %> 
@@ -38,7 +45,12 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
-			<%= link_to "Edit brewery", edit_brewery_path(d.id), class: "btn btn-default editButton", data: {toggle: "modal", target: "#edit_brewery"} %>
+			<%= link_to "Edit brewery", edit_brewery_path(d.id), class: "btn btn-default editButton", 
+			data: {toggle: "modal", target: "#edit_brewery"} %>
+		</div>
+		<div class="col-sm-1">
+			<%= link_to "Edit names", alt_brewery_names_path(d.id), class: "btn btn-default editButton",
+			data: {toggle: "modal", target: "#edit_alt_names"} %>
 		</div>
 		<div class="col-sm-1">
 			<%= link_to "Edit beers", brewery_beers_path(d.id), :class => "btn btn-success editButton" %>

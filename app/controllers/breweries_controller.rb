@@ -6,6 +6,8 @@ class BreweriesController < ApplicationController
     @breweries = Brewery.all.order(:brewery_name)
     @brewery = Brewery.new
     @brewery_count = @breweries.distinct.count('id')
+    @beer_count = Beer.distinct.count('id')
+    @brewery_alt_names = AltBreweryName.new
   end
   
   def new
@@ -44,10 +46,26 @@ class BreweriesController < ApplicationController
     redirect_to breweries_path
   end 
   
+  def alt_brewery_name
+    @alt_names = AltBreweryName.where(brewery_id:params[:id])
+    @brewery_alt_names = AltBreweryName.new
+    @brewery_info = Brewery.find(params[:id])
+    render :partial => 'breweries/alt_names'
+  end
+  
+  def create_alt_brewery
+    @new_alt_name = AltBreweryName.create!(brewery_name_params)
+    redirect_to breweries_path
+  end
+  
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def brewery_params
       params.require(:brewery).permit(:brewery_name, :brewery_city, :brewery_state, :brewery_url, :alt_name_one, :alt_name_two, :alt_name_three)
+    end
+    
+    def brewery_name_params
+      params.require(:alt_brewery_name).permit(:brewery_id, :name)
     end
 
 end

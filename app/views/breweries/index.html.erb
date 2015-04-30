@@ -4,7 +4,7 @@
 		<div class="page-header">
 			<div class="row">
 				<div class="col-sm-7">
-					<h3><%= @brewery_count %> breweries currently in the database</h3>
+					<h3><%= @brewery_count %> breweries in the database (<%= @beer_count %> beers)</h3>
 				</div>
 				<div class="col-sm-5 text-right">
 					<%= link_to "Add new brewery", new_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>
@@ -15,6 +15,9 @@
 	<div class="row small-padding">
 		<div class="col-sm-3">
 			<h5><strong>Brewery Name</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Image</strong></h5>
 		</div>
 		<div class="col-sm-1">
 			<h5><strong>City</strong></h5>
@@ -41,6 +44,13 @@
 			<%= link_to "Edit", "#", :class => "btn btn-success edit-brewery-info" %>
 			<%= link_to "Delete", "#", :class => "btn btn-warning delete-brewery-info" %>
 			<h5>
+		</div>
+		<div class="modal-body"></div>
+	</div>
+	<div id="edit_alt_names" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Alternative brewery names</h3>
 		</div>
 		<div class="modal-body"></div>
 	</div>
