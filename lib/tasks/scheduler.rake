@@ -34,76 +34,67 @@ task :check_pine_box => :environment do
           @this_beer_name.slice! word
         end
       end
-      # add special case to remove IPA if it hasn't already been removed
-      if (@this_beer_type.include? "India Pale Ale") && (@this_beer_name != @this_beer_type)
-        @this_beer_name.slice! "IPA"
-      end
       # remove extra spaces from beer name
       @this_beer_name = @this_beer_name.strip
-      # remove beer type from beer name if type isn't the only remaining word(s)
-      if @this_beer_name != @this_beer_type
-        if @this_beer_type.include? "American"
-          @this_beer_type.slice! "American"
-        end
-        @this_beer_name.slice! @this_beer_type
-      end
-      
+       
       # check if this brewery already exists in the db(s)
       @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
       if @related_brewery.empty?
-        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-      end
-      
-      # check if beer name already exists in current Pine Box beers
-      if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
-        # if so, grab this beer's info
-        @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
-        # now check if brewery name already exists for this current Pine Box beer
-        if !@related_brewery.empty?
-          #if so, insert the BeerLocation ID for this beer into an array so its status doesn't get changed to "not current"
-          this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
-          @current_beer_ids << this_beer_id
-        else 
-          # if beer exists but brewery doesn't, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
-          new_option.save!  
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
+        @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+        if !@alt_brewery_name.empty?
+          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
         end
-      else
-        # if beer name doesn't exist, check if this is also a new brewery     
-        if !@related_brewery.empty?
-          # first add new beer to beers table       
+      end
+      # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
+      if @related_brewery.empty?
+        # first add new brewery to breweries table
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
+        new_beer.save!
+        # finally add new beer option to beer_locations table
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option.save!  
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
+        @new_beer_info << this_new_beer
+      else 
+        # since this brewery exists in the db, find all its related beers
+        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        # check if this beer already exists in DB
+        @recognized_beer = nil
+        @this_brewery_beers.each do |beer|
+          if @this_beer_name.include? beer.beer_name
+            @recognized_beer = beer
+          end
+          break if !@recognized_beer.nil?
+        end 
+        if !@recognized_beer.nil?
+          # this beer already exists in our DB, so we need to find out if it is already on tap at this location
+          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+            # grab this beer's info from the array of beers from this location
+            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            @current_beer_ids << this_beer_id
+          else 
+            # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option.save!
+          end
+        else
+          # if beer doesn't exist in DB, first add new beer to beers table       
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
           new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
-        else
-          # if neither beer or brewery exists, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
-          new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer  
+          # finally, push this beer info into an array to be sent to us via email
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
+          @new_beer_info << this_new_beer   
         end
-      end
-    end
+      end   
+    end # end loop through scraped beers
 
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @pine_box_beer_location_ids - @current_beer_ids
@@ -154,77 +145,68 @@ task :check_chucks_85 => :environment do
           @this_beer_name.slice! word
         end
       end
-
-      # add special case to remove IPA if it hasn't already been removed
-      if (@this_beer_type.include? "India Pale Ale") && (@this_beer_name != @this_beer_type)
-        @this_beer_name.slice! "IPA"
-      end
       # remove extra spaces from beer name
       @this_beer_name = @this_beer_name.strip
-      # remove beer type from beer name if type isn't the only remaining word(s)
-      if @this_beer_name != @this_beer_type
-        if @this_beer_type.include? "American"
-          @this_beer_type.slice! "American"
-        end
-        @this_beer_name.slice! @this_beer_type
-      end
-
+       
       # check if this brewery already exists in the db(s)
       @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
       if @related_brewery.empty?
-        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-      end
-      
-      # check if beer name already exists in current Chuck's 85 beers
-      if @chucks_85_beer.map{|a| a.beer_name}.include? @this_beer_name
-        # if so, grab this beer's info
-        @beer_info = @chucks_85_beer.where(beer_name: @this_beer_name)
-        # now check if brewery name already exists for this current Chucks 85 beer
-        if !@related_brewery.empty?
-          #if so, insert the BeerLocation ID for this beer into an array so its status doesn't get changed to "not current"
-          this_beer_id = BeerLocation.where(location_id: 3, beer_id: @beer_info[0].id).pluck(:id)[0]
-          @current_beer_ids << this_beer_id
-        else 
-          # if beer exists but brewery doesn't, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
-          new_option.save!  
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
+        @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+        if !@alt_brewery_name.empty?
+          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
         end
-      else
-        # if beer name doesn't exist, check if this is also a new brewery     
-        if !@related_brewery.empty?
-          # first add new beer to beers table       
+      end
+      # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
+      if @related_brewery.empty?
+        # first add new brewery to breweries table
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
+        new_beer.save!
+        # finally add new beer option to beer_locations table
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option.save!  
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
+        @new_beer_info << this_new_beer
+      else 
+        # since this brewery exists in the db, find all its related beers
+        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        # check if this beer already exists in DB
+        @recognized_beer = nil
+        @this_brewery_beers.each do |beer|
+          if @this_beer_name.include? beer.beer_name
+            @recognized_beer = beer
+          end
+          break if !@recognized_beer.nil?
+        end 
+        if !@recognized_beer.nil?
+          # this beer already exists in our DB, so we need to find out if it is already on tap at this location
+          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+            # grab this beer's info from the array of beers from this location
+            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            @current_beer_ids << this_beer_id
+          else 
+            # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option.save!
+          end
+        else
+          # if beer doesn't exist in DB, first add new beer to beers table       
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
           new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
-        else
-          # if neither beer or brewery exists, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-         # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
-          new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer  
+          # finally, push this beer info into an array to be sent to us via email
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
+          @new_beer_info << this_new_beer   
         end
-      end
-    end
+      end   
+    end # end loop through scraped beers
+    
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @chucks_85_beer_location_ids - @current_beer_ids
 
@@ -238,8 +220,6 @@ task :check_chucks_85 => :environment do
       BeerUpdates.new_beers_email("Chuck's 85th", @new_beer_info).deliver
     end
 end
-
-
 
 desc "Check Chuck's CD"
 task :check_chucks_cd => :environment do
@@ -275,76 +255,68 @@ task :check_chucks_cd => :environment do
           @this_beer_name.slice! word
         end
       end
-      # add special case to remove IPA if it hasn't already been removed
-      if (@this_beer_type.include? "India Pale Ale") && (@this_beer_name != @this_beer_type)
-        @this_beer_name.slice! "IPA"
-      end
       # remove extra spaces from beer name
       @this_beer_name = @this_beer_name.strip
-      # remove beer type from beer name if type isn't the only remaining word(s)
-      if @this_beer_name != @this_beer_type
-        if @this_beer_type.include? "American"
-          @this_beer_type.slice! "American"
-        end
-        @this_beer_name.slice! @this_beer_type
-      end    
-
+       
       # check if this brewery already exists in the db(s)
       @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
       if @related_brewery.empty?
-        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-      end
-      
-      # check if beer name already exists in current Chucks CD beers
-      if @chucks_cd_beer.map{|a| a.beer_name}.include? @this_beer_name
-        # if so, grab this beer's info
-        @beer_info = @chucks_cd_beer.where(beer_name: @this_beer_name)
-        # now check if brewery name already exists for this current Chucks CD beer
-        if !@related_brewery.empty?
-          #if so, insert the BeerLocation ID for this beer into an array so its status doesn't get changed to "not current"
-          this_beer_id = BeerLocation.where(location_id: 4, beer_id: @beer_info[0].id).pluck(:id)[0]
-          @current_beer_ids << this_beer_id
-        else 
-          # if beer exists but brewery doesn't, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
-          new_option.save!  
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
+        @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+        if !@alt_brewery_name.empty?
+          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
         end
-      else
-        # if beer name doesn't exist, check if this is also a new brewery     
-        if !@related_brewery.empty?
-          # first add new beer to beers table       
+      end
+      # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
+      if @related_brewery.empty?
+        # first add new brewery to breweries table
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
+        new_beer.save!
+        # finally add new beer option to beer_locations table
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option.save!  
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
+        @new_beer_info << this_new_beer
+      else 
+        # since this brewery exists in the db, find all its related beers
+        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        # check if this beer already exists in DB
+        @recognized_beer = nil
+        @this_brewery_beers.each do |beer|
+          if @this_beer_name.include? beer.beer_name
+            @recognized_beer = beer
+          end
+          break if !@recognized_beer.nil?
+        end 
+        if !@recognized_beer.nil?
+          # this beer already exists in our DB, so we need to find out if it is already on tap at this location
+          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+            # grab this beer's info from the array of beers from this location
+            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            @current_beer_ids << this_beer_id
+          else 
+            # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option.save!
+          end
+        else
+          # if beer doesn't exist in DB, first add new beer to beers table       
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
           new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
-        else
-          # if neither beer or brewery exists, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-         # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
-          new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer  
+          # finally, push this beer info into an array to be sent to us via email
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
+          @new_beer_info << this_new_beer   
         end
-      end
-    end
+      end   
+    end # end loop through scraped beers
+    
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @chucks_cd_beer_location_ids - @current_beer_ids
     # change not current beers status in DB
@@ -410,59 +382,64 @@ task :check_beer_junction => :environment do
       # check if this brewery already exists in the db(s)
       @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
       if @related_brewery.empty?
-        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-      end
-            
-      # check if beer name already exists in current Beer Junction beers
-      if @beer_junction_beer.map{|a| a.beer_name}.include? @this_beer_name
-        # if so, grab this beer's info
-        @beer_info = @beer_junction_beer.where(beer_name: @this_beer_name)
-        # now check if brewery name already exists for this current Beer Junction beer
-        if !@related_brewery.empty?
-          #if so, insert the BeerLocation ID for this beer into an array so its status doesn't get changed to "not current"
-          this_beer_id = BeerLocation.where(location_id: 1, beer_id: @beer_info[0].id).pluck(:id)[0]
-          @current_beer_ids << this_beer_id
-        else 
-          # if beer exists but brewery doesn't, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :beer_type => @this_beer_type, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
-          new_option.save!  
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
+        @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+        if !@alt_brewery_name.empty?
+          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
         end
-      else
-        # if beer name doesn't exist, check if this is also a new brewery     
-        if !@related_brewery.empty?
-          # first add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :beer_type => @this_beer_type, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
+      end
+      
+      # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
+      if @related_brewery.empty?
+        # first add new brewery to breweries table
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
+        new_beer.save!
+        # finally add new beer option to beer_locations table
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option.save!  
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"
+        @new_beer_info << this_new_beer
+      else 
+        # since this brewery exists in the db, find all its related beers
+        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        # check if this beer already exists in DB
+        @recognized_beer = nil
+        @this_brewery_beers.each do |beer|
+          if @this_beer_name.include? beer.beer_name
+            @recognized_beer = beer
+          end
+          break if !@recognized_beer.nil?
+        end 
+        if !@recognized_beer.nil?
+          # this beer already exists in our DB, so we need to find out if it is already on tap at this location
+          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+            # if so, grab this beer's info from the array of beers from this location
+            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            @current_beer_ids << this_beer_id
+          else 
+            # this beer already exists in our DB but is newly on tap at this location so we need to add it to BeerLocations table
+            # first add new beer option to beer_locations table
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option.save!
+          end
+        else
+          # if beer doesn't exist in DB, first add new beer to beers table       
+          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
           new_option.save!
+          # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
-        else
-          # if neither beer or brewery exists, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-         # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :beer_type => @this_beer_type, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
-          new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer  
+          @new_beer_info << this_new_beer   
         end
-      end
-    end
+      end   
+    end # end loop through scraped beers
+    
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @beer_junction_beer_location_ids - @current_beer_ids
     # change not current beers status in DB
@@ -526,58 +503,64 @@ task :check_beveridge_place => :environment do
       # check if this brewery already exists in the db(s)
       @related_brewery = Brewery.where("brewery_name like ?", "%#{@this_brewery_name}%")
       if @related_brewery.empty?
-        @related_brewery = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-      end
-            
-      # check if beer name already exists in current location beers
-      if @beveridge_place_beer.map{|a| a.beer_name}.include? @this_beer_name
-        # if so, grab this beer's info
-        @beer_info = @beveridge_place_beer.where(beer_name: @this_beer_name)
-        # now check if brewery name already exists for this current beer
-        if !@related_brewery.empty?
-          #if so, insert the BeerLocation ID for this beer into an array so its status doesn't get changed to "not current"
-          this_beer_id = BeerLocation.where(location_id: 5, beer_id: @beer_info[0].id).pluck(:id)[0]
-        else 
-          # if beer exists but brewery doesn't, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :beer_type => @this_beer_type, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
-          new_option.save!  
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
-          @new_beer_info << this_new_beer
+        @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+        if !@alt_brewery_name.empty?
+          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
         end
-      else
-        # if beer name doesn't exist, check if this is also a new brewery     
-        if !@related_brewery.empty?
-          # first add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :beer_type => @this_beer_type, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
+      end
+      
+      # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
+      if @related_brewery.empty?
+        # first add new brewery to breweries table
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
+        new_beer.save!
+        # finally add new beer option to beer_locations table
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option.save!  
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"
+        @new_beer_info << this_new_beer
+      else 
+        # since this brewery exists in the db, find all its related beers
+        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        # check if this beer already exists in DB
+        @recognized_beer = nil
+        @this_brewery_beers.each do |beer|
+          if @this_beer_name.include? beer.beer_name
+            @recognized_beer = beer
+          end
+          break if !@recognized_beer.nil?
+        end 
+        if !@recognized_beer.nil?
+          # this beer already exists in our DB, so we need to find out if it is already on tap at this location
+          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+            # if so, grab this beer's info from the array of beers from this location
+            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            @current_beer_ids << this_beer_id
+          else 
+            # this beer already exists in our DB but is newly on tap at this location so we need to add it to BeerLocations table
+            # first add new beer option to beer_locations table
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option.save!
+          end
+        else
+          # if beer doesn't exist in DB, first add new beer to beers table       
+          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
           new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"   
-          @new_beer_info << this_new_beer
-        else
-          # if neither beer or brewery exists, treat this as original entry and add it to all three relevant tables
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :beer_type => @this_beer_type, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
-          new_option.save!
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"   
-          @new_beer_info << this_new_beer  
+          # finally, push this beer info into an array to be sent to us via email
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
+          @new_beer_info << this_new_beer   
         end
-      end
-    end
+      end   
+    end # end loop through scraped beers
+    
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @beveridge_place_beer_location_ids - @current_beer_ids
     # change not current beers status in DB
