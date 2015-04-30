@@ -3,7 +3,7 @@ class BeersController < ApplicationController
   load_and_authorize_resource
   
   def index
-    @brewery_beers = Beer.where(brewery_id: params[:brewery_id])
+    @brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     @beer = Beer.new
   end
