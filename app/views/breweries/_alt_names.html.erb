@@ -15,7 +15,7 @@
 	<div class="text-center">
 		<%= form_for @brewery_alt_names, :url => {:action => 'create_alt_brewery'} do |f| %>
 			<%= f.hidden_field :brewery_id, :value => @brewery_info.id %>
-			<%= f.text_field :name, :class => "form-control", placeholder: "Add alternative name" %>
+			<%= f.text_field :name, :class => "form-control", placeholder: "Add alternative name", autofocus: true %>
 			<%= f.submit "Add name", class: "btn btn-success inputButton2" %>			
 		<% end %>
 	</div>
