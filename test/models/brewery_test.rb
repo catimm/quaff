@@ -10,6 +10,7 @@
 #  created_at    :datetime
 #  updated_at    :datetime
 #  image         :string
+#  brewery_beers :integer
 #
 
 require 'test_helper'

@@ -10,6 +10,9 @@
 	<%= f.text_field :beer_image, :class => "form-control", placeholder: "Image URL" %>
 	<%= f.text_field :tag_one, :class => "form-control", placeholder: "Specialty tags" %>
 	<%= f.text_field :descriptors, :class => "form-control", placeholder: "Descriptors [separate with comma]" %>
+	<%= f.text_field :hops, :class => "form-control", placeholder: "Hops [separate with comma]" %>
+	<%= f.text_field :grains, :class => "form-control", placeholder: "Grains [separate with comma]" %>
+	<%= f.text_field :brewer_description, :class => "form-control", placeholder: "Brewer description" %>
 	<h6 class="light-gray-text">*separate descriptors with comma</h6>
 	<%= f.submit "Update", class: "btn btn-default btn-success formButton" %>			
 <% end %>

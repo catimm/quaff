@@ -30,7 +30,7 @@
 				<h5><%= d.brewery_state %></h5>
 			<% end %>
 		</div>
-		<div class="col-sm-3">
+		<div class="col-sm-2">
 			<% @alt_names = AltBreweryName.where(brewery_id: d.id) %>
 			<% if @alt_names.blank? %>
 				<h5 class="need-text no-overflow">[as needed]</h5>
@@ -42,6 +42,14 @@
 						<h5><%= n.name %>, </h5>
 					<% end %>
 				<% end %>
+			<% end %>
+		</div>
+		<div class="col-sm-1">
+			<% @beers_in_db = Beer.where(brewery_id: d.id).count %>
+			<% if d.brewery_beers.blank? %>
+				<h5 class="need-text">[need]/<%= @beers_in_db %></h5>
+			<% else %>
+				<h5><%= d.brewery_state %>/<%= @beers_in_db %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-1">

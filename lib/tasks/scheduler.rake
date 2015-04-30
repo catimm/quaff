@@ -42,7 +42,7 @@ task :check_pine_box => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
+          @related_brewery = find(id: @alt_brewery_name.brewery_id)
         end
       end
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
@@ -153,7 +153,7 @@ task :check_chucks_85 => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
+          @related_brewery = find(id: @alt_brewery_name.brewery_id)
         end
       end
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
@@ -182,9 +182,9 @@ task :check_chucks_85 => :environment do
         end 
         if !@recognized_beer.nil?
           # this beer already exists in our DB, so we need to find out if it is already on tap at this location
-          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+          if @chucks_85_beer.map{|a| a.beer_name}.include? @this_beer_name
             # grab this beer's info from the array of beers from this location
-            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            @beer_info = @chucks_85_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
@@ -263,7 +263,7 @@ task :check_chucks_cd => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
+          @related_brewery = find(id: @alt_brewery_name.brewery_id)
         end
       end
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
@@ -292,9 +292,9 @@ task :check_chucks_cd => :environment do
         end 
         if !@recognized_beer.nil?
           # this beer already exists in our DB, so we need to find out if it is already on tap at this location
-          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+          if @chucks_cd_beer.map{|a| a.beer_name}.include? @this_beer_name
             # grab this beer's info from the array of beers from this location
-            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            @beer_info = @chucks_cd_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
@@ -384,7 +384,7 @@ task :check_beer_junction => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
+          @related_brewery = find(id: @alt_brewery_name.brewery_id)
         end
       end
       
@@ -414,9 +414,9 @@ task :check_beer_junction => :environment do
         end 
         if !@recognized_beer.nil?
           # this beer already exists in our DB, so we need to find out if it is already on tap at this location
-          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+          if @beer_junction_beer.map{|a| a.beer_name}.include? @this_beer_name
             # if so, grab this beer's info from the array of beers from this location
-            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            @beer_info = @beer_junction_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
@@ -505,7 +505,7 @@ task :check_beveridge_place => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find_by(id: @alt_brewery_name.brewery_id)
+          @related_brewery = find(id: @alt_brewery_name.brewery_id)
         end
       end
       
@@ -535,9 +535,9 @@ task :check_beveridge_place => :environment do
         end 
         if !@recognized_beer.nil?
           # this beer already exists in our DB, so we need to find out if it is already on tap at this location
-          if @pine_box_beer.map{|a| a.beer_name}.include? @this_beer_name
+          if @beveridge_place_beer.map{|a| a.beer_name}.include? @this_beer_name
             # if so, grab this beer's info from the array of beers from this location
-            @beer_info = @pine_box_beer.where(beer_name: @this_beer_name)
+            @beer_info = @beveridge_place_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
