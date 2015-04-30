@@ -30,8 +30,8 @@ class BreweriesController < ApplicationController
     if params[:brewery][:form_type] == "edit"
       @brewery = Brewery.find(params[:id])
       @brewery.update(brewery_name: params[:brewery][:brewery_name], brewery_city: params[:brewery][:brewery_city], brewery_state: params[:brewery][:brewery_state],
-                      brewery_url: params[:brewery][:brewery_url], alt_name_one: params[:brewery][:alt_name_one], alt_name_two: params[:brewery][:alt_name_two],
-                      alt_name_three: params[:brewery][:alt_name_three])
+                      brewery_url: params[:brewery][:brewery_url], brewery_beers: params[:brewery][:brewery_beers], 
+                      image: params[:brewery][:image])
       @brewery.save
     elsif params[:brewery][:form_type] == "delete"
       @brewery_to_delete = Brewery.find(params[:brewery][:delete_brewery])
@@ -61,7 +61,8 @@ class BreweriesController < ApplicationController
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def brewery_params
-      params.require(:brewery).permit(:brewery_name, :brewery_city, :brewery_state, :brewery_url, :alt_name_one, :alt_name_two, :alt_name_three)
+      params.require(:brewery).permit(:brewery_name, :brewery_city, :brewery_state, :brewery_beers, 
+      :brewery_url, :image)
     end
     
     def brewery_name_params

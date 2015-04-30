@@ -49,7 +49,7 @@
 			<% if d.brewery_beers.blank? %>
 				<h5 class="need-text">[need]/<%= @beers_in_db %></h5>
 			<% else %>
-				<h5><%= d.brewery_state %>/<%= @beers_in_db %></h5>
+				<h5><%= d.brewery_beers %>/<%= @beers_in_db %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-1">
