@@ -42,7 +42,7 @@ task :check_pine_box => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find(id: @alt_brewery_name.brewery_id)
+          @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
         end
       end
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
@@ -153,7 +153,7 @@ task :check_chucks_85 => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find(id: @alt_brewery_name.brewery_id)
+          @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
         end
       end
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
@@ -263,7 +263,7 @@ task :check_chucks_cd => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find(id: @alt_brewery_name.brewery_id)
+          @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
         end
       end
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
@@ -384,7 +384,7 @@ task :check_beer_junction => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find(id: @alt_brewery_name.brewery_id)
+          @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
         end
       end
       
@@ -505,7 +505,7 @@ task :check_beveridge_place => :environment do
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find(id: @alt_brewery_name.brewery_id)
+          @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
         end
       end
       

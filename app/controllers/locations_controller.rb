@@ -22,7 +22,9 @@ class LocationsController < ApplicationController
     doc_pb.search("tr.draft_odd", "tr.draft_even").each do |node|
       # first grab all data for this beer
       @this_brewery_name = node.css("td.draft_brewery").text
+      Rails.logger.debug("this brewery: #{@this_brewery_name.inspect}")
       @this_beer_name = node.css("td.draft_name").text
+      Rails.logger.debug("this beer: #{@this_beer_name.inspect}")
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
       # split brewery name aso key words can be removed from beer name
@@ -41,7 +43,7 @@ class LocationsController < ApplicationController
       if @related_brewery.empty?
         @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
         if !@alt_brewery_name.empty?
-          @related_brewery = find(id: @alt_brewery_name.brewery_id)
+          @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
         end
       end
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
