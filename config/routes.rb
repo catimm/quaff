@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :drinks, :ratings, :rewards   
   end
   resources :beers
+  resources :locations
   resources :breweries do
     resources :beers   
   end

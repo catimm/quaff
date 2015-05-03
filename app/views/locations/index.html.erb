@@ -1,2 +1,47 @@
-<h3>Test</h3>
+<%= render 'layouts/header' %> 
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2 class="title">Find <i>your</i> beer.</h2>
+			</div>
+		</div>
+		<div class="row">
+			<% @locations.each do |location| %>
+				<%= link_to location_path(location.id) do %>
+					<div class="col-sm-4 col-xs-6">
+						<div class="location-overview">
+							<div class="row img-responsive location-tile" alt="Responsive image" style="background-image: url(<%= location.image_url %>)">
+								<h3 class="location-tile-text"><%= location.name %></h3>	
+							</div>
+							<div class="row no-margin">
+								<div class="col-xs-9 no-padding-right">
+									<h5 class="beers-for-you">Top beer recommendations for you:</h5>
+								</div>
+								<div class="col-xs-3 text-right no-padding-left">
+									<h5 class="smiley-face"><i class="fa fa-smile-o"></i></h5>
+									<h4 class="happiness-index">93</h4>
+								</div>
+							</div>
+							<div class="row no-margin recommended-beer-overview">
+								<div class="col-xs-12">
+									<ol>
+										<li>
+											<p class="recommended-beer no-overflow">Boneyard R.P.M. (an IPA)</p>
+										</li>
+										<li>
+											<p class="recommended-beer no-overflow">Holy Mountain Kiln & Cone (a Pale Ale)</p>
+										</li>
+										<li>
+											<p class="recommended-beer no-overflow">Crux Outcast (an IPA)</p>
+										</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+	</div>
+<%= render 'layouts/footer' %> 
 

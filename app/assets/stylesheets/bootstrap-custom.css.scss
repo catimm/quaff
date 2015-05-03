@@ -71,7 +71,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 // Choose locations page
 .location-overview {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
@@ -111,8 +111,11 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .recommended-beer-overview {
   margin-top: -5px;
   ol {
-    padding-left: 20px;
+    padding-left: 0;
     color: #606060;
+    li {
+      list-style-position: inside;
+    }
   }
   p {
     margin-bottom: 0;

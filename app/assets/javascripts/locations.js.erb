@@ -1,0 +1,8 @@
+$(function() {
+	$(".location-overview").on("mouseover", function(){
+		$(this).children(".location-tile").children(".location-tile-text").css({"text-decoration":"underline","color":"#4780b4"});
+	});
+	$(".location-overview").on("mouseout", function(){
+		$(this).children(".location-tile").children(".location-tile-text").css({"text-decoration":"none","color":"#fff"});
+	});
+});

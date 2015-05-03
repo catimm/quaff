@@ -1,6 +1,14 @@
 class LocationsController < ApplicationController
   
   def index
+    @locations = Location.all
+  end
+  
+  def show
+    
+  end
+  
+  def load
     require 'nokogiri'
     require 'open-uri'
 
