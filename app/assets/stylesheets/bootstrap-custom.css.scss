@@ -13,6 +13,13 @@ body {
   padding-top: 50px;
   margin-bottom: 100px;
   overflow-x: hidden;
+  background: #f0f0f0;
+}
+h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.1;
+  color: inherit;
 }
 .navbar-header a {
  line-height: 50px !important;
@@ -31,6 +38,15 @@ body {
 }
 .no-padding {
   padding: 0;
+}
+.no-padding-right {
+  padding-right: 0;
+}
+.no-padding-left {
+  padding-left: 0;
+}
+.no-margin {
+  margin: 0;
 }
 .headline {
   margin: 10px auto;
@@ -52,6 +68,57 @@ body {
 }
 .second-guide {
   padding: 0 10px;
+}
+// Choose locations page
+.location-overview {
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+.location-tile {
+    background-repeat: no-repeat;
+    height: 240px;
+    margin: 0 auto;
+    padding: 5px; 
+}
+.location-tile-text {
+  text-transform: uppercase;
+  margin: 0;
+  color: #fff;
+  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6); 
+}
+.beers-for-you {
+  margin-top: 12.5px;
+  margin-bottom: 0;
+  color: #606060;
+}
+.smiley-face {
+  display: inline-block;
+  color: #606060;
+  margin: 0;
+}
+.happiness-index {
+  display: inline-block;
+  font-weight: 500;
+  font-size: 20px;
+  color: #ffc58b;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+.recommended-beer-overview {
+  margin-top: -5px;
+  ol {
+    padding-left: 20px;
+    color: #606060;
+  }
+  p {
+    margin-bottom: 0;
+    font-size: 13px;
+    color: #606060;
+  }
 }
 .glyph-background {
   width: 25px;
@@ -370,12 +437,13 @@ body {
 }
 //Navbar css style
 .homeNavbar {
-  background: #4780b4 !important;
-  border-color: #83d4eb;
+  background: #fff !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
 .navbar {
   a {
-    color: #fff !important;
+    color: #606060 !important;
   }
   .logo {
       font-size: 48px;
@@ -395,9 +463,9 @@ body {
   }
 }
 .footer {
-  background: #4780b4 !important;
-  border-color: #83d4eb;
-  border-width: 1px 0 0 0;
+  background: #fff !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   bottom: 0;
   position: absolute;
   height: 100px;
@@ -410,7 +478,7 @@ body {
   a, .footer-menu-divider, p {
     font-size: 0.9em;
     font-weight: 300;
-    color: #fff;
+    color: #606060;
     letter-spacing: 2px;
   }
   p {
@@ -418,6 +486,7 @@ body {
     font-weight: 200;
   }
 }
+
 // CSS for Brewwery/Beer update page
 #brewery_all_val {
   height: 30px;

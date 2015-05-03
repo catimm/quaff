@@ -9,6 +9,7 @@
 #  last_scanned :datetime
 #  created_at   :datetime
 #  updated_at   :datetime
+#  image_url    :string
 #
 
 class Location < ActiveRecord::Base
