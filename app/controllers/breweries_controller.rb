@@ -29,7 +29,8 @@ class BreweriesController < ApplicationController
   def update
     if params[:brewery][:form_type] == "edit"
       @brewery = Brewery.find(params[:id])
-      @brewery.update(brewery_name: params[:brewery][:brewery_name], brewery_city: params[:brewery][:brewery_city], brewery_state: params[:brewery][:brewery_state],
+      @brewery.update(brewery_name: params[:brewery][:brewery_name], short_brewery_name: params[:brewery][:short_brewery_name], 
+                      brewery_city: params[:brewery][:brewery_city], brewery_state: params[:brewery][:brewery_state],
                       brewery_url: params[:brewery][:brewery_url], brewery_beers: params[:brewery][:brewery_beers], 
                       image: params[:brewery][:image])
       @brewery.save
@@ -61,7 +62,7 @@ class BreweriesController < ApplicationController
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def brewery_params
-      params.require(:brewery).permit(:brewery_name, :brewery_city, :brewery_state, :brewery_beers, 
+      params.require(:brewery).permit(:brewery_name, :short_brewery_name, :brewery_city, :brewery_state, :brewery_beers, 
       :brewery_url, :image)
     end
     
