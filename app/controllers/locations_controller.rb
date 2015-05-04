@@ -5,7 +5,7 @@ class LocationsController < ApplicationController
   end
   
   def show
-    
+    @beer = 'https://s3-us-west-2.amazonaws.com/yourbeer/brewery/Boneyard.jpg'
   end
   
   def load

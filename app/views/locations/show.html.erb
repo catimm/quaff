@@ -1,7 +1,61 @@
 <%= render 'layouts/header' %> 
 	<div class="container">
 		<div class="row">
-			
+			<h3>Search function here</h3>
+		</div>
+		<div class="row">
+			<div class="col-sm-4 col-xs-6">
+				<div class="projected-rating text-center">9</div>
+				<div class="add-beer text-center"><i class="fa fa-plus"></i></div>
+				<div class="overview-pane">
+					<div class="row no-margin">
+						<% if @beer.nil? %>
+							<div class="col-xs-4 text-center no-padding-right">
+								<h1 class="generic-your-beer"><i class="fa fa-beer"></i></h1>
+							</div>
+						<% else %>
+							<div class="col-xs-4 img-responsive beer-tile no-padding-right" alt="Responsive image" style="background-image: url(<%= @beer %>)"></div>
+						<% end %>
+						<div class="col-xs-8 no-padding-right cloud-holder">
+							
+						</div>	
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-9 no-padding-right">
+							<p class="beer-name no-overflow">Boneyard Hop Venom</p>
+						</div>
+						<div class="col-xs-3 no-padding-left">
+							<p class="special-tag"><i class="fa fa-tag"></i> special</p>
+						</div>
+					</div>
+					<div class="row no-margin extra-beer-info">
+						<div class="col-xs-6 no-padding-right">
+							<p class="beer-type">A Double IPA</p>
+						</div>
+						<div class="col-xs-3 no-padding abv-div text-center">
+							<p class="beer-abv">5.6% ABV</p>
+						</div>
+						<div class="col-xs-3 no-padding-left text-center">
+							<p class="beer-ibu">55 IBUs</p>
+						</div>
+					</div>
+					<div class="row no-margin list-overview">
+						<div class="col-xs-12">
+							<h5 class="why-statement">Why this might be a <b>9/10</b> for you:</h5>
+							<ul>
+								<li>
+									<p class="recommendation-reasons no-overflow">You prefer IPAs</p>
+								</li>									<li>
+									<p class="recommendation-reasons no-overflow">This IPA is known to be citrus and piney--your faves.</p>
+								</li>
+								<li>
+									<p class="recommendation-reasons no-overflow">Your friend Kyle recommends this to you.</p>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 <%= render 'layouts/footer' %> 

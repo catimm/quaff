@@ -9,7 +9,7 @@
 			<% @locations.each do |location| %>
 				<%= link_to location_path(location.id) do %>
 					<div class="col-sm-4 col-xs-6">
-						<div class="location-overview">
+						<div class=" ">
 							<div class="row img-responsive location-tile" alt="Responsive image" style="background-image: url(<%= location.image_url %>)">
 								<h3 class="location-tile-text"><%= location.name %></h3>	
 							</div>
@@ -22,7 +22,7 @@
 									<h4 class="happiness-index">93</h4>
 								</div>
 							</div>
-							<div class="row no-margin recommended-beer-overview">
+							<div class="row no-margin list-overview">
 								<div class="col-xs-12">
 									<ol>
 										<li>

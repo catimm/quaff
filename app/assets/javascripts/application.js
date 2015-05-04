@@ -19,5 +19,6 @@
 //= require bootstrap-sprockets
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
+//= require jqcloud
 //= require turbolinks
 //= require_tree .

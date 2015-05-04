@@ -5,6 +5,22 @@
 @import "font-awesome";
 @import url(http://fonts.googleapis.com/css?family=Kreon:400,700);
 
+// Descriptive colors for project
+$extra-light-gray: #e7e7e7;
+$light-gray: #909090;
+$dark-gray: #606060;
+$light-orange: #ffdba9;
+$dark-orange: #ffc58b;
+$light-blue: #31b0d5;
+$dark-blue: #4780b4;
+
+// Functional use of colors for project
+$soft-border: $extra-light-gray;
+$normal-text: $dark-gray;
+$less-emphasized-text: $light-gray;
+$special-text: $dark-orange;
+$action-background: $light-blue;
+
 html {
   position: relative;
   min-height: 100%;
@@ -69,8 +85,8 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .second-guide {
   padding: 0 10px;
 }
-// Choose locations page
-.location-overview {
+// Locations overview page
+.overview-pane {
   margin-bottom: 20px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -93,26 +109,26 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .beers-for-you {
   margin-top: 12.5px;
   margin-bottom: 0;
-  color: #606060;
+  color: $normal-text;
 }
 .smiley-face {
   display: inline-block;
-  color: #606060;
+  color: $normal-text;
   margin: 0;
 }
 .happiness-index {
   display: inline-block;
   font-weight: 500;
   font-size: 20px;
-  color: #ffc58b;
+  color: $dark-orange;
   margin-top: 5px;
   margin-bottom: 0;
 }
-.recommended-beer-overview {
+.list-overview {
   margin-top: -5px;
-  ol {
-    padding-left: 0;
-    color: #606060;
+  ol, ul {
+    padding-left: 0 !important;
+    color: $normal-text;
     li {
       list-style-position: inside;
     }
@@ -120,7 +136,92 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   p {
     margin-bottom: 0;
     font-size: 13px;
-    color: #606060;
+    color: $normal-text;
+  }
+}
+// Individual location overview page
+.projected-rating {
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  background: #fff;
+  border-radius: 50%;
+  vertical-align: middle;
+  color: $special-text;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  z-index: 1000;
+  position: absolute;
+  top: -20px;
+  left: 0;
+}
+.add-beer {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 50%;
+  vertical-align: middle;
+  background: $action-background;
+  color: #fff;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 1000;
+  position: absolute;
+  top: -16px;
+  right: 0;
+}
+.generic-your-beer {
+  height: 100px;
+  width: 100px;
+  border: 1px solid $soft-border;
+  font-size: 72px;
+  i {
+    vertical-align: middle;
+    margin-top: 5px;
+  }
+}
+.beer-tile {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+}
+.cloud-holder {
+  height: 100px;
+  width: 200px;
+}
+.beer-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: $normal-text;
+  margin-bottom: 5px;
+}
+.special-tag {
+  font-size: 13px;
+  font-weight: 500;
+  color: $dark-orange;
+}
+.extra-beer-info {
+  height: 14px;
+  .abv-div {
+    border-right: 1px solid $soft-border;
+    height: inherit;
+  }
+}
+.beer-type, .beer-abv, .beer-ibu {
+  font-size: 13px;
+  color: $light-gray;
+}
+.why-statement {
+  margin-bottom: 5px;
+  color: $normal-text;
+  span {
+    color: $special-text;
   }
 }
 .glyph-background {
@@ -200,30 +301,16 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .selected {
   a {
     font-weight: 600 !important;
-    color: #606060!important ;
+    color: $normal-text !important ;
     text-decoration: none !important;
   }
 }
 .input-box {
   margin: 0 2.5px !important;
 }
-.light-gray-text {
-  color: #909090;
-}
-.dark-gray-text {
-  color: #606060;
-}
-.light-orange-text {
-  color: #ffdba9;
-}
-.dark-orange-text {
-  color: #ffc58b;
-}
+
 .special-tag-text {
   color: #31b0d5; //light, bright blue color
-}
-.dark-blue-text {
-  color: #4780b4;
 }
 .half-bottom-margin {
   margin-bottom: 5px;
@@ -269,12 +356,6 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   padding-left: 10px;
   padding-right: 0;
 }
-.beer-name {
-  margin-top: 10px;
-  margin-bottom: 5px;
-  font-size: 20px;
-  display: inline-block;
-}
 .beer-location-info {
   text-align: left;
   h5 {
@@ -300,13 +381,6 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   text-align: left;
   display: inline-block;
   font-size: 13px;
-}
-.beer-type {
-  margin-top: 0;
-  margin-bottom: 5px;
-  span {
-   font-size: 15px;
-  }
 }
 .brewery-name {
   margin-top: 0;
@@ -340,7 +414,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   padding: 0 5px;
 }
 .descriptor-text {
-  background: #909090;
+  background: $light-gray;
   color: #fff;
   border-radius: 6px;
   padding: 5px 7.5px;
@@ -406,7 +480,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .beer-rating-input {
   text-align: left;
   i:hover {
-    color: #ffc58b;
+    color: $dark-orange;
   }
 }
 .rating-descriptor-field {
@@ -425,7 +499,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   margin-top: -5px;
 }
 .remove-drink-button {
-  color: #909090;
+  color: $light-gray;
 }
 .rate-button {
   width: 120px; 
@@ -446,7 +520,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .navbar {
   a {
-    color: #606060 !important;
+    color: $normal-text !important;
   }
   .logo {
       font-size: 48px;
@@ -481,7 +555,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   a, .footer-menu-divider, p {
     font-size: 0.9em;
     font-weight: 300;
-    color: #606060;
+    color: $normal-text;
     letter-spacing: 2px;
   }
   p {
@@ -489,6 +563,48 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
     font-weight: 200;
   }
 }
+
+// CSS from jqCloud gem
+/* fonts */
+
+div.jqcloud {
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 10pt;
+  line-height: normal;
+}
+
+div.jqcloud a {
+  font-size: inherit;
+  text-decoration: none;
+}
+
+div.jqcloud span.w10 { font-size: 200%; }
+div.jqcloud span.w9 { font-size: 180%; }
+div.jqcloud span.w8 { font-size: 170%; }
+div.jqcloud span.w7 { font-size: 160%; }
+div.jqcloud span.w6 { font-size: 150%; }
+div.jqcloud span.w5 { font-size: 140%; }
+div.jqcloud span.w4 { font-size: 130%; }
+div.jqcloud span.w3 { font-size: 120%; }
+div.jqcloud span.w2 { font-size: 110%; }
+div.jqcloud span.w1 { font-size: 100%; }
+
+/* colors */
+
+div.jqcloud { color: #09f; }
+div.jqcloud a { color: inherit; }
+div.jqcloud a:hover { color: #0df; }
+div.jqcloud a:hover { color: #0cf; }
+div.jqcloud span.w10 { color: #0cf; }
+div.jqcloud span.w9 { color: #0cf; }
+div.jqcloud span.w8 { color: #0cf; }
+div.jqcloud span.w7 { color: #39d; }
+div.jqcloud span.w6 { color: #90c5f0; }
+div.jqcloud span.w5 { color: #90a0dd; }
+div.jqcloud span.w4 { color: #90c5f0; }
+div.jqcloud span.w3 { color: #a0ddff; }
+div.jqcloud span.w2 { color: #99ccee; }
+div.jqcloud span.w1 { color: #aab5f0; }
 
 // CSS for Brewwery/Beer update page
 #brewery_all_val {
@@ -544,9 +660,6 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   .beer-name, .beer-rating {
     font-size: 15px;
   }
-  .beer-type, .number-ratings, .locations {
-    font-size: 12px;
-  }
   .page-header {
     margin-top: 10px;
   }
@@ -573,12 +686,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 /* Medium devices (desktops, 992px and up) */
 @media (max-width: 992px) {
-  .beer-name, .beer-rating {
-    font-size: 15px;
-  }
-  .beer-type, .number-ratings, .locations {
-    font-size: 12px;
-  }
+
 }
 @media (min-width: 880px) {
   .image-holder {

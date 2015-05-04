@@ -52,6 +52,8 @@ gem 'filterrific'
 gem 'mandrill-api', require: "mandrill"
 # providing authorization
 gem 'cancancan'
+# gem to help with jquery word cloud
+gem 'jqcloud-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
