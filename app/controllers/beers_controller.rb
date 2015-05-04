@@ -22,8 +22,10 @@ class BeersController < ApplicationController
     @beer = Beer.find(params[:id]) 
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
+    # pull full list of beers--for delete option
+    @beers = Beer.all.order(:beer_name)
     # pull list of beers associated with this brewery--for delete option
-    @brewery_beers_available = Beer.where(brewery_id: params[:brewery_id])
+    # @brewery_beers_available = Beer.where(brewery_id: params[:brewery_id])
     render :partial => 'beers/edit'
   end
   

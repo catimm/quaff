@@ -4,8 +4,7 @@
 	<h5>Deleting:</h5>
 	<h5 class="brewery-name-with-id"><%= @brewery.brewery_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= @brewery.id %> ]</h6>
 	<h5>Connect its beers to id:</h5>
-	<% options = options_from_collection_for_select(@breweries, 'id', 'id',
-				{prompt: 'Choose brewery'}) %>
+	<% options = options_from_collection_for_select(@breweries, :id, :connect_deleted_brewery, @brewery.id) %>
 	<%= g.select :id,  options %>
 	<%= g.submit "Delete brewery", class: "btn btn-default btn-warning formButton" %>			
 <% end %>

@@ -29,6 +29,10 @@ class Beer < ActiveRecord::Base
   has_many :drink_lists
   has_many :users, through: :drink_lists
   
+  def connect_deleted_beer
+    "#{beer_name} [id: #{id}]"
+  end
+  
   filterrific(
   default_filter_params: { sorted_by: 'beer_rating_desc' },
   available_filters: [

@@ -6,6 +6,7 @@
 @import url(http://fonts.googleapis.com/css?family=Kreon:400,700);
 
 // Descriptive colors for project
+$white: #fff;
 $extra-light-gray: #e7e7e7;
 $light-gray: #909090;
 $dark-gray: #606060;
@@ -20,6 +21,7 @@ $normal-text: $dark-gray;
 $less-emphasized-text: $light-gray;
 $special-text: $dark-orange;
 $action-background: $light-blue;
+$admin-background: $white;
 
 html {
   position: relative;
@@ -39,6 +41,9 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .navbar-header a {
  line-height: 50px !important;
+}
+.top-row {
+  margin-bottom: 20px;
 }
 .sign-up {
   border: 1px solid #fff;
@@ -93,6 +98,9 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
+}
+.overview-first-row {
+  margin: 10px 0;
 }
 .location-tile {
     background-repeat: no-repeat;
@@ -151,7 +159,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   vertical-align: middle;
   color: $special-text;
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   z-index: 1000;
   position: absolute;
@@ -193,7 +201,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .cloud-holder {
   height: 100px;
-  width: 200px;
+  margin: 5px 5px;
 }
 .beer-name {
   font-size: 18px;
@@ -239,6 +247,9 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
     color: #fff;
     margin: 0;
   }
+}
+.admin-background {
+  background: $admin-background;
 }
 .guide-header {
   display: inline-block;
@@ -803,7 +814,7 @@ body.modal-open,
   outline: none;
   position: absolute;
   margin-top: 0;
-  top: 20%;
+  top: 25%;
   overflow: visible; /* allow content to popup out (i.e tooltips) */
 }
 
