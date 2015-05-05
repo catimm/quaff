@@ -1,9 +1,9 @@
 $(function() {
-	$(".location-overview").on("mouseover", function(){
-		$(this).children(".location-tile").children(".location-tile-text").css({"text-decoration":"underline","color":"#4780b4"});
+	$(".overview-pane").on("mouseover", function(){
+		$(this).children(".location-tile-text-row").children(".location-tile-text-div").children(".location-tile-text").css({"text-decoration":"underline"});
 	});
-	$(".location-overview").on("mouseout", function(){
-		$(this).children(".location-tile").children(".location-tile-text").css({"text-decoration":"none","color":"#fff"});
+	$(".overview-pane").on("mouseout", function(){
+		$(this).children(".location-tile-text-row").children(".location-tile-text-div").children(".location-tile-text").css({"text-decoration":"none"});
 	});
 	
 	var word_array = [
@@ -11,12 +11,18 @@ $(function() {
           {text: "Ipsum", weight: 9, link: "http://jquery.com/"},
           {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
           {text: "Sit", weight: 7},
+          {text: "Amet", weight: 5},
+          {text: "Lorem", weight: 15},
+          {text: "Ipsum", weight: 9, link: "http://jquery.com/"},
+          {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+          {text: "Sit", weight: 7},
           {text: "Amet", weight: 5}
           // ...as many words as you want
       ];
-     $(".cloud-holder").jQCloud(word_array, {
-     	width: 200,
-  		height: 100,
-  		autoResize: true
-     });
+
+     for (i = 0; i < gon.beers_ids.length; i++) { 
+	    $("#beer_"+gon.beers_ids[i]).jQCloud(word_array, {
+	  		autoResize: true
+	     });
+	 }
 });

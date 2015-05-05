@@ -8,7 +8,8 @@
 // Descriptive colors for project
 $white: #fff;
 $extra-light-gray: #e7e7e7;
-$light-gray: #909090;
+$light-gray: #f0f0f0;
+$medium-gray: #909090;
 $dark-gray: #606060;
 $light-orange: #ffdba9;
 $dark-orange: #ffc58b;
@@ -16,9 +17,10 @@ $light-blue: #31b0d5;
 $dark-blue: #4780b4;
 
 // Functional use of colors for project
+$gray-body-background: $light-gray;
 $soft-border: $extra-light-gray;
 $normal-text: $dark-gray;
-$less-emphasized-text: $light-gray;
+$less-emphasized-text: $medium-gray;
 $special-text: $dark-orange;
 $action-background: $light-blue;
 $admin-background: $white;
@@ -31,7 +33,6 @@ body {
   padding-top: 50px;
   margin-bottom: 100px;
   overflow-x: hidden;
-  background: #f0f0f0;
 }
 h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -92,27 +93,27 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 // Locations overview page
 .overview-pane {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
+  width: 99%;
 }
 .overview-first-row {
   margin: 10px 0;
 }
 .location-tile {
     background-repeat: no-repeat;
-    height: 240px;
+    border-radius: 6px;
+    height: 200px;
     margin: 0 auto;
     padding: 5px; 
 }
 .location-tile-text {
-  text-transform: uppercase;
-  margin: 0;
-  color: #fff;
-  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6); 
+  color: $normal-text;
+  font-weight: 500; 
 }
 .beers-for-you {
   margin-top: 12.5px;
@@ -159,7 +160,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   vertical-align: middle;
   color: $special-text;
   margin: 0;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
   z-index: 1000;
   position: absolute;
@@ -182,7 +183,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   z-index: 1000;
   position: absolute;
   top: -16px;
-  right: 0;
+  right: 3.5px;
 }
 .generic-your-beer {
   height: 100px;
@@ -212,7 +213,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .special-tag {
   font-size: 13px;
   font-weight: 500;
-  color: $dark-orange;
+  color: $special-text;
 }
 .extra-beer-info {
   height: 14px;
@@ -223,14 +224,11 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .beer-type, .beer-abv, .beer-ibu {
   font-size: 13px;
-  color: $light-gray;
+  color: $less-emphasized-text;
 }
 .why-statement {
   margin-bottom: 5px;
   color: $normal-text;
-  span {
-    color: $special-text;
-  }
 }
 .glyph-background {
   width: 25px;
@@ -589,15 +587,15 @@ div.jqcloud a {
   text-decoration: none;
 }
 
-div.jqcloud span.w10 { font-size: 200%; }
-div.jqcloud span.w9 { font-size: 180%; }
-div.jqcloud span.w8 { font-size: 170%; }
-div.jqcloud span.w7 { font-size: 160%; }
-div.jqcloud span.w6 { font-size: 150%; }
-div.jqcloud span.w5 { font-size: 140%; }
-div.jqcloud span.w4 { font-size: 130%; }
-div.jqcloud span.w3 { font-size: 120%; }
-div.jqcloud span.w2 { font-size: 110%; }
+div.jqcloud span.w10 { font-size: 150%; }
+div.jqcloud span.w9 { font-size: 140%; }
+div.jqcloud span.w8 { font-size: 135%; }
+div.jqcloud span.w7 { font-size: 130%; }
+div.jqcloud span.w6 { font-size: 125%; }
+div.jqcloud span.w5 { font-size: 120%; }
+div.jqcloud span.w4 { font-size: 115%; }
+div.jqcloud span.w3 { font-size: 110%; }
+div.jqcloud span.w2 { font-size: 105%; }
 div.jqcloud span.w1 { font-size: 100%; }
 
 /* colors */
@@ -606,16 +604,16 @@ div.jqcloud { color: #09f; }
 div.jqcloud a { color: inherit; }
 div.jqcloud a:hover { color: #0df; }
 div.jqcloud a:hover { color: #0cf; }
-div.jqcloud span.w10 { color: #0cf; }
-div.jqcloud span.w9 { color: #0cf; }
-div.jqcloud span.w8 { color: #0cf; }
-div.jqcloud span.w7 { color: #39d; }
-div.jqcloud span.w6 { color: #90c5f0; }
-div.jqcloud span.w5 { color: #90a0dd; }
-div.jqcloud span.w4 { color: #90c5f0; }
-div.jqcloud span.w3 { color: #a0ddff; }
-div.jqcloud span.w2 { color: #99ccee; }
-div.jqcloud span.w1 { color: #aab5f0; }
+div.jqcloud span.w10 { color: $dark-blue; }
+div.jqcloud span.w9 { color: $dark-orange; }
+div.jqcloud span.w8 { color: $dark-orange; }
+div.jqcloud span.w7 { color: $light-blue; }
+div.jqcloud span.w6 { color: $light-orange; }
+div.jqcloud span.w5 { color: $light-blue; }
+div.jqcloud span.w4 { color: $dark-blue; }
+div.jqcloud span.w3 { color: $light-orange; }
+div.jqcloud span.w2 { color: $dark-blue; }
+div.jqcloud span.w1 { color: $light-blue; }
 
 // CSS for Brewwery/Beer update page
 #brewery_all_val {

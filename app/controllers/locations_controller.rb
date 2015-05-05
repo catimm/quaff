@@ -1,10 +1,18 @@
 class LocationsController < ApplicationController
+  before_filter :authenticate_user!
+  load_and_authorize_resource
   
   def index
     @locations = Location.all
   end
   
   def show
+    @beer_ids = BeerLocation.where(location_id: params[:id], beer_is_current: "yes").pluck(:beer_id)
+    Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
+    @beers = Beer.where(id: @beer_ids)
+    @beers_ids = @beers.pluck(:id)
+    Rails.logger.debug("Beer ids: #{@beers_ids.inspect}")
+    gon.beers_ids = @beers_ids
     @beer = 'https://s3-us-west-2.amazonaws.com/yourbeer/brewery/Boneyard.jpg'
   end
   

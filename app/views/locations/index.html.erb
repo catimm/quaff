@@ -9,15 +9,22 @@
 			<% @locations.each do |location| %>
 				<%= link_to location_path(location.id) do %>
 					<div class="col-sm-4 col-xs-6">
-						<div class=" ">
-							<div class="row img-responsive location-tile" alt="Responsive image" style="background-image: url(<%= location.image_url %>)">
-								<h3 class="location-tile-text"><%= location.name %></h3>	
+						<div class="overview-pane">
+							<div class="row no-margin location-tile-text-row">
+								<div class="col-xs-12 location-tile-text-div">
+									<h4 class="location-tile-text"><%= location.name %></h4>	
+								</div>
 							</div>
 							<div class="row no-margin">
-								<div class="col-xs-9 no-padding-right">
-									<h5 class="beers-for-you">Top beer recommendations for you:</h5>
+								<div class="col-xs-12">
+									<div class=" img-responsive location-tile" alt="Responsive image" style="background-image: url(<%= location.image_url %>)"></div>
+								</div>	
+							</div>
+							<div class="row no-margin">
+								<div class="col-xs-8 no-padding-right">
+									<h5 class="beers-for-you">Beers for you:</h5>
 								</div>
-								<div class="col-xs-3 text-right no-padding-left">
+								<div class="col-xs-4 text-right no-padding-left">
 									<h5 class="smiley-face"><i class="fa fa-smile-o"></i></h5>
 									<h4 class="happiness-index">93</h4>
 								</div>

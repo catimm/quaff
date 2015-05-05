@@ -1,23 +1,27 @@
 <%= render 'layouts/header' %> 
 	<div class="container">
-		<div class="row">
+		<div class="row top-row">
 			<h3>Search function here</h3>
 		</div>
 		<div class="row">
+			<% @beers.each do |beer| %>
 			<div class="col-sm-4 col-xs-6">
-				<div class="projected-rating text-center">9</div>
+				<div class="projected-rating text-center">9.5</div>
 				<div class="add-beer text-center"><i class="fa fa-plus"></i></div>
 				<div class="overview-pane">
-					<div class="row no-margin">
-						<% if @beer.nil? %>
-							<div class="col-xs-4 text-center no-padding-right">
-								<h1 class="generic-your-beer"><i class="fa fa-beer"></i></h1>
-							</div>
-						<% else %>
-							<div class="col-xs-4 img-responsive beer-tile no-padding-right" alt="Responsive image" style="background-image: url(<%= @beer %>)"></div>
-						<% end %>
-						<div class="col-xs-8 no-padding-right cloud-holder">
-							
+					<div class="row no-margin overview-first-row">
+						<div class="col-xs-4 text-center no-padding-right">
+							<% if @beer.nil? %>
+								<div class="generic-your-beer">
+									<i class="fa fa-beer"></i>
+								</div>
+							<% else %>
+								<div class="col-xs-4 img-responsive beer-tile no-padding-right" alt="Responsive image" style="background-image: url(<%= @beer %>)"></div>
+							<% end %>
+						</div>
+						<div class="col-xs-8 no-padding">
+							<%= div_for beer, :class => "cloud-holder" do %>
+							<% end %>	
 						</div>	
 					</div>
 					<div class="row no-margin">
@@ -41,12 +45,13 @@
 					</div>
 					<div class="row no-margin list-overview">
 						<div class="col-xs-12">
-							<h5 class="why-statement">Why this might be a <b>9/10</b> for you:</h5>
+							<h5 class="why-statement">Why this might be a <b>9.5/10</b> for you:</h5>
 							<ul>
 								<li>
 									<p class="recommendation-reasons no-overflow">You prefer IPAs</p>
-								</li>									<li>
-									<p class="recommendation-reasons no-overflow">This IPA is known to be citrus and piney--your faves.</p>
+								</li>									
+								<li>
+									<p class="recommendation-reasons no-overflow">This IPA is known to be citrusy and piney--your faves.</p>
 								</li>
 								<li>
 									<p class="recommendation-reasons no-overflow">Your friend Kyle recommends this to you.</p>
@@ -56,6 +61,7 @@
 					</div>
 				</div>
 			</div>
+			<% end %>
 		</div>
 	</div>
 <%= render 'layouts/footer' %> 

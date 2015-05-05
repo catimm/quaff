@@ -54,6 +54,8 @@ gem 'mandrill-api', require: "mandrill"
 gem 'cancancan'
 # gem to help with jquery word cloud
 gem 'jqcloud-rails'
+# gem to send data from controller to javascript files
+gem 'gon'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
