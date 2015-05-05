@@ -10,6 +10,8 @@
 #  created_at   :datetime
 #  updated_at   :datetime
 #  image_url    :string
+#  short_name   :string
+#  neighborhood :string
 #
 
 class Location < ActiveRecord::Base

@@ -2,47 +2,48 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12">
-				<h2 class="title">Find <i>your</i> beer.</h2>
+				<h3 class="page-title">The best places have the best beers.</h3>
 			</div>
 		</div>
 		<div class="row">
-			<% @locations.each do |location| %>
-				<%= link_to location_path(location.id) do %>
-					<div class="col-sm-4 col-xs-6">
-						<div class="overview-pane">
-							<div class="row no-margin location-tile-text-row">
-								<div class="col-xs-12 location-tile-text-div">
-									<h4 class="location-tile-text"><%= location.name %></h4>	
-								</div>
+			<% @retailers.each do |retailer| %>
+				<%= link_to location_path(retailer.id) do %>
+					<div class="col-sm-3 col-xs-6">
+						<div class="overview-tile">
+							<div class="row img-responsive retailer-tile-image" alt="Responsive image" style="background-image: url(<%= retailer.image_url %>)">
 							</div>
-							<div class="row no-margin">
-								<div class="col-xs-12">
-									<div class=" img-responsive location-tile" alt="Responsive image" style="background-image: url(<%= location.image_url %>)"></div>
-								</div>	
-							</div>
-							<div class="row no-margin">
-								<div class="col-xs-8 no-padding-right">
-									<h5 class="beers-for-you">Beers for you:</h5>
+							<div class="row no-margin retailer-tile-header-row">
+								<div class="col-xs-8 retailer-tile-header-div padding-10 no-padding-right">
+									<h5 class="retailer-tile-header"><%= retailer.short_name %></h5>
+									<h5 class="retailer-location"><i class="fa fa-map-marker"> <%= retailer.neighborhood %></i></h5>	
 								</div>
-								<div class="col-xs-4 text-right no-padding-left">
-									<h5 class="smiley-face"><i class="fa fa-smile-o"></i></h5>
+								<div class="col-xs-4 text-right padding-10 no-padding-left">
+									<h6 class="smiley-face"><i class="fa fa-smile-o"></i></h6>
 									<h4 class="happiness-index">93</h4>
 								</div>
 							</div>
 							<div class="row no-margin list-overview">
-								<div class="col-xs-12">
+								<div class="col-xs-12 padding-10">
+									<p class="beers-at-retailer-for-user">Top beers for you:</p>
 									<ol>
 										<li>
-											<p class="recommended-beer no-overflow">Boneyard R.P.M. (an IPA)</p>
+											<p class="beers-at-retailer-for-user">Boneyard R.P.M. (an IPA)</p>
 										</li>
 										<li>
-											<p class="recommended-beer no-overflow">Holy Mountain Kiln & Cone (a Pale Ale)</p>
+											<p class="beers-at-retailer-for-user">Holy Mountain Kiln & Cone (a Pale Ale)</p>
 										</li>
 										<li>
-											<p class="recommended-beer no-overflow">Crux Outcast (an IPA)</p>
+											<p class="beers-at-retailer-for-user">Crux Outcast (an IPA)</p>
+										</li>
+										<li>
+											<p class="beers-at-retailer-for-user">Crux Outcast (an IPA)</p>
+										</li>
+										<li>
+											<p class="beers-at-retailer-for-user">Crux Outcast (an IPA)</p>
 										</li>
 									</ol>
 								</div>
+								<div class="col-xs-12 overview-tile-footer"></div>
 							</div>
 						</div>
 					</div>
