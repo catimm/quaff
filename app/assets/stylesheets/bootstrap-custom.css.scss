@@ -12,15 +12,18 @@ $light-gray: #f0f0f0;
 $medium-gray: #909090;
 $dark-gray: #747474;
 $black: #000;
-$light-orange: #ffdba9;
-$bright-orange: #ffa200;
-$light-blue: #31b0d5;
-$aqua-blue: #24a8ac;
-$sky-blue: #0087cb;
-$bright-purple: #982395;
-$lawn-green: #00a03e;
-
 $dark-blue: #4780b4;
+$bright-blue: #0087cb;
+$light-blue: #17B1FB;
+$bright-orange: #ffa200;
+$light-orange: #FFC764;
+$bright-aqua-blue: #24a8ac;
+$light-aqua-blue: #6FD0D4;
+$bright-purple: #982395;
+$light-purple: #C267BE;
+$bright-green: #00a03e;
+$light-green: #40C170;
+
 
 // Functional use of colors for project
 $gray-body-background: $light-gray;
@@ -29,7 +32,7 @@ $header-text: $black;
 $normal-text: $dark-gray;
 $less-emphasized-text: $medium-gray;
 $special-text: $bright-orange;
-$action-background: $light-blue;
+$action-background: $bright-blue;
 $admin-background: $white;
 
 html {
@@ -136,12 +139,12 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
     margin: 0 auto;
     padding: 5px; 
 }
-.retailer-tile-header {
+.tile-header {
   color: $header-text;
   font-weight: 500; 
   margin-bottom: 5px;
 }
-.retailer-location {
+.tile-subheader {
   color: $less-emphasized-text;
   margin-top: 0;
 }
@@ -162,51 +165,41 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .list-overview {
   margin-top: 10px;
-  ol, ul {
+  ol {
     padding-left: 0 !important;
     color: $normal-text;
     counter-reset: foo;
     display: table;
-    > li {
+    li {
       list-style-position: inside;
       counter-increment: foo;
       display: table-row;
       p {
-         padding-left: 3px;
+         padding-left: 5px;
          line-height: 1.3;
       }
     }
-    > li::before {
+    li::before {
       content: counter(foo) ".";
       display: table-cell; /* aha! */
       text-align: right;
+    }
+  }
+  ul {
+    li {
+      list-style-position: outside;
     }
   }
   p {
     margin-bottom: 0;
     font-size: 14px;
     color: $normal-text;
+    span {
+      color: $bright-purple;
+    }
   }
 } 
 // Individual location overview page
-.projected-rating {
-  width: 40px;
-  height: 40px;
-  padding: 2px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  background: #fff;
-  border-radius: 50%;
-  vertical-align: middle;
-  color: $special-text;
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  z-index: 1000;
-  position: absolute;
-  top: -20px;
-  left: 0;
-}
 .add-beer {
   width: 32px;
   height: 32px;
@@ -225,50 +218,42 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   top: -16px;
   right: 3.5px;
 }
-.generic-your-beer {
-  height: 100px;
-  width: 100px;
-  border: 1px solid $soft-border;
-  font-size: 72px;
-  i {
-    vertical-align: middle;
-    margin-top: 5px;
-  }
-}
-.beer-tile {
-  width: 100px;
-  height: 100px;
-  background-repeat: no-repeat;
-}
 .cloud-holder {
-  height: 100px;
-  margin: 5px 5px;
-}
-.beer-name {
-  font-size: 18px;
-  font-weight: 500;
-  color: $normal-text;
-  margin-bottom: 5px;
+  height: 110px;
 }
 .special-tag {
   font-size: 13px;
   font-weight: 500;
   color: $special-text;
 }
-.extra-beer-info {
+.abv-div {
+  border-right: 1px solid $soft-border;
   height: 14px;
-  .abv-div {
-    border-right: 1px solid $soft-border;
-    height: inherit;
+}
+.beer-info {
+  margin-bottom: 5px;
+}
+.our-best-guess {
+  margin: 10px 0;
+  p {
+    font-size: 12px;
+    color: $normal-text;
+  }
+  h1 {
+    text-align: center;
+    color: $bright-orange;
+    font-size: 42px;
+    font-weight: 500;
+    margin: 10px 0;
   }
 }
-.beer-type, .beer-abv, .beer-ibu {
-  font-size: 13px;
-  color: $less-emphasized-text;
-}
 .why-statement {
-  margin-bottom: 5px;
-  color: $normal-text;
+  p {
+    margin-bottom: 0;
+    font-size: 14px;
+    color: $normal-text;
+    line-height: 1.3;
+  }
 }
 .glyph-background {
   width: 25px;
@@ -442,17 +427,6 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .number-ratings {
   margin-top: 0;
-}
-.beer-info {
-  margin-left: -10px;
-  div:first-of-type {
-    border-right: 1px solid #e7e7e7;
-  }
-  h5, h6 {
-    font-size: 13px;
-    text-align: center;
-    margin: 0;
-  }
 }
 .descriptor-row {
   div:first-of-type {
@@ -647,15 +621,15 @@ div.jqcloud { color: #09f; }
 div.jqcloud a { color: inherit; }
 div.jqcloud a:hover { color: #0df; }
 div.jqcloud a:hover { color: #0cf; }
-div.jqcloud span.w10 { color: $dark-blue; }
-div.jqcloud span.w9 { color: $bright-orange; }
-div.jqcloud span.w8 { color: $bright-orange; }
-div.jqcloud span.w7 { color: $light-blue; }
-div.jqcloud span.w6 { color: $light-orange; }
-div.jqcloud span.w5 { color: $light-blue; }
-div.jqcloud span.w4 { color: $dark-blue; }
+div.jqcloud span.w10 { color: $light-aqua-blue; }
+div.jqcloud span.w9 { color: $light-green; }
+div.jqcloud span.w8 { color: $light-orange; }
+div.jqcloud span.w7 { color: $bright-purple; }
+div.jqcloud span.w6 { color: $light-blue; }
+div.jqcloud span.w5 { color: $light-aqua-blue; }
+div.jqcloud span.w4 { color: $light-green; }
 div.jqcloud span.w3 { color: $light-orange; }
-div.jqcloud span.w2 { color: $dark-blue; }
+div.jqcloud span.w2 { color: $bright-purple; }
 div.jqcloud span.w1 { color: $light-blue; }
 
 // CSS for Brewwery/Beer update page

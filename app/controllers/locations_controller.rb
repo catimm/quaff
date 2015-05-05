@@ -13,7 +13,7 @@ class LocationsController < ApplicationController
     @beers_ids = @beers.pluck(:id)
     Rails.logger.debug("Beer ids: #{@beers_ids.inspect}")
     gon.beers_ids = @beers_ids
-    @beer = 'https://s3-us-west-2.amazonaws.com/yourbeer/brewery/Boneyard.jpg'
+    @beer = 'https://s3-us-west-2.amazonaws.com/yourbeer/brewery/3-floyds.jpg'
   end
   
   def load
