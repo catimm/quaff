@@ -11,4 +11,5 @@
 
 class BeerType < ActiveRecord::Base
   belongs_to :beer_style
+  has_many :beer_type_relationships
 end

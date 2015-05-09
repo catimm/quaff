@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: beer_type_relationships
+#
+#  id                 :integer          not null, primary key
+#  beer_type_id       :integer
+#  relationship_one   :integer
+#  relationship_two   :integer
+#  relationship_three :integer
+#  rationale          :text
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  beer_type_id: 1
+  relationship_one: 1
+  relationship_two: 1
+  relationship_three: 1
+  rationale: MyText
+
+two:
+  beer_type_id: 1
+  relationship_one: 1
+  relationship_two: 1
+  relationship_three: 1
+  rationale: MyText
