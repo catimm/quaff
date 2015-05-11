@@ -669,7 +669,7 @@ div.jqcloud span.w1 { color: $light-blue; }
 }
 
 #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name {
-  input {
+  input, select {
     margin-bottom: 7.5px;
   }
   h6 {

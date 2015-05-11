@@ -11,7 +11,7 @@
 			<% if d.beer_type.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
-				<h5><%= d.beer_type %></h5>
+				<h5><%= d.beer_type.beer_type_name %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-1">

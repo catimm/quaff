@@ -14,17 +14,17 @@ module BestGuess
     end
     # cycle through each beer to see if there is a style match
     @beers.each do |this_beer|
-      Rails.logger.debug("This beer's info: #{this_beer.inspect}")
+      # Rails.logger.debug("This beer's info: #{this_beer.inspect}")
       # first check if this beer has a public rating associated to it
       if !this_beer.beer_rating.nil? && !@user_style_preferences.nil?
         # first check if this beer has been associated with a beer type/style. if so, apply best guess formula
         if !this_beer.beer_type_id.nil?
           this_beer_style_id = BeerType.where(id: this_beer.beer_type_id).pluck(:beer_style_id)[0]
-          Rails.logger.debug("This beer's style id: #{this_beer_style_id.inspect}")
+          # Rails.logger.debug("This beer's style id: #{this_beer_style_id.inspect}")
           if @user_style_likes.include? this_beer_style_id
             # this "formula" is used if the user generally likes this beer style--multiply default rating by 1.05
             this_beer.best_guess = ((((((this_beer.beer_rating * 0.9)*1.05)*2)*2).round)/2.0)
-            Rails.logger.debug("User likes style--rating: #{this_beer.best_guess.inspect}")
+            # Rails.logger.debug("User likes style--rating: #{this_beer.best_guess.inspect}")
           elsif @user_style_dislikes.include? this_beer_style_id
             # this "formula" is used if the user generally dislikes this beer style--multiply default rating by 0.8
             this_beer.best_guess = ((((((this_beer.beer_rating * 0.9)*0.8)*2)*2).round)/2.0)

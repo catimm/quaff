@@ -6,6 +6,8 @@ class BeersController < ApplicationController
     @brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     @beer = Beer.new
+    @beer_types = BeerType.all.order(:beer_type_name)
+    Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
   end
   
   def new
@@ -14,6 +16,8 @@ class BeersController < ApplicationController
   
   def create
     @beer = Beer.create!(beer_params)
+    @beer_types = BeerType.all.order(:beer_type_name)
+    Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
     redirect_to brewery_beers_path(params[:beer][:brewery_id])
   end
   
@@ -24,6 +28,8 @@ class BeersController < ApplicationController
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     # pull full list of beers--for delete option
     @beers = Beer.all.order(:beer_name)
+    @beer_types = BeerType.all.order(:beer_type_name)
+    Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
     # pull list of beers associated with this brewery--for delete option
     # @brewery_beers_available = Beer.where(brewery_id: params[:brewery_id])
     render :partial => 'beers/edit'
@@ -34,10 +40,11 @@ class BeersController < ApplicationController
     @beer = Beer.find(params[:id])
     # if the edit function is chosen, update this beer's attributes
     if params[:beer][:form_type] == "edit"
-      @beer.update(beer_name: params[:beer][:beer_name], beer_type: params[:beer][:beer_type], beer_rating: params[:beer][:beer_rating], 
+      @beer.update(beer_name: params[:beer][:beer_name], beer_rating: params[:beer][:beer_rating], 
             number_ratings: params[:beer][:number_ratings], beer_abv: params[:beer][:beer_abv], beer_ibu: params[:beer][:beer_ibu], 
             beer_image: params[:beer][:beer_image], tag_one: params[:beer][:tag_one], descriptors: params[:beer][:descriptors], 
-            hops: params[:beer][:hops], grains: params[:beer][:grains], brewer_description: params[:beer][:brewer_description])
+            hops: params[:beer][:hops], grains: params[:beer][:grains], brewer_description: params[:beer][:brewer_description],
+            beer_type_id: params[:beer][:beer_type_id])
       @beer.save
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
@@ -57,6 +64,6 @@ class BeersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def beer_params
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating, :number_ratings, :beer_abv, 
-      :beer_ibu, :brewery_id, :beer_image, :tag_one, :descriptors, :hops, :grains, :brewer_description)
+      :beer_ibu, :brewery_id, :beer_image, :tag_one, :descriptors, :hops, :grains, :brewer_description, :beer_type_id)
     end
 end

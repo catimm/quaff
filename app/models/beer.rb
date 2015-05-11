@@ -23,6 +23,7 @@
 
 class Beer < ActiveRecord::Base
   belongs_to :brewery
+  belongs_to :beer_type
   has_many :beer_locations
   has_many :locations, through: :beer_locations
   has_many :user_beer_ratings
