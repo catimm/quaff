@@ -165,7 +165,7 @@ task :check_chucks_85 => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
         new_option.save!  
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
         @new_beer_info << this_new_beer
@@ -186,11 +186,11 @@ task :check_chucks_85 => :environment do
             # grab this beer's info from the array of beers from this location
             @beer_info = @chucks_85_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
-            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            this_beer_id = BeerLocation.where(location_id: 3, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 3, :beer_is_current => "yes")
             new_option.save!
           end
         else
@@ -198,7 +198,7 @@ task :check_chucks_85 => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
@@ -275,7 +275,7 @@ task :check_chucks_cd => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
         new_option.save!  
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
         @new_beer_info << this_new_beer
@@ -296,11 +296,11 @@ task :check_chucks_cd => :environment do
             # grab this beer's info from the array of beers from this location
             @beer_info = @chucks_cd_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
-            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            this_beer_id = BeerLocation.where(location_id: 4, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 4, :beer_is_current => "yes")
             new_option.save!
           end
         else
@@ -308,7 +308,7 @@ task :check_chucks_cd => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
@@ -397,7 +397,7 @@ task :check_beer_junction => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
         new_option.save!  
         this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"
         @new_beer_info << this_new_beer
@@ -418,12 +418,12 @@ task :check_beer_junction => :environment do
             # if so, grab this beer's info from the array of beers from this location
             @beer_info = @beer_junction_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
-            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            this_beer_id = BeerLocation.where(location_id: 1, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add it to BeerLocations table
             # first add new beer option to beer_locations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 1, :beer_is_current => "yes")
             new_option.save!
           end
         else
@@ -431,7 +431,7 @@ task :check_beer_junction => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
@@ -518,7 +518,7 @@ task :check_beveridge_place => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
         new_option.save!  
         this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"
         @new_beer_info << this_new_beer
@@ -539,12 +539,12 @@ task :check_beveridge_place => :environment do
             # if so, grab this beer's info from the array of beers from this location
             @beer_info = @beveridge_place_beer.where(beer_name: @this_beer_name)
             # and insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
-            this_beer_id = BeerLocation.where(location_id: 2, beer_id: @beer_info[0].id).pluck(:id)[0]
+            this_beer_id = BeerLocation.where(location_id: 5, beer_id: @beer_info[0].id).pluck(:id)[0]
             @current_beer_ids << this_beer_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add it to BeerLocations table
             # first add new beer option to beer_locations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 5, :beer_is_current => "yes")
             new_option.save!
           end
         else
@@ -552,7 +552,7 @@ task :check_beveridge_place => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"  
