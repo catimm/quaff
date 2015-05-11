@@ -10,6 +10,7 @@ module LocationRating
       @beer_ranking = best_guess(@beer_ids).sort_by(&:best_guess).reverse
       Rails.logger.debug("New Beer info: #{@beer_ranking.inspect}")
       @rank_input = @beer_ranking.first(5)
+      puts @rank_input
       Rails.logger.debug("Beer ranks: #{@rank_input.inspect}")
       # create list of top 5 beers per location
       if @rank_input[0].beer_type.nil?
