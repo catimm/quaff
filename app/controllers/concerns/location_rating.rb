@@ -3,16 +3,13 @@ module LocationRating
   include BestGuess
   
   def rate_location(location)
-    Rails.logger.debug("Location info: #{location.inspect}")
     location.each do |this_location|
-      Rails.logger.debug("This Location info: #{this_location.inspect}")
       # grab ids of current beers for each location
       @beer_ids = BeerLocation.where(location_id: this_location.id, beer_is_current: "yes").pluck(:beer_id)
       Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
       @beer_ranking = best_guess(@beer_ids).sort_by(&:best_guess).reverse
       Rails.logger.debug("New Beer info: #{@beer_ranking.inspect}")
       @rank_input = @beer_ranking.first(5)
-      puts @rank_input
       Rails.logger.debug("Beer ranks: #{@rank_input.inspect}")
       # create list of top 5 beers per location
       if @rank_input[0].beer_type.nil?
