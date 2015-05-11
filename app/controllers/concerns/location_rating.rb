@@ -3,7 +3,9 @@ module LocationRating
   include BestGuess
   
   def rate_location(location)
+    Rails.logger.debug("Location info: #{location.inspect}")
     location.each do |this_location|
+      Rails.logger.debug("This Location info: #{this_location.inspect}")
       # grab ids of current beers for each location
       @beer_ids = BeerLocation.where(location_id: this_location.id, beer_is_current: "yes").pluck(:beer_id)
       Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
