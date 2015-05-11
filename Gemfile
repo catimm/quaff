@@ -56,6 +56,8 @@ gem 'cancancan'
 gem 'jqcloud-rails'
 # gem to send data from controller to javascript files
 gem 'gon'
+# for logging on Heroku
+gem 'rails_12factor', group: :production
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
