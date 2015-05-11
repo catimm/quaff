@@ -5,7 +5,7 @@
 #  id                 :integer          not null, primary key
 #  beer_name          :string
 #  beer_type          :string
-#  beer_rating        :decimal(, )
+#  beer_rating        :float
 #  number_ratings     :integer
 #  created_at         :datetime
 #  updated_at         :datetime
@@ -18,6 +18,7 @@
 #  hops               :text
 #  grains             :text
 #  brewer_description :text
+#  beer_type_id       :integer
 #
 
 class Beer < ActiveRecord::Base
@@ -29,10 +30,19 @@ class Beer < ActiveRecord::Base
   has_many :drink_lists
   has_many :users, through: :drink_lists
   
+  attr_accessor :best_guess
+  
   def connect_deleted_beer
     "#{beer_name} [id: #{id}]"
   end
-  
+
+  #scope :new_rankings, lambda { |beer_id|
+  #  beer_list = where(id: beer_id).order(beer_rating: :desc, number_ratings: :desc)
+  #  beer_list.each do |beer|
+  #    attr_accessor :best_guess
+  #  end
+  #}
+         
   filterrific(
   default_filter_params: { sorted_by: 'beer_rating_desc' },
   available_filters: [

@@ -6,7 +6,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<% @retailers.each do |retailer| %>
+			<% @retailers_ranked.each do |retailer| %>
 				<%= link_to location_path(retailer.id) do %>
 					<div class="col-sm-3 col-xs-6">
 						<div class="overview-tile">
@@ -19,7 +19,7 @@
 								</div>
 								<div class="col-sm-4 visible-sm visible-md visible-lg text-right padding-10 no-padding-left">
 									<h6 class="smiley-face"><i class="fa fa-smile-o"></i></h6>
-									<h4 class="happiness-index">93</h4>
+									<h4 class="happiness-index"><%= retailer.location_rating.round(0) %></h4>
 								</div>
 								<div class="col-xs-12 visible-xs padding-10">
 									<h6 class="smiley-face"><i class="fa fa-smile-o"></i></h6>
@@ -31,19 +31,19 @@
 									<p class="beers-at-retailer-for-user">Top beers for you:</p>
 									<ol>
 										<li>
-											<p class="beers-at-retailer-for-user">Boneyard R.P.M. (an IPA)</p>
+											<p class="beers-at-retailer-for-user"><%= retailer.top_beer_one %></p>
 										</li>
 										<li>
-											<p class="beers-at-retailer-for-user">Holy Mountain Kiln & Cone (a Pale Ale)</p>
+											<p class="beers-at-retailer-for-user"><%= retailer.top_beer_two %></p>
 										</li>
 										<li>
-											<p class="beers-at-retailer-for-user">Crux Outcast (an IPA)</p>
+											<p class="beers-at-retailer-for-user"><%= retailer.top_beer_three %></p>
 										</li>
 										<li>
-											<p class="beers-at-retailer-for-user">Crux Outcast (an IPA)</p>
+											<p class="beers-at-retailer-for-user"><%= retailer.top_beer_four %></p>
 										</li>
 										<li>
-											<p class="beers-at-retailer-for-user">Crux Outcast (an IPA)</p>
+											<p class="beers-at-retailer-for-user"><%= retailer.top_beer_five %></p>
 										</li>
 									</ol>
 								</div>

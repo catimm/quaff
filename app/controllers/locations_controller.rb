@@ -1,19 +1,31 @@
 class LocationsController < ApplicationController
   before_filter :authenticate_user!
   load_and_authorize_resource
+  include BestGuess
+  include LocationRating
   
   def index
     @retailers = Location.all
+    @retailers_ranked = rate_location(@retailers).sort_by(&:location_rating).reverse
+    Rails.logger.debug("Retails ranked info: #{@retailers_ranked.inspect}")
   end
   
   def show
+    # grab ids of current beers for this location
     @beer_ids = BeerLocation.where(location_id: params[:id], beer_is_current: "yes").pluck(:beer_id)
-    Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
-    @beers = Beer.where(id: @beer_ids)
-    @beers_ids = @beers.pluck(:id)
-    Rails.logger.debug("Beer ids: #{@beers_ids.inspect}")
+    # Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
+    @beer_ranking = best_guess(@beer_ids).sort_by(&:best_guess).reverse
+    # Rails.logger.debug("New Beer info: #{@beer_ranking.inspect}")
+    # grab beer ids that will match each jcloud
+    # @beers_ids = @beers.pluck(:id)
+    # send beer ids to javascript file to create jcloud
     gon.beers_ids = @beers_ids
-    @beer = 'https://s3-us-west-2.amazonaws.com/yourbeer/brewery/3-floyds.jpg'
+  end
+  
+  private
+  
+  def rate_beers
+    
   end
   
   def load
@@ -125,5 +137,5 @@ class LocationsController < ApplicationController
       BeerUpdates.new_beers_email("Chuck's CD", @new_beer_info).deliver
     end
   
-  end # end index action
+  end # end load action
 end # end controller

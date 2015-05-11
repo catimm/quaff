@@ -6,7 +6,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<% @beers.each do |beer| %>
+			<% @beer_ranking.each do |beer| %>
 			<div class="col-sm-3 col-xs-6">
 				<div class="add-beer text-center"><i class="fa fa-plus"></i></div>
 				<div class="overview-tile">
@@ -18,22 +18,29 @@
 					</div>
 					<div class="row no-margin">
 						<div class="col-xs-9 no-padding-right">
-							<h5 class="tile-header">Boneyard Hop Venom</h5>
+							<h5 class="tile-header"><%= beer.brewery.short_brewery_name %> <%= beer.beer_name %></h5>
 						</div>
 						<div class="col-xs-12">
-							<h5 class="tile-subheader beer-info">Double IPA</h5>
+							<h5 class="tile-subheader beer-info"><%= beer.beer_type %></h5>
 						</div>
 						<div class="col-xs-6 no-padding-right abv-div">
-							<h6 class="tile-subheader beer-info">5.6% ABV</h6>
+							<h6 class="tile-subheader beer-info"><%= beer.beer_abv %>% ABV</h6>
 						</div>
 						<div class="col-xs-6 no-padding-left text-center">
-							<h6 class="tile-subheader beer-info">55 IBUs</h6>
+							<h6 class="tile-subheader beer-info"><%= beer.beer_ibu %> IBUs</h6>
 						</div>	
 					</div>
 					<div class="row no-margin our-best-guess">
 						<div class="col-xs-12">
 							<p>Our best guess for you:</p>
-							<h1>9.5</h1>
+							<% if beer.best_guess > 10 %>
+								<% beer.best_guess == 10 %>
+							<% end %>
+							<% if beer.best_guess % 1 == 0 %>
+								<h1><%= beer.best_guess.round(0) %></h1>
+							<% else %>
+								<h1><%= beer.best_guess %></h1>
+							<% end %>
 						</div>
 						
 					</div>
