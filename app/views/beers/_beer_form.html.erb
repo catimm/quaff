@@ -1,9 +1,5 @@
 <%= form_for(@beer) do |f| %>
-	<% if !@this_brewery.nil? %>
-		<%= f.hidden_field :brewery_id, :value => @this_brewery.id %>
-	<% else %>
-		<%= f.hidden_field :brewery_id, :value => @brewery_beers.brewery_id %>
-	<% end %>
+	<%= f.hidden_field :brewery_id, :value => @this_brewery.id %>
 	<%= f.hidden_field :form_type, :value => "edit" %>
 	<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %>
 	<%= f.text_field :beer_type, :class => "form-control", placeholder: "Beer type" %>
