@@ -1,8 +1,7 @@
 <% @brewery_beers.each do |d| %>
-	<% @current_beer = BeerLocation.where(beer_id: d.id).pluck(:beer_is_current)[0] %>
-	<% if @current_beer == "yes" && d.beer_rating.nil? %>
+	<% if @unrated_beers.map{|a| a.id}.include? d.id %>
 	<div class="row small-padding current-beer-background-attention-needed">
-	<% elsif @current_beer == "yes" && !d.beer_rating.nil? %>
+	<% elsif @live_beers.map{|a| a.id}.include? d.id %>
 	<div class="row small-padding current-beer-background">
 	<% else %>
 	<div class="row small-padding">

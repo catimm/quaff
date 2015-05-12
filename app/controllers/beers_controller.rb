@@ -8,6 +8,10 @@ class BeersController < ApplicationController
     @beer = Beer.new
     @beer_types = BeerType.all.order(:beer_type_name)
     Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
+    # get list of Beer IDs for live beers
+    @live_beers = Beer.live_beers
+    # get list of Beer IDs for live beers that are unrated
+    @unrated_beers = Beer.live_beers.unrated_beers
   end
   
   def new
