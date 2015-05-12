@@ -36,13 +36,10 @@ class Beer < ActiveRecord::Base
   def connect_deleted_beer
     "#{beer_name} [id: #{id}]"
   end
-
-  #scope :new_rankings, lambda { |beer_id|
-  #  beer_list = where(id: beer_id).order(beer_rating: :desc, number_ratings: :desc)
-  #  beer_list.each do |beer|
-  #    attr_accessor :best_guess
-  #  end
-  #}
+  
+  scope :live_beers, -> { 
+    joins(:beer_locations).merge(BeerLocation.current) 
+  }
          
   filterrific(
   default_filter_params: { sorted_by: 'beer_rating_desc' },

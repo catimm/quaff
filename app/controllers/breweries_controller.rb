@@ -3,11 +3,39 @@ class BreweriesController < ApplicationController
   load_and_authorize_resource
   
   def index
+    # grab all Breweries
     @breweries = Brewery.all.order(:brewery_name)
-    @brewery = Brewery.new
+     # to show number of breweries currently at top of page
     @brewery_count = @breweries.distinct.count('id')
-    @beer_count = Beer.distinct.count('id')
+    # total number of Breweries in DB
+    @total_brewery_count = Brewery.distinct.count('id')
+    # to create a new Brewery instance
+    @brewery = Brewery.new
+    # to create a new Brewery Name instance
     @brewery_alt_names = AltBreweryName.new
+    # establish filters
+    #@filterrific = initialize_filterrific(Brewery, params[:filterrific])
+    #@filterrific.select_options = {
+    #    live_brewery_beers: Brewery.options_for_live_brewery_beers
+    #  }
+
+    #Rails.logger.debug("filterrific is: #{@filterrific.inspect}")
+    #@filtered_breweries = @filterrific.find.order(:brewery_name).page(params[:page])
+
+    #Rails.logger.debug("Filtered Breweries: #{@filtered_breweries.inspect}")
+   
+    #if @total_brewery_count == @brewery_count
+    #  #indicates all Breweries are currently chosen, so show total number of beers in DB
+     # @beer_count = Beer.distinct.count('id')
+    #else
+    #  #indicates only current brewery/beers are showing
+    #  @beer_count = BeerLocation.where(beer_is_current: "yes").count('id')
+    #end
+    
+    #respond_to do |format|
+    #  format.html
+    #  format.js
+    #end
   end
   
   def new

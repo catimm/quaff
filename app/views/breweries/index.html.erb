@@ -1,7 +1,7 @@
 <body class="admin-background">
 <%= render 'layouts/header' %> 
 <div class="container">
-	<div class="row header-row">
+	<div class="row header-row stay-in-place">
 		<div class="page-header">
 			<div class="row">
 				<div class="col-sm-7">
@@ -11,33 +11,31 @@
 					<%= link_to "Add new brewery", new_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>
 				</div>
 			</div>
+			<div class="row no-padding">
+				<div class="col-sm-3">
+					<h5><strong>Brewery Name</strong></h5>
+				</div>
+				<div class="col-sm-1">
+					<h5><strong>Image</strong></h5>
+				</div>
+				<div class="col-sm-1">
+					<h5><strong>City</strong></h5>
+				</div>
+				<div class="col-sm-1">
+					<h5><strong>State</strong></h5>
+				</div>
+				<div class="col-sm-2">
+					<h5><strong>Alt Names</strong></h5>
+				</div>
+				<div class="col-sm-2">
+					<h5><strong>Beers/In DB</strong></h5>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="row small-padding">
-		<div class="col-sm-3">
-			<h5><strong>Brewery Name</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Image</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>City</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>State</strong></h5>
-		</div>
-		<div class="col-sm-2">
-			<h5><strong>Alt Names</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Beers/In DB</strong></h5>
-		</div>
+	<div class="col-xs-12 brewery-list-holder">
+			<%= render 'breweries/breweries_list', breweries: @breweries %>
 	</div>
-	<% if !@breweries.empty? %>
-		<%= render 'breweries_list' %>
-	<% else %>
-		<h4>There are no breweries in the database.</h4>
-	<% end %>
 	<div id="new_brewery" class="modal">
 		<%= render 'breweries/new' %>
 	</div>

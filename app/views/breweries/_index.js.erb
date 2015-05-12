@@ -1,0 +1,6 @@
+$(function() {
+	alert("test");
+	<% js = escape_javascript(render 'breweries/breweries_list', breweries: @filtered_breweries) %>
+	$("#filterrific_results").html("<%= js %>");
+	alert("<%= js %>");
+});

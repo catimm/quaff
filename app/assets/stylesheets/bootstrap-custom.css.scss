@@ -295,12 +295,6 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
     margin-top: 0;
   }
 }
-.filter-button-row {
-  margin: 0;
-  div {
-    padding: 0;
-  }
-}
 .filter-button {
   width: 100px;
 }
@@ -534,6 +528,20 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   i {
     margin: 0 5px;
    }
+}
+// Admin Brewery Page
+.stay-in-place {
+  .row {
+    margin: 15px 0;
+  }
+  position: fixed;
+  width: inherit;
+  max-width: 1070px;
+  background: #fff;
+  z-index: 1000;
+}
+.brewery-list-holder {
+  margin-top: 220px;
 }
 //Navbar css style
 .homeNavbar {

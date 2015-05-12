@@ -21,4 +21,33 @@ class Brewery < ActiveRecord::Base
   def connect_deleted_brewery
     "#{brewery_name} [id: #{id}]"
   end
+  
+  scope :live_brewery_beers, ->  { joins(:beers).merge(Beer.live_beers) }
+  
+  #filterrific(
+  #  #default_filter_params: { live_brewery_beers: 0 },
+  #  available_filters: [
+  #    :live_brewery_beers
+  #    ]
+  #)
+  
+  #scope :live_brewery_beers, lambda { |flag|
+  #  if flag == 0 # checkbox unchecked
+  #    all
+  #    Rails.logger.debug("ALL is firing")
+  #  else 
+  #    joins(:beers).merge(Beer.live_beers) 
+  #    Rails.logger.debug("JOIN is firing")
+  #  end
+  #}
+  
+  # This method provides select options for the `current beers` filter select input.
+  # It is called in the controller as part of `initialize_filterrific`.
+  #def self.options_for_live_brewery_beers
+  #  [
+  #    ['All breweries', 0],
+  #    ['Breweries with current beers', 1]
+  #  ]
+  #end
+  
 end

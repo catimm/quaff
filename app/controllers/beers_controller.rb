@@ -59,6 +59,14 @@ class BeersController < ApplicationController
     redirect_to brewery_beers_path(params[:beer][:brewery_id])
   end 
 
+  def current_beers
+    @brewery_beers = Beer.live_beers.order(:beer_name)
+    Rails.logger.debug("Current Beer Info: #{@brewery_beers.inspect}")
+    @beer_count = @brewery_beers.distinct.count('id')
+    @beer = Beer.new
+    @beer_types = BeerType.all.order(:beer_type_name)
+    Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
+  end
   
   private
     # Never trust parameters from the scary internet, only allow the white list through.

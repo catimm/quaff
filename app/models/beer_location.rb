@@ -15,4 +15,5 @@ class BeerLocation < ActiveRecord::Base
   belongs_to :beer
   belongs_to :location
   
+  scope :current, -> { where(beer_is_current: "yes") }
 end

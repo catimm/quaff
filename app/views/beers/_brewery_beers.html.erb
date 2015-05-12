@@ -64,6 +64,9 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
+			<% if @this_brewery.nil? %>
+				<% @this_brewery = Brewery.find_by(id: d.brewery_id) %>
+			<% end %>
 			<%= link_to "Edit beer", edit_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success", data: {toggle: "modal", target: "#edit_beer"} %>
 		</div>
 	</div>
