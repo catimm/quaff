@@ -12,30 +12,29 @@ module LocationRating
       @rank_input = @beer_ranking.first(5)
       # Rails.logger.debug("Beer ranks: #{@rank_input.inspect}")
       # create list of top 5 beers per location
-      if @rank_input[0].beer_type.nil?
-        this_location.top_beer_one = @rank_input[0].brewery.short_brewery_name + " " + @rank_input[0].beer_name + " (type NA)"
-      else
-        this_location.top_beer_one = @rank_input[0].brewery.short_brewery_name + " " + @rank_input[0].beer_name + " (" + @rank_input[0].beer_type + ")"
-      end
-      if @rank_input[1].beer_type.nil?
-        this_location.top_beer_two = @rank_input[1].brewery.short_brewery_name + " " + @rank_input[1].beer_name + " (type NA)"
-      else
-        this_location.top_beer_two = @rank_input[1].brewery.short_brewery_name + " " + @rank_input[1].beer_name + " (" + @rank_input[1].beer_type + ")"
-      end
-      if @rank_input[2].beer_type.nil?
-        this_location.top_beer_three = @rank_input[2].brewery.short_brewery_name + " " + @rank_input[2].beer_name + " (type NA)"
-      else
-        this_location.top_beer_three = @rank_input[2].brewery.short_brewery_name + " " + @rank_input[2].beer_name + " (" + @rank_input[2].beer_type + ")"
-      end
-      if @rank_input[3].beer_type.nil?
-        this_location.top_beer_four = @rank_input[3].brewery.short_brewery_name + " " + @rank_input[3].beer_name + " (type NA)"
-      else
-        this_location.top_beer_four = @rank_input[3].brewery.short_brewery_name + " " + @rank_input[3].beer_name + " (" + @rank_input[3].beer_type + ")"
-      end
-      if @rank_input[4].beer_type.nil?
-        this_location.top_beer_five = @rank_input[4].brewery.short_brewery_name + " " + @rank_input[4].beer_name + " (type NA)"
-      else
-        this_location.top_beer_five = @rank_input[4].brewery.short_brewery_name + " " + @rank_input[4].beer_name + " (" + @rank_input[4].beer_type + ")"
+      @rank_input.each_with_index do |i, index|
+        Rails.logger.debug("This beer info: #{i.inspect}")
+        if i.beer_type_id.nil?
+          @beer_type_name = "type NA"
+        else 
+          @beer_type_name = i.beer_type.beer_type_name
+        end
+        if i.brewery.short_brewery_name.nil?
+          @brewery_name = i.brewery.brewery_name
+        else 
+          @brewery_name = i.brewery.short_brewery_name
+        end
+        if index == 0
+          this_location.top_beer_one = @brewery_name + " " + i.beer_name + " (" + @beer_type_name + ")"
+        elsif index == 1
+          this_location.top_beer_two = @brewery_name + " " + i.beer_name + " (" + @beer_type_name + ")"
+        elsif index == 2
+          this_location.top_beer_three = @brewery_name + " " + i.beer_name + " (" + @beer_type_name + ")"
+        elsif index == 3
+          this_location.top_beer_four = @brewery_name + " " + i.beer_name + " (" + @beer_type_name + ")"
+        else
+          this_location.top_beer_five = @brewery_name + " " + i.beer_name + " (" + @beer_type_name + ")"
+        end
       end
       # create location ranking
       this_location.location_rating = ((@rank_input[0].best_guess + @rank_input[1].best_guess + @rank_input[2].best_guess +
