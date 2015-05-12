@@ -1,5 +1,14 @@
 <% @breweries.each do |d| %>
+	<% @brewery_beers = Beer.where(brewery_id: d.id) %>
+	<% @brewery_beers_ids = @brewery_beers.where.not(beer_rating: nil).pluck(:id) %>
+	<% @brewery_beers_attention_ids = @brewery_beers.where(beer_rating: nil).pluck(:id) %>
+	<% if !@brewery_beers_attention_ids.nil? && @brewery_beers_attention_ids.any?{|i| @current_beer_ids.include? i } %>
+	<div class="row small-padding current-beer-background-attention-needed">
+	<% elsif !@brewery_beers_ids.nil? && @brewery_beers_ids.any?{|i| @current_beer_ids.include? i } %>
+	<div class="row small-padding current-beer-background">
+	<% else %>
 	<div class="row small-padding">
+	<% end %>
 		<div class="col-sm-3">
 			<% if d.brewery_name.blank? %>
 				<h5 class="need-text">[need]</h5>

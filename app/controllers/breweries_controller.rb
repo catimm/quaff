@@ -13,6 +13,8 @@ class BreweriesController < ApplicationController
     @brewery = Brewery.new
     # to create a new Brewery Name instance
     @brewery_alt_names = AltBreweryName.new
+    # get current beer ids
+    @current_beer_ids = BeerLocation.where(beer_is_current: "yes").pluck(:beer_id)
     # establish filters
     #@filterrific = initialize_filterrific(Brewery, params[:filterrific])
     #@filterrific.select_options = {

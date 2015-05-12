@@ -34,6 +34,8 @@ $less-emphasized-text: $medium-gray;
 $special-text: $bright-orange;
 $action-background: $bright-blue;
 $admin-background: $white;
+$current-beer-background: $light-aqua-blue;
+$current-beer-background-attention-needed: $light-orange; 
 
 html {
   position: relative;
@@ -539,6 +541,12 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   max-width: 1070px;
   background: #fff;
   z-index: 1000;
+}
+.current-beer-background {
+  background: $current-beer-background;
+}
+.current-beer-background-attention-needed {
+  background: $current-beer-background-attention-needed;
 }
 .brewery-list-holder {
   margin-top: 220px;

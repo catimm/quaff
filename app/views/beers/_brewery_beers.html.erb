@@ -1,5 +1,12 @@
 <% @brewery_beers.each do |d| %>
+	<% @current_location = BeerLocation.where(beer_id: d.id, beer_is_current: "yes") %>
+	<% if !@current_location.nil? && d.beer_rating.nil? %>
+	<div class="row small-padding current-beer-background-attention-needed">
+	<% elsif !@current_location.nil? %>
+	<div class="row small-padding current-beer-background">
+	<% else %>
 	<div class="row small-padding">
+	<% end %>
 		<div class="col-sm-2">
 			<% if d.beer_name.blank? %>
 				<h5 class="need-text">[need]</h5>
