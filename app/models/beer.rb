@@ -40,6 +40,8 @@ class Beer < ActiveRecord::Base
   scope :live_beers, -> { 
     joins(:beer_locations).merge(BeerLocation.current) 
   }
+  scope :unrated_beers, -> { where(beer_rating: nil) }
+
          
   filterrific(
   default_filter_params: { sorted_by: 'beer_rating_desc' },

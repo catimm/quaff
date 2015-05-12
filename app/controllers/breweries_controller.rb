@@ -9,12 +9,19 @@ class BreweriesController < ApplicationController
     @brewery_count = @breweries.distinct.count('id')
     # total number of Breweries in DB
     @total_brewery_count = Brewery.distinct.count('id')
+    # indicates all Breweries are currently chosen, so show total number of beers in DB
+    @beer_count = Beer.distinct.count('id')
     # to create a new Brewery instance
     @brewery = Brewery.new
     # to create a new Brewery Name instance
     @brewery_alt_names = AltBreweryName.new
     # get current beer ids
     @current_beer_ids = BeerLocation.where(beer_is_current: "yes").pluck(:beer_id)
+    # get list of Brewery IDs for those breweries that have a live beer
+    @live_brewery_beers = Brewery.live_brewery_beers
+    # get list of Brewery IDs for those breweries that have a live beer that is unrated
+    @unrated_brewery_beers = Brewery.unrated_live_brewery_beers
+
     # establish filters
     #@filterrific = initialize_filterrific(Brewery, params[:filterrific])
     #@filterrific.select_options = {

@@ -1,10 +1,7 @@
 <% @breweries.each do |d| %>
-	<% @brewery_beers = Beer.where(brewery_id: d.id) %>
-	<% @brewery_beers_ids = @brewery_beers.where.not(beer_rating: nil).pluck(:id) %>
-	<% @brewery_beers_attention_ids = @brewery_beers.where(beer_rating: nil).pluck(:id) %>
-	<% if !@brewery_beers_attention_ids.nil? && @brewery_beers_attention_ids.any?{|i| @current_beer_ids.include? i } %>
+	<% if @unrated_brewery_beers.map{|a| a.id}.include? d.id %>
 	<div class="row small-padding current-beer-background-attention-needed">
-	<% elsif !@brewery_beers_ids.nil? && @brewery_beers_ids.any?{|i| @current_beer_ids.include? i } %>
+	<% elsif @live_brewery_beers.map{|a| a.id}.include? d.id %>
 	<div class="row small-padding current-beer-background">
 	<% else %>
 	<div class="row small-padding">
