@@ -1,8 +1,8 @@
 <% @brewery_beers.each do |d| %>
-	<% @current_location = BeerLocation.where(beer_id: d.id, beer_is_current: "yes") %>
-	<% if !@current_location.nil? && d.beer_rating.nil? %>
+	<% @current_beer = BeerLocation.where(beer_id: d.id).pluck(:beer_is_current)[0] %>
+	<% if @current_beer == "yes" && d.beer_rating.nil? %>
 	<div class="row small-padding current-beer-background-attention-needed">
-	<% elsif !@current_location.nil? %>
+	<% elsif @current_beer == "yes" && !d.beer_rating.nil? %>
 	<div class="row small-padding current-beer-background">
 	<% else %>
 	<div class="row small-padding">
