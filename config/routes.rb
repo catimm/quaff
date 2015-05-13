@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   put 'breweries/update' => 'breweries#update'
   get 'breweries/alt_names/:id' => 'breweries#alt_brewery_name', :as => 'alt_brewery_names'
   post 'breweries/alt_names' => 'breweries#create_alt_brewery', :as => 'create_brewery_names'
+  get 'beers/alt_names/:id' => 'beers#alt_beer_name', :as => 'alt_beer_names'
+  post 'beers/alt_names' => 'beers#create_alt_beer', :as => 'create_beer_names'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

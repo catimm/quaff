@@ -12,6 +12,8 @@ class BeersController < ApplicationController
     @live_beers = Beer.live_beers
     # get list of Beer IDs for live beers that are unrated
     @unrated_beers = Beer.live_beers.unrated_beers
+     # to create a new Beer Name instance
+    @brewery_alt_names = AltBeerName.new
   end
   
   def new
@@ -72,10 +74,25 @@ class BeersController < ApplicationController
     Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
   end
   
+  def alt_beer_name
+    @alt_beer_names = AltBeerName.where(beer_id:params[:id])
+    @beer_alt_names = AltBeerName.new
+    @beer_info = Beer.find(params[:id])
+    render :partial => 'beers/alt_names'
+  end
+  
+  def create_alt_beer
+    @new_alt_name = AltBeerName.create!(beer_name_params)
+    redirect_to brewery_beers_path(params[:alt_beer_name][:brewery_id])
+  end
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def beer_params
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating, :number_ratings, :beer_abv, 
       :beer_ibu, :brewery_id, :beer_image, :tag_one, :descriptors, :hops, :grains, :brewer_description, :beer_type_id)
+    end
+    
+    def beer_name_params
+      params.require(:alt_beer_name).permit(:beer_id, :name)
     end
 end

@@ -1,0 +1,23 @@
+<div>
+		<h5>Current alternative names:</h5>
+	<% if @alt_beer_names.blank? %>
+		<h5>None included yet</h5>
+	<% else %>
+		<% @alt_beer_names.each do |n| %>
+			<% if n == @alt_beer_names.last %> 
+				<h5><%= n.name %></h5>
+			<% else %>
+				<h5><%= n.name %>, </h5>
+			<% end %>
+		<% end %>	
+	<% end %>
+	</br>
+	<div class="text-center">
+		<%= form_for @beer_alt_names, :url => {:action => 'create_alt_beer'} do |f| %>
+			<%= f.hidden_field :brewery_id, :value => @beer_info.brewery.id %>
+			<%= f.hidden_field :beer_id, :value => @beer_info.id %>
+			<%= f.text_field :name, :class => "form-control", placeholder: "Add alternative name", autofocus: true %>
+			<%= f.submit "Add name", class: "btn btn-success inputButton2" %>			
+		<% end %>
+	</div>
+</div>
