@@ -46,7 +46,7 @@ task :check_pine_box => :environment do
         @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: "yes")
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where.not(collab: "yes")
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: nil)
         if @related_brewery.empty?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.empty?
