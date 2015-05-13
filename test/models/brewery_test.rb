@@ -12,6 +12,7 @@
 #  image              :string
 #  brewery_beers      :integer
 #  short_brewery_name :string
+#  collab             :string
 #
 
 require 'test_helper'

@@ -12,6 +12,7 @@
 #  image              :string
 #  brewery_beers      :integer
 #  short_brewery_name :string
+#  collab             :string
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
