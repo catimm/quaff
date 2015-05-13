@@ -21,6 +21,8 @@ class BreweriesController < ApplicationController
     @live_brewery_beers = Brewery.live_brewery_beers
     # get list of Brewery IDs for those breweries that have a live beer that is unrated
     @unrated_brewery_beers = Brewery.unrated_live_brewery_beers
+    # get count of total beers that are not yet rated
+    @number_unrated_beers = Beer.live_beers.unrated_beers.count('id')
 
     # establish filters
     #@filterrific = initialize_filterrific(Brewery, params[:filterrific])
