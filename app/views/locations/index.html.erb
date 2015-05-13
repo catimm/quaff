@@ -13,17 +13,13 @@
 							<div class="row img-responsive retailer-tile-image" alt="Responsive image" style="background-image: url(<%= retailer.image_url %>)">
 							</div>
 							<div class="row no-margin retailer-tile-header-row">
-								<div class="col-sm-8 col-xs-12 retailer-tile-header-div padding-10 no-padding-right">
+								<div class="col-xs-8 retailer-tile-header-div padding-10 no-padding-right">
 									<h5 class="tile-header"><%= retailer.short_name %></h5>
 									<h5 class="tile-subheader"><i class="fa fa-map-marker"> <%= retailer.neighborhood %></i></h5>	
 								</div>
-								<div class="col-sm-4 visible-sm visible-md visible-lg text-right padding-10 no-padding-left">
+								<div class="col-xs-4 text-right padding-10 no-padding-left">
 									<h6 class="smiley-face"><i class="fa fa-smile-o"></i></h6>
 									<h4 class="happiness-index"><%= retailer.location_rating.round(0) %></h4>
-								</div>
-								<div class="col-xs-12 visible-xs padding-10">
-									<h6 class="smiley-face"><i class="fa fa-smile-o"></i></h6>
-									<h4 class="happiness-index">93</h4>
 								</div>
 							</div>
 							<div class="row no-margin list-overview">
