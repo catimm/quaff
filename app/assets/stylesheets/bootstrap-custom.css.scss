@@ -647,10 +647,10 @@ div.jqcloud span.w1 { color: $light-blue; }
 .current-beer-background-attention-needed {
   background: $current-beer-attention-needed-background;
 }
-.beers-need-attention {
-  color: $current-beer-attention-needed-text;
+.live-beer-count {
+  color: $normal-text;
   span {
-    color: $normal-text;
+    color: $current-beer-attention-needed-text;
   }
 }
 .brewery-list-holder {
