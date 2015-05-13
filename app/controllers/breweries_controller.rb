@@ -22,7 +22,7 @@ class BreweriesController < ApplicationController
     # get list of Brewery IDs for those breweries that have a live beer that is unrated
     @unrated_brewery_beers = Brewery.unrated_live_brewery_beers
     # count of total live beers
-    @number_live_beers = @live_brewery_beers.count('id')
+    @number_live_beers = Beer.live_beers.count('id')
     # get count of total beers that are not yet rated
     @number_unrated_beers = Beer.live_beers.unrated_beers.count('id')
 
