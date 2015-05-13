@@ -71,7 +71,11 @@ task :check_pine_box => :environment do
           if @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           end
-          if the_first_name_match || the_second_name_match
+          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+          if !@alt_beer_name.empty?
+            the_third_name_match = true
+          end
+          if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
@@ -199,7 +203,11 @@ task :check_chucks_85 => :environment do
           if @this_beer_name.include? beer.beer_name
              the_second_name_match == true
           end
-          if the_first_name_match || the_second_name_match
+          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+          if !@alt_beer_name.empty?
+            the_third_name_match = true
+          end
+          if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
@@ -317,7 +325,11 @@ task :check_chucks_cd => :environment do
           if @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           end
-          if the_first_name_match || the_second_name_match
+          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+          if !@alt_beer_name.empty?
+            the_third_name_match = true
+          end
+          if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
@@ -440,7 +452,11 @@ task :check_beer_junction => :environment do
           if @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           end
-          if the_first_name_match || the_second_name_match
+          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+          if !@alt_beer_name.empty?
+            the_third_name_match = true
+          end
+          if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
@@ -562,7 +578,11 @@ task :check_beveridge_place => :environment do
           if @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           end
-          if the_first_name_match || the_second_name_match
+          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+          if !@alt_beer_name.empty?
+            the_third_name_match = true
+          end
+          if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
