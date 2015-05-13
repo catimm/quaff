@@ -44,9 +44,15 @@ task :check_pine_box => :environment do
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
         @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: "yes")
+        if @related_brewery.empty?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          if !@alt_brewery_name.empty?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+          end
+        end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: nil)
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where("collab IS NULL")
         if @related_brewery.empty?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.empty?
@@ -54,6 +60,7 @@ task :check_pine_box => :environment do
           end
         end
       end
+      
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
         # first add new brewery to breweries table
@@ -180,9 +187,15 @@ task :check_chucks_85 => :environment do
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
         @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: "yes")
+        if @related_brewery.empty?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          if !@alt_brewery_name.empty?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+          end
+        end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where.not(collab: "yes")
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where("collab IS NULL")
         if @related_brewery.empty?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.empty?
@@ -214,10 +227,10 @@ task :check_chucks_85 => :environment do
         @this_brewery_beers.each do |beer|
           # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match == true
+             the_first_name_match = true
           end
           if @this_beer_name.include? beer.beer_name
-             the_second_name_match == true
+             the_second_name_match = true
           end
           @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
           if !@alt_beer_name.empty?
@@ -314,9 +327,15 @@ task :check_chucks_cd => :environment do
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
         @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: "yes")
+        if @related_brewery.empty?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          if !@alt_brewery_name.empty?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+          end
+        end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where.not(collab: "yes")
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where("collab IS NULL")
         if @related_brewery.empty?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.empty?
@@ -450,9 +469,15 @@ task :check_beer_junction => :environment do
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
         @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: "yes")
+        if @related_brewery.empty?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          if !@alt_brewery_name.empty?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+          end
+        end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where.not(collab: "yes")
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where("collab IS NULL")
         if @related_brewery.empty?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.empty?
@@ -585,9 +610,15 @@ task :check_beveridge_place => :environment do
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
         @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: "yes")
+        if @related_brewery.empty?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          if !@alt_brewery_name.empty?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+          end
+        end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where.not(collab: "yes")
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where("collab IS NULL")
         if @related_brewery.empty?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.empty?
