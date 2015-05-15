@@ -147,6 +147,22 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   font-weight: 500; 
   margin-bottom: 5px;
 }
+$beer-header-font-size: 14px;
+$beer-header-line-height: 1.1;
+$beer-header-lines-to-show: 2;
+.beer-tile-header {
+  @extend .tile-header; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $beer-header-font-size*$beer-header-line-height*$beer-header-lines-to-show; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: $beer-header-font-size;
+  line-height: $beer-header-line-height;
+  -webkit-line-clamp: $beer-header-lines-to-show;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .tile-subheader {
   color: $less-emphasized-text;
   margin-top: 0;

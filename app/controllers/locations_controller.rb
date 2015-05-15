@@ -11,6 +11,9 @@ class LocationsController < ApplicationController
   end
   
   def show
+    # get retailer location information
+    @retailer = Location.where(id: params[:id])[0]
+    Rails.logger.debug("Retailer info: #{@retailer.inspect}")
     # grab ids of current beers for this location
     @beer_ids = BeerLocation.where(location_id: params[:id], beer_is_current: "yes").pluck(:beer_id)
     # Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
