@@ -2,7 +2,7 @@
 	<%= f.hidden_field :brewery_id, :value => @this_brewery.id %>
 	<%= f.hidden_field :form_type, :value => "edit" %>
 	<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %>
-	<%= f.text_field :beer_type, :class => "form-control", placeholder: "Beer type" %>
+	<%= f.text_field :beer_type_old_name, :class => "form-control", placeholder: "Beer type" %>
 	<%= f.collection_select :beer_type_id, @beer_types, :id, :beer_type_name, {prompt: "Select a beer type"}, {class: "form-control"} %>
 
 
