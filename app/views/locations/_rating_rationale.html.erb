@@ -6,7 +6,7 @@
 		<li>
 			<p class="recommendation-reasons">Others have rated this pretty highly.</p>
 		</li>
-		<% if !beer.tag_one.nil? %>
+		<% if !beer.tag_one.blank? %>
 		<li>
 			<p class="recommendation-reasons">This is a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
 		</li>
@@ -18,7 +18,7 @@
 			<p class="recommendation-reasons">You didn't explicitely say you don't like <%= beer.beer_style_name %>, 
 			and others have rated this pretty hightly...</p>
 		</li>
-		<% if !beer.tag_one.nil? %>
+		<% if !beer.tag_one.blank? %>
 		<li>
 			<p class="recommendation-reasons">Also, this is a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
 		</li>
@@ -30,7 +30,7 @@
 			<p class="recommendation-reasons">We know you don't like <%= beer.beer_style_name %>, 
 			but others have rated this pretty hightly...</p>
 		</li>
-		<% if !beer.tag_one.nil? %>
+		<% if !beer.tag_one.blank? %>
 		<li>
 			<p class="recommendation-reasons">Also, this is a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
 		</li>
@@ -41,7 +41,7 @@
 		<li>
 			<p class="recommendation-reasons">You said you like <%= beer.beer_style_name %>, so here we are...</p>
 		</li>
-		<% if !beer.tag_one.nil? %>
+		<% if !beer.tag_one.blank? %>
 		<li>
 			<p class="recommendation-reasons">This is a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
 		</li>
@@ -53,7 +53,7 @@
 			<p class="recommendation-reasons">You didn't explicitely say you don't like <%= beer.beer_style_name %>, 
 			and others have rated this pretty hightly...</p>
 		</li>
-		<% if !beer.tag_one.nil? %>
+		<% if !beer.tag_one.blank? %>
 		<li>
 			<p class="recommendation-reasons">This is a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
 		</li>
@@ -65,7 +65,7 @@
 			<p class="recommendation-reasons">We know you don't like <%= beer.beer_style_name %>, 
 			but others have rated this pretty hightly...</p>
 		</li>
-		<% if !beer.tag_one.nil? %>
+		<% if !beer.tag_one.blank? %>
 		<li>
 			<p class="recommendation-reasons">Also, this is a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
 		</li>
