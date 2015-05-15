@@ -4,7 +4,7 @@
 #
 #  id                 :integer          not null, primary key
 #  beer_name          :string
-#  beer_type          :string
+#  beer_type_old_name :string
 #  beer_rating        :float
 #  number_ratings     :integer
 #  created_at         :datetime
