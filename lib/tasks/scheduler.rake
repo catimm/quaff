@@ -94,15 +94,12 @@ task :check_pine_box => :environment do
           # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
-             Rails.logger.debug("First match is true: #{the_first_name_match.inspect}")
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
-             Rails.logger.debug("Second match is true: #{the_second_name_match.inspect}")
           else
             @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
-              Rails.logger.debug("Third match is true: #{the_third_name_match.inspect}")
             end
           end
           if the_first_name_match || the_second_name_match || the_third_name_match
@@ -249,13 +246,13 @@ task :check_chucks_85 => :environment do
           # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
-          end
-          if @this_beer_name.include? beer.beer_name
+          elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
-          end
-          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
-          if !@alt_beer_name.empty?
-            the_third_name_match = true
+          else
+            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            if !@alt_beer_name.empty?
+              the_third_name_match = true
+            end
           end
           if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
@@ -387,13 +384,13 @@ task :check_chucks_cd => :environment do
           # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
-          end
-          if @this_beer_name.include? beer.beer_name
+          elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
-          end
-          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
-          if !@alt_beer_name.empty?
-            the_third_name_match = true
+          else
+            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            if !@alt_beer_name.empty?
+              the_third_name_match = true
+            end
           end
           if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
@@ -526,16 +523,16 @@ task :check_beer_junction => :environment do
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @this_brewery_beers.each do |beer|
-          # check if beer name matches in either direction
+         # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
-          end
-          if @this_beer_name.include? beer.beer_name
+          elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
-          end
-          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
-          if !@alt_beer_name.empty?
-            the_third_name_match = true
+          else
+            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            if !@alt_beer_name.empty?
+              the_third_name_match = true
+            end
           end
           if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
@@ -670,13 +667,13 @@ task :check_beveridge_place => :environment do
           # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
-          end
-          if @this_beer_name.include? beer.beer_name
+          elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
-          end
-          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
-          if !@alt_beer_name.empty?
-            the_third_name_match = true
+          else
+            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            if !@alt_beer_name.empty?
+              the_third_name_match = true
+            end
           end
           if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
