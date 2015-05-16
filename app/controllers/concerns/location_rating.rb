@@ -17,7 +17,7 @@ module LocationRating
         if i.beer_type_id.nil?
           @beer_type_name = ""
         else 
-          @beer_type_name = "("+i.beer_type.beer_type_name+")"
+          @beer_type_name = "("+i.beer_type.beer_type_short_name+")"
         end
         if i.brewery.short_brewery_name.nil?
           @brewery_name = i.brewery.brewery_name
