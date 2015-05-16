@@ -2,11 +2,12 @@
 #
 # Table name: beer_types
 #
-#  id             :integer          not null, primary key
-#  beer_type_name :string
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  beer_style_id  :integer
+#  id                   :integer          not null, primary key
+#  beer_type_name       :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  beer_style_id        :integer
+#  beer_type_short_name :string
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
