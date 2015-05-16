@@ -95,15 +95,15 @@ task :check_pine_box => :environment do
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
              Rails.logger.debug("First match is true: #{the_first_name_match.inspect}")
-          end
-          if @this_beer_name.include? beer.beer_name
+          elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
              Rails.logger.debug("Second match is true: #{the_second_name_match.inspect}")
-          end
-          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
-          if !@alt_beer_name.empty?
-            the_third_name_match = true
-            Rails.logger.debug("Third match is true: #{the_third_name_match.inspect}")
+          else
+            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            if !@alt_beer_name.empty?
+              the_third_name_match = true
+              Rails.logger.debug("Third match is true: #{the_third_name_match.inspect}")
+            end
           end
           if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
