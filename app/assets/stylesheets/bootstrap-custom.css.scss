@@ -223,6 +223,9 @@ $beer-header-lines-to-show: 2;
   }
 } 
 // Individual location overview page
+.beer-tile-container {
+  padding-top: 20px;
+}
 .add-beer {
   width: 32px;
   height: 32px;
@@ -238,8 +241,8 @@ $beer-header-lines-to-show: 2;
   font-weight: 500;
   z-index: 1000;
   position: absolute;
-  top: -16px;
-  right: 3.5px;
+  top: 4px;
+  left: 3.5px;
 }
 .cloud-holder {
   height: 110px;
