@@ -24,7 +24,8 @@ task :check_pine_box => :environment do
       # first grab all data for this beer
       @this_brewery_name = node.css("td.draft_brewery").text
       @this_beer_name = node.css("td.draft_name").text
-      if @this_beer_name == "Hubert MPA"
+      Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
+      break if @this_beer_name != "Hubert MPA"
         Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
         @this_beer_origin = node.css("td.draft_origin").text
         @this_beer_abv = node.css("td.draft_abv").text
@@ -153,7 +154,6 @@ task :check_pine_box => :environment do
       if !@new_beer_info.empty?
         BeerUpdates.new_beers_email("Pine Box", @new_beer_info).deliver
       end
-    end
 end
 
 desc "Check Chuck's 85"
