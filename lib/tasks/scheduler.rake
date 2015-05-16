@@ -25,135 +25,137 @@ task :check_pine_box => :environment do
       @this_brewery_name = node.css("td.draft_brewery").text
       @this_beer_name = node.css("td.draft_name").text
       Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
-      break if @this_beer_name != "Hubert MPA"
-        Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
-        @this_beer_origin = node.css("td.draft_origin").text
-        @this_beer_abv = node.css("td.draft_abv").text
-        @this_place_serving_size = node.css("td.draft_size").text
-        @this_beer_price = node.css("td.draft_price").text      
-        # split brewery name aso key words can be removed from beer name
-        @split_brewery_name = @this_brewery_name.split
-        # cycle through split words to remove from beer name
-        @split_brewery_name.each do |word|
-          if @this_beer_name.include? word
-            @this_beer_name.slice! word
+      @this_beer_origin = node.css("td.draft_origin").text
+      @this_beer_abv = node.css("td.draft_abv").text
+      @this_place_serving_size = node.css("td.draft_size").text
+      @this_beer_price = node.css("td.draft_price").text      
+      # split brewery name aso key words can be removed from beer name
+      @split_brewery_name = @this_brewery_name.split
+      # cycle through split words to remove from beer name
+      @split_brewery_name.each do |word|
+        if @this_beer_name.include? word
+          @this_beer_name.slice! word
+        end
+      end
+      # remove extra spaces from beer name
+      @this_beer_name = @this_beer_name.strip
+      
+      # create variable to check if brewery name represents a collaboration project
+      @collab_beer = @this_brewery_name.match('\/')
+      Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
+      # check if this brewery already exists in the db(s)
+      # if beer is collaboration, only check for direct brewery name matches
+      if @collab_beer
+        Rails.logger.debug("This is firing, so it thinks this is a collab beer")
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: true) 
+        Rails.logger.debug("First check on related beer: #{@related_brewery.inspect}")
+        if @related_brewery.blank?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          Rails.logger.debug("Check on alternative beer names: #{@alt_brewery_name.inspect}")
+          if !@alt_brewery_name.blank?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+            Rails.logger.debug("Second check on related beer: #{@related_brewery.inspect}")
           end
         end
-        # remove extra spaces from beer name
-        @this_beer_name = @this_beer_name.strip
-        
-        # create variable to check if brewery name represents a collaboration project
-        @collab_beer = @this_brewery_name.match('\/')
-        Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
-        # check if this brewery already exists in the db(s)
-        # if beer is collaboration, only check for direct brewery name matches
-        if @collab_beer
-          @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: true) 
-          if @related_brewery.blank?
-            @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
-            if !@alt_brewery_name.blank?
-              @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-            end
-          end
-          Rails.logger.debug("Related Brewery if collab beer: #{@related_brewery.inspect}")
-        else
-          # if beer is not a collaboration, do a "normal" brewery name check
-          @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
-          if @related_brewery.blank?
-            @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-            if !@alt_brewery_name.blank?
-              @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-            end
-          end
-        end
-        
-        # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
+        Rails.logger.debug("Third and final check on related beer: #{@related_brewery.inspect}")
+      else
+        # if beer is not a collaboration, do a "normal" brewery name check
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
         if @related_brewery.empty?
-          Rails.logger.debug("This is firing, so it thinks this brewery IS NOT in the DB")
-          # first add new brewery to breweries table
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
-          new_brewery.save!
-          # then add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
-          new_beer.save!
-          # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
-          new_option.save!  
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
-          @new_beer_info << this_new_beer
-        else 
-          Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
-          # since this brewery exists in the breweries table, find all its related beers from the beers table
-          @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
-          # check if this current beer already exists in beers table
-          @recognized_beer = nil
-          @this_brewery_beers.each do |beer|
-            Rails.logger.debug("Beer matching loop, beer is: #{beer.beer_name.inspect}")
-            # check if beer name matches in either direction
-            if beer.beer_name.include? @this_beer_name
-               the_first_name_match = true
-               Rails.logger.debug("First match is true: #{the_first_name_match.inspect}")
-            end
-            if @this_beer_name.include? beer.beer_name
-               the_second_name_match = true
-               Rails.logger.debug("Second match is true: #{the_second_name_match.inspect}")
-            end
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
-              Rails.logger.debug("Third match is true: #{the_third_name_match.inspect}")
-            end
-            if the_first_name_match || the_second_name_match || the_third_name_match
-              @recognized_beer = beer
-              Rails.logger.debug("Recognized beer info: #{@recognized_beer.inspect}")
-            end
-            # break this loop as soon as there is a match on this current beer's name
-            break if !@recognized_beer.nil?
-          end 
-          # in this case, we know this beer exists in the beers table
-          if !@recognized_beer.nil?
-            Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
-            # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
-            if @pine_box_beer.map{|a| a.id}.include? @recognized_beer.id
-              Rails.logger.debug("This is firing, so it thinks this beer IS in the beer_locations table")
-              # if it matches, find it's beer_locations id 
-              this_beer_location_id = BeerLocation.where(location_id: 2, beer_id: @recognized_beer.id).pluck(:id)[0]
-              Rails.logger.debug("Recognized beer location info: #{this_beer_location_id.inspect}")
-              # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
-              @current_beer_ids << this_beer_location_id
-            else 
-              Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beer_locations table")
-              # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-              new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
-              Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
-              new_option.save!
-            end
-          else
-            Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
-            # if beer doesn't exist in DB, first add new beer to beers table       
-            new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
-            new_beer.save!
-            # then add new beer option to beer_locations table
-            new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
-            new_option.save!
-            # finally, push this beer info into an array to be sent to us via email
-            this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
-            @new_beer_info << this_new_beer   
+          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+          if !@alt_brewery_name.empty?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
           end
-        end   
-      end # end loop through scraped beers
-  
-      # create list of not current Beer Location IDs
-      @not_current_beer_ids = @pine_box_beer_location_ids - @current_beer_ids
-      # change not current beers status in DB
-      if !@not_current_beer_ids.empty?
-        @not_current_beer_ids.each do |beer|
-          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
         end
       end
-      if !@new_beer_info.empty?
-        BeerUpdates.new_beers_email("Pine Box", @new_beer_info).deliver
+      
+      # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
+      if @related_brewery.empty?
+        Rails.logger.debug("This is firing, so it thinks this brewery IS NOT in the DB")
+        # first add new brewery to breweries table
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
+        new_beer.save!
+        # finally add new beer option to beer_locations table
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option.save!  
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
+        @new_beer_info << this_new_beer
+      else 
+        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+        # since this brewery exists in the breweries table, find all its related beers from the beers table
+        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        # check if this current beer already exists in beers table
+        @recognized_beer = nil
+        @this_brewery_beers.each do |beer|
+          Rails.logger.debug("Beer matching loop, beer is: #{beer.beer_name.inspect}")
+          # check if beer name matches in either direction
+          if beer.beer_name.include? @this_beer_name
+             the_first_name_match = true
+             Rails.logger.debug("First match is true: #{the_first_name_match.inspect}")
+          end
+          if @this_beer_name.include? beer.beer_name
+             the_second_name_match = true
+             Rails.logger.debug("Second match is true: #{the_second_name_match.inspect}")
+          end
+          @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+          if !@alt_beer_name.empty?
+            the_third_name_match = true
+            Rails.logger.debug("Third match is true: #{the_third_name_match.inspect}")
+          end
+          if the_first_name_match || the_second_name_match || the_third_name_match
+            @recognized_beer = beer
+            Rails.logger.debug("Recognized beer info: #{@recognized_beer.inspect}")
+          end
+          # break this loop as soon as there is a match on this current beer's name
+          break if !@recognized_beer.nil?
+        end 
+        # in this case, we know this beer exists in the beers table
+        if !@recognized_beer.nil?
+          Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
+          # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
+          if @pine_box_beer.map{|a| a.id}.include? @recognized_beer.id
+            Rails.logger.debug("This is firing, so it thinks this beer IS in the beer_locations table")
+            # if it matches, find it's beer_locations id 
+            this_beer_location_id = BeerLocation.where(location_id: 2, beer_id: @recognized_beer.id).pluck(:id)[0]
+            Rails.logger.debug("Recognized beer location info: #{this_beer_location_id.inspect}")
+            # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << this_beer_location_id
+          else 
+            Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beer_locations table")
+            # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
+            new_option.save!
+          end
+        else
+          Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
+          # if beer doesn't exist in DB, first add new beer to beers table       
+          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
+          new_beer.save!
+          # then add new beer option to beer_locations table
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+          new_option.save!
+          # finally, push this beer info into an array to be sent to us via email
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
+          @new_beer_info << this_new_beer   
+        end
+      end   
+    end # end loop through scraped beers
+
+    # create list of not current Beer Location IDs
+    @not_current_beer_ids = @pine_box_beer_location_ids - @current_beer_ids
+    # change not current beers status in DB
+    if !@not_current_beer_ids.empty?
+      @not_current_beer_ids.each do |beer|
+        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
+    end
+    if !@new_beer_info.empty?
+      BeerUpdates.new_beers_email("Pine Box", @new_beer_info).deliver
+    end
 end
 
 desc "Check Chuck's 85"
