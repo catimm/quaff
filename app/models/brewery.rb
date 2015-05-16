@@ -12,10 +12,12 @@
 #  image              :string
 #  brewery_beers      :integer
 #  short_brewery_name :string
-#  collab             :string
+#  collab             :boolean
 #
 
 class Brewery < ActiveRecord::Base
+  strip_attributes
+  
   has_many :beers
   has_many :alt_brewery_names
   

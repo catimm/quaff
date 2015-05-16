@@ -2,6 +2,8 @@
 	<%= f.hidden_field :form_type, :value => "edit" %>
 	<%= f.text_field :brewery_name, :class => "form-control", placeholder: "Brewery name" %>
 	<%= f.text_field :short_brewery_name, :class => "form-control", placeholder: "Short brewery name" %>
+	<label for="brewery_collab">Is this a collaboration?</label>
+	<%= f.check_box :collab %>
 	<%= f.text_field :brewery_city, :class => "form-control", placeholder: "Brewery city" %>
 	<%= f.text_field :brewery_state, :class => "form-control", placeholder: "Brewery state" %>
 	<%= f.text_field :brewery_beers, :class => "form-control", placeholder: "Number of beers brewery has" %>

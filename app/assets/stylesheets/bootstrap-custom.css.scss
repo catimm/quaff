@@ -110,6 +110,10 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .second-guide {
   padding: 0 10px;
 }
+label {
+  color: $normal-text;
+  font-weight: 400;
+}
 // Retailer overview page
 .page-title {
   padding: 20px 0;

@@ -188,6 +188,8 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
+    strip_attributes (1.7.0)
+      activemodel (>= 3.0, < 5.0)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -236,6 +238,7 @@ DEPENDENCIES
   rails_12factor
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
+  strip_attributes
   thin
   turbolinks
   tzinfo-data

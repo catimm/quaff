@@ -22,6 +22,8 @@
 #
 
 class Beer < ActiveRecord::Base
+  strip_attributes
+  
   belongs_to :brewery
   belongs_to :beer_type
   has_many :alt_beer_names

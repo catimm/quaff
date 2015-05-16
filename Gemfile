@@ -58,6 +58,8 @@ gem 'jqcloud-rails'
 gem 'gon'
 # for logging on Heroku
 gem 'rails_12factor', group: :production
+# StripAttributes is an ActiveModel extension that automatically strips all attributes of leading and trailing whitespace before validation. If the attribute is blank, it strips the value to nil.
+gem 'strip_attributes'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
