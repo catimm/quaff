@@ -5,10 +5,10 @@
 				<h3 class="page-title">The best places have the best beers.</h3>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row row-horizon">
 			<% @retailers_ranked.each do |retailer| %>
-				<%= link_to location_path(retailer.id) do %>
-					<div class="col-sm-3 col-xs-6">
+					<div class="col-sm-4 col-xs-12 location-tile-container">
+						<%= link_to location_path(retailer.id) do %>
 						<div class="overview-tile">
 							<div class="row img-responsive retailer-tile-image" alt="Responsive image" style="background-image: url(<%= retailer.image_url %>)">
 							</div>
@@ -46,8 +46,9 @@
 								<div class="col-xs-12 overview-tile-footer"></div>
 							</div>
 						</div>
+					<% end %>
 					</div>
-				<% end %>
+				
 			<% end %>
 		</div>
 	</div>
