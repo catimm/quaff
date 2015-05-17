@@ -1,5 +1,6 @@
 class BeersController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :find_descriptors, only: [:new, :create, :edit, :update]
   load_and_authorize_resource
   
   def index
@@ -48,9 +49,9 @@ class BeersController < ApplicationController
     if params[:beer][:form_type] == "edit"
       @beer.update(beer_name: params[:beer][:beer_name], beer_rating: params[:beer][:beer_rating], 
             number_ratings: params[:beer][:number_ratings], beer_abv: params[:beer][:beer_abv], beer_ibu: params[:beer][:beer_ibu], 
-            beer_image: params[:beer][:beer_image], tag_one: params[:beer][:tag_one], descriptors: params[:beer][:descriptors], 
-            hops: params[:beer][:hops], grains: params[:beer][:grains], brewer_description: params[:beer][:brewer_description],
-            beer_type_id: params[:beer][:beer_type_id])
+            beer_image: params[:beer][:beer_image], tag_one: params[:beer][:tag_one], descriptor_list: params[:beer][:descriptor_list],
+            descriptors: params[:beer][:descriptors], hops: params[:beer][:hops], grains: params[:beer][:grains], 
+            brewer_description: params[:beer][:brewer_description],beer_type_id: params[:beer][:beer_type_id])
       @beer.save
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
@@ -85,11 +86,25 @@ class BeersController < ApplicationController
     @new_alt_name = AltBeerName.create!(beer_name_params)
     redirect_to brewery_beers_path(params[:alt_beer_name][:brewery_id])
   end
+  
+  def descriptors
+    descriptors = Beer.descriptor_counts.by_tag_name(params[:q]).token_input_tags
+  
+    respond_to do |format|
+      format.json { render json: descriptors }
+    end
+  end
+  
   private
+    # collect existing beer descriptors
+    def find_descriptors
+      @beer_descriptors = params[:id].present? ? Beer.find(params[:id]).descriptors.map{|t| {id: t.name, name: t.name }} : []
+    end
+    
     # Never trust parameters from the scary internet, only allow the white list through.
     def beer_params
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating, :number_ratings, :beer_abv, 
-      :beer_ibu, :brewery_id, :beer_image, :tag_one, :descriptors, :hops, :grains, :brewer_description, :beer_type_id)
+      :beer_ibu, :brewery_id, :beer_image, :tag_one, :descriptor_list, :descriptors, :hops, :grains, :brewer_description, :beer_type_id)
     end
     
     def beer_name_params

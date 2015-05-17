@@ -20,5 +20,6 @@
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
 //= require jqcloud
+//= require jquery.tokeninput
 //= require turbolinks
 //= require_tree .

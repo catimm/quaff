@@ -60,6 +60,10 @@ gem 'gon'
 gem 'rails_12factor', group: :production
 # StripAttributes is an ActiveModel extension that automatically strips all attributes of leading and trailing whitespace before validation. If the attribute is blank, it strips the value to nil.
 gem 'strip_attributes'
+# A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem 'acts-as-taggable-on', '~> 3.4'
+# Tokeninput is a jQuery plugin to select multiple items from a predefined list, using autocompletion
+gem 'jquery-tokeninput-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

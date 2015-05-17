@@ -1,4 +1,11 @@
 $(function() {
+	return $('#beer_descriptors_list_tokens').tokenInput('/beers/descriptors.json', {
+	    theme: 'mac',
+	    minChars: 2,
+	    allowCustomEntry: true,
+	    preventDuplicates: true,
+	    prePopulate: $('#beer_descriptor_list_tokens').data('load')
+	  });
 	$(".edit-beer-info").on("click", function(){
 		if ($("#edit-beer-info").hasClass("show")) {
 	    		return	

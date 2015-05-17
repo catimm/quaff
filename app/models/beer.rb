@@ -22,7 +22,13 @@
 #
 
 class Beer < ActiveRecord::Base
+  include DescriptorExtend
+  # to strip white spaces from each beer added to this table
   strip_attributes
+   
+  # to implement descriptor tags on each beer
+  acts_as_taggable_on :descriptors
+  attr_reader :descriptor_list_tokens
   
   belongs_to :brewery
   belongs_to :beer_type
@@ -101,6 +107,11 @@ class Beer < ActiveRecord::Base
   scope :with_special, lambda { |special_tag|
     where(tag_one: [*special_tag])
   }
+  
+  # save actual tags without quotes
+  def descriptor_list_tokens=(tokens)
+    self.tag_list = tokens.gsub("'", "")
+  end
   
   # This method provides select options for the `sorted_by` filter select input.
   # It is called in the controller as part of `initialize_filterrific`.

@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   resources :users do
     resources :drinks, :ratings, :rewards   
   end
-  resources :beers
+  resources :beers do
+    collection do
+      get :descriptors, as: :descriptors
+    end
+  end
   resources :locations
   resources :breweries do
     resources :beers   

@@ -4,14 +4,14 @@
 	<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %>
 	<%= f.text_field :beer_type_old_name, :class => "form-control", placeholder: "Beer type" %>
 	<%= f.collection_select :beer_type_id, @beer_types, :id, :beer_type_name, {prompt: "Select a beer type"}, {class: "form-control"} %>
-
-
 	<%= f.text_field :beer_rating, :class => "form-control", placeholder: "Beer rating" %>
 	<%= f.text_field :number_ratings, :class => "form-control", placeholder: "Number of ratings" %>
 	<%= f.text_field :beer_abv, :class => "form-control", placeholder: "Beer ABV" %>
 	<%= f.text_field :beer_ibu, :class => "form-control", placeholder: "Beer IBU" %>
 	<%= f.text_field :beer_image, :class => "form-control", placeholder: "Image URL" %>
 	<%= f.text_field :tag_one, :class => "form-control", placeholder: "Specialty tags" %>
+	<%= f.label :descriptors_list, "Important: use lower case for descriptors and separate each by a comma" %>
+  	<%= f.text_field :descriptor_list_tokens, data: {load: @beer_descriptors}, :class => "form-control", placeholder: "Descriptors [separate with comma]" %>
 	<%= f.text_field :descriptors, :class => "form-control", placeholder: "Descriptors [separate with comma]" %>
 	<%= f.text_field :hops, :class => "form-control", placeholder: "Hops [separate with comma]" %>
 	<%= f.text_field :grains, :class => "form-control", placeholder: "Grains [separate with comma]" %>
