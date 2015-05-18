@@ -11,7 +11,7 @@
 					<% end %>
 				</div>
 				<div class="col-sm-4 text-right">
-					<%= link_to "Add beer", new_brewery_beer_path(@this_brewery.id), class: "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_beer"} %>
+					<%= link_to "Add beer", new_brewery_beer_path(@this_brewery.id), class: "btn btn-success inputButton2" %>
 				</div>
 			</div>
 		</div>
@@ -50,9 +50,6 @@
 	<% else %>
 		<h4>No beers yet associated with this brewery.</h4>
 	<% end %>
-	<div id="new_beer" class="modal">
-		<%= render 'beers/new' %>
-	</div>
 	<div id="edit_beer" class="modal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

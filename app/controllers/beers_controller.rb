@@ -7,9 +7,6 @@ class BeersController < ApplicationController
   def index
     @brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
-    @beer = Beer.new
-    @beer_types = BeerType.all.order(:beer_type_name)
-    Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
     # get list of Beer IDs for live beers
     @live_beers = Beer.live_beers
     # get list of Beer IDs for live beers that are unrated
@@ -19,7 +16,12 @@ class BeersController < ApplicationController
   end
   
   def new
+    # prepare for new beer
     @beer = Beer.new
+    # grab brewery info
+    @this_brewery = Brewery.find_by(id: params[:brewery_id])
+    # grab list of beer types available
+    @beer_types = BeerType.all.order(:beer_type_name)
   end
   
   def create

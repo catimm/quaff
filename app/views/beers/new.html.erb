@@ -1,0 +1,15 @@
+<%= render 'layouts/header' %> 
+<div class="container admin-container">
+	<div class="row header-row">
+		<div class="page-header">
+			<div class="row">
+				<div class="col-sm-8">
+					<h3><%= @this_brewery.brewery_name %> -- new beer form</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" id="edit-beer-info">
+		<%= render 'beer_form' %>	
+	</div>
+</div>
