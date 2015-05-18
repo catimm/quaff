@@ -63,7 +63,9 @@
 			<% end %>
 		</div>
 		<div class="col-sm-2">
-			<% if d.descriptor_list.blank? %>
+			<% if !d.original_descriptors.blank? %>
+				<h5 class="need-text">have originals</h5>
+			<% elsif d.descriptor_list.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
 				<h5><%= raw d.descriptor_list.join(', ') %></h5>
