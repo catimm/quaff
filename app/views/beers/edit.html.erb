@@ -1,0 +1,26 @@
+<%= render 'layouts/header' %> 
+<div class="container admin-container">
+	<div class="row header-row">
+		<div class="page-header">
+			<div class="row">
+				<div class="col-sm-8">
+					<h3><%= @beer.beer_name %></h3>
+				</div>
+				<div class="col-sm-4 text-right">
+					<%= link_to "Delete", delete_beer_prep_path(@this_brewery.id, @beer.id), class: "btn btn-warning delete-beer-info", data: {toggle: "modal", target: "#delete_beer"} %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" id="edit-beer-info">
+		<%= render 'beer_form' %>	
+	</div>
+	<div id="delete_beer" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Delete beer</h3>
+		</div>
+		<div class="modal-body"></div>
+	</div>
+
+</div>

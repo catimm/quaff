@@ -2,23 +2,23 @@
 #
 # Table name: beers
 #
-#  id                 :integer          not null, primary key
-#  beer_name          :string
-#  beer_type_old_name :string
-#  beer_rating        :float
-#  number_ratings     :integer
-#  created_at         :datetime
-#  updated_at         :datetime
-#  brewery_id         :integer
-#  beer_abv           :float
-#  beer_ibu           :integer
-#  beer_image         :string
-#  tag_one            :string
-#  descriptors        :text
-#  hops               :text
-#  grains             :text
-#  brewer_description :text
-#  beer_type_id       :integer
+#  id                   :integer          not null, primary key
+#  beer_name            :string
+#  beer_type_old_name   :string
+#  beer_rating          :float
+#  number_ratings       :integer
+#  created_at           :datetime
+#  updated_at           :datetime
+#  brewery_id           :integer
+#  beer_abv             :float
+#  beer_ibu             :integer
+#  beer_image           :string
+#  speciality_notice    :string
+#  original_descriptors :text
+#  hops                 :text
+#  grains               :text
+#  brewer_description   :text
+#  beer_type_id         :integer
 #
 
 class Beer < ActiveRecord::Base
@@ -29,7 +29,7 @@ class Beer < ActiveRecord::Base
   # to implement descriptor tags on each beer
   acts_as_taggable_on :descriptors
   attr_reader :descriptor_list_tokens
-  
+
   belongs_to :brewery
   belongs_to :beer_type
   has_many :alt_beer_names
@@ -110,9 +110,9 @@ class Beer < ActiveRecord::Base
   
   # save actual tags without quotes
   def descriptor_list_tokens=(tokens)
-    self.tag_list = tokens.gsub("'", "")
+     self.descriptor_list = tokens.gsub("'", "")
   end
-  
+
   # This method provides select options for the `sorted_by` filter select input.
   # It is called in the controller as part of `initialize_filterrific`.
   def self.options_for_sorted_by

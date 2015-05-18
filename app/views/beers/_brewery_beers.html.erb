@@ -56,24 +56,24 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
-			<% if d.tag_one.blank? %>
+			<% if d.speciality_notice.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
-				<h5><%= d.tag_one %></h5>
+				<h5><%= d.speciality_notice %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-2">
-			<% if d.descriptors.blank? %>
+			<% if d.descriptor_list.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
-				<h5><%= d.descriptors %></h5>
+				<h5><%= raw d.descriptor_list.join(', ') %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-1">
 			<% if @this_brewery.nil? %>
 				<% @this_brewery = Brewery.find_by(id: d.brewery_id) %>
 			<% end %>
-			<%= link_to "Edit beer", edit_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success", data: {toggle: "modal", target: "#edit_beer"} %>
+			<%= link_to "Edit beer", edit_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success" %>
 		</div>
 		<div class="col-sm-1">
 			<%= link_to "Edit names", alt_beer_names_path(d.id), class: "btn btn-default editButton",

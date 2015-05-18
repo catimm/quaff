@@ -63,7 +63,7 @@ gem 'strip_attributes'
 # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem 'acts-as-taggable-on', '~> 3.4'
 # Tokeninput is a jQuery plugin to select multiple items from a predefined list, using autocompletion
-gem 'jquery-tokeninput-rails'
+# gem 'jquery-tokeninput-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

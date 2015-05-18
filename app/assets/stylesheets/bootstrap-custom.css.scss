@@ -715,8 +715,8 @@ div.jqcloud span.w1 { color: $light-blue; }
   }
 }
 
-#new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name {
-  input, select {
+#new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer {
+  input, select, ul {
     margin-bottom: 7.5px;
   }
   h6 {

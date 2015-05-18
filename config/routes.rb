@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       get :descriptors, as: :descriptors
     end
   end
+  
   resources :locations
   resources :breweries do
     resources :beers   
@@ -30,6 +31,8 @@ Rails.application.routes.draw do
   post 'breweries/alt_names' => 'breweries#create_alt_brewery', :as => 'create_brewery_names'
   get 'beers/alt_names/:id' => 'beers#alt_beer_name', :as => 'alt_beer_names'
   post 'beers/alt_names' => 'beers#create_alt_beer', :as => 'create_beer_names'
+  get 'beers/delete_beer/:brewery_id/:id' => 'beers#delete_beer_prep', :as => 'delete_beer_prep'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

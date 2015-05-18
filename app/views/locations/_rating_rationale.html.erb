@@ -7,9 +7,9 @@
 			<li>
 				<p class="recommendation-reasons">Others have rated this highly.</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
@@ -18,9 +18,9 @@
 			<li>
 				<p class="recommendation-reasons">Though <%= beer.beer_style_name %> aren't your faves, others have rated this highly...</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
@@ -30,9 +30,9 @@
 				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name %>, 
 				others have rated this quite highly.</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>	
@@ -41,9 +41,9 @@
 			<li>
 				<p class="recommendation-reasons">You like <%= beer.beer_style_name %>, so here we are.</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
@@ -52,9 +52,9 @@
 			<li>
 				<p class="recommendation-reasons">Though <%= beer.beer_style_name %> aren't your faves, others have rated this highly...</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">This is a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">This is a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
@@ -64,9 +64,9 @@
 				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name %>, 
 				others have rated this highly...</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
@@ -97,9 +97,9 @@
 			<li>
 				<p class="recommendation-reasons">Others have rated this highly.</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>	
@@ -108,9 +108,9 @@
 			<li>
 				<p class="recommendation-reasons">Others have rated this as just OK.</p>
 			</li>
-			<% if !beer.tag_one.blank? %>
+			<% if !beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.tag_one %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>

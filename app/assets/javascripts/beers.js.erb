@@ -1,25 +1,10 @@
 $(function() {
-	return $('#beer_descriptors_list_tokens').tokenInput('/beers/descriptors.json', {
-	    theme: 'mac',
-	    minChars: 2,
-	    allowCustomEntry: true,
+	 $('#beer_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
+		theme: 'facebook',
+		minChars: 2,
+	    allowFreeTagging: true,
 	    preventDuplicates: true,
-	    prePopulate: $('#beer_descriptor_list_tokens').data('load')
-	  });
-	$(".edit-beer-info").on("click", function(){
-		if ($("#edit-beer-info").hasClass("show")) {
-	    		return	
-	    	} else {
-	    		$("#edit-beer-info").removeClass("hidden").addClass("show");
-	    		$("#delete-beer-info").removeClass("show").addClass("hidden");
-	    	}
+		prePopulate: $('#beer_descriptor_list_tokens').data('load')
 	});
-	$(".delete-beer-info").on("click", function(){
-		if ($("#delete-beer-info").hasClass("show")) {
-	    		return	
-	    	} else {
-	    		$("#delete-beer-info").removeClass("hidden").addClass("show");
-	    		$("#edit-beer-info").removeClass("show").addClass("hidden");
-	    	}
-	});
+
 });
