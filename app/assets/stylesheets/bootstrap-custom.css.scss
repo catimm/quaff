@@ -227,7 +227,7 @@ $beer-header-lines-to-show: 2;
 .beer-tile-container {
   padding-top: 20px;
 }
-.add-beer {
+.add-beer, .beer-added {
   width: 32px;
   height: 32px;
   padding: 6px;
@@ -244,6 +244,9 @@ $beer-header-lines-to-show: 2;
   position: absolute;
   top: 4px;
   left: 3.5px;
+  i {
+    color: $white;
+  }
 }
 .cloud-holder {
   height: 110px;

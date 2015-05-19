@@ -9,6 +9,9 @@ class Ability
       can :manage, :all
     elsif user.regular?
       can :read, :all
+      can [:read, :create, :update], Location
+      can [:read, :create, :update], DrinkList
+ 
     end
     
     # The first argument to `can` is the action you are giving the user

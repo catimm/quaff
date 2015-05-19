@@ -1,6 +1,5 @@
 class LocationsController < ApplicationController
   before_filter :authenticate_user!
-  load_and_authorize_resource
   include BestGuess
   include LocationRating
   
@@ -21,6 +20,7 @@ class LocationsController < ApplicationController
     # Rails.logger.debug("New Beer info: #{@beer_ranking.inspect}")
     # grab beer ids that will match each jcloud
     # @beers_ids = @beers.pluck(:id)
+    @user_drink_list = DrinkList.where(user_id: current_user.id)
     # send beer ids to javascript file to create jcloud
     final_array = Array.new
     @beer_ids.each do |beer|
@@ -48,5 +48,14 @@ class LocationsController < ApplicationController
 
   end
   
+  def update
+    new_drink = DrinkList.new(:user_id => current_user.id, :beer_id => params[:beer])
+    new_drink.save!
+    
+    respond_to do |format|
+      format.js
+    end
+    
+  end
   
 end # end controller

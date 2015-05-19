@@ -1,11 +1,21 @@
 $(function() {
+	// change "+" button when user adds beer to drink list
+	function change_add_drink_button() {
+		$(this).children("i").removeClass("fa-plus").addClass("fa-check");
+		$(this).parent('.add-beer').removeClass('show').addClass('hide');
+		$(this).parent('.add-beer').siblings('.beer-added').removeClass('hide').addClass('show');
+	}
+	
+	$(".add-this-beer").on("click", change_add_drink_button);
+	
+	// make location header show underline when user scrolls over the overview tab
 	$(".overview-tile").on("mouseover", function(){
 		$(this).children(".retailer-tile-header-row").children(".retailer-tile-header-div").children(".tile-header").css({"text-decoration":"underline"});
 	});
 	$(".overview-tile").on("mouseout", function(){
 		$(this).children(".retailer-tile-header-row").children(".retailer-tile-header-div").children(".tile-header").css({"text-decoration":"none"});
 	});
-
+	// default word cloud if no descriptors exist 
 	var word_array = [
           {text: "descriptors", weight: 15},
           {text: "no", weight: 9},
@@ -18,7 +28,7 @@ $(function() {
           {text: "descriptors", weight: 3}
           // ...as many words as you want
       ];
-
+	 // create word cloud and return to view
      for (i = 0; i < gon.beer_array.length; i++) { 
 	    if ( gon.beer_array[i][1].length > 0 ) {
 		    $("#beer_"+gon.beer_array[i][0]).jQCloud(gon.beer_array[i][1], {
