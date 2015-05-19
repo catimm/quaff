@@ -11,8 +11,9 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.turbolinks
+// require jquery.turbolinks
 //= require jquery_ujs
+// require turbolinks
 //= require chosen-jquery
 //= require chosen-defaults
 //= require filterrific/filterrific-jquery
@@ -20,6 +21,5 @@
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
 //= require jqcloud
-//= require turbolinks
 //= require jquery.tokeninput
 //= require_tree .

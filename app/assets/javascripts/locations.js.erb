@@ -1,28 +1,33 @@
 $(function() {
 	$(".overview-tile").on("mouseover", function(){
-		$(this).children(".retailer-tile-header-row").children(".retailer-tile-header-div").children(".retailer-tile-header").css({"text-decoration":"underline"});
+		$(this).children(".retailer-tile-header-row").children(".retailer-tile-header-div").children(".tile-header").css({"text-decoration":"underline"});
 	});
 	$(".overview-tile").on("mouseout", function(){
-		$(this).children(".retailer-tile-header-row").children(".retailer-tile-header-div").children(".retailer-tile-header").css({"text-decoration":"none"});
+		$(this).children(".retailer-tile-header-row").children(".retailer-tile-header-div").children(".tile-header").css({"text-decoration":"none"});
 	});
-	
+
 	var word_array = [
-          {text: "Lorem", weight: 15},
-          {text: "Ipsum", weight: 9, link: "http://jquery.com/"},
-          {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-          {text: "Sit", weight: 7},
-          {text: "Amet", weight: 5},
-          {text: "Lorem", weight: 8},
-          {text: "Ipsum", weight: 12, link: "http://jquery.com/"},
-          {text: "Dolor", weight: 4, html: {title: "I can haz any html attribute"}},
-          {text: "Sit", weight: 3},
-          {text: "Amet", weight: 2}
+          {text: "descriptors", weight: 15},
+          {text: "no", weight: 9},
+          {text: "yet", weight: 6},
+          {text: "no", weight: 7},
+          {text: "descriptors", weight: 5},
+          {text: "yet", weight: 8},
+          {text: "no", weight: 12},
+          {text: "yet", weight: 4},
+          {text: "descriptors", weight: 3}
           // ...as many words as you want
       ];
 
-     for (i = 0; i < gon.beers_ids.length; i++) { 
-	    $("#beer_"+gon.beers_ids[i]).jQCloud(word_array, {
-	  		autoResize: true
-	     });
+     for (i = 0; i < gon.beer_array.length; i++) { 
+	    if ( gon.beer_array[i][1].length > 0 ) {
+		    $("#beer_"+gon.beer_array[i][0]).jQCloud(gon.beer_array[i][1], {
+		  		autoResize: true
+		     });
+		 } else {
+			$("#beer_"+gon.beer_array[i][0]).jQCloud(word_array, {
+		  		autoResize: true
+		     });
+		 }
 	 }
 });

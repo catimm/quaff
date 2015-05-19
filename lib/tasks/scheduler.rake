@@ -23,6 +23,9 @@ task :check_pine_box => :environment do
     doc_pb.search("tr.draft_odd", "tr.draft_even").each do |node|
       # first grab all data for this beer
       @this_brewery_name = node.css("td.draft_brewery").text
+      if @this_brewery_name == " "
+        @this_brewery_name = "Unknown"
+      end
       @this_beer_name = node.css("td.draft_name").text
       Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
       @this_beer_origin = node.css("td.draft_origin").text
@@ -186,6 +189,9 @@ task :check_chucks_85 => :environment do
     doc_pb.search("tr.draft_odd", "tr.draft_even").each do |node|
       # first grab all data for this beer
       @this_brewery_name = node.css("td.draft_brewery").text
+      if @this_brewery_name == " "
+        @this_brewery_name = "Unknown"
+      end
       @this_beer_name = node.css("td.draft_name").text
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
@@ -332,6 +338,9 @@ task :check_chucks_cd => :environment do
     doc_pb.search("tr.draft_odd", "tr.draft_even").each do |node|
       # first grab all data for this beer
       @this_brewery_name = node.css("td.draft_brewery").text
+      if @this_brewery_name == " "
+        @this_brewery_name = "Unknown"
+      end      
       @this_beer_name = node.css("td.draft_name").text
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
@@ -476,6 +485,9 @@ task :check_beer_junction => :environment do
       @this_beer_abv = node.css("span.abv").text
       @this_beer_type = node.css("span.style").text
       @this_brewery_name = node.css("+ td.brewery-column > .brewery-name").text
+      if @this_brewery_name == " "
+        @this_brewery_name = "Unknown"
+      end      
       @this_beer_origin = node.css("+ td.brewery-column > .brewery-location").text
       # split brewery name aso key words can be removed from beer name
       @split_brewery_name = @this_brewery_name.split
@@ -621,6 +633,9 @@ task :check_beveridge_place => :environment do
       @this_beer_abv = node.css("td.abv").text
       @this_beer_type = node.css("td.beer-style").text
       @this_brewery_name = node.css("td.brewery").text
+      if @this_brewery_name == " "
+        @this_brewery_name = "Unknown"
+      end
       # split brewery name aso key words can be removed from beer name
       @split_brewery_name = @this_brewery_name.split
       # cycle through split words to remove from beer name

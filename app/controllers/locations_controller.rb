@@ -22,7 +22,30 @@ class LocationsController < ApplicationController
     # grab beer ids that will match each jcloud
     # @beers_ids = @beers.pluck(:id)
     # send beer ids to javascript file to create jcloud
-    gon.beers_ids = @beers_ids
+    final_array = Array.new
+    @beer_ids.each do |beer|
+      beer_descriptor = Array.new
+      @beer_descriptors = Beer.find(beer).descriptors
+      @beer_descriptors.each do |descriptor|
+        @descriptor = descriptor["name"]
+        beer_descriptor << @descriptor
+      end
+      # @beer_descriptors << beer
+      descriptor_count = beer_descriptor.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
+      beer_array = [beer]
+      cloud_array = Array.new
+      descriptor_count.each do |key, value|
+        new_hash = Hash.new
+        new_hash["text"] = key
+        new_hash["weight"] = value
+        cloud_array << new_hash
+      end
+      full_beer_array = [beer_array,cloud_array]
+      final_array << full_beer_array
+    end
+
+    gon.beer_array = final_array
+
   end
   
   
