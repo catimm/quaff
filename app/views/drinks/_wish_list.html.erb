@@ -18,9 +18,9 @@
 				</div>
 				<div class="col-xs-8 no-padding-left">
 					<h5 class="tile-header beer-tile-header"><%= beer.brewery.short_brewery_name %> <%= beer.beer_name %></h5>
-					<% @location_id = BeerLocation.where(beer_id: beer.id, beer_is_current: "no").pluck(:location_id) %>
-					<% @location = Location.find(@location_id)[0] %>
-					<h6 class="tile-subheader">Last seen @ <%= @location.short_name %></h6>
+					<% @location_id = BeerLocation.where(beer_id: beer.id, beer_is_current: "no")[0] %>
+					<% @location = Location.where(id: @location_id)[0] %>
+					<h6 class="tile-subheader">Last seen @ <%= @location.short_name %> on <%= (@location_id.removed_at).strftime("%B %e, %Y") %></h6>
 				</div>
 			</div>
 			<div class="row no-margin">	
