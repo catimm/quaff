@@ -53,6 +53,10 @@ class Beer < ActiveRecord::Base
   }
   scope :unrated_beers, -> { where(beer_rating: nil) }
 
+  # save actual tags without quotes
+  def descriptor_list_tokens=(tokens)
+     self.descriptor_list = tokens.gsub("'", "")
+  end
          
   #filterrific(
   #default_filter_params: { sorted_by: 'beer_rating_desc' },
@@ -107,11 +111,6 @@ class Beer < ActiveRecord::Base
   #scope :with_special, lambda { |special_tag|
   #  where(tag_one: [*special_tag])
   #}
-  
-  # save actual tags without quotes
-  #def descriptor_list_tokens=(tokens)
-  #   self.descriptor_list = tokens.gsub("'", "")
-  #end
 
   # This method provides select options for the `sorted_by` filter select input.
   # It is called in the controller as part of `initialize_filterrific`.

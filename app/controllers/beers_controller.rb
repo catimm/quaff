@@ -48,9 +48,10 @@ class BeersController < ApplicationController
     # update beer attributes
       @beer.update(beer_name: params[:beer][:beer_name], beer_rating: params[:beer][:beer_rating], 
             number_ratings: params[:beer][:number_ratings], beer_abv: params[:beer][:beer_abv], beer_ibu: params[:beer][:beer_ibu], 
-            beer_image: params[:beer][:beer_image], speciality_notice: params[:beer][:speciality_notice], descriptor_list_tokens: params[:beer][:descriptor_list_tokens],
-            original_descriptors: params[:beer][:original_descriptors], hops: params[:beer][:hops], grains: params[:beer][:grains], 
-            brewer_description: params[:beer][:brewer_description],beer_type_id: params[:beer][:beer_type_id])
+            beer_image: params[:beer][:beer_image], speciality_notice: params[:beer][:speciality_notice], 
+            descriptor_list_tokens: params[:beer][:descriptor_list_tokens], original_descriptors: params[:beer][:original_descriptors], 
+            hops: params[:beer][:hops], grains: params[:beer][:grains], brewer_description: params[:beer][:brewer_description], 
+            beer_type_id: params[:beer][:beer_type_id])
       @beer.save
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
