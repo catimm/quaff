@@ -1,114 +1,53 @@
-
-	<% @current_list_beers.each_with_index do |d, n| %>
-		<div class="row each-beer">
-			<div class="col-xs-2 rank-number-area">
-				<h1 class="ranking-number light-orange-text"><%= n + 1 %></h1>
-			</div>
-			<div class="col-xs-10 no-padding">
-				<div class="row">
-					<div class="col-xs-8 no-padding">
-						<h4 class="beer-name dark-gray-text"><%= d.beer_name %></h4>
-						<% if d.tag_one == "new release" %>
-							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-						<% elsif d.tag_one == "limited release" %>
-							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-						<% elsif d.tag_one == "rare" %>
-							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-						<% elsif d.tag_one == "seasonal" %>
-							<h5 class="special-tag-text special-info"><i class="fa fa-tag"></i> <%= d.tag_one %></h5>
-						<% end %>
-						<h5 class="beer-type light-gray-text">
-							<% if d.beer_type =~ /^[aeiou]/i %>An <% else %> A <% end %>
-							<%= d.beer_type %> by <span class="dark-gray-text"><%= d.brewery.brewery_name %></span></h5>
-						<div class="row no-padding beer-info">
-							<div class="col-xs-2 no-padding">
-								<h5 class="light-gray-text"><%= d.beer_abv %>% ABV</h5>
-							</div>
-							<div class="col-xs-2 no-padding">
-								<% if d.beer_ibu == 0 %>
-									<h5 class="light-gray-text">IBUs n/a</h5>
-								<% else %>
-									<h5 class="light-gray-text"><%= d.beer_ibu %> IBUs</h5>
-								<% end %>
-							</div>
-							<div class="col-xs-2 more-info show">
-								<h6 class="light-gray-text"><i class="fa fa-plus-square-o"></i> more</h6>
-							</div>
-							<div class="col-xs-2 less-info hidden">
-								<h6 class="light-gray-text"><i class="fa fa-minus-square-o"></i> less</h6>
-							</div>
+<% @current_list_beers.each do |beer| %>
+	<div class="col-sm-4 col-xs-12 beer-tile-container">
+		<div class="delete-beer text-center">
+			<i class="fa fa-times"></i>
+		</div>
+		<div class="drink-list-overview-tile">
+			<div class="row no-margin">
+				<div class="col-xs-4 brewery-image-holder">	
+					<% if !beer.brewery.image.nil? %>
+						<div class="brewery-image-holder-full text-center">
+							<p>show image</p>
+						</div>	
+					<% else %>
+						<div class="brewery-image-holder-empty text-center">
+							<h1><i class="fa fa-beer"></i></h1>
 						</div>
-						<div class="row descriptor-row hidden">
-							<div class="col-xs-3">
-								<h6 class="dark-gray-text">Common descriptors:</h6>
-							</div>
-							<div class="col-xs-9 descriptor-text-container">
-								<% if !d.descriptors.nil? %>
-									<% @descriptor_list = d.descriptors.split(',') %>
-									<% @descriptor_list.each do |descriptor| %>
-										<h6 class="descriptor-text"><%= descriptor %></h6>
-									<% end %>
-								<% end %>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-4 no-padding beer-location-info">
-						<% @beer_locations = BeerLocation.where(beer_id: d.id).pluck(:location_id) %>
-						<% @location_name = Location.where(id: @beer_locations) %>
-							<h5 class="locations">Available at: 
-								<% @location_name.each do |b| %>
-									<% if b == @location_name.last %> 
-										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>
-									<% else %>
-										<%= link_to(raw(b.name), b.homepage, :class => "location-links", :target => "_blank") %>,
-									<% end %>
-								<% end %>
-							</h5>
-					</div>
+					<% end %>
 				</div>
-				<div class="row ratings-row">
-					<div class="col-xs-4 no-padding beer-rating-info-1">
-							<% if d.beer_rating > 4.25 %>
-								<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
-							<% elsif d.beer_rating > 3.75 %>
-								<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></h4>
-							<% elsif d.beer_rating > 3.25 %>
-								<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></h4>
-							<% end %>
-						<h6 class="beer-rating light-gray-text">(<%= d.beer_rating %>--<%= number_with_delimiter(d.number_ratings, :delimiter => ',') %> ratings).<span class="light-gray-text space-bar">&nbsp;&nbsp;&nbsp;&nbsp;|</span></h6>
-					</div>
-					<div class="col-xs-4 no-padding beer-rating-info-2">
-						<% @user_rated = UserBeerRating.where(beer_id: d.id, user_id: current_user.id).pluck(:user_beer_rating) %>
-						<% if @user_rated.size > 0 %>
-							<% @ratings_average = (@user_rated.sum / @user_rated.size).to_f %>
-							<h6 class="light-gray-text user-rating"><span class="dark-gray-text">Your</span> <%= @user_rated.size %> ratings <span class="dark-gray-text">avg</span> </h6>
-								<% if @ratings_average > 4.25 %>
-									<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
-								<% elsif @ratings_average > 3.75 %>
-									<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></h4>
-								<% elsif @ratings_average > 3.25 %>
-									<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></h4>
-								<% end %>
-							<h6 class="beer-rating light-gray-text">(<%= @ratings_average.round(2) %>).</h6>
-					</div>
-					<div class="col-xs-4 no-padding beer-rating-info-2">
-						<% else %>
-							<h6 class="light-gray-text beer-rating"><span class="dark-gray-text">Best guess for you:</span></h6>
-							<h4 class="dark-orange-text star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></h4>
-							<h6 class="beer-rating light-gray-text">(4.50).</h6>
-						<% end %>
-					</div>
-					<div class="col-xs-4 drink-button-holder-dl no-padding">
-						<%= link_to "rate!", "#", class: "btn btn-warning rate-button", data: {toggle: "modal", target: "#rate_beer"} %>
-						<%= link_to user_drink_path(current_user.id, d.id), class: "btn btn-default remove-drink-button" do %>
-							<i class="fa fa-minus-square-o"></i> remove
-						<% end %>
-					</div>
+				<div class="col-xs-8 no-padding-left">
+					<h5 class="tile-header beer-tile-header"><%= beer.brewery.short_brewery_name %> <%= beer.beer_name %></h5>
+					<% @location_id = BeerLocation.where(beer_id: beer.id, beer_is_current: "yes").pluck(:location_id) %>
+					<% @location = Location.find(@location_id)[0] %>
+					<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
+				</div>
+			</div>
+			<div class="row no-margin">	
+				<div class="col-xs-12">
+					<% if !beer.beer_type_id.nil? %>
+						<h5 class="tile-subheader beer-info no-overflow"><%= beer.beer_type.beer_type_name %></h5>
+					<% else %>
+						<h5 class="tile-subheader beer-info">Style unknown</h5>
+					<% end %>
+				</div>
+				<div class="col-xs-6 no-padding-right abv-div">
+					<h6 class="tile-subheader beer-info"><%= beer.beer_abv %>% ABV</h6>
+				</div>
+				<div class="col-xs-6 no-padding-left text-center">
+					<% if !beer.beer_ibu.nil? %>
+						<h6 class="tile-subheader beer-info"><%= beer.beer_ibu %> IBUs</h6>
+					<% else %>
+						<h6 class="tile-subheader beer-info">IBUs N/A</h6>
+					<% end %>
+				</div>
+			</div>	
+			<div class="row no-margin">
+				<div class="col-xs-2"></div>
+				<div class="col-xs-8">
+					<%= link_to "Rate", "#", class: 'btn btn-default btn-success formButton' %>
 				</div>
 			</div>
 		</div>
-		<hr/>
-		<div id="rate_beer" class="modal">
-			<%= render( partial: 'layouts/rate_beer') %>
-		</div>
-	<% end %>
+	</div>
+<% end %>

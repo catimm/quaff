@@ -130,6 +130,10 @@ label {
   height: 425px;
   position: relative;
 }
+.drink-list-overview-tile {
+  @extend .overview-tile;
+  height: 200px;
+}
 .overview-tile-footer {
   width: 100%;
   position: absolute;
@@ -247,6 +251,22 @@ $beer-header-lines-to-show: 2;
   i {
     color: $white;
   }
+}
+.delete-beer {
+  @extend .add-beer;
+  background: $gray-body-background;
+  i {
+    color: $normal-text !important;
+  }
+}
+.brewery-image-holder {
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+.brewery-image-holder-empty {
+  height: 75px;
+  border: 1px solid $gray-body-background;
+  color: $normal-text;
 }
 .cloud-holder {
   height: 110px;
@@ -728,7 +748,7 @@ div.jqcloud span.w1 { color: $light-blue; }
 }
 .formButton {
   width: 100%;
-  margin-top: 5px;
+  margin-top: 15px;
 }
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */

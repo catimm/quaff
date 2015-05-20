@@ -12,10 +12,10 @@ class DrinksController < ApplicationController
     end 
     
     # Grab beer info for current beers
-    @current_list_beers = Beer.where(id: @current_list_ids).order(:beer_rating).reverse
+    @current_list_beers = Beer.where(id: @current_list_ids)
     Rails.logger.debug("current list of beers: #{@current_list_beers.inspect}")
     # Grab beer info for wish list beers
-    @wish_list_beers = Beer.where(id: @wish_list_ids).order(:beer_rating).reverse
+    @wish_list_beers = Beer.where(id: @wish_list_ids)
     
     # Grab list of locations represented in drink list
     @current_list_locations = BeerLocation.where(beer_id:@user_drink_list_ids, beer_is_current: "yes").pluck(:location_id)
