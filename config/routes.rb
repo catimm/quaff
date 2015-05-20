@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   post 'drinks/update' => 'drinks#update', :as => 'user_beer_ratings'
   get 'locations' => 'locations#index'
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
+  get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
   get 'reloads' => 'reloads#index'
   get 'beers/current_beers' => 'beers#current_beers', :as => 'current_beers', :path => "/currentbeers"
   put 'breweries/update' => 'breweries#update'

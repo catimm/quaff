@@ -33,6 +33,14 @@ class DrinksController < ApplicationController
       @find_drink.destroy!
     end
     
-    redirect_to :action => :index
+    redirect_to user_drinks_path
+  end
+  
+  def update
+    find_drink = DrinkList.where(:user_id => current_user.id, :beer_id => params[:id]).pluck(:id)
+    destroy_drink = DrinkList.find(find_drink)[0]
+    destroy_drink.destroy!
+    
+    redirect_to user_drinks_path(current_user.id)
   end
 end

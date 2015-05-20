@@ -254,10 +254,13 @@ $beer-header-lines-to-show: 2;
 }
 .delete-beer {
   @extend .add-beer;
-  background: $gray-body-background;
-  i {
-    color: $normal-text !important;
-  }
+  background: $less-emphasized-text;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  padding: 4px;
+  top: 3.5px;
+  left: 2.5px;
 }
 .brewery-image-holder {
   padding-top: 10px;
