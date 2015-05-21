@@ -14,16 +14,17 @@ module LocationRating
       # create list of top 5 beers per location
       @rank_input.each_with_index do |i, index|
         Rails.logger.debug("This beer info: #{i.inspect}")
-        if @brewery_name.nil?
-          @brewery_name = "Unknown"
-        end
         if i.beer_type_id.nil?
           @beer_type_name = ""
         else 
           @beer_type_name = "("+i.beer_type.beer_type_short_name+")"
         end
         if i.brewery.short_brewery_name.nil?
-          @brewery_name = i.brewery.brewery_name
+          if i.brewery.brewery_name.blank?
+            @brewery_name = "Unknown brewery"
+          else
+            @brewery_name = i.brewery.brewery_name
+          end 
         else 
           @brewery_name = i.brewery.short_brewery_name
         end
