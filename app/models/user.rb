@@ -16,6 +16,7 @@
 #  created_at             :datetime
 #  updated_at             :datetime
 #  role_id                :integer
+#  username               :string
 #
 
 class User < ActiveRecord::Base
@@ -23,6 +24,9 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+  
+  # for ActsAsTaggableOn gem
+  acts_as_tagger
   
   belongs_to :role       
   has_many :user_beer_ratings

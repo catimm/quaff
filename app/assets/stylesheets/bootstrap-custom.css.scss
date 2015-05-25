@@ -227,6 +227,44 @@ $beer-header-lines-to-show: 2;
     }
   }
 } 
+// Sign-up & log-in pages
+.box {
+  background: #fff;
+  border: 1px solid #e7e7e7;
+  margin-top: 48px;
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+.onRight {
+  width: 100%;
+}
+.rememberMe {
+  padding-left: 17.5px;
+  label {
+    font-weight: normal;
+    font-size: 10px;
+    color: #909090;
+  }
+}
+.signupBox {
+  background: #f8f8f8;
+  margin-top: 1em;
+  border-top: 1px solid #e7e7e7;
+  padding: 10px 0;
+}
+.forgot {
+  height: 41.5px;
+}
+.forgot a {
+  font-size: 0.75em;
+   position: relative;
+   top: -30px;
+   float: right;
+   margin-right: 0.5em;
+   margin-bottom: -0.25em;
+}
+
 // Individual location overview page
 .beer-tile-container {
   padding-top: 20px;
@@ -744,7 +782,7 @@ div.jqcloud span.w1 { color: $light-blue; }
   }
 }
 
-#new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer {
+#new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, #new_user {
   input, select, ul {
     margin-bottom: 7.5px;
   }
