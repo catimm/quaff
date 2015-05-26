@@ -20,7 +20,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
-//= require bootstrap-slider
 //= require jqcloud
 //= require jquery.tokeninput
 //= require_tree .
+//= require bootstrap-slider

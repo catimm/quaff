@@ -1,0 +1,72 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row rating-tile">
+		<div class="row no-margin">
+			<div class="col-sm-4 col-xs-12">
+				<div class="col-xs-4 brewery-image-holder">	
+						<% if !@this_beer.brewery.image.nil? %>
+							<div class="brewery-image-holder-full text-center">
+								<p>show image</p>
+							</div>	
+						<% else %>
+							<div class="brewery-image-holder-empty text-center">
+								<h1><i class="fa fa-beer"></i></h1>
+							</div>
+						<% end %>
+					</div>
+					<div class="col-xs-8 no-padding-left">
+						<h5 class="tile-header beer-tile-header"><%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %></h5>
+						<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
+					</div>			
+			</div>
+		</div>
+		<div class="row no-margin">
+			<%= form_for(@user_beer_rating) do |rate| %>
+			<div class="col-sm-4 col-xs-12 rating-holder text-center no-padding-right">
+				<div id="visible-rating">
+					<h1>NR</h1>
+				</div>
+				<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
+                 data: {'slider-id' => 'rating-slider',
+                 		'slider-min' => '-0.5',
+                        'slider-max' => '10',
+                        'slider-step' => '0.5',
+                        'slider-value' => '-0.5',
+                        'slider-orientation' => 'horizontal' } %> 
+			</div>
+			<div class="col-sm-4 col-xs-12">
+				<h5>Common descriptors for this beer:</h5>
+				<% if @this_beer.descriptor_list.blank? %>
+					<h5 class="need-text">Actually, you'll be the first to describe this beer. Hooray!</h5>
+				<% else %>
+					<h5><%= raw @this_beer.descriptor_list.join(', ') %></h5>
+				<% end %>
+				<%= rate.fields_for :beer do |beer| %> 
+			    	<%= beer.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
+			    <% end %>
+				
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>
+<script>
+	$("#rater").slider({
+		tooltip: 'hide'
+	});
+	$("#rater").on("slide", function(slideEvt) {
+		if (slideEvt.value == '-0.5') {
+			$("#visible-rating h1").text("NR");
+		} else {
+			$("#visible-rating h1").text(slideEvt.value);
+		}
+	});
+	$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
+		theme: 'facebook',
+		placeholder: 'Descriptors [separate with comma]',
+		minChars: 2,
+	    allowFreeTagging: true,
+	    preventDuplicates: true
+	});
+</script>

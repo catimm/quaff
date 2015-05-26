@@ -2,6 +2,7 @@ class DrinksController < ApplicationController
   before_filter :authenticate_user!
   
   def index
+    @user_id = current_user.id
     @user_drink_list_ids = DrinkList.where(user_id: current_user.id).pluck(:beer_id)
     Rails.logger.debug("user drink list ids: #{@user_drink_list_ids.inspect}")
     if !@user_drink_list_ids.empty?

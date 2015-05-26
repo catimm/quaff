@@ -6,9 +6,9 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs-12 no-padding">
+			<div class="col-xs-12">
  				<% if @current_list_beers.empty? %>
- 					<h6 class="light-gray-text">Your drink list is currently empty...and it's a shame. Seriously, shame on you.</h6>
+ 					<h5 class="light-gray-text">Your drink list is currently empty...and it's a shame. Seriously, shame on you.</h5>
  				<% else %>
  					<%= render( partial: 'drinks/current_list') %>
  				<% end %>

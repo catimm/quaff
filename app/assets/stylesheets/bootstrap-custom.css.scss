@@ -227,6 +227,38 @@ $beer-header-lines-to-show: 2;
     }
   }
 } 
+// Rating page
+.rating-tile {
+  margin-top: 20px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  position: relative;
+}
+.rating-holder {
+  margin: -5px 0 20px 10px;
+}
+#rating-slider .slider-selection {
+  background: $soft-border;
+}
+#rating-slider .slider-handle {
+  background: $action-background;
+}
+.slider .slider-vertical {
+  
+}
+#visible-rating {
+  h1 {
+    margin: 0;
+    font-size: 90px;
+    font-weight: 500;
+    color: $action-background;
+  }
+  
+}
 // Sign-up & log-in pages
 .box {
   background: #fff;

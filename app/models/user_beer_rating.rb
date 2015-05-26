@@ -17,4 +17,6 @@
 class UserBeerRating < ActiveRecord::Base
   belongs_to :user
   belongs_to :beer
+  
+  accepts_nested_attributes_for :beer
 end
