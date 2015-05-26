@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   get 'home/update' => 'home#update', :as => 'show_beers'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'drinks/update' => 'drinks#update', :as => 'user_beer_ratings'
+  post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
   get 'locations' => 'locations#index'
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'

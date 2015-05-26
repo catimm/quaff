@@ -27,6 +27,22 @@ ul.token-input-list-facebook {
   	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 
+ul.token-input-list-facebook_rating {
+    overflow: hidden; 
+    height: auto !important; 
+    height: 1%;
+    cursor: text;
+    font-size: 12px;
+    font-family: Verdana, sans-serif;
+    min-height: 1px;
+    z-index: 999;
+    margin-bottom: 7.5px;
+    padding-left: 0 !important;
+    background-color: #fff;
+    list-style-type: none;
+    clear: left;
+}
+
 ul.token-input-list-facebook li input {
     border: 0;
     width: 100px;
@@ -36,7 +52,7 @@ ul.token-input-list-facebook li input {
     -webkit-appearance: caret;
 }
 
-li.token-input-token-facebook {
+li.token-input-token-facebook, li.token-input-token-facebook_rating {
     overflow: hidden; 
     height: auto !important; 
     height: 15px;
@@ -54,13 +70,13 @@ li.token-input-token-facebook {
     white-space: nowrap;
 }
 
-li.token-input-token-facebook p {
+li.token-input-token-facebook p, li.token-input-token-facebook_rating p {
     display: inline;
     padding: 0;
     margin: 0;
 }
 
-li.token-input-token-facebook span {
+li.token-input-token-facebook span, li.token-input-token-facebook_rating span {
     color: #a6b3cf;
     margin-left: 5px;
     font-weight: bold;

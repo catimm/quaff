@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div class="row no-margin">
-			<%= form_for(@user_beer_rating) do |rate| %>
+			<%= form_for @user_beer_rating, :url => {:controller => "ratings", :action => "create"} do |rate| %>
 			<div class="col-sm-4 col-xs-12 rating-holder text-center no-padding-right">
 				<div id="visible-rating">
 					<h1>NR</h1>
@@ -36,37 +36,27 @@
 			</div>
 			<div class="col-sm-4 col-xs-12">
 				<h5>Common descriptors for this beer:</h5>
-				<% if @this_beer.descriptor_list.blank? %>
-					<h5 class="need-text">Actually, you'll be the first to describe this beer. Hooray!</h5>
+				<% if @this_descriptors.blank? %>
+					<h5 class="need-text">Looks like you're the first to describe this beer. Hooray!</h5>
 				<% else %>
-					<h5><%= raw @this_beer.descriptor_list.join(', ') %></h5>
+					<ul class="token-input-list-facebook_rating">
+					<% @this_descriptors.each do |descriptor| %>
+						<li class="token-input-token-facebook_rating">
+							<p><%= descriptor %></p>
+							<span class="token-input-delete-token-facebook_rating">+</span>
+						</li>
+					<% end %>
+					</ul>
 				<% end %>
 				<%= rate.fields_for :beer do |beer| %> 
 			    	<%= beer.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
 			    <% end %>
-				
+				<%= rate.text_field :comment, :class => "form-control", placeholder: "Additional comments" %>
 			</div>
+			
+			<%= rate.submit "Save", class: "btn btn-default btn-success formButton" %>
 			<% end %>
 		</div>
 	</div>
 </div>
 <%= render 'layouts/footer' %>
-<script>
-	$("#rater").slider({
-		tooltip: 'hide'
-	});
-	$("#rater").on("slide", function(slideEvt) {
-		if (slideEvt.value == '-0.5') {
-			$("#visible-rating h1").text("NR");
-		} else {
-			$("#visible-rating h1").text(slideEvt.value);
-		}
-	});
-	$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
-		theme: 'facebook',
-		placeholder: 'Descriptors [separate with comma]',
-		minChars: 2,
-	    allowFreeTagging: true,
-	    preventDuplicates: true
-	});
-</script>

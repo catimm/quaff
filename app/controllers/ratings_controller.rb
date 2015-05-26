@@ -17,7 +17,13 @@ class RatingsController < ApplicationController
     @location = Location.find(@location_id)[0]
     
     @user_beer_rating = UserBeerRating.new
-    @beer=@user_beer_rating.build_beer
+    @beer = @user_beer_rating.build_beer
+    @this_descriptors = @this_beer.descriptor_list
+    Rails.logger.debug("descxriptor list: #{@this_descriptors.inspect}")
+  end
+  
+  def create
+    
   end
   
   private
