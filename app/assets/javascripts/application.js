@@ -17,10 +17,10 @@
 //= require chosen-jquery
 //= require chosen-defaults
 //= require filterrific/filterrific-jquery
+//= require bootstrap-slider
 //= require bootstrap-sprockets
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
 //= require jqcloud
 //= require jquery.tokeninput
 //= require_tree .
-//= require bootstrap-slider

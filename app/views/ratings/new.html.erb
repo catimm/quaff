@@ -1,9 +1,10 @@
 <%= render 'layouts/header' %> 
 <div class="container">
-	<div class="row rating-tile">
-		<div class="row no-margin">
-			<div class="col-sm-4 col-xs-12">
-				<div class="col-xs-4 brewery-image-holder">	
+	<div class="row">
+		<div class="col-sm-3 col-xs-0"></div>
+		<div class="col-sm-6 col-xs-12 rating-tile">
+			<div class="row">
+				<div class="col-sm-3 col-xs-4 brewery-image-holder">	
 						<% if !@this_beer.brewery.image.nil? %>
 							<div class="brewery-image-holder-full text-center">
 								<p>show image</p>
@@ -14,47 +15,80 @@
 							</div>
 						<% end %>
 					</div>
-					<div class="col-xs-8 no-padding-left">
+					<div class="col-sm-9 col-xs-8 no-padding-left">
 						<h5 class="tile-header beer-tile-header"><%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %></h5>
 						<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
 					</div>			
 			</div>
-		</div>
-		<div class="row no-margin">
 			<%= form_for @user_beer_rating, :url => {:controller => "ratings", :action => "create"} do |rate| %>
-			<div class="col-sm-4 col-xs-12 rating-holder text-center no-padding-right">
-				<div id="visible-rating">
-					<h1>NR</h1>
+			<%= rate.hidden_field :user_id, :value => @user.id %>
+			<%= rate.hidden_field :rated_on, :value => @time %>
+			<%= rate.hidden_field :beer_id, :value => @this_beer.id %>
+			<%= rate.hidden_field :drank_at, :value => @location.short_name %>
+			<%= rate.hidden_field :projected_rating, :value => @our_best_guess %>
+			<div class="row rating-top-row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-3 col-xs-3 text-center small-padding">
+					<div class="rating-direction">
+						<p>Rate from 0 to 10</p>
+					</div>
 				</div>
-				<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
-                 data: {'slider-id' => 'rating-slider',
-                 		'slider-min' => '-0.5',
-                        'slider-max' => '10',
-                        'slider-step' => '0.5',
-                        'slider-value' => '-0.5',
-                        'slider-orientation' => 'horizontal' } %> 
+				<div class="col-sm-8 col-xs-9 rating-holder text-center no-padding">
+					<div id="visible-rating">
+						<h1>No rating (NR)</h1>
+					</div>
+					<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
+	                 data: {'slider-id' => 'rating-slider',
+	                 		'slider-min' => '-0.5',
+	                        'slider-max' => '10',
+	                        'slider-step' => '0.5',
+	                        'slider-value' => '-0.5',
+	                        'slider-orientation' => 'horizontal' } %> 
+				</div>
 			</div>
-			<div class="col-sm-4 col-xs-12">
-				<h5>Common descriptors for this beer:</h5>
-				<% if @this_descriptors.blank? %>
-					<h5 class="need-text">Looks like you're the first to describe this beer. Hooray!</h5>
-				<% else %>
-					<ul class="token-input-list-facebook_rating">
-					<% @this_descriptors.each do |descriptor| %>
-						<li class="token-input-token-facebook_rating">
-							<p><%= descriptor %></p>
-							<span class="token-input-delete-token-facebook_rating">+</span>
-						</li>
+			<div class="row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-3 col-xs-3 text-center small-padding">
+					<div class="rating-direction">
+						<p>Use common words or add your own.</p>
+					</div>
+				</div>
+				<div class="col-sm-8 col-xs-9 descriptor-holder text-left">
+					<p class="common-description-heading">Common descriptors:</p>
+					<% if @this_descriptors.blank? %>
+						<p class="need-text">Looks like you're the first to describe this beer. Hooray!</p>
+					<% else %>
+						<ul class="token-input-list-facebook_rating">
+						<% @this_descriptors.each do |descriptor| %>
+							<li class="token-input-token-facebook_rating">
+								<p><%= descriptor %></p>
+								<span class="token-input-delete-token-facebook_rating">+</span>
+							</li>
+						<% end %>
+						</ul>
 					<% end %>
-					</ul>
-				<% end %>
-				<%= rate.fields_for :beer do |beer| %> 
-			    	<%= beer.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
-			    <% end %>
-				<%= rate.text_field :comment, :class => "form-control", placeholder: "Additional comments" %>
+					<%= rate.fields_for :beer do |beer| %> 
+				    	<%= beer.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
+				    <% end %>
+				</div>
 			</div>
-			
-			<%= rate.submit "Save", class: "btn btn-default btn-success formButton" %>
+			<div class="row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-3 col-xs-3 text-center small-padding">
+					<div class="rating-direction-optional">
+						<p>Extra thoughts? Add 'em here.</p>
+					</div>
+				</div>
+				<div class="col-sm-8 col-xs-9 comment-holder">
+					<%= rate.text_field :comment, :class => "form-control", placeholder: "Additional comments (optional)" %>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4 col-xs-3"></div>
+				<div class="col-sm-8 col-xs-9 comment-holder">
+					<%= rate.submit "Save", class: "btn btn-default btn-success formButton" %>
+				</div>
+			</div>
 			<% end %>
 		</div>
 	</div>

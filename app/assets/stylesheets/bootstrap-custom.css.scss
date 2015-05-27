@@ -33,6 +33,7 @@ $normal-text: $dark-gray;
 $less-emphasized-text: $medium-gray;
 $special-text: $bright-orange;
 $action-background: $bright-blue;
+$step-background: $light-green;
 $admin-background: $white;
 $current-beer-background: $light-aqua-blue;
 $current-beer-attention-needed-background: $light-orange;
@@ -229,35 +230,54 @@ $beer-header-lines-to-show: 2;
 } 
 // Rating page
 .rating-tile {
-  margin-top: 20px;
+  margin: 20px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
-  width: 99%;
   position: relative;
+  padding-bottom: 20px;
 }
 .rating-holder {
-  margin: -5px 0 20px 10px;
+  margin-top: -15px;
 }
+.rating-direction {
+  margin-top: 33px;
+  p {
+    width: 90%;
+    color: $less-emphasized-text;
+    font-size: 12px;
+    vertical-align: center;
+  }
+}
+.rating-direction-optional {
+  @extend .rating-direction;
+  margin-top: 10px;
+}
+.descriptor-holder {
+  margin-top: 25px;
+}
+.comment-holder {
+  margin-top: 5px;
+}
+.common-description-heading {
+    color: $normal-text;
+    font-size: 13px; 
+  }
 #rating-slider .slider-selection {
   background: $soft-border;
 }
 #rating-slider .slider-handle {
   background: $action-background;
 }
-.slider .slider-vertical {
-  
-}
 #visible-rating {
   h1 {
-    margin: 0;
-    font-size: 90px;
-    font-weight: 500;
-    color: $action-background;
-  }
-  
+    margin: 30px 0 30px 0;
+    font-size: 28px;
+    font-weight: 400;
+    color: $less-emphasized-text;
+  }  
 }
 // Sign-up & log-in pages
 .box {
@@ -809,12 +829,13 @@ div.jqcloud span.w1 { color: $light-blue; }
   color: red;
 }
 .small-padding {
+  padding: 0 5px;
   div {
     padding: 0 5px;
   }
 }
 
-#new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, #new_user {
+#new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, #new_user, #new_user_beer_rating {
   input, select, ul {
     margin-bottom: 7.5px;
   }
@@ -822,10 +843,21 @@ div.jqcloud span.w1 { color: $light-blue; }
     margin: 5px 0 5px 5px;
   }
 }
+#user_beer_rating_comment {
+  height: 66px;
+}
 .formButton {
   width: 100%;
   margin-top: 15px;
 }
+::-webkit-input-placeholder, :-moz-placeholder, ::-moz-placeholder, :-ms-input-placeholder {
+  color: $gray-body-background;
+  font-size: 11px;
+  position: relative;
+  z-index: 1000;
+  font-family: inherit !important;
+}
+
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 768px) {
@@ -846,6 +878,23 @@ div.jqcloud span.w1 { color: $light-blue; }
   .image-holder {
     float: right;
     width: 100px;
+  }
+  // Rating page
+  .rating-tile {
+    margin: 20px 0 0 2.5px;
+    width: 98%;
+  }
+  .rating-direction {
+    p {
+      width: 90%;
+      font-size: 11px;
+    }
+  }
+  #visible-rating {
+    h1 {
+      margin: 32px 0 32px 0;
+      font-size: 24px;
+    }  
   }
 }
 @media (min-width: 786px) {
