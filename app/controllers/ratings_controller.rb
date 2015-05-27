@@ -21,7 +21,7 @@ class RatingsController < ApplicationController
     
     @user_beer_rating = UserBeerRating.new
     @user_beer_rating.build_beer
-    @this_descriptors = @this_beer.descriptor_list
+    @this_descriptors = @this_beer.descriptors
     Rails.logger.debug("descxriptor list: #{@this_descriptors.inspect}")
     @this_beer_best_guess = best_guess(@beer_id)[0]
     @our_best_guess = @this_beer_best_guess.best_guess
@@ -29,8 +29,12 @@ class RatingsController < ApplicationController
   end
   
   def create
+    @user = current_user
+    @beer = Beer.find(params[:user_beer_rating][:beer_id])
     # post new rating and related info
-    new_user_rating = UserBeerRating.create!(rating_params)
+    new_user_rating = UserBeerRating.new(rating_params)
+    new_user_rating.save!
+    @user.tag(@beer, :with => params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens], :on => :descriptors)
     # if successfully posted, remove drink from drink list
     if new_user_rating
       find_drink = DrinkList.where(:user_id => current_user.id, :beer_id => params[:user_beer_rating][:beer_id]).pluck(:id)
@@ -47,6 +51,8 @@ class RatingsController < ApplicationController
      # Never trust parameters from the scary internet, only allow the white list through.
     def rating_params
       params.require(:user_beer_rating).permit(:user_id, :beer_id, :drank_at, :projected_rating, :user_beer_rating, :comment,
-                      :rated_on, beer_attributes: [:descriptor_list_tokens])
+                      :rated_on)
     end
+    
+    
 end

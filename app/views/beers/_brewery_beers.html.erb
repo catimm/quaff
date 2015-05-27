@@ -68,7 +68,7 @@
 			<% elsif d.descriptor_list.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
-				<h5><%= raw d.descriptor_list.join(', ') %></h5>
+				<h5><%= raw d.descriptors.join(', ') %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-1">
