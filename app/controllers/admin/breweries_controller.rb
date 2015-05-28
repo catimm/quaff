@@ -1,6 +1,5 @@
-class BreweriesController < ApplicationController
-  before_filter :authenticate_user!
-  load_and_authorize_resource
+class Admin::BreweriesController < ApplicationController
+  before_filter :verify_admin
   
   def index
     # grab all Breweries
@@ -57,14 +56,14 @@ class BreweriesController < ApplicationController
   
   def create
     @brewery = Brewery.create!(brewery_params)
-    redirect_to breweries_path
+    redirect_to admin_breweries_path
   end
   
   def edit
     @breweries = Brewery.all.order(:brewery_name)
     @brewery = Brewery.find(params[:id]) 
     Rails.logger.debug("this brewery info: #{@brewery.inspect}")
-    render :partial => 'edit'
+    render :partial => 'admin/breweries/edit'
   end
   
   def update
@@ -85,19 +84,19 @@ class BreweriesController < ApplicationController
       end
       @brewery_to_delete.destroy
     end
-    redirect_to breweries_path
+    redirect_to admin_breweries_path
   end 
   
   def alt_brewery_name
     @alt_names = AltBreweryName.where(brewery_id:params[:id])
     @brewery_alt_names = AltBreweryName.new
     @brewery_info = Brewery.find(params[:id])
-    render :partial => 'breweries/alt_names'
+    render :partial => 'admin/breweries/alt_names'
   end
   
   def create_alt_brewery
     @new_alt_name = AltBreweryName.create!(brewery_name_params)
-    redirect_to breweries_path
+    redirect_to admin_breweries_path
   end
   
   private
@@ -111,4 +110,7 @@ class BreweriesController < ApplicationController
       params.require(:alt_brewery_name).permit(:brewery_id, :name)
     end
 
+    def verify_admin
+      redirect_to root_url unless current_user.role_id == 1
+    end
 end

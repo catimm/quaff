@@ -9,8 +9,7 @@ class Ability
       can :manage, :all
     elsif user.regular?
       can :read, :all
-      can [:read, :create, :update], Location
-      can [:read, :create, :update], DrinkList
+      can [:read, :create, :update], :all
  
     end
     

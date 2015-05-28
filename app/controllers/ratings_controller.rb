@@ -22,6 +22,7 @@ class RatingsController < ApplicationController
     @user_beer_rating = UserBeerRating.new
     @user_beer_rating.build_beer
     @this_descriptors = @this_beer.descriptors
+    @this_descriptors = @this_descriptors.uniq
     Rails.logger.debug("descxriptor list: #{@this_descriptors.inspect}")
     @this_beer_best_guess = best_guess(@beer_id)[0]
     @our_best_guess = @this_beer_best_guess.best_guess

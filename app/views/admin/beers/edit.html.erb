@@ -7,13 +7,13 @@
 					<h3><%= @beer.beer_name %></h3>
 				</div>
 				<div class="col-sm-4 text-right">
-					<%= link_to "Delete", delete_beer_prep_path(@this_brewery.id, @beer.id), class: "btn btn-warning delete-beer-info", data: {toggle: "modal", target: "#delete_beer"} %>
+					<%= link_to "Delete", admin_delete_beer_prep_path(@this_brewery.id, @beer.id), class: "btn btn-warning delete-beer-info", data: {toggle: "modal", target: "#delete_beer"} %>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row" id="edit-beer-info">
-		<%= render 'beer_form' %>	
+		<%= render 'admin/beers/beer_form' %>	
 	</div>
 	<div id="delete_beer" class="modal">
 		<div class="modal-header">

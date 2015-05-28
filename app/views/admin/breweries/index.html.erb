@@ -8,7 +8,7 @@
 					<h4 class="live-beer-count"><%= @number_live_beers %> beers are currently live; <span><%= @number_unrated_beers %> of those</span> are missing a rating</h4>
 				</div>
 				<div class="col-sm-5 text-right">
-					<%= link_to "Add new brewery", new_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>
+					<%= link_to "Add new brewery", new_admin_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>
 				</div>
 			</div>
 			<div class="row no-padding">
@@ -34,10 +34,10 @@
 		</div>
 	</div>
 	<div class="col-xs-12 brewery-list-holder">
-			<%= render 'breweries/breweries_list', breweries: @breweries %>
+			<%= render 'admin/breweries/breweries_list', breweries: @breweries %>
 	</div>
 	<div id="new_brewery" class="modal">
-		<%= render 'breweries/new' %>
+		<%= render 'admin/breweries/new' %>
 	</div>
 	<div id="edit_brewery" class="modal">
 		<div class="modal-header">

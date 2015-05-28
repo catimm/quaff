@@ -4,6 +4,15 @@ Rails.application.routes.draw do
   resources :users do
     resources :drinks, :ratings, :rewards   
   end
+  
+  namespace :admin do
+    resources :beers do
+      collection do
+        get :descriptors, as: :descriptors
+      end
+    end 
+ end
+ 
   resources :beers do
     collection do
       get :descriptors, as: :descriptors
@@ -13,27 +22,32 @@ Rails.application.routes.draw do
   resources :breweries do
     resources :beers   
   end
+
+  namespace :admin do
+    resources :users, :user_beer_ratings
+  end
   
-  scope "/admin" do
-    resources :users, :breweries
+  namespace :admin do
+    resources :breweries do
+      resources :beers
+    end
   end
   
   root :to => 'home#index'
   get 'home/update' => 'home#update', :as => 'show_beers'
   post 'users/update' => 'users#update', :as => 'new_drink'
-  post 'drinks/update' => 'drinks#update', :as => 'user_beer_ratings'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
   get 'locations' => 'locations#index'
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
   get 'reloads' => 'reloads#index'
-  get 'beers/current_beers' => 'beers#current_beers', :as => 'current_beers', :path => "/currentbeers"
-  put 'breweries/update' => 'breweries#update'
-  get 'breweries/alt_names/:id' => 'breweries#alt_brewery_name', :as => 'alt_brewery_names'
-  post 'breweries/alt_names' => 'breweries#create_alt_brewery', :as => 'create_brewery_names'
-  get 'beers/alt_names/:id' => 'beers#alt_beer_name', :as => 'alt_beer_names'
-  post 'beers/alt_names' => 'beers#create_alt_beer', :as => 'create_beer_names'
-  get 'beers/delete_beer/:brewery_id/:id' => 'beers#delete_beer_prep', :as => 'delete_beer_prep'
+  get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
+  put 'admin/breweries/update' => 'admin/breweries#update'
+  get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'
+  post 'admin/breweries/alt_names' => 'admin/breweries#create_alt_brewery', :as => 'admin_create_brewery_names'
+  get 'admin/beers/alt_names/:id' => 'admin/beers#alt_beer_name', :as => 'admin_alt_beer_names'
+  post 'admin/beers/alt_names' => 'admin/beers#create_alt_beer', :as => 'admin_create_beer_names'
+  get 'admin/beers/delete_beer/:brewery_id/:id' => 'admin/beers#delete_beer_prep', :as => 'admin_delete_beer_prep'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

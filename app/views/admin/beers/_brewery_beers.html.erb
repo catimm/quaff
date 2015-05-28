@@ -75,10 +75,10 @@
 			<% if @this_brewery.nil? %>
 				<% @this_brewery = Brewery.find_by(id: d.brewery_id) %>
 			<% end %>
-			<%= link_to "Edit beer", edit_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success" %>
+			<%= link_to "Edit beer", edit_admin_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success" %>
 		</div>
 		<div class="col-sm-1">
-			<%= link_to "Edit names", alt_beer_names_path(d.id), class: "btn btn-default editButton",
+			<%= link_to "Edit names", admin_alt_beer_names_path(d.id), class: "btn btn-default editButton",
 			data: {toggle: "modal", target: "#edit_alt_names"} %>
 		</div>
 	</div>
