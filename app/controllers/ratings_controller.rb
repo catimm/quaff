@@ -32,6 +32,7 @@ class RatingsController < ApplicationController
   def create
     @user = current_user
     @beer = Beer.find(params[:user_beer_rating][:beer_id])
+    params[:user_beer_rating][:current_descriptors] = params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens]
     # post new rating and related info
     new_user_rating = UserBeerRating.new(rating_params)
     new_user_rating.save!
@@ -52,7 +53,7 @@ class RatingsController < ApplicationController
      # Never trust parameters from the scary internet, only allow the white list through.
     def rating_params
       params.require(:user_beer_rating).permit(:user_id, :beer_id, :drank_at, :projected_rating, :user_beer_rating, :comment,
-                      :rated_on)
+                      :rated_on, :current_descriptors)
     end
     
     

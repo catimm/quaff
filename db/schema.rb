@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150528053715) do
+ActiveRecord::Schema.define(version: 20150529041040) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,6 +150,7 @@ ActiveRecord::Schema.define(version: 20150528053715) do
     t.datetime "rated_on"
     t.float    "projected_rating"
     t.text     "comment"
+    t.text     "current_descriptors"
   end
 
   create_table "user_style_preferences", force: :cascade do |t|
