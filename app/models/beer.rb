@@ -5,8 +5,8 @@
 #  id                   :integer          not null, primary key
 #  beer_name            :string
 #  beer_type_old_name   :string
-#  beer_rating          :float
-#  number_ratings       :integer
+#  beer_rating_one      :float
+#  number_ratings_one   :integer
 #  created_at           :datetime
 #  updated_at           :datetime
 #  brewery_id           :integer
@@ -19,6 +19,10 @@
 #  grains               :text
 #  brewer_description   :text
 #  beer_type_id         :integer
+#  beer_rating_two      :float
+#  number_ratings_two   :integer
+#  beer_rating_three    :float
+#  number_ratings_three :integer
 #
 
 class Beer < ActiveRecord::Base
@@ -51,13 +55,61 @@ class Beer < ActiveRecord::Base
   scope :live_beers, -> { 
     joins(:beer_locations).merge(BeerLocation.current) 
   }
-  scope :unrated_beers, -> { where(beer_rating: nil) }
+  scope :unrated_beers, -> { where(beer_rating_one: nil, beer_rating_two: nil, beer_rating_three: nil) }
 
   # save actual tags without quotes
   def descriptor_list_tokens=(tokens)
      self.descriptor_list = tokens.gsub("'", "")
   end
-         
+  # aggregate total number of beer ratings
+  def number_ratings
+    if number_ratings_one.nil? && number_ratings_two.nil? && number_ratings_three.nil?
+      0
+    # else, combine the public ratings according to algorithm below
+    else  
+      if  number_ratings_one && number_ratings_two && number_ratings_three
+        (number_ratings_one + number_ratings_two + number_ratings_three)
+      elsif number_ratings_one && number_ratings_two
+        (number_ratings_one + number_ratings_two)
+      elsif number_ratings_one && number_ratings_three
+        (number_ratings_one + number_ratings_three)
+      elsif number_ratings_two && number_ratings_three
+        (number_ratings_two + number_ratings_three)
+      elsif number_ratings_one
+        number_ratings_one
+      elsif number_ratings_two
+        number_ratings_two
+      else
+        number_ratings_three
+      end
+    end
+  end       
+  
+  #create beer rating algorithm
+  def beer_rating
+    # if all three public rating sources are nil, provide a "zero" rating for this beer
+    if beer_rating_one.nil? && beer_rating_two.nil? && beer_rating_three.nil?
+      0
+    # else, combine the public ratings according to algorithm below
+    else  
+      if  beer_rating_one && beer_rating_two && beer_rating_three
+        ((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_two + number_ratings_three))*0.9).round(2)
+      elsif beer_rating_one && beer_rating_two
+        ((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two)) / (number_ratings_one + number_ratings_two))*0.9).round(2)
+      elsif beer_rating_one && beer_rating_three
+        ((((beer_rating_one * number_ratings_one) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_three))*0.9).round(2)
+      elsif beer_rating_two && beer_rating_three
+        ((((beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_two + number_ratings_three))*0.9).round(2)
+      elsif beer_rating_one
+        (((beer_rating_one * number_ratings_one) / (number_ratings_one))*0.9).round(2)
+      elsif beer_rating_two
+        (((beer_rating_two * number_ratings_two) / (number_ratings_two))*0.9).round(2)
+      else
+        (((beer_rating_three * number_ratings_three) / (number_ratings_three))*0.9).round(2)
+      end
+    end
+  end
+  
   #filterrific(
   #default_filter_params: { sorted_by: 'beer_rating_desc' },
   #available_filters: [

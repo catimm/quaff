@@ -5,8 +5,8 @@
 #  id                   :integer          not null, primary key
 #  beer_name            :string
 #  beer_type_old_name   :string
-#  beer_rating          :float
-#  number_ratings       :integer
+#  beer_rating_one      :float
+#  number_ratings_one   :integer
 #  created_at           :datetime
 #  updated_at           :datetime
 #  brewery_id           :integer
@@ -19,6 +19,10 @@
 #  grains               :text
 #  brewer_description   :text
 #  beer_type_id         :integer
+#  beer_rating_two      :float
+#  number_ratings_two   :integer
+#  beer_rating_three    :float
+#  number_ratings_three :integer
 #
 
 require 'test_helper'

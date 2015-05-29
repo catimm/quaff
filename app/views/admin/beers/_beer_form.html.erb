@@ -9,16 +9,13 @@
 		<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
-		<%= f.text_field :beer_type_old_name, :class => "form-control", placeholder: "Beer type" %>
-	</div>
-	<div class="col-sm-6 col-xs-12">
 		<%= f.collection_select :beer_type_id, @beer_types, :id, :beer_type_name, {prompt: "Select a beer type"}, {class: "form-control"} %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
-		<%= f.text_field :beer_rating, :class => "form-control", placeholder: "Beer rating" %>
+		<%= f.text_field :beer_type_old_name, :class => "form-control", placeholder: "Beer type [old field]" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
-		<%= f.text_field :number_ratings, :class => "form-control", placeholder: "Number of ratings" %>
+		<%= f.text_field :original_descriptors, :class => "form-control", placeholder: "Beer descriptors [old field]" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :beer_abv, :class => "form-control", placeholder: "Beer ABV" %>
@@ -27,17 +24,28 @@
 		<%= f.text_field :beer_ibu, :class => "form-control", placeholder: "Beer IBU" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :beer_rating_one, :class => "form-control", placeholder: "Beer rating (1)" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :number_ratings_one, :class => "form-control", placeholder: "Number of ratings (1)" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :beer_rating_two, :class => "form-control", placeholder: "Beer rating (2)" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :number_ratings_two, :class => "form-control", placeholder: "Number of ratings (2)" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :beer_rating_three, :class => "form-control", placeholder: "Beer rating (3)" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :number_ratings_three, :class => "form-control", placeholder: "Number of ratings (3)" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :beer_image, :class => "form-control", placeholder: "Image URL" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :speciality_notice, :class => "form-control", placeholder: "Specialty tags" %>
-	</div>
-	<div class="col-sm-6 col-xs-12">
-		<%= f.label :descriptor_list_tokens, "Separate new descriptors by a comma:" %>
-  		<%= f.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
-	</div>
-	<div class="col-sm-6 col-xs-12">
-		<%= f.text_field :original_descriptors, :class => "form-control", placeholder: "To hold original descriptors (for now)" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :hops, :class => "form-control", placeholder: "Hops [separate with comma]" %>
@@ -47,6 +55,9 @@
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :brewer_description, :class => "form-control", placeholder: "Brewer description" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+  		<%= f.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
 	</div>
 	<div class="col-sm-3 col-xs-0"></div>
 	<div class="col-sm-6 col-xs-12 text-center">
