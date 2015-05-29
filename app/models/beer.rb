@@ -88,7 +88,7 @@ class Beer < ActiveRecord::Base
   #create beer rating algorithm
   def beer_rating
     # if all three public rating sources are nil, provide a "zero" rating for this beer
-    if beer_rating_one.nil? && beer_rating_two.nil? && beer_rating_three.nil?
+    if beer_rating_one.blank? && beer_rating_two.blank? && beer_rating_three.blank?
       0
     # else, combine the public ratings according to algorithm below
     else  
