@@ -10,8 +10,6 @@ class LocationsController < ApplicationController
   end
   
   def show
-    @beer_test = Beer.find(165).beer_rating
-    Rails.logger.debug("Beer 165: #{@beer_test.inspect}")
     # get retailer location information
     @retailer = Location.where(id: params[:id])[0]
     Rails.logger.debug("Retailer info: #{@retailer.inspect}")
