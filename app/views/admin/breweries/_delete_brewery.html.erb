@@ -1,4 +1,4 @@
-<%= form_for(@brewery) do |g| %>
+<%= form_for [:admin, @brewery] do |g| %>
 	<%= g.hidden_field :form_type, :value => "delete" %>
 	<%= g.hidden_field :delete_brewery, :value => @brewery.id %>
 	<h5>Deleting:</h5>
