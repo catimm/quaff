@@ -1,4 +1,4 @@
-<%= form_for(@brewery) do |f| %>
+<%= form_for [:admin, @brewery] do |f| %>
 	<%= f.hidden_field :form_type, :value => "edit" %>
 	<%= f.text_field :brewery_name, :class => "form-control", placeholder: "Brewery name" %>
 	<%= f.text_field :short_brewery_name, :class => "form-control", placeholder: "Short brewery name" %>
