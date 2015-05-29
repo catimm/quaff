@@ -44,10 +44,10 @@ class Admin::BeersController < ApplicationController
     # if the edit function is chosen, update this beer's attributes
     if params[:beer][:form_type] == "edit"
     # update beer attributes
-      @beer.update(beer_name: params[:beer][:beer_name], beer_rating: params[:beer][:beer_rating_one], 
-            number_ratings: params[:beer][:number_ratings_one], beer_rating: params[:beer][:beer_rating_two], 
-            number_ratings: params[:beer][:number_ratings_two], beer_rating: params[:beer][:beer_rating_three],
-            number_ratings: params[:beer][:number_ratings_three], beer_abv: params[:beer][:beer_abv], 
+      @beer.update(beer_name: params[:beer][:beer_name], beer_rating_one: params[:beer][:beer_rating_one], 
+            number_ratings_one: params[:beer][:number_ratings_one], beer_rating_two: params[:beer][:beer_rating_two], 
+            number_ratings_two: params[:beer][:number_ratings_two], beer_rating_three: params[:beer][:beer_rating_three],
+            number_ratings_three: params[:beer][:number_ratings_three], beer_abv: params[:beer][:beer_abv], 
             beer_ibu: params[:beer][:beer_ibu], beer_image: params[:beer][:beer_image], 
             speciality_notice: params[:beer][:speciality_notice], descriptor_list_tokens: params[:beer][:descriptor_list_tokens], 
             original_descriptors: params[:beer][:original_descriptors], hops: params[:beer][:hops], grains: params[:beer][:grains], 
