@@ -93,19 +93,19 @@ class Beer < ActiveRecord::Base
     # else, combine the public ratings according to algorithm below
     else  
       if  beer_rating_one && beer_rating_two && beer_rating_three
-        ((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_two + number_ratings_three))*0.9).round(2)
+        (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_two + number_ratings_three))*0.9)*2).round(2)
       elsif beer_rating_one && beer_rating_two
-        ((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two)) / (number_ratings_one + number_ratings_two))*0.9).round(2)
+        (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two)) / (number_ratings_one + number_ratings_two))*0.9)*2).round(2)
       elsif beer_rating_one && beer_rating_three
-        ((((beer_rating_one * number_ratings_one) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_three))*0.9).round(2)
+        (((((beer_rating_one * number_ratings_one) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_three))*0.9)*2).round(2)
       elsif beer_rating_two && beer_rating_three
-        ((((beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_two + number_ratings_three))*0.9).round(2)
+        (((((beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_two + number_ratings_three))*0.9)*2).round(2)
       elsif beer_rating_one
-        (((beer_rating_one * number_ratings_one) / (number_ratings_one))*0.9).round(2)
+        ((((beer_rating_one * number_ratings_one) / (number_ratings_one))*0.9)*2).round(2)
       elsif beer_rating_two
-        (((beer_rating_two * number_ratings_two) / (number_ratings_two))*0.9).round(2)
+        ((((beer_rating_two * number_ratings_two) / (number_ratings_two))*0.9)*2).round(2)
       else
-        (((beer_rating_three * number_ratings_three) / (number_ratings_three))*0.9).round(2)
+        ((((beer_rating_three * number_ratings_three) / (number_ratings_three))*0.9)*2).round(2)
       end
     end
   end
