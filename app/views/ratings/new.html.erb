@@ -27,6 +27,7 @@
 			<%= rate.hidden_field :drank_at, :value => @location.short_name %>
 			<%= rate.hidden_field :projected_rating, :value => @our_best_guess %>
 			<%= rate.hidden_field :current_descriptors, :value => "" %>
+			<%= rate.hidden_field :beer_type_id, :value => @this_beer.beer_type_id %>
 			<div class="row rating-top-row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-3 col-xs-3 text-center small-padding">

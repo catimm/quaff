@@ -46,7 +46,9 @@ class Beer < ActiveRecord::Base
   
   attr_accessor :best_guess
   attr_accessor :likes_style
-  attr_accessor :beer_style_name
+  attr_accessor :beer_style_name_one
+  attr_accessor :beer_style_name_two
+  attr_accessor :is_hybrid
   
   def connect_deleted_beer
     "#{beer_name} [id: #{id}]"
@@ -89,7 +91,7 @@ class Beer < ActiveRecord::Base
   def beer_rating
     # if all three public rating sources are nil, provide a "zero" rating for this beer
     if beer_rating_one.blank? && beer_rating_two.blank? && beer_rating_three.blank?
-      0
+      (3.25*2).round(2)
     # else, combine the public ratings according to algorithm below
     else  
       if  beer_rating_one && beer_rating_two && beer_rating_three

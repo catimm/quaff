@@ -2,7 +2,7 @@
 	<% if beer.best_guess >= 8 && beer.likes_style == "yes" %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">You like <%= beer.beer_style_name %>, so here we are.</p>
+				<p class="recommendation-reasons">You like <%= beer.beer_style_name_one %>, so here we are.</p>
 			</li>									
 			<li>
 				<p class="recommendation-reasons">Others have rated this highly.</p>
@@ -16,7 +16,7 @@
 	<% elsif beer.best_guess >= 8 && beer.likes_style == "neither" %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">Though <%= beer.beer_style_name %> aren't your faves, others have rated this highly...</p>
+				<p class="recommendation-reasons">Though <%= beer.beer_style_name_one %> aren't your faves, others have rated this highly...</p>
 			</li>
 			<% if !beer.speciality_notice.blank? %>
 			<li>
@@ -27,7 +27,7 @@
 	<% elsif beer.best_guess >= 8 && beer.likes_style == "no" %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name %>, 
+				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name_one %>, 
 				others have rated this quite highly.</p>
 			</li>
 			<% if !beer.speciality_notice.blank? %>
@@ -39,7 +39,7 @@
 	<% elsif beer.best_guess >= 6 && beer.likes_style == "yes" %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">You like <%= beer.beer_style_name %>, so here we are.</p>
+				<p class="recommendation-reasons">You like <%= beer.beer_style_name_one %>, so here we are.</p>
 			</li>
 			<% if !beer.speciality_notice.blank? %>
 			<li>
@@ -50,7 +50,7 @@
 	<% elsif beer.best_guess >= 6 && beer.likes_style == "neither" %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">Though <%= beer.beer_style_name %> aren't your faves, others have rated this highly...</p>
+				<p class="recommendation-reasons">Though <%= beer.beer_style_name_one %> aren't your faves, others have rated this highly...</p>
 			</li>
 			<% if !beer.speciality_notice.blank? %>
 			<li>
@@ -61,7 +61,7 @@
 	<% elsif beer.best_guess >= 6 && beer.likes_style == "no" %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name %>, 
+				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name_one %>, 
 				others have rated this highly...</p>
 			</li>
 			<% if !beer.speciality_notice.blank? %>
@@ -73,7 +73,7 @@
 	<% elsif beer.best_guess >= 0 && beer.likes_style == "yes" %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">Though you like <%= beer.beer_style_name %>, 
+				<p class="recommendation-reasons">Though you like <%= beer.beer_style_name_one %>, 
 				others haven't rated this too kindly...</p>
 			</li>
 		</ul>
@@ -86,7 +86,7 @@
 	<% else %>
 		<ul>
 			<li>
-				<p class="recommendation-reasons">We know you don't like <%= beer.beer_style_name %>; 
+				<p class="recommendation-reasons">We know you don't like <%= beer.beer_style_name_one %>; 
 				also, others haven't rated this too kindly...</p>
 			</li>
 		</ul>

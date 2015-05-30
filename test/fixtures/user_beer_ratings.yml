@@ -13,6 +13,7 @@
 #  projected_rating    :float
 #  comment             :text
 #  current_descriptors :text
+#  beer_type_id        :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

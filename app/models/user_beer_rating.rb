@@ -13,6 +13,7 @@
 #  projected_rating    :float
 #  comment             :text
 #  current_descriptors :text
+#  beer_type_id        :integer
 #
 
 class UserBeerRating < ActiveRecord::Base

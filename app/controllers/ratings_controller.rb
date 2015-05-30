@@ -16,6 +16,7 @@ class RatingsController < ApplicationController
     @time = Time.now
     @beer_id = params[:format]
     @this_beer = Beer.where(id: @beer_id)[0]
+    Rails.logger.debug("this beer info: #{@this_beer.inspect}")
     @location_id = BeerLocation.where(beer_id: @beer_id, beer_is_current: "yes").pluck(:location_id)
     @location = Location.find(@location_id)[0]
     
@@ -53,7 +54,7 @@ class RatingsController < ApplicationController
      # Never trust parameters from the scary internet, only allow the white list through.
     def rating_params
       params.require(:user_beer_rating).permit(:user_id, :beer_id, :drank_at, :projected_rating, :user_beer_rating, :comment,
-                      :rated_on, :current_descriptors)
+                      :rated_on, :current_descriptors, :beer_type_id)
     end
     
     

@@ -68,7 +68,11 @@
 					<div class="row no-margin list-overview">
 						<div class="col-xs-12 why-statement">
 							<p>Why, you ask?</p>
-							<%= render 'locations/rating_rationale', beer: beer %>
+							<% if  beer.is_hybrid == "yes"%>
+								<%= render 'locations/hybrid_rating_rationale', beer: beer %>
+							<% else %>
+								<%= render 'locations/nonhybrid_rating_rationale', beer: beer %>
+							<% end %>
 						</div>
 						<div class="col-xs-12 overview-tile-footer"></div>
 					</div>
