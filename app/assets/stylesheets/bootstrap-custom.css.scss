@@ -45,7 +45,7 @@ html {
 }
 body {
   padding-top: 50px;
-  margin-bottom: 80px;
+  margin-bottom: 50px !important;
   overflow-x: hidden;
 }
 .container {
@@ -120,7 +120,7 @@ label {
   padding: 20px 0;
   margin: 0;
 }
-.overview-tile {
+.overview-tile, .overview-tile-2 {
   margin-bottom: 25px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -711,13 +711,14 @@ $beer-header-lines-to-show: 2;
   background: $dark-gray !important;
   bottom: 0;
   position: absolute;
-  height: 80px;
+  height: 50px !important;
   width: 100%;
   padding-top: 1.5em;
   padding-bottom: 0.5em;
   .container {
     text-align: center;
   }
+  
   a, .footer-menu-divider, p {
     font-size: 12px;
     font-weight: 300;
@@ -861,8 +862,31 @@ div.jqcloud span.w1 { color: $light-blue; }
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 768px) {
+  body {
+    padding-top: 50px;
+    margin-bottom: 40px;
+    overflow-x: hidden;
+  }
+  .overview-tile {
+    margin-bottom: 10px;
+  }
+  .overview-tile-2 {
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+    -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    width: 99%;
+    height: 395px;
+    position: relative;
+  }
   .beer-name, .beer-rating {
     font-size: 15px;
+  }
+  .page-title {
+    font-size: 16px;
+    padding: 10px 0 5px 0;
   }
   .page-header {
     margin-top: 10px;
@@ -897,6 +921,37 @@ div.jqcloud span.w1 { color: $light-blue; }
     }  
   }
 }
+// Footer css
+  .footer {
+    background: $dark-gray !important;
+    bottom: 0;
+    position: absolute;
+    height: 40px;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    .container {
+      text-align: center;
+      .list-inline {
+        padding: 0 !important;
+        width: 100%;
+      }
+      .copyright {
+        margin-bottom: 5px;
+      }
+    }
+    a, .footer-menu-divider, p {
+      font-size: 9px;
+      font-weight: 300;
+      color: $white;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    p {
+      font-size: 8px;
+      font-weight: 200;
+    }
+  }
 @media (min-width: 786px) {
   .image-holder {
     position: fixed;
