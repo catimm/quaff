@@ -10,6 +10,7 @@ class Ability
     elsif user.regular?
       can :read, :all
       can [:read, :create, :update], :all
+      cannot :manage, Brewery
  
     end
     
