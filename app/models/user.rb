@@ -25,12 +25,13 @@
 #  invited_by_id          :integer
 #  invited_by_type        :string
 #  invitations_count      :integer          default("0")
+#  first_name             :string
 #
 
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :invitable, :database_authenticatable, :registerable,
+  # :confirmable, :lockable, :timeoutable and :omniauthable, :registerable
+  devise :invitable, :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable
   
   # for ActsAsTaggableOn gem

@@ -8,7 +8,6 @@ class Ability
     if user.admin?
       can :manage, :all
     elsif user.regular?
-      can :read, :all
       can [:read, :create, :update], :all
       cannot :manage, Brewery
  

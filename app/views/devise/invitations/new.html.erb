@@ -1,12 +1,35 @@
-<h2><%= t "devise.invitations.new.header" %></h2>
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row topRow"> 
+		<div class="col-xs-0 col-sm-3 col-md-4"></div>
+		<div class="col-xs-12 col-sm-6 col-md-4 box">
+			<div class="row">
+				<div class="col-xs-12">
+						<h2>Invite others</h2>
+					    <%= form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => {:method => :post} do |f| %>
+  							<%- flash.each do |name, msg| -%>
+							    <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+							  <%- end -%>
+							<div class="row"> 
+								<div class="col-xs-12">
+							 		<%= f.text_field :first_name, :class => "form-control", required: true, placeholder: "Invitee's first name" %>
+								</div>
+							</div>
+							<div class="row"> 
+								<div class="col-xs-12">
+							 		<%= f.email_field :email, :class => "form-control", required: true, placeholder: "Invitee's email address" %>
+								</div>
+							</div>
+							<div class="row"> 
+								<div class="col-xs-12">
+							 		<%= f.submit "Send invite", class: "btn btn-default btn-success formButton" %> 
+								</div>
+							</div>
+					    <% end %>
+				</div> 
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>
 
-<%= form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => {:method => :post} do |f| %>
-  <%= devise_error_messages! %>
-
-<% resource.class.invite_key_fields.each do |field| -%>
-  <p><%= f.label field %><br />
-  <%= f.text_field field %></p>
-<% end -%>
-
-  <p><%= f.submit t("devise.invitations.new.submit_button") %></p>
-<% end %>
