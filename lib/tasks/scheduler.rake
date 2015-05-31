@@ -902,7 +902,7 @@ task :check_fremont_beer_garden => :environment do
         end   
       else # if beer is not guest beer do this
         # since this brewery exists in the breweries table, find all its related beers from the beers table
-        @fremont_brewing_beers = Beer.where(brewery_id: 70)
+        @fremont_brewing_beers = Beer.where(brewery_id: 44)
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @fremont_brewing_beers.each do |beer|
@@ -938,7 +938,7 @@ task :check_fremont_beer_garden => :environment do
           end
         else
           # if beer doesn't exist in DB, first add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => 70)
+          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => 44)
           new_beer.save!
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 6, :beer_is_current => "yes")
