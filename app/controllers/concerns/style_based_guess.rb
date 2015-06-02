@@ -2,6 +2,7 @@ module StyleBasedGuess
   extend ActiveSupport::Concern
 
   def style_based_guess(this_beer)
+     Rails.logger.debug("Retailer info: #{this_beer.inspect}")
       # first check if this beer has been associated with a beer type/style. if so, apply best guess formula
       if !this_beer.beer_type_id.nil? && !@user_style_preferences.nil?
         # get this beer style ID
