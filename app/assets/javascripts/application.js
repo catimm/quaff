@@ -14,6 +14,7 @@
 // require jquery.turbolinks
 //= require jquery_ujs
 // require turbolinks
+//= require circliful
 //= require chosen-jquery
 //= require chosen-defaults
 //= require filterrific/filterrific-jquery

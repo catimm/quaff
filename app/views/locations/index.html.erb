@@ -17,9 +17,18 @@
 									<h5 class="tile-header"><%= retailer.short_name %></h5>
 									<h5 class="tile-subheader"><i class="fa fa-map-marker"> <%= retailer.neighborhood %></i></h5>	
 								</div>
-								<div class="col-xs-4 text-right padding-10 no-padding-left">
+								<div class="col-xs-4 text-right padding-10 no-padding-left location-circle-holder">
+									<% if retailer.location_rating.round(0) >= 70 %>
+										<div class="locationRating text-right" data-dimension="40" data-text=<%= retailer.location_rating.round(0) %> data-animationstep="0" data-info="" data-bordersize="1" data-width="2" data-fontsize="18" data-percent=<%= retailer.location_rating.round(0) %> data-fgcolor="#40C170" data-bgcolor="#e7e7e7" data-total="100" data-part=<%= retailer.location_rating.round(0) %> ></div>
+									<% elsif retailer.location_rating.round(0) >= 40 %>
+										<div class="locationRating text-right" data-dimension="40" data-text=<%= retailer.location_rating.round(0) %> data-animationstep="0" data-info="" data-bordersize="1" data-width="2" data-fontsize="18" data-percent=<%= retailer.location_rating.round(0) %> data-fgcolor="#FFC764" data-bgcolor="#e7e7e7" data-total="100" data-part=<%= retailer.location_rating.round(0) %> ></div>
+									<% else %>
+										<div class="locationRating text-right" data-dimension="40" data-text=<%= retailer.location_rating.round(0) %> data-animationstep="0" data-info="" data-bordersize="1" data-width="2" data-fontsize="18" data-percent=<%= retailer.location_rating.round(0) %> data-fgcolor="#d9534f" data-bgcolor="#e7e7e7" data-total="100" data-part=<%= retailer.location_rating.round(0) %> ></div>
+									<% end %>
+									<% if false %>
 									<h6 class="smiley-face"><i class="fa fa-smile-o"></i></h6>
 									<h4 class="happiness-index"><%= retailer.location_rating.round(0) %></h4>
+									<% end %>
 								</div>
 							</div>
 							<div class="row no-margin list-overview">
