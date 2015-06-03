@@ -14,7 +14,7 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
-			<h5><%= (d.updated_at).strftime("%_m/%e/%y")  %></h5>
+			<h5><%= (d.updated_at).strftime("%-m/%d/%y")  %></h5>
 		</div>
 		<div class="col-sm-1">
 			<% if d.beer_type.blank? %>
