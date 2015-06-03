@@ -14,6 +14,9 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
+			<h5><%= (d.updated_at).strftime("%_m/%e/%y")  %></h5>
+		</div>
+		<div class="col-sm-1">
 			<% if d.beer_type.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
@@ -25,13 +28,6 @@
 				<h5 class="need-text">[need]</h5>
 			<% else %>
 				<h5><%= d.beer_rating %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-1">
-			<% if d.number_ratings.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
-				<h5><%= d.number_ratings %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-1">

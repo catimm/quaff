@@ -5,7 +5,7 @@
 			<div class="row">
 				<div class="col-sm-8">
 					<% if !@this_brewery.brewery_url.nil? %>
-						<h3"><%= link_to @this_brewery.brewery_name, @this_brewery.brewery_url, :target => "_blank", class:"brewery-name-header" %>&nbsp;</h3>
+						<h3><%= link_to @this_brewery.brewery_name, @this_brewery.brewery_url, :target => "_blank", class:"brewery-name-header" %>&nbsp;</h3>
 					<% else %>
 						<h3><%= @this_brewery.brewery_name %></h3>
 					<% end %>
@@ -21,13 +21,13 @@
 			<h5><strong>Beer Name</strong></h5>
 		</div>
 		<div class="col-sm-1">
+			<h5><strong>Last Updated</strong></h5>
+		</div>
+		<div class="col-sm-1">
 			<h5><strong>Beer Type</strong></h5>
 		</div>
 		<div class="col-sm-1">
 			<h5><strong>Rating</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong># ratings</strong></h5>
 		</div>
 		<div class="col-sm-1">
 			<h5><strong>ABV</strong></h5>
