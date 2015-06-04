@@ -11,8 +11,6 @@
 		<div class="col-sm-3">
 			<% if d.brewery_name.blank? %>
 				<h5 class="need-text">[need]</h5>
-			<% elsif !d.brewery_url.nil? %>
-				<h5 class="brewery-name-with-id"><%= link_to d.brewery_name, d.brewery_url, :target => "_blank" %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
 			<% else %>
 				<h5 class="brewery-name-with-id"><%= d.brewery_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
 			<% end %>
