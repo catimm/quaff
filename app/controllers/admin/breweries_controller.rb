@@ -18,12 +18,20 @@ class Admin::BreweriesController < ApplicationController
     @current_beer_ids = BeerLocation.where(beer_is_current: "yes").pluck(:beer_id)
     # get list of Brewery IDs for those breweries that have a live beer
     @live_brewery_beers = Brewery.live_brewery_beers
-    # get list of Brewery IDs for those breweries that have a live beer that is unrated
-    @unrated_brewery_beers = Brewery.unrated_live_brewery_beers
+    # get list of Brewery IDs for those breweries that have a live beer that needs works
+    @need_attention_brewery_beers = Brewery.need_attention_brewery_beers
+    # get list of Brewery IDs for those breweries that have a live beer that is complete
+    @complete_brewery_beers = Brewery.complete_brewery_beers
+    # get list of Brewery IDs for those breweries that have a live beer with some info but is not complete
+    @usable_incomplete_brewery_beers = @live_brewery_beers - @need_attention_brewery_beers - @complete_brewery_beers
     # count of total live beers
     @number_live_beers = Beer.live_beers.count('id')
-    # get count of total beers that are not yet rated
-    @number_unrated_beers = Beer.live_beers.unrated_beers.count('id')
+    # get count of total beers that have no info
+    @number_need_attention_beers = Beer.live_beers.need_attention_beers.count('id')
+    # get count of total beers that are complete
+    @number_complete_beers = Beer.live_beers.complete_beers.count('id')
+    # get count of total beers that still need some info
+    @number_usable_incomplete_beers = @number_live_beers - @number_need_attention_beers - @number_complete_beers
 
     # establish filters
     #@filterrific = initialize_filterrific(Brewery, params[:filterrific])

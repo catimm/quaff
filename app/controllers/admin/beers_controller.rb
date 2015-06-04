@@ -5,11 +5,19 @@ class Admin::BeersController < ApplicationController
   def index
     @brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
-    # get list of Beer IDs for live beers
+    # get list of IDs for all live Beers
     @live_beers = Beer.live_beers
-    # get list of Beer IDs for live beers that are unrated
-    @unrated_beers = Beer.live_beers.unrated_beers
-     # to create a new Beer Name instance
+    Rails.logger.debug("Live beers: #{@live_beers.inspect}")
+    # get list of Beer IDs for live beers that have all information provided
+    @complete_beers = Beer.live_beers.complete_beers
+    Rails.logger.debug("Live & Complete beers: #{@complete_beers.inspect}")
+    # get list of Beer IDs for live beers that don't yet have any information (top priority)
+    @need_attention_beers = Beer.live_beers.need_attention_beers
+    Rails.logger.debug("Live & Need Attention beers: #{@need_attention_beers.inspect}")
+    # get list Beer IDs for usable but incomplete beers that still need attention
+    @usable_incomplete_beers = @live_beers - @complete_beers - @need_attention_beers
+    Rails.logger.debug("Live & Usable/Imcomplete beers: #{@usable_incomplete_beers.inspect}")
+    # to create a new Beer Name instance
     @brewery_alt_names = AltBeerName.new
   end
   
@@ -51,7 +59,8 @@ class Admin::BeersController < ApplicationController
             beer_ibu: params[:beer][:beer_ibu], beer_image: params[:beer][:beer_image], 
             speciality_notice: params[:beer][:speciality_notice], descriptor_list_tokens: params[:beer][:descriptor_list_tokens], 
             original_descriptors: params[:beer][:original_descriptors], hops: params[:beer][:hops], grains: params[:beer][:grains], 
-            brewer_description: params[:beer][:brewer_description], beer_type_id: params[:beer][:beer_type_id])
+            brewer_description: params[:beer][:brewer_description], beer_type_id: params[:beer][:beer_type_id],
+            rating_one_na: params[:beer][:rating_one_na], rating_two_na: params[:beer][:rating_two_na], rating_three_na: params[:beer][:rating_three_na])
       @beer.save
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
@@ -120,7 +129,8 @@ class Admin::BeersController < ApplicationController
     def beer_params
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
       :number_ratings_two, :beer_rating_three, :number_ratings_three,:beer_abv, :beer_ibu, :brewery_id, :beer_image, 
-      :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id)
+      :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id,
+      :rating_one_na, :rating_two_na, :rating_three_na)
     end
     
     def beer_name_params

@@ -1,8 +1,10 @@
 <% @brewery_beers.each do |d| %>
-	<% if @unrated_beers.map{|a| a.id}.include? d.id %>
+	<% if @need_attention_beers.map{|a| a.id}.include? d.id %>
 	<div class="row small-padding current-beer-background-attention-needed">
-	<% elsif @live_beers.map{|a| a.id}.include? d.id %>
-	<div class="row small-padding current-beer-background">
+	<% elsif @usable_incomplete_beers.map{|a| a.id}.include? d.id %>
+	<div class="row small-padding current-beer-usable-background">
+	<% elsif @complete_beers.map{|a| a.id}.include? d.id %>
+	<div class="row small-padding current-beer-complete-background">
 	<% else %>
 	<div class="row small-padding">
 	<% end %>

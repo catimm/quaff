@@ -23,6 +23,8 @@ $bright-purple: #982395;
 $light-purple: #C267BE;
 $bright-green: #00a03e;
 $light-green: #40C170;
+$light-yellow: #FFD759;
+$light-red: #FB575F;
 
 
 // Functional use of colors for project
@@ -36,9 +38,10 @@ $action-background: $bright-blue;
 $rating-text: $bright-blue;
 $step-background: $light-green;
 $admin-background: $white;
-$current-beer-background: $light-aqua-blue;
-$current-beer-attention-needed-background: $light-orange;
-$current-beer-attention-needed-text: $bright-orange; 
+$current-beer-complete-background: $light-green;
+$current-beer-usable-background: $light-orange;
+$current-beer-attention-needed-background: $light-red;
+$current-beer-attention-needed-text: $light-red; 
 
 html {
   position: relative;
@@ -801,17 +804,26 @@ div.jqcloud span.w1 { color: $light-blue; }
   background: #fff;
   z-index: 1000;
 }
-.current-beer-background {
-  background: $current-beer-background;
+.current-beer-complete-background {
+  background: $current-beer-complete-background;
+}
+.current-beer-usable-background {
+  background: $current-beer-usable-background;
 }
 .current-beer-background-attention-needed {
   background: $current-beer-attention-needed-background;
 }
+.complete-beer-text {
+  color: $current-beer-complete-background;
+}
+.usable-beer-text {
+  color: $current-beer-usable-background;
+}
+.attention-needed-beer-text {
+  color: $current-beer-attention-needed-background;
+}
 .live-beer-count {
   color: $normal-text;
-  span {
-    color: $current-beer-attention-needed-text;
-  }
 }
 .brewery-list-holder {
   margin-top: 220px;
@@ -851,7 +863,18 @@ div.jqcloud span.w1 { color: $light-blue; }
     padding: 0 5px;
   }
 }
-
+.rating-na {
+  padding-right: 0;
+  font-size: 13px;
+}
+.rating-checkbox {
+  height: 41.5px;
+  padding: 0;
+  input {
+    width: 45px;
+    margin: 0 auto;
+  }
+}
 #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, #new_user, #new_user_beer_rating, #edit_user {
   input, select, ul {
     margin-bottom: 7.5px;

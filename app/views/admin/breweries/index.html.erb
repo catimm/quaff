@@ -5,7 +5,7 @@
 			<div class="row">
 				<div class="col-sm-7">
 					<h3><%= @brewery_count %> breweries in the database (<%= @beer_count %> beers)</h3>
-					<h4 class="live-beer-count"><%= @number_live_beers %> beers are currently live; <span><%= @number_unrated_beers %> of those</span> are missing a rating</h4>
+					<h4 class="live-beer-count"><%= @number_live_beers %> beers live (<span class="complete-beer-text"><%= @number_complete_beers %> done</span>; <span class="usable-beer-text"><%= @number_usable_incomplete_beers %> partial</span>; <span class="attention-needed-beer-text"><%= @number_need_attention_beers %> need attention</span>)</h4>
 				</div>
 				<div class="col-sm-5 text-right">
 					<%= link_to "Add new brewery", new_admin_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>

@@ -23,19 +23,37 @@
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :beer_ibu, :class => "form-control", placeholder: "Beer IBU" %>
 	</div>
-	<div class="col-sm-6 col-xs-12">
+	<div class="col-sm-1 col-xs-6 rating-na">
+		<%= label :rating_one_na, 'Rating 1 N/A' %>
+	</div>
+	<div class="col-sm-1 col-xs-6 rating-checkbox">
+		<%= f.check_box :rating_one_na, :class => "form-control" %>
+	</div>
+	<div class="col-sm-4 col-xs-12">
 		<%= f.text_field :beer_rating_one, :class => "form-control", placeholder: "Beer rating (1)" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :number_ratings_one, :class => "form-control", placeholder: "Number of ratings (1)" %>
 	</div>
-	<div class="col-sm-6 col-xs-12">
+	<div class="col-sm-1 col-xs-6 rating-na">
+		<%= label :rating_two_na, 'Rating 2 N/A' %>
+	</div>
+	<div class="col-sm-1 col-xs-6 rating-checkbox">
+		<%= f.check_box :rating_two_na, :class => "form-control" %>
+	</div>
+	<div class="col-sm-4 col-xs-12">
 		<%= f.text_field :beer_rating_two, :class => "form-control", placeholder: "Beer rating (2)" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :number_ratings_two, :class => "form-control", placeholder: "Number of ratings (2)" %>
 	</div>
-	<div class="col-sm-6 col-xs-12">
+	<div class="col-sm-1 col-xs-6 rating-na">
+		<%= label :rating_three_na, 'Rating 3 N/A' %>
+	</div>
+	<div class="col-sm-1 col-xs-6 rating-checkbox">
+		<%= f.check_box :rating_three_na, :class => "form-control" %>
+	</div>
+	<div class="col-sm-4 col-xs-12">
 		<%= f.text_field :beer_rating_three, :class => "form-control", placeholder: "Beer rating (3)" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">

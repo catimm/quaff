@@ -23,6 +23,9 @@
 #  number_ratings_two   :integer
 #  beer_rating_three    :float
 #  number_ratings_three :integer
+#  rating_one_na        :boolean
+#  rating_two_na        :boolean
+#  rating_three_na      :boolean
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

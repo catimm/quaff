@@ -26,8 +26,9 @@ class Brewery < ActiveRecord::Base
   end
   
   scope :live_brewery_beers, ->  { joins(:beers).merge(Beer.live_beers) }
-  scope :unrated_live_brewery_beers, -> { joins(:beers).merge(Beer.live_beers).merge(Beer.unrated_beers) }
-  
+  scope :need_attention_brewery_beers, -> { joins(:beers).merge(Beer.live_beers).merge(Beer.need_attention_beers) }
+  scope :complete_brewery_beers, -> { joins(:beers).merge(Beer.live_beers).merge(Beer.complete_beers) }
+
   #filterrific(
   #  #default_filter_params: { live_brewery_beers: 0 },
   #  available_filters: [

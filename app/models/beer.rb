@@ -23,6 +23,9 @@
 #  number_ratings_two   :integer
 #  beer_rating_three    :float
 #  number_ratings_three :integer
+#  rating_one_na        :boolean
+#  rating_two_na        :boolean
+#  rating_three_na      :boolean
 #
 
 class Beer < ActiveRecord::Base
@@ -57,8 +60,17 @@ class Beer < ActiveRecord::Base
   scope :live_beers, -> { 
     joins(:beer_locations).merge(BeerLocation.current) 
   }
-  scope :unrated_beers, -> { where(beer_rating_one: nil, beer_rating_two: nil, beer_rating_three: nil) }
-
+  scope :need_attention_beers, -> { 
+    where(beer_rating_one: nil, beer_rating_two: nil, beer_rating_three: nil, beer_type_id: nil, 
+          rating_one_na: nil, rating_two_na: nil, rating_three_na: nil) 
+    }
+  
+  scope :complete_beers, -> { 
+    where("rating_one_na = ? OR beer_rating_one IS NOT NULL", true).
+    where("rating_two_na = ? OR beer_rating_two IS NOT NULL", true).
+    where("rating_three_na = ? OR beer_rating_three IS NOT NULL", true).
+    where.not(beer_type_id: nil) }
+  
   # save actual tags without quotes
   def descriptor_list_tokens=(tokens)
      self.descriptor_list = tokens.gsub("'", "")
