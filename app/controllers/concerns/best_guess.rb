@@ -16,6 +16,7 @@ module BestGuess
     end
     # cycle through each beer to see if there is a style match and apply proper algorithm
     @beers.each do |this_beer|
+      # Rails.logger.debug("beer info: #{this_beer.inspect}")
       # find this beer's beer type id
       this_beer_type_id = this_beer.beer_type_id
       # first find out if this beer has a type associated to it yet

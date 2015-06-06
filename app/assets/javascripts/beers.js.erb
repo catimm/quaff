@@ -8,4 +8,32 @@ $(function() {
 		prePopulate: $('#beer_descriptor_list_tokens').data('load')
 	});
 
+	// default word cloud if no descriptors exist 
+	var word_array = [
+          {text: "descriptors", weight: 15},
+          {text: "no", weight: 9},
+          {text: "yet", weight: 6},
+          {text: "no", weight: 7},
+          {text: "descriptors", weight: 5},
+          {text: "yet", weight: 8},
+          {text: "no", weight: 12},
+          {text: "yet", weight: 4},
+          {text: "descriptors", weight: 3}
+          // ...as many words as you want
+      ];
+
+	 if (gon.beer_array != undefined) {
+		 // create word cloud and return to view
+		if ( gon.beer_array.length > 0 ) {
+			$("#cloud-holder-full-page").jQCloud(gon.beer_array, {
+		  		autoResize: true
+		     });
+		 } else {
+			$("#cloud-holder-full-page").jQCloud(word_array, {
+		  		autoResize: true
+		     });
+		 }
+	 } else {
+	 	return;
+	 }
 });

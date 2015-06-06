@@ -12,6 +12,9 @@
 #  image_url    :string
 #  short_name   :string
 #  neighborhood :string
+#  logo_small   :string
+#  logo_med     :string
+#  logo_large   :string
 #
 
 require 'test_helper'

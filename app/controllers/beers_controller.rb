@@ -1,21 +1,50 @@
 class BeersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_descriptor_tags, only: [:new, :create, :edit, :update]
+  before_filter :find_descriptor_tags, only: [:show]
+  include BestGuess
   
-  def index
+  def show
+    @user_id = current_user.id
+    # grab beer info
+    @beer = Beer.where(id: params[:id])[0]
+    Rails.logger.debug("Beer info #{@beer.inspect}")
+    # grab ids of current beers for this location
+    @beer_locations = BeerLocation.where(beer_id: params[:id])
+    Rails.logger.debug("Locations: #{@beer_locations.inspect}")
+    # find if any beer locations currently have the beer
+    @current_beer_locations = @beer_locations.where(beer_is_current: "yes").pluck(:location_id)
+    Rails.logger.debug("Current locations: #{@current_beer_locations.inspect}")
+    # find most recent locations where beer was located
+    @recent_beer_locations = @beer_locations.where(beer_is_current: "no").order(:removed_at).reverse
+    if @recent_beer_locations
+      @recent_beer_locations.first(3)
+    end
+    Rails.logger.debug("Recent locations: #{@recent_beer_locations.inspect}")
+    @beer = best_guess(@beer.id)[0]
+    Rails.logger.debug("Beer ranking #{@beer.best_guess.inspect}")
+    # grab beer ids that will match each jcloud
+    # @beers_ids = @beers.pluck(:id)
+    @user_drink_list = DrinkList.where(user_id: current_user.id)
+    # send beer ids to javascript file to create jcloud
+    beer_descriptor = Array.new
+    @beer_descriptors = Beer.find(@beer.id).descriptors
+    @beer_descriptors.each do |descriptor|
+      @descriptor = descriptor["name"]
+      beer_descriptor << @descriptor
+    end
+    descriptor_count = beer_descriptor.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
+    cloud_array = Array.new
+    descriptor_count.each do |key, value|
+      new_hash = Hash.new
+      new_hash["text"] = key
+      new_hash["weight"] = value
+      cloud_array << new_hash
+    end
+    Rails.logger.debug("Each beer descriptors: #{cloud_array.inspect}")
+
+    gon.beer_array = cloud_array
   end
   
-  def new
-  end
-  
-  def create
-  end
-  
-  def edit
-  end
-  
-  def update
-  end 
   
   def descriptors
     Rails.logger.debug("Descriptors is called too")

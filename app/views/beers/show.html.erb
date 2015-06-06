@@ -1,0 +1,115 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row">
+		<div class="col-sm-1 col-xs-0"></div>
+		<div class="col-sm-10 col-xs-12 beer-info-tile">
+			<div class="row">
+				<div class="col-sm-8 col-xs-12">
+					<div class="row no-margin">
+						<div class="col-xs-4 no-padding">
+							<div class="brewery-image-holder-full-page">	
+								<% if !@beer.brewery.image.nil? %>
+									<div class="brewery-image-holder-full text-center">
+										<p>show image</p>
+									</div>	
+								<% else %>
+									<div class="brewery-image-holder-empty-full-page text-center">
+										<h1><i class="fa fa-beer"></i></h1>
+									</div>
+								<% end %>
+							</div>
+						</div>
+						<div class="col-xs-7 cloud-holder-full-page" id="cloud-holder-full-page"></div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12">
+							<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= @beer.beer_name %></h5>
+						</div>
+						<div class="col-xs-12">
+							<% if !@beer.beer_type_id.nil? %>
+								<h5 class="tile-subheader beer-info no-overflow"><%= @beer.beer_type.beer_type_name %></h5>
+							<% else %>
+								<h5 class="tile-subheader beer-info">Style unknown</h5>
+							<% end %>
+						</div>
+						<div class="col-sm-3 col-xs-6 no-padding-right abv-div">
+							<h6 class="tile-subheader beer-info"><%= @beer.beer_abv %>% ABV</h6>
+						</div>
+						<div class="col-sm-3 col-xs-6 no-padding-left text-center">
+							<% if !@beer.beer_ibu.nil? %>
+								<h6 class="tile-subheader beer-info"><%= @beer.beer_ibu %> IBUs</h6>
+							<% else %>
+								<h6 class="tile-subheader beer-info">IBUs N/A</h6>
+							<% end %>
+						</div>	
+					</div>
+					<div class="row no-margin our-best-guess">
+						<div class="col-sm-5 col-xs-12">
+							<p>Our best guess for you:</p>
+							<% if @beer.best_guess > 10 %>
+								<% @beer.best_guess == 10 %>
+							<% end %>
+							<% if @beer.best_guess % 1 == 0 %>
+								<h1><%= @beer.best_guess.round(0) %></h1>
+							<% else %>
+								<h1><%= @beer.best_guess %></h1>
+							<% end %>
+						</div>
+						<div class="col-sm-7 col-xs-12 why-statement-full-page no-padding-left">
+							<p>Why, you ask?</p>
+							<% if  @beer.is_hybrid == "yes"%>
+								<%= render 'locations/hybrid_rating_rationale', beer: @beer %>
+							<% else %>
+								<%= render 'locations/nonhybrid_rating_rationale', beer: @beer %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4 col-xs-12">
+					<%= link_to new_user_rating_path(@user_id, @beer.id), class: 'btn btn-default btn-success formButton' do %>
+						<i class="fa fa-heart"> rate beer</i>
+					<% end %>
+					<% if !@current_beer_locations.blank? %>
+						<h4 class="beer-location-status">This beer is currently at:</h4>
+						<ul class="locations-list">
+						<% @current_beer_locations.each do |location| %>
+							<% @this_location = Location.where(id: location)[0] %>
+							<li>
+								<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
+									<p><%= @this_location.short_name %></p>
+								</div>
+							</li>
+						<% end %>
+						</ul>
+					<% else %>
+						<% if !@recent_beer_locations.blank? %>
+							<h4 class="beer-location-status">This beer was last seen at:</h4>
+							<ul class="locations-list">
+							<% @recent_beer_locations.each_with_index do |location, i| %>
+								<% if i < 3 %>
+									<% @this_location = Location.where(id: location.location_id)[0] %>
+									<li>
+										<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
+											<p><%= @this_location.short_name %> on <%= (location.removed_at).strftime("%b %e, %Y") %></p>
+										</div>
+										
+									</li>
+								<% end %>
+							<% end %>
+							</ul>
+						<% else %>
+							<h4 class="beer-location-status not-seen-message">This beer hasn't been on tap in Seattle since before April 2015...</h4>
+						<% end %>
+					<% end %>
+					<%= link_to new_user_rating_path(@user_id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
+						<i class="fa fa-plus"> track beer</i>
+					<% end %>
+				</div>
+			</div>
+			<div class="row">
+				
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

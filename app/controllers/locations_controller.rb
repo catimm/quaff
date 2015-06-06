@@ -4,7 +4,7 @@ class LocationsController < ApplicationController
   include LocationRating
   
   def index
-    @retailers = Location.all
+    @retailers = Location.first(6)
     @retailers_ranked = rate_location(@retailers).sort_by(&:location_rating).reverse
     Rails.logger.debug("Retails ranked info: #{@retailers_ranked.inspect}")
   end
