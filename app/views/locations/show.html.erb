@@ -41,8 +41,13 @@
 					</div>
 					<div class="row no-margin">
 						<div class="col-xs-10">
-							<% @title_header = beer.brewery.short_brewery_name + " " + beer.beer_name %>
-							<%= link_to @title_header, brewery_beer_path(beer.brewery.id, beer.id), :class => 'tile-header beer-tile-header' %>
+							<% if !beer.brewery.short_brewery_name.nil? %>
+								<% @title_header = beer.brewery.brewery_name + " " + beer.beer_name %>
+								<%= link_to @title_header, brewery_beer_path(beer.brewery.id, beer.id), :class => 'tile-header beer-tile-header' %>
+							<% else %>
+								<% @title_header = beer.brewery.short_brewery_name + " " + beer.beer_name %>
+								<%= link_to @title_header, brewery_beer_path(beer.brewery.id, beer.id), :class => 'tile-header beer-tile-header' %>
+							<% end %>
 						</div>
 						<div class="col-xs-12">
 							<% if !beer.beer_type_id.nil? %>
