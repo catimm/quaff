@@ -104,7 +104,7 @@ task :check_pine_box => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
@@ -263,7 +263,7 @@ task :check_chucks_85 => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
@@ -408,7 +408,7 @@ task :check_chucks_cd => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
@@ -557,7 +557,7 @@ task :check_beer_junction => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
@@ -717,7 +717,7 @@ task :check_beveridge_place => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
@@ -912,7 +912,7 @@ task :check_fremont_beer_garden => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
@@ -999,10 +999,17 @@ task :check_the_yard => :environment do
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
         @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%").where(collab: false)
-        if @related_brewery
-              @initial_beer_name.slice! word
-              @this_beer_name = @initial_beer_name
-              # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
+        if @related_brewery.blank?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          if !@alt_brewery_name.blank?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+            @initial_beer_name.slice! word
+            @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+          end
+        else
+          @initial_beer_name.slice! word
+          @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+          # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
         end
         break if !@related_brewery.nil?
       end  
@@ -1035,7 +1042,7 @@ task :check_the_yard => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
@@ -1127,10 +1134,17 @@ task :check_the_dray => :environment do
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
         @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%").where(collab: false)
-        if @related_brewery
-              @initial_beer_name.slice! word
-              @this_beer_name = @initial_beer_name
-              # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
+        if @related_brewery.blank?
+          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          if !@alt_brewery_name.blank?
+            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+            @initial_beer_name.slice! word
+            @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+          end
+        else
+          @initial_beer_name.slice! word
+          @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+          # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
         end
         break if !@related_brewery.nil?
       end  
@@ -1163,7 +1177,7 @@ task :check_the_dray => :environment do
           elsif @this_beer_name.include? beer.beer_name
              the_second_name_match = true
           else
-            @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
+            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
