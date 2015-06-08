@@ -15,20 +15,6 @@
 		<div class="row row-horizon">
 			<% @beer_ranking.each do |beer| %>
 			<div class="col-sm-4 col-xs-12 beer-tile-container">
-				<% if @user_drink_list.map{|a| a.beer_id}.include? beer.id %>
-				<div class="beer-added text-center">
-					<i class="fa fa-check"></i>
-				</div>
-				<% else %>
-				<div class="add-beer text-center show">
-					<%= link_to brewery_beer_update_path(:beer => beer.id), :remote => true, :class => 'add-this-beer' do %>
-						<i class="fa fa-plus"></i>
-					<% end %>
-				</div>
-				<div class="beer-added text-center hide">
-					<i class="fa fa-check"></i>
-				</div>
-				<% end %>
 				<%= link_to new_user_rating_path(current_user.id, beer.id), :class => 'rate-beer text-center' do %>
 					<i class="fa fa-heart"></i>
 				<% end %>

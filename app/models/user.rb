@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
   has_many :beers, through: :user_beer_ratings
   has_many :drink_lists
   has_many :beers, through: :drink_lists
+  has_many :user_beer_trackings
   
   def admin?
     self.role.role == "admin"

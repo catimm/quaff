@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   
   devise_for :users, controllers: { invitations: "invitations" }
   resources :users do
-    resources :drinks, :ratings, :rewards   
+    resources :drinks, :ratings, :rewards, :trackings   
   end
   
   namespace :admin do
@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   get 'home/update' => 'home#update', :as => 'show_beers'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
+  post 'trackings/create' => 'trackings#create', :as => 'user_new_tracking'
   get 'locations' => 'locations#index'
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'

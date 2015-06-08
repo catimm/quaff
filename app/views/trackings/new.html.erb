@@ -1,0 +1,32 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row">
+		<div class="col-sm-3 col-xs-0"></div>
+		<div class="col-sm-6 col-xs-12 rating-tile">
+			<div class="row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-10 col-xs-12">
+					<h4>You'll be notified when <%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %> is available at the location(s) you choose:</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4 col-xs-3"></div>
+				<div class="col-sm-4 col-xs-6">
+					<input id="all_checkbox" type="checkbox" name="all" checked><span id="all-city">Anywhere in Seattle</span></input>
+					<h6 class="text-center or-text">-- or --</h6>
+					<%= form_for @location_tracking, :url => {:controller => "trackings", :action => "create"} do |track| %>
+					<%= track.hidden_field :beer_id, :value => @this_beer.id %>
+					<%= track.collection_check_boxes :location_id, @locations, :id, :short_name, {class: "form-control"} %>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2 col-xs-1"></div>
+				<div class="col-sm-8 col-xs-10 comment-holder">
+					<%= track.submit "Save", class: "btn btn-default btn-success formButton" %>
+				</div>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

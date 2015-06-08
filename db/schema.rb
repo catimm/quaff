@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150605213238) do
+ActiveRecord::Schema.define(version: 20150608034751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,13 @@ ActiveRecord::Schema.define(version: 20150605213238) do
     t.datetime "updated_at"
   end
 
+  create_table "location_trackings", force: :cascade do |t|
+    t.integer  "user_beer_tracking_id"
+    t.integer  "location_id"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "locations", force: :cascade do |t|
     t.string   "name"
     t.string   "homepage"
@@ -162,6 +169,14 @@ ActiveRecord::Schema.define(version: 20150605213238) do
     t.text     "comment"
     t.text     "current_descriptors"
     t.integer  "beer_type_id"
+  end
+
+  create_table "user_beer_trackings", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "beer_id"
+    t.datetime "removed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_style_preferences", force: :cascade do |t|

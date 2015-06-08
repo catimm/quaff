@@ -101,7 +101,7 @@
 							<h4 class="beer-location-status not-seen-message">This beer hasn't been on tap in Seattle since before April 2015...</h4>
 						<% end %>
 					<% end %>
-					<%= link_to new_user_rating_path(@user_id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
+					<%= link_to new_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
 						<i class="fa fa-plus"> track beer</i>
 					<% end %>
 				</div>

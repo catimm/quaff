@@ -482,7 +482,7 @@ $beer-header-lines-to-show: 2;
   z-index: 1000;
   position: absolute;
   top: 0;
-  right: 9px;
+  left: 9px;
   i {
     color: $white;
   }
@@ -1015,6 +1015,30 @@ div.jqcloud span.w1 { color: $light-blue; }
   h6 {
     margin: 5px 0 5px 5px;
   }
+}
+#new_location_tracking {
+  input {
+    margin-right: 2.5px;
+  }
+  label {
+    display:inline;
+    font-size: 15px;
+    color: $normal-text;
+  }
+  label:after {
+      content:"\a";
+      white-space: pre;
+  }
+}
+#all-city {
+   color: $normal-text;
+   font-weight: 400;
+   font-size: 15px;
+   margin-left: 2.5px;
+}
+.or-text {
+  color: $less-emphasized-text;
+  font-weight: 400;
 }
 #user_beer_rating_comment {
   height: 66px;

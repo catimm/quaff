@@ -1,0 +1,12 @@
+$(function() {
+	$('#all_checkbox').on("change", function(){
+		if ($("#new_location_tracking input:checkbox:checked").length > 0) {
+			$('#new_location_tracking').children('input[type="checkbox"]').removeAttr('checked');
+		} 
+	});
+	$('#new_location_tracking').children('input[type="checkbox"]').on("change", function(){
+		if ($('#all_checkbox').is('checked')) {
+			('#all_checkbox').removeAttr('checked');
+		}
+	});
+});

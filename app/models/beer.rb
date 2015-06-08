@@ -46,6 +46,7 @@ class Beer < ActiveRecord::Base
   has_many :users, through: :user_beer_ratings
   has_many :drink_lists
   has_many :users, through: :drink_lists
+  has_many :user_beer_trackings
   
   attr_accessor :best_guess
   attr_accessor :likes_style
