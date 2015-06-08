@@ -16,18 +16,21 @@ class TrackingsController < ApplicationController
     new_user_tracking = UserBeerTracking.new(user_id: params[:user_id], beer_id: params[:location_tracking][:beer_id])
     if new_user_tracking.save
       @locations = params[:location_tracking][:location_id]
-      if @locations.nil?
+      Rails.logger.debug("Locations ids: #{@locations.inspect}")
+      if @locations.length == 1
         new_user_location = LocationTracking.new(user_beer_tracking_id: new_user_tracking.id, location_id: 0)
         new_user_location.save!
       else
-        @locations.compact
         @locations.each do |location_id|
-          new_user_location = LocationTracking.new(user_beer_tracking_id: new_user_tracking.id, location_id: location_id)
-          new_user_location.save!
+          Rails.logger.debug("This location: #{location_id.inspect}")
+          if location_id != ""
+            new_user_location = LocationTracking.new(user_beer_tracking_id: new_user_tracking.id, location_id: location_id)
+            new_user_location.save!
+          end
         end
       end
     end
-
+    beer = Beer.where(id: params[:location_tracking][:beer_id])
     # now redirect back to locations page
     redirect_to locations_path
   end
