@@ -42,6 +42,8 @@ Rails.application.routes.draw do
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
   get 'reloads' => 'reloads#index'
+  get 'searches/index' => 'searches#index', :as => 'search'
+  # admin routes
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'

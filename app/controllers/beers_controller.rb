@@ -3,6 +3,10 @@ class BeersController < ApplicationController
   before_filter :find_descriptor_tags, only: [:show]
   include BestGuess
   
+  def index
+    
+  end
+  
   def show
     @user_id = current_user.id
     # grab beer info

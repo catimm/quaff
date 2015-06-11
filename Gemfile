@@ -64,7 +64,8 @@ gem 'strip_attributes'
 gem 'acts-as-taggable-on', '~> 3.4'
 # Tokeninput is a jQuery plugin to select multiple items from a predefined list, using autocompletion
 # gem 'jquery-tokeninput-rails'
-
+# PgSearch builds named scopes that take advantage of PostgreSQL's full text search
+gem 'pg_search'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

@@ -29,6 +29,7 @@
 #
 
 class Beer < ActiveRecord::Base
+  include PgSearch
   include DescriptorExtend
   # to strip white spaces from each beer added to this table
   strip_attributes
@@ -53,7 +54,12 @@ class Beer < ActiveRecord::Base
   attr_accessor :beer_style_name_one
   attr_accessor :beer_style_name_two
   attr_accessor :is_hybrid
+
+  pg_search_scope :beer_search, :against => :beer_name,
+                  :associated_against => { :brewery => :brewery_name },
+                  :using => { :tsearch => {:prefix => true} }
   
+  # put beer name and id together into one variable
   def connect_deleted_beer
     "#{beer_name} [id: #{id}]"
   end

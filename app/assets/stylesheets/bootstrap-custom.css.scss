@@ -1058,7 +1058,7 @@ div.jqcloud span.w1 { color: $light-blue; }
 
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */
-@media (max-width: 768px) {
+@media(max-width:767px) {
   body {
     padding-top: 50px;
     margin-bottom: 40px;
@@ -1190,7 +1190,7 @@ div.jqcloud span.w1 { color: $light-blue; }
       font-weight: 200;
     }
   }
-@media (min-width: 786px) {
+@media(min-width: 768px) {
   .image-holder {
     position: fixed;
     top: 120px;

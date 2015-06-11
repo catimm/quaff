@@ -59,4 +59,5 @@ class LocationsController < ApplicationController
     
   end
   
+  
 end # end controller
