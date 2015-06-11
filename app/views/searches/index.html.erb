@@ -1,0 +1,77 @@
+<%= render 'layouts/header' %> 
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-1 col-xs-0"></div>
+			<div class="col-sm-10 col-xs-12 search-result-tile">
+				<% if @search.empty? %>
+					<div class="row">
+						<div class="col-sm-8 col-xs-12">
+							<h4 class="no-search-results">Sorry, we don't see a match... Please use the "add beer" button to suggest we add a beer.</h4>
+						</div>
+						<div class="col-sm-4 col-xs-12">
+							<%= link_to user_add_beer_path, class: 'btn btn-default btn-success formButton' do %>
+								<i class="fa fa-plus"> add a beer!</i>
+							<% end %>
+						</div>
+					</div>
+				<% else %>
+					<div class="row">
+						<div class="col-sm-8 col-xs-12">
+							<% @search.each_with_index do |beer, index| %>
+								<div class="row no-margin">
+									<div class="col-xs-4 brewery-image-holder">	
+										<% if !beer.brewery.image.nil? %>
+											<div class="brewery-image-holder-full text-center">
+												<p>show image</p>
+											</div>	
+										<% else %>
+											<div class="brewery-image-holder-empty text-center">
+												<h1><i class="fa fa-beer"></i></h1>
+											</div>
+										<% end %>
+									</div>
+									<div class="col-xs-8 no-padding-left">
+										<h5 class="search-brewery-header"><%= beer.brewery.brewery_name %></h5>
+										<h5 class="search-beer-header"><%= beer.beer_name %></h5>
+										<% if !beer.beer_type_id.nil? %>
+											<h5 class="tile-subheader beer-info no-overflow"><%= beer.beer_type.beer_type_name %></h5>
+										<% else %>
+											<h5 class="tile-subheader beer-info">Style unknown</h5>
+										<% end %>
+										<div class="row">
+											<div class="col-xs-6 col-sm-4 no-padding-right abv-div">
+												<h6 class="tile-subheader beer-info"><%= beer.beer_abv %>% ABV</h6>
+											</div>
+											<div class="col-xs-6 col-sm-4 no-padding-left text-center">
+												<% if !beer.beer_ibu.nil? %>
+													<h6 class="tile-subheader beer-info"><%= beer.beer_ibu %> IBUs</h6>
+												<% else %>
+													<h6 class="tile-subheader beer-info">IBUs N/A</h6>
+												<% end %>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row no-margin">	
+									<div class="col-xs-12">
+										<% @location_id = BeerLocation.where(beer_id: beer.id, beer_is_current: "yes").pluck(:location_id) %>
+										<% @location = Location.find(@location_id)[0] %>
+										<h6 class="tile-subheader">@ Location Here</h6>
+									</div>	
+								</div>
+								<% if index != @search.size - 1 %>
+							    	<hr>
+							  	<% end %>
+							<% end %>
+						</div>
+						<div class="col-sm-4 col-xs-12">
+							<%= link_to user_add_beer_path, class: 'btn btn-default btn-success formButton' do %>
+								<i class="fa fa-plus"> add a beer!</i>
+							<% end %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %> 

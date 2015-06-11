@@ -121,6 +121,40 @@ label {
   color: $normal-text;
   font-weight: 400;
 }
+// Search result page
+.search-result-tile {
+  margin: 15px 0;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  min-height: 150px;
+}
+.search-brewery-header {
+  color: $header-text;
+  font-weight: 500; 
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.search-beer-header {
+  color: $header-text;
+  font-weight: 500; 
+  margin: 0 0 5px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  line-height: 1.2;
+}
+hr {
+  margin: 10px 0;
+}
 // Beer info page
 .beer-info-tile {
   margin-top: 15px;
@@ -1064,6 +1098,16 @@ div.jqcloud span.w1 { color: $light-blue; }
     margin-bottom: 40px;
     overflow-x: hidden;
   }
+  // navbar header
+  .navbar-form {
+    width: 220px;
+    border: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  // locations index page
   .overview-tile {
     margin-bottom: 10px;
   }
