@@ -44,11 +44,19 @@ class User < ActiveRecord::Base
   has_many :beers, through: :drink_lists
   has_many :user_beer_trackings
   
+  def super_admin?
+    self.role.role == "super_admin"
+  end
+  
   def admin?
     self.role.role == "admin"
   end
   
-  def regular?
-    self.role.role == "regular"
+  def super_user?
+    self.role.role == "super_user"
+  end
+  
+  def user?
+    self.role.role == "user"
   end
 end
