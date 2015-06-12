@@ -49,6 +49,41 @@ class BeersController < ApplicationController
     gon.beer_array = cloud_array
   end
   
+  def create
+    # get data from params
+    @associated_brewery = params[:beer][:associated_brewery]
+    @this_beer_name = params[:beer][:beer_name]
+    @rate_beer_now = params[:beer][:rate_beer_now]
+    Rails.logger.debug("Rate beer #{@rate_beer_now.inspect}")
+    # check if this brewery is already in system
+    @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@associated_brewery}%", "%#{@associated_brewery}%").where(collab: false)
+    if @related_brewery.empty?
+       @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@associated_brewery}%")
+       if !@alt_brewery_name.empty?
+         @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+       end
+     end
+     # if brewery does not exist in DB, insert info into Breweries and Beers tables
+     if @related_brewery.empty?
+        # first add new brewery to breweries table & add correct collab status
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :user_addition => true)
+        new_beer.save!
+      else # since this brewery exists in the breweries table, fadd beer to beers table
+        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :user_addition => true)
+        new_beer.save!
+      end
+      
+      #redirect at end of action
+      if @rate_beer_now == "1"
+        redirect_to new_user_rating_path(current_user.id, new_beer.id)
+      else 
+        # redirect_to locations_path
+        redirect_to user_add_beer_path
+      end
+  end
   
   def descriptors
     Rails.logger.debug("Descriptors is called too")

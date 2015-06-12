@@ -137,20 +137,24 @@ label {
 .search-brewery-header {
   color: $header-text;
   font-weight: 500; 
-  margin-bottom: 5px;
+  margin-bottom: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 14px;
   line-height: 1.2;
 }
-.search-beer-header {
+a.search-beer-header {
   color: $header-text;
   font-weight: 500; 
-  margin: 0 0 5px 0;
+  margin-bottom: 10px !important;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 14px;
   line-height: 1.2;
+}
+.search-beer-info {
+  margin: 5px 0 5px 0;
+  color: $less-emphasized-text;
 }
 hr {
   margin: 10px 0;

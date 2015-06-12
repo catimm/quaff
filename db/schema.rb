@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150611041722) do
+ActiveRecord::Schema.define(version: 20150612061353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 20150611041722) do
     t.boolean  "rating_one_na"
     t.boolean  "rating_two_na"
     t.boolean  "rating_three_na"
+    t.boolean  "user_addition"
   end
 
   create_table "breweries", force: :cascade do |t|

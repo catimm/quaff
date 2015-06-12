@@ -26,6 +26,7 @@
 #  rating_one_na        :boolean
 #  rating_two_na        :boolean
 #  rating_three_na      :boolean
+#  user_addition        :boolean
 #
 
 require 'test_helper'

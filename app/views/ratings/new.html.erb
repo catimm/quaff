@@ -17,14 +17,15 @@
 					</div>
 					<div class="col-sm-9 col-xs-8 no-padding-left">
 						<h5 class="tile-header beer-tile-header"><%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %></h5>
-						<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
+						<% if !@location.nil? %>
+							<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
+						<% end %>
 					</div>			
 			</div>
 			<%= form_for @user_beer_rating, :url => {:controller => "ratings", :action => "create"} do |rate| %>
 			<%= rate.hidden_field :user_id, :value => @user.id %>
 			<%= rate.hidden_field :rated_on, :value => @time %>
 			<%= rate.hidden_field :beer_id, :value => @this_beer.id %>
-			<%= rate.hidden_field :drank_at, :value => @location.short_name %>
 			<%= rate.hidden_field :projected_rating, :value => @our_best_guess %>
 			<%= rate.hidden_field :current_descriptors, :value => "" %>
 			<%= rate.hidden_field :beer_type_id, :value => @this_beer.beer_type_id %>
@@ -48,6 +49,21 @@
 	                        'slider-orientation' => 'horizontal' } %> 
 				</div>
 			</div>
+			<% if !@location.nil? %>
+				<%= rate.hidden_field :drank_at, :value => @location.short_name %>
+			<% else %>
+				<div class="row">
+					<div class="col-sm-1 col-xs-0"></div>
+					<div class="col-sm-3 col-xs-3 text-center small-padding">
+						<div class="rating-direction">
+							<p>Where you drinkin', Lincoln?</p>
+						</div>
+					</div>
+					<div class="col-sm-8 col-xs-9 descriptor-holder text-left">
+						<%= rate.text_field :drank_at, :class => "form-control", placeholder: "Drinking location (optional)" %>
+					</div>
+				</div>
+			<% end %>
 			<div class="row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-3 col-xs-3 text-center small-padding">

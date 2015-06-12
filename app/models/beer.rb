@@ -26,6 +26,7 @@
 #  rating_one_na        :boolean
 #  rating_two_na        :boolean
 #  rating_three_na      :boolean
+#  user_addition        :boolean
 #
 
 class Beer < ActiveRecord::Base
@@ -54,6 +55,8 @@ class Beer < ActiveRecord::Base
   attr_accessor :beer_style_name_one
   attr_accessor :beer_style_name_two
   attr_accessor :is_hybrid
+  attr_accessor :associated_brewery
+  attr_accessor :rate_beer_now
 
   pg_search_scope :beer_search, :against => :beer_name,
                   :associated_against => { :brewery => :brewery_name },
