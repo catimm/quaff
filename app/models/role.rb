@@ -3,7 +3,7 @@
 # Table name: roles
 #
 #  id         :integer          not null, primary key
-#  role       :string
+#  role_name  :string
 #  created_at :datetime
 #  updated_at :datetime
 #

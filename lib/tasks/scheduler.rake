@@ -88,7 +88,7 @@ task :check_pine_box => :environment do
         # finally add new beer option to beer_locations table
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
         new_option.save!  
-        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         @new_beer_info << this_new_beer
       else 
         Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
@@ -133,6 +133,37 @@ task :check_pine_box => :environment do
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
             Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
             new_option.save!
+            # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << new_option.id
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
@@ -143,7 +174,7 @@ task :check_pine_box => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
         end
       end   
@@ -157,9 +188,10 @@ task :check_pine_box => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    Rails.logger.debug("Location Beers: #{@new_beer_info.inspect}")
     if !@new_beer_info.empty?
       BeerUpdates.new_beers_email("Pine Box", @new_beer_info).deliver
-    end
+    end 
 end
 
 desc "Check Chuck's 85"
@@ -248,7 +280,7 @@ task :check_chucks_85 => :environment do
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
         new_option.save!  
         # create list item (new beer) to send via email
-        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
       else 
@@ -286,6 +318,37 @@ task :check_chucks_85 => :environment do
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 3, :beer_is_current => "yes")
             new_option.save!
+            # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << new_option.id
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           # if beer doesn't exist in DB, first add new beer to beers table       
@@ -295,7 +358,7 @@ task :check_chucks_85 => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
         end
       end   
@@ -394,7 +457,9 @@ task :check_chucks_cd => :environment do
         # finally add new beer option to beer_locations table
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
         new_option.save!  
-        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)"
+         # create list item (new beer) to send via email
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
+        # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
       else 
         # since this brewery exists in the breweries table, find all its related beers from the beers table
@@ -431,6 +496,37 @@ task :check_chucks_cd => :environment do
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 4, :beer_is_current => "yes")
             new_option.save!
+            # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << new_option.id
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           # if beer doesn't exist in DB, first add new beer to beers table       
@@ -440,8 +536,8 @@ task :check_chucks_cd => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (an unknown type)" 
-          @new_beer_info << this_new_beer   
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
+          @new_beer_info << this_new_beer  
         end
       end   
     end # end loop through scraped beers
@@ -543,7 +639,9 @@ task :check_beer_junction => :environment do
         # finally add new beer option to beer_locations table
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
         new_option.save!  
-        this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"
+         # create list item (new beer) to send via email
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
+        # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
       else 
         # since this brewery exists in the breweries table, find all its related beers from the beers table
@@ -580,6 +678,37 @@ task :check_beer_junction => :environment do
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 1, :beer_is_current => "yes")
             new_option.save!
+            # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << new_option.id
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           # if beer doesn't exist in DB, first add new beer to beers table       
@@ -589,8 +718,8 @@ task :check_beer_junction => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")" 
-          @new_beer_info << this_new_beer   
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
+          @new_beer_info << this_new_beer  
         end
       end   
     end # end loop through scraped beers
@@ -702,7 +831,9 @@ task :check_beveridge_place => :environment do
         # finally add new beer option to beer_locations table
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
         new_option.save!  
-        this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")"
+         # create list item (new beer) to send via email
+        this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
+        # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
       else 
         # Rails.logger.debug("This is firing, so it DOES recognize Brewery in breweries table")
@@ -740,6 +871,37 @@ task :check_beveridge_place => :environment do
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 5, :beer_is_current => "yes")
             new_option.save!
+            # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << new_option.id
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           # if beer doesn't exist in DB, first add new beer to beers table       
@@ -749,7 +911,7 @@ task :check_beveridge_place => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")" 
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
         end
       end   
@@ -849,7 +1011,9 @@ task :check_fremont_beer_garden => :environment do
           # finally add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 6, :beer_is_current => "yes")
           new_option.save!  
-          this_new_beer = @this_brewery_name +" "+ @this_beer_name
+          # create list item (new beer) to send via email
+          this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
+          # add new list (new beer) to an array to send via email 
           @new_beer_info << this_new_beer
         else 
           # Rails.logger.debug("This is firing, so it DOES recognize Brewery in breweries table")
@@ -887,6 +1051,37 @@ task :check_fremont_beer_garden => :environment do
               # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
               new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 6, :beer_is_current => "yes")
               new_option.save!
+              # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << new_option.id
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
             end
           else
             # if beer doesn't exist in DB, first add new beer to beers table       
@@ -896,7 +1091,7 @@ task :check_fremont_beer_garden => :environment do
             new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 6, :beer_is_current => "yes")
             new_option.save!
             # finally, push this beer info into an array to be sent to us via email
-            this_new_beer = @this_brewery_name +" "+ @this_beer_name +" "+"(an "+ @this_beer_type +")" 
+            this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
             @new_beer_info << this_new_beer   
           end
         end   
@@ -935,6 +1130,37 @@ task :check_fremont_beer_garden => :environment do
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 6, :beer_is_current => "yes")
             new_option.save!
+            # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
+            @current_beer_ids << new_option.id
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = "Fremont " + @this_beer_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = "Fremont " + @this_beer_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = "Fremont "+ @this_beer_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           # if beer doesn't exist in DB, first add new beer to beers table       
@@ -944,7 +1170,7 @@ task :check_fremont_beer_garden => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 6, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = "Fremont "+ @this_beer_name 
+          this_new_beer = "Fremont "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
         end
       end # end separation of whether beer is guest beer or not
@@ -1026,7 +1252,9 @@ task :check_the_yard => :environment do
         # finally add new beer option to beer_locations table
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 7, :beer_is_current => "yes")
         new_option.save!  
-        this_new_beer = @this_brewery_name + " (an unknown type)"
+         # create list item (new beer) to send via email
+        this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)"
+        # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
       else 
         Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
@@ -1071,6 +1299,35 @@ task :check_the_yard => :environment do
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 7, :beer_is_current => "yes")
             Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
             new_option.save!
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
@@ -1081,7 +1338,7 @@ task :check_the_yard => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 7, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = @this_brewery_name + " (an unknown type)" 
+          this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
         end
       end   
@@ -1161,7 +1418,9 @@ task :check_the_dray => :environment do
         # finally add new beer option to beer_locations table
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 8, :beer_is_current => "yes")
         new_option.save!  
-        this_new_beer = @this_brewery_name + " (an unknown type)"
+         # create list item (new beer) to send via email
+        this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)"
+        # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
       else 
         Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
@@ -1206,6 +1465,35 @@ task :check_the_dray => :environment do
             new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 8, :beer_is_current => "yes")
             Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
             new_option.save!
+            # add beer to email and give it a status
+            if @recognized_beer.rating_one_na || @recognized_beer.beer_rating_one
+              rating_one = true
+            else
+              rating_one = nil
+            end
+            if @recognized_beer.rating_two_na || @recognized_beer.beer_rating_two
+              rating_two = true
+            else 
+              rating_two = nil
+            end
+            if @recognized_beer.rating_three_na || @recognized_beer.beer_rating_three
+              rating_three = true
+            else 
+              rating_three = nil
+            end
+            if @recognized_beer.beer_type_id
+              beer_type_id = true
+            else 
+              beer_type_id = nil
+            end
+            if rating_one && rating_two && rating_three && beer_type_id
+              this_new_beer = @this_brewery_name + " (<span class='green-text'>OLD: green status</span>)"
+            elsif rating_one.nil? && rating_two.nil? && rating_three.nil? && beer_type_id.nil?
+              this_new_beer = @this_brewery_name + " (<span class='red-text'>OLD: red status</span>)"
+            else 
+              this_new_beer = @this_brewery_name + " (<span class='orange-text'>OLD: orange status</span>)"
+            end
+            @new_beer_info << this_new_beer
           end
         else
           Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
@@ -1216,7 +1504,7 @@ task :check_the_dray => :environment do
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 8, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
-          this_new_beer = @this_brewery_name + " (an unknown type)" 
+          this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
         end
       end   

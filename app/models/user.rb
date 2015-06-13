@@ -44,19 +44,30 @@ class User < ActiveRecord::Base
   has_many :beers, through: :drink_lists
   has_many :user_beer_trackings
   
+  # set user roles for cancancan
   def super_admin?
-    self.role.role == "super_admin"
+    self.role.role_name == "super_admin"
   end
   
   def admin?
-    self.role.role == "admin"
+    self.role.role_name == "admin"
   end
   
   def super_user?
-    self.role.role == "super_user"
+    self.role.role_name == "super_user"
   end
   
   def user?
-    self.role.role == "user"
+    self.role.role_name == "user"
+  end
+  
+  # get recepient emails for Mandrill
+  def self.mandrill_emails(users)
+   users.map{|user| {:email => user.email}}
+  end
+  
+  # connect recepient names to emails for Mandrill
+  def self.mandrill_names_and_emails(users)
+    users.map{|user| {:rcpt => user.email, :vars => [{:name => 'first_name', :content => user.first_name}]}}
   end
 end
