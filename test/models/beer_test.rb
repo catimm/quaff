@@ -27,6 +27,7 @@
 #  rating_two_na        :boolean
 #  rating_three_na      :boolean
 #  user_addition        :boolean
+#  touched_by_user      :integer
 #
 
 require 'test_helper'

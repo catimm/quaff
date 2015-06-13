@@ -37,11 +37,11 @@ class BeerUpdates < ActionMailer::Base
       merge: true,
       merge_language: "handlebars",
       to: [
-        {:email => "ctiv@hotmail.com"}
+        {:email => "tinez55@hotmail.com"}
       ],
       inline_css: true,
       merge_vars: [
-        { rcpt: "ctiv@hotmail.com",
+        { rcpt: "tinez55@hotmail.com",
           vars: [
              {name: "location", content: user},
              {name: "beers", content: beers}
