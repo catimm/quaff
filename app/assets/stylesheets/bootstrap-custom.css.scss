@@ -444,8 +444,11 @@ $beer-header-lines-to-show: 2;
 // Sign-up & log-in pages
 .box {
   background: #fff;
-  border: 1px solid #e7e7e7;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
   margin-top: 48px;
+  padding-bottom: 15px;
   h2 {
     margin-bottom: 20px;
   }
@@ -1055,9 +1058,6 @@ div.jqcloud span.w1 { color: $light-blue; }
   }
 }
 #new_location_tracking {
-  input {
-    margin-right: 2.5px;
-  }
   label {
     display:inline;
     font-size: 15px;
@@ -1067,6 +1067,18 @@ div.jqcloud span.w1 { color: $light-blue; }
       content:"\a";
       white-space: pre;
   }
+}
+input[type="checkbox"] {
+    font-size: 150%;
+    margin-right: 4px;
+}
+.tracking-row {
+  margin: 5px 0;
+}
+.tracking-option {
+  margin: 3px 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 #all-city {
    color: $normal-text;
@@ -1237,6 +1249,13 @@ div.jqcloud span.w1 { color: $light-blue; }
       font-size: 8px;
       font-weight: 200;
     }
+  }
+  // Sign-up & log-in pages
+  .box {
+    margin-top: 24px;
+  }
+  .formSpace {
+    font-size: 24px;
   }
 @media(min-width: 768px) {
   .image-holder {

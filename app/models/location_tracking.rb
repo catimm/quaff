@@ -14,4 +14,7 @@ class LocationTracking < ActiveRecord::Base
   belongs_to :user_beer_tracking
   
   accepts_nested_attributes_for :user_beer_tracking
+  
+  # for "all Seattle" option on user tracking form
+  attr_accessor :all_seattle
 end

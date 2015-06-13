@@ -1527,19 +1527,18 @@ desc "Check User Additions"
 task :check_user_additions => :environment do
   # get list of user added beers
     @user_added_beers = Beer.where(user_addition: true)
-    @user_added_beers_count = @user_added_beers.count
     @user_added_beer_list = Array.new
-    @user_added_beers.each do |user_beer|
-      @user = User.where(id: user_beer.touched_by_user)[0]
-      
-      beer_name = user_beer.brewery.brewery_name + " - " + user_beer.beer_name + " [beer id: " + user_beer.id.to_s + ";" + " added by " + @user.username + " (user id: " + @user.id.to_s + ")]" 
-      @user_added_beer_list << beer_name
-    end
-    # Rails.logger.debug("User Added beer list: #{@user_added_beer_list.inspect}")
-    
-    # send email
     if !@user_added_beers.empty?
+      @user_added_beers.each do |user_beer|
+        @user = User.where(id: user_beer.touched_by_user)[0]
+        
+        beer_name = user_beer.brewery.brewery_name + " - " + user_beer.beer_name + " [beer id: " + user_beer.id.to_s + ";" + " added by " + @user.username + " (user id: " + @user.id.to_s + ")]" 
+        @user_added_beer_list << beer_name
+      end
+      
+      # send email
       BeerUpdates.user_added_beers_email("Users", @user_added_beer_list).deliver   
     end
+    
 
 end

@@ -1,12 +1,12 @@
 $(function() {
-	$('#all_checkbox').on("change", function(){
+	$('#location_tracking_all_seattle').on("change", function(){
 		if ($("#new_location_tracking input:checkbox:checked").length > 0) {
-			$('#new_location_tracking').children('input[type="checkbox"]').removeAttr('checked');
+			$(".tracking-option").children("label").children("input").removeAttr('checked');
 		} 
 	});
-	$('#new_location_tracking').children('input[type="checkbox"]').on("change", function(){
-		if ($('#all_checkbox').is('checked')) {
-			('#all_checkbox').removeAttr('checked');
+	$(".tracking-option").children("label").children("input").on("change", function(){
+		if ($('#location_tracking_all_seattle').length > 0) {
+			$('#location_tracking_all_seattle').removeAttr('checked');
 		}
 	});
 });

@@ -17,7 +17,7 @@ class TrackingsController < ApplicationController
     if new_user_tracking.save
       @locations = params[:location_tracking][:location_id]
       Rails.logger.debug("Locations ids: #{@locations.inspect}")
-      if @locations.length == 1
+      if params[:location_tracking][:all_seattle] == 1
         new_user_location = LocationTracking.new(user_beer_tracking_id: new_user_tracking.id, location_id: 0)
         new_user_location.save!
       else

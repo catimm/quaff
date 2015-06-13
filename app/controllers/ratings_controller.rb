@@ -41,8 +41,10 @@ class RatingsController < ApplicationController
     # if successfully posted, remove drink from drink list
     if new_user_rating
       find_drink = DrinkList.where(:user_id => current_user.id, :beer_id => params[:user_beer_rating][:beer_id]).pluck(:id)
-      destroy_drink = DrinkList.find(find_drink)[0]
-      destroy_drink.destroy!
+      if find_drink
+        destroy_drink = DrinkList.find(find_drink)[0]
+        destroy_drink.destroy!
+      end
     end
     # now redirect back to locations page
     redirect_to locations_path

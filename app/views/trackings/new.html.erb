@@ -9,15 +9,22 @@
 					<h4>You'll be notified when <%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %> is available at the location(s) you choose:</h4>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-sm-4 col-xs-3"></div>
-				<div class="col-sm-4 col-xs-6">
-					<input id="all_checkbox" type="checkbox" name="all" checked><span id="all-city">Anywhere in Seattle</span></input>
-					<h6 class="text-center or-text">-- or --</h6>
-					<%= form_for @location_tracking, :url => {:controller => "trackings", :action => "create"} do |track| %>
+			<%= form_for @location_tracking, :url => {:controller => "trackings", :action => "create"} do |track| %>
 					<%= track.hidden_field :beer_id, :value => @this_beer.id %>
-					<%= track.collection_check_boxes :location_id, @locations, :id, :short_name, {class: "form-control"} %>
+			<div class="row tracking-row">
+				<div class="col-xs-12 text-center">
+					<%= track.check_box :all_seattle, checked: true %>
+					<%= label :all_seattle, 'Anywhere in Seattle' %>
+					<h6 class="text-center or-text">-- or --</h6>
 				</div>
+			</div>
+			<div class="row tracking-row">
+					
+					<%= track.collection_check_boxes(:location_id, @locations, :id, :short_name, :class => "form-control tracking-checkboxes") do |box| %>
+				        <div class="col-md-4 col-sm-6 col-xs-6 tracking-option">
+				          <%= box.label { box.check_box + box.text } %>
+				        </div>
+				     <% end %>
 			</div>
 			<div class="row">
 				<div class="col-sm-2 col-xs-1"></div>

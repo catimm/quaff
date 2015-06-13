@@ -51,13 +51,16 @@ class Beer < ActiveRecord::Base
   has_many :users, through: :drink_lists
   has_many :user_beer_trackings
   
+  # the first 5 are for the suggested beer rating formula
   attr_accessor :best_guess
   attr_accessor :likes_style
   attr_accessor :beer_style_name_one
   attr_accessor :beer_style_name_two
   attr_accessor :is_hybrid
+  # these next three are for when a user suggests to add a new beer
   attr_accessor :associated_brewery
   attr_accessor :rate_beer_now
+  attr_accessor :track_beer_now
 
   pg_search_scope :beer_search, :against => :beer_name,
                   :associated_against => { :brewery => :brewery_name },
