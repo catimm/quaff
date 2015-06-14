@@ -2,9 +2,14 @@ desc "Check Pine Box"
 task :check_pine_box => :environment do
     require 'nokogiri'
     require 'open-uri'
-
+    
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    
     # grab current Pine box beers in DB
-    @pine_box_beer = BeerLocation.where(location_id: 2, beer_is_current: "yes")
+    @this_location_name = "The Pine Box"
+    @this_location_id = 2
+    @pine_box_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     @pine_box_beer_ids = @pine_box_beer.pluck(:beer_id)
     Rails.logger.debug("Pine Box Beer IDs: #{@pine_box_beer_ids.inspect}")
     @pine_box_beer_location_ids = @pine_box_beer.pluck(:id)
@@ -15,6 +20,8 @@ task :check_pine_box => :environment do
     @current_beer_ids = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
 
     # grab Pine Box beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('http://www.pineboxbar.com/draft'))
@@ -86,7 +93,7 @@ task :check_pine_box => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         @new_beer_info << this_new_beer
@@ -119,18 +126,53 @@ task :check_pine_box => :environment do
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @pine_box_beer.map{|a| a.id}.include? @recognized_beer.id
             Rails.logger.debug("This is firing, so it thinks this beer IS in the beer_locations table")
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 2, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             Rails.logger.debug("Recognized beer location info: #{this_beer_location_id.inspect}")
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beer_locations table")
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 2, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
             new_option.save!
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
@@ -171,15 +213,21 @@ task :check_pine_box => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 2, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
         end
-      end   
+      end 
     end # end loop through scraped beers
-
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end 
+        
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @pine_box_beer_location_ids - @current_beer_ids
     # change not current beers status in DB
@@ -188,10 +236,13 @@ task :check_pine_box => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
-    Rails.logger.debug("Location Beers: #{@new_beer_info.inspect}")
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("Pine Box", @new_beer_info).deliver
-    end 
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end  
 end
 
 desc "Check Chuck's 85"
@@ -199,9 +250,14 @@ task :check_chucks_85 => :environment do
     require 'nokogiri'
     require 'open-uri'
 
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+
     # grab current Chuck's 85th beers in DB
     # grab all beers from beer_locations table that are connected to Chucs 85th (id:3) and are currently served
-    @chucks_85_beer = BeerLocation.where(location_id: 3, beer_is_current: "yes")
+    @this_location_name = "Chuck's Hop Shop--Greenwood"
+    @this_location_id = 3
+    @chucks_85_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     # pluck the beer ids for future use
     @chucks_85_beer_ids = @chucks_85_beer.pluck(:beer_id)
     # pluck the beer_location ids for future use
@@ -277,7 +333,7 @@ task :check_chucks_85 => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
         # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
@@ -308,15 +364,50 @@ task :check_chucks_85 => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @chucks_85_beer.map{|a| a.id}.include? @recognized_beer.id
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 3, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 3, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             new_option.save!
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << new_option.id
@@ -355,7 +446,7 @@ task :check_chucks_85 => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 3, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -363,6 +454,12 @@ task :check_chucks_85 => :environment do
         end
       end   
     end # end loop through scraped beers
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end 
     
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @chucks_85_beer_location_ids - @current_beer_ids
@@ -373,9 +470,13 @@ task :check_chucks_85 => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("Chuck's 85th", @new_beer_info).deliver
-    end
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end 
 end
 
 desc "Check Chuck's CD"
@@ -383,8 +484,13 @@ task :check_chucks_cd => :environment do
     require 'nokogiri'
     require 'open-uri'
 
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+
     # grab current Chucks CD beers in DB
-    @chucks_cd_beer = BeerLocation.where(location_id: 4, beer_is_current: "yes")
+    @this_location_name = "Chuck's Hop Shop--CD"
+    @this_location_id = 4
+    @chucks_cd_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     @chucks_cd_beer_ids = @chucks_cd_beer.pluck(:beer_id)
     @chucks_cd_beer_location_ids = @chucks_cd_beer.pluck(:id)
     @chucks_cd_beer = Beer.where(id: @chucks_cd_beer_ids)
@@ -455,7 +561,7 @@ task :check_chucks_cd => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
@@ -486,15 +592,50 @@ task :check_chucks_cd => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @chucks_cd_beer.map{|a| a.id}.include? @recognized_beer.id
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 4, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 4, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             new_option.save!
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << new_option.id
@@ -533,7 +674,7 @@ task :check_chucks_cd => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 4, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -541,6 +682,12 @@ task :check_chucks_cd => :environment do
         end
       end   
     end # end loop through scraped beers
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end 
     
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @chucks_cd_beer_location_ids - @current_beer_ids
@@ -550,18 +697,27 @@ task :check_chucks_cd => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("Chuck's CD", @new_beer_info).deliver
-    end
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end 
 end
 
 desc "Check Beer Junction"
 task :check_beer_junction => :environment do
     require 'nokogiri'
     require 'open-uri'
+    
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
 
     # grab current Beer Junction beers in DB
-    @beer_junction_beer = BeerLocation.where(location_id: 1, beer_is_current: "yes")
+    @this_location_name = "Beer Junction"
+    @this_location_id = 1
+    @beer_junction_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     @beer_junction_beer_ids = @beer_junction_beer.pluck(:beer_id)
     @beer_junction_beer_location_ids = @beer_junction_beer.pluck(:id)
     @beer_junction_beer = Beer.where(id: @beer_junction_beer_ids)  
@@ -571,7 +727,7 @@ task :check_beer_junction => :environment do
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
 
-    # grab Pine Box beers listed on their draft board
+    # grab Beer Junction beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('http://seattle.taphunter.com/widgets/locationWidget?orderby=category&breweryname=on&format=images&brewerylocation=on&onlyBody=on&location=The-Beer-Junction&width=925&updatedate=on&servingsize=on&servingprice=on'))
 
     # search and parse Beer Junction beers
@@ -637,7 +793,7 @@ task :check_beer_junction => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
@@ -668,15 +824,50 @@ task :check_beer_junction => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @beer_junction_beer.map{|a| a.id}.include? @recognized_beer.id
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 1, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 1, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             new_option.save!
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << new_option.id
@@ -715,7 +906,7 @@ task :check_beer_junction => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 1, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -723,6 +914,12 @@ task :check_beer_junction => :environment do
         end
       end   
     end # end loop through scraped beers
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end
     
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @beer_junction_beer_location_ids - @current_beer_ids
@@ -732,18 +929,27 @@ task :check_beer_junction => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("Beer Junction", @new_beer_info).deliver
-    end
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end 
 end
 
 desc "Check Beveridge Place"
 task :check_beveridge_place => :environment do
     require 'nokogiri'
     require 'open-uri'
+    
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
 
     # grab current location beers from DB
-    @beveridge_place_beer = BeerLocation.where(location_id: 5, beer_is_current: "yes")
+    @this_location_name = "Beveridge Place"
+    @this_location_id = 5
+    @beveridge_place_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     @beveridge_place_beer_ids = @beveridge_place_beer.pluck(:beer_id)
     Rails.logger.debug("BP Beer IDs: #{@beveridge_place_beer_ids.inspect}")
     @beveridge_place_beer_location_ids = @beveridge_place_beer.pluck(:id)
@@ -829,7 +1035,7 @@ task :check_beveridge_place => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
@@ -861,15 +1067,50 @@ task :check_beveridge_place => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @beveridge_place_beer.map{|a| a.id}.include? @recognized_beer.id
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 5, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 5, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             new_option.save!
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << new_option.id
@@ -908,7 +1149,7 @@ task :check_beveridge_place => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_beer_abv)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 5, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -916,6 +1157,12 @@ task :check_beveridge_place => :environment do
         end
       end   
     end # end loop through scraped beers
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end
     
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @beveridge_place_beer_location_ids - @current_beer_ids
@@ -925,18 +1172,27 @@ task :check_beveridge_place => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("Beveridge Place", @new_beer_info).deliver_now
-    end
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end 
 end
 
 desc "Check Fremont Beer Garden"
 task :check_fremont_beer_garden => :environment do
     require 'nokogiri'
     require 'open-uri'
+    
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
 
     # grab current location beers from DB
-    @fremont_beer_garden = BeerLocation.where(location_id: 6, beer_is_current: "yes")
+    @this_location_name = "Fremont Brewery"
+    @this_location_id = 6
+    @fremont_beer_garden = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     @fremont_beer_garden_ids = @fremont_beer_garden.pluck(:beer_id)
     # Rails.logger.debug("Fremont Beer IDs: #{@fremont_beer_garden_ids.inspect}")
     @fremont_beer_garden_location_ids = @fremont_beer_garden.pluck(:id)
@@ -1009,7 +1265,7 @@ task :check_fremont_beer_garden => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id)
           new_beer.save!
           # finally add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 6, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!  
           # create list item (new beer) to send via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
@@ -1041,15 +1297,50 @@ task :check_fremont_beer_garden => :environment do
           end 
           # in this case, we know this beer exists in the beers table
           if !@recognized_beer.nil?
+            
+            # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+            
             # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
             if @fremont_beer_garden.map{|a| a.id}.include? @recognized_beer.id
               # if it matches, find it's beer_locations id 
-              this_beer_location_id = BeerLocation.where(location_id: 6, beer_id: @recognized_beer.id).pluck(:id)[0]
+              this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
               # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
               @current_beer_ids << this_beer_location_id
             else 
               # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-              new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 6, :beer_is_current => "yes")
+              new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
               new_option.save!
               # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << new_option.id
@@ -1088,7 +1379,7 @@ task :check_fremont_beer_garden => :environment do
             new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id)
             new_beer.save!
             # then add new beer option to beer_locations table
-            new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 6, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             new_option.save!
             # finally, push this beer info into an array to be sent to us via email
             this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -1120,15 +1411,50 @@ task :check_fremont_beer_garden => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @fremont_beer_garden.map{|a| a.id}.include? @recognized_beer.id
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 6, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 6, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             new_option.save!
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << new_option.id
@@ -1167,7 +1493,7 @@ task :check_fremont_beer_garden => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => 44)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 6, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = "Fremont "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -1175,6 +1501,12 @@ task :check_fremont_beer_garden => :environment do
         end
       end # end separation of whether beer is guest beer or not
     end # end looping through each current beer
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end
     
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @fremont_beer_garden_location_ids - @current_beer_ids
@@ -1186,18 +1518,28 @@ task :check_fremont_beer_garden => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("Fremont Brewery", @new_beer_info).deliver_now
-    end
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end 
 end
 
 desc "Check The Yard"
 task :check_the_yard => :environment do
     require 'nokogiri'
     require 'open-uri'
+    
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
 
     # grab current location beers from DB
-    @the_yard_cafe = BeerLocation.where(location_id: 7, beer_is_current: "yes")
+    @this_location_name = "The Yard"
+    @this_location_id = 7
+    # grab current location beers from DB
+    @the_yard_cafe = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     @the_yard_cafe_ids = @the_yard_cafe.pluck(:beer_id)
     # Rails.logger.debug("The Yard Beer IDs: #{@the_yard_cafe_ids.inspect}")
     @the_yard_cafe_location_ids = @the_yard_cafe.pluck(:id)
@@ -1250,7 +1592,7 @@ task :check_the_yard => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 7, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)"
@@ -1285,18 +1627,53 @@ task :check_the_yard => :environment do
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @the_yard_cafe.map{|a| a.id}.include? @recognized_beer.id
             Rails.logger.debug("This is firing, so it thinks this beer IS in the beer_locations table")
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 7, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             Rails.logger.debug("Recognized beer location info: #{this_beer_location_id.inspect}")
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beer_locations table")
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 7, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
             new_option.save!
             # add beer to email and give it a status
@@ -1335,7 +1712,7 @@ task :check_the_yard => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 7, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -1343,7 +1720,13 @@ task :check_the_yard => :environment do
         end
       end   
     end # end loop through scraped beers
-
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end
+    
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @the_yard_cafe_location_ids - @current_beer_ids
     # change not current beers status in DB
@@ -1352,18 +1735,27 @@ task :check_the_yard => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("The Yard Cafe", @new_beer_info).deliver.now
-    end
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end 
 end
 
 desc "Check The Dray"
 task :check_the_dray => :environment do
     require 'nokogiri'
     require 'open-uri'
+    
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
 
     # grab current location beers from DB
-    @the_dray = BeerLocation.where(location_id: 8, beer_is_current: "yes")
+    @this_location_name = "The Dray"
+    @this_location_id = 8
+    @the_dray = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
     @the_dray_ids = @the_dray.pluck(:beer_id)
     # Rails.logger.debug("The Yard Beer IDs: #{@the_dray_ids.inspect}")
     @the_dray_location_ids = @the_dray.pluck(:id)
@@ -1416,7 +1808,7 @@ task :check_the_dray => :environment do
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id)
         new_beer.save!
         # finally add new beer option to beer_locations table
-        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 8, :beer_is_current => "yes")
+        new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)"
@@ -1451,18 +1843,53 @@ task :check_the_dray => :environment do
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
+          
+          # find if any users are tracking this beer at this location
+          @relevant_trackings = Array.new
+          @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
+          if !@tracking_info.empty?
+            @tracking_info.each do |tracking|
+              @tracking_locations = LocationTracking.where(user_beer_tracking_id: tracking.id)
+              if @tracking_locations.map{|a| a.location_id}.include? @this_location_id
+                first_match = true
+              end
+              if @tracking_locations.map{|a| a.location_id}.include? 0
+                second_match = true
+              end
+              if first_match || second_match
+                @relevant_trackings << tracking
+              end
+            end
+          end
+          # put the user, beer info, and tracking location info into array for email
+          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          if !@relevant_trackings.empty? 
+            @current_beer_name = @recognized_beer.beer_name
+            @current_beer_id = @recognized_beer.id
+            @current_brewery_name = @recognized_beer.brewery.brewery_name
+            @current_brewery_id = @recognized_beer.brewery.id
+            @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
+    
+            @relevant_trackings.each do |each_tracking|
+              @user_info = User.where(id: each_tracking.user_id)[0]
+              @this_user_array = [@user_info.email, @current_beer_name, @current_beer_id, @current_brewery_name, 
+                                  @current_brewery_id, @user_info.username, @this_location_name]
+              @user_email_array << @this_user_array 
+            end
+          end
+          
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
           if @the_dray.map{|a| a.id}.include? @recognized_beer.id
             Rails.logger.debug("This is firing, so it thinks this beer IS in the beer_locations table")
             # if it matches, find it's beer_locations id 
-            this_beer_location_id = BeerLocation.where(location_id: 8, beer_id: @recognized_beer.id).pluck(:id)[0]
+            this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             Rails.logger.debug("Recognized beer location info: #{this_beer_location_id.inspect}")
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
             @current_beer_ids << this_beer_location_id
           else 
             Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beer_locations table")
             # this beer already exists in our DB but is newly on tap at this location so we need to add this instance to BeerLocations table
-            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => 8, :beer_is_current => "yes")
+            new_option = BeerLocation.new(:beer_id => @recognized_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
             Rails.logger.debug("Not recognized beer new info: #{new_option.inspect}")
             new_option.save!
             # add beer to email and give it a status
@@ -1501,7 +1928,7 @@ task :check_the_dray => :environment do
           new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id)
           new_beer.save!
           # then add new beer option to beer_locations table
-          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => 8, :beer_is_current => "yes")
+          new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)" 
@@ -1509,7 +1936,13 @@ task :check_the_dray => :environment do
         end
       end   
     end # end loop through scraped beers
-
+    
+    # Send user tracking email info here.....
+    # Rails.logger.debug("Email array: #{@user_email_array.inspect}")
+    @user_email_array.each do |array|
+      BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    end
+    
     # create list of not current Beer Location IDs
     @not_current_beer_ids = @the_dray_location_ids - @current_beer_ids
     # change not current beers status in DB
@@ -1518,14 +1951,22 @@ task :check_the_dray => :environment do
         update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
       end
     end
+    
+    # send admin emails with new beer updates
     if !@new_beer_info.empty?
-      BeerUpdates.new_beers_email("The Dray", @new_beer_info).deliver.now
-    end
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      end
+    end 
 end
 
 desc "Check User Additions"
 task :check_user_additions => :environment do
-  # get list of user added beers
+    
+    # set admin emails to receive updates
+    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    
+    # get list of user added beers
     @user_added_beers = Beer.where(user_addition: true)
     @user_added_beer_list = Array.new
     if !@user_added_beers.empty?
@@ -1537,8 +1978,7 @@ task :check_user_additions => :environment do
       end
       
       # send email
-      BeerUpdates.user_added_beers_email("Users", @user_added_beer_list).deliver   
+      BeerUpdates.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver   
     end
     
-
 end
