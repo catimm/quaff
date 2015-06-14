@@ -232,13 +232,12 @@ $beer-header-lines-to-show-fp: 1;
   padding-left: 0 !important;
   li {list-style-type: none;
     margin-bottom: 5px;
-    div {
-      p {
-       margin-left: 40px;
-       padding-top: 7px; 
-     }  
-    }
+
   }
+}
+.location-name-by-image {
+  margin-left: 40px;
+  padding-top: 7px;
 }
 .location-logo-image-small {
     background-repeat: no-repeat;
@@ -255,6 +254,15 @@ $beer-header-lines-to-show-fp: 1;
   width: 100%;
   margin-top: 15px;
   background: $action-background;
+}
+.formButton-track-beer-stop {
+  width: 100%;
+  margin-top: 15px;
+  background: $current-beer-attention-needed-background;
+}
+.or-option {
+  margin: 15px 0 0 0;
+  color: $less-emphasized-text;
 }
 // Retailer overview page
 .page-title {

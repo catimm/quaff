@@ -12,6 +12,13 @@ class BeersController < ApplicationController
     # grab beer info
     @beer = Beer.where(id: params[:id])[0]
     Rails.logger.debug("Beer info #{@beer.inspect}")
+    # find if user is tracking this beer already
+    @user_beer_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: @beer.id)
+    Rails.logger.debug("User Tracking info #{@user_beer_tracking.inspect}")
+    if !@user_beer_tracking.empty?
+      @tracking_locations = LocationTracking.where(user_beer_tracking_id: @user_beer_tracking[0].id)
+      Rails.logger.debug("Tracking Location info #{@tracking_locations.inspect}")
+    end
     # grab ids of current beers for this location
     @beer_locations = BeerLocation.where(beer_id: params[:id])
     Rails.logger.debug("Locations: #{@beer_locations.inspect}")

@@ -5,9 +5,32 @@
 		<div class="col-sm-6 col-xs-12 rating-tile">
 			<div class="row">
 				<div class="col-sm-1 col-xs-0"></div>
-				<div class="col-sm-10 col-xs-12">
-					<h4>You'll be notified when <%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %> is available at the location(s) you choose:</h4>
-				</div>
+				<% if !@user_beer_tracking.empty? %>
+					<div class="col-sm-10 col-xs-12">
+						<h4 class="beer-location-status">You're currently tracking <%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %> at:</h4>
+							<div class="row">
+								<% @tracking_locations.each_with_index do |location, i| %>
+									<% if location.location_id != 0 %>
+										<% @this_location = Location.where(id: location.location_id)[0] %>
+											<div class="col-sm-6 col-xs-12">
+												<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
+													<p class="location-name-by-image"><%= @this_location.short_name %></p>
+												</div>
+											</div>
+									<% else %>
+										<div class="col-xs-12">
+											<h4 class="beer-location-status">All Seattle locations!</h4>
+										</div>
+									<% end %>	
+								<% end %>
+							</div>
+							<h5>Change your tracking options below: </h5>
+						</div>
+					<% else %>
+						<div class="col-sm-10 col-xs-12">
+							<h4>You'll be notified when <%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %> is available at the location(s) you choose:</h4>
+						</div>
+					<% end %>
 			</div>
 			<%= form_for @location_tracking, :url => {:controller => "trackings", :action => "create"} do |track| %>
 					<%= track.hidden_field :beer_id, :value => @this_beer.id %>

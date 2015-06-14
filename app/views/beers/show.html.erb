@@ -76,7 +76,7 @@
 							<% @this_location = Location.where(id: location)[0] %>
 							<li>
 								<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
-									<p><%= @this_location.short_name %></p>
+									<p class="location-name-by-image"><%= @this_location.short_name %></p>
 								</div>
 							</li>
 						<% end %>
@@ -90,7 +90,7 @@
 									<% @this_location = Location.where(id: location.location_id)[0] %>
 									<li>
 										<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
-											<p><%= @this_location.short_name %> on <%= (location.removed_at).strftime("%b %e, %Y") %></p>
+											<p class="location-name-by-image"><%= @this_location.short_name %> on <%= (location.removed_at).strftime("%b %e, %Y") %></p>
 										</div>
 										
 									</li>
@@ -101,8 +101,34 @@
 							<h4 class="beer-location-status not-seen-message">This beer hasn't been on tap in Seattle since before April 2015...</h4>
 						<% end %>
 					<% end %>
-					<%= link_to new_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
-						<i class="fa fa-plus"> track beer</i>
+					<% if !@user_beer_tracking.empty? %>
+						<h4 class="beer-location-status">You're currently tracking this beer at:</h4>
+							<ul class="locations-list">
+							<% @tracking_locations.each_with_index do |location, i| %>
+								<% if location.location_id != 0 %>
+									<% @this_location = Location.where(id: location.location_id)[0] %>
+										<li>
+											<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
+												<p class="location-name-by-image"><%= @this_location.short_name %></p>
+											</div>
+										</li>
+								<% else %>
+									<li>
+										<h4 class="beer-location-status">All Seattle locations!</h4>
+									</li>
+								<% end %>	
+							<% end %>
+						<%= link_to new_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
+							<i class="fa fa-pencil"> edit tracking options</i>
+						<% end %>
+						<h6 class="text-center or-option">- or -</h6>
+						<%= link_to edit_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-danger btn-primary formButton-track-beer-stop' do %>
+							<i class="fa fa-minus"> stop tracking beer</i>
+						<% end %>
+					<% else %>
+						<%= link_to new_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
+							<i class="fa fa-plus"> track beer</i>
+						<% end %>
 					<% end %>
 				</div>
 			</div>
