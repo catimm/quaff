@@ -11,7 +11,7 @@ class TrackingsController < ApplicationController
     @this_beer = Beer.where(id: @beer_id)[0]
     @locations = Location.all.order(:short_name)
     # find if user is tracking this beer already
-    @user_beer_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: @beer_id)
+    @user_beer_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: @beer_id, removed_at: nil).where("removed_at IS NULL")
     Rails.logger.debug("User Tracking info #{@user_beer_tracking.inspect}")
     if !@user_beer_tracking.empty?
       @tracking_locations = LocationTracking.where(user_beer_tracking_id: @user_beer_tracking[0].id)
@@ -24,7 +24,7 @@ class TrackingsController < ApplicationController
     beer = Beer.where(id: params[:location_tracking][:beer_id])[0]
     
     # find if user is already tracking this beer (and this is an update/edit)
-    @current_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: params[:location_tracking][:beer_id])
+    @current_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: params[:location_tracking][:beer_id]).where("removed_at IS NULL")
     # if previous tracking exists, delete them first
     if !@current_tracking.empty?
       # delete list of currently tracked locations
@@ -62,25 +62,21 @@ class TrackingsController < ApplicationController
       end
     end
     
-
     # now redirect back to locations page
     redirect_to brewery_beer_path(beer.brewery.id, beer.id)
   end
   
   def edit
-    # find the user beer tracking info to edit
-    @user_beer_tracking = UserBeerTracking.where(beer_id: params[:id]).pluck(:id)
-    # grab correct form info using UserBeerTracking info
-    @location_tracking = LocationTracking.where(user_beer_tracking_id: @user_beer_tracking)
-    Rails.logger.debug("This location info: #{@location_tracking.inspect}")
-    # get beer info for form
-    @this_beer = Beer.where(id: params[:id])[0]
-    # get locations info
-    @locations = Location.all.order(:short_name)
-  end
-  
-  def update
+    # get beer info
+    beer = Beer.where(id: params[:id])[0]
     
+    # find current tracking of this beer
+    @current_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: params[:id]).where("removed_at IS NULL")[0]
+    # add removed time to indicate this beer is no longer tracked
+    @update_tracking = UserBeerTracking.update(@current_tracking.id, :removed_at => Time.now)
+    
+    # now redirect back to locations page
+    redirect_to brewery_beer_path(beer.brewery.id, beer.id)
   end
   
   private 
