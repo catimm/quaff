@@ -102,7 +102,7 @@
 						<% end %>
 					<% end %>
 					<% if !@user_beer_tracking.empty? %>
-						<h4 class="beer-location-status">You're currently tracking this beer at:</h4>
+						<h4 class="beer-tracking-status">You're currently tracking this beer at:</h4>
 							<ul class="locations-list">
 							<% @tracking_locations.each_with_index do |location, i| %>
 								<% if location.location_id != 0 %>
