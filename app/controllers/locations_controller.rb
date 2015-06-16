@@ -16,7 +16,7 @@ class LocationsController < ApplicationController
     # grab ids of current beers for this location
     @beer_ids = BeerLocation.where(location_id: params[:id], beer_is_current: "yes").pluck(:beer_id)
     # Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
-    @beer_ranking = best_guess(@beer_ids).sort_by(&:best_guess).reverse
+    @beer_ranking = best_guess(@beer_ids).sort_by(&:ultimate_rating).reverse
     # Rails.logger.debug("New Beer info: #{@beer_ranking.inspect}")
     # grab beer ids that will match each jcloud
     # @beers_ids = @beers.pluck(:id)

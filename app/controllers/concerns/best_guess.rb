@@ -33,6 +33,27 @@ module BestGuess
       else 
         style_based_guess(this_beer)
       end
+      # check if user has rated this beer
+      @user_rating = UserBeerRating.where(user_id: current_user.id, beer_id: this_beer.id)
+      # if user has rated this beer, add user ratings to data array
+      if !@user_rating.empty?
+        if @user_rating.length > 1
+          user_rating_sum = 0
+          @user_rating.each do |rating|
+            user_rating_sum = user_rating_sum + rating.user_beer_rating
+          end
+          user_rating_avg = user_rating_sum / @user_rating.length
+          this_beer.ultimate_rating = user_rating_avg # if the user has rated this beer, use this as the ranking number
+          this_beer.user_rating = user_rating_avg
+          this_beer.number_of_ratings = @user_rating.length
+        else
+          this_beer.ultimate_rating = @user_rating[0].user_beer_rating # if the user has rated this beer, use this as the ranking number
+          this_beer.user_rating = @user_rating[0].user_beer_rating
+          this_beer.number_of_ratings = 1
+        end
+      else # if user hasn't rated this beer, use our best guess as the ranking number
+        this_beer.ultimate_rating = this_beer.best_guess
+      end
     end #end of each beer loop
   end # end of method
 end # end of module

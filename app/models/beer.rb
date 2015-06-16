@@ -51,8 +51,11 @@ class Beer < ActiveRecord::Base
   has_many :users, through: :drink_lists
   has_many :user_beer_trackings
   
-  # the first 5 are for the suggested beer rating formula
+  # the first 8 are for the suggested beer rating formula
   attr_accessor :best_guess
+  attr_accessor :ultimate_rating # this will hold a user's rating and/or best_guess to sort by highest rating
+  attr_accessor :user_rating # hold the user's ratings
+  attr_accessor :number_of_ratings # to hold the number of times a user has rated this beer
   attr_accessor :likes_style
   attr_accessor :beer_style_name_one
   attr_accessor :beer_style_name_two

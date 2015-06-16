@@ -36,6 +36,8 @@ $header-text: $black;
 $normal-text: $dark-gray;
 $less-emphasized-text: $medium-gray;
 $special-text: $bright-orange;
+$best-guess-text: $bright-orange;
+$user-rating-text: $bright-blue;
 $action-background: $bright-blue;
 $rating-text: $bright-blue;
 $step-background: $light-green;
@@ -184,6 +186,10 @@ hr {
     font-size: 56px;
   }
 }
+  .brewer-description {
+    line-height: 1.2;
+    color: $normal-text;
+  }
 .last-seen {
   margin-bottom: 3px;
 }
@@ -590,11 +596,16 @@ $beer-header-lines-to-show: 2;
   }
   h1 {
     text-align: center;
-    color: $bright-orange;
     font-size: 42px;
     font-weight: 500;
     margin: 10px 0;
   }
+}
+.best-guess {
+  color: $best-guess-text;
+}
+.user-rating {
+  color: $user-rating-text;
 }
 .why-statement {
   p {
@@ -746,11 +757,6 @@ $beer-header-lines-to-show: 2;
   text-align: center;
   background: #f7f7f7;
 }
-.user-rating {
-  display: inline-block;
-  margin: 5px 0;
-}
-
 .star-rating {
   display: inline-block;
   text-align: right;
@@ -1232,6 +1238,7 @@ input[type="checkbox"] {
   .cloud-holder-full-page {
     height: 75px;
   }
+
 // Footer css
   .footer {
     background: $dark-gray !important;
