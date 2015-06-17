@@ -516,7 +516,7 @@ task :check_chucks_cd => :environment do
         @this_brewery_name = "Unknown"
       end      
       @this_beer_name = node.css("td.draft_name").text
-      Rails.logger.debug("Beer Name: #@this_beer_name.inspect}")
+      Rails.logger.debug("Beer Name: #{@this_beer_name.inspect}")
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
       # split brewery name aso key words can be removed from beer name
