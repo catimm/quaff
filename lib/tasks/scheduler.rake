@@ -493,17 +493,13 @@ task :check_chucks_cd => :environment do
     @this_location_name = "Chuck's Hop Shop--CD"
     @this_location_id = 4
     @chucks_cd_beer_locations = BeerLocation.where(location_id: @this_location_id)
-    @chucks_beer_history_count = @chucks_cd_beer_locations.count
-    Rails.logger.debug("Total beer count: #{@chucks_beer_history_count.inspect}")
-    @chucks_beer_yes_count = @chucks_cd_beer_locations.where(beer_is_current: "yes").count
-    Rails.logger.debug("Yes beer count: #{@chucks_beer_yes_count.inspect}")
-    @chucks_beer_no_count = @chucks_cd_beer_locations.where(beer_is_current: "no").count
-    Rails.logger.debug("No beer count: #{@chucks_beer_no_count.inspect}")
-    @chucks_cd_beer = BeerLocation.active_beers(@this_location_id)
+    @chucks_cd_beer = @chucks_cd_beer_locations.where(beer_is_current: "yes")
+    # Rails.logger.debug("Chuck's currenet beer: #{@chucks_beer_is_current.inspect}")
+    # @chucks_cd_beer = BeerLocation.active_beers(@this_location_id)
     @chucks_cd_beer_location_ids = @chucks_cd_beer.pluck(:id)
-    Rails.logger.debug("Location IDs: #{@chucks_cd_beer_location_ids.inspect}")
+    # Rails.logger.debug("Location IDs: #{@chucks_cd_beer_location_ids.inspect}")
     @chucks_cd_beer_ids = @chucks_cd_beer.pluck(:beer_id)
-    Rails.logger.debug("Beer IDs: #{@chucks_cd_beer_ids.inspect}")
+    # Rails.logger.debug("Beer IDs: #{@chucks_cd_beer_ids.inspect}")
     @chucks_cd_beer_location_ids = @chucks_cd_beer.pluck(:id)
     @chucks_cd_beer = Beer.where(id: @chucks_cd_beer_ids)
 
