@@ -492,11 +492,11 @@ task :check_chucks_cd => :environment do
     # grab current Chucks CD beers in DB
     @this_location_name = "Chuck's Hop Shop--CD"
     @this_location_id = 4
-    @chucks_cd_beer = BeerLocation.where(location_id: @this_location_id).where('updated_at <= ?', 1.day.ago).where("removed_at IS NULL")
-    @chucks_cd_location_ids = @chucks_cd_beer.pluck(:location_id)
-    Rails.logger.debug("Location IDs: #@chucks_cd_location_ids.inspect}")
+    @chucks_cd_beer = BeerLocation.active_beers(@this_location_id)
+    @chucks_cd_beer_location_ids = @chucks_cd_beer.pluck(:id)
+    Rails.logger.debug("Location IDs: #{@chucks_cd_beer_location_ids.inspect}")
     @chucks_cd_beer_ids = @chucks_cd_beer.pluck(:beer_id)
-    Rails.logger.debug("Beer IDs: #@chucks_cd_beer_ids.inspect}")
+    Rails.logger.debug("Beer IDs: #{@chucks_cd_beer_ids.inspect}")
     @chucks_cd_beer_location_ids = @chucks_cd_beer.pluck(:id)
     @chucks_cd_beer = Beer.where(id: @chucks_cd_beer_ids)
 
@@ -514,7 +514,9 @@ task :check_chucks_cd => :environment do
       @this_brewery_name = node.css("td.draft_brewery").text
       if @this_brewery_name == " "
         @this_brewery_name = "Unknown"
-      end      
+      end   
+      # remove extra spaces from brewery name
+      @this_brewery_name = @this_brewery_name.strip   
       @this_beer_name = node.css("td.draft_name").text
       Rails.logger.debug("Beer Name: #{@this_beer_name.inspect}")
       @this_beer_origin = node.css("td.draft_origin").text
