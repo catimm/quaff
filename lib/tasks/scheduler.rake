@@ -492,7 +492,7 @@ task :check_chucks_cd => :environment do
     # grab current Chucks CD beers in DB
     @this_location_name = "Chuck's Hop Shop--CD"
     @this_location_id = 4
-    @chucks_cd_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
+    @chucks_cd_beer = BeerLocation.where(location_id: @this_location_id).where('updated_at <= ?', 1.day.ago).where("removed_at IS NULL")
     @chucks_cd_location_ids = @chucks_cd_beer.pluck(:location_id)
     Rails.logger.debug("Location IDs: #@chucks_cd_location_ids.inspect}")
     @chucks_cd_beer_ids = @chucks_cd_beer.pluck(:beer_id)
