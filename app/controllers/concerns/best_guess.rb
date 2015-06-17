@@ -54,7 +54,7 @@ module BestGuess
       else # if user hasn't rated this beer, use our best guess as the ranking number
         this_beer.ultimate_rating = this_beer.best_guess
       end
-      @beer_rating_and_id = this_beer.id + " " + this_beer.ultimate_rating
+      @beer_rating_and_id = "ID: " + this_beer.id.to_s + "; Rating: " + this_beer.ultimate_rating.to_s
       Rails.logger.debug("This Beer ID & Rating #{@beer_rating_and_id.inspect}")
     end #end of each beer loop
   end # end of method

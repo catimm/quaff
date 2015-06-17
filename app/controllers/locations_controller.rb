@@ -6,13 +6,13 @@ class LocationsController < ApplicationController
   def index
     @retailers = Location.all
     @retailers_ranked = rate_location(@retailers).sort_by(&:location_rating).reverse
-    Rails.logger.debug("Retails ranked info: #{@retailers_ranked.inspect}")
+    # Rails.logger.debug("Retails ranked info: #{@retailers_ranked.inspect}")
   end
   
   def show
     # get retailer location information
     @retailer = Location.where(id: params[:id])[0]
-    Rails.logger.debug("Retailer info: #{@retailer.inspect}")
+    # Rails.logger.debug("Retailer info: #{@retailer.inspect}")
     # grab ids of current beers for this location
     @beer_ids = BeerLocation.where(location_id: params[:id], beer_is_current: "yes").pluck(:beer_id)
     # Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
@@ -42,7 +42,7 @@ class LocationsController < ApplicationController
       end
       full_beer_array = [beer_array,cloud_array]
       final_array << full_beer_array
-      Rails.logger.debug("Each beer descriptors: #{final_array.inspect}")
+      # Rails.logger.debug("Each beer descriptors: #{final_array.inspect}")
     end
 
     gon.beer_array = final_array
