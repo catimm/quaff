@@ -223,7 +223,7 @@ task :check_pine_box => :environment do
     end # end loop through scraped beers
     
     # Send user tracking email info here
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
@@ -457,7 +457,7 @@ task :check_chucks_85 => :environment do
     end # end loop through scraped beers
     
     # Send user tracking email info here.....
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
@@ -686,7 +686,7 @@ task :check_chucks_cd => :environment do
     end # end loop through scraped beers
     
     # Send user tracking email info here.....
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
@@ -919,7 +919,7 @@ task :check_beer_junction => :environment do
     end # end loop through scraped beers
     
     # Send user tracking email info here.....
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
@@ -1163,7 +1163,7 @@ task :check_beveridge_place => :environment do
     end # end loop through scraped beers
     
     # Send user tracking email info here.....
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
@@ -1508,7 +1508,7 @@ task :check_fremont_beer_garden => :environment do
     end # end looping through each current beer
     
     # Send user tracking email info here.....
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
@@ -1728,7 +1728,7 @@ task :check_the_yard => :environment do
     end # end loop through scraped beers
     
     # Send user tracking email info here.....
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
@@ -1945,7 +1945,7 @@ task :check_the_dray => :environment do
     end # end loop through scraped beers
     
     # Send user tracking email info here.....
-    if !@user_email_array.empty?
+    if !@user_email_array.nil?
       @user_email_array.each do |array|
         BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
       end
