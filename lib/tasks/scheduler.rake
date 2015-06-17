@@ -492,6 +492,13 @@ task :check_chucks_cd => :environment do
     # grab current Chucks CD beers in DB
     @this_location_name = "Chuck's Hop Shop--CD"
     @this_location_id = 4
+    @chucks_cd_beer_locations = BeerLocation.where(location_id: @this_location_id)
+    @chucks_beer_history_count = @chucks_cd_beer_locations.count
+    Rails.logger.debug("Total beer count: #{@chucks_beer_history_count.inspect}")
+    @chucks_beer_yes_count = @chucks_cd_beer_locations.where(beer_is_current: "yes").count
+    Rails.logger.debug("Yes beer count: #{@chucks_beer_yes_count.inspect}")
+    @chucks_beer_no_count = @chucks_cd_beer_locations.where(beer_is_current: "no").count
+    Rails.logger.debug("No beer count: #{@chucks_beer_no_count.inspect}")
     @chucks_cd_beer = BeerLocation.active_beers(@this_location_id)
     @chucks_cd_beer_location_ids = @chucks_cd_beer.pluck(:id)
     Rails.logger.debug("Location IDs: #{@chucks_cd_beer_location_ids.inspect}")
@@ -712,7 +719,7 @@ task :check_chucks_cd => :environment do
       @admin_emails.each do |admin_email|
         BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
       end
-    end 
+    end
 end
 
 desc "Check Beer Junction"
