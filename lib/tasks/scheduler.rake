@@ -493,7 +493,10 @@ task :check_chucks_cd => :environment do
     @this_location_name = "Chuck's Hop Shop--CD"
     @this_location_id = 4
     @chucks_cd_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
+    @chucks_cd_location_ids = @chucks_cd_beer.pluck(:location_id)
+    Rails.logger.debug("Location IDs: #@chucks_cd_location_ids.inspect}")
     @chucks_cd_beer_ids = @chucks_cd_beer.pluck(:beer_id)
+    Rails.logger.debug("Beer IDs: #@chucks_cd_beer_ids.inspect}")
     @chucks_cd_beer_location_ids = @chucks_cd_beer.pluck(:id)
     @chucks_cd_beer = Beer.where(id: @chucks_cd_beer_ids)
 
@@ -613,7 +616,7 @@ task :check_chucks_cd => :environment do
             end
           end
           # put the user, beer info, and tracking location info into array for email
-          Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
+          # Rails.logger.debug("Relevant trackings: #{!@relevant_trackings.inspect}")
           if !@relevant_trackings.empty? 
             @current_beer_name = @recognized_beer.beer_name
             @current_beer_id = @recognized_beer.id
