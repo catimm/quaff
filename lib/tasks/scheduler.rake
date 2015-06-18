@@ -9,12 +9,13 @@ task :check_pine_box => :environment do
     # grab current Pine box beers in DB
     @this_location_name = "The Pine Box"
     @this_location_id = 2
-    @pine_box_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
-    @pine_box_beer_ids = @pine_box_beer.pluck(:beer_id)
-    Rails.logger.debug("Pine Box Beer IDs: #{@pine_box_beer_ids.inspect}")
-    @pine_box_beer_location_ids = @pine_box_beer.pluck(:id)
+    @pine_box_beer_locations = BeerLocation.active_beers(@this_location_id)
+    @pine_box_beer_location_ids = @pine_box_beer_locations.pluck(:id)
+    # Rails.logger.debug("Location IDs: #{@pine_box_beer_location_ids.inspect}")
+    @pine_box_beer_ids = @pine_box_beer_locations.pluck(:beer_id)
+    # Rails.logger.debug("Beer IDs: #{@pine_box_beer_ids.inspect}")
     @pine_box_beer = Beer.where(id: @pine_box_beer_ids)
-    Rails.logger.debug("Pine Box Beers: #{@pine_box_beer.inspect}")
+    # Rails.logger.debug("Pine Box Beers: #{@pine_box_beer.inspect}")
 
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
@@ -33,13 +34,16 @@ task :check_pine_box => :environment do
       if @this_brewery_name == " "
         @this_brewery_name = "Unknown"
       end
+      # remove extra spaces from brewery name
+      @this_brewery_name = @this_brewery_name.strip
+      
       @this_beer_name = node.css("td.draft_name").text
       Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
       @this_place_serving_size = node.css("td.draft_size").text
       @this_beer_price = node.css("td.draft_price").text      
-      # split brewery name aso key words can be removed from beer name
+      # split brewery name so key words can be removed from beer name
       @split_brewery_name = @this_brewery_name.split
       # cycle through split words to remove from beer name
       @split_brewery_name.each do |word|
@@ -258,11 +262,11 @@ task :check_chucks_85 => :environment do
     # grab all beers from beer_locations table that are connected to Chucs 85th (id:3) and are currently served
     @this_location_name = "Chuck's Hop Shop--Greenwood"
     @this_location_id = 3
-    @chucks_85_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
-    # pluck the beer ids for future use
-    @chucks_85_beer_ids = @chucks_85_beer.pluck(:beer_id)
-    # pluck the beer_location ids for future use
-    @chucks_85_beer_location_ids = @chucks_85_beer.pluck(:id)
+    @chucks_85_beer_locations = BeerLocation.active_beers(@this_location_id)
+    @chucks_85_beer_location_ids = @chucks_85_beer_locations.pluck(:id)
+    # Rails.logger.debug("Location IDs: #{@chucks_85_beer_location_ids.inspect}")
+    @chucks_85_beer_ids = @chucks_85_beer_locations.pluck(:beer_id)
+    # Rails.logger.debug("Beer IDs: #{@chucks_85_beer_ids.inspect}")
     # refill this variable with a list of beers rather than just beer_locations
     @chucks_85_beer = Beer.where(id: @chucks_85_beer_ids)
 
@@ -281,6 +285,9 @@ task :check_chucks_85 => :environment do
       if @this_brewery_name == " "
         @this_brewery_name = "Unknown"
       end
+      # remove extra spaces from brewery name
+      @this_brewery_name = @this_brewery_name.strip
+      
       @this_beer_name = node.css("td.draft_name").text
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
@@ -726,9 +733,11 @@ task :check_beer_junction => :environment do
     # grab current Beer Junction beers in DB
     @this_location_name = "Beer Junction"
     @this_location_id = 1
-    @beer_junction_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
-    @beer_junction_beer_ids = @beer_junction_beer.pluck(:beer_id)
-    @beer_junction_beer_location_ids = @beer_junction_beer.pluck(:id)
+    @beer_junction_beer_locations = BeerLocation.active_beers(@this_location_id)
+    @beer_junction_beer_location_ids = @beer_junction_beer_locations.pluck(:id)
+    # Rails.logger.debug("Location IDs: #{@beer_junction_beer_location_ids.inspect}")
+    @beer_junction_beer_ids = @beer_junction_beer_locations.pluck(:beer_id)
+    # Rails.logger.debug("Beer IDs: #{@beer_junction_beer_ids.inspect}")
     @beer_junction_beer = Beer.where(id: @beer_junction_beer_ids)  
 
     # create array of current BeerLocation ids
@@ -748,7 +757,10 @@ task :check_beer_junction => :environment do
       @this_brewery_name = node.css("+ td.brewery-column > .brewery-name").text
       if @this_brewery_name == " "
         @this_brewery_name = "Unknown"
-      end      
+      end
+      # remove extra spaces from brewery name
+      @this_brewery_name = @this_brewery_name.strip
+            
       @this_beer_origin = node.css("+ td.brewery-column > .brewery-location").text
       # split brewery name aso key words can be removed from beer name
       @split_brewery_name = @this_brewery_name.split
@@ -959,12 +971,13 @@ task :check_beveridge_place => :environment do
     # grab current location beers from DB
     @this_location_name = "Beveridge Place"
     @this_location_id = 5
-    @beveridge_place_beer = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
-    @beveridge_place_beer_ids = @beveridge_place_beer.pluck(:beer_id)
-    Rails.logger.debug("BP Beer IDs: #{@beveridge_place_beer_ids.inspect}")
-    @beveridge_place_beer_location_ids = @beveridge_place_beer.pluck(:id)
+    @beveridge_place_beer_locations = BeerLocation.active_beers(@this_location_id)
+    @beveridge_place_beer_location_ids = @beveridge_place_beer_locations.pluck(:id)
+    # Rails.logger.debug("Location IDs: #{@beveridge_place_beer_location_ids.inspect}")
+    @beveridge_place_beer_ids = @beveridge_place_beer_locations.pluck(:beer_id)
+    # Rails.logger.debug("Beer IDs: #{@beveridge_place_beer_ids.inspect}")
     @beveridge_place_beer = Beer.where(id: @beveridge_place_beer_ids)
-    Rails.logger.debug("BP Beer list: #{@beveridge_place_beer.inspect}")
+    # Rails.logger.debug("BP Beer list: #{@beveridge_place_beer.inspect}")
     
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
@@ -980,6 +993,9 @@ task :check_beveridge_place => :environment do
       @this_beer_abv = node.css("td.abv").text
       @this_beer_type = node.css("td.beer-style").text
       @this_brewery_name = node.css("td.brewery").text
+      # remove extra spaces from brewery name
+      @this_brewery_name = @this_brewery_name.strip
+      
       # Rails.logger.debug("This brewery name: #{@this_brewery_name.inspect}")
       # if brewery name is blank, fill it with first two words from beer name (which is often the brewery, or a part of it)
       if @this_brewery_name.blank?
@@ -1203,11 +1219,12 @@ task :check_fremont_beer_garden => :environment do
     # grab current location beers from DB
     @this_location_name = "Fremont Brewery"
     @this_location_id = 6
-    @fremont_beer_garden = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
-    @fremont_beer_garden_ids = @fremont_beer_garden.pluck(:beer_id)
-    # Rails.logger.debug("Fremont Beer IDs: #{@fremont_beer_garden_ids.inspect}")
-    @fremont_beer_garden_location_ids = @fremont_beer_garden.pluck(:id)
-    @fremont_beer_garden = Beer.where(id: @fremont_beer_garden_ids)
+    @fremont_beer_garden_beer_locations = BeerLocation.active_beers(@this_location_id)
+    @fremont_beer_garden_beer_location_ids = @fremont_beer_garden_beer_locations.pluck(:id)
+    # Rails.logger.debug("Location IDs: #{@fremont_beer_garden_beer_location_ids.inspect}")
+    @fremont_beer_garden_beer_ids = @fremont_beer_garden_beer_locations.pluck(:beer_id)
+    # Rails.logger.debug("Beer IDs: #{@fremont_beer_garden_beer_ids.inspect}")
+    @fremont_beer_garden = Beer.where(id: @fremont_beer_garden_beer_ids)
     # Rails.logger.debug("Fremont Beer list: #{@fremont_beer_garden.inspect}")
     
     # create array of current BeerLocation ids
@@ -1551,11 +1568,12 @@ task :check_the_yard => :environment do
     @this_location_name = "The Yard"
     @this_location_id = 7
     # grab current location beers from DB
-    @the_yard_cafe = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
-    @the_yard_cafe_ids = @the_yard_cafe.pluck(:beer_id)
-    # Rails.logger.debug("The Yard Beer IDs: #{@the_yard_cafe_ids.inspect}")
-    @the_yard_cafe_location_ids = @the_yard_cafe.pluck(:id)
-    @the_yard_cafe = Beer.where(id: @the_yard_cafe_ids)
+    @the_yard_cafe_beer_locations = BeerLocation.active_beers(@this_location_id)
+    @the_yard_cafe_beer_location_ids = @the_yard_cafe_beer_locations.pluck(:id)
+    # Rails.logger.debug("Location IDs: #{@the_yard_cafe_beer_location_ids.inspect}")
+    @the_yard_cafe_beer_ids = @the_yard_cafe_beer_locations.pluck(:beer_id)
+    # Rails.logger.debug("Beer IDs: #{@the_yard_cafe_beer_ids.inspect}")
+    @the_yard_cafe = Beer.where(id: @the_yard_cafe_beer_ids)
     # Rails.logger.debug("The Yard Beer list: #{@the_yard_cafe.inspect}")
     
     # create array of current BeerLocation ids
@@ -1768,11 +1786,12 @@ task :check_the_dray => :environment do
     # grab current location beers from DB
     @this_location_name = "The Dray"
     @this_location_id = 8
-    @the_dray = BeerLocation.where(location_id: @this_location_id, beer_is_current: "yes")
-    @the_dray_ids = @the_dray.pluck(:beer_id)
-    # Rails.logger.debug("The Yard Beer IDs: #{@the_dray_ids.inspect}")
-    @the_dray_location_ids = @the_dray.pluck(:id)
-    @the_dray = Beer.where(id: @the_dray_ids)
+    @the_dray_beer_locations = BeerLocation.active_beers(@this_location_id)
+    @the_dray_beer_location_ids = @the_dray_beer_locations.pluck(:id)
+    # Rails.logger.debug("Location IDs: #{@the_dray_beer_location_ids.inspect}")
+    @the_dray_beer_ids = @the_dray_beer_locations.pluck(:beer_id)
+    # Rails.logger.debug("Beer IDs: #{@the_dray_beer_ids.inspect}")
+    @the_dray = Beer.where(id: @the_dray_beer_ids)
     # Rails.logger.debug("The Yard Beer list: #{@the_dray.inspect}")
     
     # create array of current BeerLocation ids
