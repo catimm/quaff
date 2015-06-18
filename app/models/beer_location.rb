@@ -18,7 +18,6 @@ class BeerLocation < ActiveRecord::Base
   scope :current, -> { where(beer_is_current: "yes") }
   
   scope :active_beers, ->(location_id) { 
-    where('updated_at >= ?', 1.day.ago).
     where(:location_id => location_id).
     where(:beer_is_current => "yes")
     }
