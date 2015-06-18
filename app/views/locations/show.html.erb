@@ -69,9 +69,9 @@
 									<% beer.best_guess == 10 %>
 								<% end %>
 								<% if beer.best_guess % 1 == 0 %>
-									<h1 class="best-guess"><%= beer.best_guess.round(0) %></h1>
+									<h1 class="best-guess"><%= beer.best_guess %></h1>
 								<% else %>
-									<h1 class="best-guess"><%= beer.best_guess.round(0) %></h1>
+									<h1 class="best-guess"><%= beer.best_guess %></h1>
 								<% end %>
 							<% end %>
 						</div>
