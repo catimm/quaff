@@ -516,11 +516,12 @@ task :check_chucks_cd => :environment do
       end   
       # remove extra spaces from brewery name
       @this_brewery_name = @this_brewery_name.strip   
+      
       @this_beer_name = node.css("td.draft_name").text
-      Rails.logger.debug("Beer Name: #{@this_beer_name.inspect}")
+      # Rails.logger.debug("Beer Name: #{@this_beer_name.inspect}")
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
-      # split brewery name aso key words can be removed from beer name
+      # split brewery name so key words can be removed from beer name
       @split_brewery_name = @this_brewery_name.split
       # cycle through split words to remove from beer name
       @split_brewery_name.each do |word|
