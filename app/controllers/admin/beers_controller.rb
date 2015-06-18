@@ -106,6 +106,28 @@ class Admin::BeersController < ApplicationController
     render :partial => 'admin/beers/delete_beer'
   end
   
+  def clean_location_prep
+    # create new instance for form
+    @cleaning = BeerLocation.new
+    # find the beer to edit
+    @beer = Beer.find(params[:beer_id]) 
+    # pull full list of beers--for delete option
+    @locations = Location.all.order(:name)
+    render :partial => 'admin/beers/clean_location'
+  end
+  
+  def clean_location
+    @beer_id = params[:beer_id] 
+    @location_id = params[:beer_location][:id]
+    @beer_locations = BeerLocation.where(beer_id: @beer_id, location_id: @location_id)
+    @beer_locations.each do |record|
+      if record.beer_is_current == "no"
+        record.destroy!
+      end
+    end
+    redirect_to admin_breweries_path
+  end
+  
   def descriptors
     Rails.logger.debug("Descriptors is called too")
     descriptors = Beer.descriptor_counts.by_tag_name(params[:q]).map{|t| {id: t.name, name: t.name }}

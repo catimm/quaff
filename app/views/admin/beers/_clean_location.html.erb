@@ -1,0 +1,8 @@
+<%= form_for [:admin, @cleaning] do |g| %>
+	<h5>Cleaning this beer:</h5>
+	<h5 class="brewery-name-with-id"><%= @beer.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= @beer.id %> ]</h6>
+	<h5>Choose at which location to clean:</h5>
+	<% options = options_from_collection_for_select(@locations, :id, :name) %>
+	<%= g.select :id,  options %>
+	<%= g.submit "Clean location", class: "btn btn-default btn-warning formButton" %>			
+<% end %>
