@@ -119,8 +119,7 @@ class Admin::BeersController < ApplicationController
       # then delete this instance of the beer
       @beer.destroy
     end
-    # redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
-    redirect_to user_add_beer_path
+    redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
   end 
 
   def current_beers
