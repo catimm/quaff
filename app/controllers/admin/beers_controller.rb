@@ -60,16 +60,57 @@ class Admin::BeersController < ApplicationController
             speciality_notice: params[:beer][:speciality_notice], descriptor_list_tokens: params[:beer][:descriptor_list_tokens], 
             original_descriptors: params[:beer][:original_descriptors], hops: params[:beer][:hops], grains: params[:beer][:grains], 
             brewer_description: params[:beer][:brewer_description], beer_type_id: params[:beer][:beer_type_id],
-            rating_one_na: params[:beer][:rating_one_na], rating_two_na: params[:beer][:rating_two_na], rating_three_na: params[:beer][:rating_three_na])
+            rating_one_na: params[:beer][:rating_one_na], rating_two_na: params[:beer][:rating_two_na], 
+            rating_three_na: params[:beer][:rating_three_na], touched_by_user: params[:beer][:touched_by_user])
       @beer.save
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
+      # first change associations in beer_locations table
       @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
-      @beer_locations_to_change.each do |beers|
-        this_beer = BeerLocation.find(beers.id)
-        this_beer.update(beer_id: params[:beer][:id])
-        this_beer.save
+      if !@beer_locations_to_change.empty?
+        @beer_locations_to_change.each do |beers|
+          this_beer = BeerLocation.find(beers.id)
+          this_beer.update(beer_id: params[:beer][:id])
+          this_beer.save
+        end
       end
+      # first change associations in alt_beer_names table
+      @alt_beer_names_to_change = BeerLocation.where(beer_id: @beer.id)
+      if !@alt_beer_names_to_change.empty?
+        @alt_beer_names_to_change.each do |beers|
+          this_beer = AltBeerName.find(beers.id)
+          this_beer.update(beer_id: params[:beer][:id])
+          this_beer.save
+        end
+      end
+      # first change associations in user_beer_ratings table
+      @user_beer_ratings_to_change = BeerLocation.where(beer_id: @beer.id)
+      if !@user_beer_ratings_to_change.empty?
+        @user_beer_ratings_to_change.each do |beers|
+          this_beer = UserBeerRating.find(beers.id)
+          this_beer.update(beer_id: params[:beer][:id])
+          this_beer.save
+        end
+      end
+      # first change associations in drink_lists table
+      @drink_lists_to_change = BeerLocation.where(beer_id: @beer.id)
+      if !@drink_lists_to_change.empty?
+        @drink_lists_to_change.each do |beers|
+          this_beer = DrinkList.find(beers.id)
+          this_beer.update(beer_id: params[:beer][:id])
+          this_beer.save
+        end
+      end
+      # first change associations in user_beer_trackings table
+      @user_beer_trackings_to_change = BeerLocation.where(beer_id: @beer.id)
+      if !@user_beer_trackings_to_change.empty?
+        @user_beer_trackings_to_change.each do |beers|
+          this_beer = UserBeerTracking.find(beers.id)
+          this_beer.update(beer_id: params[:beer][:id])
+          this_beer.save
+        end
+      end
+      # then delete this instance of the beer
       @beer.destroy
     end
     redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
@@ -152,7 +193,7 @@ class Admin::BeersController < ApplicationController
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
       :number_ratings_two, :beer_rating_three, :number_ratings_three,:beer_abv, :beer_ibu, :brewery_id, :beer_image, 
       :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id,
-      :rating_one_na, :rating_two_na, :rating_three_na)
+      :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user)
     end
     
     def beer_name_params

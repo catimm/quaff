@@ -4,7 +4,12 @@
 		<div class="page-header">
 			<div class="row">
 				<div class="col-sm-8">
-					<h3><%= @beer.beer_name %> <span class="last-updated">(last updated: <%= (@beer.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h3>
+					<% if !@beer.touched_by_user.nil? %>
+						<% @edited_by = User.where(id: @beer.touched_by_user).pluck(:username)[0] %>
+						<h3><%= @beer.beer_name %> <span class="last-updated">(last updated: <%= (@beer.updated_at).strftime("%B %e, %Y @ %l:%M %p") %> by <%= @edited_by %>)</span></h3>
+					<% else %>
+						<h3><%= @beer.beer_name %> <span class="last-updated">(last updated: <%= (@beer.updated_at).strftime("%B %e, %Y @ %l:%M %p") %> by N/A)</span></h3>
+					<% end %>
 				</div>
 				<% if current_user.role_id == 1 %>
 					<div class="col-sm-2 text-right">

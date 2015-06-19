@@ -1,10 +1,7 @@
 <%= form_for [:admin, @beer] do |f| %>
-	<div class="col-sm-6 col-xs-12">
-		<%= f.hidden_field :brewery_id, :value => @this_brewery.id %>
-	</div>
-	<div class="col-sm-6 col-xs-12">
-		<%= f.hidden_field :form_type, :value => "edit" %>
-	</div>
+	<%= f.hidden_field :touched_by_user, :value => current_user.id %>
+	<%= f.hidden_field :brewery_id, :value => @this_brewery.id %>
+	<%= f.hidden_field :form_type, :value => "edit" %>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %>
 	</div>
