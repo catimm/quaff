@@ -61,59 +61,66 @@ class Admin::BeersController < ApplicationController
             original_descriptors: params[:beer][:original_descriptors], hops: params[:beer][:hops], grains: params[:beer][:grains], 
             brewer_description: params[:beer][:brewer_description], beer_type_id: params[:beer][:beer_type_id],
             rating_one_na: params[:beer][:rating_one_na], rating_two_na: params[:beer][:rating_two_na], 
-            rating_three_na: params[:beer][:rating_three_na], touched_by_user: params[:beer][:touched_by_user])
+            rating_three_na: params[:beer][:rating_three_na], touched_by_user: params[:beer][:touched_by_user],
+            user_addition: params[:beer][:user_addition])
       @beer.save
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
       # first change associations in beer_locations table
       @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
+      Rails.logger.debug("Beer locations table: #{@beer_locations_to_change.inspect}")
       if !@beer_locations_to_change.empty?
+        Rails.logger.debug("Beer locations empty test is firing")
         @beer_locations_to_change.each do |beers|
-          this_beer = BeerLocation.find(beers.id)
-          this_beer.update(beer_id: params[:beer][:id])
-          this_beer.save
+          Rails.logger.debug("Beer locations loop is firing")
+          BeerLocation.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # first change associations in alt_beer_names table
-      @alt_beer_names_to_change = BeerLocation.where(beer_id: @beer.id)
+      @alt_beer_names_to_change = AltBeerName.where(beer_id: @beer.id)
+      Rails.logger.debug("Alt Beer names table: #{@alt_beer_names_to_change.inspect}")
       if !@alt_beer_names_to_change.empty?
+        Rails.logger.debug("Alt Beer names empty test is firing")
         @alt_beer_names_to_change.each do |beers|
-          this_beer = AltBeerName.find(beers.id)
-          this_beer.update(beer_id: params[:beer][:id])
-          this_beer.save
+          Rails.logger.debug("Alt Beer names loop is firing")
+          AltBeerName.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # first change associations in user_beer_ratings table
-      @user_beer_ratings_to_change = BeerLocation.where(beer_id: @beer.id)
+      @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @beer.id)
+      Rails.logger.debug("User Beer ratings table: #{@user_beer_ratings_to_change.inspect}")
       if !@user_beer_ratings_to_change.empty?
+        Rails.logger.debug("User Beer ratings empty test is firing")
         @user_beer_ratings_to_change.each do |beers|
-          this_beer = UserBeerRating.find(beers.id)
-          this_beer.update(beer_id: params[:beer][:id])
-          this_beer.save
+          Rails.logger.debug("User Beer ratings loop is firing")
+          UserBeerRating.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # first change associations in drink_lists table
-      @drink_lists_to_change = BeerLocation.where(beer_id: @beer.id)
+      @drink_lists_to_change = DrinkList.where(beer_id: @beer.id)
+      Rails.logger.debug("Drink list table: #{@drink_lists_to_change.inspect}")
       if !@drink_lists_to_change.empty?
+        Rails.logger.debug("Drink list empty test is firing")
         @drink_lists_to_change.each do |beers|
-          this_beer = DrinkList.find(beers.id)
-          this_beer.update(beer_id: params[:beer][:id])
-          this_beer.save
+          Rails.logger.debug("Drink list loop is firing")
+          DrinkList.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # first change associations in user_beer_trackings table
-      @user_beer_trackings_to_change = BeerLocation.where(beer_id: @beer.id)
+      @user_beer_trackings_to_change = UserBeerTracking.where(beer_id: @beer.id)
+      Rails.logger.debug("User Beer trackings table: #{@user_beer_trackings_to_change.inspect}")
       if !@user_beer_trackings_to_change.empty?
+        Rails.logger.debug("User Beer trackings empty test is firing")
         @user_beer_trackings_to_change.each do |beers|
-          this_beer = UserBeerTracking.find(beers.id)
-          this_beer.update(beer_id: params[:beer][:id])
-          this_beer.save
+          Rails.logger.debug("User Beer trackings loop is firing")
+          UserBeerTracking.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # then delete this instance of the beer
       @beer.destroy
     end
-    redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
+    # redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
+    redirect_to user_add_beer_path
   end 
 
   def current_beers
@@ -193,7 +200,7 @@ class Admin::BeersController < ApplicationController
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
       :number_ratings_two, :beer_rating_three, :number_ratings_three,:beer_abv, :beer_ibu, :brewery_id, :beer_image, 
       :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id,
-      :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user)
+      :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user, :user_addition)
     end
     
     def beer_name_params

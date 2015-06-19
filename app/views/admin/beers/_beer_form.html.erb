@@ -1,5 +1,6 @@
 <%= form_for [:admin, @beer] do |f| %>
 	<%= f.hidden_field :touched_by_user, :value => current_user.id %>
+	<%= f.hidden_field :user_addition, :value => false %>
 	<%= f.hidden_field :brewery_id, :value => @this_brewery.id %>
 	<%= f.hidden_field :form_type, :value => "edit" %>
 	<div class="col-sm-6 col-xs-12">
