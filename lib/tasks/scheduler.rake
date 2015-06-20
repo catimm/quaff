@@ -1538,7 +1538,7 @@ task :check_fremont_beer_garden => :environment do
     end
     
     # create list of not current Beer Location IDs
-    @not_current_beer_ids = @fremont_beer_garden_location_ids - @current_beer_ids
+    @not_current_beer_ids = @fremont_beer_garden_beer_location_ids - @current_beer_ids
     # Rails.logger.debug("Current Beer IDs: #{@current_beer_ids.inspect}")
     # Rails.logger.debug("Not Current Beer IDs: #{@not_current_beer_ids.inspect}")
     # change not current beers status in DB
@@ -1759,7 +1759,7 @@ task :check_the_yard => :environment do
     end
     
     # create list of not current Beer Location IDs
-    @not_current_beer_ids = @the_yard_cafe_location_ids - @current_beer_ids
+    @not_current_beer_ids = @the_yard_cafe_beer_location_ids - @current_beer_ids
     # change not current beers status in DB
     if !@not_current_beer_ids.empty?
       @not_current_beer_ids.each do |beer|
@@ -1977,7 +1977,7 @@ task :check_the_dray => :environment do
     end
     
     # create list of not current Beer Location IDs
-    @not_current_beer_ids = @the_dray_location_ids - @current_beer_ids
+    @not_current_beer_ids = @the_dray_beer_location_ids - @current_beer_ids
     # change not current beers status in DB
     if !@not_current_beer_ids.empty?
       @not_current_beer_ids.each do |beer|
