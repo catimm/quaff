@@ -42,6 +42,7 @@ $action-background: $bright-blue;
 $rating-text: $bright-blue;
 $step-background: $light-green;
 $admin-background: $white;
+$mobile-navbar-text: $white;
 $current-beer-complete-background: $extra-light-green;
 $current-beer-usable-background: $light-orange;
 $current-beer-attention-needed-background: $extra-light-red;
@@ -919,6 +920,21 @@ $beer-header-lines-to-show: 2;
     }
   }
 }
+.dropdown-menu {
+  padding: 10px 0 !important;
+  li {
+    list-style-type: none;
+    a {
+      color: $normal-text !important;
+    }
+  }
+}
+.dropdown.open {
+  background: $admin-background !important;
+  a {
+    color: $normal-text !important; 
+  }
+}
 .footer {
   background: $dark-gray !important;
   bottom: 0;
@@ -1141,6 +1157,13 @@ input[type="checkbox"] {
     -webkit-box-shadow: none !important;
     padding-top: 0;
     padding-bottom: 0;
+  }
+  .dropdown-menu {
+    li {
+      a {
+        color: $mobile-navbar-text !important;
+      }
+    }
   }
   // locations index page
   .overview-tile {

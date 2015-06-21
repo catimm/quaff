@@ -6,33 +6,6 @@ class UsersController < ApplicationController
   end
   
   def show
-    @new_drink = DrinkList.new
-    
-    # allow user to rate a beer
-    @user_rating = UserBeerRating.new
-    
-    @time = Time.current - 30.minutes
-    @drink_list = DrinkList.where(user_id: current_user.id).pluck(:beer_id)
-    @filterrific = initialize_filterrific(
-      Beer,
-      params[:filterrific],
-      select_options: {
-        sorted_by: Beer.options_for_sorted_by,
-        with_any_location_ids: Location.options_for_select,
-        with_beer_type: Beer.options_for_beer_type.uniq,
-        beer_abv_lte: Beer.options_for_beer_abv,
-        with_special: Beer.options_for_special_beer.uniq
-      },
-      persistence_id: 'shared_key',
-      default_filter_params: {},
-      available_filters: [],
-    ) or return
-    @beers = @filterrific.find.page(params[:page])
-  
-    respond_to do |format|
-      format.html
-      format.js
-    end
   
   end
   
@@ -49,5 +22,9 @@ class UsersController < ApplicationController
       format.js
     end
   end
-
+  
+  def style_preferences
+    
+  end
+  
 end
