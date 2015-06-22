@@ -5,6 +5,12 @@ Rails.application.routes.draw do
     resources :drinks, :ratings, :rewards, :trackings   
   end
   
+  resource :user, only: [:edit] do
+    collection do
+      patch 'update_password'
+    end
+  end
+  
   namespace :admin do
     resources :beers do
       collection do
@@ -58,6 +64,8 @@ Rails.application.routes.draw do
   get 'admin/beers/locations/:beer_id' => 'admin/beers#clean_location', :as => 'admin_beer_locations'
   # to post clean location form
   post '/admin/beers/locations/:beer_id' => 'admin/beers#clean_location', :as => 'admin_clean_location'
+  # user account updates
+  post '/users/notification_preferences' => 'user#notification_preferences', :as => 'user_notification_preference'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

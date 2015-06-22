@@ -2009,9 +2009,13 @@ task :check_user_additions => :environment do
         beer_name = user_beer.brewery.brewery_name + " - " + user_beer.beer_name + " [beer id: " + user_beer.id.to_s + ";" + " added by " + @user.username + " (user id: " + @user.id.to_s + ")]" 
         @user_added_beer_list << beer_name
       end
-      
-      # send email
-      BeerUpdates.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver   
     end
+    
+    # send email
+    if !@user_added_beer_list.empty?
+      @admin_emails.each do |admin_email|
+        BeerUpdates.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver
+      end
+    end   
     
 end

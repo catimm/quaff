@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: user_notification_preferences
+#
+#  id               :integer          not null, primary key
+#  user_id          :integer
+#  notification_one :string
+#  preference_one   :boolean
+#  threshold_one    :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  notification_two :string
+#  preference_two   :boolean
+#  threshold_two    :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  notification_id: 1
+  preference: false
+  threshold: 1
+
+two:
+  user_id: 1
+  notification_id: 1
+  preference: false
+  threshold: 1

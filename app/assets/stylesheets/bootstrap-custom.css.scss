@@ -941,8 +941,8 @@ $beer-header-lines-to-show: 2;
   position: absolute;
   height: 50px !important;
   width: 100%;
-  padding-top: 1.5em;
-  padding-bottom: 0.5em;
+  padding-top: 5px;
+  padding-bottom: 5px;
   .container {
     text-align: center;
   }
@@ -959,7 +959,63 @@ $beer-header-lines-to-show: 2;
     font-weight: 200;
   }
 }
-
+// User Account css style
+.account-options {
+  font-size: 16px;
+    display: inline-block;
+    margin-right: 15px;
+    margin-top: 20px;
+    color: $less-emphasized-text;
+}
+.account-options.selected {
+    color: $user-rating-text;
+    font-weight: 500;
+}  
+.account-created {
+  color: $less-emphasized-text;
+  padding-top: 5px;
+}
+.changeButton {
+  font-size: 10px !important;
+  padding: 3px 6px !important;
+}
+.changeButton.delete-acct {
+  background: $current-beer-attention-needed-background;
+  width: 50%;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.changeButton.change-password {
+  background: $less-emphasized-text;
+  border: 1px $normal-text solid;
+  width: 40%;
+  margin: 10px 0;
+}
+#flash_success, #flash_failure {
+  color: $current-beer-attention-needed-background;
+}
+.edit_user_notification_preference {
+  margin-top: 20px;
+  input[type="checkbox"] {
+    height: 20px;
+    width: 20px;
+    margin: 0;
+    text-align: center;
+    vertical-align: middle;
+  }
+  input[type="text"] {
+    text-align: center;
+  }
+}
+.user-notification-form-text {
+  color: $normal-text;
+  .user-rated {
+    color: $user-rating-text;
+  }
+  .best-guess-rating {
+    color: $best-guess-text;
+  }
+}
 // CSS from jqCloud gem
 /* fonts */
 
@@ -1064,7 +1120,7 @@ div.jqcloud span.w1 { color: $light-blue; }
   padding: 6px 8px;
 }
 .need-text {
-  color: red;
+  color: $current-beer-attention-needed-background;
 }
 .small-padding {
   padding: 0 5px;
@@ -1084,13 +1140,16 @@ div.jqcloud span.w1 { color: $light-blue; }
     margin: 0 auto;
   }
 }
-#new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, #new_user, #new_user_beer_rating, #edit_user {
+.edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, #new_user, #new_user_beer_rating, #edit_user {
   input, select, ul {
     margin-bottom: 7.5px;
   }
   h6 {
     margin: 5px 0 5px 5px;
   }
+}
+.edit_user {
+  margin-top: 15px;
 }
 #new_location_tracking {
   label {
@@ -1237,7 +1296,6 @@ input[type="checkbox"] {
       margin: 10px 0 5px 0;
       padding: 5px; 
   }
-}
 // Beer info page
 //  .beer-info-tile {
 //    box-shadow: 0 1px 2px 0 rgba(255, 255, 255, 0) !important;
@@ -1261,7 +1319,11 @@ input[type="checkbox"] {
   .cloud-holder-full-page {
     height: 75px;
   }
-
+  // User account page
+  .user-account-header {
+    font-size: 28px;
+  }
+  
 // Footer css
   .footer {
     background: $dark-gray !important;
@@ -1300,6 +1362,7 @@ input[type="checkbox"] {
   .formSpace {
     font-size: 24px;
   }
+}
 @media(min-width: 768px) {
   .image-holder {
     position: fixed;

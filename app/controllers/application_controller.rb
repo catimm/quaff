@@ -14,6 +14,9 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:accept_invitation) << :first_name
     devise_parameter_sanitizer.for(:accept_invitation) << :username
     devise_parameter_sanitizer.for(:accept_invitation) << :role_id
+    devise_parameter_sanitizer.for(:account_update) { |u| 
+      u.permit(:password, :password_confirmation, :current_password) 
+    }
   end
   
   private

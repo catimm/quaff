@@ -43,6 +43,7 @@ class User < ActiveRecord::Base
   has_many :drink_lists
   has_many :beers, through: :drink_lists
   has_many :user_beer_trackings
+  has_many :user_notification_preferences
   
   # set user roles for cancancan
   def super_admin?

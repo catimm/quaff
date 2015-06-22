@@ -1,5 +1,21 @@
 <%= render 'layouts/header' %> 
 <div class="container">
-	<h1>User Settings</h1>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h1 class="user-account-header"><%= current_user.username %></h1>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h5 class="account-options selected" id="user-profile-link">Profile</h5>
+			<h5 class="account-options" id="user-notifications-link">Notifications</h5>
+		</div>
+	</div>
+	<div class="row no-margin show" id="user-profile">
+		<%= render 'users/user_profile' %>
+	</div>
+	<div class="row no-margin hidden" id="user-notifications">
+		<%= render 'users/user_notifications' %>
+	</div>
 </div>
 <%= render 'layouts/footer' %>
