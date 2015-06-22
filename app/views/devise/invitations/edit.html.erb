@@ -11,7 +11,7 @@
 							    <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
 							  <%- end -%>
 							<%= f.hidden_field :invitation_token %>
-							<%= f.hidden_field :role_id, :value => 2 %>
+							<%= f.hidden_field :role_id, :value => 4 %>
 							<div class="row"> 
 								<div class="col-xs-12">
 							 		<%= f.text_field :first_name, :class => "form-control", required: true, placeholder: "Your first name" %>
