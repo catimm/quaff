@@ -1,5 +1,21 @@
 <%= render 'layouts/header' %> 
 <div class="container">
-	<h1>Beer Profile</h1>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h1 class="user-account-header">Beer Preferences</h1>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h5 class="account-options selected" id="user-styles-link">Styles</h5>
+			<h5 class="account-options" id="user-drinks-link">Drinks</h5>
+		</div>
+	</div>
+	<div class="row no-margin show" id="user-styles">
+		<%= render 'users/user_styles' %>
+	</div>
+	<div class="row no-margin hidden" id="user-drinks">
+		<%= render 'users/user_drinks' %>
+	</div>
 </div>
 <%= render 'layouts/footer' %>

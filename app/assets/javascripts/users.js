@@ -46,4 +46,44 @@ $(function () {
 			$(".password-change-form").removeClass("show").addClass("hidden");
 		}
 	});
+	
+	// show user profile block when this link is clicked, if it isn't already showing
+	$("#user-styles-link").on("click", function() {
+		if ($("#user-styles").hasClass("hidden")) {
+			$("#user-styles").removeClass("hidden").addClass("show");
+			$("#user-drinks").removeClass("show").addClass("hidden");
+			$("#user-styles-link").addClass("selected");
+			$("#user-drinks-link").removeClass("selected");
+		}
+	});
+	// if this link isn't already active, show underline when mouse over
+	$("#user-styles-link").on("mouseover", function() {
+		if ($("#user-styles").hasClass("hidden")) {
+			$(this).css("text-decoration", "underline");
+		}
+	});
+	// remove underline when mouse out	
+	$("#user-styles-link").on("mouseout", function() {
+		$(this).css("text-decoration", "none");
+	});
+	// show user profile block when this link is clicked, if it isn't already showing
+	$("#user-drinks-link").on("click", function() {
+		if ($("#user-drinks").hasClass("hidden")) {
+			$("#user-drinks").removeClass("hidden").addClass("show");
+			$("#user-styles").removeClass("show").addClass("hidden");
+			$("#user-drinks-link").addClass("selected");
+			$("#user-styles-link").removeClass("selected");
+		}
+	});
+	// if this link isn't already active, show underline when mouse over
+	$("#user-drinks-link").on("mouseover", function() {
+		if ($("#user-drinks").hasClass("hidden")) {
+			$(this).css("text-decoration", "underline");
+		}
+	});	
+	// remove underline when mouse out
+	$("#user-drinks-link").on("mouseout", function() {
+		$(this).css("text-decoration", "none");
+	});
+
 });
