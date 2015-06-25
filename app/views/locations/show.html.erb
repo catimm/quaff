@@ -16,7 +16,7 @@
 			<% @beer_ranking.each do |beer| %>
 			<div class="col-sm-4 col-xs-12 beer-tile-container">
 				<%= link_to new_user_rating_path(current_user.id, beer.id), :class => 'rate-beer text-center' do %>
-					<i class="fa fa-heart"></i>
+					<i class="fa fa-tasks"></i>
 				<% end %>
 				<div class="overview-tile-2">
 					<div class="row no-margin">

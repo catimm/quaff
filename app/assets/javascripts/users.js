@@ -86,4 +86,47 @@ $(function () {
 		$(this).css("text-decoration", "none");
 	});
 
+	// allow user to dislike beer style
+	$(".dislike-style").on("click", function() {
+		if ($(this).siblings(".overview-tile-3").children(".dislike-style-chosen").hasClass("hidden")) {
+			$(this).removeClass("show").addClass("hidden");
+			$(this).siblings(".overview-tile-3").children(".dislike-style-chosen").removeClass("hidden").addClass("show");
+			// if like is already chosen, reverse it
+			if ($(this).siblings(".overview-tile-3").children(".like-style-chosen").hasClass("show")) {
+				$(this).siblings(".overview-tile-3").children(".like-style-chosen").removeClass("show").addClass("hidden");	
+			}
+			if ($(this).siblings(".like-style").hasClass("hidden")) {
+				$(this).siblings(".like-style").removeClass("hidden").addClass("show");
+			}
+		}
+	});
+	// allow user to reverse dislike of beer style
+	$(".dislike-style-chosen").on("click", function() {
+		if ($(this).hasClass("show")) {
+			$(this).removeClass("show").addClass("hidden");
+			$(this).parent(".overview-tile-3").siblings(".dislike-style").removeClass("hidden").addClass("show");
+		}
+	});
+	
+	// allow user to like beer style
+	$(".like-style").on("click", function() {
+		if ($(this).siblings(".overview-tile-3").children(".like-style-chosen").hasClass("hidden")) {
+			$(this).removeClass("show").addClass("hidden");
+			$(this).siblings(".overview-tile-3").children(".like-style-chosen").removeClass("hidden").addClass("show");
+			// if dislike is already chosen, reverse it
+			if ($(this).siblings(".overview-tile-3").children(".dislike-style-chosen").hasClass("show")) {
+				$(this).siblings(".overview-tile-3").children(".dislike-style-chosen").removeClass("show").addClass("hidden");
+			}
+			if ($(this).siblings(".dislike-style").hasClass("hidden")) {
+				$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
+			}
+		}
+	});
+	// allow user to reverse like of beer style
+	$(".like-style-chosen").on("click", function() {
+		if ($(this).hasClass("show")) {
+			$(this).removeClass("show").addClass("hidden");
+			$(this).parent(".overview-tile-3").siblings(".like-style").removeClass("hidden").addClass("show");
+		}
+	});
 });

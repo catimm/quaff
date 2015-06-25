@@ -6,12 +6,12 @@
 #  user_id          :integer
 #  notification_one :string
 #  preference_one   :boolean
-#  threshold_one    :integer
+#  threshold_one    :float
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  notification_two :string
 #  preference_two   :boolean
-#  threshold_two    :integer
+#  threshold_two    :float
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

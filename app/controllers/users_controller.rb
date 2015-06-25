@@ -2,7 +2,8 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
   
   def index
-    
+    @styles = BeerStyle.all
+    @user_styles = UserStylePreference.where(user_id: current_user.id)
   end
   
   def show
