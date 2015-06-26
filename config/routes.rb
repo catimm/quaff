@@ -66,6 +66,8 @@ Rails.application.routes.draw do
   post '/admin/beers/locations/:beer_id' => 'admin/beers#clean_location', :as => 'admin_clean_location'
   # user account updates
   post '/users/notification_preferences' => 'user#notification_preferences', :as => 'user_notification_preference'
+  # user beer preferences
+  post '/styles' => 'users#style_preferences', :as => 'user_style_preference'
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

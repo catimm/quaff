@@ -1,0 +1,8 @@
+<%= hidden_field_tag "styles[][beer_style_id]", style.id %>
+<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
+	<%= hidden_field_tag "styles[][user_preference]", 1 %>
+<% elsif @user_likes.map{|a| a.beer_style_id}.include? style.id %>
+	<%= hidden_field_tag "styles[][user_preference]", 2 %>
+<% else %>
+	<%= hidden_field_tag "styles[][user_preference]", 0 %>
+<% end %>

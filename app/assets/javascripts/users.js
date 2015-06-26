@@ -89,6 +89,7 @@ $(function () {
 	// allow user to dislike beer style
 	$(".dislike-style").on("click", function() {
 		if ($(this).siblings(".overview-tile-3").children(".dislike-style-chosen").hasClass("hidden")) {
+			// change view/UI
 			$(this).removeClass("show").addClass("hidden");
 			$(this).siblings(".overview-tile-3").children(".dislike-style-chosen").removeClass("hidden").addClass("show");
 			// if like is already chosen, reverse it
@@ -98,6 +99,8 @@ $(function () {
 			if ($(this).siblings(".like-style").hasClass("hidden")) {
 				$(this).siblings(".like-style").removeClass("hidden").addClass("show");
 			}
+			// change user preference form value
+			$(this).siblings("#styles__user_preference").val(1);
 		}
 	});
 	// allow user to reverse dislike of beer style
@@ -106,6 +109,8 @@ $(function () {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).parent(".overview-tile-3").siblings(".dislike-style").removeClass("hidden").addClass("show");
 		}
+		// change user preference form value
+		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
 	});
 	
 	// allow user to like beer style
@@ -120,6 +125,8 @@ $(function () {
 			if ($(this).siblings(".dislike-style").hasClass("hidden")) {
 				$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
 			}
+			// change user preference form value
+			$(this).siblings("#styles__user_preference").val(2);
 		}
 	});
 	// allow user to reverse like of beer style
@@ -128,5 +135,7 @@ $(function () {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).parent(".overview-tile-3").siblings(".like-style").removeClass("hidden").addClass("show");
 		}
+		// change user preference form value
+		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
 	});
 });
