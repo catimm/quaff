@@ -12,7 +12,7 @@
 	</div>
 	<div class="row row-horizon">
 		<% @styles.each do |style| %>
-			<% if style.style_name != "Hybrid" %>
+			<% if style.style_name != "Hybrids" %>
 				<div class="col-sm-3 col-xs-12 style-tile-container">
 					<%= render 'group_style_form', style: style %>
 					<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
