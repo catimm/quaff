@@ -1031,6 +1031,15 @@ $beer-header-lines-to-show: 2;
     height: 229px;
     position: relative;
   }
+  .overview-tile-4 {
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.25);
+    height: 229px;
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    z-index: 100;
+  }
 .formButton-style {
   width: 100%;
   margin: 5px 0 15px 0;
@@ -1074,11 +1083,21 @@ $beer-header-lines-to-show: 2;
   left: 9px;
   padding: 6px;
 }
+.dislike-style-middle {
+  background: $current-beer-attention-needed-background;
+  padding: 7px 7px;
+  position: absolute;
+}
 .like-style {
   background: $step-background;
   top: 0;
   right: 9px;
   padding: 7px;
+}
+.like-style-middle {
+  background: $step-background;
+  padding: 7px 7px;
+  position: absolute;
 }
 .tiny-dislike-style {
   background: $current-beer-attention-needed-background;
@@ -1121,14 +1140,14 @@ $style-header-lines-to-show: 1;
 .dislike-style-chosen {
   z-index: 1000;
   position: absolute;
-  right: 142px; 
-  top: 70px; 
+  height: 36px; 
+  top: 70px;
 }
 .like-style-chosen {
   z-index: 1000;
   position: absolute;
-  left: 142px; 
-  top: 70px; 
+  height: 36px;
+  top: 70px;
 }
 
 // CSS from jqCloud gem
@@ -1470,15 +1489,7 @@ input[type="checkbox"] {
       font-weight: 200;
     }
   }
-  // Beer Preferences css style
-  .dislike-style-chosen {
-    right: 153px; 
-    top: 70px; 
-  }
-  .like-style-chosen {
-    left: 153px; 
-    top: 70px; 
-  }
+
   // Sign-up & log-in pages
   .box {
     margin-top: 24px;

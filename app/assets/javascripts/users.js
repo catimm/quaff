@@ -92,6 +92,8 @@ $(function () {
 			// change view/UI
 			$(this).removeClass("show").addClass("hidden");
 			$(this).siblings(".overview-tile-3").children(".dislike-style-chosen").removeClass("hidden").addClass("show");
+			// add overlay
+			$(this).siblings(".overview-tile-4").addClass("show").removeClass("hidden");
 			// if like is already chosen, reverse it
 			if ($(this).siblings(".overview-tile-3").children(".like-style-chosen").hasClass("show")) {
 				$(this).siblings(".overview-tile-3").children(".like-style-chosen").removeClass("show").addClass("hidden");	
@@ -108,6 +110,8 @@ $(function () {
 		if ($(this).hasClass("show")) {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).parent(".overview-tile-3").siblings(".dislike-style").removeClass("hidden").addClass("show");
+			// remove overlay
+			$(this).parent(".overview-tile-3").siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
 		// change user preference form value
 		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
@@ -118,6 +122,8 @@ $(function () {
 		if ($(this).siblings(".overview-tile-3").children(".like-style-chosen").hasClass("hidden")) {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).siblings(".overview-tile-3").children(".like-style-chosen").removeClass("hidden").addClass("show");
+			// add overlay
+			$(this).siblings(".overview-tile-4").addClass("show").removeClass("hidden");
 			// if dislike is already chosen, reverse it
 			if ($(this).siblings(".overview-tile-3").children(".dislike-style-chosen").hasClass("show")) {
 				$(this).siblings(".overview-tile-3").children(".dislike-style-chosen").removeClass("show").addClass("hidden");
@@ -134,8 +140,22 @@ $(function () {
 		if ($(this).hasClass("show")) {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).parent(".overview-tile-3").siblings(".like-style").removeClass("hidden").addClass("show");
+			// remove overlay
+			$(this).parent(".overview-tile-3").siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
 		// change user preference form value
 		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
 	});
+	
+	// find width of style preference overview tile
+	style_width = $(".overview-tile-3").width();
+	half_style_width = style_width/2;
+	// make width of selected style overlay equal that of the overview tile
+	$(".overview-tile-4").width(style_width);
+	// make width of style preference row equal that of the overview tile
+	$(".like-style-chosen").width(style_width);
+	$(".dislike-style-chosen").width(style_width);
+	// make chosen preference appear in middle of tile regardless of tile size
+	$(".dislike-style-chosen").children(".dislike-style-middle").css("left",style_width - half_style_width - 18);
+	$(".like-style-chosen").children(".like-style-middle").css("left",style_width - half_style_width - 18);
 });
