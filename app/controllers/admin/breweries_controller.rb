@@ -20,10 +20,14 @@ class Admin::BreweriesController < ApplicationController
     @live_brewery_beers = Brewery.live_brewery_beers
     # get list of Brewery IDs for those breweries that have a live beer that needs works
     @need_attention_brewery_beers = Brewery.need_attention_brewery_beers
+    # Rails.logger.debug("Red beers: #{@need_attention_brewery_beers.inspect}")
     # get list of Brewery IDs for those breweries that have a live beer that is complete
     @complete_brewery_beers = Brewery.complete_brewery_beers
+    # Rails.logger.debug("Green beers: #{@complete_brewery_beers.inspect}")
     # get list of Brewery IDs for those breweries that have a live beer with some info but is not complete
-    @usable_incomplete_brewery_beers = @live_brewery_beers - @need_attention_brewery_beers - @complete_brewery_beers
+    # @usable_incomplete_brewery_beers = @live_brewery_beers - @need_attention_brewery_beers - @complete_brewery_beers
+    @usable_incomplete_brewery_beers = Brewery.usable_incomplete_brewery_beers
+    
     # count of total live beers
     @number_live_beers = Beer.live_beers.count('id')
     # get count of total beers that have no info

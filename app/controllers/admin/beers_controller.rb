@@ -7,16 +7,16 @@ class Admin::BeersController < ApplicationController
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     # get list of IDs for all live Beers
     @live_beers = Beer.live_beers
-    Rails.logger.debug("Live beers: #{@live_beers.inspect}")
+    # Rails.logger.debug("Live beers: #{@live_beers.inspect}")
     # get list of Beer IDs for live beers that have all information provided
     @complete_beers = Beer.live_beers.complete_beers
-    Rails.logger.debug("Live & Complete beers: #{@complete_beers.inspect}")
+    # Rails.logger.debug("Live & Complete beers: #{@complete_beers.inspect}")
     # get list of Beer IDs for live beers that don't yet have any information (top priority)
     @need_attention_beers = Beer.live_beers.need_attention_beers
-    Rails.logger.debug("Live & Need Attention beers: #{@need_attention_beers.inspect}")
+    # Rails.logger.debug("Live & Need Attention beers: #{@need_attention_beers.inspect}")
     # get list Beer IDs for usable but incomplete beers that still need attention
-    @usable_incomplete_beers = @live_beers - @complete_beers - @need_attention_beers
-    Rails.logger.debug("Live & Usable/Imcomplete beers: #{@usable_incomplete_beers.inspect}")
+    @usable_incomplete_beers = Beer.live_beers.usable_incomplete_beers
+    # Rails.logger.debug("Live & Usable/Imcomplete beers: #{@usable_incomplete_beers.inspect}")
     # to create a new Beer Name instance
     @brewery_alt_names = AltBeerName.new
   end

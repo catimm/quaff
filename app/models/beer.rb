@@ -88,6 +88,13 @@ class Beer < ActiveRecord::Base
     where("rating_three_na = ? OR beer_rating_three IS NOT NULL", true).
     where.not(beer_type_id: nil) }
   
+  scope :usable_incomplete_beers, -> {
+    where("rating_one_na = ? OR beer_rating_one IS NOT NULL OR beer_type_id IS NOT NULL", true).
+    where("rating_two_na IS NULL OR rating_two_na = ?", false).
+    where("rating_three_na IS NULL OR rating_three_na = ?", false).
+    where(beer_rating_two: nil, beer_rating_three: nil) 
+  }
+  
   # save actual tags without quotes
   def descriptor_list_tokens=(tokens)
      self.descriptor_list = tokens.gsub("'", "")
