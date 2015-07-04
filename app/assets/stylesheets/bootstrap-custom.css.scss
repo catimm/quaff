@@ -292,14 +292,14 @@ $beer-header-lines-to-show-fp: 1;
     padding: 5px; 
 }
 .overview-tile, .overview-tile-2 {
-  margin-bottom: 25px;
+  margin: 15px 0 20px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
   width: 99%;
-  height: 425px;
+  height: 435px;
   position: relative;
 }
 .drink-list-overview-tile {
@@ -354,6 +354,7 @@ $beer-header-lines-to-show: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: underline;
 }
 .tile-subheader {
   color: $less-emphasized-text;
