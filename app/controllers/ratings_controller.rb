@@ -14,20 +14,28 @@ class RatingsController < ApplicationController
   def new
     @user = current_user
     @time = Time.now
+    # get beer info
     @beer_id = params[:format]
     @this_beer = Beer.where(id: @beer_id)[0]
-    Rails.logger.debug("this beer info: #{@this_beer.inspect}")
-    @location_id = BeerLocation.where(beer_id: @beer_id, beer_is_current: "yes").pluck(:location_id)
-    @location = Location.find(@location_id)[0]
+    # get retailer info if retailer id exists
+    if params.has_key?(:retailer_id)
+      Rails.logger.debug("This fires so it has retailer id")
+      @retailer_id = params[:retailer_id]
+      Rails.logger.debug("Retailer ID: #{@retailer_id.inspect}")
+      @location = Location.where(id: @retailer_id)[0]
+      Rails.logger.debug("Location: #{@location.inspect}")
+    else
+      @location = "0"
+    end
     
     @user_beer_rating = UserBeerRating.new
     @user_beer_rating.build_beer
     @this_descriptors = @this_beer.descriptors
     @this_descriptors = @this_descriptors.uniq
-    Rails.logger.debug("descxriptor list: #{@this_descriptors.inspect}")
+    # Rails.logger.debug("descxriptor list: #{@this_descriptors.inspect}")
     @this_beer_best_guess = best_guess(@beer_id)[0]
     @our_best_guess = @this_beer_best_guess.best_guess
-    Rails.logger.debug("Our best guess: #{@our_best_guess.inspect}")
+    # Rails.logger.debug("Our best guess: #{@our_best_guess.inspect}")
   end
   
   def create

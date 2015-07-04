@@ -6,16 +6,14 @@ $(function() {
 	$("#rater").on("slide", function(slideEvt) {
 		if (slideEvt.value == '-0.5') {
 			$("#visible-rating h1").text("NR");
-			$("#visible-rating h1").css({"font-size":"82px","font-weight":"500","color":"#0087cb","margin":"0"});
 		} else {
 			$("#visible-rating h1").text(slideEvt.value);
-			$("#visible-rating h1").css({"font-size":"82px","font-weight":"500","color":"#0087cb","margin":"0"});
 		}
 	});
 	// to grab list of descriptors for this beer
 	$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
 		theme: 'facebook',
-		placeholder: 'Descriptors (separate with comma)',
+		placeholder: 'Choose from list or add your own (separate w/comma)',
 		minChars: 2,
 	    allowFreeTagging: true,
 	    preventDuplicates: true,

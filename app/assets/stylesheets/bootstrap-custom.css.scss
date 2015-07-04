@@ -423,6 +423,9 @@ $beer-header-lines-to-show: 2;
 }
 .rating-holder {
   margin-top: -15px;
+    p {
+      margin: 10px 0 0 0 !important;
+    }
 }
 .rating-direction {
   margin-top: 33px;
@@ -455,11 +458,14 @@ $beer-header-lines-to-show: 2;
 }
 #visible-rating {
   h1 {
-    margin: 30px 0 30px 0;
-    font-size: 28px;
-    font-weight: 400;
-    color: $less-emphasized-text;
-  }  
+      font-size: 82px;
+      font-weight: 500;
+      color: $user-rating-text;
+      margin: 0;
+    }   
+}
+#user_beer_rating_comment {
+  height: 40px !important;
 }
 // Sign-up & log-in pages
 .box {
@@ -1318,9 +1324,6 @@ input[type="checkbox"] {
   color: $less-emphasized-text;
   font-weight: 400;
 }
-#user_beer_rating_comment {
-  height: 66px;
-}
 .formButton {
   width: 100%;
   margin-top: 15px;
@@ -1403,9 +1406,16 @@ input[type="checkbox"] {
   }
   // Rating page
   .rating-tile {
-    margin: 20px 0 0 2.5px;
-    width: 98%;
+    margin: 7.5px 0 0 2.5px;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    border-radius: 0;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+    padding-bottom: 20px;
   }
+
   .rating-direction {
     p {
       width: 90%;
@@ -1414,8 +1424,10 @@ input[type="checkbox"] {
   }
   #visible-rating {
     h1 {
-      margin: 32px 0 32px 0;
-      font-size: 24px;
+      font-size: 72px;
+      font-weight: 500;
+      color: $user-rating-text;
+      margin: 0;
     }  
   }
   // Retailer page

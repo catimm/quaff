@@ -17,7 +17,7 @@
 					</div>
 					<div class="col-sm-9 col-xs-8 no-padding-left">
 						<h5 class="tile-header beer-tile-header"><%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %></h5>
-						<% if !@location.nil? %>
+						<% if @location != "0" %>
 							<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
 						<% end %>
 					</div>			
@@ -31,14 +31,10 @@
 			<%= rate.hidden_field :beer_type_id, :value => @this_beer.beer_type_id %>
 			<div class="row rating-top-row">
 				<div class="col-sm-1 col-xs-0"></div>
-				<div class="col-sm-3 col-xs-3 text-center small-padding">
-					<div class="rating-direction">
-						<p>Rate from 0 to 10</p>
-					</div>
-				</div>
-				<div class="col-sm-8 col-xs-9 rating-holder text-center no-padding">
+				<div class="col-sm-10 col-xs-12 rating-holder text-center">
+					<p class="common-description-heading text-left">Rate drink 0 - 10 or leave it unrated ("NR"):</p>
 					<div id="visible-rating">
-						<h1>No rating (NR)</h1>
+						<h1>NR</h1>
 					</div>
 					<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
 	                 data: {'slider-id' => 'rating-slider',
@@ -49,33 +45,16 @@
 	                        'slider-orientation' => 'horizontal' } %> 
 				</div>
 			</div>
-			<% if !@location.nil? %>
+			<% if @location != "0" %>
 				<%= rate.hidden_field :drank_at, :value => @location.short_name %>
 			<% else %>
-				<div class="row">
-					<div class="col-sm-1 col-xs-0"></div>
-					<div class="col-sm-3 col-xs-3 text-center small-padding">
-						<div class="rating-direction">
-							<p>Where you drinkin', Lincoln?</p>
-						</div>
-					</div>
-					<div class="col-sm-8 col-xs-9 descriptor-holder text-left">
-						<%= rate.text_field :drank_at, :class => "form-control", placeholder: "Drinking location (optional)" %>
-					</div>
-				</div>
+				<%= rate.hidden_field :drank_at, :value => "not at location" %>
 			<% end %>
 			<div class="row">
 				<div class="col-sm-1 col-xs-0"></div>
-				<div class="col-sm-3 col-xs-3 text-center small-padding">
-					<div class="rating-direction">
-						<p>Use common words or add your own.</p>
-					</div>
-				</div>
-				<div class="col-sm-8 col-xs-9 descriptor-holder text-left">
-					<p class="common-description-heading">Common descriptors:</p>
-					<% if @this_descriptors.blank? %>
-						<p class="need-text">Looks like you're the first to describe this beer. Hooray!</p>
-					<% else %>
+				<div class="col-sm-10 col-xs-12 descriptor-holder text-left">
+					<p class="common-description-heading">Add keyword descriptors to describe drink:</p>
+					<% if !@this_descriptors.blank? %>
 						<ul class="token-input-list-facebook_rating">
 						<% @this_descriptors.each do |descriptor| %>
 							<li class="token-input-token-facebook_rating">
@@ -92,18 +71,14 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-1 col-xs-0"></div>
-				<div class="col-sm-3 col-xs-3 text-center small-padding">
-					<div class="rating-direction-optional">
-						<p>Extra thoughts? Add 'em here.</p>
-					</div>
-				</div>
-				<div class="col-sm-8 col-xs-9 comment-holder">
+				<div class="col-sm-10 col-xs-12 comment-holder">
+					<p class="common-description-heading">Add extra thoughts here if you'd like:</p>
 					<%= rate.text_area :comment, :class => "form-control", placeholder: "Additional comments (optional)" %>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-4 col-xs-3"></div>
-				<div class="col-sm-8 col-xs-9 comment-holder">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-10 col-xs-12 comment-holder">
 					<%= rate.submit "Save", class: "btn btn-default btn-success formButton" %>
 				</div>
 			</div>
