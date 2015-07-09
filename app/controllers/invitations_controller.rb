@@ -42,6 +42,7 @@ class InvitationsController < Devise::InvitationsController
         respond_with resource, :location => new_session_path(resource_name)
       end
     else
+      flash[:error] = resource.errors.full_messages.join(" ")
       resource.invitation_token = raw_invitation_token
       respond_with_navigational(resource){ render :edit }
     end

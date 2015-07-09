@@ -24,12 +24,12 @@
 							</div>
 							<div class="row"> 
 								<div class="col-xs-12">
-							 		<%= f.password_field :password, :class => "form-control", required: true, placeholder: "Set password", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+							 		<%= f.password_field :password, :class => "form-control", required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
 								</div>
 							</div>
 							<div class="row"> 
 								<div class="col-xs-12">
-							 		<%= f.password_field :password_confirmation, :class => "form-control", required: true, placeholder: "Confirm password" %>
+							 		<%= f.password_field :password_confirmation, :class => "form-control", required: true, placeholder: "Confirm password (8 characters min)" %>
 								</div>
 							</div>
 							<div class="row"> 
