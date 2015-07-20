@@ -36,6 +36,10 @@ class BeersController < ApplicationController
     # grab beer ids that will match each jcloud
     # @beers_ids = @beers.pluck(:id)
     @user_drink_list = DrinkList.where(user_id: current_user.id)
+    
+    # get user's ratings for this beer if any exist
+    @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id)
+    
     # send beer ids to javascript file to create jcloud
     beer_descriptor = Array.new
     @beer_descriptors = Beer.find(@beer.id).descriptors
