@@ -50,16 +50,19 @@ class Beer < ActiveRecord::Base
   has_many :drink_lists
   has_many :users, through: :drink_lists
   has_many :user_beer_trackings
+  has_many :beer_brewery_collabs
   
   # the first 8 are for the suggested beer rating formula
   attr_accessor :best_guess
   attr_accessor :ultimate_rating # this will hold a user's rating and/or best_guess to sort by highest rating
   attr_accessor :user_rating # hold the user's ratings
   attr_accessor :number_of_ratings # to hold the number of times a user has rated this beer
-  attr_accessor :likes_style
+  attr_accessor :likes_style # to hold drink style liked/disliked by user
+  attr_accessor :this_beer_descriptors # to hold list of descriptors user typically likes/dislikes
   attr_accessor :beer_style_name_one
   attr_accessor :beer_style_name_two
-  attr_accessor :is_hybrid
+  attr_accessor :recommendation_rationale # to note if recommendation is based on style or type
+  attr_accessor :is_hybrid # to note if recommendation is based on style and drink is a hybrid
   # these next three are for when a user suggests to add a new beer
   attr_accessor :associated_brewery
   attr_accessor :rate_beer_now
@@ -130,20 +133,58 @@ class Beer < ActiveRecord::Base
       (3.25*2).round(2)
     # else, combine the public ratings according to algorithm below
     else  
-      if  beer_rating_one && beer_rating_two && beer_rating_three
-        (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_two + number_ratings_three))*0.9)*2).round(2)
-      elsif beer_rating_one && beer_rating_two
-        (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two)) / (number_ratings_one + number_ratings_two))*0.9)*2).round(2)
-      elsif beer_rating_one && beer_rating_three
-        (((((beer_rating_one * number_ratings_one) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_three))*0.9)*2).round(2)
-      elsif beer_rating_two && beer_rating_three
-        (((((beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_two + number_ratings_three))*0.9)*2).round(2)
-      elsif beer_rating_one
-        ((((beer_rating_one * number_ratings_one) / (number_ratings_one))*0.9)*2).round(2)
-      elsif beer_rating_two
-        ((((beer_rating_two * number_ratings_two) / (number_ratings_two))*0.9)*2).round(2)
+      # determine if a large number of people have provided ratings on this beer
+      if number_ratings_one 
+        first_ratings = number_ratings_one
       else
-        ((((beer_rating_three * number_ratings_three) / (number_ratings_three))*0.9)*2).round(2)
+        first_ratings = 0
+      end
+      if number_ratings_two 
+        second_ratings = number_ratings_two
+      else
+        second_ratings = 0
+      end
+      if number_ratings_three
+        third_ratings = number_ratings_three
+      else
+        third_ratings = 0
+      end
+      # calculate total number of ratings 
+      number_of_ratings = (first_ratings + second_ratings + third_ratings)
+      # if a significant number (>1000) have rated this beer, don't discount the rating
+      if number_of_ratings >= 1000
+        if  beer_rating_one && beer_rating_two && beer_rating_three
+          (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_of_ratings))*1)*2).round(2)
+        elsif beer_rating_one && beer_rating_two
+          (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two)) / (number_ratings_one + number_ratings_two))*1)*2).round(2)
+        elsif beer_rating_one && beer_rating_three
+          (((((beer_rating_one * number_ratings_one) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_three))*1)*2).round(2)
+        elsif beer_rating_two && beer_rating_three
+          (((((beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_two + number_ratings_three))*1)*2).round(2)
+        elsif beer_rating_one
+          ((((beer_rating_one * number_ratings_one) / (number_ratings_one))*1)*2).round(2)
+        elsif beer_rating_two
+          ((((beer_rating_two * number_ratings_two) / (number_ratings_two))*1)*2).round(2)
+        else
+          ((((beer_rating_three * number_ratings_three) / (number_ratings_three))*1)*2).round(2)
+        end
+      else
+        # if a non-significant number (<1000) have rated this beer, discount the rating by 10%
+        if  beer_rating_one && beer_rating_two && beer_rating_three
+          (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_of_ratings))*0.9)*2).round(2)
+        elsif beer_rating_one && beer_rating_two
+          (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two)) / (number_ratings_one + number_ratings_two))*0.9)*2).round(2)
+        elsif beer_rating_one && beer_rating_three
+          (((((beer_rating_one * number_ratings_one) + (beer_rating_three * number_ratings_three)) / (number_ratings_one + number_ratings_three))*0.9)*2).round(2)
+        elsif beer_rating_two && beer_rating_three
+          (((((beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_ratings_two + number_ratings_three))*0.9)*2).round(2)
+        elsif beer_rating_one
+          ((((beer_rating_one * number_ratings_one) / (number_ratings_one))*0.9)*2).round(2)
+        elsif beer_rating_two
+          ((((beer_rating_two * number_ratings_two) / (number_ratings_two))*0.9)*2).round(2)
+        else
+          ((((beer_rating_three * number_ratings_three) / (number_ratings_three))*0.9)*2).round(2)
+        end
       end
     end
   end

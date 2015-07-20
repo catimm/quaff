@@ -998,7 +998,7 @@ $beer-header-lines-to-show: 2;
   width: 40%;
   margin: 10px 0;
 }
-#flash_success, #flash_failure {
+#flash_success, #flash_failure, #flash_error {
   color: $current-beer-attention-needed-background;
 }
 .edit_user_notification_preference {

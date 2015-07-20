@@ -57,10 +57,10 @@
 						<div class="col-xs-12">
 							<% if beer.user_rating %>
 								<% if beer.user_rating == beer.best_guess %>
-									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= beer.best_guess %></span> and you rated it:</p>
+									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((beer.best_guess) * 2).round)/2.0) %></span> and you rated it:</p>
 									<h1 class="user-rating"><%= beer.user_rating %></h1>
 								<% else %>
-									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= beer.best_guess %></span> but you rated it:</p>
+									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((beer.best_guess) * 2).round)/2.0) %></span> but you rated it:</p>
 									<h1 class="user-rating"><%= beer.user_rating %></h1>
 								<% end %>
 							<% else %>
@@ -69,9 +69,9 @@
 									<% beer.best_guess == 10 %>
 								<% end %>
 								<% if beer.best_guess % 1 == 0 %>
-									<h1 class="best-guess"><%= beer.best_guess %></h1>
+									<h1 class="best-guess"><%= ((((beer.best_guess) * 2).round)/2.0) %></h1>
 								<% else %>
-									<h1 class="best-guess"><%= beer.best_guess %></h1>
+									<h1 class="best-guess"><%= ((((beer.best_guess) * 2).round)/2.0) %></h1>
 								<% end %>
 							<% end %>
 						</div>
@@ -80,10 +80,14 @@
 					<div class="row no-margin list-overview">
 						<div class="col-xs-12 why-statement">
 							<p>Why, you ask?</p>
-							<% if  beer.is_hybrid == "yes"%>
-								<%= render 'locations/hybrid_rating_rationale', beer: beer %>
+							<% if beer.recommendation_rationale == "style" %>
+								<% if  beer.is_hybrid == "yes" %>
+									<%= render 'locations/hybrid_rating_rationale', beer: beer %>
+								<% else %>
+									<%= render 'locations/nonhybrid_rating_rationale', beer: beer %>
+								<% end %>
 							<% else %>
-								<%= render 'locations/nonhybrid_rating_rationale', beer: beer %>
+								<%= render 'locations/type_rating_rationale', beer: beer %>
 							<% end %>
 						</div>
 						<div class="col-xs-12 overview-tile-footer"></div>
