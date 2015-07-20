@@ -276,6 +276,46 @@ $beer-header-lines-to-show-fp: 1;
   margin: 15px 0 0 0;
   color: $less-emphasized-text;
 }
+.user-rating-section {
+  margin-bottom: 15px !important;
+}
+.past-user-rating {
+  p {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: $normal-text;
+    line-height: 1.3;
+    display: inline;
+    vertical-align: top;
+    margin-top: 10px !important;
+  }
+  .user-rating {
+    display: inline;
+    margin-top: 10px;
+  }
+}
+.past-user-descriptors {
+  p {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: $normal-text;
+    line-height: 1.3;
+    display: inline;
+    vertical-align: top;
+  }
+  .user-rating {
+    margin-top: 0;
+  }
+}
+.past-user-comment {
+  p {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: $normal-text;
+    line-height: 1.3;
+    vertical-align: top;
+  }
+}
 // Retailer overview page
 .page-title {
   padding: 20px 0;

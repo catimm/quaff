@@ -21,4 +21,5 @@ class UserBeerRating < ActiveRecord::Base
   belongs_to :beer
   
   accepts_nested_attributes_for :beer, :update_only => true
+
 end
