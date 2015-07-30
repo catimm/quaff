@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   
   root :to => 'home#index'
   get 'home/update' => 'home#update', :as => 'show_beers'
+  post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
   post 'trackings/create' => 'trackings#create', :as => 'user_new_tracking'

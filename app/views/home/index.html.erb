@@ -26,7 +26,7 @@
 	        <section class="background-light first-section">
 	   			<div class="container">
 		   			<div class="row">
-		        		<h3>The Top 10 Best Beers Currently Available in Seattle</h3>
+		        		<h3 class="index-section-header">The Top 10 Best Beers Currently Available in Seattle</h3>
 		        		<div class="col-xs-12 col-sm-6">
 			        		<% @best_five.each_with_index do |beer, index| %>
 					        	<div class="row">
@@ -38,7 +38,7 @@
 											<div class="col-xs-12">
 												<h5 class="tile-header beer-tile-header-full-page"><%= beer.brewery.short_brewery_name %> <%= beer.beer_name %></h5>
 											</div>
-											<div class="col-xs-3">
+											<div class="col-xs-6">
 												<% if !beer.beer_type_id.nil? %>
 													<h5 class="tile-subheader beer-info no-overflow"><%= beer.beer_type.beer_type_name %></h5>
 												<% else %>
@@ -89,7 +89,7 @@
 											<div class="col-xs-12">
 												<h5 class="tile-header beer-tile-header-full-page"><%= beer.brewery.short_brewery_name %> <%= beer.beer_name %></h5>
 											</div>
-											<div class="col-xs-3">
+											<div class="col-xs-6">
 												<% if !beer.beer_type_id.nil? %>
 													<h5 class="tile-subheader beer-info no-overflow"><%= beer.beer_type.beer_type_name %></h5>
 												<% else %>
@@ -131,23 +131,68 @@
 				        </div>
 		        	</div>
 		        	<div class="row">
-		        		<div class="col-sm-4">	
-		        		</div>
+		        		<div class="col-sm-4"></div>
 		        		<div class="col-sm-4">
 		        			<%= link_to "Find more great beers in Seattle", "#request-invitation", class: 'btn btn-default btn-primary formButton-index-Banner2' %>
 		        		</div>
+		        		<div class="col-sm-4"></div>		
+		        	</div>
+		        </div>
+	        </section>
+	        <!-- /.row -->	
+	        <section class="background-dark value-prop-section">
+	   			<div class="container">
+		   			<div class="row">
+		        		<h3 class="index-section-header">Knird is the simplest, fastest way to find locally available craft beer and ciders you will love.</h3> 
+		        	</div>
+		        	<div class="row value-prop-row">
 		        		<div class="col-sm-4">
-		        			
+		        			<div class="icon-background">
+		        				<h3><i class="fa fa-heart"></i></h3>
+		        			</div>
+		        			<h4>Make it personal.</h4> 
+		        			<h5 class="valueDesc">Get personalized recommendations for drinks you'll love.</h5>
+		        		</div>
+		        		<div class="col-sm-4">
+		        			<div class="icon-background">
+		        				<h3><i class="fa fa-thumbs-up"></i></h3>
+		        			</div>
+		        			<h4>Make it easy.</h4>
+		        			<h5 class="valueDesc">Effortlessly find drinks you love at locally accessible retailers.</h5>
+		        		</div>
+		        		<div class="col-sm-4">
+		        			<div class="icon-background">
+		        				<h3><i class="fa fa-smile-o"></i></h3>
+		        			</div>
+		        			<h4>Make it convenient.</h4> 
+		        			<h5 class="valueDesc">Track drinks of interest and get notified when they become locally available.</h5>
 		        		</div>		
 		        	</div>
 		        </div>
 	        </section>
-	        <section class="background-dark" id="request-invitation">
+	        <!-- /.row -->
+	        <section class="background-light request-invitation-section">
 	   			<div class="container">
 		   			<div class="row">
-		        		<h2>Request an invitation</h2>
+		        		<h3 class="index-section-header">We're currently in a closed beta, but request an invitation to check it out!</h3> 
 		        	</div>
-		        	
+		        	<div class="row request-invitation-row show" id="request-invitation">
+		        		<%= form_for @request_invitation, :url => {:controller => "home", :action => "create"}, :remote => true do |invite| %>
+							<div class="col-sm-2 col-xs-0"></div>
+							<div class="col-xs-2 text-right no-padding-right">
+								<%= label :email, 'Email address' %>
+							</div>
+							<div class="col-sm-4 col-xs-12">
+								<%= invite.email_field :email, :class => "form-control", required: true, placeholder: "Add your email address here" %>
+							</div>
+							<div class="col-sm-2 col-xs-12">
+								<%= invite.submit "Submit", class: "btn btn-default btn-success formButton-invitation-request" %>
+							</div>
+						<% end %>
+		        	</div>
+		        	<div class="row request-invitation-row hidden text-center" id="request-invitation-thanks">
+						<h4 class="invitation-request-response">Thanks for your interest! We'll be in touch soon.</h4>
+		        	</div>       	
 		        </div>
 	        </section>
 		<%= render 'layouts/footer' %>
