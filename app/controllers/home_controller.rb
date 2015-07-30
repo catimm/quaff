@@ -9,7 +9,8 @@ class HomeController < ApplicationController
     # Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
     @beer_ranking = Beer.where(id: @beer_ids).sort_by(&:beer_rating).reverse.first(10)
     @best_five = @beer_ranking.first(5)
-    @next_five = @beer_ranking.reverse.first(5)
+    @next_five_interim = @beer_ranking.reverse.first(5)
+    @next_five = @next_five_interim.reverse
     
     # instantiate invitation request 
     @request_invitation = InvitationRequest.new
