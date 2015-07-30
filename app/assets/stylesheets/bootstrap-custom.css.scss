@@ -1626,7 +1626,7 @@ input[type="checkbox"] {
   padding-top: 13%;
   height:100vh;
   width: 100%;
-  position: fixed;
+  position: relative;
   color: #fff;
   text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
   text-align: left;
@@ -1639,6 +1639,9 @@ input[type="checkbox"] {
       font-size: 125%;
     }
   }
+}
+.mobile-container-fix {
+  padding: 0 10px 0 20px;
 }
 .formButton-index-Banner {
   width: 100%;
