@@ -1,4 +1,5 @@
 class InvitationsController < Devise::InvitationsController
+  before_filter :authenticate_user!
   
   def new
     super

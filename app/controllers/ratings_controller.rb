@@ -1,4 +1,5 @@
 class RatingsController < ApplicationController
+  before_filter :authenticate_user!
   include BestGuess
   
   def index

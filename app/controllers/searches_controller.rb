@@ -1,4 +1,5 @@
 class SearchesController < ApplicationController
+  before_filter :authenticate_user!
   
   def index
     @search_results = Beer.beer_search(params[:beer_search])

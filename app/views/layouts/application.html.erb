@@ -4,13 +4,32 @@
   <title>Quaff! Drink the good stuff.</title>
   <%= include_gon %>
   <%= Gon::Base.render_data({}) %>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
   
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-  <meta property="og:title" content="Quaff! - Drink the good stuff." />
-  <meta property="og:type" content="website" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+  	<meta property="og:title" content="Knird - Drink what you love. Love what you drink." />
+  	<meta property="og:type" content="website" />
+  	<meta property="og:url" content="http://www.drinkknird.com" />
+  	<meta property="og:image" content="http://www.drinkknird.com/logo.png"/>
+  	<meta charset=utf-8 />
+  	<meta http-equiv="X-UA-Compatible" content="IE=9" />
+	<link rel="icon" type="image/x-ico" href="http://www.drinkknird.com/logo.png" />
+ 	<%= favicon_link_tag 'logo.ico' %>
+ 	<title>Knird - Drink what you love. Love what you drink.</title>
+  	
+  	<%= stylesheet_link_tag "application", :media => "all" %>
+  	<%= javascript_include_tag "application" %>
+  	<%= csrf_meta_tags %>
+	<!-- Script for Google Analytics service -->
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+	  ga('create', 'UA-65821771-1', 'auto');
+	  ga('send', 'pageview');
+	
+	</script>
 </head>
 <body>
 

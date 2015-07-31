@@ -40,7 +40,8 @@ Rails.application.routes.draw do
   end
   
   root :to => 'home#index'
-  get 'home/update' => 'home#update', :as => 'show_beers'
+  get 'privacy' => 'home#privacy', :as => "privacy"
+  get 'terms' => 'home#terms', :as => "terms"
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
