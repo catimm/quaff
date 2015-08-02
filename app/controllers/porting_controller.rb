@@ -18,7 +18,7 @@ class PortingController < ApplicationController
     
     # grab json file
     root = Rails.root.to_s #make sure string    
-    f = File.read("#{root}/app/assets/port/carl2.json")
+    f = File.read("#{root}/app/assets/port/carl1.json")
     # parse json file
     port_hash = JSON.parse(f)
     # determine total number of user rated drinks added to database
@@ -89,7 +89,11 @@ class PortingController < ApplicationController
           @total_new_breweries += 1
         end
         # then add new beer to beers table       
-        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_type_id => @this_beer_type_id)
+        if !@this_beer_type_id.nil?
+          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_type_id => @this_beer_type_id)
+        else
+          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_type_old_name => @this_beer_type_name)
+        end
         # if successfully saved, add new drink to counter
         if new_beer.save
           @total_new_drinks += 1
@@ -108,7 +112,8 @@ class PortingController < ApplicationController
         @new_drink_info << this_new_beer
         # if this drink isn't associated with a beer type id, add this drink to an array so admin can see it's lacking
         if @this_beer_type_id.nil?
-          @no_beer_type_id << this_new_beer
+          this_new_beer_type = this_new_beer +" ("+ @this_beer_type_name + ")"
+          @no_beer_type_id << this_new_beer_type
         end
       else 
         Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
@@ -151,7 +156,11 @@ class PortingController < ApplicationController
         else
           Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
           # if beer doesn't exist in DB, first add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_type_id => @this_beer_type_id)
+          if !@this_beer_type_id.nil?
+            new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_type_id => @this_beer_type_id)
+          else
+            new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_type_old_name => @this_beer_type_name)
+          end
           # if successfully saved, add new drink to counter
           if new_beer.save
             @total_new_drinks += 1
@@ -170,7 +179,8 @@ class PortingController < ApplicationController
           @new_drink_info << this_new_beer
           # if this drink isn't associated with a beer type id, add this drink to an array so admin can see it's lacking
           if @this_beer_type_id.nil?
-            @no_beer_type_id << this_new_beer
+            this_new_beer_type = this_new_beer +" ("+ @this_beer_type_name + ")"
+            @no_beer_type_id << this_new_beer_type
           end
         end
       end      
