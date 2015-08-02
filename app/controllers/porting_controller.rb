@@ -16,12 +16,9 @@ class PortingController < ApplicationController
     # create array to hold drinks not associated with a beer type id
     @no_beer_type_id = Array.new
     
-    # set admin emails to receive updates
-    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
-    
     # grab json file
     root = Rails.root.to_s #make sure string    
-    f = File.read("#{root}/app/assets/port/carl.json")
+    f = File.read("#{root}/app/assets/port/carl1.json")
     # parse json file
     port_hash = JSON.parse(f)
     # determine total number of user rated drinks added to database
