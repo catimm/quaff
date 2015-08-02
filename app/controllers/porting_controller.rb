@@ -157,9 +157,9 @@ class PortingController < ApplicationController
           Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
           # if beer doesn't exist in DB, first add new beer to beers table       
           if !@this_beer_type_id.nil?
-            new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_type_id => @this_beer_type_id)
+            new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_type_id => @this_beer_type_id)
           else
-            new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_type_old_name => @this_beer_type_name)
+            new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_type_old_name => @this_beer_type_name)
           end
           # if successfully saved, add new drink to counter
           if new_beer.save
