@@ -49,11 +49,13 @@ Rails.application.routes.draw do
   get 'locations' => 'locations#index'
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
-  get 'reloads' => 'reloads#index'
+  
   get 'searches/index' => 'searches#index', :as => 'search'
   get 'searches/add_beer' => 'searches#add_beer', :as => 'user_add_beer'
   get 'users/:user_id/ratings/new(.:format)/:retailer_id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   # admin routes
+  get 'porting' => 'porting#index'
+  get 'reloads' => 'reloads#index'
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'

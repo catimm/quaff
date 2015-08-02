@@ -1,0 +1,55 @@
+<%= render 'layouts/header' %> 
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h3>Summary of drinks ported for <%= @rating_user.username %> (<%= @rating_user.email %>)</h3>
+			</div>
+			<div class="col-xs-4 text-right">
+				<h4>Total drinks available to port over:</h4>
+			</div>
+			<div class="col-xs-7 text-left">
+				<h4><%= @total_drinks %></h4>
+			</div>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-4 text-right">
+				<h4>Total drinks successfully ported over:</h4>
+			</div>
+			<div class="col-xs-7 text-left">
+				<h4><%= @total_drinks_added %></h4>
+			</div>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-4 text-right">
+				<h4>Total new breweries added:</h4>
+			</div>
+			<div class="col-xs-7 text-left">
+				<h4><%= @total_new_breweries %></h4>
+			</div>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-4 text-right">
+				<h4>Total new drinks added:</h4>
+			</div>
+			<div class="col-xs-7 text-left">
+				<h4><%= @total_new_drinks %></h4>
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6">
+				<h4>List of new drinks added (count: <%= @new_drink_info_count %>)</h4>
+				<ul>
+					<% @new_drink_info.each do |drink| %>
+						<li><%= drink %></li>
+					<% end %>
+				</ul>
+			</div>
+			<div class="col-xs-6">
+				<h4>List of drinks without a related ID (count: <%= @no_beer_type_id_count %>)</h4>
+				<ul>
+					<% @no_beer_type_id.each do |drink| %>
+						<li><%= drink %></li>
+					<% end %>
+				</ul>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %> 
