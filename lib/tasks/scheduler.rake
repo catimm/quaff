@@ -227,7 +227,7 @@ task :check_pine_box => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -467,7 +467,7 @@ task :check_chucks_85 => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -705,7 +705,7 @@ task :check_chucks_cd => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -946,7 +946,7 @@ task :check_beer_junction => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -1197,7 +1197,7 @@ task :check_beveridge_place => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -1546,7 +1546,7 @@ task :check_fremont_beer_garden => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -1770,7 +1770,7 @@ task :check_the_yard => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -1991,7 +1991,7 @@ task :check_the_dray => :environment do
     end # end loop through scraped beers
     
     # only execute following code in Prod Env
-    if root_url != "https://quaff-stage.herokuapp.com/"
+    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -2036,7 +2036,7 @@ task :check_user_additions => :environment do
     end
     
    # only execute following code in Prod Env
-   if root_url != "https://quaff-stage.herokuapp.com/"
+   if root_url == "http://www.drinkknird.com/"
       # send email
       if !@user_added_beer_list.empty?
         @admin_emails.each do |admin_email|

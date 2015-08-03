@@ -7,7 +7,6 @@ class LocationsController < ApplicationController
     @retailers = Location.all
     @retailers_ranked = rate_location(@retailers).sort_by(&:location_rating).reverse
     # Rails.logger.debug("Retails ranked info: #{@retailers_ranked.inspect}")
-    gon.root = root_url
   end
   
   def show
