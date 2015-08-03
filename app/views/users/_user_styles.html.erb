@@ -82,7 +82,11 @@
 								<p>Such as:</p>
 									<ul>
 										<% @style_examples.each do |example| %>
-											<li><%= example.brewery.short_brewery_name + " " + example.beer_name %></li>
+											<% if !example.brewery.short_brewery_name.blank? %>
+												<li><%= example.brewery.short_brewery_name + " " + example.beer_name %></li>
+											<% else %>
+												<li><%= example.brewery.brewery_name + " " + example.beer_name %></li>
+											<% end %>
 										<% end %>
 									</ul>
 							</div>
