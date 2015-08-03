@@ -226,8 +226,6 @@ task :check_pine_box => :environment do
       end 
     end # end loop through scraped beers
     
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
       # Send user tracking email info here
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -249,8 +247,7 @@ task :check_pine_box => :environment do
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
-      end
-    end  
+      end 
 end
 
 desc "Check Chuck's 85"
@@ -465,9 +462,7 @@ task :check_chucks_85 => :environment do
         end
       end   
     end # end loop through scraped beers
-    
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
+
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -491,7 +486,6 @@ task :check_chucks_85 => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end
-    end 
 end
 
 desc "Check Chuck's CD"
@@ -703,9 +697,7 @@ task :check_chucks_cd => :environment do
         end
       end   
     end # end loop through scraped beers
-    
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
+
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -728,7 +720,6 @@ task :check_chucks_cd => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end
-    end
 end
 
 desc "Check Beer Junction"
@@ -944,9 +935,7 @@ task :check_beer_junction => :environment do
         end
       end   
     end # end loop through scraped beers
-    
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
+
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -969,7 +958,6 @@ task :check_beer_junction => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-    end
 end
 
 desc "Check Beveridge Place"
@@ -1195,9 +1183,7 @@ task :check_beveridge_place => :environment do
         end
       end   
     end # end loop through scraped beers
-    
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
+
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -1220,7 +1206,6 @@ task :check_beveridge_place => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-    end
 end
 
 desc "Check Fremont Beer Garden"
@@ -1544,9 +1529,7 @@ task :check_fremont_beer_garden => :environment do
         end
       end # end separation of whether beer is guest beer or not
     end # end loop through scraped beers
-    
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
+
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -1571,7 +1554,6 @@ task :check_fremont_beer_garden => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-    end
 end
 
 desc "Check The Yard"
@@ -1768,9 +1750,7 @@ task :check_the_yard => :environment do
         end
       end   
     end # end loop through scraped beers
-    
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
+
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -1793,7 +1773,6 @@ task :check_the_yard => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-    end
 end
 
 desc "Check The Dray"
@@ -1989,9 +1968,7 @@ task :check_the_dray => :environment do
         end
       end   
     end # end loop through scraped beers
-    
-    # only execute following code in Prod Env
-    if root_url == "http://www.drinkknird.com/"
+
       # Send user tracking email info here.....
       if !@user_email_array.nil?
         @user_email_array.each do |array|
@@ -2014,7 +1991,6 @@ task :check_the_dray => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-    end
 end
 
 desc "Check User Additions"
@@ -2035,13 +2011,10 @@ task :check_user_additions => :environment do
       end
     end
     
-   # only execute following code in Prod Env
-   if root_url == "http://www.drinkknird.com/"
       # send email
       if !@user_added_beer_list.empty?
         @admin_emails.each do |admin_email|
           BeerUpdates.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver
         end
       end   
-   end
 end

@@ -25,7 +25,9 @@ class BeerUpdates < ActionMailer::Base
          }
       ]
     }
-    mandrill_client.messages.send_template template_name, template_content, message
+    if root_url == "http://www.drinkknird.com/"
+      mandrill_client.messages.send_template template_name, template_content, message
+    end
   end
   
   def user_added_beers_email(admin_email, user, beers)
@@ -49,7 +51,9 @@ class BeerUpdates < ActionMailer::Base
          }
       ]
     }
-    mandrill_client.messages.send_template template_name, template_content, message
+    if root_url == "http://www.drinkknird.com/"
+      mandrill_client.messages.send_template template_name, template_content, message
+    end
   end
   
   def tracking_beer_email(email, beer_name, beer_id, brewery_name, brewery_id, username, location)

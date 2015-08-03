@@ -67,12 +67,12 @@ Rails.application.configure do
     address: "smtp.mandrillapp.com",
     port: 587,
     authentication: "plain",
-    user_name: "carl@drinkknird.com",
+    user_name: "quaff@heroku.com",
     password: ENV['MANDRILL_APIKEY'],
     enable_starttls_auto: true
   }
   config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => 'drinkknird.com' }
+  config.action_mailer.default_url_options = { :host => 'quaff-stage.herokuapp.com' }
   config.action_mailer.perform_deliveries = true
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
