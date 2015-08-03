@@ -42,6 +42,15 @@ class PortingController < ApplicationController
       
       # find beer type ID if it exists
       @this_beer_type_id = BeerType.where(beer_type_name: @this_beer_type_name).pluck(:id)[0]
+      if @this_beer_type_id.blank?
+        @this_beer_type_id = BeerType.where(beer_type_short_name: @this_beer_type_name).pluck(:id)[0]
+        if @this_beer_type_id.blank?
+          @this_beer_type_id = BeerType.where(alt_one_beer_type_name: @this_beer_type_name).pluck(:id)[0]
+          if @this_beer_type_id.blank?
+            @this_beer_type_id = BeerType.where(alt_two_beer_type_name: @this_beer_type_name).pluck(:id)[0]
+          end
+        end
+      end
       #Rails.logger.debug("beer type id: #{@this_beer_type_id.inspect}")
       
       # create variable to check if brewery name represents a collaboration project
