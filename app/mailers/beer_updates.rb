@@ -26,6 +26,7 @@ class BeerUpdates < ActionMailer::Base
          }
       ]
     }
+    
     if @prod.username == "CarlAdmin"
       mandrill_client.messages.send_template template_name, template_content, message
     end
