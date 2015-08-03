@@ -4,7 +4,7 @@ task :check_pine_box => :environment do
     require 'open-uri'
     
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
     
     # grab current Pine box beers in DB
     @this_location_name = "The Pine Box"
@@ -226,26 +226,29 @@ task :check_pine_box => :environment do
       end 
     end # end loop through scraped beers
     
-    # Send user tracking email info here
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
+      end 
+          
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @pine_box_beer_location_ids - @current_beer_ids
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
       end
-    end 
-        
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @pine_box_beer_location_ids - @current_beer_ids
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
       end
     end  
 end
@@ -256,7 +259,7 @@ task :check_chucks_85 => :environment do
     require 'open-uri'
 
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
 
     # grab current Chuck's 85th beers in DB
     # grab all beers from beer_locations table that are connected to Chucs 85th (id:3) and are currently served
@@ -463,27 +466,30 @@ task :check_chucks_85 => :environment do
       end   
     end # end loop through scraped beers
     
-    # Send user tracking email info here.....
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here.....
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
+      end 
+      
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @chucks_85_beer_location_ids - @current_beer_ids
+  
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
       end
-    end 
-    
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @chucks_85_beer_location_ids - @current_beer_ids
-
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
       end
     end 
 end
@@ -494,7 +500,7 @@ task :check_chucks_cd => :environment do
     require 'open-uri'
 
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
 
     # grab current Chucks CD beers in DB
     @this_location_name = "Chuck's Hop Shop--CD"
@@ -698,26 +704,29 @@ task :check_chucks_cd => :environment do
       end   
     end # end loop through scraped beers
     
-    # Send user tracking email info here.....
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here.....
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
+      end 
+      
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @chucks_cd_beer_location_ids - @current_beer_ids
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
       end
-    end 
-    
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @chucks_cd_beer_location_ids - @current_beer_ids
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
       end
     end
 end
@@ -728,7 +737,7 @@ task :check_beer_junction => :environment do
     require 'open-uri'
     
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
 
     # grab current Beer Junction beers in DB
     @this_location_name = "Beer Junction"
@@ -936,28 +945,31 @@ task :check_beer_junction => :environment do
       end   
     end # end loop through scraped beers
     
-    # Send user tracking email info here.....
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here.....
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
       end
+      
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @beer_junction_beer_location_ids - @current_beer_ids
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
+      end
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
+      end 
     end
-    
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @beer_junction_beer_location_ids - @current_beer_ids
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
-      end
-    end 
 end
 
 desc "Check Beveridge Place"
@@ -966,7 +978,7 @@ task :check_beveridge_place => :environment do
     require 'open-uri'
     
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
 
     # grab current location beers from DB
     @this_location_name = "Beveridge Place"
@@ -1184,28 +1196,31 @@ task :check_beveridge_place => :environment do
       end   
     end # end loop through scraped beers
     
-    # Send user tracking email info here.....
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here.....
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
       end
+      
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @beveridge_place_beer_location_ids - @current_beer_ids
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
+      end
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
+      end 
     end
-    
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @beveridge_place_beer_location_ids - @current_beer_ids
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
-      end
-    end 
 end
 
 desc "Check Fremont Beer Garden"
@@ -1214,7 +1229,7 @@ task :check_fremont_beer_garden => :environment do
     require 'open-uri'
     
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
 
     # grab current location beers from DB
     @this_location_name = "Fremont Brewery"
@@ -1528,32 +1543,35 @@ task :check_fremont_beer_garden => :environment do
           @new_beer_info << this_new_beer   
         end
       end # end separation of whether beer is guest beer or not
-    end # end looping through each current beer
+    end # end loop through scraped beers
     
-    # Send user tracking email info here.....
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here.....
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
       end
+      
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @fremont_beer_garden_beer_location_ids - @current_beer_ids
+      # Rails.logger.debug("Current Beer IDs: #{@current_beer_ids.inspect}")
+      # Rails.logger.debug("Not Current Beer IDs: #{@not_current_beer_ids.inspect}")
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
+      end
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
+      end 
     end
-    
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @fremont_beer_garden_beer_location_ids - @current_beer_ids
-    # Rails.logger.debug("Current Beer IDs: #{@current_beer_ids.inspect}")
-    # Rails.logger.debug("Not Current Beer IDs: #{@not_current_beer_ids.inspect}")
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
-      end
-    end 
 end
 
 desc "Check The Yard"
@@ -1562,7 +1580,7 @@ task :check_the_yard => :environment do
     require 'open-uri'
     
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
 
     # grab current location beers from DB
     @this_location_name = "The Yard"
@@ -1751,28 +1769,31 @@ task :check_the_yard => :environment do
       end   
     end # end loop through scraped beers
     
-    # Send user tracking email info here.....
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here.....
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
       end
+      
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @the_yard_cafe_beer_location_ids - @current_beer_ids
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
+      end
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
+      end 
     end
-    
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @the_yard_cafe_beer_location_ids - @current_beer_ids
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
-      end
-    end 
 end
 
 desc "Check The Dray"
@@ -1781,7 +1802,7 @@ task :check_the_dray => :environment do
     require 'open-uri'
     
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
 
     # grab current location beers from DB
     @this_location_name = "The Dray"
@@ -1969,35 +1990,38 @@ task :check_the_dray => :environment do
       end   
     end # end loop through scraped beers
     
-    # Send user tracking email info here.....
-    if !@user_email_array.nil?
-      @user_email_array.each do |array|
-        BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+    # only execute following code in Prod Env
+    if root_url != "https://quaff-stage.herokuapp.com/"
+      # Send user tracking email info here.....
+      if !@user_email_array.nil?
+        @user_email_array.each do |array|
+          BeerUpdates.tracking_beer_email(array[0], array[1], array[2], array[3], array[4], array[5], array[6]).deliver 
+        end
       end
+      
+      # create list of not current Beer Location IDs
+      @not_current_beer_ids = @the_dray_beer_location_ids - @current_beer_ids
+      # change not current beers status in DB
+      if !@not_current_beer_ids.empty?
+        @not_current_beer_ids.each do |beer|
+          update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
+        end
+      end
+      
+      # send admin emails with new beer updates
+      if !@new_beer_info.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
+        end
+      end 
     end
-    
-    # create list of not current Beer Location IDs
-    @not_current_beer_ids = @the_dray_beer_location_ids - @current_beer_ids
-    # change not current beers status in DB
-    if !@not_current_beer_ids.empty?
-      @not_current_beer_ids.each do |beer|
-        update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
-      end
-    end
-    
-    # send admin emails with new beer updates
-    if !@new_beer_info.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
-      end
-    end 
 end
 
 desc "Check User Additions"
 task :check_user_additions => :environment do
     
     # set admin emails to receive updates
-    @admin_emails = ["tinez55@hotmail.com", "ctiv@hotmail.com"]
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
     
     # get list of user added beers
     @user_added_beers = Beer.where(user_addition: true)
@@ -2011,11 +2035,13 @@ task :check_user_additions => :environment do
       end
     end
     
-    # send email
-    if !@user_added_beer_list.empty?
-      @admin_emails.each do |admin_email|
-        BeerUpdates.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver
-      end
-    end   
-    
+   # only execute following code in Prod Env
+   if root_url != "https://quaff-stage.herokuapp.com/"
+      # send email
+      if !@user_added_beer_list.empty?
+        @admin_emails.each do |admin_email|
+          BeerUpdates.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver
+        end
+      end   
+   end
 end
