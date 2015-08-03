@@ -5,8 +5,9 @@ class BeerUpdates < ActionMailer::Base
   end
   
   def new_beers_email(admin_email, location, beers)
-    # Rails.logger.debug("Location: #{location.inspect}")
-    # Rails.logger.debug("Beer info in email: #{beers.inspect}")
+    # determine if this is prod environment
+    @prod = User.where(email: "carl@drinkknird.com")
+    # mandrill template info
     template_name = "new-beers-email"
     template_content = []
     message = {
@@ -25,14 +26,15 @@ class BeerUpdates < ActionMailer::Base
          }
       ]
     }
-    if root_url == "http://www.drinkknird.com/"
+    if @prod.username == "CarlAdmin"
       mandrill_client.messages.send_template template_name, template_content, message
     end
   end
   
   def user_added_beers_email(admin_email, user, beers)
-    # Rails.logger.debug("Location: #{location.inspect}")
-    # Rails.logger.debug("Beer info in email: #{beers.inspect}")
+    # determine if this is prod environment
+    @prod = User.where(email: "carl@drinkknird.com")
+    # mandrill template info
     template_name = "new-beers-email"
     template_content = []
     message = {
@@ -51,7 +53,7 @@ class BeerUpdates < ActionMailer::Base
          }
       ]
     }
-    if root_url == "http://www.drinkknird.com/"
+    if @prod.username == "CarlAdmin"
       mandrill_client.messages.send_template template_name, template_content, message
     end
   end
