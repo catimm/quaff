@@ -6,7 +6,7 @@ class BeerUpdates < ActionMailer::Base
   
   def new_beers_email(admin_email, location, beers)
     # determine if this is prod environment
-    @prod = User.where(email: "carl@drinkknird.com")
+    @prod = User.where(email: "carl@drinkknird.com")[0]
     # mandrill template info
     template_name = "new-beers-email"
     template_content = []
@@ -33,7 +33,7 @@ class BeerUpdates < ActionMailer::Base
   
   def user_added_beers_email(admin_email, user, beers)
     # determine if this is prod environment
-    @prod = User.where(email: "carl@drinkknird.com")
+    @prod = User.where(email: "carl@drinkknird.com")[0]
     # mandrill template info
     template_name = "new-beers-email"
     template_content = []
