@@ -18,7 +18,7 @@ class PortingController < ApplicationController
     
     # grab json file
     root = Rails.root.to_s #make sure string    
-    f = File.read("#{root}/app/assets/port/carl2.json")
+    f = File.read("#{root}/app/assets/port/carl1.json")
     # parse json file
     port_hash = JSON.parse(f)
     # determine total number of user rated drinks added to database
