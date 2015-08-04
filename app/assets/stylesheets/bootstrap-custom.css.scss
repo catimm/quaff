@@ -1134,6 +1134,7 @@ $beer-header-lines-to-show: 2;
   position: absolute;
   top: 0;
   width: 100%;
+  z-index: 2000;
   ul {
     li {
       a {
