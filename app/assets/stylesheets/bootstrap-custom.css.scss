@@ -1381,6 +1381,10 @@ $beer-header-lines-to-show: 2;
     width: 80px;
     margin: 10px auto; 
 }
+.example-beer-header {
+  color: $dark-gray;
+  text-decoration: underline;
+}
 $style-header-font-size: 14px;
 $style-header-line-height: 1.2;
 $style-header-lines-to-show: 1;

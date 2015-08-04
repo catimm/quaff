@@ -93,9 +93,11 @@
 									<ul>
 										<% @style_examples.each do |example| %>
 											<% if !example.brewery.short_brewery_name.blank? %>
-												<li><%= example.brewery.short_brewery_name + " " + example.beer_name %></li>
+												<% @title_header = example.brewery.short_brewery_name + " " + example.beer_name %>
+												<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
 											<% else %>
-												<li><%= example.brewery.brewery_name + " " + example.beer_name %></li>
+												<% @title_header = example.brewery.brewery_name + " " + example.beer_name %>
+												<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
 											<% end %>
 										<% end %>
 									</ul>
