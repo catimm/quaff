@@ -1275,6 +1275,9 @@ $beer-header-lines-to-show: 2;
   }
 }
 // Beer Preferences css style
+.style-preference-section {
+  margin-top: -47px;
+}
 .style-tile-container {
   padding-top: 10px;
 }
@@ -1286,16 +1289,16 @@ $beer-header-lines-to-show: 2;
     overflow: hidden;
     background: #fff;
     width: 99%;
-    height: 229px;
+    height: 280px;
     position: relative;
   }
   .overview-tile-4 {
     border-radius: 6px;
     background: rgba(0, 0, 0, 0.25);
-    height: 229px;
+    height: 280px;
     position: absolute;
-    top: 10px;
-    left: 15px;
+    top: 0;
+    left: 0;
     z-index: 100;
   }
 .formButton-style {
@@ -1304,17 +1307,18 @@ $beer-header-lines-to-show: 2;
   background: $step-background;
 }
 .style-indicator {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  border-radius: 50%;
+  border-radius: 6px;
   vertical-align: middle;
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   z-index: 1000;
   position: absolute;
+  padding-top: 4px !important;
   i {
     color: $white;
   }
@@ -1335,10 +1339,16 @@ $beer-header-lines-to-show: 2;
     color: $white;
   }
 }
+.style-choose-neither {
+  font-weight: 500;
+  span {
+    text-decoration: underline;
+  }
+}
 .dislike-style {
   background: $current-beer-attention-needed-background;
   top: 0;
-  left: 9px;
+  left: 0;
   padding: 6px;
 }
 .dislike-style-middle {
@@ -1349,7 +1359,7 @@ $beer-header-lines-to-show: 2;
 .like-style {
   background: $step-background;
   top: 0;
-  right: 9px;
+  right: 0;
   padding: 7px;
 }
 .like-style-middle {

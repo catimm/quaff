@@ -88,15 +88,15 @@ $(function () {
 
 	// allow user to dislike beer style
 	$(".dislike-style").on("click", function() {
-		if ($(this).siblings(".overview-tile-3").children(".dislike-style-chosen").hasClass("hidden")) {
+		if ($(this).siblings(".dislike-style-chosen").hasClass("hidden")) {
 			// change view/UI
 			$(this).removeClass("show").addClass("hidden");
-			$(this).siblings(".overview-tile-3").children(".dislike-style-chosen").removeClass("hidden").addClass("show");
+			$(this).siblings(".dislike-style-chosen").removeClass("hidden").addClass("show");
 			// add overlay
 			$(this).siblings(".overview-tile-4").addClass("show").removeClass("hidden");
 			// if like is already chosen, reverse it
-			if ($(this).siblings(".overview-tile-3").children(".like-style-chosen").hasClass("show")) {
-				$(this).siblings(".overview-tile-3").children(".like-style-chosen").removeClass("show").addClass("hidden");	
+			if ($(this).siblings(".like-style-chosen").hasClass("show")) {
+				$(this).siblings(".like-style-chosen").removeClass("show").addClass("hidden");	
 			}
 			if ($(this).siblings(".like-style").hasClass("hidden")) {
 				$(this).siblings(".like-style").removeClass("hidden").addClass("show");
@@ -109,24 +109,24 @@ $(function () {
 	$(".dislike-style-chosen").on("click", function() {
 		if ($(this).hasClass("show")) {
 			$(this).removeClass("show").addClass("hidden");
-			$(this).parent(".overview-tile-3").siblings(".dislike-style").removeClass("hidden").addClass("show");
+			$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
 			// remove overlay
-			$(this).parent(".overview-tile-3").siblings(".overview-tile-4").removeClass("show").addClass("hidden");
+			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
 		// change user preference form value
-		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
+		$(this).siblings("#styles__user_preference").val(0);
 	});
 	
 	// allow user to like beer style
 	$(".like-style").on("click", function() {
-		if ($(this).siblings(".overview-tile-3").children(".like-style-chosen").hasClass("hidden")) {
+		if ($(this).siblings(".like-style-chosen").hasClass("hidden")) {
 			$(this).removeClass("show").addClass("hidden");
-			$(this).siblings(".overview-tile-3").children(".like-style-chosen").removeClass("hidden").addClass("show");
+			$(this).siblings(".like-style-chosen").removeClass("hidden").addClass("show");
 			// add overlay
 			$(this).siblings(".overview-tile-4").addClass("show").removeClass("hidden");
 			// if dislike is already chosen, reverse it
-			if ($(this).siblings(".overview-tile-3").children(".dislike-style-chosen").hasClass("show")) {
-				$(this).siblings(".overview-tile-3").children(".dislike-style-chosen").removeClass("show").addClass("hidden");
+			if ($(this).siblings(".dislike-style-chosen").hasClass("show")) {
+				$(this).siblings(".dislike-style-chosen").removeClass("show").addClass("hidden");
 			}
 			if ($(this).siblings(".dislike-style").hasClass("hidden")) {
 				$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
@@ -139,12 +139,12 @@ $(function () {
 	$(".like-style-chosen").on("click", function() {
 		if ($(this).hasClass("show")) {
 			$(this).removeClass("show").addClass("hidden");
-			$(this).parent(".overview-tile-3").siblings(".like-style").removeClass("hidden").addClass("show");
+			$(this).siblings(".like-style").removeClass("hidden").addClass("show");
 			// remove overlay
-			$(this).parent(".overview-tile-3").siblings(".overview-tile-4").removeClass("show").addClass("hidden");
+			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
 		// change user preference form value
-		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
+		$(this).siblings("#styles__user_preference").val(0);
 	});
 	
 	// find width of style preference overview tile
