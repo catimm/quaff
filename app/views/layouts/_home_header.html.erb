@@ -1,17 +1,7 @@
-<nav class="navbar navbar-default" role="navigation" id="index_homeNavbar">
-        
-        <div class="container">
-             <%= link_to "Log in", new_user_session_path, class: 'navbar-toggle btn btn-default btn-success formButton-index-mobile', :data => {:toggle=>"collapse", :target=>".navbar-ex1-collapse"} %>
-			
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
-                <ul class="nav navbar-nav">
-                  
-		          	<li class="navLinks"> <%= link_to "Log in", new_user_session_path, class: 'btn btn-default btn-success formButton' %></li>
-		          	
-                </ul>
-           </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+<nav class="navbar navbar-default" role="navigation" id="index_homeNavbar">  
+    <div class="container">
+    	<ul class="nav navbar-nav navbar-right">            
+		     <li class="navLinks"> <%= link_to "Log in", new_user_session_path, class: 'btn btn-default btn-success formButton' %></li>	          	
+        </ul>
+    </div> <!-- /.container -->  
+</nav>

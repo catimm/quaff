@@ -1146,13 +1146,6 @@ $beer-header-lines-to-show: 2;
     }
   }
 }
-.formButton-index-mobile {
-  width: 30%;
-  padding: 6px 12px;
-  margin-top: 15px;
-  background: $step-background;
-  border-color: #4cae4c !important;
-}
 .homeNavbar {
   background: $dark-gray !important;
 }
@@ -1606,6 +1599,24 @@ input[type="checkbox"] {
     overflow-x: hidden;
   }
   // navbar header
+  #index_homeNavbar {
+    .container {
+      ul {
+        float: right;
+        width: 30%;
+        margin-right: 15px;
+        li {
+          .formButton {
+            width: 100%;
+            padding: 6px 12px;
+            margin-top: 15px;
+            background: $step-background;
+            border-color: #4cae4c !important;
+          }
+        }
+      }
+    }
+  }
   .navbar-form {
     width: 220px;
     border: none !important;
