@@ -5,8 +5,7 @@ class UserMailer < ActionMailer::Base
   end
  
   def select_invite_email(invited, inviter)
-    url = root_url+"users/invitation/accept?invitation_token="
-    website = root_url
+    url = "http://www.drinkknird.com/users/invitation/accept?invitation_token="
     template_name = "select-invite-email"
     template_content = []
     message = {
@@ -28,7 +27,7 @@ class UserMailer < ActionMailer::Base
   
   def welcome_email(user)
     Rails.logger.debug("User info is: #{user.inspect}")
-    url = root_url+"users/"
+    url = "http://www.drinkknird.com/users/"
     template_name = "welcome-email"
     template_content = []
     message = {
