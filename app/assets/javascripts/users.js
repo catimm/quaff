@@ -102,7 +102,7 @@ $(function () {
 				$(this).siblings(".like-style").removeClass("hidden").addClass("show");
 			}
 			// change user preference form value
-			$(this).siblings("#styles__user_preference").val(1);
+			$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(1);
 		}
 	});
 	// allow user to reverse dislike of beer style
@@ -114,7 +114,7 @@ $(function () {
 			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
 		// change user preference form value
-		$(this).siblings("#styles__user_preference").val(0);
+		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
 	});
 	
 	// allow user to like beer style
@@ -132,7 +132,7 @@ $(function () {
 				$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
 			}
 			// change user preference form value
-			$(this).siblings("#styles__user_preference").val(2);
+			$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(2);
 		}
 	});
 	// allow user to reverse like of beer style
@@ -144,7 +144,7 @@ $(function () {
 			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
 		// change user preference form value
-		$(this).siblings("#styles__user_preference").val(0);
+		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
 	});
 	
 	// find width of style preference overview tile
