@@ -37,7 +37,8 @@ class SearchesController < ApplicationController
         @drinks_compared += 1
           if first_drink.beer_name.strip == second_drink.beer_name.strip
             Rails.logger.debug("Have the same name")
-            if first_drink.brewery_id == second_drink.brewery_id
+            second_brewery_name = second_drink.brewery.brewery_name.split
+            if first_drink.brewery.brewery_name.start_with?(second_brewery_name[0])
               @drinks_compared -= 1
               Rails.logger.debug("Is same brewery")
               second_drink_value = 0
