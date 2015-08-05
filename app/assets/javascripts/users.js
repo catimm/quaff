@@ -158,4 +158,16 @@ $(function () {
 	// make chosen preference appear in middle of tile regardless of tile size
 	$(".dislike-style-chosen").children(".dislike-style-middle").css("left",style_width - half_style_width - 18);
 	$(".like-style-chosen").children(".like-style-middle").css("left",style_width - half_style_width - 18);
+	
+	// find width of style preference overview tile for mobile
+	mobile_style_width = $(".row-horizon").children(".mobile.style-tile-container").width();
+	half_style_width = mobile_style_width/2;
+	// make width of selected style overlay equal that of the overview tile
+	$(".mobile.overview-tile-4").width(mobile_style_width);
+	// make width of style preference row equal that of the overview tile
+	$(".mobile.like-style-chosen").width(mobile_style_width);
+	$(".mobile.dislike-style-chosen").width(mobile_style_width);
+	// make chosen preference appear in middle of tile regardless of tile size
+	$(".mobile.dislike-style-chosen").children(".mobile.dislike-style-middle").css("left",mobile_style_width - half_style_width - 18);
+	$(".mobile.like-style-chosen").children(".mobile.like-style-middle").css("left",mobile_style_width - half_style_width - 18);
 });

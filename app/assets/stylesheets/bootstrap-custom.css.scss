@@ -343,6 +343,7 @@ a.search-beer-header {
   text-overflow: ellipsis;
   font-size: 14px;
   line-height: 1.2;
+  text-decoration: underline;
 }
 .search-beer-info {
   margin: 5px 0 5px 0;
@@ -1288,7 +1289,6 @@ $beer-header-lines-to-show: 2;
     border-radius: 6px;
     overflow: hidden;
     background: #fff;
-    width: 99%;
     height: 280px;
     position: relative;
   }
@@ -1786,6 +1786,7 @@ input[type="checkbox"] {
       margin: 0;
     }  
   }
+
   // Retailer page
   .retailer-page-title-mobile {
     padding: 7.5px 0 0 45px;
