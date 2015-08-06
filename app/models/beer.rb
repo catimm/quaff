@@ -28,6 +28,7 @@
 #  rating_three_na      :boolean
 #  user_addition        :boolean
 #  touched_by_user      :integer
+#  collab               :boolean
 #
 
 class Beer < ActiveRecord::Base

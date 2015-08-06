@@ -20,6 +20,7 @@ class Brewery < ActiveRecord::Base
   
   has_many :beers
   has_many :alt_brewery_names
+  has_many :beer_brewery_collabs
   
   def connect_deleted_brewery
     "#{brewery_name} [id: #{id}]"
