@@ -12,7 +12,7 @@
 #  image              :string
 #  brewery_beers      :integer
 #  short_brewery_name :string
-#  collab             :boolean
+#  collab             :boolean  # this now means, "does this brewery have a collab beer?"--8/6/15
 #
 
 class Brewery < ActiveRecord::Base

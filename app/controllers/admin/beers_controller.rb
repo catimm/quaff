@@ -3,7 +3,16 @@ class Admin::BeersController < ApplicationController
   before_filter :find_descriptor_tags, only: [:new, :create, :edit, :update]
   
   def index
-    @brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
+    # find non-collab beers produced by brewery
+    @brewery_beers = Beer.all_brewery_beers(params[:brewery_id]).uniq
+    Rails.logger.debug("Brewery beers: #{@brewery_beers.inspect}")
+    #@brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
+    # find collab beers produced by brewery
+    #@collab_brewery_beer_ids = BeerBreweryCollab.where(brewery_id: params[:brewery_id]).pluck(:beer_id)
+    #@collab_beers = Beer.find(@collab_brewery_beer_ids)
+    # add collab beers to beer non-call beer list
+    #@brewery_beers << @collab_beers
+    # grab brewery info
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     # get list of IDs for all live Beers
     @live_beers = Beer.live_beers

@@ -77,21 +77,45 @@ class Beer < ActiveRecord::Base
   def connect_deleted_beer
     "#{beer_name} [id: #{id}]"
   end
+ 
+  # scope all beers connected with a brewery (whether a collab beer or not)
+  scope :all_brewery_beers, ->(brewery_id) {
+    collab_test = BeerBreweryCollab.where(brewery_id: brewery_id).pluck(:beer_id)
+    Rails.logger.debug("brewrey test: #{collab_test.inspect}")
+    if !collab_test.empty?
+      Rails.logger.debug("first option fired")
+      combined_array = non_collab_beers(brewery_id) << collab_beers(collab_test)[0]
+      combined_array.sort_by{|e| e[:beer_name]}
+    else
+      Rails.logger.debug("second option fired")
+      non_collab_beers(brewery_id).order(:beer_name)
+    end
+  }
+  # scope all non-collab beers
+  scope :non_collab_beers, ->(brewery_id) {
+    where(brewery_id: brewery_id)
+  }
+  # scope all collab beers
+  scope :collab_beers, ->(beer_id) {
+    where(id: beer_id) 
+  }
   
+  # scope only drinks currently available 
   scope :live_beers, -> { 
     joins(:beer_locations).merge(BeerLocation.current) 
   }
+  # scope beers that don't have all related info in the DB
   scope :need_attention_beers, -> { 
     where(beer_rating_one: nil, beer_rating_two: nil, beer_rating_three: nil, beer_type_id: nil, 
           rating_one_na: nil, rating_two_na: nil, rating_three_na: nil) 
     }
-  
+  # scope beers that have all related info in the DB
   scope :complete_beers, -> { 
     where("rating_one_na = ? OR beer_rating_one IS NOT NULL", true).
     where("rating_two_na = ? OR beer_rating_two IS NOT NULL", true).
     where("rating_three_na = ? OR beer_rating_three IS NOT NULL", true).
     where.not(beer_type_id: nil) }
-  
+  # scope beers that have partial related info in the DB
   scope :usable_incomplete_beers, -> {
     where("rating_one_na = ? OR beer_rating_one IS NOT NULL OR beer_type_id IS NOT NULL", true).
     where("rating_two_na IS NULL OR rating_two_na = ?", false).

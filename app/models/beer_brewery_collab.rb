@@ -10,4 +10,11 @@
 #
 
 class BeerBreweryCollab < ActiveRecord::Base
+  belongs_to :brewery
+  belongs_to :beer
+  
+  # scope all collab beers connected with a brewery
+  scope :collabs, ->(brewery_id) {
+    where(brewery_id: brewery_id)
+  }
 end
