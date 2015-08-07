@@ -23,7 +23,12 @@
 					</div>
 					<div class="row no-margin">
 						<div class="col-xs-12">
-							<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= @beer.beer_name %></h5>
+							<% if @beer.collab == true %>
+								<% @collab_brewery_name = Beer.collab_brewery_name(@beer.id) %>
+								<h5 class="tile-header beer-tile-header-full-page"><%= @collab_brewery_name %> <%= @beer.beer_name %></h5>
+							<% else %>
+								<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= @beer.beer_name %></h5>
+							<% end %>
 						</div>
 						<div class="col-xs-12">
 							<% if !@beer.beer_type_id.nil? %>

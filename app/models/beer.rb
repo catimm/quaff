@@ -100,6 +100,29 @@ class Beer < ActiveRecord::Base
     where(id: beer_id) 
   }
   
+  # scope brewery name view for collabs
+  scope :collab_brewery_name, ->(beer_id) {
+    collab_breweries = BeerBreweryCollab.where(beer_id: beer_id)
+    collab_brewery_names = ""
+    collab_breweries.each do |collab, index|
+      brewery = Brewery.where(id: collab.brewery_id)[0]
+      if !brewery.short_brewery_name.nil?
+        if collab == collab_breweries.last
+          collab_brewery_names = collab_brewery_names + brewery.short_brewery_name
+        else
+          collab_brewery_names = collab_brewery_names + brewery.short_brewery_name + "/"
+        end
+      else
+        if collab == collab_breweries.last
+          collab_brewery_names = collab_brewery_names + brewery.brewery_name
+        else
+          collab_brewery_names = collab_brewery_names + brewery.brewery_name + "/"
+        end
+      end
+    end
+    collab_brewery_names  
+  }
+  
   # scope only drinks currently available 
   scope :live_beers, -> { 
     joins(:beer_locations).merge(BeerLocation.current) 

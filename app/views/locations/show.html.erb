@@ -27,7 +27,10 @@
 					</div>
 					<div class="row no-margin">
 						<div class="col-xs-10">
-							<% if beer.brewery.short_brewery_name.nil? %>
+							<% if beer.collab == true %>
+								<% @title_header = Beer.collab_brewery_name(beer.id) + " " + beer.beer_name %>
+								<%= link_to @title_header, brewery_beer_path(beer.brewery.id, beer.id), :class => 'tile-header beer-tile-header' %>
+							<% elsif beer.brewery.short_brewery_name.nil? %>
 								<% @title_header = beer.brewery.brewery_name + " " + beer.beer_name %>
 								<%= link_to @title_header, brewery_beer_path(beer.brewery.id, beer.id), :class => 'tile-header beer-tile-header' %>
 							<% else %>
