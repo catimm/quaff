@@ -61,17 +61,58 @@ task :check_pine_box => :environment do
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
         Rails.logger.debug("This is firing, so it thinks this is a collab beer")
-        @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: true) 
-        Rails.logger.debug("First check on related beer: #{@related_brewery.inspect}")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
-          Rails.logger.debug("Check on alternative beer names: #{@alt_brewery_name.inspect}")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-            Rails.logger.debug("Second check on related beer: #{@related_brewery.inspect}")
+        # create array to hold collaborators
+        @brewery_collaborators = Array.new
+        # split collaborators into individual names to be tested against database
+        @each_collaborator = @this_brewery_name.split('/')
+        # run each collaborator against database check
+        @each_collaborator.each_with_index do |collaborator, index|
+          @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
+          Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+          if @collaborator_brewery.blank? # not found in Brewery Table
+            # check to see if alternative brewery name table
+            @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
+            if @alt_brewery_name.blank? # not found in Alternative Brewery Table
+              # since brewery isn't found in either Brewery Table, insert it
+              new_brewery = Brewery.new(:brewery_name => collaborator, :collab => true)
+              new_brewery.save
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = new_brewery
+              end
+              # add new brewery to brewery collaborator array for use below
+              @brewery_collaborators << new_brewery
+            else # found in Alternative Brewery Table
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @related_brewery[0].collab != true
+                  @related_brewery[0].update_attributes(collab: "1")
+                end
+              else 
+                @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @temp_collab[0].collab != true
+                  @temp_collab[0].update_attributes(collab: "1")
+                end
+              end
+              # add this brewery to brewery collaborator array for use below
+              @brewery_collaborators << @collaborator_brewery[0]
+            end
+          else # found in Brewery Table
+            if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+              Rails.logger.debug("This is firing on first iteration through")
+              @related_brewery = @collaborator_brewery
+              Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+              Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
+            end
+            # make certain this brewery is flagged as having collaboration beers
+            if @collaborator_brewery[0].collab != true
+                @collaborator_brewery[0].update_attributes(collab: "1")
+            end
+            # add this brewery to brewery collaborator array for use below
+            @brewery_collaborators << @collaborator_brewery[0]
           end
         end
-        Rails.logger.debug("Third and final check on related beer: #{@related_brewery.inspect}")
       else
         # if beer is not a collaboration, do a "normal" brewery name check
         @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
@@ -87,11 +128,7 @@ task :check_pine_box => :environment do
       if @related_brewery.empty?
         Rails.logger.debug("This is firing, so it thinks this brewery IS NOT in the DB")
         # first add new brewery to breweries table & add correct collab status
-        if @collab_beer
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => true)
-        else
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
-        end
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -101,10 +138,20 @@ task :check_pine_box => :environment do
         new_option.save!  
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         @new_beer_info << this_new_beer
-      else 
-        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+      else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
-        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+        if @collab_beer # for collab scenario              
+          @this_brewery_collab_beers_ids = BeerBreweryCollab.where(brewery_id: @related_brewery[0].id).pluck(:beer_id)
+          if !@this_brewery_collab_beers_ids.blank?
+            @this_brewery_beers = Beer.where(id: @this_brewery_collab_beers_ids)
+          else 
+            @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+          end
+        else # for non-collab beers
+          @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        end
+        
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @this_brewery_beers.each do |beer|
@@ -130,6 +177,15 @@ task :check_pine_box => :environment do
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
+          if @collab_beer # for collab scenario--make sure collab table is populated properly
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
+                collab_insert.save
+              end
+            end
+          end
           
           # find if any users are tracking this beer at this location
           @relevant_trackings = Array.new
@@ -219,6 +275,18 @@ task :check_pine_box => :environment do
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
+          
+          # for collab scenario--make sure collab table is populated properly
+          if @collab_beer
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: new_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
+                collab_insert.save
+              end
+            end
+          end 
+          
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
@@ -306,15 +374,61 @@ task :check_chucks_85 => :environment do
        
       # create variable to check if brewery name represents a collaboration project
       @collab_beer = @this_brewery_name.match('\/')
-      
+      Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
       # check if this brewery already exists in the db(s)
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
-        @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: true)
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+        Rails.logger.debug("This is firing, so it thinks this is a collab beer")
+        # create array to hold collaborators
+        @brewery_collaborators = Array.new
+        # split collaborators into individual names to be tested against database
+        @each_collaborator = @this_brewery_name.split('/')
+        # run each collaborator against database check
+        @each_collaborator.each_with_index do |collaborator, index|
+          @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
+          Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+          if @collaborator_brewery.blank? # not found in Brewery Table
+            # check to see if alternative brewery name table
+            @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
+            if @alt_brewery_name.blank? # not found in Alternative Brewery Table
+              # since brewery isn't found in either Brewery Table, insert it
+              new_brewery = Brewery.new(:brewery_name => collaborator, :collab => true)
+              new_brewery.save
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = new_brewery
+              end
+              # add new brewery to brewery collaborator array for use below
+              @brewery_collaborators << new_brewery
+            else # found in Alternative Brewery Table
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @related_brewery[0].collab != true
+                  @related_brewery[0].update_attributes(collab: "1")
+                end
+              else 
+                @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @temp_collab[0].collab != true
+                  @temp_collab[0].update_attributes(collab: "1")
+                end
+              end
+              # add this brewery to brewery collaborator array for use below
+              @brewery_collaborators << @collaborator_brewery[0]
+            end
+          else # found in Brewery Table
+            if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+              Rails.logger.debug("This is firing on first iteration through")
+              @related_brewery = @collaborator_brewery
+              Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+              Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
+            end
+            # make certain this brewery is flagged as having collaboration beers
+            if @collaborator_brewery[0].collab != true
+                @collaborator_brewery[0].update_attributes(collab: "1")
+            end
+            # add this brewery to brewery collaborator array for use below
+            @brewery_collaborators << @collaborator_brewery[0]
           end
         end
       else
@@ -331,11 +445,7 @@ task :check_chucks_85 => :environment do
       # if brewery does not exist in db(s), insert related info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
         # first add new brewery to breweries table & add correct collab status
-        if @collab_beer
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => true)
-        else
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
-        end
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -347,9 +457,20 @@ task :check_chucks_85 => :environment do
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
-      else 
+      else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
-        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+        if @collab_beer # for collab scenario              
+          @this_brewery_collab_beers_ids = BeerBreweryCollab.where(brewery_id: @related_brewery[0].id).pluck(:beer_id)
+          if !@this_brewery_collab_beers_ids.blank?
+            @this_brewery_beers = Beer.where(id: @this_brewery_collab_beers_ids)
+          else 
+            @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+          end
+        else # for non-collab beers
+          @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        end
+        
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @this_brewery_beers.each do |beer|
@@ -372,6 +493,15 @@ task :check_chucks_85 => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          if @collab_beer # for collab scenario--make sure collab table is populated properly
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
+                collab_insert.save
+              end
+            end
+          end
           
           # find if any users are tracking this beer at this location
           @relevant_trackings = Array.new
@@ -456,6 +586,18 @@ task :check_chucks_85 => :environment do
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
+          
+          # for collab scenario--make sure collab table is populated properly
+          if @collab_beer
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: new_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
+                collab_insert.save
+              end
+            end
+          end
+          
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
@@ -541,15 +683,61 @@ task :check_chucks_cd => :environment do
        
       # create variable to check if brewery name represents a collaboration project
       @collab_beer = @this_brewery_name.match('\/')
-      
+      Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
       # check if this brewery already exists in the db(s)
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
-        @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: true)
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+        Rails.logger.debug("This is firing, so it thinks this is a collab beer")
+        # create array to hold collaborators
+        @brewery_collaborators = Array.new
+        # split collaborators into individual names to be tested against database
+        @each_collaborator = @this_brewery_name.split('/')
+        # run each collaborator against database check
+        @each_collaborator.each_with_index do |collaborator, index|
+          @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
+          Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+          if @collaborator_brewery.blank? # not found in Brewery Table
+            # check to see if alternative brewery name table
+            @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
+            if @alt_brewery_name.blank? # not found in Alternative Brewery Table
+              # since brewery isn't found in either Brewery Table, insert it
+              new_brewery = Brewery.new(:brewery_name => collaborator, :collab => true)
+              new_brewery.save
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = new_brewery
+              end
+              # add new brewery to brewery collaborator array for use below
+              @brewery_collaborators << new_brewery
+            else # found in Alternative Brewery Table
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @related_brewery[0].collab != true
+                  @related_brewery[0].update_attributes(collab: "1")
+                end
+              else 
+                @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @temp_collab[0].collab != true
+                  @temp_collab[0].update_attributes(collab: "1")
+                end
+              end
+              # add this brewery to brewery collaborator array for use below
+              @brewery_collaborators << @collaborator_brewery[0]
+            end
+          else # found in Brewery Table
+            if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+              Rails.logger.debug("This is firing on first iteration through")
+              @related_brewery = @collaborator_brewery
+              Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+              Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
+            end
+            # make certain this brewery is flagged as having collaboration beers
+            if @collaborator_brewery[0].collab != true
+                @collaborator_brewery[0].update_attributes(collab: "1")
+            end
+            # add this brewery to brewery collaborator array for use below
+            @brewery_collaborators << @collaborator_brewery[0]
           end
         end
       else
@@ -566,11 +754,7 @@ task :check_chucks_cd => :environment do
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
         # first add new brewery to breweries table & add correct collab status
-        if @collab_beer
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => true)
-        else
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
-        end
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -582,9 +766,20 @@ task :check_chucks_cd => :environment do
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
-      else 
+      else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
-        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+        if @collab_beer # for collab scenario              
+          @this_brewery_collab_beers_ids = BeerBreweryCollab.where(brewery_id: @related_brewery[0].id).pluck(:beer_id)
+          if !@this_brewery_collab_beers_ids.blank?
+            @this_brewery_beers = Beer.where(id: @this_brewery_collab_beers_ids)
+          else 
+            @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+          end
+        else # for non-collab beers
+          @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        end
+        
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @this_brewery_beers.each do |beer|
@@ -607,6 +802,15 @@ task :check_chucks_cd => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          if @collab_beer # for collab scenario--make sure collab table is populated properly
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
+                collab_insert.save
+              end
+            end
+          end
           
           # find if any users are tracking this beer at this location
           @relevant_trackings = Array.new
@@ -691,6 +895,18 @@ task :check_chucks_cd => :environment do
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
+          
+          # for collab scenario--make sure collab table is populated properly
+          if @collab_beer
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: new_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
+                collab_insert.save
+              end
+            end
+          end
+          
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer  
@@ -779,15 +995,61 @@ task :check_beer_junction => :environment do
 
       # create variable to check if brewery name represents a collaboration project
       @collab_beer = @this_brewery_name.match('\/')
-      
+      Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
       # check if this brewery already exists in the db(s)
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
-        @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: true)
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+        Rails.logger.debug("This is firing, so it thinks this is a collab beer")
+        # create array to hold collaborators
+        @brewery_collaborators = Array.new
+        # split collaborators into individual names to be tested against database
+        @each_collaborator = @this_brewery_name.split('/')
+        # run each collaborator against database check
+        @each_collaborator.each_with_index do |collaborator, index|
+          @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
+          Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+          if @collaborator_brewery.blank? # not found in Brewery Table
+            # check to see if alternative brewery name table
+            @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
+            if @alt_brewery_name.blank? # not found in Alternative Brewery Table
+              # since brewery isn't found in either Brewery Table, insert it
+              new_brewery = Brewery.new(:brewery_name => collaborator, :collab => true)
+              new_brewery.save
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = new_brewery
+              end
+              # add new brewery to brewery collaborator array for use below
+              @brewery_collaborators << new_brewery
+            else # found in Alternative Brewery Table
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @related_brewery[0].collab != true
+                  @related_brewery[0].update_attributes(collab: "1")
+                end
+              else 
+                @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @temp_collab[0].collab != true
+                  @temp_collab[0].update_attributes(collab: "1")
+                end
+              end
+              # add this brewery to brewery collaborator array for use below
+              @brewery_collaborators << @collaborator_brewery[0]
+            end
+          else # found in Brewery Table
+            if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+              Rails.logger.debug("This is firing on first iteration through")
+              @related_brewery = @collaborator_brewery
+              Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+              Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
+            end
+            # make certain this brewery is flagged as having collaboration beers
+            if @collaborator_brewery[0].collab != true
+                @collaborator_brewery[0].update_attributes(collab: "1")
+            end
+            # add this brewery to brewery collaborator array for use below
+            @brewery_collaborators << @collaborator_brewery[0]
           end
         end
       else
@@ -804,11 +1066,7 @@ task :check_beer_junction => :environment do
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
         # first add new brewery to breweries table & add correct collab status
-        if @collab_beer
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => true)
-        else
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
-        end
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -820,9 +1078,20 @@ task :check_beer_junction => :environment do
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
-      else 
+      else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
-        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+        if @collab_beer # for collab scenario              
+          @this_brewery_collab_beers_ids = BeerBreweryCollab.where(brewery_id: @related_brewery[0].id).pluck(:beer_id)
+          if !@this_brewery_collab_beers_ids.blank?
+            @this_brewery_beers = Beer.where(id: @this_brewery_collab_beers_ids)
+          else 
+            @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+          end
+        else # for non-collab beers
+          @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        end
+        
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @this_brewery_beers.each do |beer|
@@ -845,6 +1114,15 @@ task :check_beer_junction => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          if @collab_beer # for collab scenario--make sure collab table is populated properly
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
+                collab_insert.save
+              end
+            end
+          end
           
           # find if any users are tracking this beer at this location
           @relevant_trackings = Array.new
@@ -929,6 +1207,18 @@ task :check_beer_junction => :environment do
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
+          
+          # for collab scenario--make sure collab table is populated properly
+          if @collab_beer
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: new_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
+                collab_insert.save
+              end
+            end
+          end
+          
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer  
@@ -1020,18 +1310,61 @@ task :check_beveridge_place => :environment do
 
       # create variable to check if brewery name represents a collaboration project
       @collab_beer = @this_brewery_name.match('\/')
-      # Rails.logger.debug("Is this a collab?: #{@collab_beer.inspect}")
-      
+      Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
       # check if this brewery already exists in the db(s)
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
-        @related_brewery = Brewery.where(brewery_name: @this_brewery_name).where(collab: true)
-        # Rails.logger.debug("Find if collab is in breweries table: #{@related_brewery.inspect}")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
-          # Rails.logger.debug("Find if collab is in alt_breweries table: #{@alt_brewery_name.inspect}")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+        Rails.logger.debug("This is firing, so it thinks this is a collab beer")
+        # create array to hold collaborators
+        @brewery_collaborators = Array.new
+        # split collaborators into individual names to be tested against database
+        @each_collaborator = @this_brewery_name.split('/')
+        # run each collaborator against database check
+        @each_collaborator.each_with_index do |collaborator, index|
+          @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
+          Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+          if @collaborator_brewery.blank? # not found in Brewery Table
+            # check to see if alternative brewery name table
+            @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
+            if @alt_brewery_name.blank? # not found in Alternative Brewery Table
+              # since brewery isn't found in either Brewery Table, insert it
+              new_brewery = Brewery.new(:brewery_name => collaborator, :collab => true)
+              new_brewery.save
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = new_brewery
+              end
+              # add new brewery to brewery collaborator array for use below
+              @brewery_collaborators << new_brewery
+            else # found in Alternative Brewery Table
+              if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @related_brewery[0].collab != true
+                  @related_brewery[0].update_attributes(collab: "1")
+                end
+              else 
+                @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # make certain this brewery is flagged as having collaboration beers
+                if @temp_collab[0].collab != true
+                  @temp_collab[0].update_attributes(collab: "1")
+                end
+              end
+              # add this brewery to brewery collaborator array for use below
+              @brewery_collaborators << @collaborator_brewery[0]
+            end
+          else # found in Brewery Table
+            if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+              Rails.logger.debug("This is firing on first iteration through")
+              @related_brewery = @collaborator_brewery
+              Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+              Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
+            end
+            # make certain this brewery is flagged as having collaboration beers
+            if @collaborator_brewery[0].collab != true
+                @collaborator_brewery[0].update_attributes(collab: "1")
+            end
+            # add this brewery to brewery collaborator array for use below
+            @brewery_collaborators << @collaborator_brewery[0]
           end
         end
       else
@@ -1051,11 +1384,7 @@ task :check_beveridge_place => :environment do
       if @related_brewery.empty?
         # Rails.logger.debug("This is firing, so it DOES NOT recognize Brewery in breweries table")
         # first add new brewery to breweries table & add correct collab status
-        if @collab_beer
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => true)
-        else
-          new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
-        end
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -1067,10 +1396,20 @@ task :check_beveridge_place => :environment do
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
         # add new list (new beer) to an array to send via email 
         @new_beer_info << this_new_beer
-      else 
-        # Rails.logger.debug("This is firing, so it DOES recognize Brewery in breweries table")
+      else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
-        @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+        if @collab_beer # for collab scenario              
+          @this_brewery_collab_beers_ids = BeerBreweryCollab.where(brewery_id: @related_brewery[0].id).pluck(:beer_id)
+          if !@this_brewery_collab_beers_ids.blank?
+            @this_brewery_beers = Beer.where(id: @this_brewery_collab_beers_ids)
+          else 
+            @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+          end
+        else # for non-collab beers
+          @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        end
+        
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @this_brewery_beers.each do |beer|
@@ -1093,6 +1432,15 @@ task :check_beveridge_place => :environment do
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          if @collab_beer # for collab scenario--make sure collab table is populated properly
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
+                collab_insert.save
+              end
+            end
+          end
           
           # find if any users are tracking this beer at this location
           @relevant_trackings = Array.new
@@ -1177,6 +1525,18 @@ task :check_beveridge_place => :environment do
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
           new_option.save!
+          
+          # for collab scenario--make sure collab table is populated properly
+          if @collab_beer
+            @brewery_collaborators.each do |collaborator|
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: new_beer.id)
+              if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
+                collab_insert.save
+              end
+            end
+          end
+          
           # finally, push this beer info into an array to be sent to us via email
           this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)" 
           @new_beer_info << this_new_beer   
@@ -1326,7 +1686,7 @@ task :check_fremont_beer_garden => :environment do
           # in this case, we know this beer exists in the beers table
           if !@recognized_beer.nil?
             
-            # find if any users are tracking this beer at this location
+          # find if any users are tracking this beer at this location
           @relevant_trackings = Array.new
           @tracking_info = UserBeerTracking.where(beer_id: @recognized_beer.id).where("removed_at IS NULL")
           if !@tracking_info.empty?
