@@ -61,10 +61,10 @@
 							<% if beer.user_rating %>
 								<% if beer.user_rating == beer.best_guess %>
 									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((beer.best_guess) * 2).round)/2.0) %></span> and you rated it:</p>
-									<h1 class="user-rating"><%= beer.user_rating %></h1>
+									<h1 class="user-rating"><%= (((beer.user_rating * 2).round)/2.0) %></h1>
 								<% else %>
 									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((beer.best_guess) * 2).round)/2.0) %></span> but you rated it:</p>
-									<h1 class="user-rating"><%= beer.user_rating %></h1>
+									<h1 class="user-rating"><%= (((beer.user_rating * 2).round)/2.0) %></h1>
 								<% end %>
 							<% else %>
 								<p>Our <span class="best-guess">best guess</span> for you:</p>
