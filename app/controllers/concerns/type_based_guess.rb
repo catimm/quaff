@@ -77,12 +77,20 @@ module TypeBasedGuess
     # finally, adjust projected rating based on number of descriptor matches
     if @rating_boost == 5
       this_beer.best_guess = this_beer.best_guess + 1.5
+      this_beer.likes_style = "yes"
+      this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     elsif @rating_boost >= 3
       this_beer.best_guess = this_beer.best_guess + 1.0
+      this_beer.likes_style = "yes"
+      this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     elsif @rating_boost >= 1
       this_beer.best_guess = this_beer.best_guess + 0.5
+      this_beer.likes_style = "yes"
+      this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     else 
       this_beer.best_guess = this_beer.best_guess + 0
+      this_beer.likes_style = "neither"
+      this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     end
     # Rails.logger.debug("this beer rating #{this_beer.beer_rating.inspect}")
     # Rails.logger.debug("this beer best guess #{this_beer.best_guess.inspect}")
@@ -130,26 +138,22 @@ module TypeBasedGuess
     # finally, adjust projected rating based on number of descriptor matches
     if @rating_discount == 5
       this_beer.best_guess = this_beer.best_guess - 1.5
+      this_beer.likes_style = "no"
+      this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     elsif @rating_discount >= 3
       this_beer.best_guess = this_beer.best_guess - 1.0
+      this_beer.likes_style = "no"
+      this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     elsif @rating_discount >= 1
       this_beer.best_guess = this_beer.best_guess - 0.5
+      this_beer.likes_style = "no"
+      this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     else 
       this_beer.best_guess = this_beer.best_guess - 0
+      this_beer.likes_style = "neither"
+      this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     end
     # Rails.logger.debug("this beer rating #{this_beer.beer_rating.inspect}")
     # Rails.logger.debug("this beer best guess #{this_beer.best_guess.inspect}")
-    
-    # note whether this is a recommendation or not and reason(s) why--add to recommendation rationale
-    if this_beer.best_guess > this_beer.beer_rating
-      # note the user likes this sytle
-      this_beer.likes_style = "yes"
-      this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
-    elsif this_beer.best_guess < this_beer.beer_rating
-      # note the user dislikes this sytle
-      this_beer.likes_style = "no"
-      this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
-      this_beer.likes_style = "neither"
-    end
   end # end of method
 end # end of module
