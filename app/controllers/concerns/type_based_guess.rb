@@ -155,5 +155,20 @@ module TypeBasedGuess
     end
     # Rails.logger.debug("this beer rating #{this_beer.beer_rating.inspect}")
     # Rails.logger.debug("this beer best guess #{this_beer.best_guess.inspect}")
+    
+    # note whether this is a recommendation or not and reason(s) why--add to recommendation rationale
+    if this_beer.best_guess > this_beer.beer_rating
+      # note the user likes this sytle
+      this_beer.likes_style = "yes"
+      this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
+    elsif this_beer.best_guess == this_beer.beer_rating
+      # note the user likes this sytle
+      this_beer.likes_style = "neither"
+      this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
+    else
+      # note the user dislikes this sytle
+      this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
+      this_beer.likes_style = "no"
+    end
   end # end of method
 end # end of module
