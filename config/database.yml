@@ -1,6 +1,6 @@
 development:
   adapter: postgresql
-  database: besties_dev
+  database: staging-data
   username: carltimm
   password: 
   pool: 5

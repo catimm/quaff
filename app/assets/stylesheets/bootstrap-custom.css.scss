@@ -35,6 +35,7 @@ $soft-border: $extra-light-gray;
 $header-text: $black;
 $normal-text: $dark-gray;
 $less-emphasized-text: $medium-gray;
+$special-beer: $bright-purple;
 $special-text: $bright-orange;
 $best-guess-text: $bright-orange;
 $user-rating-text: $bright-blue;
@@ -377,10 +378,21 @@ hr {
     font-size: 56px;
   }
 }
-  .brewer-description {
-    line-height: 1.2;
-    color: $normal-text;
-  }
+/* $brewer-description-font-size-fp: 14px; */
+$brewer-description-line-height-fp: 1.2;
+/* $brewer-description-lines-to-show-fp: 2; */
+.brewer-description {
+  color: $normal-text;
+  /* display: block; /* Fallback for non-webkit */ 
+  /* display: -webkit-box; */
+  /* height: $brewer-description-font-size-fp*$brewer-description-line-height-fp*$brewer-description-lines-to-show-fp; /* Fallback for non-webkit */
+  /* font-size: $brewer-description-font-size-fp; */
+  line-height: $brewer-description-line-height-fp;
+  /* -webkit-line-clamp: $brewer-description-lines-to-show-fp; */
+  /* -webkit-box-orient: vertical; */
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+}
 .last-seen {
   margin-bottom: 3px;
 }
@@ -410,7 +422,7 @@ $beer-header-lines-to-show-fp: 1;
   color: $less-emphasized-text;
   margin-top: 0;
 }
-.why-statement-full-page {
+.why-statement.full-page {
   p {
     margin-bottom: 0;
     font-size: 12px;
@@ -638,10 +650,15 @@ $beer-header-lines-to-show: 2;
     font-size: 14px;
     color: $normal-text;
     span {
-      color: $bright-purple;
+      color: $special-beer;
     }
   }
 } 
+p {
+   span {
+     color: $special-beer;
+   }
+}
 // Rating page
 .rating-tile {
   margin: 20px 0;
