@@ -39,6 +39,7 @@ class BeersController < ApplicationController
     
     # get user's ratings for this beer if any exist
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse
+    @number_of_ratings = @user_rating_for_this_beer.count
     
     # send beer ids to javascript file to create jcloud
     beer_descriptor = Array.new

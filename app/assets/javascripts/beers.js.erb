@@ -36,4 +36,16 @@ $(function() {
 	 } else {
 	 	return;
 	 }
+	 
+	 // show/hide full brewer description
+	 $("#more-brewer-description").on("click", function(){
+		$("#brewer-description").removeClass("small-brewer-description").addClass("big-brewer-description");
+		$(this).removeClass("show").addClass("hidden");
+		$("#less-brewer-description").removeClass("hidden").addClass("show");
+	 });
+	 $("#less-brewer-description").on("click", function(){
+		$("#brewer-description").removeClass("big-brewer-description").addClass("small-brewer-description");
+		$(this).removeClass("show").addClass("hidden");
+		$("#more-brewer-description").removeClass("hidden").addClass("show");
+	 });
 });

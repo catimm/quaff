@@ -355,7 +355,7 @@ hr {
 }
 // Beer info page
 .beer-info-tile {
-  margin-top: 15px;
+  margin: 15px 0;
   padding-bottom: 15px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -378,20 +378,30 @@ hr {
     font-size: 56px;
   }
 }
-/* $brewer-description-font-size-fp: 14px; */
+$brewer-description-font-size-fp: 14px;
 $brewer-description-line-height-fp: 1.2;
-/* $brewer-description-lines-to-show-fp: 2; */
-.brewer-description {
+$brewer-description-lines-to-show-fp: 2;
+.small-brewer-description {
   color: $normal-text;
-  /* display: block; /* Fallback for non-webkit */ 
-  /* display: -webkit-box; */
-  /* height: $brewer-description-font-size-fp*$brewer-description-line-height-fp*$brewer-description-lines-to-show-fp; /* Fallback for non-webkit */
-  /* font-size: $brewer-description-font-size-fp; */
+  margin-bottom: 0;
+  display: block; /* Fallback for non-webkit */ 
+  display: -webkit-box;
+  height: $brewer-description-font-size-fp*$brewer-description-line-height-fp*$brewer-description-lines-to-show-fp; /* Fallback for non-webkit */
+  font-size: $brewer-description-font-size-fp;
   line-height: $brewer-description-line-height-fp;
-  /* -webkit-line-clamp: $brewer-description-lines-to-show-fp; */
-  /* -webkit-box-orient: vertical; */
-  /* overflow: hidden; */
-  /* text-overflow: ellipsis; */
+  -webkit-line-clamp: $brewer-description-lines-to-show-fp;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.big-brewer-description {
+  color: $normal-text;
+  margin-bottom: 0;
+  line-height: $brewer-description-line-height-fp;
+}
+.more-brewer-description, .less-brewer-description {
+  float: right;
+  font-size: 13px;
 }
 .last-seen {
   margin-bottom: 3px;
@@ -466,13 +476,13 @@ $beer-header-lines-to-show-fp: 1;
 }
 .formButton-track-beer {
   width: 100%;
-  margin-top: 15px;
+  margin: 15px 0 20px 0;
   background: $action-background;
 }
 
 .formButton-track-beer-stop {
   width: 100%;
-  margin-top: 15px;
+  margin: 15px 0 20px 0;
   background: $current-beer-attention-needed-background;
 }
 .or-option {
