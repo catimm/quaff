@@ -41,6 +41,9 @@ class BeersController < ApplicationController
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse
     @number_of_ratings = @user_rating_for_this_beer.count
     
+    # get temporary beer image
+    @temp_beer_image = @beer.beer_type.beer_style.style_image_url
+    
     # send beer ids to javascript file to create jcloud
     beer_descriptor = Array.new
     @beer_descriptors = Beer.find(@beer.id).descriptors
