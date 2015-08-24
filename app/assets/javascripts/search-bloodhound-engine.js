@@ -43,12 +43,12 @@ ready = function() {
           source: numbers.ttAdapter(),
           templates: {
 			    empty: [
-			      '<div class="empty-message"><a href="http://localhost:3000/searches/add_beer">',
+			      '<div class="empty-message"><a href="'+ BASE_URL +'searches/add_beer">',
 			        'Not found. Click here to suggest we add it!',
 			      '</a></div>'
 			    ].join('\n'),
 			    suggestion: function(data) {
-				    return '<p><a href="http://'+ BASE_URL +'/breweries/'+ data.brewery_id +'/beers/'+ data.beer_id +'">' + data.brewery + ' ' + data.beer + '</a></p>';
+				    return '<p><a href="'+ BASE_URL +'breweries/'+ data.brewery_id +'/beers/'+ data.beer_id +'">' + data.brewery + ' ' + data.beer + '</a></p>';
 				}
 			}
         });
@@ -56,5 +56,3 @@ ready = function() {
 
 $(document).ready(ready);
 $(document).on('page:load', ready);
-
-alert(BASE_URL);
