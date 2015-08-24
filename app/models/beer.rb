@@ -32,7 +32,8 @@
 #
 
 class Beer < ActiveRecord::Base
-  include PgSearch
+  #include PgSearch
+  # searchkick word_middle: [:full_beer_name]
   include DescriptorExtend
   # to strip white spaces from each beer added to this table
   strip_attributes
@@ -53,6 +54,11 @@ class Beer < ActiveRecord::Base
   has_many :user_beer_trackings
   has_many :beer_brewery_collabs
   
+  # to keep search function indexed properly
+  after_commit :reindex_brewery
+  def reindex_brewery
+    brewery.reindex # or reindex_async
+  end
   # the first 8 are for the suggested beer rating formula
   attr_accessor :best_guess
   attr_accessor :ultimate_rating # this will hold a user's rating and/or best_guess to sort by highest rating
@@ -69,9 +75,9 @@ class Beer < ActiveRecord::Base
   attr_accessor :rate_beer_now
   attr_accessor :track_beer_now
 
-  pg_search_scope :beer_search, :against => :beer_name,
-                  :associated_against => { :brewery => :brewery_name },
-                  :using => { :tsearch => {:prefix => true} }
+  #pg_search_scope :beer_search, :against => :beer_name,
+  #                :associated_against => { :brewery => :brewery_name },
+  #                :using => { :tsearch => {:prefix => true} }
   
   # put beer name and id together into one variable
   def connect_deleted_beer

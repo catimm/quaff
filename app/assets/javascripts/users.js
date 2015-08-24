@@ -170,4 +170,9 @@ $(function () {
 	// make chosen preference appear in middle of tile regardless of tile size
 	$(".mobile.dislike-style-chosen").children(".mobile.dislike-style-middle").css("left",mobile_style_width - half_style_width - 18);
 	$(".mobile.like-style-chosen").children(".mobile.like-style-middle").css("left",mobile_style_width - half_style_width - 18);
+	
+	// find width of the navbar search input box
+	navbar_search_width = $("#header-navbar").children(".input-group").width() + 20;
+	// make the dropdown search result box match the width of the search input box
+	$(".tt-menu").width(navbar_search_width);
 });

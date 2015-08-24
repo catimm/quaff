@@ -111,6 +111,8 @@ class Admin::BreweriesController < ApplicationController
     redirect_to admin_breweries_path
   end
   
+  
+  
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def brewery_params

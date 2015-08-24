@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 20150806050229) do
   create_table "beer_locations", force: :cascade do |t|
     t.integer  "beer_id"
     t.integer  "location_id"
-    t.string   "beer_is_current"
+    t.string   "beer_is_current", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "removed_at"
@@ -74,8 +74,8 @@ ActiveRecord::Schema.define(version: 20150806050229) do
   end
 
   create_table "beers", force: :cascade do |t|
-    t.string   "beer_name"
-    t.string   "beer_type_old_name"
+    t.string   "beer_name",            limit: 255
+    t.string   "beer_type_old_name",   limit: 255
     t.float    "beer_rating_one"
     t.integer  "number_ratings_one"
     t.datetime "created_at"
@@ -83,8 +83,8 @@ ActiveRecord::Schema.define(version: 20150806050229) do
     t.integer  "brewery_id"
     t.float    "beer_abv"
     t.integer  "beer_ibu"
-    t.string   "beer_image"
-    t.string   "speciality_notice"
+    t.string   "beer_image",           limit: 255
+    t.string   "speciality_notice",    limit: 255
     t.text     "original_descriptors"
     t.text     "hops"
     t.text     "grains"
@@ -103,10 +103,10 @@ ActiveRecord::Schema.define(version: 20150806050229) do
   end
 
   create_table "breweries", force: :cascade do |t|
-    t.string   "brewery_name"
-    t.string   "brewery_city"
-    t.string   "brewery_state"
-    t.string   "brewery_url"
+    t.string   "brewery_name",       limit: 255
+    t.string   "brewery_city",       limit: 255
+    t.string   "brewery_state",      limit: 255
+    t.string   "brewery_url",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "image"
@@ -137,9 +137,9 @@ ActiveRecord::Schema.define(version: 20150806050229) do
   end
 
   create_table "locations", force: :cascade do |t|
-    t.string   "name"
-    t.string   "homepage"
-    t.string   "beerpage"
+    t.string   "name",         limit: 255
+    t.string   "homepage",     limit: 255
+    t.string   "beerpage",     limit: 255
     t.datetime "last_scanned"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -149,12 +149,6 @@ ActiveRecord::Schema.define(version: 20150806050229) do
     t.string   "logo_small"
     t.string   "logo_med"
     t.string   "logo_large"
-  end
-
-  create_table "notifications", force: :cascade do |t|
-    t.string   "notification_name"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
   end
 
   create_table "pg_search_documents", force: :cascade do |t|
@@ -168,7 +162,7 @@ ActiveRecord::Schema.define(version: 20150806050229) do
   add_index "pg_search_documents", ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id", using: :btree
 
   create_table "roles", force: :cascade do |t|
-    t.string   "role_name"
+    t.string   "role_name",  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -199,7 +193,7 @@ ActiveRecord::Schema.define(version: 20150806050229) do
     t.float    "user_beer_rating"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "drank_at"
+    t.string   "drank_at",            limit: 255
     t.datetime "rated_on"
     t.float    "projected_rating"
     t.text     "comment"
@@ -236,12 +230,12 @@ ActiveRecord::Schema.define(version: 20150806050229) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: ""
-    t.string   "reset_password_token"
+    t.string   "email",                  limit: 255, default: "", null: false
+    t.string   "encrypted_password",     limit: 255, default: ""
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",                      default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.inet     "current_sign_in_ip"
@@ -257,7 +251,7 @@ ActiveRecord::Schema.define(version: 20150806050229) do
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
-    t.integer  "invitations_count",      default: 0
+    t.integer  "invitations_count",                  default: 0
     t.string   "first_name"
   end
 

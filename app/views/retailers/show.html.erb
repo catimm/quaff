@@ -1,0 +1,16 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="books-search">
+			  <%= form_tag beers_path, method: :get do %>
+			    <div class="form-group">
+			      <%= text_field_tag :query, params[:query], class: 'form-control' %>
+			      <%= submit_tag 'Search', class: 'btn btn-primary' %>
+			    </div>
+			  <% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

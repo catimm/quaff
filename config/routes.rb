@@ -26,7 +26,10 @@ Rails.application.routes.draw do
   end 
   resources :locations
   resources :breweries do
-    resources :beers   
+    resources :beers
+    collection do
+      get :autocomplete
+    end   
   end
 
   namespace :admin do
@@ -42,6 +45,8 @@ Rails.application.routes.draw do
   root :to => 'home#index'
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
+  
+  get 'retailers/show' => 'retailers#show', :as => 'retailer_availalbe'
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
@@ -49,8 +54,6 @@ Rails.application.routes.draw do
   get 'locations' => 'locations#index'
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
-  
-  get 'searches/index' => 'searches#index', :as => 'search'
   get 'searches/add_beer' => 'searches#add_beer', :as => 'user_add_beer'
   get 'users/:user_id/ratings/new(.:format)/:retailer_id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   # admin routes

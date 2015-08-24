@@ -17,15 +17,27 @@
 
 class Brewery < ActiveRecord::Base
   strip_attributes
+  searchkick word_middle: [:brewery_name, :beer_name], autocomplete: [:brewery_name, :beer_name]
   
   has_many :beers
   has_many :alt_brewery_names
   has_many :beer_brewery_collabs
   
+  # set temporary accessor to create merged array of beer names from search function
+  attr_accessor :beer_name
+  
   def connect_deleted_brewery
     "#{brewery_name} [id: #{id}]"
   end
   
+  def search_data
+    {
+      brewery_name: brewery_name,
+      beer_name: beers.map(&:beer_name).join('')
+    }
+  end
+  
+    
   scope :live_brewery_beers, ->  { joins(:beers).merge(Beer.live_beers) }
   scope :need_attention_brewery_beers, -> { joins(:beers).merge(Beer.live_beers).merge(Beer.need_attention_beers) }
   scope :complete_brewery_beers, -> { joins(:beers).merge(Beer.live_beers).merge(Beer.complete_beers) }

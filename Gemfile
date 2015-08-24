@@ -66,6 +66,9 @@ gem 'acts-as-taggable-on', '~> 3.4'
 # gem 'jquery-tokeninput-rails'
 # PgSearch builds named scopes that take advantage of PostgreSQL's full text search
 gem 'pg_search'
+# Searchkick is a Ruby gem that runs on top of Elasticsearch and makes it easy to make searches in a Rails-friendly fashion. 
+gem 'searchkick'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

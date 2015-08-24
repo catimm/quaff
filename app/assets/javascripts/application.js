@@ -24,4 +24,6 @@
 //= require bootstrap-modalmanager
 //= require jqcloud
 //= require jquery.tokeninput
+//= require typeahead.bundle.min
+//= require search-bloodhound-engine
 //= require_tree .

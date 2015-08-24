@@ -11,6 +11,8 @@
 
 class BeerStyle < ActiveRecord::Base
   has_many :beer_types
+  has_many :user_style_preferences
+  
   
   # add way to access user's preference in view
   attr_accessor :user_preference

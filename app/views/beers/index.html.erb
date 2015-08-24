@@ -1,0 +1,101 @@
+<%= render 'layouts/header' %> 
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-1 col-xs-0"></div>
+			<div class="col-sm-10 col-xs-12 search-result-tile">
+				<% if @final_search_results.empty? %>
+					<div class="row">
+						<div class="col-sm-8 col-xs-12">
+							<h4 class="no-search-results">Sorry, we don't see a match....Add it!</h4>
+						</div>
+						<div class="col-sm-4 col-xs-12">
+							<h5 class="text-center">Don't see the drink you're looking for?</h4>
+							<%= link_to user_add_beer_path, class: 'btn btn-default btn-success formButton' do %>
+								<i class="fa fa-plus"> add a drink</i>
+							<% end %>
+						</div>
+					</div>
+				<% else %>
+					<div class="row">
+						<div class="col-sm-8 col-xs-12">
+							<% @final_search_results.each_with_index do |beer, index| %>
+								<div class="row no-margin">
+									<div class="col-xs-4 brewery-image-holder">	
+										<% if !beer.brewery.image.nil? %>
+											<div class="brewery-image-holder-full text-center">
+												<p>show image</p>
+											</div>	
+										<% else %>
+											<div class="brewery-image-holder-empty text-center">
+												<h1><i class="fa fa-beer"></i></h1>
+											</div>
+										<% end %>
+									</div>
+									<div class="col-xs-8 no-padding-left">
+										<% if beer.collab == true %>
+											<% @collab_brewery_name = Beer.collab_brewery_name(beer.id) %>
+											<h5 class="search-brewery-header"><%= @collab_brewery_name %></h5>
+										<% else %>
+											<h5 class="search-brewery-header"><%= beer.brewery.brewery_name %> </h5>
+										<% end %>
+										<%= link_to beer.beer_name, brewery_beer_path(beer.brewery.id, beer.id), :class => 'search-beer-header' %>
+										<% if !beer.beer_type_id.nil? %>
+											<h5 class="search-beer-info no-overflow"><%= beer.beer_type.beer_type_name %></h5>
+										<% else %>
+											<h5 class="search-beer-info">Style unknown</h5>
+										<% end %>
+										<div class="row">
+											<div class="col-xs-6 col-sm-4 no-padding-right abv-div">
+												<h6 class="tile-subheader beer-info"><%= beer.beer_abv %>% ABV</h6>
+											</div>
+											<div class="col-xs-6 col-sm-4 no-padding-left text-center">
+												<% if !beer.beer_ibu.nil? %>
+													<h6 class="tile-subheader beer-info"><%= beer.beer_ibu %> IBUs</h6>
+												<% else %>
+													<h6 class="tile-subheader beer-info">IBUs N/A</h6>
+												<% end %>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row no-margin">	
+									<div class="col-xs-12">
+										<% @location_beers = BeerLocation.where(beer_id: beer.id).order("created_at DESC") %>
+										<% if @location_beers.empty? %>
+											<h6 class="tile-subheader">This beer hasn't been on tap in Seattle since before April 2015...</h6>
+										<% elsif @location_beers.map{|a| a.beer_is_current}.include?("yes") %>
+											<% @current_beers = @location_beers.where(beer_is_current: "yes") %>
+											<h6 class="tile-subheader">Currently @
+											<% @current_beers.each_with_index do |location, index| %>
+												<% @location = Location.where(id: location.location_id)[0] %>
+												<% if index != @current_beers.size - 1 %>
+													<%= @location.short_name %>,
+												<% else %>
+													<%= @location.short_name %>
+												<% end %>
+											<% end %>
+											</h6>
+										<% else %>
+											<% @most_recent_beer = @location_beers.order("removed_at DESC").first %>
+											<% @most_recent_location = Location.where(id: @most_recent_beer.location_id)[0] %>
+											<h6 class="tile-subheader last-seen">Last seen @ <%= @most_recent_location.short_name %> (<%= (@most_recent_beer.removed_at).strftime("%B %e, %Y") %>) </h6>
+										<% end %>
+									</div>	
+								</div>
+								<% if index != @search_results.size - 1 %>
+							    	<hr>
+							  	<% end %>
+							<% end %>
+						</div>
+						<div class="col-sm-4 col-xs-12">
+							<h5 class="text-center">Don't see the drink you're looking for?</h5>
+							<%= link_to user_add_beer_path, class: 'btn btn-default btn-success formButton' do %>
+								<i class="fa fa-plus"> add a drink</i>
+							<% end %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %> 

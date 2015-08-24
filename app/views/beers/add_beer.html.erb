@@ -1,0 +1,45 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row topRow"> 
+		<div class="col-xs-0 col-sm-3 col-md-4"></div>
+		<div class="col-xs-12 col-sm-6 col-md-4 box">
+			<div class="row">
+				<div class="col-xs-12">
+						<h2 class="formSpace">Suggest a beer to add</h2>
+					    <%= form_for @new_beer do |f| %> 
+							<div class="row"> 
+								<div class="col-xs-12">
+						      		<%= f.text_field :associated_brewery, :class => "form-control", placeholder: "Brewewry name" %> 
+								</div>
+							</div>
+							<div class="row"> 
+								<div class="col-xs-12">
+							 		<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %> 
+								</div>
+							</div>
+							<div class="row"> 
+								<div class="col-xs-10">
+								    <%= f.label :rate_beer_now, "Rate this beer now:" %>
+								</div>
+								<div class="col-xs-2 text-left no-padding-left">
+								    <%= f.check_box :rate_beer_now %> 
+								</div>
+								<div class="col-xs-10">
+								    <%= f.label :track_beer_now, "Get notified when beer is in town:" %>
+								</div>
+								<div class="col-xs-2 text-left no-padding-left"> 
+								    <%= f.check_box :track_beer_now %> 
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+					      			<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %> 
+					      		</div>
+					      	</div>
+					    <% end %> 
+					</div> 
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %> 
