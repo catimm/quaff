@@ -16,6 +16,7 @@
 #
 
 class Brewery < ActiveRecord::Base
+  #include Elasticsearch::Model
   strip_attributes
   searchkick word_middle: [:brewery_name, :beer_name], autocomplete: [:brewery_name, :beer_name]
   
