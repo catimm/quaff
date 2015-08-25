@@ -6,3 +6,7 @@ MANDRILL_APIKEY: xAz5_ENXRG84hsuISKQF-A
 staging:
   # Searchbox API
   SEARCHBOX_URL: http://paas:6a476c5c640ed4ebd715f503154be28d@dwalin-us-east-1.searchly.com
+
+production:
+  # Searchbox API
+  SEARCHBOX_URL: http://paas:cbc4f45f96b2a107ed8ae6db7884d11c@dwalin-us-east-1.searchly.com 
