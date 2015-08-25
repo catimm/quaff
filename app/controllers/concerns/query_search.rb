@@ -29,10 +29,12 @@ module QuerySearch
                 end
               end
             end
-            @brewery_beers = Beer.where(brewery_id: result.id)
-            @brewery_beers.each do |brewery_beer|  
-              if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
-                @search_results << brewery_beer
+            if result.brewery_name.downcase.include? search_term.downcase
+              @brewery_beers = Beer.where(brewery_id: result.id)
+              @brewery_beers.each do |brewery_beer|  
+                if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
+                  @search_results << brewery_beer
+                end
               end
             end
         elsif result.brewery_name.downcase.include? search_term.downcase
