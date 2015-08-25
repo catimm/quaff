@@ -6,46 +6,54 @@ module QuerySearch
       misspellings: {edit_distance: 2},
       limit: 30,
       operator: 'or',
-      where: {
-        user_addition: {
-          not: true
-        }
-      },
       fields: [{ 'beer_name^10' => :word_middle }, { 'brewery_name' => :word_middle }]
      
     Rails.logger.debug("Search results: #{@search.inspect}")
     
     @search_results = Array.new
     @search.each do |result|
-      Rails.logger.debug("Result: #{result.inspect}")
-      if result.collab == true
-          @collabs = BeerBreweryCollab.where(brewery_id: result.id).pluck(:beer_id)
-          @collab_beers = Beer.where(id: @collabs)
-          @collab_beers.each do |brewery_beer|
-            if result.brewery_name.downcase.include? search_term.downcase
-              @search_results << brewery_beer
-            else
+      if result.dont_include != true # make sure this brewery should be included
+        Rails.logger.debug("Result: #{result.inspect}")
+        if result.collab == true
+            Rails.logger.debug("Recognized as collab")
+            @collabs = BeerBreweryCollab.where(brewery_id: result.id).pluck(:beer_id)
+            @collab_beers = Beer.where(id: @collabs)
+            @collab_beers.each do |brewery_beer|
+              if result.brewery_name.downcase.include? search_term.downcase         
+                  @search_results << brewery_beer
+              else
+                if brewery_beer.beer_name.downcase.include? search_term.downcase
+                  if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin 
+                    @search_results << brewery_beer
+                  end
+                end
+              end
+            end
+            @brewery_beers = Beer.where(brewery_id: result.id)
+            @brewery_beers.each do |brewery_beer|
               if brewery_beer.beer_name.downcase.include? search_term.downcase
+                if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
+                  @search_results << brewery_beer
+                end
+              end
+            end
+        elsif result.brewery_name.downcase.include? search_term.downcase
+            Rails.logger.debug("Recognized as brewery search")
+            @brewery_beers = Beer.where(brewery_id: result.id)
+            @brewery_beers.each do |brewery_beer|
+              if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
                 @search_results << brewery_beer
               end
             end
-          end
+        else 
+          Rails.logger.debug("Recognized as beer search")
           @brewery_beers = Beer.where(brewery_id: result.id)
           @brewery_beers.each do |brewery_beer|
             if brewery_beer.beer_name.downcase.include? search_term.downcase
-              @search_results << brewery_beer
+              if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
+                @search_results << brewery_beer
+              end
             end
-          end
-      elsif result.brewery_name.downcase.include? search_term.downcase
-        @brewery_beers = Beer.where(brewery_id: result.id)
-        @brewery_beers.each do |brewery_beer|
-          @search_results << brewery_beer
-        end
-      else 
-        @brewery_beers = Beer.where(brewery_id: result.id)
-        @brewery_beers.each do |brewery_beer|
-          if brewery_beer.beer_name.downcase.include? search_term.downcase
-            @search_results << brewery_beer
           end
         end
       end

@@ -4,6 +4,7 @@ module BestGuess
   include TypeBasedGuess
  
   def best_guess(beer_ids)
+    #initial beers
     @beers = Beer.where(id: beer_ids)
     # grab user's style preferences
     @user_style_preferences = UserStylePreference.where(user_id: current_user.id)

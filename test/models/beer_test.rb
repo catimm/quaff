@@ -3,8 +3,8 @@
 # Table name: beers
 #
 #  id                   :integer          not null, primary key
-#  beer_name            :string
-#  beer_type_old_name   :string
+#  beer_name            :string(255)
+#  beer_type_old_name   :string(255)
 #  beer_rating_one      :float
 #  number_ratings_one   :integer
 #  created_at           :datetime
@@ -12,8 +12,8 @@
 #  brewery_id           :integer
 #  beer_abv             :float
 #  beer_ibu             :integer
-#  beer_image           :string
-#  speciality_notice    :string
+#  beer_image           :string(255)
+#  speciality_notice    :string(255)
 #  original_descriptors :text
 #  hops                 :text
 #  grains               :text

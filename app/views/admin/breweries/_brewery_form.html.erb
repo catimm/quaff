@@ -4,6 +4,8 @@
 	<%= f.text_field :short_brewery_name, :class => "form-control", placeholder: "Short brewery name" %>
 	<%= f.label :collab, "Does this brewery have a collaboration beer?" %>
 	<%= f.check_box :collab %>
+	<%= f.label :dont_include, "Avoid showing any related info in Views?" %>
+	<%= f.check_box :dont_include %>
 	<%= f.text_field :brewery_city, :class => "form-control", placeholder: "Brewery city" %>
 	<%= f.text_field :brewery_state, :class => "form-control", placeholder: "Brewery state" %>
 	<%= f.text_field :brewery_beers, :class => "form-control", placeholder: "Number of beers brewery has" %>

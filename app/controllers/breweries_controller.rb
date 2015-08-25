@@ -17,8 +17,14 @@ class BreweriesController < ApplicationController
       temp_drink = Hash.new
       temp_drink[:beer_id] = result.id
       temp_drink[:beer_name] = result.beer_name
-      temp_drink[:brewery_name] = result.brewery.short_brewery_name
       temp_drink[:brewery_id] = result.brewery.id
+      # make sure collab beer names display properly
+      if result.collab == true
+        @collab_brewery_name = Beer.collab_brewery_name(result.id)
+        temp_drink[:brewery_name] = @collab_brewery_name
+      else
+        temp_drink[:brewery_name] = result.brewery.short_brewery_name
+      end
       @reduced_final_search_results << temp_drink
     end
     
