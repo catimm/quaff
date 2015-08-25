@@ -64,7 +64,7 @@ task :check_pine_box => :environment do
         # create array to hold collaborators
         @brewery_collaborators = Array.new
         # split collaborators into individual names to be tested against database
-        @each_collaborator = @this_brewery_name.split('/')
+        @each_collaborator = @this_brewery_name.split('/').map(&:strip)
         # run each collaborator against database check
         @each_collaborator.each_with_index do |collaborator, index|
           @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
@@ -382,7 +382,7 @@ task :check_chucks_85 => :environment do
         # create array to hold collaborators
         @brewery_collaborators = Array.new
         # split collaborators into individual names to be tested against database
-        @each_collaborator = @this_brewery_name.split('/')
+        @each_collaborator = @this_brewery_name.split('/').map(&:strip)
         # run each collaborator against database check
         @each_collaborator.each_with_index do |collaborator, index|
           @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
@@ -691,7 +691,7 @@ task :check_chucks_cd => :environment do
         # create array to hold collaborators
         @brewery_collaborators = Array.new
         # split collaborators into individual names to be tested against database
-        @each_collaborator = @this_brewery_name.split('/')
+        @each_collaborator = @this_brewery_name.split('/').map(&:strip)
         # run each collaborator against database check
         @each_collaborator.each_with_index do |collaborator, index|
           @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
@@ -1003,7 +1003,7 @@ task :check_beer_junction => :environment do
         # create array to hold collaborators
         @brewery_collaborators = Array.new
         # split collaborators into individual names to be tested against database
-        @each_collaborator = @this_brewery_name.split('/')
+        @each_collaborator = @this_brewery_name.split('/').map(&:strip)
         # run each collaborator against database check
         @each_collaborator.each_with_index do |collaborator, index|
           @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
@@ -1318,7 +1318,7 @@ task :check_beveridge_place => :environment do
         # create array to hold collaborators
         @brewery_collaborators = Array.new
         # split collaborators into individual names to be tested against database
-        @each_collaborator = @this_brewery_name.split('/')
+        @each_collaborator = @this_brewery_name.split('/').map(&:strip)
         # run each collaborator against database check
         @each_collaborator.each_with_index do |collaborator, index|
           @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
