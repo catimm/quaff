@@ -1,0 +1,42 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row topRow"> 
+		<div class="col-xs-0 col-sm-3 col-md-4"></div>
+		<div class="col-xs-12 col-sm-6 col-md-4 box-with-message">
+			<div class="row">
+				<div class="col-xs-12">
+						<h2>Change password</h2>
+						<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+							<%= devise_error_messages! %>
+							<%- flash.each do |name, msg| -%>
+							    <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+							  <%- end -%>
+							<%= f.hidden_field :reset_password_token %>
+							<div class="row"> 
+								<div class="col-xs-12">
+							 		 <%= f.password_field :password, :class => "form-control", required: true, placeholder: "New password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+								</div>
+							</div>
+							<div class="row"> 
+								<div class="col-xs-12">
+							 		<%= f.password_field :password_confirmation, :class => "form-control", required: true, placeholder: "Confirm new password" %>
+								</div>
+							</div>
+							<div class="row"> 
+								<div class="col-xs-12">
+							 		<%= f.submit "Change my password", class: "btn btn-default btn-success formButton" %> 
+								</div>
+							</div>
+					    <% end %> 
+					  </div> 
+					</div>
+					<div class="row signupBox text-center">
+						<div class="col-xs-12">
+							<h5>Suddenly remember? <%= render "devise/shared/login" %></h5> 
+						</div>
+					</div>
+			</div>
+		</div>
+		<div class="col-xs-0 col-sm-3 col-md-4"></div>
+</div>
+<%= render 'layouts/footer' %>

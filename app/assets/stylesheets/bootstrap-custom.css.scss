@@ -738,6 +738,16 @@ p {
     margin-bottom: 20px;
   }
 }
+.box-with-message {
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  margin-top: 48px;
+  h2 {
+    margin-bottom: 20px;
+  }
+}
 .onRight {
   width: 100%;
 }

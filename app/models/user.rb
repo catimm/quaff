@@ -72,4 +72,8 @@ class User < ActiveRecord::Base
   def self.mandrill_names_and_emails(users)
     users.map{|user| {:rcpt => user.email, :vars => [{:name => 'first_name', :content => user.first_name}]}}
   end
+  
+  # to fix a devise error when trying to set new password
+  def after_password_reset; end
+  
 end
