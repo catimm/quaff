@@ -17,9 +17,17 @@ module QuerySearch
         @search_term = search_term.downcase
         # check if search term contains spaces and if so add each term to array 
         if search_term.match(/\s+/)
-          @search_array = search_term.downcase.split(/\s+/)
+          @temp_array = search_term.downcase.split(/\s+/)
+          @search_array = Array.new
+          @temp_array.each do |brewery_check|
+            if result.brewery_name.downcase.include? brewery_check
+              #
+            else
+              @search_array << brewery_check
+            end
+          end
         end
-      
+      Rails.logger.debug("Search Terms: #{@search_array.inspect}")
       # check search term agains breweries and beers to grab relevant matches
       # If search term contains white spaces, run first block of code
         if search_term.match(/\s+/)
@@ -37,9 +45,20 @@ module QuerySearch
               else
                 Rails.logger.debug("Recognized as WS collab beer search")
                 this_beer = brewery_beer.beer_name.downcase
-                if @search_array.any? { |w| this_beer =~ /#{w}/ } 
-                  if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin 
-                    @search_results << brewery_beer
+                if @temp_array.any? { |w| this_brewery =~ /#{w}/ } 
+                  Rails.logger.debug("Matches brewery")
+                  only_beer_match = true
+                else
+                  Rails.logger.debug("Doesn't match brewery")
+                  only_beer_match = false
+                end
+                if only_beer_match
+                  @search_array.each do |term_check|
+                    if this_beer.include? term_check
+                      if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                        @search_results << brewery_beer
+                      end
+                    end
                   end
                 end
               end
@@ -49,12 +68,12 @@ module QuerySearch
             Rails.logger.debug("Recognized as WS brewery search")
             @brewery_beers = Beer.where(brewery_id: result.id)
             @brewery_beers.each do |brewery_beer|
-              if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
+              if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
                 @search_results << brewery_beer
               end
             end
           else 
-            if @search_array.any? { |w| this_brewery =~ /#{w}/ } 
+            if @temp_array.any? { |w| this_brewery =~ /#{w}/ } 
               Rails.logger.debug("Matches brewery")
               only_beer_match = true
             else
@@ -67,7 +86,7 @@ module QuerySearch
               @brewery_beers.each do |brewery_beer|
                 @search_array.each do |term_check|
                   if brewery_beer.beer_name.downcase.include? term_check
-                    if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
+                    if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
                       @search_results << brewery_beer
                     end
                   end
@@ -126,7 +145,6 @@ module QuerySearch
       #Rails.logger.debug("First Drink ID: #{first_drink.id.inspect}")
       #Rails.logger.debug("First Drink Name #{first_drink.beer_name.inspect}")
       #Rails.logger.debug("First Drink Index #{first_index.inspect}")
-      break if @evaluated_drinks.include? first_drink.id
       @total_results = @search_results.count - 1
       first_drink_value = 0
       if !first_drink.beer_abv.nil?
@@ -178,6 +196,11 @@ module QuerySearch
                 @evaluated_drinks << first_drink.id
               end  # end of deleting the "weaker" drink from the array
             end # end of comparing both drink names and breweries 
+          else
+            #Rails.logger.debug("Names don't match")
+            #Rails.logger.debug("first drink info: #{first_drink.inspect}")
+            # add first drink if it doesn't have the same name
+            @final_search_results << first_drink
           end # end of comparing only drink names
         end # end of making sure this isn't the same drink 
       end # end of 2nd loop
