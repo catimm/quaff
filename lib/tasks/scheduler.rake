@@ -44,7 +44,7 @@ task :check_pine_box => :environment do
       @this_place_serving_size = node.css("td.draft_size").text
       @this_beer_price = node.css("td.draft_price").text      
       # split brewery name so key words can be removed from beer name
-      @split_brewery_name = @this_brewery_name.split
+      @split_brewery_name = @this_brewery_name.split(/\s+/)
       # cycle through split words to remove from beer name
       @split_brewery_name.each do |word|
         if @this_beer_name.include? word
@@ -362,7 +362,7 @@ task :check_chucks_85 => :environment do
       @this_place_serving_size = node.css("td.draft_size").text
       @this_beer_price = node.css("td.draft_price").text      
       # split brewery name so key words can be removed from beer name
-      @split_brewery_name = @this_brewery_name.split
+      @split_brewery_name = @this_brewery_name.split(/\s+/)
       # cycle through split words to remove from beer name
       @split_brewery_name.each do |word|
         if @this_beer_name.include? word
@@ -671,7 +671,7 @@ task :check_chucks_cd => :environment do
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
       # split brewery name so key words can be removed from beer name
-      @split_brewery_name = @this_brewery_name.split
+      @split_brewery_name = @this_brewery_name.split(/\s+/)
       # cycle through split words to remove from beer name
       @split_brewery_name.each do |word|
         if @this_beer_name.include? word
@@ -979,7 +979,7 @@ task :check_beer_junction => :environment do
             
       @this_beer_origin = node.css("+ td.brewery-column > .brewery-location").text
       # split brewery name aso key words can be removed from beer name
-      @split_brewery_name = @this_brewery_name.split
+      @split_brewery_name = @this_brewery_name.split(/\s+/)
       # cycle through split words to remove from beer name
       @split_brewery_name.each do |word|
         if @this_beer_name.include? word
@@ -1293,7 +1293,7 @@ task :check_beveridge_place => :environment do
       end
       # Rails.logger.debug("This brewery name--again: #{@this_brewery_name.inspect}")
       # split brewery name so key words can be removed from beer name
-      @split_brewery_name = @this_brewery_name.split
+      @split_brewery_name = @this_brewery_name.split(/\s+/)
       # cycle through split words to remove from beer name
       @split_brewery_name.each do |word|
         if @this_beer_name.include? word
@@ -1953,7 +1953,7 @@ task :check_the_yard => :environment do
       # grab brewery short names to compare to beer name and find brewery
       @breweries = Brewery.all
       # split beer name to find brewery
-      @split_beer_name = @initial_beer_name.split
+      @split_beer_name = @initial_beer_name.split(/\s+/)
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
         @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%").where(collab: false)
@@ -2171,7 +2171,7 @@ task :check_the_dray => :environment do
       # grab brewery short names to compare to beer name and find brewery
       @breweries = Brewery.all
       # split beer name to find brewery
-      @split_beer_name = @initial_beer_name.split
+      @split_beer_name = @initial_beer_name.split(/\s+/)
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
         @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%").where(collab: false)
