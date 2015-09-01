@@ -1,17 +1,31 @@
 <%= render 'layouts/header' %> 
 <div class="container">
-	<div class="row no-margin">
+	<div class="row no-margin visible-xs">
 		<div class="col-xs-12">
 			<h1 class="user-account-header">Beer Preferences</h1>
 		</div>
 	</div>
-	<div class="row no-margin">
+	<div class="row no-margin visible-xs">
 		<div class="col-xs-12">
 			<h5 class="account-options selected" id="user-styles-link">Styles</h5>
 			<%# For future use... <h5 class="account-options" id="user-drinks-link">Drinks</h5> %>
 		</div>
 	</div>
-	<div class="row no-margin show" id="user-styles">
+	<div class="row no-margin show visible-xs" id="user-styles">
+		<%= render 'users/user_styles' %>
+	</div>
+	<div class="row no-margin visible-sm visible-md visible-lg preferences-header-fixed">
+		<div class="col-xs-12">
+			<h1 class="user-account-header">Beer Preferences</h1>
+		</div>
+	</div>
+	<div class="row no-margin visible-sm visible-md visible-lg styles-header-fixed">
+		<div class="col-xs-12">
+			<h5 class="account-options selected" id="user-styles-link">Styles</h5>
+			<%# For future use... <h5 class="account-options" id="user-drinks-link">Drinks</h5> %>
+		</div>
+	</div>
+	<div class="row no-margin show visible-sm visible-md visible-lg desktop-style-preference-view" id="user-styles">
 		<%= render 'users/user_styles' %>
 	</div>
 	<%# For future use...  <div class="row no-margin hidden" id="user-drinks">  %>

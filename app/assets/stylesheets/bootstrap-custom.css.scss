@@ -1385,8 +1385,34 @@ p {
   }
 }
 // Beer Preferences css style
+.preferences-header-fixed {
+  position: fixed;
+  margin-top: 10px !important;
+  height: 59px;
+  width: 100%;
+  background: #fff;
+  z-index: 3000;
+}
+.styles-header-fixed {
+  position: fixed;
+  height: 47px;
+  margin-top: 69px;
+  padding-bottom: 70px;
+  width: 100%;
+  background: #fff;
+  z-index: 3000;
+}
 .style-preference-section {
   margin-top: -47px;
+}
+.style-preference-section-fixed {
+  position: fixed;
+  height: 106px;
+  margin-top: -95px;
+  z-index: 4000;
+}
+.desktop-style-preference-view {
+  margin-top: 150px;
 }
 .style-tile-container {
   padding-top: 10px;
