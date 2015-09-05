@@ -19,7 +19,7 @@
 class Brewery < ActiveRecord::Base
   #include Elasticsearch::Model
   strip_attributes
-  searchkick word_middle: [:brewery_name, :beer_name], autocomplete: [:brewery_name, :beer_name]
+  searchkick word_middle: [:beer_name], autocomplete: [:brewery_name, :beer_name]
   
   has_many :beers
   has_many :alt_brewery_names
@@ -27,12 +27,14 @@ class Brewery < ActiveRecord::Base
   
   # set temporary accessor to create merged array of beer names from search function
   attr_accessor :beer_name
+  attr_accessor :source
   
   def connect_deleted_brewery
     "#{brewery_name} [id: #{id}]"
   end
   
   def search_data
+    Rails.logger.debug("This fires in model")
     {
       brewery_name: brewery_name,
       beer_name: beers.map(&:beer_name).join('')

@@ -126,6 +126,6 @@ class Admin::BreweriesController < ApplicationController
     end
 
     def verify_admin
-      redirect_to root_url unless current_user.role_id == 1
+      redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2
     end
 end

@@ -1,0 +1,4 @@
+// insert partial with new draft info into partial below search box
+$(function() {
+	$("#<%=@new_draft_info_id %>").html("<%= escape_javascript(render 'new_draft_info', chosen_drink: @chosen_drink ) %>");
+});

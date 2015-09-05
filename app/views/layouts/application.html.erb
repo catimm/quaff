@@ -2,6 +2,9 @@
 <html>
 <head>
   <title>Knird - Drink what you love. Love what you drink.</title>
+  <script type="text/javascript">
+	  var BASE_URL = '<%= root_url %>';
+	</script>
   <%= include_gon %>
   <%= Gon::Base.render_data({}) %>
   
@@ -28,9 +31,6 @@
 	  ga('create', 'UA-65821771-1', 'auto');
 	  ga('send', 'pageview');
 	
-	</script>
-	<script type="text/javascript">
-	  var BASE_URL = '<%= root_url %>';
 	</script>
 </head>
 <body>

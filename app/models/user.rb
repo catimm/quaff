@@ -55,6 +55,14 @@ class User < ActiveRecord::Base
     self.role.role_name == "admin"
   end
   
+  def super_retailer?
+    self.role.role_name == "super_retailer"
+  end
+  
+  def retailer?
+    self.role.role_name == "retailer"
+  end
+  
   def super_user?
     self.role.role_name == "super_user"
   end

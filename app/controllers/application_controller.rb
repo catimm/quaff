@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :configure_permitted_parameters, if: :devise_controller?
-
+  before_action :user_retailer_connection
+  
   protected
 
   def configure_permitted_parameters
@@ -34,7 +35,16 @@ class ApplicationController < ActionController::Base
       render :status => 401, :json => {:success => false, :errors => ["Unauthorized access"] }
     end
   end
-
+  
+  def user_retailer_connection
+    if current_user.role_id == 1 || current_user.role_id == 2
+      
+    end
+    if current_user.role_id == 5 || current_user.role_id == 6
+      
+    end
+  end
+    
   rescue_from CanCan::AccessDenied do |exception|
     flash[:error] = "Access denied!"
     redirect_to root_url

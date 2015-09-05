@@ -68,6 +68,10 @@ gem 'acts-as-taggable-on', '~> 3.4'
 gem 'pg_search'
 # Searchkick is a Ruby gem that runs on top of Elasticsearch and makes it easy to make searches in a Rails-friendly fashion. 
 gem 'searchkick'
+# NestedForm helps dynamically add partials in nested forms
+gem "nested_form"
+# autoNumeric is a jQuery plugin that automatically formats currency (money) and numbers as you type on form inputs
+gem 'autonumeric-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

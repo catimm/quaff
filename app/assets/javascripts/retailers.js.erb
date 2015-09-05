@@ -1,0 +1,81 @@
+$(function() {
+
+	// count number of drink sizes in each row & adjust drink size count
+	$(document).on('click', '.formButton-add-details.add_nested_fields', function () {
+	    var siblings = 0
+	    $(this).siblings().each(function() {
+	    	if ($(this).css('display') != 'none') {
+    			siblings++;
+    			if(siblings == 1) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("1st size option");
+    			}
+    			if(siblings == 2) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("2nd size option");
+    			}
+    			if(siblings == 3) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("3rd size option");
+    			}
+    			if(siblings == 4) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("4th size option");
+    			}
+			}
+	    });
+	    if (siblings >= 4) {
+	    	$('.formButton-add-details.add_nested_fields').hide();
+	    } 
+	});
+	$(document).on('click', '.remove_nested_fields', function () {
+	    var siblings = 0
+	    $(this).parent().parent().parent().siblings().each(function(value) {
+	    	if ($(this).css('display') != 'none') {
+    			siblings++;
+    			if(siblings == 1) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("1st size option");
+    			}
+    			if(siblings == 2) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("2nd size option");
+    			}
+    			if(siblings == 3) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("3rd size option");
+    			}
+    			if(siblings == 4) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("4th size option");
+    			}
+			}
+	    });
+	    if (siblings <= 4) {
+	    	$(this).parent().parent().parent().siblings('.formButton-add-details.add_nested_fields').show();
+	    } 
+	});
+	// count number of drinks loaded
+	$(document).on('click', '.formButton-add-draft.add_nested_fields', function () {
+	    var siblings = 0
+	    $(this).siblings().each(function() {
+		    if ($(this).hasClass('fields')) {
+		    	if ($(this).css('display') != 'none') {
+	    			siblings++;
+	    			$(this).children(".new-draft-row").children(".tap-number-holder").children("input").val(siblings);
+				}
+			}
+	    });
+	});
+	// get unique id of search box when it comes into focus; then send it to the controller to store in session variable
+	$(document).on('focus', '.form-control.typeahead.retailer-search.tt-input', function (e) {
+		counter = 1;
+		var inputID;
+		if (counter == 1) {
+			var inputID = $(e.target).attr('id');
+			console.log();
+			counter++;
+		}
+		$.ajax({
+		        url : "/retailers/show",
+		        type : "get",
+			    data : { inputID }
+			    });		
+	});	
+	$(document).on('nested:fieldAdded', function(event){
+		$(document).trigger('refresh_autonumeric');
+	});
+
+});

@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   
   devise_for :users, controllers: { invitations: "invitations" }
   resources :users do
-    resources :drinks, :ratings, :rewards, :trackings   
+    resources :drinks, :ratings, :rewards, :trackings, :retailers   
   end
   
   resource :user, only: [:edit] do
@@ -46,7 +46,9 @@ Rails.application.routes.draw do
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
   
-  get 'retailers/show' => 'retailers#show', :as => 'retailer_availalbe'
+  get '/search-bloodhound-engine.js' => 'retailers#show'
+  get 'retailers/show' => 'retailers#show', :as => 'retailer_available'
+  get 'retailers/show' => 'retailers#new', :as => 'beer_locations'
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
@@ -56,6 +58,7 @@ Rails.application.routes.draw do
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
   get 'searches/add_beer' => 'searches#add_beer', :as => 'user_add_beer'
   get 'users/:user_id/ratings/new(.:format)/:retailer_id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
+
   # admin routes
   get 'porting' => 'porting#index'
   get 'reloads' => 'reloads#index'

@@ -26,4 +26,6 @@
 //= require jquery.tokeninput
 //= require typeahead.bundle.min
 //= require search-bloodhound-engine
+//= require jquery_nested_form
+//= require autonumeric
 //= require_tree .

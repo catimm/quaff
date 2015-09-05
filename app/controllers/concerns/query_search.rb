@@ -6,7 +6,7 @@ module QuerySearch
       misspellings: {edit_distance: 2},
       limit: 30,
       operator: 'or',
-      fields: [{ 'beer_name^10' => :word_middle }, { 'brewery_name' => :word_middle }]
+      fields: [{ 'beer_name^10' => :word_middle }, 'brewery_name']
      
     Rails.logger.debug("Search results: #{@search.inspect}")
     
@@ -39,20 +39,15 @@ module QuerySearch
             @collabs = BeerBreweryCollab.where(brewery_id: result.id).pluck(:beer_id)
             @collab_beers = Beer.where(id: @collabs)
             @collab_beers.each do |brewery_beer|
+              collab_brewery_name = Beer.collab_brewery_name(brewery_beer.id)
               if result.brewery_name.downcase.include? @search_term          
                   Rails.logger.debug("Recognized as WS collab brewery search")
                   @search_results << brewery_beer
               else
                 Rails.logger.debug("Recognized as WS collab beer search")
                 this_beer = brewery_beer.beer_name.downcase
-                if @temp_array.any? { |w| this_brewery =~ /#{w}/ } 
+                if @temp_array.any? { |w| collab_brewery_name =~ /#{w}/ } 
                   Rails.logger.debug("Matches brewery")
-                  only_beer_match = true
-                else
-                  Rails.logger.debug("Doesn't match brewery")
-                  only_beer_match = false
-                end
-                if only_beer_match
                   @search_array.each do |term_check|
                     if this_beer.include? term_check
                       if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
@@ -60,6 +55,15 @@ module QuerySearch
                       end
                     end
                   end
+                else
+                  Rails.logger.debug("Doesn't match brewery")
+                    @temp_array.each do |term_check|
+                      if brewery_beer.beer_name.downcase.include? term_check
+                        if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                          @search_results << brewery_beer
+                        end
+                      end
+                    end
                 end
               end
             end
@@ -75,13 +79,6 @@ module QuerySearch
           else 
             if @temp_array.any? { |w| this_brewery =~ /#{w}/ } 
               Rails.logger.debug("Matches brewery")
-              only_beer_match = true
-            else
-              Rails.logger.debug("Doesn't match brewery")
-              only_beer_match = false
-            end
-            if only_beer_match
-              Rails.logger.debug("Recognized as WS beer search w/o Brewery Match")
               @brewery_beers = Beer.where(brewery_id: result.id)
               @brewery_beers.each do |brewery_beer|
                 @search_array.each do |term_check|
@@ -89,6 +86,22 @@ module QuerySearch
                     if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
                       @search_results << brewery_beer
                     end
+                  end
+                end
+              end
+            else
+              Rails.logger.debug("Doesn't match brewery")
+              @brewery_beers = Beer.where(brewery_id: result.id)
+              @brewery_beers.each do |brewery_beer|
+                term_count = 0
+                @temp_array.each do |term_check|
+                  if brewery_beer.beer_name.downcase.include? term_check
+                    term_count += 1
+                  end
+                end
+                if term_count == @temp_array.count
+                  if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                    @search_results << brewery_beer
                   end
                 end
               end

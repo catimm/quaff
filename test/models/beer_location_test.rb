@@ -9,6 +9,7 @@
 #  created_at      :datetime
 #  updated_at      :datetime
 #  removed_at      :datetime
+#  tap_number      :integer
 #
 
 require 'test_helper'

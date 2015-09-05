@@ -47,6 +47,8 @@ class Beer < ActiveRecord::Base
   has_many :alt_beer_names
   has_many :beer_locations
   has_many :locations, through: :beer_locations
+  accepts_nested_attributes_for :beer_locations, :reject_if => :all_blank, :allow_destroy => true
+  
   has_many :user_beer_ratings
   has_many :users, through: :user_beer_ratings
   has_many :drink_lists

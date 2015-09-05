@@ -1247,6 +1247,7 @@ p {
 }
 
 .tt-menu {    // used to be tt-dropdown-menu in older versions
+  width: 100% !important;
   margin-top: 4px;
   padding: 4px 0;
   background-color: #fff;
@@ -1301,6 +1302,7 @@ p {
     margin-left: 0 !important;
   }
 }
+//
 .footer {
   background: $dark-gray !important;
   bottom: 0;
@@ -1384,6 +1386,7 @@ p {
     color: $best-guess-text;
   }
 }
+
 // Beer Preferences css style
 .preferences-header-fixed {
   position: fixed;
@@ -1738,7 +1741,104 @@ input[type="checkbox"] {
   z-index: 1000;
   font-family: inherit !important;
 }
-
+// Draft edit page
+.draft-edit-top-row {
+  margin-top: 10px;
+}
+.formButton-draft-edit {
+  margin-top: 20px;
+  width: 100%;
+}
+.formButton-add-draft {
+  width: 30%;
+}
+.new-draft-row {
+  padding: 15px 0;
+}
+.beers-search {
+    .input-group {
+      width: 100% !important;
+      .twitter-typeahead {
+        width: 100% !important;
+        .retailer-search {
+          width: 100% !important;
+          border-radius: 4px !important;
+        }
+      }
+    }
+}
+.retail-edit-beer-info {
+  margin-top: 2.5px;
+  margin-bottom: 0;
+}
+.remove-draft-button {
+    padding: 20px 0 0 15px;
+    a {
+      i {
+        color: $less-emphasized-text;
+        font-size: 24px;
+        font-weight: 400 !important;
+      }
+    }
+}
+.draft-details-row {
+  margin-top: 5px;
+  padding-left: 15px;
+}
+.size-option-text {
+  color: $normal-text;
+  weight: 500;
+  width: 60px;
+  vertical-align: middle !important;
+  padding-top: 3px;
+  font-size: 12px;
+  margin-bottom: 0;
+}
+.draft-size-input { 
+  margin-right: 5px;
+  .drink-size {
+      color: $normal-text !important;
+      font-size: 14px !important;
+    }
+}
+.draft-cost-input { 
+  input {
+    padding: 3px 6px !important;
+  }
+  ::-webkit-input-placeholder {
+   color: $normal-text;
+   font-size: 14px;
+  }
+  :-moz-placeholder { /* Firefox 18- */
+   color: $normal-text;
+   font-size: 14px;  
+  }
+  ::-moz-placeholder {  /* Firefox 19+ */
+   color: $normal-text;
+   font-size: 14px;  
+  }
+  :-ms-input-placeholder {  
+     color: $normal-text;
+     font-size: 14px;  
+  }
+}
+.dropdown-toggle.drink-size {
+  height: 34px !important;
+}
+.formButton-add-details {
+  margin: 10px 0 0 25px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.remove-draft-details {
+    padding: 7px 0 0 15px;
+    a {
+      i {
+        color: $less-emphasized-text;
+        font-size: 20px;
+      }
+    }
+}
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */
 @media(max-width:767px) {
@@ -1921,7 +2021,7 @@ input[type="checkbox"] {
       margin: 0;
     }  
   }
-
+  
   // Retailer page
   .retailer-page-title-mobile {
     padding: 7.5px 0 0 45px;
