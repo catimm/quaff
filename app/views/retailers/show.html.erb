@@ -1,19 +1,46 @@
 <%= render 'layouts/header_retailer' %> 
-<%= nested_form_for @draft do |f| %>
-	<div class="container">
-		<div class="row no-margin draft-edit-top-row">
-			<div class="col-xs-9">
-				<h2 class="page-title">Available on draft</h2>
+	<div class="container draft-board-container">
+		<div class="row no-margin ">
+			<div class="col-xs-12 visible-sm visible-md visible-lg">
+				<div class="row img-responsive retailer-logo-image-med" alt="Responsive image" style="background-image: url(<%= @retailer.logo_med %>)">
+					<h3 class="retailer-page-title"><%= @retailer.short_name %>'s Account</h3>
+				</div>
 			</div>
-			<div class="col-xs-2">
-				<%= f.submit "Save", class: "btn btn-default btn-success formButton-draft-edit" %>
+			<div class="col-xs-12 visible-xs">
+				<div class="row img-responsive retailer-logo-image-small" alt="Responsive image" style="background-image: url(<%= @retailer.logo_small %>)">
+					<h3 class="retailer-page-title-mobile"><%= @retailer.short_name %>'s Account</h3>
+				</div>
 			</div>
 		</div>
 		<hr>
-		<%= render 'new_draft', :f => f %>
-		<%= f.link_to_add :beer_locations, id: "add-drink-button", class: 'btn btn-default btn-primary formButton-add-draft' do %>
-			<i class="fa fa-plus"> Add a new drink</i>
+		<% if @draft_board.nil? %>
+			<div class="row no-margin ">
+				<div class="col-xs-2">
+					<%= link_to new_draft_board_path(@retailer[0].id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
+						<i class="fa fa-plus"> Create a draft board</i>
+					<% end %>
+				</div>
+			</div>
+		<% else %>
+			<div class="row no-margin ">
+				<div class="col-sm-4 retail-account-col">
+					<%= link_to edit_draft_board_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+						<i class="fa fa-pencil"> Edit your draft board</i>
+					<% end %>
+				</div>
+			</div>	
+			<div class="row no-margin ">
+				<div class="col-sm-4 text-center">
+					<h6>or</h6>
+				</div>
+			</div>	
+			<div class="row no-margin ">	
+				<div class="col-sm-4 retail-account-col">
+					<%= link_to draft_board_path(@draft_board[0].id), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
+						<i class="fa fa-chevron-right"> View your draft board</i>
+					<% end %>
+				</div>
+			</div>		
 		<% end %>
 	</div>
-<% end %>
 <%= render 'layouts/footer' %>

@@ -47,7 +47,6 @@ class Beer < ActiveRecord::Base
   has_many :alt_beer_names
   has_many :beer_locations
   has_many :locations, through: :beer_locations
-  accepts_nested_attributes_for :beer_locations, :reject_if => :all_blank, :allow_destroy => true
   
   has_many :user_beer_ratings
   has_many :users, through: :user_beer_ratings
@@ -85,7 +84,7 @@ class Beer < ActiveRecord::Base
   def connect_deleted_beer
     "#{beer_name} [id: #{id}]"
   end
- 
+  
   # scope all beers connected with a brewery (whether a collab beer or not)
   scope :all_brewery_beers, ->(brewery_id) {
     collab_test = BeerBreweryCollab.where(brewery_id: brewery_id).pluck(:beer_id)
@@ -135,6 +134,12 @@ class Beer < ActiveRecord::Base
   scope :live_beers, -> { 
     joins(:beer_locations).merge(BeerLocation.current) 
   }
+  
+  # scope only drinks currently available at a particular location
+  scope :live_beers_at_location, ->(location_id) { 
+    joins(:beer_locations).merge(BeerLocation.active_beers(location_id)) 
+  }
+
   # scope beers that don't have all related info in the DB
   scope :need_attention_beers, -> { 
     where(beer_rating_one: nil, beer_rating_two: nil, beer_rating_three: nil, beer_type_id: nil, 

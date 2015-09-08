@@ -4,9 +4,9 @@ class LocationsController < ApplicationController
   include LocationRating
   
   def index
-    @retailers = Location.all
+    @retailers = Location.where.not(id: 9)
     @retailers_ranked = rate_location(@retailers).sort_by(&:location_rating).reverse
-    # Rails.logger.debug("Retails ranked info: #{@retailers_ranked.inspect}")
+    Rails.logger.debug("Retailers: #{@retailers.inspect}")
   end
   
   def show

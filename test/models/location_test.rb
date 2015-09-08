@@ -2,19 +2,20 @@
 #
 # Table name: locations
 #
-#  id           :integer          not null, primary key
-#  name         :string(255)
-#  homepage     :string(255)
-#  beerpage     :string(255)
-#  last_scanned :datetime
-#  created_at   :datetime
-#  updated_at   :datetime
-#  image_url    :string
-#  short_name   :string
-#  neighborhood :string
-#  logo_small   :string
-#  logo_med     :string
-#  logo_large   :string
+#  id              :integer          not null, primary key
+#  name            :string(255)
+#  homepage        :string(255)
+#  beerpage        :string(255)
+#  last_scanned    :datetime
+#  created_at      :datetime
+#  updated_at      :datetime
+#  image_url       :string
+#  short_name      :string
+#  neighborhood    :string
+#  logo_small      :string
+#  logo_med        :string
+#  logo_large      :string
+#  ignore_location :boolean
 #
 
 require 'test_helper'

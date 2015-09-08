@@ -53,8 +53,8 @@ module TypeBasedGuess
     @descriptor_count = Hash[@descriptor_count.sort_by{ |_, v| -v }]
     # grab top 7 of user's most liked descriptors for this drink type
     @descriptors_final_hash = @descriptor_count.first(7)
-    Rails.logger.debug("descriptor counts: #{@descriptor_count.inspect}")
-    Rails.logger.debug("descriptors: #{@descriptors_final_hash.inspect}")
+    #Rails.logger.debug("descriptor counts: #{@descriptor_count.inspect}")
+    #Rails.logger.debug("descriptors: #{@descriptors_final_hash.inspect}")
     # create empty array to hold final list of top liked descriptors
     @descriptors_final_list = Array.new
     # fill array with user's most liked descriptors

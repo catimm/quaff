@@ -10,11 +10,15 @@
 #  updated_at      :datetime
 #  removed_at      :datetime
 #  tap_number      :integer
+#  draft_board_id  :integer
 #
 
 class BeerLocation < ActiveRecord::Base
   belongs_to :beer
   belongs_to :location
+  belongs_to :draft_board
+  validates :beer_id, presence: true
+  validates :location_id, presence: true
   has_many :draft_details
   accepts_nested_attributes_for :draft_details, :reject_if => :all_blank, :allow_destroy => true
   

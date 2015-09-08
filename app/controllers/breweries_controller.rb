@@ -19,7 +19,7 @@ class BreweriesController < ApplicationController
     @reduced_final_search_results = Array.new
     @final_search_results.each do |result|   
       temp_drink = Hash.new
-      if request_url.include? "retailers/show"
+      if request_url.include? "draft_boards"
         temp_drink[:source] = "retailer"
         if !result.beer_type_id.nil?
           temp_drink[:type] = result.beer_type.beer_type_name

@@ -10,6 +10,7 @@
 #  updated_at      :datetime
 #  removed_at      :datetime
 #  tap_number      :integer
+#  draft_board_id  :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

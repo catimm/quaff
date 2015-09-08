@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150902180503) do
+ActiveRecord::Schema.define(version: 20150907231254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20150902180503) do
     t.datetime "updated_at"
     t.datetime "removed_at"
     t.integer  "tap_number"
+    t.integer  "draft_board_id"
   end
 
   create_table "beer_styles", force: :cascade do |t|
@@ -117,6 +118,12 @@ ActiveRecord::Schema.define(version: 20150902180503) do
     t.boolean  "dont_include"
   end
 
+  create_table "draft_boards", force: :cascade do |t|
+    t.integer  "location_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
   create_table "draft_details", force: :cascade do |t|
     t.integer  "drink_size"
     t.decimal  "drink_cost",       precision: 5, scale: 2
@@ -147,9 +154,9 @@ ActiveRecord::Schema.define(version: 20150902180503) do
   end
 
   create_table "locations", force: :cascade do |t|
-    t.string   "name",         limit: 255
-    t.string   "homepage",     limit: 255
-    t.string   "beerpage",     limit: 255
+    t.string   "name",            limit: 255
+    t.string   "homepage",        limit: 255
+    t.string   "beerpage",        limit: 255
     t.datetime "last_scanned"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -159,6 +166,7 @@ ActiveRecord::Schema.define(version: 20150902180503) do
     t.string   "logo_small"
     t.string   "logo_med"
     t.string   "logo_large"
+    t.boolean  "ignore_location"
   end
 
   create_table "pg_search_documents", force: :cascade do |t|
@@ -217,6 +225,13 @@ ActiveRecord::Schema.define(version: 20150902180503) do
     t.datetime "removed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_locations", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "location_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "user_notification_preferences", force: :cascade do |t|

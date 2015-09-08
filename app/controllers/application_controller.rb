@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :user_retailer_connection
   
   protected
 
@@ -35,15 +34,6 @@ class ApplicationController < ActionController::Base
       render :status => 401, :json => {:success => false, :errors => ["Unauthorized access"] }
     end
   end
-  
-  def user_retailer_connection
-    if current_user.role_id == 1 || current_user.role_id == 2
-      
-    end
-    if current_user.role_id == 5 || current_user.role_id == 6
-      
-    end
-  end
     
   rescue_from CanCan::AccessDenied do |exception|
     flash[:error] = "Access denied!"
@@ -52,9 +42,15 @@ class ApplicationController < ActionController::Base
   
   def after_sign_in_path_for(resource)
     @user = current_user
+    if current_user.role_id == 1
+      session[:retail_id] = 9
+    end
+    if current_user.role_id == 5 || current_user.role_id == 6
+      session[:retail_id] = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
+    end
     return locations_path
   end
-
+  
   def after_sign_out_path_for(resource_or_scope)
     root_path
   end

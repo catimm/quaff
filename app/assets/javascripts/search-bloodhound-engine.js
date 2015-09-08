@@ -63,7 +63,7 @@ ready = function() {
 			    if(datum.source == "retailer") {
 					//console.log(datum);
 					$.ajax({
-				        url : "/retailers/show",
+				        url : "/draft_boards/edit",
 				        type : "get",
 				        data : { chosen_drink: JSON.stringify(datum) }
 				    });	    	

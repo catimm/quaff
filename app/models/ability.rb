@@ -9,6 +9,8 @@ class Ability
       can :manage, :all
     elsif user.admin?
       can :manage, :all
+      cannot :manage, BeerLocation
+      cannot :manage, DraftBoard
     elsif user.super_retailer?
       can [:read, :create, :update], :all
       cannot :manage, Brewery
@@ -18,11 +20,13 @@ class Ability
     elsif user.super_user?
       can [:read, :create, :update], :all
       cannot :manage, Brewery 
-      cannot :manage, BeerLocation 
+      cannot :manage, BeerLocation
+      cannot :manage, DraftBoard  
     else
       can [:read, :create, :update], :all
       cannot :manage, Brewery
       cannot :manage, BeerLocation
+      cannot :manage, DraftBoard 
     end
     
     # The first argument to `can` is the action you are giving the user

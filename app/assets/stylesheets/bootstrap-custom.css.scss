@@ -1741,16 +1741,36 @@ input[type="checkbox"] {
   z-index: 1000;
   font-family: inherit !important;
 }
+// Retail account page
+.formButton-add-draft-board, .formButton-draft-board-edit, .formButton-view-draft-board {
+  margin: 10px 0;
+  width: 100%;
+}
 // Draft edit page
-.draft-edit-top-row {
-  margin-top: 10px;
+ .draft-board-container {
+   > .fields:nth-of-type(2) {
+      padding-top: 79px;
+   }
+ }
+ .draft-edit-top-row-container {
+    background: #fff;
+    position: fixed;
+    z-index: 2000;
+    .draft-edit-top-row {
+      div {
+        .page-title {
+          padding: 15px 0 10px 0;
+        }
+      }
+    }
 }
 .formButton-draft-edit {
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
 }
 .formButton-add-draft {
   width: 30%;
+  margin-bottom: 20px;
 }
 .new-draft-row {
   padding: 15px 0;
@@ -1770,6 +1790,15 @@ input[type="checkbox"] {
 .retail-edit-beer-info {
   margin-top: 2.5px;
   margin-bottom: 0;
+}
+.new-draft-info {
+  margin-top: 5px;
+  .draft-abv {
+    margin-top: 5px;
+  }
+  .draft-ibu {
+    margin-top: 5px;
+  }
 }
 .remove-draft-button {
     padding: 20px 0 0 15px;

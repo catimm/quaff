@@ -2,9 +2,9 @@ Rails.application.routes.draw do
   
   devise_for :users, controllers: { invitations: "invitations" }
   resources :users do
-    resources :drinks, :ratings, :rewards, :trackings, :retailers   
+    resources :drinks, :ratings, :rewards, :trackings   
   end
-  
+
   resource :user, only: [:edit] do
     collection do
       patch 'update_password'
@@ -24,7 +24,10 @@ Rails.application.routes.draw do
       get :descriptors, as: :descriptors
     end
   end 
+  
   resources :locations
+  resources :retailers
+  
   resources :breweries do
     resources :beers
     collection do
@@ -45,10 +48,9 @@ Rails.application.routes.draw do
   root :to => 'home#index'
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
-  
-  get '/search-bloodhound-engine.js' => 'retailers#show'
-  get 'retailers/show' => 'retailers#show', :as => 'retailer_available'
-  get 'retailers/show' => 'retailers#new', :as => 'beer_locations'
+  get '/search-bloodhound-engine.js' => 'draft_boards#edit'
+  get '/draft_boards/edit' => 'draft_boards#edit'
+  resources :draft_boards
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'

@@ -58,7 +58,7 @@ module BestGuess
         this_beer.ultimate_rating = this_beer.best_guess
       end
       @beer_rating_and_id = "ID: " + this_beer.id.to_s + "; Rating: " + this_beer.ultimate_rating.to_s
-      Rails.logger.debug("This Beer ID & Rating #{@beer_rating_and_id.inspect}")
+      #Rails.logger.debug("This Beer ID & Rating #{@beer_rating_and_id.inspect}")
     end #end of each beer loop
   end # end of method
 end # end of module

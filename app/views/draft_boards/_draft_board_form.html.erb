@@ -1,0 +1,19 @@
+<%= nested_form_for @draft do |f| %>
+	<div class="container draft-board-container">
+		<div class="row no-margin draft-edit-top-row-container">
+			<div class="row no-margin draft-edit-top-row">
+				<div class="col-xs-9">
+					<h2 class="page-title">Available on draft</h2>
+				</div>
+				<div class="col-xs-2">
+					<%= f.submit "Save", class: "btn btn-default btn-success formButton-draft-edit" %>
+				</div>
+			</div>
+			<hr>
+		</div>
+		<%= render 'new_draft', :f => f %>
+		<%= f.link_to_add :beer_locations, id: "add-drink-button", class: 'btn btn-default btn-primary formButton-add-draft' do %>
+			<i class="fa fa-plus"> Add a new drink</i>
+		<% end %>
+	</div>
+<% end %>
