@@ -50,8 +50,7 @@ class DraftBoardsController < ApplicationController
   end # end of create action
   
   def edit
-    puts(session)
-    # Rails.logger.debug("Session Info #: #{session.inspect}")
+    Rails.logger.debug("Params #: #{params.inspect}")
     # set draft board id as session id so no errors are thrown when jquery calls are sent
     if params.has_key?(:id) 
       session[:draft_board_id] = params[:id]

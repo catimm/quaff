@@ -22765,7 +22765,7 @@ $(function() {
 			$.ajax({
 		    	url : "/draft_boards/edit",
 		        type : "get",
-			    data : {inputID}
+			    data : {inputID: inputID},
 			});
 		}
 				

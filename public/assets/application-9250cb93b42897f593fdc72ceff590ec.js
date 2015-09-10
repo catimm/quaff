@@ -22754,7 +22754,7 @@ $(function() {
 		$.ajax({
 		        url : "/draft_boards/edit",
 		        type : "get",
-			    data : { inputID }
+			    data : {inputID: inputID},
 			    });		
 	});	
 	// bind autonumeric javascript each time a new drink details row is added
