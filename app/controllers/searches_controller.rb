@@ -3,7 +3,7 @@ class SearchesController < ApplicationController
   
   def index
     @search_results = Beer.beer_search(params[:beer_search])
-    Rails.logger.debug("Search results: #{@search_results.inspect}")
+    #Rails.logger.debug("Search results: #{@search_results.inspect}")
     @search = @search_results.where("user_addition IS NOT true")
     @final_search_results = Array.new
     @evaluated_drinks = Array.new

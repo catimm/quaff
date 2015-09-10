@@ -1,10 +1,4 @@
-<%= f.fields_for :beer_locations, f.object.beer_locations.order(:tap_number) do |ff| %>
-	<% if ff.object.beer_is_current == "yes" %>
-		<% if !ff.object.beer.brewery.short_brewery_name.nil? %>
-			<% @beer_name = ff.object.beer.brewery.short_brewery_name + " " + ff.object.beer.beer_name %>
-		<% else %>
-			<% @beer_name = ff.object.beer.brewery.brewery_name + " " + ff.object.beer.beer_name %>
-		<% end %>
+<%= f.fields_for :beer_locations, f.object.beer_locations.where(beer_is_current: "yes").order(:tap_number) do |ff| %>
 		<div class="row new-draft-row" id="new-draft-row-<%= ff.index %>" >
 					<div class="col-sm-1 text-center tap-number-holder">
 						<p>Tap #</p>
@@ -13,14 +7,29 @@
 					<div class="col-sm-5">	
 						<%= ff.hidden_field :beer_id %>
 						<div class="row no-margin search-field">
-							<div class="col-sm-12 drink-search-holder">
-								<div class="beers-search">
-									<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
-										<div class="input-group">
-								 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search" %>
+							<div class="col-sm-12 drink-search-holder">	
+								<% if !ff.object.beer.nil? %>
+										<% if !ff.object.beer.brewery.short_brewery_name.nil? %>
+											<% @beer_name = ff.object.beer.brewery.short_brewery_name + " " + ff.object.beer.beer_name %>
+										<% else %>
+											<% @beer_name = ff.object.beer.brewery.brewery_name + " " + ff.object.beer.beer_name %>
+										<% end %>
+										<div class="beers-search">
+											<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+												<div class="input-group">
+										 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search" %>
+												</div>
+											<% end %>
 										</div>
-									<% end %>
-								</div>
+								<% else %>
+									<div class="beers-search">
+										<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+											<div class="input-group testing">
+									 	    	<%= text_field_tag :query, params[:query], id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search" %>
+											</div>
+										<% end %>
+									</div>
+								<% end %>
 							</div>
 						</div>
 						<div class="row no-margin new-draft-info" id="new-draft-info-<%= ff.index %>">
@@ -43,6 +52,5 @@
 					</div>
 			</div>	
 			<hr>
-	<% end %>
 <% end %>	
 

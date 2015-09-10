@@ -22,6 +22,8 @@ class BeerLocation < ActiveRecord::Base
   has_many :draft_details
   accepts_nested_attributes_for :draft_details, :reject_if => :all_blank, :allow_destroy => true
   
+  scope :draft_board_current, -> { where(beer_is_current: "yes").order(tap_number: :desc) }
+  
   scope :current, -> { where(beer_is_current: "yes") }
   
   scope :active_beers, ->(location_id) { 

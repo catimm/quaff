@@ -3,7 +3,13 @@ class RetailersController < ApplicationController
   
   def show
     @retailer = Location.find(params[:id])
+    Rails.logger.debug("Draft Board #{@retailer.inspect}")
     @draft_board = DraftBoard.where(location_id: params[:id])
+     Rails.logger.debug("Draft Board #{@draft_board.inspect}")
+    # find last time this draft board was updated
+    if !@draft_board.blank?
+      @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board[0].id).order(:updated_at).reverse_order.first
+    end
   end
   
   def new

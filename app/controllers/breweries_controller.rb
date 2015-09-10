@@ -3,14 +3,23 @@ class BreweriesController < ApplicationController
   include QuerySearch
   
   def autocomplete
-    Rails.logger.debug("Params #{params.inspect}")
+    # load session ids related to search params needed for jquery update
+    @new_draft_info_id = session[:draft_info_id]
+    @unique_number = session[:draft_info_number]
+    Rails.logger.debug("Draft ID #{@new_draft_info_id.inspect}")
+    Rails.logger.debug("Draft Number #{@unique_number.inspect}")
+    Rails.logger.debug("Retailer ID #{session[:retail_id].inspect}")
+    Rails.logger.debug("Draft Board ID #{session[:draft_board_id].inspect}")
+    
+    
+    #Rails.logger.debug("Params #{params.inspect}")
     if params[:query].present?
       query_search(params[:query])
     else
       @search = []
     end
      
-    Rails.logger.debug("Final search results #{@final_search_results.inspect}")
+    # Rails.logger.debug("Final Search results #{@final_search_results.inspect}")
     
     # find if search request is coming from retailer edit drinks page
     request_url = request.env["HTTP_REFERER"] 

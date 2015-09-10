@@ -112,6 +112,9 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .navbar-header a {
  line-height: 50px !important;
 }
+.dropdown-menu {
+  z-index: 5000 !important;
+  }
 .top-row {
   margin-bottom: 20px;
 }
@@ -1746,16 +1749,12 @@ input[type="checkbox"] {
   margin: 10px 0;
   width: 100%;
 }
+
 // Draft edit page
- .draft-board-container {
-   > .fields:nth-of-type(2) {
-      padding-top: 79px;
-   }
- }
  .draft-edit-top-row-container {
     background: #fff;
     position: fixed;
-    z-index: 2000;
+    z-index: 100;
     .draft-edit-top-row {
       div {
         .page-title {
@@ -1765,6 +1764,10 @@ input[type="checkbox"] {
     }
 }
 .formButton-draft-edit {
+  margin-top: 15px;
+  width: 100%;
+}
+.formButton-cancel-draft-board-edit {
   margin-top: 15px;
   width: 100%;
 }
@@ -1810,6 +1813,7 @@ input[type="checkbox"] {
       }
     }
 }
+
 .draft-details-row {
   margin-top: 5px;
   padding-left: 15px;

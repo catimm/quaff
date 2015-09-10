@@ -1,6 +1,5 @@
 // insert partial with new draft info into partial below search box
 $(function() {
-	alert("this is firing");
 	$("#<%=@new_draft_info_id %>").html("<%= escape_javascript(render 'new_draft_info', chosen_drink: @chosen_drink ) %>");
 	$("#draft_board_beer_locations_attributes_"+<%= @unique_number %>+"_beer_id").val(<%=@chosen_drink['beer_id'] %>);
 });

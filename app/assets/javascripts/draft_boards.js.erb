@@ -1,5 +1,17 @@
 $(function() {
-
+	// set height of draft row padding
+	top_row_height = $(".draft-edit-top-row-container").height();
+	$(".draft-edit-top-row-container").next().css('padding-top', top_row_height);
+	
+	// check if add new draft button has .fields siblings
+	if ($("#add-drink-button").prev().hasClass("fields")) {
+		field_width = $(".fields").width();
+		$(".draft-edit-top-row-container").width(field_width);
+	} else {
+		$("#add-drink-button").css('margin-top', top_row_height);
+		field_width = $(".draft-board-container").width() - 30;
+		$(".draft-edit-top-row-container").width(field_width);
+	}
 	// count number of drink sizes in each row & adjust drink size count
 	$(document).on('click', '.formButton-add-details.add_nested_fields', function () {
 	    var siblings = 0
@@ -60,26 +72,25 @@ $(function() {
 	    });
 	});
 	// get unique id of search box when it comes into focus; then send it to the controller to store in session variable
-	$(document).on('focus', '.form-control.typeahead.retailer-search.tt-input', function (e) {
-		alert("this fires");
+	$(document).one('focus', '.form-control.typeahead.retailer-search.tt-input', function (e) {
+		var counter;
 		counter = 1;
 		var inputID;
 		if (counter == 1) {
 			var inputID = $(e.target).attr('id');
-			console.log();
+			alert(inputID);
 			counter++;
-		}
-		$.ajax({
-		        url : "/draft_boards/edit",
+			$.ajax({
+		    	url : "/draft_boards/edit",
 		        type : "get",
-			    data : { inputID }
-			    });		
+			    data : {inputID}
+			});
+		}
+				
 	});	
 	// bind autonumeric javascript each time a new drink details row is added
 	$(document).on('nested:fieldAdded', function(event){
 		$(document).trigger('refresh_autonumeric');
 	});
-	// set width of .draft-edit-top-row to that of field rows below
-	field_width = $(".fields").width();
-	$(".draft-edit-top-row-container").width(field_width);
+
 });
