@@ -1,14 +1,16 @@
 $(function() {
 	// set height of draft row padding
 	top_row_height = $(".draft-edit-top-row-container").height();
-	$(".draft-edit-top-row-container").next().css('padding-top', top_row_height);
+	$(".draft-filler-top-row").css('padding-top', top_row_height);
+	//$(".draft-edit-top-row-container").next().addClass('top_row_height');
+
 	
 	// check if add new draft button has .fields siblings
 	if ($("#add-drink-button").prev().hasClass("fields")) {
 		field_width = $(".fields").width();
 		$(".draft-edit-top-row-container").width(field_width);
 	} else {
-		$("#add-drink-button").css('margin-top', top_row_height);
+		//$("#add-drink-button").css('margin-top', top_row_height);
 		field_width = $(".draft-board-container").width() - 30;
 		$(".draft-edit-top-row-container").width(field_width);
 	}
@@ -71,27 +73,41 @@ $(function() {
 			}
 	    });
 	});
-	// get unique id of search box when it comes into focus; then send it to the controller to store in session variable
-	$(document).one('focus', '.form-control.typeahead.retailer-search.tt-input', function (e) {
-		var counter;
-		counter = 1;
+	// get unique id of edit form search box when it comes into focus; then send it to the controller to store in session variable
+	$(document).on('keydown', '.form-control.typeahead.retailer-search.tt-input.edit-form', function(e) {
+	//$('.form-control.typeahead.retailer-search.tt-input').on('keydown', function(e) {
 		var inputID;
-		if (counter == 1) {
-			var inputID = $(e.target).attr('id');
-			alert(inputID);
-			counter++;
-			$.ajax({
-		    	url : "/draft_boards/edit",
-		        data : {inputID: inputID},
-		        type : "get"
-			    
-			});
-		}
-				
+		var inputID = $(e.target).attr('id');
+		//alert(inputID);
+		$.ajax({
+	    	url : "/draft_boards/edit",
+	        data : {inputID: inputID},
+		    type : "get"
+		});
 	});	
-	// bind autonumeric javascript each time a new drink details row is added
-	$(document).on('nested:fieldAdded', function(event){
-		$(document).trigger('refresh_autonumeric');
+	
+	// get unique id of new form search box when it comes into focus; then send it to the controller to store in session variable
+	$(document).on('keydown', '.form-control.typeahead.retailer-search.tt-input.new-form', function(e) {
+	//$('.form-control.typeahead.retailer-search.tt-input').on('keydown', function(e) {
+		var inputID;
+		var inputID = $(e.target).attr('id');
+		//alert(inputID);
+		$.ajax({
+	    	url : "/draft_boards/new",
+	        data : {inputID: inputID},
+		    type : "get"
+		});
 	});
+	
+	// set height of second draft row if top draft row is deleted
+	$(document).on('nested:fieldRemoved', function(event){
+	});
+	
+	// when new fields are added
+	$(document).on('nested:fieldAdded', function(event){
+		// bind autonumeric javascript each time a new drink details row is added
+		$(document).trigger('refresh_autonumeric');
+		
+	});	
 
 });

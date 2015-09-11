@@ -16,6 +16,40 @@ class DraftBoardsController < ApplicationController
     @draft = DraftBoard.new
     @new_draft = @draft.beer_locations.build
     @new_draft.draft_details.build
+    session[:form] = "new"
+    # accept drink info once a drink is chosen in the search form & grab session variable with unique id
+     if params.has_key?(:chosen_drink) 
+      if !params[:chosen_drink].nil?
+        #Rails.logger.debug("Thinks there is a chosen drink")
+        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
+        @chosen_drink = JSON.parse(params[:chosen_drink])
+        @new_draft_info_id = session[:draft_info_id]
+        @unique_number = session[:draft_info_number]
+        #Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
+        Rails.logger.debug("New Element ID #: #{@new_draft_info_id.inspect}")
+        Rails.logger.debug("Unique Number #: #{@unique_number.inspect}")
+        respond_to do |format|
+          format.js
+        end # end of redirect to jquery
+      end # end of what to do if chosen drink data exists
+    end # end of check if params (:chosen_drink) exists
+  
+    # get unique id of search box and store in session variable
+    if params.has_key?(:inputID)  
+      if !params[:inputID].nil?
+        #Rails.logger.debug("Thinks there is an input ID")
+        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
+        @input_id = params[:inputID]
+        @input_id_number_array = @input_id.split('-')
+        @input_id_number = @input_id_number_array[1]
+        #Rails.logger.debug("Input ID: #{@input_id.inspect}")
+        Rails.logger.debug("Input ID #: #{@input_id_number.inspect}")
+        session[:draft_info_id] = "new-draft-info-"+@input_id_number
+        session[:draft_info_number] = @input_id_number
+        Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
+        #Rails.logger.debug("Session Info #: #{session.inspect}")
+      end
+    end
   end
   
   def create
@@ -25,11 +59,11 @@ class DraftBoardsController < ApplicationController
       # first make sure this item should be added (ie wasn't deleted)
       @destroy = drink[1][:_destroy]
       if @destroy != "1"
-        @new_beer_location_drink = BeerLocation.new(location_id: @draft_board.location_id, 
-                                     beer_id: @beer_id, 
+        @new_beer_location_drink = BeerLocation.new(location_id: session[:retail_id], 
+                                     beer_id: drink[1][:beer_id], 
                                      beer_is_current: "yes", 
                                      tap_number: drink[1][:tap_number],
-                                     draft_board_id: params[:id])
+                                     draft_board_id: @draft_board.id)
          @new_beer_location_drink.save
          # add size/cost of new draft drink
          drink[1][:draft_details_attributes].each do |details|
@@ -50,13 +84,14 @@ class DraftBoardsController < ApplicationController
   end # end of create action
   
   def edit
-    Rails.logger.debug("Params #: #{params.inspect}")
+    #Rails.logger.debug("New Element ID #: #{session.inspect}")
     # set draft board id as session id so no errors are thrown when jquery calls are sent
     if params.has_key?(:id) 
       session[:draft_board_id] = params[:id]
     end
     # indicate which form this is
     @draft_board_form = "edit"
+    session[:form] = "edit"
     # get retailer info for header/title
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
@@ -65,22 +100,16 @@ class DraftBoardsController < ApplicationController
     @draft = DraftBoard.find_by(location_id: @retail_id)
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
-    # load session ids related to search params needed for jquery update
-    @new_draft_info_id = session[:draft_info_id]
-    @unique_number = session[:draft_info_number]
-    Rails.logger.debug("Draft ID #{@new_draft_info_id.inspect}")
-    Rails.logger.debug("Draft Number #{@unique_number.inspect}")
-
-    # Rails.logger.debug("Related Retailer ID #: #{@retail_id.inspect}")
-    # Rails.logger.debug("Draft Board info #: #{@draft.inspect}")
     
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
       if !params[:chosen_drink].nil?
-        Rails.logger.debug("Thinks there is a chosen drink")
-        Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
+        #Rails.logger.debug("Thinks there is a chosen drink")
+        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
         @chosen_drink = JSON.parse(params[:chosen_drink])
-        Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
+        @new_draft_info_id = session[:draft_info_id]
+        @unique_number = session[:draft_info_number]
+        #Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
         Rails.logger.debug("New Element ID #: #{@new_draft_info_id.inspect}")
         Rails.logger.debug("Unique Number #: #{@unique_number.inspect}")
         respond_to do |format|
@@ -92,12 +121,12 @@ class DraftBoardsController < ApplicationController
     # get unique id of search box and store in session variable
     if params.has_key?(:inputID)  
       if !params[:inputID].nil?
-        Rails.logger.debug("Thinks there is an input ID")
-        Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
+        #Rails.logger.debug("Thinks there is an input ID")
+        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
         @input_id = params[:inputID]
         @input_id_number_array = @input_id.split('-')
         @input_id_number = @input_id_number_array[1]
-        Rails.logger.debug("Input ID: #{@input_id.inspect}")
+        #Rails.logger.debug("Input ID: #{@input_id.inspect}")
         Rails.logger.debug("Input ID #: #{@input_id_number.inspect}")
         session[:draft_info_id] = "new-draft-info-"+@input_id_number
         session[:draft_info_number] = @input_id_number
@@ -105,12 +134,7 @@ class DraftBoardsController < ApplicationController
         #Rails.logger.debug("Session Info #: #{session.inspect}")
       end
     end
-    # load session ids related to search params needed for jquery update
-    @new_draft_info_id = session[:draft_info_id]
-    @unique_number = session[:draft_info_number]
-    Rails.logger.debug("Draft ID #{@new_draft_info_id.inspect}")
-    Rails.logger.debug("Draft Number #{@unique_number.inspect}")
-    puts(session)
+
   end # end of edit action
   
   def update
@@ -134,16 +158,18 @@ class DraftBoardsController < ApplicationController
           # delete all related size/cost information
           DraftDetail.where(beer_location_id: @current_beer_location.id).destroy_all
           # add size/cost info to ensure it is currently accurate
-          drink[1][:draft_details_attributes].each do |details|
-            # first make sure this item should be added (ie wasn't deleted)
-            @destroy_details = details[1][:_destroy]
-            if @destroy_details != "1"
-              @new_drink_details = DraftDetail.new(beer_location_id: @current_beer_location.id, 
-                                    drink_size: details[1][:drink_size], 
-                                    drink_cost: details[1][:drink_cost])
-              @new_drink_details.save
-            end # end of test to determine if drink details "row" was deleted and should be ignored 
-          end # end of loop to add drin details
+          if !drink[1][:draft_details_attributes].blank?
+            drink[1][:draft_details_attributes].each do |details|
+              # first make sure this item should be added (ie wasn't deleted)
+              @destroy_details = details[1][:_destroy]
+              if @destroy_details != "1"
+                @new_drink_details = DraftDetail.new(beer_location_id: @current_beer_location.id, 
+                                      drink_size: details[1][:drink_size], 
+                                      drink_cost: details[1][:drink_cost])
+                @new_drink_details.save
+              end # end of test to determine if drink details "row" was deleted and should be ignored 
+            end # end of loop to add drink details
+          end # end validation that drink details exist
         else # if not on draft, add it as new draft item
           @new_beer_location_drink = BeerLocation.new(location_id: @draft_board.location_id, 
                                       beer_id: @beer_id, 

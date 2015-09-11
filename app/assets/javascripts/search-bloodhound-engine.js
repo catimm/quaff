@@ -22,7 +22,8 @@ ready = function() {
 	                    source: beer.source,
 	                    type: beer.type,
 	                   	ibu: beer.ibu,
-	                   	abv: beer.abv
+	                   	abv: beer.abv,
+	                   	form: beer.form
 	                };
 	            });
 	       }
@@ -62,11 +63,19 @@ ready = function() {
 	        }).on('typeahead:selected', function (obj, datum) {   
 			    if(datum.source == "retailer") {
 					//console.log(datum);
-					$.ajax({
-				        url : "/draft_boards/edit",
-				        type : "get",
-				        data : { chosen_drink: JSON.stringify(datum) }
-				    });	    	
+					if(datum.form == "edit") {
+						$.ajax({
+					        url : "/draft_boards/edit",
+					        type : "get",
+					        data : { chosen_drink: JSON.stringify(datum) }
+					    });	
+					} else  {
+						$.ajax({
+					        url : "/draft_boards/new",
+					        type : "get",
+					        data : { chosen_drink: JSON.stringify(datum) }
+					    });
+					} 	
 				}
 	    	});
 };

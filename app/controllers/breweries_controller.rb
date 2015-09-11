@@ -3,16 +3,7 @@ class BreweriesController < ApplicationController
   include QuerySearch
   
   def autocomplete
-    # load session ids related to search params needed for jquery update
-    @new_draft_info_id = session[:draft_info_id]
-    @unique_number = session[:draft_info_number]
-    Rails.logger.debug("Draft ID #{@new_draft_info_id.inspect}")
-    Rails.logger.debug("Draft Number #{@unique_number.inspect}")
-    Rails.logger.debug("Retailer ID #{session[:retail_id].inspect}")
-    Rails.logger.debug("Draft Board ID #{session[:draft_board_id].inspect}")
-    
-    
-    #Rails.logger.debug("Params #{params.inspect}")
+    Rails.logger.debug("Form info #{session[:form].inspect}")
     if params[:query].present?
       query_search(params[:query])
     else
@@ -35,6 +26,7 @@ class BreweriesController < ApplicationController
         end
         temp_drink[:ibu] = result.beer_ibu
         temp_drink[:abv] = result.beer_abv
+        temp_drink[:form] = session[:form]
       end
       temp_drink[:beer_id] = result.id
       temp_drink[:beer_name] = result.beer_name

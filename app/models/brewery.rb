@@ -40,7 +40,6 @@ class Brewery < ActiveRecord::Base
       beer_name: beers.map(&:beer_name).join('')
     }
   end
-  
     
   scope :live_brewery_beers, ->  { joins(:beers).merge(Beer.live_beers) }
   scope :need_attention_brewery_beers, -> { joins(:beers).merge(Beer.live_beers).merge(Beer.need_attention_beers) }
