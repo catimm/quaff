@@ -17,7 +17,7 @@ module LocationRating
         if i.beer_type_id.nil?
           @beer_type_name = ""
         else 
-          @beer_type_name = "("+i.beer_type.beer_type_short_name+")"
+          @beer_type_name = ("<span class=short-beer-type>("+i.beer_type.beer_type_short_name+")</span>").html_safe
         end
         if i.brewery.short_brewery_name.nil?
           if i.brewery.brewery_name.blank?
@@ -28,16 +28,17 @@ module LocationRating
         else 
           @brewery_name = i.brewery.short_brewery_name
         end
+        @beer_name = "<span class=combined-drink-text>"+i.beer_name+"</span>"
         if index == 0
-          this_location.top_beer_one = @brewery_name + " " + i.beer_name + " " + @beer_type_name
+          this_location.top_beer_one = (@brewery_name + " " + @beer_name + " " + @beer_type_name).html_safe
         elsif index == 1
-          this_location.top_beer_two = @brewery_name + " " + i.beer_name + " " + @beer_type_name
+          this_location.top_beer_two = (@brewery_name + " " + @beer_name + " " + @beer_type_name).html_safe
         elsif index == 2
-          this_location.top_beer_three = @brewery_name + " " + i.beer_name + " " + @beer_type_name
+          this_location.top_beer_three = (@brewery_name + " " + @beer_name + " " + @beer_type_name).html_safe
         elsif index == 3
-          this_location.top_beer_four = @brewery_name + " " + i.beer_name + " " + @beer_type_name
+          this_location.top_beer_four = (@brewery_name + " " + @beer_name + " " + @beer_type_name).html_safe
         else
-          this_location.top_beer_five = @brewery_name + " " + i.beer_name + " " + @beer_type_name
+          this_location.top_beer_five = (@brewery_name + " " + @beer_name + " " + @beer_type_name).html_safe
         end
       end
       # create location ranking

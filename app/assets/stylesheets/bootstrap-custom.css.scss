@@ -34,6 +34,8 @@ $gray-body-background: $light-gray;
 $soft-border: $extra-light-gray;
 $header-text: $black;
 $normal-text: $dark-gray;
+$combined-brewery-text: $dark-gray;
+$combined-drink-text: $black;
 $less-emphasized-text: $medium-gray;
 $special-beer: $bright-purple;
 $special-text: $bright-orange;
@@ -169,6 +171,18 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 label {
   color: $normal-text;
   font-weight: 400;
+}
+// Used throughout
+.combined-brewery-text {
+  color: $combined-brewery-text !important;
+}
+.combined-drink-text {
+  color: $combined-drink-text !important;
+}
+.short-beer-type {
+  font-style: italic;
+  color: $normal-text !important;
+  font-size: 12px;
 }
 // Index page
 .banner {
@@ -331,7 +345,7 @@ label {
   min-height: 150px;
 }
 .search-brewery-header {
-  color: $header-text;
+  color: $normal-text;
   font-weight: 500; 
   margin-bottom: 0;
   overflow: hidden;
@@ -541,6 +555,10 @@ $beer-header-lines-to-show-fp: 1;
   padding: 12.5px 0 0 67.5px;
   margin: 0;
 }
+.retailer-page-title.with-update-text {
+  float: left;
+}
+
 .retailer-logo-image-med {
     background-repeat: no-repeat;
     height: 70px;
@@ -580,7 +598,7 @@ $beer-header-lines-to-show-fp: 1;
     padding: 5px; 
 }
 .tile-header {
-  color: $header-text;
+  color: $normal-text;
   font-weight: 500; 
   margin-bottom: 5px;
 }
@@ -729,6 +747,56 @@ p {
 #user_beer_rating_comment {
   height: 40px !important;
 }
+// Draft Board "pretty" page
+.brewery-logo-image-med {
+  background-repeat: no-repeat;
+  height: 85px;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+.drink-origin {
+  margin-top: -5px;
+}
+$beer-header-font-size-fp: 16px;
+$beer-header-line-height-fp: 1.2;
+$beer-header-lines-to-show-fp: 1;
+.drink-header-draft-pretty {
+  color: $normal-text;
+  font-weight: 500; 
+  margin-bottom: 5px; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $beer-header-font-size-fp*$beer-header-line-height-fp*$beer-header-lines-to-show-fp; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: $beer-header-font-size-fp;
+  line-height: $beer-header-line-height-fp;
+  -webkit-line-clamp: $beer-header-lines-to-show-fp;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.draft-pretty-filler {
+  height: 14px;
+}
+.abv-div {
+  height: 14px;
+}
+.draft-pretty-icon {
+  float: left;
+  text-align: center;
+}
+.icon-taster {
+  padding-top: 16px;
+}
+.icon-nonic {
+  padding-top: 6px;
+}
+.draft-pretty-draft-size, .draft-pretty-draft-cost {
+  color: $less-emphasized-text;
+  font-size: 12px;
+  margin: 2.5px 0;
+  text-align: center; 
+}
 // Sign-up & log-in pages
 .box {
   background: #fff;
@@ -862,6 +930,10 @@ p {
 }
 .abv-div {
   border-right: 1px solid $soft-border;
+  height: 14px;
+}
+.ibu-div {
+  border-left: 1px solid $soft-border;
   height: 14px;
 }
 .beer-info {

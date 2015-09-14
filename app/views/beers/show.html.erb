@@ -25,9 +25,9 @@
 						<div class="col-xs-12">
 							<% if @beer.collab == true %>
 								<% @collab_brewery_name = Beer.collab_brewery_name(@beer.id) %>
-								<h5 class="tile-header beer-tile-header-full-page"><%= @collab_brewery_name %> <%= @beer.beer_name %></h5>
+								<h5 class="tile-header beer-tile-header-full-page"><%= @collab_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %></h5>
 							<% else %>
-								<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= @beer.beer_name %></h5>
+								<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %></h5>
 							<% end %>
 						</div>
 						<div class="col-xs-12">
@@ -37,16 +37,20 @@
 								<h5 class="tile-subheader beer-info">Style unknown</h5>
 							<% end %>
 						</div>
-						<div class="col-sm-3 col-xs-6 no-padding-right abv-div">
-							<h6 class="tile-subheader beer-info"><%= @beer.beer_abv %>% ABV</h6>
-						</div>
-						<div class="col-sm-3 col-xs-6 no-padding-left text-center">
-							<% if !@beer.beer_ibu.nil? %>
-								<h6 class="tile-subheader beer-info"><%= @beer.beer_ibu %> IBUs</h6>
+						<div class="col-sm-3 col-xs-6 no-padding-right">
+							<% if !@beer.beer_abv.nil? %>
+								<h6 class="tile-subheader beer-info"><%= @beer.beer_abv %>% ABV</h6>
 							<% else %>
-								<h6 class="tile-subheader beer-info">IBUs N/A</h6>
+								<h6 class="tile-subheader beer-info">ABV N/A</h6>
 							<% end %>
-						</div>	
+						</div>
+						<% if !@beer.beer_ibu.nil? %>
+							<div class="col-sm-3 col-xs-6 no-padding-left text-center ibu-div">
+								<h6 class="tile-subheader beer-info"><%= @beer.beer_ibu %> IBUs</h6>
+							</div>
+						<% else %>
+							<div class="col-xs-6"></div>
+						<% end %>
 					</div>
 					<% if !@beer.brewer_description.nil? %>
 					<div class="row no-margin">

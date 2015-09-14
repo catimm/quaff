@@ -1,4 +1,24 @@
 <%= render 'layouts/header_retailer' %> 
-
+	<div class="container draft-board-container">
+		<div class="row no-margin ">
+			<div class="col-sm-12 visible-sm visible-md visible-lg">
+				<div class="row img-responsive retailer-logo-image-med" alt="Responsive image" style="background-image: url(<%= @retailer.logo_med %>)">
+					<h3 class="retailer-page-title with-update-text"><%= @retailer.short_name %>'s Account <span class="last-updated">(last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h3>
+				</div>
+			</div>
+			<div class="col-xs-12 visible-xs">
+				<div class="row img-responsive retailer-logo-image-small" alt="Responsive image" style="background-image: url(<%= @retailer.logo_small %>)">
+					<h3 class="retailer-page-title-mobile"><%= @retailer.short_name %>'s Account</h3>
+				</div>
+			</div>
+			<div class="col-xs-12 visible-xs">
+				<h3 class="retail-account-last-updated-container"><span class="last-updated">(last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h3>
+			</div>
+		</div>
+		<hr>
+		<div class="row no-margin ">
+			<%= render 'current_draft_board' %>
+		</div>
+	</div>
 
 <%= render 'layouts/footer' %>

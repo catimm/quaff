@@ -26,7 +26,7 @@ class BeersController < ApplicationController
       Rails.logger.debug("Tracking Location info #{@tracking_locations.inspect}")
     end
     # grab ids of current beers for this location
-    @beer_locations = BeerLocation.where(beer_id: params[:id])
+    @beer_locations = BeerLocation.current.where(beer_id: params[:id])
     Rails.logger.debug("Locations: #{@beer_locations.inspect}")
     # find if any beer locations currently have the beer
     @current_beer_locations = @beer_locations.where(beer_is_current: "yes").pluck(:location_id)

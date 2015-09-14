@@ -3,11 +3,16 @@ class DraftBoardsController < ApplicationController
   include QuerySearch
   
   def show
+    # get retailer info
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
-    Rails.logger.debug("Related Retailer ID #: #{@retail_id.inspect}")
-    Rails.logger.debug("Retailer Info #: #{@retailer.inspect}")
-    @draft = DraftBoard.find_by(location_id: @retail_id)
+    # get draft board info
+    @draft_board = DraftBoard.find_by(location_id: @retail_id)
+    #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
+    # get draft board details
+    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes")
+    # get last updated info
+    @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
   end
   
   def new

@@ -129,6 +129,10 @@ class Beer < ActiveRecord::Base
     end
     collab_brewery_names  
   }
+  # scope only all drinks shown in admin pages 
+  scope :all_live_beers, -> { 
+    joins(:beer_locations).merge(BeerLocation.all_current) 
+  }
   
   # scope only drinks currently available 
   scope :live_beers, -> { 

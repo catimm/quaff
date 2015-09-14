@@ -23,7 +23,13 @@ class BeerLocation < ActiveRecord::Base
   accepts_nested_attributes_for :draft_details, :reject_if => :all_blank, :allow_destroy => true
   validates_uniqueness_of :tap_number, :scope => :draft_board_id, :presence => {message: "Seems you have two tap numbers the same; you should change one.)"}
   
-  scope :current, -> { where(beer_is_current: "yes") }
+  # this scope is for the admin page
+  scope :all_current, -> { where(beer_is_current: "yes") }
+  
+  # this scope is for other locations pages
+  scope :current, -> { where(beer_is_current: "yes").
+    joins(:location).merge(Location.live_location)
+    }
   
   scope :active_beers, ->(location_id) { 
     where(:location_id => location_id).
