@@ -41,6 +41,8 @@ task :check_pine_box => :environment do
       
       @this_beer_name = node.css("td.draft_name").text
       Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
+      # set new variable to false
+      @contains_numbers = false
       # check if this drink contains numbers of any type
       if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
         @contains_numbers = true
@@ -170,7 +172,7 @@ task :check_pine_box => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers # if this drink contains numbers, do an exact match
+        if @contains_numbers == true # if this drink contains numbers, do an exact match
             if beer.beer_name == @this_beer_name
               @drink_name_match = true
             else 
@@ -385,6 +387,8 @@ task :check_chucks_85 => :environment do
       @this_brewery_name = @this_brewery_name.strip
       
       @this_beer_name = node.css("td.draft_name").text
+      # set new variable to false
+      @contains_numbers = false
       # check if this drink contains numbers of any type
       if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
         @contains_numbers = true
@@ -514,7 +518,7 @@ task :check_chucks_85 => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers # if this drink contains numbers, do an exact match
+        if @contains_numbers == true # if this drink contains numbers, do an exact match
             if beer.beer_name == @this_beer_name
               @drink_name_match = true
             else 
@@ -725,6 +729,8 @@ task :check_chucks_cd => :environment do
       
       @this_beer_name = node.css("td.draft_name").text
       # Rails.logger.debug("Beer Name: #{@this_beer_name.inspect}")
+      # set new variable to false
+      @contains_numbers = false
       # check if this drink contains numbers of any type
       if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
         @contains_numbers = true
@@ -852,7 +858,7 @@ task :check_chucks_cd => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers # if this drink contains numbers, do an exact match
+        if @contains_numbers == true # if this drink contains numbers, do an exact match
             if beer.beer_name == @this_beer_name
               @drink_name_match = true
             else 
@@ -1054,6 +1060,8 @@ task :check_beer_junction => :environment do
     doc_pb.search("td.beer-column").each do |node|
       # first grab all data for this beer
       @this_beer_name = node.css("a.beername").text.strip.gsub(/\n +/, " ")
+      # set new variable to false
+      @contains_numbers = false
       # check if this drink contains numbers of any type
       if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
         @contains_numbers = true
@@ -1193,7 +1201,7 @@ task :check_beer_junction => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers # if this drink contains numbers, do an exact match
+        if @contains_numbers == true # if this drink contains numbers, do an exact match
             if beer.beer_name == @this_beer_name
               @drink_name_match = true
             else 
@@ -1395,6 +1403,8 @@ task :check_beveridge_place => :environment do
     doc_pb.search("tbody tr").each do |node|
       # first grab all data for this beer
       @this_beer_name = node.css("td.beer > a").text.strip.gsub(/\n +/, " ")
+      # set new variable to false
+      @contains_numbers = false
       # check if this drink contains numbers of any type
       if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
         @contains_numbers = true
@@ -1540,7 +1550,7 @@ task :check_beveridge_place => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers # if this drink contains numbers, do an exact match
+        if @contains_numbers == true # if this drink contains numbers, do an exact match
             if beer.beer_name == @this_beer_name
               @drink_name_match = true
             else 
@@ -2107,6 +2117,8 @@ task :check_the_yard => :environment do
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
             @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+            # set new variable to false
+            @contains_numbers = false
             # check if this drink contains numbers of any type
             if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
               @contains_numbers = true
@@ -2119,6 +2131,8 @@ task :check_the_yard => :environment do
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
           # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
+          # set new variable to false
+          @contains_numbers = false
           # check if this drink contains numbers of any type
           if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
             @contains_numbers = true
@@ -2158,7 +2172,7 @@ task :check_the_yard => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers # if this drink contains numbers, do an exact match
+        if @contains_numbers == true # if this drink contains numbers, do an exact match
             if beer.beer_name == @this_beer_name
               @drink_name_match = true
             else 
@@ -2359,6 +2373,8 @@ task :check_the_dray => :environment do
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
             @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+            # set new variable to false
+            @contains_numbers = false
             # check if this drink contains numbers of any type
             if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
               @contains_numbers = true
@@ -2371,6 +2387,8 @@ task :check_the_dray => :environment do
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
           # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
+          # set new variable to false
+          @contains_numbers = false
           # check if this drink contains numbers of any type
           if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
             @contains_numbers = true
@@ -2410,7 +2428,7 @@ task :check_the_dray => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers # if this drink contains numbers, do an exact match
+        if @contains_numbers == true # if this drink contains numbers, do an exact match
             if beer.beer_name == @this_beer_name
               @drink_name_match = true
             else 
