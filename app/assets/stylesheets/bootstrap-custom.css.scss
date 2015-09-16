@@ -35,7 +35,7 @@ $soft-border: $extra-light-gray;
 $header-text: $black;
 $normal-text: $dark-gray;
 $combined-brewery-text: $dark-gray;
-$combined-drink-text: $black;
+$combined-drink-text: $bright-blue;
 $less-emphasized-text: $medium-gray;
 $special-beer: $bright-purple;
 $special-text: $bright-orange;
@@ -173,6 +173,9 @@ label {
   font-weight: 400;
 }
 // Used throughout
+.normal-text {
+  color: $normal-text;
+}
 .combined-brewery-text {
   color: $combined-brewery-text !important;
 }
@@ -598,7 +601,7 @@ $beer-header-lines-to-show-fp: 1;
     padding: 5px; 
 }
 .tile-header {
-  color: $normal-text;
+  color: $header-text;
   font-weight: 500; 
   margin-bottom: 5px;
 }
@@ -647,7 +650,7 @@ $beer-header-lines-to-show: 2;
   margin-bottom: 0;
 }
 .beers-at-retailer-for-user {
-  color: $normal-text;
+  color: $header-text !important;
 }
 .list-overview {
   margin-top: 10px;
@@ -682,6 +685,11 @@ $beer-header-lines-to-show: 2;
     color: $normal-text;
     span {
       color: $special-beer;
+    }
+  }
+  div {
+    .normal-text {
+      color: $normal-text !important;
     }
   }
 } 
