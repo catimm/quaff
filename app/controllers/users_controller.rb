@@ -27,7 +27,7 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(current_user.id)
-    @user_notifications = UserNotificationPreference.find_by(user_id: current_user.id)
+    @user_notifications = UserNotificationPreference.find_by(user_id: @user.id)
     # Rails.logger.debug("User notifications: #{@user_notifications.inspect}")
   end
   

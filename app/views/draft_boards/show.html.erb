@@ -16,9 +16,15 @@
 			</div>
 		</div>
 		<hr>
-		<div class="row no-margin ">
-			<%= render 'current_draft_board' %>
-		</div>
+		<% if @board_type == "column" %>
+			<div class="row no-margin ">
+				<%= render 'current_column_draft_board' %>
+			</div>
+		<% else %>
+			<div class="row no-margin ">
+				<%= render 'current_row_draft_board' %>
+			</div>
+		<% end %>
 	</div>
 
 <%= render 'layouts/footer' %>

@@ -747,7 +747,20 @@ p {
 #user_beer_rating_comment {
   height: 40px !important;
 }
-// Draft Board "pretty" page
+// Draft Board Column page
+.draft-board-column-image-holder-div {
+  position: relative;
+}
+.draft-board-column-tap-number {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: $action-background;
+  color: #fff;
+}
 .brewery-logo-image-med {
   background-repeat: no-repeat;
   height: 85px;
@@ -761,7 +774,7 @@ $beer-header-font-size-fp: 16px;
 $beer-header-line-height-fp: 1.2;
 $beer-header-lines-to-show-fp: 1;
 .drink-header-draft-pretty {
-  color: $normal-text;
+  color: $header-text;
   font-weight: 500; 
   margin-bottom: 5px; 
   display: block; /* Fallback for non-webkit */
@@ -796,6 +809,28 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 12px;
   margin: 2.5px 0;
   text-align: center; 
+}
+// Draft Board Row Page
+.draft-board-row-maker-name {
+  color: $normal-text;
+}
+.draft-board-drink-name {
+  color: $action-background;
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   //background-color: red;
+}
+.table {
+   th {
+      padding: 8px 4px !important;
+   }
+   td {
+      padding: 8px 4px !important; 
+   }
+}
+.draft-board-row-name {
+  font-size: 16px;
+  padding-top: 4px !important;
 }
 // Sign-up & log-in pages
 .box {
@@ -930,6 +965,9 @@ $beer-header-lines-to-show-fp: 1;
 }
 .abv-div {
   border-right: 1px solid $soft-border;
+  height: 14px;
+}
+.abv-div-draft-board {
   height: 14px;
 }
 .ibu-div {
