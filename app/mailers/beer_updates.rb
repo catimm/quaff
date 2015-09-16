@@ -32,6 +32,34 @@ class BeerUpdates < ActionMailer::Base
     end
   end # end of new beers added email
   
+  def new_breweries_email(admin_email, location, breweries)
+    # determine if this is prod environment
+    @prod = User.where(email: "carl@drinkknird.com")[0]
+    # mandrill template info
+    template_name = "new-breweries-email"
+    template_content = []
+    message = {
+      merge: true,
+      merge_language: "handlebars",
+      to: [
+        {:email => admin_email}
+      ],
+      inline_css: true,
+      merge_vars: [
+        { rcpt: admin_email,
+          vars: [
+             {name: "location", content: location},
+             {name: "breweries", content: breweries}
+           ]
+         }
+      ]
+    }
+    
+    if @prod.username == "CarlAdmin"
+      mandrill_client.messages.send_template template_name, template_content, message
+    end
+  end # end of new beers added email
+  
   def user_added_beers_email(admin_email, user, beers)
     # determine if this is prod environment
     @prod = User.where(email: "carl@drinkknird.com")[0]

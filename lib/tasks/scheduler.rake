@@ -19,6 +19,8 @@ task :check_pine_box => :environment do
 
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
     # create array to hold email info for user's tracking new beers
@@ -39,6 +41,14 @@ task :check_pine_box => :environment do
       
       @this_beer_name = node.css("td.draft_name").text
       Rails.logger.debug("This beer name: #{@this_beer_name.inspect}")
+      # check if this drink contains numbers of any type
+      if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+        @contains_numbers = true
+      end
+      if (@this_beer_name =~ /\d/)
+        @contains_numbers = true
+      end
+      
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
       @this_place_serving_size = node.css("td.draft_size").text
@@ -137,6 +147,9 @@ task :check_pine_box => :environment do
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id, :beer_is_current => "yes")
         new_option.save!  
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
+        # add new brewery to array for email 
+        @new_brewery_info << @this_brewery_name
+        # add new drink to array for email
         @new_beer_info << this_new_beer
       else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
@@ -154,22 +167,32 @@ task :check_pine_box => :environment do
         
         # check if this current beer already exists in beers table
         @recognized_beer = nil
+        @drink_name_match = false
         @this_brewery_beers.each do |beer|
-          Rails.logger.debug("Beer matching loop, beer is: #{beer.beer_name.inspect}")
-          # check if beer name matches in either direction
+        # check if beer name matches in either direction
+        if @contains_numbers # if this drink contains numbers, do an exact match
+            if beer.beer_name == @this_beer_name
+              @drink_name_match = true
+            else 
+              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
+              if !@alt_drink_name.nil?
+                @drink_name_match = true
+              end
+            end
+        else # else if drink doesn't contain numbers, look for approximate matches
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match = true
+             @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
+             @drink_name_match = true
           else
-            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            if !@alt_drink_name.nil?
+              @drink_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+         end # end of split between drinks with numbers and drinks without
+          if @drink_name_match == true
             @recognized_beer = beer
-            Rails.logger.debug("Recognized beer info: #{@recognized_beer.inspect}")
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
@@ -310,6 +333,11 @@ task :check_pine_box => :environment do
         end
       end
       
+      # send Carl an email with new brewery info
+      if !@new_brewery_info.empty?
+         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+      end
+      
       # send admin emails with new beer updates
       if !@new_beer_info.empty?
         @admin_emails.each do |admin_email|
@@ -357,6 +385,14 @@ task :check_chucks_85 => :environment do
       @this_brewery_name = @this_brewery_name.strip
       
       @this_beer_name = node.css("td.draft_name").text
+      # check if this drink contains numbers of any type
+      if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+        @contains_numbers = true
+      end
+      if (@this_beer_name =~ /\d/)
+        @contains_numbers = true
+      end
+      
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
       @this_place_serving_size = node.css("td.draft_size").text
@@ -455,7 +491,9 @@ task :check_chucks_85 => :environment do
         new_option.save!  
         # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
-        # add new list (new beer) to an array to send via email 
+        # add new brewery to array for email 
+        @new_brewery_info << @this_brewery_name
+        # add new drink to array for email   
         @new_beer_info << this_new_beer
       else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
@@ -473,24 +511,36 @@ task :check_chucks_85 => :environment do
         
         # check if this current beer already exists in beers table
         @recognized_beer = nil
+        @drink_name_match = false
         @this_brewery_beers.each do |beer|
-          # check if beer name matches in either direction
+        # check if beer name matches in either direction
+        if @contains_numbers # if this drink contains numbers, do an exact match
+            if beer.beer_name == @this_beer_name
+              @drink_name_match = true
+            else 
+              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
+              if !@alt_drink_name.nil?
+                @drink_name_match = true
+              end
+            end
+        else # else if drink doesn't contain numbers, look for approximate matches
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match = true
+             @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
+             @drink_name_match = true
           else
-            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            if !@alt_drink_name.nil?
+              @drink_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+         end # end of split between drinks with numbers and drinks without
+          if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end 
+        end
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           if @collab_beer # for collab scenario--make sure collab table is populated properly
@@ -622,6 +672,11 @@ task :check_chucks_85 => :environment do
         end
       end
       
+      # send Carl an email with new brewery info
+      if !@new_brewery_info.empty?
+         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+      end
+      
       # send admin emails with new beer updates
       if !@new_beer_info.empty?
         @admin_emails.each do |admin_email|
@@ -650,6 +705,8 @@ task :check_chucks_cd => :environment do
 
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
 
@@ -668,6 +725,14 @@ task :check_chucks_cd => :environment do
       
       @this_beer_name = node.css("td.draft_name").text
       # Rails.logger.debug("Beer Name: #{@this_beer_name.inspect}")
+      # check if this drink contains numbers of any type
+      if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+        @contains_numbers = true
+      end
+      if (@this_beer_name =~ /\d/)
+        @contains_numbers = true
+      end
+      
       @this_beer_origin = node.css("td.draft_origin").text
       @this_beer_abv = node.css("td.draft_abv").text
       # split brewery name so key words can be removed from beer name
@@ -764,7 +829,9 @@ task :check_chucks_cd => :environment do
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
-        # add new list (new beer) to an array to send via email 
+        # add new brewery to array for email 
+        @new_brewery_info << @this_brewery_name
+        # add new drink to array for email
         @new_beer_info << this_new_beer
       else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
@@ -782,24 +849,36 @@ task :check_chucks_cd => :environment do
         
         # check if this current beer already exists in beers table
         @recognized_beer = nil
+        @drink_name_match = false
         @this_brewery_beers.each do |beer|
-          # check if beer name matches in either direction
+        # check if beer name matches in either direction
+        if @contains_numbers # if this drink contains numbers, do an exact match
+            if beer.beer_name == @this_beer_name
+              @drink_name_match = true
+            else 
+              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
+              if !@alt_drink_name.nil?
+                @drink_name_match = true
+              end
+            end
+        else # else if drink doesn't contain numbers, look for approximate matches
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match = true
+             @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
+             @drink_name_match = true
           else
-            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            if !@alt_drink_name.nil?
+              @drink_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+         end # end of split between drinks with numbers and drinks without
+          if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end 
+        end
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           if @collab_beer # for collab scenario--make sure collab table is populated properly
@@ -930,6 +1009,11 @@ task :check_chucks_cd => :environment do
         end
       end
       
+      # send Carl an email with new brewery info
+      if !@new_brewery_info.empty?
+         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+      end
+      
       # send admin emails with new beer updates
       if !@new_beer_info.empty?
         @admin_emails.each do |admin_email|
@@ -958,6 +1042,8 @@ task :check_beer_junction => :environment do
 
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
 
@@ -968,6 +1054,14 @@ task :check_beer_junction => :environment do
     doc_pb.search("td.beer-column").each do |node|
       # first grab all data for this beer
       @this_beer_name = node.css("a.beername").text.strip.gsub(/\n +/, " ")
+      # check if this drink contains numbers of any type
+      if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+        @contains_numbers = true
+      end
+      if (@this_beer_name =~ /\d/)
+        @contains_numbers = true
+      end
+      
       @this_beer_abv = node.css("span.abv").text
       @this_beer_type = node.css("span.style").text
       @this_brewery_name = node.css("+ td.brewery-column > .brewery-name").text
@@ -1076,7 +1170,9 @@ task :check_beer_junction => :environment do
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
-        # add new list (new beer) to an array to send via email 
+        # add new brewery to array for email 
+        @new_brewery_info << @this_brewery_name
+        # add new drink to array for email
         @new_beer_info << this_new_beer
       else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
@@ -1094,24 +1190,36 @@ task :check_beer_junction => :environment do
         
         # check if this current beer already exists in beers table
         @recognized_beer = nil
+        @drink_name_match = false
         @this_brewery_beers.each do |beer|
-         # check if beer name matches in either direction
+        # check if beer name matches in either direction
+        if @contains_numbers # if this drink contains numbers, do an exact match
+            if beer.beer_name == @this_beer_name
+              @drink_name_match = true
+            else 
+              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
+              if !@alt_drink_name.nil?
+                @drink_name_match = true
+              end
+            end
+        else # else if drink doesn't contain numbers, look for approximate matches
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match = true
+             @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
+             @drink_name_match = true
           else
-            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            if !@alt_drink_name.nil?
+              @drink_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+         end # end of split between drinks with numbers and drinks without
+          if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end 
+        end
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           if @collab_beer # for collab scenario--make sure collab table is populated properly
@@ -1242,6 +1350,11 @@ task :check_beer_junction => :environment do
         end
       end
       
+      # send Carl an email with new brewery info
+      if !@new_brewery_info.empty?
+         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+      end
+      
       # send admin emails with new beer updates
       if !@new_beer_info.empty?
         @admin_emails.each do |admin_email|
@@ -1271,6 +1384,8 @@ task :check_beveridge_place => :environment do
     
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
     
@@ -1280,6 +1395,14 @@ task :check_beveridge_place => :environment do
     doc_pb.search("tbody tr").each do |node|
       # first grab all data for this beer
       @this_beer_name = node.css("td.beer > a").text.strip.gsub(/\n +/, " ")
+      # check if this drink contains numbers of any type
+      if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+        @contains_numbers = true
+      end
+      if (@this_beer_name =~ /\d/)
+        @contains_numbers = true
+      end
+      
       @this_beer_abv = node.css("td.abv").text
       @this_beer_type = node.css("td.beer-style").text
       @this_brewery_name = node.css("td.brewery").text
@@ -1394,7 +1517,9 @@ task :check_beveridge_place => :environment do
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name +" "+ @this_beer_name + " (<span class='red-text'>NEW: red status</span>)"
-        # add new list (new beer) to an array to send via email 
+        # add new brewery to array for email 
+        @new_brewery_info << @this_brewery_name
+        # add new drink to array for email
         @new_beer_info << this_new_beer
       else # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
@@ -1412,24 +1537,36 @@ task :check_beveridge_place => :environment do
         
         # check if this current beer already exists in beers table
         @recognized_beer = nil
+        @drink_name_match = false
         @this_brewery_beers.each do |beer|
-          # check if beer name matches in either direction
+        # check if beer name matches in either direction
+        if @contains_numbers # if this drink contains numbers, do an exact match
+            if beer.beer_name == @this_beer_name
+              @drink_name_match = true
+            else 
+              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
+              if !@alt_drink_name.nil?
+                @drink_name_match = true
+              end
+            end
+        else # else if drink doesn't contain numbers, look for approximate matches
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match = true
+             @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
+             @drink_name_match = true
           else
-            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            if !@alt_drink_name.nil?
+              @drink_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+         end # end of split between drinks with numbers and drinks without
+          if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end 
+        end
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           if @collab_beer # for collab scenario--make sure collab table is populated properly
@@ -1558,6 +1695,11 @@ task :check_beveridge_place => :environment do
         @not_current_beer_ids.each do |beer|
           update_not_current_beer = BeerLocation.update(beer, beer_is_current: "no", removed_at: Time.now)
         end
+      end
+      
+      # send Carl an email with new brewery info
+      if !@new_brewery_info.empty?
+         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
@@ -1938,6 +2080,8 @@ task :check_the_yard => :environment do
     
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
 
@@ -1963,11 +2107,25 @@ task :check_the_yard => :environment do
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
             @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+            # check if this drink contains numbers of any type
+            if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+              @contains_numbers = true
+            end
+            if (@this_beer_name =~ /\d/)
+              @contains_numbers = true
+            end
           end
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
           # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
+          # check if this drink contains numbers of any type
+          if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+            @contains_numbers = true
+          end
+          if (@this_beer_name =~ /\d/)
+            @contains_numbers = true
+          end
         end
         break if !@related_brewery.nil?
       end  
@@ -1986,34 +2144,47 @@ task :check_the_yard => :environment do
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)"
-        # add new list (new beer) to an array to send via email 
+        # add new brewery to array for email 
+        @new_brewery_info << @this_brewery_name
+        # add new drink to array for email 
         @new_beer_info << this_new_beer
       else 
         Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
         # since this brewery exists in the breweries table, find all its related beers from the beers table
         @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+        
         # check if this current beer already exists in beers table
         @recognized_beer = nil
+        @drink_name_match = false
         @this_brewery_beers.each do |beer|
-          Rails.logger.debug("Beer matching loop, beer is: #{beer.beer_name.inspect}")
-          # check if beer name matches in either direction
+        # check if beer name matches in either direction
+        if @contains_numbers # if this drink contains numbers, do an exact match
+            if beer.beer_name == @this_beer_name
+              @drink_name_match = true
+            else 
+              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
+              if !@alt_drink_name.nil?
+                @drink_name_match = true
+              end
+            end
+        else # else if drink doesn't contain numbers, look for approximate matches
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match = true
+             @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
+             @drink_name_match = true
           else
-            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            if !@alt_drink_name.nil?
+              @drink_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+         end # end of split between drinks with numbers and drinks without
+          if @drink_name_match == true
             @recognized_beer = beer
-            Rails.logger.debug("Recognized beer info: #{@recognized_beer.inspect}")
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end 
+        end
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
@@ -2127,6 +2298,11 @@ task :check_the_yard => :environment do
         end
       end
       
+      # send Carl an email with new brewery info
+      if !@new_brewery_info.empty?
+         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+      end
+      
       # send admin emails with new beer updates
       if !@new_beer_info.empty?
         @admin_emails.each do |admin_email|
@@ -2156,6 +2332,8 @@ task :check_the_dray => :environment do
     
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
 
@@ -2181,11 +2359,25 @@ task :check_the_dray => :environment do
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
             @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+            # check if this drink contains numbers of any type
+            if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+              @contains_numbers = true
+            end
+            if (@this_beer_name =~ /\d/)
+              @contains_numbers = true
+            end
           end
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
           # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
+          # check if this drink contains numbers of any type
+          if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+            @contains_numbers = true
+          end
+          if (@this_beer_name =~ /\d/)
+            @contains_numbers = true
+          end
         end
         break if !@related_brewery.nil?
       end  
@@ -2204,34 +2396,47 @@ task :check_the_dray => :environment do
         new_option.save!  
          # create list item (new beer) to send via email
         this_new_beer = @this_brewery_name + " (<span class='red-text'>NEW: red status</span>)"
-        # add new list (new beer) to an array to send via email 
+        # add new brewery to array for email 
+        @new_brewery_info << @this_brewery_name
+        # add new drink to array for email 
         @new_beer_info << this_new_beer
       else 
         Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
         # since this brewery exists in the breweries table, find all its related beers from the beers table
         @this_brewery_beers = Beer.where(brewery_id: @related_brewery[0].id)
+
         # check if this current beer already exists in beers table
         @recognized_beer = nil
+        @drink_name_match = false
         @this_brewery_beers.each do |beer|
-          Rails.logger.debug("Beer matching loop, beer is: #{beer.beer_name.inspect}")
-          # check if beer name matches in either direction
+        # check if beer name matches in either direction
+        if @contains_numbers # if this drink contains numbers, do an exact match
+            if beer.beer_name == @this_beer_name
+              @drink_name_match = true
+            else 
+              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
+              if !@alt_drink_name.nil?
+                @drink_name_match = true
+              end
+            end
+        else # else if drink doesn't contain numbers, look for approximate matches
           if beer.beer_name.include? @this_beer_name
-             the_first_name_match = true
+             @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
+             @drink_name_match = true
           else
-            @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
-            if !@alt_beer_name.empty?
-              the_third_name_match = true
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            if !@alt_drink_name.nil?
+              @drink_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+         end # end of split between drinks with numbers and drinks without
+          if @drink_name_match == true
             @recognized_beer = beer
-            Rails.logger.debug("Recognized beer info: #{@recognized_beer.inspect}")
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end 
+        end
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
@@ -2345,6 +2550,11 @@ task :check_the_dray => :environment do
         end
       end
       
+      # send Carl an email with new brewery info
+      if !@new_brewery_info.empty?
+         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+      end
+      
       # send admin emails with new beer updates
       if !@new_beer_info.empty?
         @admin_emails.each do |admin_email|
@@ -2365,7 +2575,13 @@ task :check_user_additions => :environment do
     if !@user_added_beers.empty?
       @user_added_beers.each do |user_beer|
         @user = User.where(id: user_beer.touched_by_user)[0]
-        
+        if user_beer.brewery.brewery_name.nil?
+          user_beer.brewery.brewery_name = "[not provided]"
+        end
+        if user_beer.beer_name.nil?
+          user_beer.beer_name = "[not provided]"
+          user_beer.id = "N/A"
+        end
         beer_name = user_beer.brewery.brewery_name + " - " + user_beer.beer_name + " [beer id: " + user_beer.id.to_s + ";" + " added by " + @user.username + " (user id: " + @user.id.to_s + ")]" 
         @user_added_beer_list << beer_name
       end

@@ -21,7 +21,7 @@ class BeerLocation < ActiveRecord::Base
   validates :location_id, presence: true
   has_many :draft_details
   accepts_nested_attributes_for :draft_details, :reject_if => :all_blank, :allow_destroy => true
-  validates_uniqueness_of :tap_number, :scope => :draft_board_id, :presence => {message: "Seems you have two tap numbers the same; you should change one.)"}
+  #validates_uniqueness_of :tap_number, :scope => :draft_board_id, :presence => {message: "Seems you have two tap numbers the same; you should change one.)"}
   
   # this scope is for the admin page
   scope :all_current, -> { where(beer_is_current: "yes") }
