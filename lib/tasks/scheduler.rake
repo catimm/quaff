@@ -1028,14 +1028,14 @@ task :check_beer_junction => :environment do
       # first grab all data for this beer
       @this_beer_name = node.css("a.beername").text.strip.gsub(/\n +/, " ")
       # set new variable to false
-      @contains_numbers = false
+      #@contains_numbers = false
       # check if this drink contains numbers of any type
-      if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
-        @contains_numbers = true
-      end
-      if (@this_beer_name =~ /\d/)
-        @contains_numbers = true
-      end
+      #if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+      #  @contains_numbers = true
+      #end
+      #if (@this_beer_name =~ /\d/)
+      #  @contains_numbers = true
+      #end
       
       @this_beer_abv = node.css("span.abv").text
       @this_beer_type = node.css("span.style").text
@@ -1168,33 +1168,22 @@ task :check_beer_junction => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers == true # if this drink contains numbers, do an exact match
-            if beer.beer_name == @this_beer_name
-              @drink_name_match = true
-            else 
-              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
-              if !@alt_drink_name.nil?
-                @drink_name_match = true
-              end
-            end
-        else # else if drink doesn't contain numbers, look for approximate matches
-          if beer.beer_name.include? @this_beer_name
+          if beer.beer_name == @this_beer_name
              @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
              @drink_name_match = true
           else
-            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
               @drink_name_match = true
             end
           end
-         end # end of split between drinks with numbers and drinks without
           if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end
+        end # end loop to check each drink name against this drink
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           if @collab_beer # for collab scenario--make sure collab table is populated properly
@@ -1371,14 +1360,14 @@ task :check_beveridge_place => :environment do
       # first grab all data for this beer
       @this_beer_name = node.css("td.beer > a").text.strip.gsub(/\n +/, " ")
       # set new variable to false
-      @contains_numbers = false
+      #@contains_numbers = false
       # check if this drink contains numbers of any type
-      if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
-        @contains_numbers = true
-      end
-      if (@this_beer_name =~ /\d/)
-        @contains_numbers = true
-      end
+      #if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
+      #  @contains_numbers = true
+      #end
+      #if (@this_beer_name =~ /\d/)
+      #  @contains_numbers = true
+      #end
       
       @this_beer_abv = node.css("td.abv").text
       @this_beer_type = node.css("td.beer-style").text
@@ -1517,33 +1506,22 @@ task :check_beveridge_place => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers == true # if this drink contains numbers, do an exact match
-            if beer.beer_name == @this_beer_name
-              @drink_name_match = true
-            else 
-              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
-              if !@alt_drink_name.nil?
-                @drink_name_match = true
-              end
-            end
-        else # else if drink doesn't contain numbers, look for approximate matches
-          if beer.beer_name.include? @this_beer_name
+          if beer.beer_name == @this_beer_name
              @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
              @drink_name_match = true
           else
-            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
               @drink_name_match = true
             end
           end
-         end # end of split between drinks with numbers and drinks without
           if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end
+        end # end loop to check each drink name against this drink
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           if @collab_beer # for collab scenario--make sure collab table is populated properly
@@ -2084,29 +2062,11 @@ task :check_the_yard => :environment do
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
             @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
-            # set new variable to false
-            @contains_numbers = false
-            # check if this drink contains numbers of any type
-            if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
-              @contains_numbers = true
-            end
-            if (@this_beer_name =~ /\d/)
-              @contains_numbers = true
-            end
           end
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
           # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
-          # set new variable to false
-          @contains_numbers = false
-          # check if this drink contains numbers of any type
-          if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
-            @contains_numbers = true
-          end
-          if (@this_beer_name =~ /\d/)
-            @contains_numbers = true
-          end
         end
         break if !@related_brewery.nil?
       end  
@@ -2139,33 +2099,22 @@ task :check_the_yard => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers == true # if this drink contains numbers, do an exact match
-            if beer.beer_name == @this_beer_name
-              @drink_name_match = true
-            else 
-              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
-              if !@alt_drink_name.nil?
-                @drink_name_match = true
-              end
-            end
-        else # else if drink doesn't contain numbers, look for approximate matches
-          if beer.beer_name.include? @this_beer_name
+          if beer.beer_name == @this_beer_name
              @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
              @drink_name_match = true
           else
-            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
               @drink_name_match = true
             end
           end
-         end # end of split between drinks with numbers and drinks without
           if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end
+        end # end loop to check each drink name against this drink
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
@@ -2340,29 +2289,11 @@ task :check_the_dray => :environment do
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
             @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
-            # set new variable to false
-            @contains_numbers = false
-            # check if this drink contains numbers of any type
-            if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
-              @contains_numbers = true
-            end
-            if (@this_beer_name =~ /\d/)
-              @contains_numbers = true
-            end
           end
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
           # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
-          # set new variable to false
-          @contains_numbers = false
-          # check if this drink contains numbers of any type
-          if (@this_beer_name =~ /^(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/)
-            @contains_numbers = true
-          end
-          if (@this_beer_name =~ /\d/)
-            @contains_numbers = true
-          end
         end
         break if !@related_brewery.nil?
       end  
@@ -2395,33 +2326,22 @@ task :check_the_dray => :environment do
         @drink_name_match = false
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
-        if @contains_numbers == true # if this drink contains numbers, do an exact match
-            if beer.beer_name == @this_beer_name
-              @drink_name_match = true
-            else 
-              @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
-              if !@alt_drink_name.nil?
-                @drink_name_match = true
-              end
-            end
-        else # else if drink doesn't contain numbers, look for approximate matches
-          if beer.beer_name.include? @this_beer_name
+          if beer.beer_name == @this_beer_name
              @drink_name_match = true
           elsif @this_beer_name.include? beer.beer_name
              @drink_name_match = true
           else
-            @alt_drink_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")[0]
+            @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
               @drink_name_match = true
             end
           end
-         end # end of split between drinks with numbers and drinks without
           if @drink_name_match == true
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
-        end
+        end # end loop to check each drink name against this drink
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
