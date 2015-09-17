@@ -325,12 +325,12 @@ task :check_pine_box => :environment do
       end
       
       # send Carl an email with new brewery info
-      if !@new_brewery_info.empty?
+      if !@new_brewery_info.nil?
          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
@@ -655,12 +655,12 @@ task :check_chucks_85 => :environment do
       end
       
       # send Carl an email with new brewery info
-      if !@new_brewery_info.empty?
+      if !@new_brewery_info.nil?
          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
@@ -983,12 +983,12 @@ task :check_chucks_cd => :environment do
       end
       
       # send Carl an email with new brewery info
-      if !@new_brewery_info.empty?
+      if !@new_brewery_info.nil?
          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
@@ -1315,12 +1315,12 @@ task :check_beer_junction => :environment do
       end
       
       # send Carl an email with new brewery info
-      if !@new_brewery_info.empty?
+      if !@new_brewery_info.nil?
          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
@@ -1653,12 +1653,12 @@ task :check_beveridge_place => :environment do
       end
       
       # send Carl an email with new brewery info
-      if !@new_brewery_info.empty?
+      if !@new_brewery_info.nil?
          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
@@ -2006,7 +2006,7 @@ task :check_fremont_beer_garden => :environment do
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
@@ -2229,12 +2229,12 @@ task :check_the_yard => :environment do
       end
       
       # send Carl an email with new brewery info
-      if !@new_brewery_info.empty?
+      if !@new_brewery_info.nil?
          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
@@ -2456,12 +2456,12 @@ task :check_the_dray => :environment do
       end
       
       # send Carl an email with new brewery info
-      if !@new_brewery_info.empty?
+      if !@new_brewery_info.nil?
          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
       end
       
       # send admin emails with new beer updates
-      if !@new_beer_info.empty?
+      if !@new_beer_info.nil?
         @admin_emails.each do |admin_email|
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
