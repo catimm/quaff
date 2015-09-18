@@ -326,7 +326,9 @@ task :check_pine_box => :environment do
       
       # send Carl an email with new brewery info
       if !@new_brewery_info.nil?
-         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        if !@new_brewery_info.empty?
+          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        end
       end
       
       # send admin emails with new beer updates
@@ -656,7 +658,9 @@ task :check_chucks_85 => :environment do
       
       # send Carl an email with new brewery info
       if !@new_brewery_info.nil?
-         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+         if !@new_brewery_info.empty?
+          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        end
       end
       
       # send admin emails with new beer updates
@@ -984,7 +988,9 @@ task :check_chucks_cd => :environment do
       
       # send Carl an email with new brewery info
       if !@new_brewery_info.nil?
-         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+         if !@new_brewery_info.empty?
+          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        end
       end
       
       # send admin emails with new beer updates
@@ -1316,7 +1322,9 @@ task :check_beer_junction => :environment do
       
       # send Carl an email with new brewery info
       if !@new_brewery_info.nil?
-         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+         if !@new_brewery_info.empty?
+          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        end
       end
       
       # send admin emails with new beer updates
@@ -1654,7 +1662,9 @@ task :check_beveridge_place => :environment do
       
       # send Carl an email with new brewery info
       if !@new_brewery_info.nil?
-         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+         if !@new_brewery_info.empty?
+          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        end
       end
       
       # send admin emails with new beer updates
@@ -1734,7 +1744,7 @@ task :check_fremont_beer_garden => :environment do
         @this_beer_name.slice! "Guest: "
         @this_brewery_name = @this_beer_name.split.first(2).join(' ')
         # find if brewery is in brewery table
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
         if @related_brewery.blank?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           # Rails.logger.debug("Find if Brewery is in alt_breweries table: #{@alt_brewery_name.inspect}")
@@ -2055,9 +2065,9 @@ task :check_the_yard => :environment do
       @split_beer_name = @initial_beer_name.split(/\s+/)
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
-        @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%").where(collab: false)
+        @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%")
         if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          @alt_brewery_name = @alt_brewery_name.where("name like ?", "%#{word}%")
           if !@alt_brewery_name.blank?
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
@@ -2066,10 +2076,9 @@ task :check_the_yard => :environment do
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
-          # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
         end
         break if !@related_brewery.nil?
-      end  
+      end   
 
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
@@ -2230,7 +2239,9 @@ task :check_the_yard => :environment do
       
       # send Carl an email with new brewery info
       if !@new_brewery_info.nil?
-         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+         if !@new_brewery_info.empty?
+          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        end
       end
       
       # send admin emails with new beer updates
@@ -2282,9 +2293,9 @@ task :check_the_dray => :environment do
       @split_beer_name = @initial_beer_name.split(/\s+/)
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
-        @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%").where(collab: false)
+        @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%")
         if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+          @alt_brewery_name = @alt_brewery_name.where("name like ?", "%#{word}%")
           if !@alt_brewery_name.blank?
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
@@ -2293,10 +2304,9 @@ task :check_the_dray => :environment do
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
-          # Rails.logger.debug("Beer Name minus brewery: #{@this_beer_name.inspect}")
         end
         break if !@related_brewery.nil?
-      end  
+      end   
 
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
@@ -2457,7 +2467,9 @@ task :check_the_dray => :environment do
       
       # send Carl an email with new brewery info
       if !@new_brewery_info.nil?
-         BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+         if !@new_brewery_info.empty?
+          BeerUpdates.new_breweries_email("carl@drinkknird.com", @this_location_name, @new_brewery_info).deliver
+        end
       end
       
       # send admin emails with new beer updates
