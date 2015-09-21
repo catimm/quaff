@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150907231254) do
+ActiveRecord::Schema.define(version: 20150918230138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,10 +105,10 @@ ActiveRecord::Schema.define(version: 20150907231254) do
   end
 
   create_table "breweries", force: :cascade do |t|
-    t.string   "brewery_name",       limit: 255
-    t.string   "brewery_city",       limit: 255
-    t.string   "brewery_state",      limit: 255
-    t.string   "brewery_url",        limit: 255
+    t.string   "brewery_name",        limit: 255
+    t.string   "brewery_city",        limit: 255
+    t.string   "brewery_state_short", limit: 255
+    t.string   "brewery_url",         limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "image"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20150907231254) do
     t.string   "short_brewery_name"
     t.boolean  "collab"
     t.boolean  "dont_include"
+    t.string   "brewery_state_long"
   end
 
   create_table "draft_boards", force: :cascade do |t|

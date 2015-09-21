@@ -35,6 +35,7 @@ class Location < ActiveRecord::Base
   attr_accessor :top_beer_five
   
   scope :live_location, -> { where(ignore_location: [false, nil]) }
+  
 
   def self.options_for_select 
     order('LOWER(name)').map { |e| [e.name, e.id] }

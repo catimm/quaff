@@ -15,23 +15,31 @@ class DraftBoardsController < ApplicationController
     # get last updated info
     @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
     
-    # determine number of drink size columns needed in row view
-    #@beer_location_ids = @current_draft_board.pluck(:id)
-    #@drink_details = DraftDetail.where(beer_location_id: @beer_location_ids)
-    #@drink_details.each do |details|
-    #  if details.drink_size > 0 && details.drink_size <= 5
-    #    @taster_size += 1
-    #  end
-    #  if details.drink_size > 5 && details.drink_size <= 12
-    #    @tulip_size += 1
-    #  end
-    #  if details.drink_size > 12 && details.drink_size <= 22
-    #    @pint_size += 1
-    #  end
-    #  if details.drink_size >= 32
-    #    @growler_size += 1
-    #  end
-    #end
+    # determine whether a drink size column shows in row view
+    @taster_size = 0
+    @tulip_size = 0
+    @pint_size = 0
+    @half_growler_size = 0
+    @growler_size = 0
+    @beer_location_ids = @current_draft_board.pluck(:id)
+    @drink_details = DraftDetail.where(beer_location_id: @beer_location_ids)
+    @drink_details.each do |details|
+      if details.drink_size > 0 && details.drink_size <= 5
+        @taster_size += 1
+      end
+      if details.drink_size > 5 && details.drink_size <= 12
+        @tulip_size += 1
+      end
+      if details.drink_size > 12 && details.drink_size <= 22
+        @pint_size += 1
+      end
+      if details.drink_size == 32
+        @half_growler_size += 1
+      end
+      if details.drink_size == 64
+        @growler_size += 1
+      end
+    end
     
   end
   

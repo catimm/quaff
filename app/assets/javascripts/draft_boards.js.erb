@@ -32,9 +32,12 @@ $(function() {
     			if(siblings == 4) {
     				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("4th size option");
     			}
+    			if(siblings == 5) {
+    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("5th size option");
+    			}
 			}
 	    });
-	    if (siblings >= 4) {
+	    if (siblings >= 5) {
 	    	$('.formButton-add-details.add_nested_fields').hide();
 	    } 
 	});

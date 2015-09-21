@@ -136,16 +136,16 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   padding: 0 10px;
 }
 .no-padding {
-  padding: 0;
+  padding: 0 !important;
 }
 .no-padding-right {
-  padding-right: 0;
+  padding-right: 0 !important;
 }
 .no-padding-left {
-  padding-left: 0;
+  padding-left: 0 !important;
 }
 .no-margin {
-  margin: 0;
+  margin: 0 !important;
 }
 .headline {
   margin: 10px auto;
@@ -561,7 +561,9 @@ $beer-header-lines-to-show-fp: 1;
 .retailer-page-title.with-update-text {
   float: left;
 }
-
+  .retail-account-filler-col {
+    height: 54px !important;
+  }
 .retailer-logo-image-med {
     background-repeat: no-repeat;
     height: 70px;
@@ -769,14 +771,17 @@ p {
   background: $action-background;
   color: #fff;
 }
-.brewery-logo-image-med {
-  background-repeat: no-repeat;
+.column-draft-image-holder {
   height: 85px;
   padding: 0;
   margin: 10px 0 0 0;
 }
 .drink-origin {
-  margin-top: -5px;
+  margin: 0 0 0 5px;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 $beer-header-font-size-fp: 16px;
 $beer-header-line-height-fp: 1.2;
@@ -805,6 +810,13 @@ $beer-header-lines-to-show-fp: 1;
 .draft-pretty-icon {
   float: left;
   text-align: center;
+}
+.draft-size-holder {
+  margin-top: 5px;
+  padding-right: 0;
+}
+.draft-size-holder-for-growlers {
+  margin-top: 7.5px;
 }
 .icon-taster {
   padding-top: 16px;
@@ -890,7 +902,6 @@ $beer-header-lines-to-show-fp: 1;
    margin-right: 0.5em;
    margin-bottom: -0.25em;
 }
-
 // Individual location overview page
 .beer-tile-container {
   padding-top: 7.5px;
@@ -1756,7 +1767,7 @@ div.jqcloud span.w1 { color: $light-blue; }
   color: $normal-text;
 }
 .brewery-list-holder {
-  margin-top: 220px;
+  margin-top: 180px;
 }
 #brewery_all_val {
   height: 30px;
@@ -1783,6 +1794,7 @@ div.jqcloud span.w1 { color: $light-blue; }
   width: 100%;
   font-size: 12px;
   padding: 6px 8px;
+  margin: 2.5px 0;
 }
 .need-text {
   color: $current-beer-attention-needed-background;
@@ -2103,6 +2115,29 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 
+  // Draft board column view page
+  .retailer-logo-image-small {
+    margin: 5px 0 0 0 !important;
+  }
+  .last-updated {
+    font-size: 12px;
+  }
+  .column-draft-image-holder {
+    height: 65px;
+    padding: 0;
+    margin: 10px 0 0 0;
+  }
+  .drink-origin {
+    margin-top: 2.5px;
+  }
+  .drink-header-draft-pretty-mobile {
+    color: $header-text;
+    font-weight: 500; 
+    margin: 10px auto 5px auto;
+    font-size: 14px;
+    line-height: 1.1;
+    overflow: visible;
+  }
   // locations index page
   .overview-tile {
     margin-bottom: 10px;

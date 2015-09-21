@@ -2,34 +2,38 @@
 <div class="container">
 	<div class="row header-row stay-in-place">
 		<div class="page-header">
-			<div class="row">
-				<div class="col-sm-7">
+			<div class="row no-margin">
+				<div class="col-sm-7 visible-sm visible-md visible-lg">
 					<h3><%= @brewery_count %> breweries in the database (<%= @beer_count %> beers)</h3>
-					<h4 class="live-beer-count"><%= @number_live_beers %> beers live (<span class="complete-beer-text"><%= @number_complete_beers %> done</span>; <span class="usable-beer-text"><%= @number_usable_incomplete_beers %> partial</span>; <span class="attention-needed-beer-text"><%= @number_need_attention_beers %> need attention</span>)</h4>
+					<h4 class="live-beer-count"><%= @number_live_beers %> beers live (<span class="complete-beer-text"><%= @number_complete_beers %> done</span>/<span class="usable-beer-text"><%= @number_usable_incomplete_beers %> partial</span>/<span class="attention-needed-beer-text"><%= @number_need_attention_beers %> need attention</span>)</h4>
 				</div>
-				<div class="col-sm-5 text-right">
+				<div class="col-xs-12 visible-xs">
+					<h4><%= @brewery_count %> breweries (<%= @beer_count %> beers)</h4>
+					<h5 class="live-beer-count"><%= @number_live_beers %> beers (<span class="complete-beer-text"><%= @number_complete_beers %></span>/<span class="usable-beer-text"><%= @number_usable_incomplete_beers %></span>/<span class="attention-needed-beer-text"><%= @number_need_attention_beers %></span>)</h5>
+				</div>
+				<div class="col-xs-10 col-sm-5 text-right">
 					<%= link_to "Add new brewery", new_admin_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>
 				</div>
 			</div>
-			<div class="row no-padding">
+			<div class="row no-margin visible-sm visible-md visible-lg">
 				<div class="col-sm-3">
 					<h5><strong>Brewery Name</strong></h5>
 				</div>
 				<div class="col-sm-1">
 					<h5><strong>Image</strong></h5>
 				</div>
-				<div class="col-sm-1">
+				<div class="col-sm-2">
 					<h5><strong>City</strong></h5>
 				</div>
 				<div class="col-sm-1">
 					<h5><strong>State</strong></h5>
 				</div>
 				<div class="col-sm-2">
-					<h5><strong>Alt Names</strong></h5>
-				</div>
-				<div class="col-sm-2">
 					<h5><strong>Beers/In DB</strong></h5>
 				</div>
+				<div class="col-sm-1 no-padding">
+					<h5><strong>Alt Names</strong></h5>
+				</div>			
 			</div>
 		</div>
 	</div>

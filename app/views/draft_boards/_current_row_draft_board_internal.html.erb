@@ -2,14 +2,25 @@
 	<table class="table table-striped">
 		<thead>
 			<th class="text-center">Tap</th>
-			<th>Maker <span class="draft-board-row-drink-name">Drink Name</span></th>
+			<th>Maker <span class="draft-board-drink-name">Drink Name</span></th>
 			<th>Style</th>
 			<th class="text-center">ABV</th>
 			<th class="text-center">IBU</th>
-			<th class="text-center">Taster</th>
-			<th class="text-center">Tulip</th>
-			<th class="text-center">Pint</th>
-			<th class="text-center">Growler</th>
+			<% if @taster_size >= 1 %>
+				<th class="text-center">Taster</th>
+			<% end %>
+			<% if @tulip_size >= 1 %>
+				<th class="text-center">Tulip</th>
+			<% end %>
+			<% if @pint_size >= 1 %>
+				<th class="text-center">Pint</th>
+			<% end %>
+			<% if @half_growler_size >= 1 %>
+				<th class="text-center">1/2 G</th>
+			<% end %>
+			<% if @growler_size >= 1 %>
+				<th class="text-center">Growler</th>
+			<% end %>
 		</thead>
 		<tbody>
 		<% @current_draft_board.each do	|drink| %>		
@@ -39,6 +50,7 @@
 				<% @taster = "N/A" %>
 				<% @tulip = "N/A" %>
 				<% @pint = "N/A" %>
+				<% @half_growler = "N/A" %>
 				<% @growler = "N/A" %>
 				<% @draft_details = DraftDetail.where(beer_location_id: drink.id) %>
 				<% @draft_details.each do |details| %>
@@ -51,14 +63,28 @@
 					<% if details.drink_size > 12 && details.drink_size <= 22 %>
 						<% @pint = "$"+details.drink_cost.to_s %>
 					<% end %>
-					<% if details.drink_size >= 32 %>
+					<% if details.drink_size == 32 %>
+						<% @half_growler = "$"+details.drink_cost.to_s %>
+					<% end %>
+					<% if details.drink_size == 64 %>
 						<% @growler = "$"+details.drink_cost.to_s %>
 					<% end %>
 				<% end %>
-				<td class="draft-board-row-taster text-center"><%= @taster %></td>
-				<td class="draft-board-row-tulip text-center"><%= @tulip %></td>
-				<td class="draft-board-row-pint text-center"><%= @pint %></td>
-				<td class="draft-board-row-growler text-center"><%= @growler %></td>
+				<% if @taster_size >= 1 %>
+					<td class="draft-board-row-taster text-center"><%= @taster %></td>
+				<% end %>
+				<% if @tulip_size >= 1 %>
+					<td class="draft-board-row-tulip text-center"><%= @tulip %></td>
+				<% end %>
+				<% if @pint_size >= 1 %>
+					<td class="draft-board-row-pint text-center"><%= @pint %></td>
+				<% end %>
+				<% if @half_growler_size >= 1 %>
+					<td class="draft-board-row-growler text-center"><%= @half_growler %></td>
+				<% end %>
+				<% if @growler_size >= 1 %>
+					<td class="draft-board-row-growler text-center"><%= @growler %></td>
+				<% end %>
 			</tr>
 		<% end %>
 		</tbody>
