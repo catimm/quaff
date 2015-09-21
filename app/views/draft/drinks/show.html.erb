@@ -1,0 +1,17 @@
+<% if @board_type == "column-web" %>
+	<div class="row no-margin ">
+		<%= render 'current_column_draft_board_web' %>
+	</div>
+<% elsif @board_type == "column-internal" %>
+	<div class="row no-margin ">
+		<%= render 'current_column_draft_board_internal' %>
+	</div>
+<% elsif @board_type == "row-web" %>
+	<div class="row no-margin ">
+		<%= render 'current_row_draft_board_web' %>
+	</div>
+<% else %>
+	<div class="row no-margin ">
+		<%= render 'current_row_draft_board_internal' %>	
+	</div>
+<% end %>

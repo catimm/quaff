@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
   end
   
+  # for Knird admins to add/edit breweries and drinks
   namespace :admin do
     resources :beers do
       collection do
@@ -19,11 +20,16 @@ Rails.application.routes.draw do
     end 
  end
  
-  resources :beers do
-    collection do
-      get :descriptors, as: :descriptors
-    end
-  end 
+ # for retailers to add draft board iframe widget
+ namespace :draft do
+   resources :drinks, only: :show, path: "" # -> drinkknird.com/draft/1
+ end
+ 
+ resources :beers do
+   collection do
+     get :descriptors, as: :descriptors
+   end
+ end 
   
   resources :locations
   resources :retailers
