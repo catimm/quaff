@@ -17,9 +17,9 @@ window.onload = function() {
    document.body.appendChild(iframe);
    
    //css
-   var cssLink = document.createElement("link");
+   var cssLink = document.createElement('link');
    cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
    cssLink.rel = "stylesheet";
    cssLink.type = "text/css";
-   frames['draft-frame'].document.head.appendChild(cssLink);
+   iframe.document.head.appendChild(cssLink);
 };
