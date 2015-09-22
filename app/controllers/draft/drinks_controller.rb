@@ -1,5 +1,5 @@
 class Draft::DrinksController < ApplicationController
-  before_filter :iframe_widget
+  before_filter :allow_iframe_requests
   layout false
   
   def show 
@@ -43,9 +43,8 @@ class Draft::DrinksController < ApplicationController
     end
   end
   
-  private
-  def iframe_widget
-    response.headers.delete "X-Frame-Options"
-    render
+  def allow_iframe_requests
+    response.headers.delete('X-Frame-Options')
   end
+
 end
