@@ -7,6 +7,6 @@ window.onload = function() {
    //iFrame
    var iframe = document.createElement('iframe');
    iframe.style.display = "none";
-   iframe.src = "draft/" + id;
+   iframe.src = "https://quaff-stage.herokuapp.com/draft_boards/1.column-web";  //"draft/" + id;
    document.body.appendChild(iframe);
 };
