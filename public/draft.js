@@ -21,5 +21,5 @@ window.onload = function() {
    cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
    cssLink.rel = "stylesheet";
    cssLink.type = "text/css";
-   document.head.appendChild(cssLink);
+   iframe.document.html.head.appendChild(cssLink);
 };
