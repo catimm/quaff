@@ -22,6 +22,6 @@ window.onload = function() {
    cssLink.rel = "stylesheet";
    cssLink.type = "text/css";
    var ifrm = document.getElementById('draft-frame');
-   ifrm.document.head.appendChild(cssLink);
+   ifrm.contentWindow.document.head.appendChild(cssLink);
 
 };
