@@ -2,6 +2,7 @@ class Draft::DrinksController < ApplicationController
   layout false
   
   def show 
+    Rails.logger.debug("Params info: #: #{params.inspect}")
     @board_type = "column-web" #params[:format]
     # get retailer info
     @retail_id = params[:id]
