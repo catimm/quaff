@@ -7,6 +7,7 @@ window.onload = function() {
    //iFrame
    var iframe = document.createElement('iframe');
    iframe.name = "draft-frame";
+   iframe.id = "draft-frame";
    iframe.style.border = "0";
    iframe.style.frameborder = "0";
    iframe.style.cellspacing = "0";
@@ -20,5 +21,5 @@ window.onload = function() {
    cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
    cssLink.rel = "stylesheet";
    cssLink.type = "text/css";
-   frames['draft-frame'].document.body.appendChild(cssLink);
+   frames['draft-frame'].document.head.appendChild(cssLink);
 };
