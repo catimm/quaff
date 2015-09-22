@@ -15,11 +15,13 @@ window.onload = function() {
    iframe.style.height = "100%";
    iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
-   
+
    //css
    var cssLink = document.createElement('link');
    cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
    cssLink.rel = "stylesheet";
    cssLink.type = "text/css";
-   iframe.head.appendChild(cssLink);
+   var ifrm = document.getElementById('draft-frame');
+   ifrm.document.head.appendChild(cssLink);
+
 };
