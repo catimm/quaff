@@ -11,12 +11,13 @@ window.onload = function() {
    iframe.style.frameborder = "0";
    iframe.style.cellspacing = "0";
    iframe.style.width = "100%";
+   iframe.style.height = "100%";
    iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
    
    //css
    var cssLink = document.createElement("link");
-   cssLink.href = "/assets/application-15d9bb5a37036843a6caa5de5da2b0e6.css";
+   cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
    cssLink .rel = "stylesheet";
    cssLink .type = "text/css";
    frames['draft-frame'].document.head.appendChild(cssLink);
