@@ -74,6 +74,8 @@ gem "nested_form", :git => "git://github.com/ryanb/nested_form.git"
 gem 'autonumeric-rails'
 # The CORS spec allows web applications to make cross domain AJAX calls without using workarounds such as JSONP
 gem 'rack-cors', :require => 'rack/cors'
+# using New Relic to monitor app performance
+gem 'newrelic_rpm'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
