@@ -2,9 +2,18 @@
 	<link href="https://quaff-stage.herokuapp.com/bootstrap.min.js" rel="stylesheet" type="text/javascript">
 	<link href="https://quaff-stage.herokuapp.com/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
 	<link href="https://quaff-stage.herokuapp.com/bootstrap.min.css" rel="stylesheet" type="text/css">
-	<link href="https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss" rel="stylesheet" type="text/css">
+	<link href="https://quaff-stage.herokuapp.com/bootstrap-custom.css" rel="stylesheet" type="text/css">
+	<script> 
+      // Tell the parent iframe what height the iframe needs to be
+      function iframeResize()
+      {
+        var iframe_height = document.getElementById('draft-frame').height();
+		alert(iframe_height);
+		iframe.style.height = iframe_height;
+      }
+    </script> 
 </head>
-<body>
+<body onload="iframeResize()">
 	<div class="container">
 		<% if @board_type == "column-web" %>
 			<div class="row no-margin ">

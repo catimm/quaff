@@ -15,11 +15,6 @@ window.onload = function() {
    iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
 
-	iframe.onload = function() {
-		var iframe_height = document.getElementById('draft-frame').height();
-		alert(iframe_height);
-		iframe.style.height = iframe_height;
-	};
    //css
    //var cssLink = document.createElement('link');
    //cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
