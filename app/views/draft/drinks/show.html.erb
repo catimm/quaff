@@ -1,17 +1,24 @@
-<% if @board_type == "column-web" %>
-	<div class="row no-margin ">
-		<%= render 'current_column_draft_board_web' %>
+<head>
+	<link href="https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div class="container">
+		<% if @board_type == "column-web" %>
+			<div class="row no-margin ">
+				<%= render 'current_column_draft_board_web' %>
+			</div>
+		<% elsif @board_type == "column-internal" %>
+			<div class="row no-margin ">
+				<%= render 'current_column_draft_board_internal' %>
+			</div>
+		<% elsif @board_type == "row-web" %>
+			<div class="row no-margin ">
+				<%= render 'current_row_draft_board_web' %>
+			</div>
+		<% else %>
+			<div class="row no-margin ">
+				<%= render 'current_row_draft_board_internal' %>	
+			</div>
+		<% end %>
 	</div>
-<% elsif @board_type == "column-internal" %>
-	<div class="row no-margin ">
-		<%= render 'current_column_draft_board_internal' %>
-	</div>
-<% elsif @board_type == "row-web" %>
-	<div class="row no-margin ">
-		<%= render 'current_row_draft_board_web' %>
-	</div>
-<% else %>
-	<div class="row no-margin ">
-		<%= render 'current_row_draft_board_internal' %>	
-	</div>
-<% end %>
+</body>
