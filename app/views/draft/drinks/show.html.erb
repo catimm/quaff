@@ -35,6 +35,8 @@
 		
 		function iResize(draft_content_height) {
 		   alert(draft_content_height);
+		   var ifrm = document.getElementById('draft-frame');
+		   ifrm.style.width = draft_content_height;
 		   $('#draft-frame').css("height", draft_content_height);
 		}
 	  });
