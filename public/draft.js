@@ -7,11 +7,13 @@ window.onload = function() {
    //iFrame
    var iframe = document.createElement('iframe');
    iframe.name = "draft-frame";
+   iframe.onload = "iframeLoaded()";
    iframe.id = "draft-frame";
    iframe.style.border = "0";
    iframe.style.frameborder = "0";
    iframe.style.cellspacing = "0";
    iframe.style.width = "100%";
+   iframe.style.height = "200px";
    iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
 
