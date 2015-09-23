@@ -6,7 +6,7 @@
 	<link href="https://quaff-stage.herokuapp.com/bootstrap-custom.css" rel="stylesheet" type="text/css"> 
 </head>
 <body>
-	<div class="container">
+	<div class="container" id="draft-board">
 		<% if @board_type == "column-web" %>
 			<div class="row no-margin ">
 				<%= render 'current_column_draft_board_web' %>
@@ -29,8 +29,8 @@
 <script type="text/javascript"> 
       // Tell the parent iframe what height the iframe needs to be
       $( document ).ready(function() {
-	        var iframe_height = $('#draft-frame').height();
-			alert(iframe_height);
-			iframe.style.height = iframe_height;
+	        var draft_content_height = $('#draft-board').height();
+			alert(draft_content_height);
+			$('#draft-frame').height(draft_content_height);
 	  });
     </script>
