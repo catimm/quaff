@@ -27,7 +27,7 @@
 </body>
 <script type="text/javascript"> 
       // Tell the parent iframe what height the iframe needs to be
-      window.onload = function() {
+      $( document ).ready(function() {
 	        var iframe_height = document.getElementById('draft-frame').height();
 			alert(iframe_height);
 			iframe.style.height = iframe_height;
