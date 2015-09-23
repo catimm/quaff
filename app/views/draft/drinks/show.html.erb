@@ -28,17 +28,15 @@
 </body>
 <script type="text/javascript"> 
       // Tell the parent iframe what height the iframe needs to be
-      $('#draft-frame').load(function() {
-		    var draft_content_height = $('#draft-board').height() + 60;
-			alert(draft_content_height);
-		    setTimeout(iResize(draft_content_height), 50);
-		    // Safari and Opera need a kick-start.
-		    var iSource = document.getElementById('#draft-frame').src;
-		    document.getElementById('draft-frame').src = '';
-		    document.getElementById('draft-frame').src = iSource;
-		});
+      $( document ).ready(function() {
+	  	var draft_content_height = $('#draft-board').height() + 60;
+		alert(draft_content_height);
+		setTimeout(iResize(draft_content_height), 50);
+		$('#draft-frame').css("height", draft_content_height);
+		$('#draft-frame').css("background", "red");
+		
 		function iResize(draft_content_height) {
-		    alert(draft_content_height);
 		    $('#draft-frame').css("height", draft_content_height);
 		}
+	  });
     </script>
