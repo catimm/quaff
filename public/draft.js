@@ -23,5 +23,6 @@ window.onload = function() {
    cssLink.type = "text/css";
    var ifrm = document.getElementById('draft-frame');
    ifrm.contentWindow.document.head.appendChild(cssLink);
+   $('#draft-frame').contents().find('head').append('<link href="https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss" rel="stylesheet" type="text/css">');
 
 };
