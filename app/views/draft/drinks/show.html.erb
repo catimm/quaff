@@ -30,7 +30,6 @@
       // Tell the parent iframe what height the iframe needs to be
       $( document ).ready(function() {
 	        var draft_content_height = $('#draft-board').height();
-			alert(draft_content_height);
-			$('#draft-frame').height(draft_content_height);
+			$('#draft-frame').css("height", draft_content_height);
 	  });
     </script>
