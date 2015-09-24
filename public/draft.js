@@ -14,7 +14,6 @@ window.onload = function() {
    iframe.style.cellspacing = "0";
    iframe.style.width = "100%";
    iframe.scrolling = "no";
-   iframe.style.height = "200px";
    iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
 
