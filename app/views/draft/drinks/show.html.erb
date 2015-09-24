@@ -36,7 +36,9 @@
 		function iResize(draft_content_height) {
 			alert(draft_content_height);
 			var ifrm = document.getElementById('draft-frame');
-			var ifrm_doc = x.contentWindow.document;
+			var ifrm_doc = ifrm.contentWindow.document;
+			var testing = ifrm.contentWindow.document.body.scrollHeight;
+			alert(testing);
 			ifrm_doc.body.style.height = "100px";
 			ifrm_doc.body.style.height = draft_content_height;
 		}
