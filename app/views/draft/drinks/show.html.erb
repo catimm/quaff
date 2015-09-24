@@ -29,18 +29,9 @@
 <script type="text/javascript"> 
       // Tell the parent iframe what height the iframe needs to be
       $( document ).ready(function() {
-	  	var draft_content_height = $('#draft-board').height() + 60;
-		alert(draft_content_height);
-		setTimeout(iResize(draft_content_height), 50);
-		
-		function iResize(draft_content_height) {
-			alert(draft_content_height);
-			var ifrm = document.getElementById('draft-frame');
-			var ifrm_doc = ifrm.contentWindow.document;
-			var testing = ifrm.contentWindow.document.body.scrollHeight;
-			alert(testing);
-			ifrm_doc.body.style.height = "100px";
-			ifrm_doc.body.style.height = draft_content_height;
-		}
+	  	alert(document.getElementById("frmid").contentWindow.document.body.scrollHeight);
+	  	setInterval(function(){
+    		document.getElementById("frmid").style.height = document.getElementById("frmid").contentWindow.document.body.scrollHeight + 'px';
+		},1000)
 	  });
     </script>
