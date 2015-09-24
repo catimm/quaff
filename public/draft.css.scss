@@ -1,8 +1,3 @@
-//@import "bootstrap-sprockets";
-//@import "bootstrap";
-//@import "bootstrap-social";
-//@import "font-awesome-sprockets";
-//@import "font-awesome";
 @import url(http://fonts.googleapis.com/css?family=Kreon:400,700);
 
 // Descriptive colors for project
@@ -79,6 +74,104 @@ $current-beer-attention-needed-text: $light-red;
     font-weight: normal;
     font-style: normal;
 
+}
+
+// column draft board
+
+// Draft Board Column page
+.draft-board-column-image-holder-div {
+  position: relative;
+}
+.draft-board-column-tap-number {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: $action-background;
+  color: #fff;
+}
+.column-draft-image-holder {
+  height: 85px;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+.drink-origin {
+  margin: 0 0 0 5px;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+$beer-header-font-size-fp: 16px;
+$beer-header-line-height-fp: 1.2;
+$beer-header-lines-to-show-fp: 1;
+.drink-header-draft-pretty {
+  color: $header-text;
+  font-weight: 500; 
+  margin-bottom: 5px; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $beer-header-font-size-fp*$beer-header-line-height-fp*$beer-header-lines-to-show-fp; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: $beer-header-font-size-fp;
+  line-height: $beer-header-line-height-fp;
+  -webkit-line-clamp: $beer-header-lines-to-show-fp;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.draft-pretty-filler {
+  height: 14px;
+}
+.abv-div {
+  height: 14px;
+}
+.draft-pretty-icon {
+  float: left;
+  text-align: center;
+}
+.draft-size-holder {
+  margin-top: 5px;
+  padding-right: 0;
+}
+.draft-size-holder-for-growlers {
+  margin-top: 7.5px;
+}
+.icon-taster {
+  padding-top: 16px;
+}
+.icon-nonic {
+  padding-top: 6px;
+}
+.draft-pretty-draft-size, .draft-pretty-draft-cost {
+  color: $less-emphasized-text;
+  font-size: 12px;
+  margin: 2.5px 0;
+  text-align: center; 
+}
+// Draft Board Row Page
+.draft-board-row-maker-name {
+  color: $normal-text;
+}
+.draft-board-drink-name {
+  color: $action-background;
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   //background-color: red;
+}
+.table {
+   th {
+      padding: 8px 4px !important;
+   }
+   td {
+      padding: 8px 4px !important; 
+   }
+}
+.draft-board-row-name {
+  font-size: 16px;
+  padding-top: 4px !important;
 }
 
 
@@ -757,101 +850,7 @@ p {
 #user_beer_rating_comment {
   height: 40px !important;
 }
-// Draft Board Column page
-.draft-board-column-image-holder-div {
-  position: relative;
-}
-.draft-board-column-tap-number {
-  position: absolute;
-  top: 5px;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background: $action-background;
-  color: #fff;
-}
-.column-draft-image-holder {
-  height: 85px;
-  padding: 0;
-  margin: 10px 0 0 0;
-}
-.drink-origin {
-  margin: 0 0 0 5px;
-  font-size: 11px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-$beer-header-font-size-fp: 16px;
-$beer-header-line-height-fp: 1.2;
-$beer-header-lines-to-show-fp: 1;
-.drink-header-draft-pretty {
-  color: $header-text;
-  font-weight: 500; 
-  margin-bottom: 5px; 
-  display: block; /* Fallback for non-webkit */
-  display: -webkit-box;
-  height: $beer-header-font-size-fp*$beer-header-line-height-fp*$beer-header-lines-to-show-fp; /* Fallback for non-webkit */
-  margin: 10px auto 5px auto;
-  font-size: $beer-header-font-size-fp;
-  line-height: $beer-header-line-height-fp;
-  -webkit-line-clamp: $beer-header-lines-to-show-fp;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.draft-pretty-filler {
-  height: 14px;
-}
-.abv-div {
-  height: 14px;
-}
-.draft-pretty-icon {
-  float: left;
-  text-align: center;
-}
-.draft-size-holder {
-  margin-top: 5px;
-  padding-right: 0;
-}
-.draft-size-holder-for-growlers {
-  margin-top: 7.5px;
-}
-.icon-taster {
-  padding-top: 16px;
-}
-.icon-nonic {
-  padding-top: 6px;
-}
-.draft-pretty-draft-size, .draft-pretty-draft-cost {
-  color: $less-emphasized-text;
-  font-size: 12px;
-  margin: 2.5px 0;
-  text-align: center; 
-}
-// Draft Board Row Page
-.draft-board-row-maker-name {
-  color: $normal-text;
-}
-.draft-board-drink-name {
-  color: $action-background;
-}
-.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-   //background-color: red;
-}
-.table {
-   th {
-      padding: 8px 4px !important;
-   }
-   td {
-      padding: 8px 4px !important; 
-   }
-}
-.draft-board-row-name {
-  font-size: 16px;
-  padding-top: 4px !important;
-}
+
 // Sign-up & log-in pages
 .box {
   background: #fff;
