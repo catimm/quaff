@@ -29,9 +29,9 @@
 <script type="text/javascript"> 
       // Tell the parent iframe what height the iframe needs to be
       $( document ).ready(function() {
-	  	alert(document.getElementById("frmid").contentWindow.document.body.scrollHeight);
+	  	alert(document.getElementById("draft-frame").contentWindow.document.body.scrollHeight);
 	  	setInterval(function(){
-    		document.getElementById("frmid").style.height = document.getElementById("frmid").contentWindow.document.body.scrollHeight + 'px';
+    		document.getElementById("draft-frame").style.height = document.getElementById("draft-frame").contentWindow.document.body.scrollHeight + 'px';
 		},1000)
 	  });
     </script>
