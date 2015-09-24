@@ -13,10 +13,21 @@ window.onload = function() {
    iframe.style.frameborder = "0";
    iframe.style.cellspacing = "0";
    iframe.style.width = "100%";
+   iframe.scrolling = "no";
    iframe.style.height = "200px";
    iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
 
+   //resizing iFrame
+   var iframe_script_one = document.createElement('script');
+   iframe_script_one.type = "text/javascript";
+   iframe_script_one.src = "https://quaff-stage.herokuapp.com/draft/iframeResizer.min.js";
+   document.body.appendChild(iframe_script_one);
+   var iframe_script_two = document.createElement('script');
+   iframe_script_two.type = "text/javascript";
+   iframe_script_two.innerHTML = "iFrameResize({log:true})";
+   document.body.appendChild(iframe_script_two);
+   
    //css
    //var cssLink = document.createElement('link');
    //cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
