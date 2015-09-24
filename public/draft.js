@@ -19,7 +19,7 @@ window.onload = function() {
    //resizing iFrame
    var iframe_script_one = document.createElement('script');
    iframe_script_one.type = "text/javascript";
-   iframe_script_one.src = "https://quaff-stage.herokuapp.com/draft/iframeResizer.min.js";
+   iframe_script_one.src = "https://quaff-stage.herokuapp.com/iframeResizer.min.js";
    document.body.appendChild(iframe_script_one);
    var iframe_script_two = document.createElement('script');
    iframe_script_two.type = "text/javascript";
