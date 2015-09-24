@@ -37,6 +37,7 @@
 			alert(draft_content_height);
 			var ifrm = document.getElementById('draft-frame');
 			var ifrm_doc = x.contentWindow.document;
+			ifrm_doc.body.style.height = "100px";
 			ifrm_doc.body.style.height = draft_content_height;
 		}
 	  });
