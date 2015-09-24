@@ -7,7 +7,6 @@ window.onload = function() {
    //iFrame
    var iframe = document.createElement('iframe');
    iframe.name = "draft-frame";
-   iframe.onload = "iframeLoaded()";
    iframe.id = "draft-frame";
    iframe.style.border = "0";
    iframe.style.frameborder = "0";
