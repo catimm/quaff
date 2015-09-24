@@ -8,6 +8,7 @@ window.onload = function() {
    var iframe = document.createElement('iframe');
    iframe.name = "draft-frame";
    iframe.id = "draft-frame";
+   iframe.setAttribute('onload', 'testing()'); // assign an id
    iframe.style.border = "0";
    iframe.style.frameborder = "0";
    iframe.style.cellspacing = "0";
