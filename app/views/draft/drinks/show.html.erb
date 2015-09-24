@@ -34,15 +34,10 @@
 		setTimeout(iResize(draft_content_height), 50);
 		
 		function iResize(draft_content_height) {
-		   alert(draft_content_height);
-		   var ifrm = document.getElementById('draft-frame');
-
-	      if(ifrm) {
-	            alert(ifrm);
-	            // here you can make the height, I delete it first, then I make it again
-	            ifrm.height = "";
-	            ifrm.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
-	      }
+			alert(draft_content_height);
+			var ifrm = document.getElementById('draft-frame');
+			var ifrm_doc = x.contentWindow.document;
+			ifrm_doc.body.style.height = draft_content_height;
 		}
 	  });
     </script>
