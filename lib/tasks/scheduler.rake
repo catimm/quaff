@@ -337,7 +337,7 @@ task :check_pine_box => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-end
+end # end Pine Box scrape
 
 desc "Check Chuck's 85"
 task :check_chucks_85 => :environment do
@@ -361,8 +361,12 @@ task :check_chucks_85 => :environment do
 
     # create empty array to hold current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create empty array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
 
     # grab Chucks 85 beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('http://chucks85th.com/draft'))
@@ -669,7 +673,7 @@ task :check_chucks_85 => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end
-end
+end # end Chuck's 85 scrape
 
 desc "Check Chuck's CD"
 task :check_chucks_cd => :environment do
@@ -695,6 +699,8 @@ task :check_chucks_cd => :environment do
     @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
 
     # grab Pine Box beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('http://cd.chucks85th.com/draft'))
@@ -999,7 +1005,7 @@ task :check_chucks_cd => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end
-end
+end # end Chuck's CD scrape
 
 desc "Check Beer Junction"
 task :check_beer_junction => :environment do
@@ -1025,6 +1031,8 @@ task :check_beer_junction => :environment do
     @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
 
     # grab Beer Junction beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('http://seattle.taphunter.com/widgets/locationWidget?orderby=category&breweryname=on&format=images&brewerylocation=on&onlyBody=on&location=The-Beer-Junction&width=925&updatedate=on&servingsize=on&servingprice=on'))
@@ -1333,7 +1341,7 @@ task :check_beer_junction => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-end
+end # end Beer Junction scrape
 
 desc "Check Beveridge Place"
 task :check_beveridge_place => :environment do
@@ -1360,6 +1368,8 @@ task :check_beveridge_place => :environment do
     @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
     
     # grab location beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('https://www.taplister.com/public/widget/442c2497f964a520d0311fe3'))
@@ -1673,7 +1683,7 @@ task :check_beveridge_place => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-end
+end # end Beer Junction scrape
 
 desc "Check Fremont Beer Garden"
 task :check_fremont_beer_garden => :environment do
@@ -1696,8 +1706,12 @@ task :check_fremont_beer_garden => :environment do
     
     # create array of current BeerLocation ids
     @current_beer_ids = Array.new
+    # create array to hold newly added breweries info for email
+    @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
     
     # create array for current beer list
     @current_beer_list = Array.new
@@ -2021,7 +2035,7 @@ task :check_fremont_beer_garden => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-end
+end # end Fremont Brewery scrape
 
 desc "Check The Yard"
 task :check_the_yard => :environment do
@@ -2049,6 +2063,8 @@ task :check_the_yard => :environment do
     @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
 
     # grab The Yard beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('https://docs.google.com/spreadsheets/d/1-1L9oCGJ0MPTUWuRwADzcECjxkGTih9O-VT6RbIFXlA/pubhtml?gid=0&single=true'))
@@ -2250,7 +2266,7 @@ task :check_the_yard => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-end
+end # end The Yard scrape
 
 desc "Check The Dray"
 task :check_the_dray => :environment do
@@ -2277,6 +2293,8 @@ task :check_the_dray => :environment do
     @new_brewery_info = Array.new
     # create array to hold newly added beer info for email
     @new_beer_info = Array.new
+    # create array to hold email info for user's tracking new beers
+    @user_email_array = Array.new
 
     # grab The Yard beers listed on their draft board
     doc_pb = Nokogiri::HTML(open('https://docs.google.com/spreadsheets/d/1tSIEW6A0O8c2VWC62jGmLxlX-_DiNQKMYKP5jFU_Ikc/pubhtml'))
@@ -2478,7 +2496,7 @@ task :check_the_dray => :environment do
           BeerUpdates.new_beers_email(admin_email, @this_location_name, @new_beer_info).deliver
         end
       end 
-end
+end # end The Dray scrape
 
 desc "Check User Additions"
 task :check_user_additions => :environment do
