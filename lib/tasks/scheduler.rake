@@ -140,7 +140,7 @@ task :check_pine_box => :environment do
       if @related_brewery.empty?
         Rails.logger.debug("This is firing, so it thinks this brewery IS NOT in the DB")
         # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state_short => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -476,7 +476,7 @@ task :check_chucks_85 => :environment do
       # if brewery does not exist in db(s), insert related info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
         # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state_short => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -807,7 +807,7 @@ task :check_chucks_cd => :environment do
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
         # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state_short => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -1141,7 +1141,7 @@ task :check_beer_junction => :environment do
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
         # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state_short => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
@@ -1481,7 +1481,7 @@ task :check_beveridge_place => :environment do
       if @related_brewery.empty?
         # Rails.logger.debug("This is firing, so it DOES NOT recognize Brewery in breweries table")
         # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state_short => @this_beer_origin, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :beer_abv => @this_beer_abv)
