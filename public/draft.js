@@ -4,11 +4,7 @@ window.onload = function() {
    var scriptPram = document.getElementById('load_widget');
    var id = scriptPram.getAttribute('data-page');
 	
-	//jquery
-	var jquery = document.createElement('script');
-	jquery.type = "text/javascript";
-   	jquery.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js";
-   	document.body.appendChild(jquery);
+	
    
    //iFrame
    var iframe = document.createElement('iframe');
@@ -22,6 +18,12 @@ window.onload = function() {
    iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
 
+	//jquery
+	var jquery = document.createElement('script');
+	jquery.type = "text/javascript";
+   	jquery.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js";
+   	document.body.appendChild(jquery);
+   	
    //resizing iFrame
    var iframe_script_one = document.createElement('script');
    iframe_script_one.type = "text/javascript";
