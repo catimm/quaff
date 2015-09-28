@@ -29,7 +29,7 @@ window.onload = function() {
    document.body.appendChild(iframe_script_one);
    var iframe_script_two = document.createElement('script');
    iframe_script_two.type = "text/javascript";
-   iframe_script_two.innerHTML = "var transport = new easyXDM.Socket({ remote: 'https://quaff-stage.herokuapp.com/draft/" + id +"', remoteHelper: 'https://quaff-stage.herokuapp.com/name.html', swf: 'https://quaff-stage.herokuapp.com/easyxdm.swf', container: 'container', onMessage: function (message, origin) { this.container.getElementsByTagName('iframe')[0].style.height = message + 'px';} });";
+   iframe_script_two.innerHTML = "var transport = new easyXDM.Socket({ remote: 'https://quaff-stage.herokuapp.com/draft/" + id +"', remoteHelper: 'https://quaff-stage.herokuapp.com/name.html', swf: 'https://quaff-stage.herokuapp.com/easyxdm.swf', container: 'draft-frame', onMessage: function (message, origin) { this.container.getElementsByTagName('iframe')[0].style.height = message + 'px';} });";
    document.body.appendChild(iframe_script_two);
    
    //css
