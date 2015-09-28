@@ -27,82 +27,11 @@
 
 }
 
-// Draft Board Column--universal
-.draft-board-column-image-holder-div {
-  position: relative;
-}
-.draft-board-column-tap-number {
-  position: absolute;
-  top: 5px;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background: #0087cb;
-  color: #fff;
-}
-.column-draft-image-holder {
-  height: 85px;
-  padding: 0;
-  margin: 10px 0 0 0;
-}
-.drink-origin {
-  margin: 0 0 0 5px;
-  font-size: 11px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.drink-header-draft-pretty {
-  color: #000;
-  font-weight: 500; 
-  margin-bottom: 5px; 
-  display: block; /* Fallback for non-webkit */
-  display: -webkit-box;
-  height: 19.2px; /* Fallback for non-webkit */
-  margin: 10px auto 5px auto;
-  font-size: 16px;
-  line-height: 1.2;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.draft-pretty-filler {
-  height: 14px;
-}
-.abv-div {
-  height: 14px;
-}
-.draft-pretty-icon {
-  float: left;
-  text-align: center;
-}
-.draft-size-holder {
-  margin-top: 5px;
-  padding-right: 0;
-}
-.draft-size-holder-for-growlers {
-  margin-top: 7.5px;
-}
-.icon-taster {
-  padding-top: 16px;
-}
-.icon-nonic {
-  padding-top: 6px;
-}
-.draft-pretty-draft-size, .draft-pretty-draft-cost {
-  color: #909090;
-  font-size: 12px;
-  margin: 2.5px 0;
-  text-align: center; 
-}
-
 // Draft Board Column--web
-.draft-board-column-image-holder-div {
+.draft-board-column-image-holder-div-web {
   position: relative;
 }
-.draft-board-column-tap-number {
+.draft-board-column-tap-number-web {
   position: absolute;
   top: 5px;
   left: 0;
@@ -112,19 +41,19 @@
   background: #0087cb;
   color: #fff;
 }
-.column-draft-image-holder {
+.column-draft-image-holder-web {
   height: 85px;
   padding: 0;
   margin: 10px 0 0 0;
 }
-.drink-origin {
+.drink-origin-web {
   margin: 0 0 0 5px;
   font-size: 11px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.drink-header-draft-pretty {
+.drink-header-draft-pretty-web {
   color: #000;
   font-weight: 500; 
   margin-bottom: 5px; 
@@ -139,100 +68,80 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.draft-pretty-filler {
+.draft-pretty-filler-web {
   height: 14px;
 }
-.abv-div {
+.abv-div-web {
   height: 14px;
 }
-.draft-pretty-icon {
+.draft-pretty-icon-web {
   float: left;
   text-align: center;
 }
-.draft-size-holder {
+.draft-size-holder-web {
   margin-top: 5px;
   padding-right: 0;
 }
-.draft-size-holder-for-growlers {
+.draft-size-holder-for-growlers-web {
   margin-top: 7.5px;
 }
-.icon-taster {
+.icon-taster-web {
   padding-top: 16px;
 }
-.icon-nonic {
+.icon-nonic-web {
   padding-top: 6px;
 }
-.draft-pretty-draft-size, .draft-pretty-draft-cost {
+.draft-pretty-draft-size-web, .draft-pretty-draft-cost-web {
   color: #909090;
   font-size: 12px;
   margin: 2.5px 0;
   text-align: center; 
 }
 // Draft Board Column--internal
-.draft-board-column-image-holder-div {
-  position: relative;
-}
-.draft-board-column-tap-number {
-  position: absolute;
-  top: 5px;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  background: #0087cb;
-  color: #fff;
-}
-.column-draft-image-holder {
-  height: 85px;
-  padding: 0;
-  margin: 10px 0 0 0;
-}
-.drink-origin {
+.drink-origin-internal {
   margin: 0 0 0 5px;
   font-size: 11px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.drink-header-draft-pretty {
+.drink-header-draft-pretty-internal {
   color: #000;
   font-weight: 500; 
   margin-bottom: 5px; 
-  display: block; /* Fallback for non-webkit */
-  display: -webkit-box;
-  height: 19.2px; /* Fallback for non-webkit */
+
   margin: 10px auto 5px auto;
-  font-size: 16px;
+  font-size: 32px;
   line-height: 1.2;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.draft-pretty-filler {
+.draft-pretty-filler-internal {
   height: 14px;
 }
-.abv-div {
+.abv-div-internal {
   height: 14px;
 }
-.draft-pretty-icon {
+.draft-pretty-icon-internal {
   float: left;
   text-align: center;
 }
-.draft-size-holder {
+.draft-size-holder-internal {
   margin-top: 5px;
   padding-right: 0;
 }
-.draft-size-holder-for-growlers {
+.draft-size-holder-for-growlers-internal {
   margin-top: 7.5px;
 }
-.icon-taster {
+.icon-taster-internal {
   padding-top: 16px;
 }
-.icon-nonic {
+.icon-nonic-internal {
   padding-top: 6px;
 }
-.draft-pretty-draft-size, .draft-pretty-draft-cost {
+.draft-pretty-draft-size-internal, .draft-pretty-draft-cost-internal {
   color: #909090;
   font-size: 12px;
   margin: 2.5px 0;
