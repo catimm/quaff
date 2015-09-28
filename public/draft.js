@@ -3,9 +3,8 @@ window.onload = function() {
    //Params
    var scriptPram = document.getElementById('load_widget');
    var id = scriptPram.getAttribute('data-page');
-	
-	
-   
+   var page_type = scriptPram.getAttribute('page-type');
+
    //iFrame
    var iframe = document.createElement('iframe');
    iframe.name = "draft-frame";
@@ -15,7 +14,7 @@ window.onload = function() {
    iframe.style.cellspacing = "0";
    iframe.style.width = "100%";
    iframe.scrolling = "no";
-   iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
+   iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id +"." + page_type;
    document.body.appendChild(iframe);
 
 	//jquery
@@ -34,13 +33,4 @@ window.onload = function() {
    iframe_script_two.innerHTML = "$( document ).ready(function() { iFrameResize({log:true}); });";
    document.body.appendChild(iframe_script_two);
    
-   //css
-   //var cssLink = document.createElement('link');
-   //cssLink.href = "https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss";
-   //cssLink.rel = "stylesheet";
-   //cssLink.type = "text/css";
-   //var ifrm = document.getElementById('draft-frame');
-   //ifrm.contentWindow.document.head.appendChild(cssLink);
-   //$('#draft-frame').contents().find('head').append('<link href="https://quaff-stage.herokuapp.com/bootstrap-custom.css.scss" rel="stylesheet" type="text/css">');
-
 };

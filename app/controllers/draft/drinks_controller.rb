@@ -4,7 +4,7 @@ class Draft::DrinksController < ApplicationController
   
   def show 
     Rails.logger.debug("Params info: #: #{params.inspect}")
-    @board_type = "column-web" #params[:format]
+    @board_type = params[:format]
     # get retailer info
     @retail_id = params[:id]
     @retailer = Location.find(@retail_id)

@@ -25,7 +25,6 @@
 //= require jqcloud
 //= require jquery.tokeninput
 //= require typeahead.bundle.min
-//= require easyXDM.min
 //= require search-bloodhound-engine
 //= require jquery_nested_form
 //= require autonumeric
