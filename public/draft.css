@@ -27,7 +27,7 @@
 
 }
 
-// Draft Board Column page
+// Draft Board Column--universal
 .draft-board-column-image-holder-div {
   position: relative;
 }
@@ -97,7 +97,149 @@
   margin: 2.5px 0;
   text-align: center; 
 }
-// Draft Board Row Page
+
+// Draft Board Column--web
+.draft-board-column-image-holder-div {
+  position: relative;
+}
+.draft-board-column-tap-number {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #0087cb;
+  color: #fff;
+}
+.column-draft-image-holder {
+  height: 85px;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+.drink-origin {
+  margin: 0 0 0 5px;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.drink-header-draft-pretty {
+  color: #000;
+  font-weight: 500; 
+  margin-bottom: 5px; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: 19.2px; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: 16px;
+  line-height: 1.2;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.draft-pretty-filler {
+  height: 14px;
+}
+.abv-div {
+  height: 14px;
+}
+.draft-pretty-icon {
+  float: left;
+  text-align: center;
+}
+.draft-size-holder {
+  margin-top: 5px;
+  padding-right: 0;
+}
+.draft-size-holder-for-growlers {
+  margin-top: 7.5px;
+}
+.icon-taster {
+  padding-top: 16px;
+}
+.icon-nonic {
+  padding-top: 6px;
+}
+.draft-pretty-draft-size, .draft-pretty-draft-cost {
+  color: #909090;
+  font-size: 12px;
+  margin: 2.5px 0;
+  text-align: center; 
+}
+// Draft Board Column--internal
+.draft-board-column-image-holder-div {
+  position: relative;
+}
+.draft-board-column-tap-number {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #0087cb;
+  color: #fff;
+}
+.column-draft-image-holder {
+  height: 85px;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+.drink-origin {
+  margin: 0 0 0 5px;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.drink-header-draft-pretty {
+  color: #000;
+  font-weight: 500; 
+  margin-bottom: 5px; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: 19.2px; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: 16px;
+  line-height: 1.2;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.draft-pretty-filler {
+  height: 14px;
+}
+.abv-div {
+  height: 14px;
+}
+.draft-pretty-icon {
+  float: left;
+  text-align: center;
+}
+.draft-size-holder {
+  margin-top: 5px;
+  padding-right: 0;
+}
+.draft-size-holder-for-growlers {
+  margin-top: 7.5px;
+}
+.icon-taster {
+  padding-top: 16px;
+}
+.icon-nonic {
+  padding-top: 6px;
+}
+.draft-pretty-draft-size, .draft-pretty-draft-cost {
+  color: #909090;
+  font-size: 12px;
+  margin: 2.5px 0;
+  text-align: center; 
+}
+
+// Draft Board Row--universal
 .draft-board-row-maker-name {
   color: #747474;
 }

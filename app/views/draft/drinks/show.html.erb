@@ -6,14 +6,24 @@
 	<link href="https://quaff-stage.herokuapp.com/draft.css" rel="stylesheet" type="text/css"> 
 </head>
 <body>
-	<% if @board_type == "column" %>
-		<div class="row no-margin ">
-			<%= render 'column_board' %>
-		</div>
-	<% else %>
-		<div class="row no-margin ">
-			<%= render 'row_board' %>	
-		</div>
-	<% end %>
+	<div class="container" id="draft-board">
+		<% if @board_type == "column-web" %>
+			<div class="row no-margin ">
+				<%= render 'column_board_web' %>
+			</div>
+		<% elsif @board_type == "column-internal" %>
+			<div class="row no-margin ">
+				<%= render 'column_board_internal' %>
+			</div>
+		<% elsif @board_type == "row-web" %>
+			<div class="row no-margin ">
+				<%= render 'row_board_web' %>
+			</div>
+		<% else %>
+			<div class="row no-margin ">
+				<%= render 'row_board_internal' %>	
+			</div>
+		<% end %>
+	</div>
 	<script type="text/javascript" src="https://quaff-stage.herokuapp.com/iframeResizer.contentWindow.min.js"></script>
 </body>
