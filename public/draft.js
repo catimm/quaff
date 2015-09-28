@@ -31,7 +31,7 @@ window.onload = function() {
    document.body.appendChild(iframe_script_one);
    var iframe_script_two = document.createElement('script');
    iframe_script_two.type = "text/javascript";
-   iframe_script_two.innerHTML = "iFrameResize({log:true});";
+   iframe_script_two.innerHTML = "$( document ).ready(function() { iFrameResize({log:true}); });";
    document.body.appendChild(iframe_script_two);
    
    //css
