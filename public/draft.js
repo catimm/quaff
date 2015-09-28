@@ -13,7 +13,7 @@ window.onload = function() {
    iframe.style.cellspacing = "0";
    iframe.style.width = "100%";
    iframe.scrolling = "no";
-   //iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
+   iframe.src = "https://quaff-stage.herokuapp.com/draft/" + id;
    document.body.appendChild(iframe);
 
 	//jquery
