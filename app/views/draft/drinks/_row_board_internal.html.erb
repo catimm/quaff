@@ -24,7 +24,7 @@
 		</thead>
 		<tbody>
 		<% @current_draft_board.each do	|drink| %>		
-			<tr>
+			<tr class="table-row-internal">
 				<td class="draft-board-row-tap text-center"><%= drink.tap_number %></td>
 				<% if drink.beer.collab == true %>
 					<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
