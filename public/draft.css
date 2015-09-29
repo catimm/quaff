@@ -187,7 +187,7 @@
    }
 }
 // Draft Board Row--internal
-.table > tbody > .table-row-internal > td {
+.table-row-internal > td {
       font-size: 30px !important;
       padding: 4px 8px !important;
 }
