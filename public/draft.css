@@ -187,13 +187,15 @@
    }
 }
 // Draft Board Row--internal
-td.draft-board-row-internal  {
-	font-size: 28px !important;
-	padding: 4px 8px !important;
-}
+
 .draft-board-row-name-internal {
   font-size: 32px !important;
   padding: 4px 8px !important;
+}
+td.draft-board-row-internal  {
+	font-size: 28px !important;
+	padding: 4px 8px !important;
+	color: #747474;
 }
 // Draft Board Row--web
 .draft-board-row-web {
