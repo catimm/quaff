@@ -178,9 +178,6 @@
 .draft-board-drink-name {
   color: #0087cb;
 }
-.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-   //background-color: red;
-}
 .table {
    th {
       padding: 8px 4px !important;
@@ -189,11 +186,21 @@
       padding: 8px 4px !important; 
    }
 }
-.draft-board-row-name {
+// Draft Board Row--internal
+.draft-board-row-name-internal {
+  font-size: 32px;
+  padding-top: 4px !important;
+}
+.table {
+   td {
+      font-size: 30px;
+   }
+}
+// Draft Board Row--web
+.draft-board-row-name-web {
   font-size: 16px;
   padding-top: 4px !important;
 }
-
 
 .brand-font {
    font-family: 'sansationregular' !important;
@@ -220,12 +227,10 @@
 .no-margin {
   margin: 0 !important;
 }
-
 .tile-subheader {
   color: #909090;
   margin-top: 0;
 }
-
 .tile-header {
   color: #000;
   font-weight: 500; 

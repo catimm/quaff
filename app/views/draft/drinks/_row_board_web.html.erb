@@ -28,9 +28,9 @@
 				<td class="draft-board-row-tap text-center"><%= drink.tap_number %></td>
 				<% if drink.beer.collab == true %>
 					<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-					<td class="draft-board-row-name"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<td class="draft-board-row-name-web"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
 				<% else %>
-					<td class="draft-board-row-name table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<td class="draft-board-row-name-web table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
 				<% end %>
 				<% if !drink.beer.beer_type_id.nil? %>
 					<td class="draft-board-row-style"><%= drink.beer.beer_type.beer_type_short_name %></td>
