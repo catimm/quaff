@@ -187,14 +187,13 @@
    }
 }
 // Draft Board Row--internal
-
-.draft-board-drink-name-internal {
-  color: #000000;
-}
 td.draft-board-row-internal  {
 	font-size: 28px !important;
 	padding: 4px 8px !important;
 	color: #747474;
+}
+.draft-board-drink-name-internal {
+  color: #000000;
 }
 // Draft Board Row--web
 .draft-board-row-web {
