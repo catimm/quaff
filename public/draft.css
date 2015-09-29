@@ -187,15 +187,13 @@
    }
 }
 // Draft Board Row--internal
-.table-row-internal {
-	td {
+.table-row-internal > td {
       font-size: 30px !important;
-      padding-top: 4px !important;
-   }
+      padding: 4px 8px !important;
 }
 .draft-board-row-name-internal {
   font-size: 32px !important;
-  padding-top: 4px !important;
+  padding: 4px 8px !important;
 }
 // Draft Board Row--web
 .draft-board-row-name-web {
