@@ -7,16 +7,20 @@
 </head>
 <body>
 	<% if @board_type == "column-web" %>
-		<div class="row no-margin" id="draft-board">
-			<%= render 'column_board_web' %>
+		<div class="container">
+			<div class="row no-margin" id="draft-board">
+				<%= render 'column_board_web' %>
+			</div>
 		</div>
 	<% elsif @board_type == "column-internal" %>
 		<div class="row no-margin" id="draft-board">
 			<%= render 'column_board_internal' %>
 		</div>
 	<% elsif @board_type == "row-web" %>
-		<div class="row no-margin" id="draft-board">
-			<%= render 'row_board_web' %>
+		<div class="container">
+			<div class="row no-margin" id="draft-board">
+				<%= render 'row_board_web' %>
+			</div>
 		</div>
 	<% else %>
 		<div class="row no-margin" id="draft-board">
