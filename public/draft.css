@@ -188,7 +188,7 @@
 }
 // Draft Board Row--internal
 .draft-board-row-name-internal {
-  font-size: 32px;
+  font-size: 32px !important;
   padding-top: 4px !important;
 }
 .table {
@@ -198,7 +198,7 @@
 }
 // Draft Board Row--web
 .draft-board-row-name-web {
-  font-size: 16px;
+  font-size: 16px !important;
   padding-top: 4px !important;
 }
 
