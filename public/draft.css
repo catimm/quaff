@@ -188,8 +188,8 @@
 }
 // Draft Board Row--internal
 td.draft-board-row-internal  {
-      font-size: 28px !important;
-      padding: 4px 8px !important;
+	font-size: 28px !important;
+	padding: 4px 8px !important;
 }
 .draft-board-row-name-internal {
   font-size: 32px !important;
