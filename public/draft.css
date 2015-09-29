@@ -172,6 +172,11 @@
 }
 
 // Draft Board Row--universal
+   td.draft-board-row-internal  {
+   	font-size: 28px !important;
+	padding: 4px 8px !important;
+	color: #747474;
+	}
 .draft-board-row-maker-name {
   color: #747474;
 }
@@ -188,11 +193,6 @@
    td {
       padding: 8px 4px !important; 
    }
-   td.draft-board-row-internal  {
-   	font-size: 28px !important;
-	padding: 4px 8px !important;
-	color: #747474;
-	}
 }
 
 
