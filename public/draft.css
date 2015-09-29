@@ -187,8 +187,8 @@
    }
 }
 // Draft Board Row--internal
-table > .table-row-internal > .draft-board-row-internal  {
-      font-size: 30px !important;
+td.draft-board-row-internal  {
+      font-size: 28px !important;
       padding: 4px 8px !important;
 }
 .draft-board-row-name-internal {
