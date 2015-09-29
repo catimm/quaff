@@ -178,6 +178,9 @@
 .draft-board-drink-name {
   color: #0087cb;
 }
+.draft-board-drink-name-internal {
+  color: #000000;
+}
 .table {
    th {
       padding: 8px 4px !important;
@@ -192,9 +195,7 @@ td.draft-board-row-internal  {
 	padding: 4px 8px !important;
 	color: #747474;
 }
-.draft-board-drink-name-internal {
-  color: #000000;
-}
+
 // Draft Board Row--web
 .draft-board-row-web {
   font-size: 14px !important;
