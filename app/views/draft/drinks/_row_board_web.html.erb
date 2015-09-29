@@ -25,27 +25,27 @@
 		<tbody>
 		<% @current_draft_board.each do	|drink| %>		
 			<tr>
-				<td class="draft-board-row-tap text-center"><%= drink.tap_number %></td>
+				<td class="draft-board-row-web draft-board-row-tap text-center"><%= drink.tap_number %></td>
 				<% if drink.beer.collab == true %>
 					<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-					<td class="draft-board-row-name-web"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<td class="draft-board-row-web draft-board-row-name-web"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
 				<% else %>
-					<td class="draft-board-row-name-web table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<td class="draft-board-row-web draft-board-row-name-web table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
 				<% end %>
 				<% if !drink.beer.beer_type_id.nil? %>
-					<td class="draft-board-row-style"><%= drink.beer.beer_type.beer_type_short_name %></td>
+					<td class="draft-board-row-web draft-board-row-style"><%= drink.beer.beer_type.beer_type_short_name %></td>
 				<% else %>
-					<td class="draft-board-row-style">N/A</td>
+					<td class="draft-board-row-web draft-board-row-style">N/A</td>
 				<% end %>
 				<% if !drink.beer.beer_abv.nil? %>
-					<td class="draft-board-row-abv text-center"><%= drink.beer.beer_abv %></td>
+					<td class="draft-board-row-web draft-board-row-abv text-center"><%= drink.beer.beer_abv %></td>
 				<% else %>
-					<td class="draft-board-row-abv text-center">N/A</td>
+					<td class="draft-board-row-web draft-board-row-abv text-center">N/A</td>
 				<% end %>
 				<% if !drink.beer.beer_ibu.nil? %>
-					<td class="draft-board-row-ibu text-center"><%= drink.beer.beer_ibu %></td>
+					<td class="draft-board-row-web draft-board-row-ibu text-center"><%= drink.beer.beer_ibu %></td>
 				<% else %>
-					<td class="draft-board-row-ibu text-center">N/A</td>
+					<td class="draft-board-row-web draft-board-row-ibu text-center">N/A</td>
 				<% end %>
 				<% @taster = "N/A" %>
 				<% @tulip = "N/A" %>
@@ -71,19 +71,19 @@
 					<% end %>
 				<% end %>
 				<% if @taster_size >= 1 %>
-					<td class="draft-board-row-taster text-center"><%= @taster %></td>
+					<td class="draft-board-row-web draft-board-row-taster text-center"><%= @taster %></td>
 				<% end %>
 				<% if @tulip_size >= 1 %>
-					<td class="draft-board-row-tulip text-center"><%= @tulip %></td>
+					<td class="draft-board-row-web draft-board-row-tulip text-center"><%= @tulip %></td>
 				<% end %>
 				<% if @pint_size >= 1 %>
-					<td class="draft-board-row-pint text-center"><%= @pint %></td>
+					<td class="draft-board-row-web draft-board-row-pint text-center"><%= @pint %></td>
 				<% end %>
 				<% if @half_growler_size >= 1 %>
-					<td class="draft-board-row-growler text-center"><%= @half_growler %></td>
+					<td class="draft-board-row-web draft-board-row-growler text-center"><%= @half_growler %></td>
 				<% end %>
 				<% if @growler_size >= 1 %>
-					<td class="draft-board-row-growler text-center"><%= @growler %></td>
+					<td class="draft-board-row-web draft-board-row-growler text-center"><%= @growler %></td>
 				<% end %>
 			</tr>
 		<% end %>

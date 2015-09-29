@@ -187,7 +187,7 @@
    }
 }
 // Draft Board Row--internal
-.table-row-internal > td {
+.draft-board-row-internal {
       font-size: 30px !important;
       padding: 4px 8px !important;
 }
@@ -196,9 +196,13 @@
   padding: 4px 8px !important;
 }
 // Draft Board Row--web
+.draft-board-row-web {
+  font-size: 14px !important;
+  padding: 4px 8px !important;
+}
 .draft-board-row-name-web {
   font-size: 16px !important;
-  padding-top: 4px !important;
+  padding: 4px 8px !important;
 }
 
 .brand-font {
