@@ -1,7 +1,7 @@
 <% @current_draft_board.each do	|drink| %>
 	<div class="col-sm-6 visible-sm visible-md visible-lg">
 		<div class="row no-margin">
-			<div class="col-sm-2 no-padding draft-brewery-image-holder-variable-web">
+			<div class="col-sm-2 no-padding">
 				<div class="draft-board-column-tap-number tap-number-variable-web text-center"><%= drink.tap_number %></div>
 				<% if !drink.beer.brewery.image.nil? %>
 					<div class="draft-brewery-image-holder-variable-web">
@@ -96,7 +96,7 @@
 	</div>
 	<div class="col-xs-12 visible-xs">
 		<div class="row no-margin">
-			<div class="col-xs-3 no-padding draft-brewery-image-holder-variable-web">
+			<div class="col-xs-3 no-padding">
 				<div class="draft-board-column-tap-number tap-number-variable-web text-center"><%= drink.tap_number %></div>
 				<% if !drink.beer.brewery.image.nil? %>
 					<div class="draft-brewery-image-holder-variable-web">
