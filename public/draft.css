@@ -265,13 +265,6 @@
     overflow: visible;
   }
  
- .table-responsive {
-    width: 100%;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    min-height: .01%;
-    overflow-x: auto;
-}
 @media(min-width: 768px) {
   
 }
