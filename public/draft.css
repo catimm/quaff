@@ -87,7 +87,8 @@
 }
 .draft-size-holder-web {
   margin-top: 5px;
-  padding-right: 0;
+  padding-right: 0 !important;
+  padding-left: 10px !important;
   height: 32px;
 }
 .icon-taster-web {
