@@ -27,7 +27,7 @@
 
 }
 
-// Draft Board Column--web
+/* Draft Board Column--web */
 .draft-board-column-image-holder-div-web {
   position: relative;
 }
@@ -121,7 +121,7 @@
   text-align: center;
   line-height: 1.2; 
 }
-// Draft Board Column--internal
+/* Draft Board Column--internal */
 .draft-board-column-image-holder-div-internal {
   position: relative;
 }
@@ -204,7 +204,7 @@
   text-align: center; 
 }
 
-// Draft Board Row--universal
+/* Draft Board Row--universal */
 .draft-board-row-maker-name {
   color: #747474;
 }
@@ -222,7 +222,7 @@
 }
 
 
-// Draft Board Row--web
+/* Draft Board Row--web */
 .draft-board-row-web {
   font-size: 14px !important;
   padding: 4px 8px !important;
@@ -269,11 +269,11 @@
 }
 
 
-//Change font size when screen size changes
+/* Change font size when screen size changes */
 /* Extra small devices (phones, less than 768px) */
 @media(max-width:767px) {
   
-  // Draft board column view page
+  /* Draft board column view page */
   .retailer-logo-image-small {
     margin: 5px 0 0 0 !important;
   }
