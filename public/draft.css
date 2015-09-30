@@ -278,6 +278,7 @@
 	}	
 	.column-header-variable-web {
 		overflow: visible;
+		text-overflow: initial;
 	  	line-height: 1.1;
 	}
 	
