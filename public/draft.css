@@ -84,18 +84,19 @@
 .draft-size-holder-web {
   margin-top: 5px;
   padding-right: 0;
-}
-.draft-size-holder-for-growlers-web {
-  margin-top: 7.5px;
+  height: 32px;
 }
 .icon-taster-web {
   height: 18px;
+  margin-top: 14px;
 }
 .icon-tulip-web {
   height: 24px;
+  margin-top: 8px;
 }
 .icon-nonic-web {
   height: 24px;
+  margin-top: 8px;
 }
 .icon-half-growler-web {
   height: 32px;
