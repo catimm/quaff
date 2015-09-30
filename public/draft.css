@@ -282,6 +282,9 @@
 	 	padding: 0;
 	  	margin: 10px 0 0 0;
 	}	
+	.drink-origin {
+	  text-align: left;
+	}
 	.drink-header-draft-column-mobile {
 		color: #000;
   		font-weight: 500;  
