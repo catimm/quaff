@@ -300,18 +300,14 @@
     margin-bottom: 15px;
     border: 1px solid #ddd;
   }
-@media(min-width: 768px) {
-  
-}
-/* Medium devices (desktops, 992px and up) */
-@media (max-width: 992px) {
+@media (min-width: 768px) {
 
 }
-@media (min-width: 880px) {
-  
+@media (min-width: 992px) {
+
 }
-@media (min-width: 1000px) {
-  
+@media (min-width: 1200px) {
+
 }
 
 td.draft-board-row-internal  {
