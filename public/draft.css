@@ -78,7 +78,7 @@
   height: 14px;
 }
 .ibu-div-web {
-	border-left: 1px solid $soft-border;
+	border-left: 1px solid #e7e7e7;
   	height: 14px;
 }
 .draft-pretty-icon-web {
@@ -257,7 +257,8 @@
 }
 .tile-subheader {
   color: #909090;
-  margin: 0 0 5px 0;
+  margin: 5px 0;
+  font-weight: 400;
 }
 .tile-header {
   color: #000;
