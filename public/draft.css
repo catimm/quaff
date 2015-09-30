@@ -89,26 +89,32 @@
 .icon-taster-web {
   height: 18px;
   margin-top: 14px;
+  float: left;
 }
 .icon-tulip-web {
   height: 24px;
   margin-top: 8px;
+  float: left;
 }
 .icon-nonic-web {
   height: 24px;
   margin-top: 8px;
+  float: left;
 }
 .icon-half-growler-web {
   height: 32px;
+  float: left;
 }
 .icon-growler-web {
   height: 32px;
+  float: left;
 }
 .draft-pretty-draft-size-web, .draft-pretty-draft-cost-web {
   color: #909090;
   font-size: 12px;
   margin: 2.5px 0;
-  text-align: center; 
+  text-align: center;
+  line-height: 1.2; 
 }
 // Draft Board Column--internal
 .draft-board-column-image-holder-div-internal {

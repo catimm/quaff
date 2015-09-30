@@ -56,35 +56,35 @@
 					<% @draft_details.each do |details| %>
 						<% if details.drink_size > 0 && details.drink_size <= 5 %>
 							<div class="col-sm-2 draft-size-holder-web">
-								<img class="img-responsive center-block draft-pretty-icon-web icon-taster-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/taster.jpg" />
+								<img class="img-responsive draft-pretty-icon-web icon-taster-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/taster.jpg" />
 								<p class="draft-pretty-draft-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
 								<p class="draft-pretty-draft-size-web"><%= details.drink_size %> oz.</p>					
 							</div>
 						<% end %>
 						<% if details.drink_size > 5 && details.drink_size <= 12 %>
 							<div class="col-sm-2 draft-size-holder-web">
-								<img class="img-responsive center-block draft-pretty-icon-web icon-tulip-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/tulip.jpg" />
+								<img class="img-responsive draft-pretty-icon-web icon-tulip-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/tulip.jpg" />
 								<p class="draft-pretty-draft-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
 								<p class="draft-pretty-draft-size-web"><%= details.drink_size %> oz.</p>								
 							</div>
 						<% end %>
 						<% if details.drink_size > 12 && details.drink_size <= 22 %>
 							<div class="col-sm-2 draft-size-holder-web">
-								<img class="img-responsive center-block draft-pretty-icon icon-nonic-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/nonic.jpg" />
+								<img class="img-responsive draft-pretty-icon icon-nonic-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/nonic.jpg" />
 								<p class="draft-pretty-draft-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
 								<p class="draft-pretty-draft-size-web"><%= details.drink_size %> oz.</p>			
 							</div>
 						<% end %>
 						<% if details.drink_size == 32 %>
-							<div class="col-sm-3 icon-half-growler-web">
-								<img class="img-responsive center-block draft-pretty-icon-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
+							<div class="col-sm-3 draft-size-holder-web">
+								<img class="img-responsive draft-pretty-icon-web icon-half-growler-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
 								<p class="draft-pretty-draft-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
 								<p class="draft-pretty-draft-size-web"><%= details.drink_size %> oz.</p>	
 							</div>
 						<% end %>
 						<% if details.drink_size == 64 %>
-							<div class="col-sm-3 icon-growler-web">
-								<img class="img-responsive center-block draft-pretty-icon-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
+							<div class="col-sm-3 draft-size-holder-web">
+								<img class="img-responsive draft-pretty-icon-web icon-growler-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
 								<p class="draft-pretty-draft-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
 								<p class="draft-pretty-draft-size-web"><%= details.drink_size %> oz.</p>	
 							</div>
