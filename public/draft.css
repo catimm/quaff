@@ -274,6 +274,11 @@
   /* Draft Board Column--variable-web */
 	.tap-number-variable-web {
 		top: 0;
+	}
+	.draft-brewery-image-holder-variable-web {
+	  	height: 72.5px;
+	 	padding: 0;
+	  	margin: 10px 0 0 0;
 	}	
 	.drink-header-draft-column-mobile {
 		color: #000;

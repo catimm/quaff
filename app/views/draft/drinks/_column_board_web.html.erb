@@ -4,7 +4,7 @@
 			<div class="col-sm-2 no-padding draft-brewery-image-holder-variable-web">
 				<div class="draft-board-column-tap-number tap-number-variable-web text-center"><%= drink.tap_number %></div>
 				<% if !drink.beer.brewery.image.nil? %>
-					<div class="column-draft-image-holder-web">
+					<div class="draft-brewery-image-holder-variable-web">
 						<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
 					</div>		
 				<% else %>
@@ -99,7 +99,7 @@
 			<div class="col-xs-3 no-padding draft-brewery-image-holder-variable-web">
 				<div class="draft-board-column-tap-number tap-number-variable-web text-center"><%= drink.tap_number %></div>
 				<% if !drink.beer.brewery.image.nil? %>
-					<div class="column-draft-image-holder-web">
+					<div class="draft-brewery-image-holder-variable-web">
 						<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
 					</div>		
 				<% else %>
