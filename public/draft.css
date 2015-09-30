@@ -136,7 +136,7 @@
   color: #fff;
 }
 .column-draft-image-holder-internal {
-  height: 85px;
+  height: 100px;
   padding: 0;
   margin: 10px 0 0 0;
 }
@@ -161,6 +161,9 @@
 }
 .draft-board-drink-name-internal {
   color: #0087cb;
+}
+.tile-subheader-draft-internal {
+	font-size: 28px;
 }
 .draft-pretty-filler-internal {
   height: 14px;
@@ -208,9 +211,7 @@
 .draft-board-drink-name {
   color: #0087cb;
 }
-.draft-board-drink-name-internal {
-  color: #000000;
-}
+
 .table {
    th {
       padding: 8px 4px !important;

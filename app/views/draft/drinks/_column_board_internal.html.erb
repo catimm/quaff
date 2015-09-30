@@ -33,21 +33,21 @@
 					</div>
 					<div class="col-xs-12">
 						<% if !drink.beer.beer_type_id.nil? %>
-							<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer.beer_type.beer_type_name %></h5>
+							<h5 class="tile-subheader beer-info no-overflow tile-subheader-draft-internal"><%= drink.beer.beer_type.beer_type_name %></h5>
 						<% else %>
-							<h5 class="tile-subheader beer-info">Style unknown</h5>
+							<h5 class="tile-subheader beer-info tile-subheader-draft-internal">Style unknown</h5>
 						<% end %>
 					</div>
 					<div class="col-xs-6 col-sm-3 no-padding-right abv-div-draft-board-internal">
 						<% if !drink.beer.beer_abv.nil? %>
-							<h6 class="tile-subheader beer-info"><%= drink.beer.beer_abv %>% ABV</h6>
+							<h6 class="tile-subheader beer-info tile-subheader-draft-internal"><%= drink.beer.beer_abv %>% ABV</h6>
 						<% else %>
-							<h6 class="tile-subheader beer-info">ABV N/A</h6>
+							<h6 class="tile-subheader beer-info tile-subheader-draft-internal">ABV N/A</h6>
 						<% end %>
 					</div>
 					<% if !drink.beer.beer_ibu.nil? %>
 						<div class="col-xs-6 col-sm-3 no-padding-left text-center ibu-div-internal">
-							<h6 class="tile-subheader beer-info"><%= drink.beer.beer_ibu %> IBUs</h6>
+							<h6 class="tile-subheader beer-info tile-subheader-draft-internal"><%= drink.beer.beer_ibu %> IBUs</h6>
 						</div>
 					<% end %>
 				</div>
