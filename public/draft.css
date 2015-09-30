@@ -272,6 +272,16 @@
 /* Extra small devices (phones, less than 768px) */
 @media(max-width:767px) {
   
+  /* Draft Board Column--variable-web */
+	.tap-number-variable-web {
+		top: 0;
+	}	
+	.column-header-variable-web {
+		overflow: visible;
+	  	line-height: 1.1;
+	}
+	
+	--OLD STUFF
   /* Draft board column view page */
   .retailer-logo-image-small {
     margin: 5px 0 0 0 !important;
