@@ -88,7 +88,6 @@
   	font-size: 11px;
 }
 .column-header-variable-web {
-	margin-bottom: 5px;
 	height: 19.2px; /* Fallback for non-webkit */
   	margin: 10px auto 5px auto;
   	font-size: 16px;
@@ -276,10 +275,12 @@
 	.tap-number-variable-web {
 		top: 0;
 	}	
-	.column-header-variable-web {
-		overflow: visible;
-		text-overflow: initial;
-	  	line-height: 1.1;
+	.drink-header-draft-column-mobile {
+		color: #000;
+  		font-weight: 500;  
+  		margin: 10px auto 5px auto;
+  		font-size: 16px;
+  		line-height: 1.1;
 	}
 	
 	--OLD STUFF
