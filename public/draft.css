@@ -77,6 +77,10 @@
 .abv-div-web {
   height: 14px;
 }
+.ibu-div-web {
+	border-left: 1px solid $soft-border;
+  	height: 14px;
+}
 .draft-pretty-icon-web {
   float: left;
   text-align: center;
@@ -88,7 +92,7 @@
 }
 .icon-taster-web {
   height: 18px;
-  margin-top: 14px;
+  margin-top: 10px;
   float: left;
 }
 .icon-tulip-web {
@@ -253,7 +257,7 @@
 }
 .tile-subheader {
   color: #909090;
-  margin-top: 0;
+  margin: 0 0 5px 0;
 }
 .tile-header {
   color: #000;
