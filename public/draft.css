@@ -89,10 +89,19 @@
   margin-top: 7.5px;
 }
 .icon-taster-web {
-  padding-top: 16px;
+  height: 18px;
+}
+.icon-tulip-web {
+  height: 24px;
 }
 .icon-nonic-web {
-  padding-top: 6px;
+  height: 24px;
+}
+.icon-half-growler-web {
+  height: 32px;
+}
+.icon-growler-web {
+  height: 32px;
 }
 .draft-pretty-draft-size-web, .draft-pretty-draft-cost-web {
   color: #909090;
@@ -159,10 +168,19 @@
   margin-top: 7.5px;
 }
 .icon-taster-internal {
-  padding-top: 16px;
+  height: 18px;
+}
+.icon-tulip-internal {
+  height: 24px;
 }
 .icon-nonic-internal {
-  padding-top: 6px;
+  height: 24px;
+}
+.icon-half-growler-internal {
+  height: 32px;
+}
+.icon-growler-internal {
+  height: 32px;
 }
 .draft-pretty-draft-size-internal, .draft-pretty-draft-cost-internal {
   color: #909090;
