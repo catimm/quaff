@@ -264,7 +264,11 @@
     line-height: 1.1;
     overflow: visible;
   }
- 
+  .table-responsive {
+  	width: 100%;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+  }
 @media(min-width: 768px) {
   
 }
