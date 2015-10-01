@@ -87,33 +87,42 @@ class DraftBoardsController < ApplicationController
   
   def create
     @draft_board = DraftBoard.new(location_id: session[:retail_id])
-    @draft_board.save
-    params[:draft_board][:beer_locations_attributes].each do |drink|
-      # first make sure this item should be added (ie wasn't deleted)
-      @destroy = drink[1][:_destroy]
-      if @destroy != "1"
-        @new_beer_location_drink = BeerLocation.new(location_id: session[:retail_id], 
-                                     beer_id: drink[1][:beer_id], 
-                                     beer_is_current: "yes", 
-                                     tap_number: drink[1][:tap_number],
-                                     draft_board_id: @draft_board.id)
-         @new_beer_location_drink.save
-         # add size/cost of new draft drink
-         drink[1][:draft_details_attributes].each do |details|
-           # first make sure this item should be added (ie wasn't deleted)
-           @destroy_details = details[1][:_destroy]
-           if @destroy_details != "1"
-             @new_drink_details = DraftDetail.new(beer_location_id: @new_beer_location_drink.id, 
-                                   drink_size: details[1][:drink_size], 
-                                   drink_cost: details[1][:drink_cost])
-             @new_drink_details.save
-           end # end of test to determine if drink details "row" was deleted and should be ignored 
-         end # end of loop to add drink details
-      end # end of test to determine if drink "row" was deleted and should be ignored
-    end # end of loop to run through each drink in the saved params
-    
-    redirect_to retailer_path(session[:retail_id])
-    
+    if @draft_boards.save
+      params[:draft_board][:beer_locations_attributes].each do |drink|
+        # first make sure this item should be added (ie wasn't deleted)
+        @destroy = drink[1][:_destroy]
+        if @destroy != "1"
+          @new_beer_location_drink = BeerLocation.new(location_id: session[:retail_id], 
+                                       beer_id: drink[1][:beer_id], 
+                                       beer_is_current: "yes", 
+                                       tap_number: drink[1][:tap_number],
+                                       draft_board_id: @draft_board.id)
+           if @new_beer_location_drink.save
+             # add size/cost of new draft drink
+             drink[1][:draft_details_attributes].each do |details|
+               # first make sure this item should be added (ie wasn't deleted)
+               @destroy_details = details[1][:_destroy]
+               if @destroy_details != "1"
+                 @new_drink_details = DraftDetail.new(beer_location_id: @new_beer_location_drink.id, 
+                                       drink_size: details[1][:drink_size], 
+                                       drink_cost: details[1][:drink_cost])
+                 if @new_drink_details.save
+                   # Rails.logger.debug("Draft Details saved")
+                 else 
+                   render :action=>'new'  # render to fill fields after error message
+                 end # end DraftDetail 'if save'
+               end # end of test to determine if drink details "row" was deleted and should be ignored 
+             end # end of loop to add drink details
+          else
+            render :action=>'new'  # render to fill fields after error message
+          end # end BeerLocation 'if save'
+        end # end of test to determine if drink "row" was deleted and should be ignored
+      end # end of loop to run through each drink in the saved params
+      
+      redirect_to retailer_path(session[:retail_id])
+    else 
+      render :action=>'new'  # render to fill fields after error message
+    end # end DraftBoard 'if save'
   end # end of create action
   
   def edit
