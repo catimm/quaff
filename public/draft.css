@@ -145,7 +145,7 @@
   	font-size: 13px;
 }
 .column-header-variable-internal {
-	height: 64px; /* Fallback for non-webkit */
+	/* height: 64px; /* Fallback for non-webkit */
   	margin: 10px auto 5px auto;
   	font-size: 32px;
   	-webkit-line-clamp: 2;
@@ -163,25 +163,25 @@
   margin-top: 5px;
   padding-right: 0 !important;
   padding-left: 10px !important;
-  height: 36px;
+  height: 40px;
 }
 .icon-taster-variable-internal {
-  height: 22px;
+  height: 26px;
   margin-top: 10px;
 }
 .icon-tulip-variable-internal {
-  height: 28px;
+  height: 32px;
   margin-top: 8px;
 }
 .icon-nonic-variable-internal {
-  height: 28px;
+  height: 32px;
   margin-top: 8px;
 }
 .icon-half-growler-variable-internal {
-  height: 36px;
+  height: 40px;
 }
 .icon-growler-variable-internal {
-  height: 36px;
+  height: 40px;
 }
 .size-and-cost-variable-internal {
 	font-size: 18px;
