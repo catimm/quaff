@@ -135,19 +135,26 @@
 	border-radius: 10px;
 }	
 .draft-brewery-image-holder-variable-internal {
-  	height: 85px;
+  	height: 100px;
+  	width: 100px;
  	padding: 0;
   	margin: 10px 0 0 0;
 }
 .origin-variable-internal {
   	margin: 0 0 0 7.5px;
-  	font-size: 11px;
+  	font-size: 13px;
 }
 .column-header-variable-internal {
-	height: 19.2px; /* Fallback for non-webkit */
+	height: 38px; /* Fallback for non-webkit */
   	margin: 10px auto 5px auto;
-  	font-size: 16px;
+  	font-size: 32px;
   	line-height: 1.2;
+}
+.draft-subheader-variable-internal {
+  color: #909090;
+  margin: 5px 0;
+  font-weight: 400;
+  font-size: 24px;
 }
 .ibu-variable-internal {
 	height: 13px;
