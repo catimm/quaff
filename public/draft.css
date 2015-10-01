@@ -24,6 +24,12 @@
     font-weight: normal;
     font-style: normal;
 }
+.brand-font {
+   font-family: 'sansationregular' !important;
+}
+.brand-subfont {
+   font-family: "novecento_sans_widenormal";
+}
 
 /* Draft Board Column */
 .draft-board-column-image-holder-div {
@@ -194,6 +200,24 @@
   	margin: 2.5px 0;
 	line-height: 1.1;
 }
+
+/* Draft Board Row */
+.draft-board-row {
+  padding: 4px 8px !important;
+  color: #747474;
+}
+.draft-board-drink-name {
+  color: #0087cb;
+}
+
+/* Draft Board Row--variable-web */
+.row-variable-web {
+	font-size: 14px !important;
+}
+.draft-board-row-name-variable-web {
+	font-size: 16px !important;
+	color: #000000;
+}
 --OLD STUFF
 
 
@@ -201,43 +225,18 @@
 .draft-board-row-maker-name {
   color: #747474;
 }
-.draft-board-drink-name {
-  color: #0087cb;
-}
 
-.table {
-   th {
-      padding: 8px 4px !important;
-   }
-   td {
-      padding: 8px 4px !important; 
-   }
-}
+
 
 
 /* Draft Board Row--web */
-.draft-board-row-web {
-  font-size: 14px !important;
-  padding: 4px 8px !important;
-}
+
 .draft-board-row-name-web {
   font-size: 16px !important;
   padding: 4px 8px !important;
 }
 
-.brand-font {
-   font-family: 'sansationregular' !important;
-}
-.brand-subfont {
-   font-family: "novecento_sans_widenormal";
-}
-
-.hidden {
-  display: none;
-}
-.show {
-  display: inline;
-}
+/* Universal padding and margin classes */
 .no-padding {
   padding: 0 !important;
 }
