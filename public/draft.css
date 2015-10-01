@@ -215,25 +215,18 @@
 	font-size: 14px !important;
 }
 .draft-board-row-name-variable-web {
+	padding: 4px 8px !important;
 	font-size: 16px !important;
 	color: #000000;
 }
---OLD STUFF
-
-
-/* Draft Board Row--universal */
-.draft-board-row-maker-name {
-  color: #747474;
+/* Draft Board Row--variable-internal */
+.row-variable-web {
+	font-size: 14px !important;
 }
-
-
-
-
-/* Draft Board Row--web */
-
-.draft-board-row-name-web {
-  font-size: 16px !important;
-  padding: 4px 8px !important;
+.draft-board-row-name-variable-web {
+	padding: 4px 8px !important;
+	font-size: 16px !important;
+	color: #000000;
 }
 
 /* Universal padding and margin classes */
@@ -249,8 +242,6 @@
 .no-margin {
   margin: 0 !important;
 }
-
-
 
 /* Change font size when screen size changes */
 /* Extra small devices (phones, less than 768px) */
@@ -277,48 +268,4 @@
   		font-size: 16px;
   		line-height: 1.1;
 	}
-	
-	--OLD STUFF
-  /* Draft board column view page */
-  .retailer-logo-image-small {
-    margin: 5px 0 0 0 !important;
-  }
-  .last-updated {
-    font-size: 12px;
-  }
-  .column-draft-image-holder {
-    height: 65px;
-    padding: 0;
-    margin: 10px 0 0 0;
-  }
-  .drink-origin {
-    margin-top: 2.5px;
-  }
-  .drink-header-draft-pretty-mobile {
-    color: #000;
-    font-weight: 500; 
-    margin: 10px auto 5px auto;
-    font-size: 14px;
-    line-height: 1.1;
-    overflow: visible;
-  }
-  .table-responsive {
-  	width: 100%;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-  }
-@media (min-width: 768px) {
-
-}
-@media (min-width: 992px) {
-
-}
-@media (min-width: 1200px) {
-
-}
-
-td.draft-board-row-internal  {
-   	font-size: 28px !important;
-	padding: 4px 8px !important;
-	color: #747474;
-	}
+}	
