@@ -12,7 +12,7 @@ class Draft::DrinksController < ApplicationController
     @draft_board = DraftBoard.find_by(location_id: @retail_id)
     #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
     # get draft board details
-    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes")
+    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
     # get last updated info
     @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
     
