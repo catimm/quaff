@@ -52,7 +52,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row no-margin">
+		<div class="row no-margin draft-icon-row-variable-internal">
 			<% @draft_details = DraftDetail.where(beer_location_id: drink.id).order(:drink_size) %>
 			<% @draft_details.each do |details| %>
 				<% if details.drink_size > 0 && details.drink_size <= 5 %>

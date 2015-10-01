@@ -152,7 +152,7 @@
 }
 .draft-subheader-variable-internal {
   color: #909090;
-  margin: 5px 0;
+  margin: 0;
   font-weight: 400;
   font-size: 24px;
 }
@@ -164,6 +164,9 @@
   padding-right: 0 !important;
   padding-left: 10px !important;
   height: 40px;
+}
+.draft-icon-row-variable-internal {
+	margin-top: 5px;
 }
 .icon-taster-variable-internal {
   height: 26px;
