@@ -45,7 +45,6 @@
   font-weight: 500;  
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
-  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -92,6 +91,7 @@
   	margin: 10px auto 5px auto;
   	font-size: 16px;
   	line-height: 1.2;
+  	-webkit-line-clamp: 1;
 }
 .ibu-variable-web {
 	height: 13px;
@@ -145,10 +145,11 @@
   	font-size: 13px;
 }
 .column-header-variable-internal {
-	height: 38px; /* Fallback for non-webkit */
+	height: 64px; /* Fallback for non-webkit */
   	margin: 10px auto 5px auto;
   	font-size: 32px;
   	line-height: 1.2;
+  	-webkit-line-clamp: 2;
 }
 .draft-subheader-variable-internal {
   color: #909090;

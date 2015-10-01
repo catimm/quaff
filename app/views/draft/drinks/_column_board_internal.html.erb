@@ -37,7 +37,7 @@
 							<h5 class="draft-subheader-variable-internal">Style unknown</h5>
 						<% end %>
 					</div>
-					<div class="col-sm-4 col-md-3 no-padding-right">
+					<div class="col-sm-4 no-padding-right">
 						<% if !drink.beer.beer_abv.nil? %>
 							<h6 class="draft-subheader-variable-internal"><%= drink.beer.beer_abv %>% ABV</h6>
 						<% else %>
@@ -45,7 +45,7 @@
 						<% end %>
 					</div>
 					<% if !drink.beer.beer_ibu.nil? %>
-						<div class="col-sm-4 col-md-3 no-padding-left text-center">
+						<div class="col-sm-4no-padding-left text-center">
 							<h6 class="draft-subheader-variable-internal ibu-div ibu-variable-internal"><%= drink.beer.beer_ibu %> IBUs</h6>
 						</div>
 					<% end %>
