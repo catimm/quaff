@@ -156,8 +156,11 @@
   font-weight: 400;
   font-size: 22px;
 }
+.style-subheader-variable-internal {
+	margin: 5px 0 0 0;
+}
 .ibu-variable-internal {
-	height: 26px;
+	height: 24px;
 }
 .draft-size-holder-variable-internal {
   margin-top: 5px;
