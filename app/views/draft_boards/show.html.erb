@@ -17,21 +17,13 @@
 			</div>
 		</div>
 		<hr>
-		<% if @board_type == "column-web" %>
+		<% if @board_type == "column" %>
 			<div class="row no-margin ">
-				<%= render 'current_column_draft_board_web' %>
-			</div>
-		<% elsif @board_type == "column-internal" %>
-			<div class="row no-margin ">
-				<%= render 'current_column_draft_board_internal' %>
-			</div>
-		<% elsif @board_type == "row-web" %>
-			<div class="row no-margin ">
-				<%= render 'current_row_draft_board_web' %>
+				<%= render 'current_column_draft_board' %>
 			</div>
 		<% else %>
 			<div class="row no-margin ">
-				<%= render 'current_row_draft_board_internal' %>
+				<%= render 'current_row_draft_board' %>
 			</div>
 		<% end %>
 	</div>

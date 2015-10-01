@@ -813,16 +813,27 @@ $beer-header-lines-to-show-fp: 1;
 }
 .draft-size-holder {
   margin-top: 5px;
-  padding-right: 0;
-}
-.draft-size-holder-for-growlers {
-  margin-top: 7.5px;
+  padding-right: 0 !important;
+  padding-left: 10px !important;
+  height: 32px;
 }
 .icon-taster {
-  padding-top: 16px;
+  height: 18px;
+  margin-top: 10px;
+}
+.icon-tulip {
+  height: 24px;
+  margin-top: 8px;
 }
 .icon-nonic {
-  padding-top: 6px;
+  height: 24px;
+  margin-top: 8px;
+}
+.icon-half-growler {
+  height: 32px;
+}
+.icon-growler {
+  height: 32px;
 }
 .draft-pretty-draft-size, .draft-pretty-draft-cost {
   color: $less-emphasized-text;
