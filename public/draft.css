@@ -148,7 +148,6 @@
 	height: 64px; /* Fallback for non-webkit */
   	margin: 10px auto 5px auto;
   	font-size: 32px;
-  	line-height: 1.2;
   	-webkit-line-clamp: 2;
 }
 .draft-subheader-variable-internal {
@@ -158,7 +157,7 @@
   font-size: 24px;
 }
 .ibu-variable-internal {
-	height: 13px;
+	height: 26px;
 }
 .draft-size-holder-variable-internal {
   margin-top: 5px;
