@@ -145,16 +145,16 @@
   	font-size: 13px;
 }
 .column-header-variable-internal {
-	/* height: 64px; /* Fallback for non-webkit */
+	height: 60px; /* Fallback for non-webkit */
   	margin: 10px auto 5px auto;
-  	font-size: 32px;
+  	font-size: 28px;
   	-webkit-line-clamp: 2;
 }
 .draft-subheader-variable-internal {
   color: #909090;
   margin-bottom: 5px;
   font-weight: 400;
-  font-size: 24px;
+  font-size: 22px;
 }
 .ibu-variable-internal {
 	height: 26px;
