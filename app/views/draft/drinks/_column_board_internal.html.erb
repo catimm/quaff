@@ -1,10 +1,10 @@
 <% @current_draft_board.each do	|drink| %>
 	<div class="col-sm-6 visible-sm visible-md visible-lg">
 		<div class="row no-margin">
-			<div class="col-sm-2 no-padding draft-brewery-image-holder-variable-web">
-				<div class="draft-board-column-tap-number tap-number-variable-web text-center"><%= drink.tap_number %></div>
+			<div class="col-sm-2 no-padding">
+				<div class="draft-board-column-tap-number tap-number-variable-internal text-center"><%= drink.tap_number %></div>
 				<% if !drink.beer.brewery.image.nil? %>
-					<div class="column-draft-image-holder-web">
+					<div class="draft-brewery-image-holder-variable-internal">
 						<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
 					</div>		
 				<% else %>
@@ -13,11 +13,11 @@
 					</div>
 				<% end %>
 				<% if !drink.beer.brewery.brewery_state_long.nil? %>
-					<h6 class="tile-subheader drink-origin origin-variable-web"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_long %></i></h6>
+					<h6 class="tile-subheader drink-origin origin-variable-internal"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_long %></i></h6>
 				<% elsif !drink.beer.brewery.brewery_state_short.nil? %>
-					<h6 class="tile-subheader drink-origin origin-variable-web"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_short %></i></h6>
+					<h6 class="tile-subheader drink-origin origin-variable-internal"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_short %></i></h6>
 				<% else %>
-					<h6 class="tile-subheader drink-origin origin-variable-web"></h6>
+					<h6 class="tile-subheader drink-origin origin-variable-internal"></h6>
 				<% end %>
 			</div>
 			<div class="col-sm-10 no-padding">
@@ -25,9 +25,9 @@
 					<div class="col-sm-12">
 						<% if drink.beer.collab == true %>
 							<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-							<h5 class="drink-header-draft-column column-header-variable-web"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
+							<h5 class="drink-header-draft-column column-header-variable-internal"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
 						<% else %>
-							<h5 class="drink-header-draft-column column-header-variable-web"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
+							<h5 class="drink-header-draft-column column-header-variable-internal"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
 						<% end %>
 					</div>
 					<div class="col-sm-12">
@@ -37,7 +37,7 @@
 							<h5 class="draft-subheader">Style unknown</h5>
 						<% end %>
 					</div>
-					<div class="col-sm-3 no-padding-right">
+					<div class="col-sm-4 col-md-3 no-padding-right">
 						<% if !drink.beer.beer_abv.nil? %>
 							<h6 class="draft-subheader"><%= drink.beer.beer_abv %>% ABV</h6>
 						<% else %>
@@ -45,8 +45,8 @@
 						<% end %>
 					</div>
 					<% if !drink.beer.beer_ibu.nil? %>
-						<div class="col-sm-3 no-padding-left text-center">
-							<h6 class="draft-subheader ibu-div ibu-variable-web"><%= drink.beer.beer_ibu %> IBUs</h6>
+						<div class="col-sm-4 col-md-3 no-padding-left text-center">
+							<h6 class="draft-subheader ibu-div ibu-variable-internal"><%= drink.beer.beer_ibu %> IBUs</h6>
 						</div>
 					<% end %>
 				</div>
@@ -54,38 +54,38 @@
 					<% @draft_details = DraftDetail.where(beer_location_id: drink.id).order(:drink_size) %>
 					<% @draft_details.each do |details| %>
 						<% if details.drink_size > 0 && details.drink_size <= 5 %>
-							<div class="col-sm-2 draft-size-holder-variable-web">
-								<img class="img-responsive draft-column-icons icon-taster-variable-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/taster.jpg" />
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= details.drink_size %> oz.</p>					
+							<div class="col-sm-3 col-md-2 draft-size-holder-variable-internal">
+								<img class="img-responsive draft-column-icons icon-taster-variable-internal" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/taster.jpg" />
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= details.drink_size %> oz.</p>					
 							</div>
 						<% end %>
 						<% if details.drink_size > 5 && details.drink_size <= 12 %>
-							<div class="col-sm-2 draft-size-holder-variable-web">
-								<img class="img-responsive draft-column-icons icon-tulip-variable-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/tulip.jpg" />
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= details.drink_size %> oz.</p>								
+							<div class="col-sm-3 col-md-2 draft-size-holder-variable-internal">
+								<img class="img-responsive draft-column-icons icon-tulip-variable-internal" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/tulip.jpg" />
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= details.drink_size %> oz.</p>								
 							</div>
 						<% end %>
 						<% if details.drink_size > 12 && details.drink_size <= 22 %>
-							<div class="col-sm-2 draft-size-holder-variable-web">
-								<img class="img-responsive draft-column-icons icon-nonic-variable-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/nonic.jpg" />
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= details.drink_size %> oz.</p>			
+							<div class="col-sm-3 col-md-2 draft-size-holder-variable-internal">
+								<img class="img-responsive draft-column-icons icon-nonic-variable-internal" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/nonic.jpg" />
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= details.drink_size %> oz.</p>			
 							</div>
 						<% end %>
 						<% if details.drink_size == 32 %>
-							<div class="col-sm-3 draft-size-holder-variable-web">
-								<img class="img-responsive draft-column-icons icon-half-growler-variable-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= details.drink_size %> oz.</p>	
+							<div class="col-sm-4 col-md-3 draft-size-holder-variable-internal">
+								<img class="img-responsive draft-column-icons icon-half-growler-variable-internal" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= details.drink_size %> oz.</p>	
 							</div>
 						<% end %>
 						<% if details.drink_size == 64 %>
-							<div class="col-sm-3 draft-size-holder-variable-web">
-								<img class="img-responsive draft-column-icons icon-growler-variable-web" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
-								<p class="draft-column-size-and-cost size-and-cost-variable-web"><%= details.drink_size %> oz.</p>	
+							<div class="col-sm-4 col-md-3 draft-size-holder-variable-internal">
+								<img class="img-responsive draft-column-icons icon-growler-variable-internal" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/growler.jpeg" />
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+								<p class="draft-column-size-and-cost size-and-cost-variable-internal"><%= details.drink_size %> oz.</p>	
 							</div>
 						<% end %>
 					<% end %>
