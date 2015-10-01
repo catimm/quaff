@@ -163,30 +163,30 @@
   margin-top: 5px;
   padding-right: 0 !important;
   padding-left: 10px !important;
-  height: 32px;
+  height: 36px;
 }
 .icon-taster-variable-internal {
-  height: 18px;
+  height: 22px;
   margin-top: 10px;
 }
 .icon-tulip-variable-internal {
-  height: 24px;
+  height: 28px;
   margin-top: 8px;
 }
 .icon-nonic-variable-internal {
-  height: 24px;
+  height: 28px;
   margin-top: 8px;
 }
 .icon-half-growler-variable-internal {
-  height: 32px;
+  height: 36px;
 }
 .icon-growler-variable-internal {
-  height: 32px;
+  height: 36px;
 }
 .size-and-cost-variable-internal {
-	font-size: 12px;
+	font-size: 18px;
   	margin: 2.5px 0;
-	line-height: 1.2;
+	line-height: 1.1;
 }
 --OLD STUFF
 
