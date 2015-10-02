@@ -127,7 +127,7 @@ task :check_pine_box => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
         if @related_brewery.empty?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.empty?
@@ -468,7 +468,7 @@ task :check_chucks_85 => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
         if @related_brewery.blank?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.blank?
@@ -801,7 +801,7 @@ task :check_chucks_cd => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
         if @related_brewery.blank?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.blank?
@@ -1137,7 +1137,7 @@ task :check_beer_junction => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
         if @related_brewery.blank?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
           if !@alt_brewery_name.blank?
@@ -1476,7 +1476,7 @@ task :check_beveridge_place => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
+        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
         # Rails.logger.debug("Find if Brewery is in breweries table: #{@related_brewery.inspect}")
         if @related_brewery.blank?
           @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
