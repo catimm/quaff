@@ -14,8 +14,12 @@
 		<% end %>
 	</div>
 	<div class="col-sm-6 no-padding draft-type-holder">
-		<% if !this_drink.beer_type.beer_type_name.nil? %>
-			<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type"><%= this_drink.beer_type.beer_type_name %></h5>
+		<% if !this_drink.beer_type.nil? %>
+			<% if !this_drink.beer_type.beer_type_name.nil? %>
+				<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type"><%= this_drink.beer_type.beer_type_name %></h5>
+			<% else %>
+				<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type">Unknown Style</h5>
+			<% end %>
 		<% else %>
 			<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type">Unknown Style</h5>
 		<% end %>
