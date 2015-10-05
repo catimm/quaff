@@ -47,20 +47,15 @@ class DraftBoardsController < ApplicationController
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
     @draft = DraftBoard.new
-    @new_draft = @draft.beer_locations.build
-    @new_draft.draft_details.build
+    @draft_drink = @draft.beer_locations.build
+    @draft_drink_details = @draft_drink.draft_details.build
     session[:form] = "new"
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
       if !params[:chosen_drink].nil?
-        #Rails.logger.debug("Thinks there is a chosen drink")
-        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
         @chosen_drink = JSON.parse(params[:chosen_drink])
         @new_draft_info_id = session[:draft_info_id]
         @unique_number = session[:draft_info_number]
-        #Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
-        Rails.logger.debug("New Element ID #: #{@new_draft_info_id.inspect}")
-        Rails.logger.debug("Unique Number #: #{@unique_number.inspect}")
         respond_to do |format|
           format.js
         end # end of redirect to jquery
@@ -70,24 +65,21 @@ class DraftBoardsController < ApplicationController
     # get unique id of search box and store in session variable
     if params.has_key?(:inputID)  
       if !params[:inputID].nil?
-        #Rails.logger.debug("Thinks there is an input ID")
-        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
         @input_id = params[:inputID]
         @input_id_number_array = @input_id.split('-')
         @input_id_number = @input_id_number_array[1]
-        #Rails.logger.debug("Input ID: #{@input_id.inspect}")
-        Rails.logger.debug("Input ID #: #{@input_id_number.inspect}")
         session[:draft_info_id] = "new-draft-info-"+@input_id_number
         session[:draft_info_number] = @input_id_number
-        Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
-        #Rails.logger.debug("Session Info #: #{session.inspect}")
       end
     end
   end
   
   def create
-    @draft_board = DraftBoard.new(location_id: session[:retail_id])
-    if @draft_boards.save
+    # add retailer info in case form upload doesn't work and form gets shown again 
+    @retail_id = session[:retail_id]
+    @retailer = Location.find(@retail_id)
+    @draft = DraftBoard.new(location_id: session[:retail_id])
+    if @draft.save
       params[:draft_board][:beer_locations_attributes].each do |drink|
         # first make sure this item should be added (ie wasn't deleted)
         @destroy = drink[1][:_destroy]
@@ -96,7 +88,7 @@ class DraftBoardsController < ApplicationController
                                        beer_id: drink[1][:beer_id], 
                                        beer_is_current: "yes", 
                                        tap_number: drink[1][:tap_number],
-                                       draft_board_id: @draft_board.id)
+                                       draft_board_id: @draft.id)
            if @new_beer_location_drink.save
              # add size/cost of new draft drink
              drink[1][:draft_details_attributes].each do |details|
@@ -109,19 +101,34 @@ class DraftBoardsController < ApplicationController
                  if @new_drink_details.save
                    # Rails.logger.debug("Draft Details saved")
                  else 
-                   render :action=>'new'  # render to fill fields after error message
+                   @draft = DraftBoard.find_by(location_id: @retail_id)
+                   @beer_location_info = BeerLocation.find_by(draft_board_id: @draft.id)
+                   @beer_location_info.destroy!
+                   @draft.destroy!
+                   @draft_board_form = "edit"
+                   flash[:error] = "Something went wrong; your draft info didn't save. Please try again!"
+                   @draft = DraftBoard.new(drink_params)
+                   render :edit  and return # render to fill fields after error message
                  end # end DraftDetail 'if save'
                end # end of test to determine if drink details "row" was deleted and should be ignored 
              end # end of loop to add drink details
           else
-            render :action=>'new'  # render to fill fields after error message
+            @draft = DraftBoard.find_by(location_id: @retail_id)
+            @draft.destroy!
+            @draft_board_form = "edit"
+            flash[:error] = "Something went wrong; your draft info didn't save. Please try again!"
+            @draft = DraftBoard.new(drink_params)
+            render :edit  and return # render to fill fields after error message
           end # end BeerLocation 'if save'
         end # end of test to determine if drink "row" was deleted and should be ignored
       end # end of loop to run through each drink in the saved params
       
       redirect_to retailer_path(session[:retail_id])
     else 
-      render :action=>'new'  # render to fill fields after error message
+      @draft_board_form = "new_error"
+      flash[:error] = "Something went wrong; your draft info didn't save. Please try again!"
+      @draft = DraftBoard.new(drink_params)
+      render :edit  # render to fill fields after error message
     end # end DraftBoard 'if save'
   end # end of create action
   
@@ -140,6 +147,9 @@ class DraftBoardsController < ApplicationController
     # get draft board #/info
     @draft_board = session[:draft_board_id]
     @draft = DraftBoard.find_by(location_id: @retail_id)
+    @draft_drink = BeerLocation.where(draft_board_id: @draft.id, beer_is_current: "yes").order(:tap_number)
+    Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
+    @draft_drink_details = DraftDetail.where(beer_location_id: @draft_drink)
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
     
@@ -180,9 +190,13 @@ class DraftBoardsController < ApplicationController
   end # end of edit action
   
   def update
-    @draft_board = DraftBoard.find(params[:id])
-    @current_draft_drink_ids = BeerLocation.where(location_id: @draft_board.location_id, beer_is_current: "yes").pluck(:beer_id)
+    # add retailer info in case form upload doesn't work and form gets shown again 
+    @retail_id = session[:retail_id]
+    @retailer = Location.find(@retail_id)
+    @draft = DraftBoard.find(params[:id])
+    @current_draft_drink_ids = BeerLocation.where(location_id: @draft.location_id, beer_is_current: "yes").pluck(:beer_id)
     Rails.logger.debug("Draft IDs #: #{@current_draft_drink_ids.inspect}")
+    @testing = "yes"
     @still_current_drink_ids = Array.new
     params[:draft_board][:beer_locations_attributes].each do |drink|
       # first make sure this item should be added (ie wasn't deleted)
@@ -194,7 +208,7 @@ class DraftBoardsController < ApplicationController
           # add this beer id to array of still current drinks
           @still_current_drink_ids << @beer_id
           # grab this BeerLocation record
-          @current_beer_location = BeerLocation.where(location_id: @draft_board.location_id, beer_id: @beer_id, beer_is_current: "yes").first
+          @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "yes").first
           # update tap number to ensure it's currently accurate
           @current_beer_location.update_attributes(tap_number: drink[1][:tap_number])
           # delete all related size/cost information
@@ -213,23 +227,27 @@ class DraftBoardsController < ApplicationController
             end # end of loop to add drink details
           end # end validation that drink details exist
         else # if not on draft, add it as new draft item
-          @new_beer_location_drink = BeerLocation.new(location_id: @draft_board.location_id, 
+          @new_beer_location_drink = BeerLocation.new(location_id: @draft.location_id, 
                                       beer_id: @beer_id, 
                                       beer_is_current: "yes", 
                                       tap_number: drink[1][:tap_number],
                                       draft_board_id: params[:id])
-          @new_beer_location_drink.save
-          # add size/cost of new draft drink
-          drink[1][:draft_details_attributes].each do |details|
-            # first make sure this item should be added (ie wasn't deleted)
-            @destroy_details = details[1][:_destroy]
-            if @destroy_details != "1"
-              @new_drink_details = DraftDetail.new(beer_location_id: @new_beer_location_drink.id, 
-                                    drink_size: details[1][:drink_size], 
-                                    drink_cost: details[1][:drink_cost])
-              @new_drink_details.save
-            end # end of test to determine if drink details "row" was deleted and should be ignored 
-          end # end of loop to add drink details
+          if @testing == "no" #@new_beer_location_drink.save
+            # add size/cost of new draft drink
+            drink[1][:draft_details_attributes].each do |details|
+              # first make sure this item should be added (ie wasn't deleted)
+              @destroy_details = details[1][:_destroy]
+              if @destroy_details != "1"
+                @new_drink_details = DraftDetail.new(beer_location_id: @new_beer_location_drink.id, 
+                                      drink_size: details[1][:drink_size], 
+                                      drink_cost: details[1][:drink_cost])
+                @new_drink_details.save
+              end # end of test to determine if drink details "row" was deleted and should be ignored 
+            end # end of loop to add drink details
+          else
+            flash[:error] = "Something went wrong; your new draft info didn't save. Please try again!"
+            render :edit  and return # render to fill fields after error message
+          end
         end # end of if/else to determine if draft drink is new or being updated
       end # end of test to determine if drink "row" was deleted and should be ignored
     end # end of loop to run through each drink in the saved params
@@ -240,7 +258,7 @@ class DraftBoardsController < ApplicationController
     if !@removed_drink_ids.nil?
       @removed_drink_ids.each do |update|
         # grab this BeerLocation record
-        @removed_beer_location = BeerLocation.where(location_id: @draft_board.location_id, beer_id: update, beer_is_current: "yes").first
+        @removed_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: update, beer_is_current: "yes").first
         # update removed drink info
         @removed_beer_location.update_attributes(beer_is_current: "no", removed_at: Time.now)
       end # end of loop to update removed drinks
@@ -253,6 +271,11 @@ class DraftBoardsController < ApplicationController
   private
   def verify_admin
     redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6
+  end
+
+  def drink_params
+    params.require(:draft_board).permit(beer_locations_attributes: [:tap_number, :beer_id, :_destroy, draft_details_attributes: [
+                                        :drink_size, :drink_cost, :_destroy]])  
   end
   
 end # end of draft_boards controller

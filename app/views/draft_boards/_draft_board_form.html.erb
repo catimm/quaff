@@ -27,10 +27,13 @@
 					<%= f.submit "Save", class: "btn btn-default btn-success formButton-draft-edit" %>
 				</div>
 			</div>
+			<%- flash.each do |name, msg| -%>
+				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+			<%- end -%>
 			<hr>
 		</div>
 		<div class="row draft-filler-top-row"></div>
-		<%= render 'edit_new_draft', :f => f %>
+		<%= render 'new_draft', :f => f %>
 		<%= f.link_to_add :beer_locations, id: "add-drink-button", class: 'btn btn-default btn-primary formButton-add-draft' do %>
 			<i class="fa fa-plus"> Add a new drink</i>
 		<% end %>

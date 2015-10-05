@@ -812,25 +812,32 @@ $beer-header-lines-to-show-fp: 1;
   text-align: center;
 }
 .draft-size-holder {
-  margin-top: 5px;
+  margin: 5px 7.5px 0 0;
   padding-right: 0 !important;
-  padding-left: 10px !important;
+  padding-left: 8px !important;
+  height: 32px;
+}
+.draft-size-holder-growler {
+  margin: 5px 7.5px 0 0;
+  padding-right: 0 !important;
+  padding-left: 2px !important;
   height: 32px;
 }
 .icon-taster {
-  height: 18px;
-  margin-top: 10px;
+  height: 40px;
+  margin-top: -1px;
 }
 .icon-tulip {
-  height: 24px;
+  height: 22px;
   margin-top: 8px;
 }
 .icon-nonic {
   height: 24px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 .icon-half-growler {
-  height: 32px;
+  height: 26px;
+  margin-top: 4px;
 }
 .icon-growler {
   height: 32px;
@@ -1903,6 +1910,13 @@ input[type="checkbox"] {
         }
       }
     }
+  #flash_error {
+    text-align: center;
+    font-size: 18px;
+  }
+  #flash_notice {
+    display: none;
+  }
 }
 .formButton-draft-edit {
   margin-top: 15px;

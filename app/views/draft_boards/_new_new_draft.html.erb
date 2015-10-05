@@ -1,4 +1,4 @@
-<%= f.fields_for :beer_locations do |ff| %>
+<%= f.fields_for :beer_locations, @new_draft do |ff| %>
 		<div class="row new-draft-row" id="new-draft-row-<%= ff.index %>" >
 					<div class="col-sm-1 text-center tap-number-holder">
 						<p>Tap #</p>
