@@ -196,7 +196,6 @@ class DraftBoardsController < ApplicationController
     @draft = DraftBoard.find(params[:id])
     @current_draft_drink_ids = BeerLocation.where(location_id: @draft.location_id, beer_is_current: "yes").pluck(:beer_id)
     Rails.logger.debug("Draft IDs #: #{@current_draft_drink_ids.inspect}")
-    @testing = "yes"
     @still_current_drink_ids = Array.new
     params[:draft_board][:beer_locations_attributes].each do |drink|
       # first make sure this item should be added (ie wasn't deleted)
@@ -232,7 +231,7 @@ class DraftBoardsController < ApplicationController
                                       beer_is_current: "yes", 
                                       tap_number: drink[1][:tap_number],
                                       draft_board_id: params[:id])
-          if @testing == "no" #@new_beer_location_drink.save
+          if @new_beer_location_drink.save
             # add size/cost of new draft drink
             drink[1][:draft_details_attributes].each do |details|
               # first make sure this item should be added (ie wasn't deleted)
