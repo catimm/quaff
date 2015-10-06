@@ -281,6 +281,65 @@ class DraftBoardsController < ApplicationController
     
   end # end of update action
   
+  def add_new_drink
+    Rails.logger.debug("Hitting the add new drink method")
+    @add_new_drink = Beer.new
+    render :partial => '/draft_boards/new_drink'
+  end
+  
+  def create_new_drink
+    # set admin emails to receive updates
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+    # get retailer info
+    @retail_id = session[:retail_id]
+    @retailer = Location.find(@retail_id)
+    # get draft board info
+    @draft_board = DraftBoard.find_by(location_id: @retail_id)
+    # get data from params
+    @this_brewery_name = params[:beer][:associated_brewery]
+    @this_drink_name = params[:beer][:beer_name]
+    @this_drink_abv = params[:beer][:beer_abv]
+    # check if this brewery is already in system
+    @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
+    if @related_brewery.empty?
+       @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
+       if !@alt_brewery_name.empty?
+         @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+       end
+     end
+     # if brewery does not exist in DB, insert info into Breweries and Beers tables
+     if @related_brewery.empty?
+        # first add new brewery to breweries table & add correct collab status
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name)
+        new_brewery.save!
+        # then add new beer to beers table       
+        new_beer = Beer.new(:beer_name => @this_drink_name, :brewery_id => new_brewery.id, :beer_abv => @this_drink_abv, :touched_by_user => current_user.id)
+        new_beer.save!
+      else # since this brewery exists in the breweries table, add beer to beers table
+        new_beer = Beer.new(:beer_name => @this_drink_name, :brewery_id => @related_brewery[0].id, :beer_abv => @this_drink_abv, :touched_by_user => current_user.id)
+        new_beer.save!
+      end
+     # find current number of drinks on draft board
+     number_of_drinks = BeerLocation.where(draft_board_id: @draft_board.id).count
+     # add new drink to retailer draft board
+     new_drink_number = number_of_drinks + 1
+     new_draft_board_drink = BeerLocation.new(:beer_id => new_beer.id, :location_id => @retail_id, 
+                              :draft_board_id => @draft_board.id, :tap_number => new_drink_number, :beer_is_current => "yes")
+     new_draft_board_drink.save!
+    # send email to admins to update new drink info
+    if @related_brewery.empty?
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, new_brewery.id, @this_drink_name, new_beer.id).deliver
+      end
+    else
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, @related_brewery[0].id, @this_drink_name, new_beer.id).deliver
+      end
+    end
+    # redirect back to updated draft edit page
+    redirect_to edit_draft_board_path(session[:retail_id])
+  end
+  
   private
   def verify_admin
     redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6

@@ -47,11 +47,15 @@ ready = function() {
 	          displayKey: 'beer',
 	          source: numbers.ttAdapter(),
 	          templates: {
-				    empty: [
-				      '<div class="empty-message"><a href="'+ BASE_URL +'searches/add_beer">',
-				        'Not found. Click here to suggest we add it!',
-				      '</a></div>'
-				    ].join('\n'),
+				    empty: function() {
+				    	if(window.location.href.indexOf("draft_boards") > -1) {
+				    		return ['<div class="empty-message"><a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink">',
+					        'Not found. Click here to add it.','</a></div>'].join('\n');
+				    	} else {
+					      	return ['<div class="empty-message"><a href="'+ BASE_URL +'searches/add_beer">',
+					        'Not found. Click here to suggest we add it!','</a></div>'].join('\n');
+					    }
+				     },
 				    suggestion: function(data) {
 					    if(data.source == "retailer") {
 					    	return '<p>' + data.beer +'</p>';	    	

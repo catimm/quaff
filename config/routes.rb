@@ -56,6 +56,8 @@ Rails.application.routes.draw do
   get 'terms' => 'home#terms', :as => "terms"
   get '/search-bloodhound-engine.js' => 'draft_boards#edit'
   get '/draft_boards/edit' => 'draft_boards#edit'
+  get 'draft_boards/new_drink' => 'draft_boards#add_new_drink', :as => 'retailer_add_new_drink'
+  post 'draft_boards/new_drink' => 'draft_boards#create_new_drink', :as => 'retailer_create_new_drink'
   resources :draft_boards
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
