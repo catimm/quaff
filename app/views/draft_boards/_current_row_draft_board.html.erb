@@ -29,6 +29,8 @@
 				<% if drink.beer.collab == true %>
 					<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
 					<td class="draft-board-row-name"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
+					<td class="draft-board-row-name table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
 				<% else %>
 					<td class="draft-board-row-name table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
 				<% end %>

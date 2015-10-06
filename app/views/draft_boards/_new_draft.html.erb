@@ -1,10 +1,21 @@
 <%= f.fields_for :beer_locations, @draft_drink do |ff| %>
 		<div class="row new-draft-row" id="new-draft-row-<%= ff.index %>" >
-					<div class="col-sm-1 text-center tap-number-holder">
+					<div class="col-xs-3 text-center tap-number-holder visible-xs">
 						<p>Tap #</p>
+					</div>
+					<div class="col-xs-3 text-center no-padding-left tap-number-holder visible-xs">
 						<%= ff.text_field :tap_number, :class => "form-control" %>
 					</div>
-					<div class="col-sm-5">	
+					<div class="col-xs-6 remove-draft-button visible-xs text-right">
+						<%= ff.link_to_remove do %>
+							<i class="fa fa-trash-o"></i>	
+						<% end %>
+					</div>
+					<div class="col-xs-6 col-sm-2 text-center tap-number-holder visible-sm visible-md visible-lg">
+						<p>Tap #</p>
+						<%= ff.text_field :tap_number, :class => "form-control mobile-tap-number" %>
+					</div>
+					<div class="col-xs-12 col-sm-5">	
 						<%= ff.hidden_field :beer_id %>
 						<% if @draft_board_form == "edit" %>
 							<div class="row no-margin search-field">
@@ -35,7 +46,7 @@
 							</div>
 						<% else %>
 							<div class="row no-margin search-field">
-								<div class="col-sm-12 drink-search-holder">	
+								<div class="col-xs-12 drink-search-holder">	
 									<% if !ff.object.beer.nil? %>
 											<% if !ff.object.beer.brewery.short_brewery_name.nil? %>
 												<% @beer_name = ff.object.beer.brewery.short_brewery_name + " " + ff.object.beer.beer_name %>
@@ -67,14 +78,14 @@
 							<% end %>
 						</div>	
 					</div>
-					<div class="col-sm-5 draft-details-row-container">
+					<div class="col-xs-12 col-sm-5 draft-details-row-container">
 						<%= render 'new_draft_details', :ff => ff %>
 						<%= ff.link_to_add :draft_details, class: 'btn btn-default btn-primary formButton-add-details' do %>
 							<i class="fa fa-plus"> Add a drink size</i>
 						<% end %>
 						
 					</div>			
-					<div class="col-sm-1 no-padding-right remove-draft-button">
+					<div class="col-sm-1 no-padding-right remove-draft-button visible-sm visible-md visible-lg">
 						<%= ff.link_to_remove do %>
 							<i class="fa fa-trash-o"></i>	
 						<% end %>

@@ -1,18 +1,18 @@
 
 <%= ff.fields_for :draft_details do |builder| %>
 	<div class="row draft-details-row" id="draft-details-row-<%= builder.index %>">
-		<div class="col-sm-2 text-center dropdown draft-size-input size-option-text-holder">
+		<div class="col-xs-2 col-sm-2 text-center dropdown draft-size-input size-option-text-holder">
 			<p class="size-option-text">1st size option</p>
 		</div>
-		<div class="col-sm-3 no-padding-right draft-size-input"> 
+		<div class="col-xs-4 col-sm-3 no-padding-right draft-size-input"> 
 			<%= builder.select(:drink_size, 
 				[ ['Size (oz)', 0],['2 oz.', 2],['4 oz.', 4],['6 oz.', 6],['8 oz.', 8],['10 oz.', 10],['12 oz.', 12],['16 oz.', 16],['20 oz.', 20],['32 oz.', 32],['64 oz.', 64] ], 
 				{}, { :class => "btn btn-default dropdown-toggle drink-size" }) %>
 		</div>
-		<div class="col-sm-3 no-padding-right draft-cost-input">
+		<div class="col-xs-4 col-sm-3 no-padding-right draft-cost-input">
 			<%= builder.text_field :drink_cost, :data => {autonumeric: {aSign: '$ ', a_sep: ',', a_dec: '.'}}, :class => "form-control", placeholder: "Cost ($)" %>
 		</div>
-		<div class="col-sm-3 remove-draft-details">
+		<div class="col-xs-1 col-sm-3 remove-draft-details">
 			<%= builder.link_to_remove do %>
 				<i class="fa fa-times-circle"></i>	
 			<% end %>

@@ -109,19 +109,21 @@
   height: 32px;
 }
 .icon-taster-variable-web {
-  height: 18px;
-  margin-top: 10px;
+ 	height: 40px;
+   	margin-top: -1px;
+  	margin-left: -5px;
 }
 .icon-tulip-variable-web {
-  height: 24px;
-  margin-top: 8px;
+  	height: 22px;
+    margin-top: 8px;
 }
 .icon-nonic-variable-web {
-  height: 24px;
-  margin-top: 8px;
+  	height: 24px;
+    margin-top: 6px;
 }
 .icon-half-growler-variable-web {
-  height: 32px;
+  	height: 26px;
+    margin-top: 4px;
 }
 .icon-growler-variable-web {
   height: 32px;

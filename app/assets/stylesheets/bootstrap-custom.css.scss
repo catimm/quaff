@@ -2139,7 +2139,26 @@ input[type="checkbox"] {
   background: $step-background;
   margin-top: 10px;
 }
-
+  // Draft edit page
+  .remove-draft-button {
+    padding: 0 27.5px 0 0;
+    a {
+      i {
+        color: $less-emphasized-text;
+        font-size: 24px;
+        font-weight: 400 !important;
+      }
+    }
+  }
+  .mobile-tap-number {
+    float: left !important;
+    width: 55% !important;
+    margin-left: -5px;
+  }
+  .formButton-add-draft {
+    width: 80%;
+    margin-bottom: 20px;
+  }
   // Draft board column view page
   .retailer-logo-image-small {
     margin: 5px 0 0 0 !important;
@@ -2162,6 +2181,64 @@ input[type="checkbox"] {
     font-size: 14px;
     line-height: 1.1;
     overflow: visible;
+  }
+  .tap-number-variable-web {
+    top: 0;
+  }
+  .draft-brewery-image-holder-variable-web {
+      display: block;
+      height: 72.5px;
+      width: 72.5px;
+      padding: 0;
+      margin: 10px 0 0 0;
+  } 
+  .drink-origin {
+    text-align: left;
+  }
+  .draft-column-icons {
+    float: left;
+    text-align: center;
+  }
+  .draft-type-retailer-mobile {
+    margin: 0 !important;
+  }
+  .draft-size-holder {
+    margin: 5px 7.5px 0 0;
+    padding-right: 0 !important;
+    padding-left: 5px !important;
+    height: 32px;
+  }
+  .draft-size-holder-growler {
+    margin: 5px 7.5px 0 0;
+    padding-right: 0 !important;
+    padding-left: 2px !important;
+    height: 32px;
+  }
+  .icon-taster {
+    height: 40px;
+    margin-top: -1px;
+    margin-left: -5px;
+  }
+  .icon-tulip {
+    height: 22px;
+    margin-top: 8px;
+  }
+  .icon-nonic {
+    height: 24px;
+    margin-top: 6px;
+  }
+  .icon-half-growler {
+    height: 26px;
+    margin-top: 4px;
+  }
+  .icon-growler {
+    height: 32px;
+  }
+  .draft-pretty-draft-size, .size-and-cost-web {
+    color: $less-emphasized-text;
+    font-size: 12px;
+    margin: 2.5px 0;
+    text-align: center; 
   }
   // locations index page
   .overview-tile {

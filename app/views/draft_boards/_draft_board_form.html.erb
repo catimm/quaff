@@ -14,7 +14,7 @@
 					<div class="col-xs-12 visible-xs">
 						<div class="row img-responsive retailer-logo-image-med" alt="Responsive image" style="background-image: url(<%= @retailer.logo_med %>)">
 							<% if !@last_draft_board_update.nil? %>
-								<h3 class="retailer-page-title">Edit Draft Board <span class="last-updated">(last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h3>
+								<h3 class="retailer-page-title">Edit Draft Board <span class="last-updated">(updated: <%= (@last_draft_board_update.updated_at).strftime("%-m.%-d.%y @ %l:%M %p") %>)</span></h3>
 							<% else %>
 								<h3 class="retailer-page-title">Edit Draft Board</h3>
 							<% end %>
