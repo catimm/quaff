@@ -1071,10 +1071,6 @@ task :check_beer_junction => :environment do
           @this_beer_name.slice! word
         end
       end
-      # add special case to remove IPA if it hasn't already been removed
-      if (@this_beer_type.include? "India Pale Ale") && (@this_beer_name != @this_beer_type)
-        @this_beer_name.slice! "IPA"
-      end
       # remove extra spaces from beer name
       @this_beer_name = @this_beer_name.strip
 
@@ -1409,10 +1405,6 @@ task :check_beveridge_place => :environment do
         if @this_beer_name.include? word
           @this_beer_name.slice! word
         end
-      end
-      # add special case to remove IPA if it hasn't already been removed
-      if (@this_beer_type.include? "India Pale Ale") && (@this_beer_name != @this_beer_type)
-        @this_beer_name.slice! "IPA"
       end
       # remove extra spaces from beer name
       @this_beer_name = @this_beer_name.strip
