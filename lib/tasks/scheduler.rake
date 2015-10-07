@@ -174,8 +174,6 @@ task :check_pine_box => :environment do
           # check if beer name matches in either direction
           if beer.beer_name == @this_beer_name
              @drink_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
-             @drink_name_match = true
           else
             @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
@@ -515,8 +513,6 @@ task :check_chucks_85 => :environment do
         # check if beer name matches in either direction
           if beer.beer_name == @this_beer_name
              @drink_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
-             @drink_name_match = true
           else
             @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
@@ -849,8 +845,6 @@ task :check_chucks_cd => :environment do
         # check if beer name matches in either direction
           if beer.beer_name == @this_beer_name
              @drink_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
-             @drink_name_match = true
           else
             @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
@@ -1181,8 +1175,6 @@ task :check_beer_junction => :environment do
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
           if beer.beer_name == @this_beer_name
-             @drink_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
              @drink_name_match = true
           else
             @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
@@ -1521,8 +1513,6 @@ task :check_beveridge_place => :environment do
         # check if beer name matches in either direction
           if beer.beer_name == @this_beer_name
              @drink_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
-             @drink_name_match = true
           else
             @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
             if !@alt_drink_name.nil?
@@ -1786,15 +1776,13 @@ task :check_fremont_beer_garden => :environment do
             # check if beer name matches in either direction
             if beer.beer_name.include? @this_beer_name
                the_first_name_match = true
-            elsif @this_beer_name.include? beer.beer_name
-               the_second_name_match = true
             else
               @alt_beer_name = AltBeerName.where("name like ?", "%#{@this_beer_name}%")
               if !@alt_beer_name.empty?
                 the_third_name_match = true
               end
             end
-            if the_first_name_match || the_second_name_match || the_third_name_match
+            if the_first_name_match || the_third_name_match
               @recognized_beer = beer
             end
             # break this loop as soon as there is a match on this current beer's name
@@ -1900,15 +1888,13 @@ task :check_fremont_beer_garden => :environment do
           # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
-             the_second_name_match = true
           else
             @alt_beer_name = AltBeerName.where(beer_id: beer.id).where("name like ?", "%#{@this_beer_name}%")
             if !@alt_beer_name.empty?
               the_third_name_match = true
             end
           end
-          if the_first_name_match || the_second_name_match || the_third_name_match
+          if the_first_name_match || the_third_name_match
             @recognized_beer = beer
           end
           # break this loop as soon as there is a match on this current beer's name
@@ -2121,8 +2107,6 @@ task :check_the_yard => :environment do
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
           if beer.beer_name == @this_beer_name
-             @drink_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
              @drink_name_match = true
           else
             @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
@@ -2351,8 +2335,6 @@ task :check_the_dray => :environment do
         @this_brewery_beers.each do |beer|
         # check if beer name matches in either direction
           if beer.beer_name == @this_beer_name
-             @drink_name_match = true
-          elsif @this_beer_name.include? beer.beer_name
              @drink_name_match = true
           else
             @alt_drink_name = AltBeerName.where(beer_id: beer.id, name: @this_beer_name)[0]
