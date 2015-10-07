@@ -239,7 +239,6 @@ task :check_pine_box => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
@@ -572,7 +571,6 @@ task :check_chucks_85 => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
@@ -906,7 +904,6 @@ task :check_chucks_cd => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
@@ -1237,7 +1234,6 @@ task :check_beer_junction => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
@@ -1574,7 +1570,6 @@ task :check_beveridge_place => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
@@ -1827,7 +1822,6 @@ task :check_fremont_beer_garden => :environment do
                 @current_beer_id = @recognized_beer.id
                 @current_brewery_name = @recognized_beer.brewery.brewery_name
                 @current_brewery_id = @recognized_beer.brewery.id
-                @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
         
                 @relevant_trackings.each do |each_tracking|
                   @user_info = User.where(id: each_tracking.user_id)[0]
@@ -1935,7 +1929,6 @@ task :check_fremont_beer_garden => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
@@ -2162,7 +2155,6 @@ task :check_the_yard => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
@@ -2390,7 +2382,6 @@ task :check_the_dray => :environment do
               @current_beer_id = @recognized_beer.id
               @current_brewery_name = @recognized_beer.brewery.brewery_name
               @current_brewery_id = @recognized_beer.brewery.id
-              @beer_info = [{name: "beer", content: @current_beer_name }, {name: "brewery", content: @current_brewery_name }]
       
               @relevant_trackings.each do |each_tracking|
                 @user_info = User.where(id: each_tracking.user_id)[0]
