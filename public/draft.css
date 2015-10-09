@@ -35,6 +35,10 @@
 .draft-board-column-image-holder-div {
 	position: relative;
 }
+.last-updated {
+  color: #909090;
+  font-size: 14px;
+}
 .draft-board-column-tap-number {
 	position: absolute;
 	background: #0087cb;
