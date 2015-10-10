@@ -25,11 +25,20 @@
 		<% @current_draft_board.each do	|drink| %>		
 			<tr>
 				<td class="draft-board-row row-variable-internal text-center"><%= drink.tap_number %></td>
-				<% if drink.beer.collab == true %>
-					<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-					<td class="draft-board-row-name-variable-internal"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+				<% if !drink.beer.short_beer_name.nil? %>
+					<% if drink.beer.collab == true %>
+						<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+						<td class="draft-board-row-name-variable-internal"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+					<% else %>
+						<td class="draft-board-row-name-variable-internal"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+					<% end %>
 				<% else %>
-					<td class="draft-board-row-name-variable-internal"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<% if drink.beer.collab == true %>
+						<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+						<td class="draft-board-row-name-variable-internal"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<% else %>
+						<td class="draft-board-row-name-variable-internal"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<% end %>
 				<% end %>
 				<% if !drink.beer.beer_type_id.nil? %>
 					<td class="draft-board-row row-variable-internal"><%= drink.beer.beer_type.beer_type_short_name %></td>
@@ -37,7 +46,7 @@
 					<td class="draft-board-row row-variable-internal">N/A</td>
 				<% end %>
 				<% if !drink.beer.beer_abv.nil? %>
-					<td class="draft-board-row row-variable-internal text-center"><%= drink.beer.beer_abv %></td>
+					<td class="draft-board-row row-variable-internal text-center"><%= drink.beer.beer_abv %><span class="row-variable-percent-sign">%</span></td>
 				<% else %>
 					<td class="draft-board-row row-variable-internal text-center">N/A</td>
 				<% end %>

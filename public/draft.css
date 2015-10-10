@@ -234,7 +234,9 @@
 	font-size: 26px !important;
 	color: #000000;
 }
-
+.row-variable-percent-sign {
+	font-size: 14px;
+}
 /* Universal padding and margin classes */
 .no-padding {
   padding: 0 !important;

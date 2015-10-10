@@ -29,6 +29,7 @@
 #  user_addition        :boolean
 #  touched_by_user      :integer
 #  collab               :boolean
+#  short_beer_name      :string
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

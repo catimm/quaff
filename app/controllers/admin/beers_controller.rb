@@ -61,7 +61,7 @@ class Admin::BeersController < ApplicationController
     # if the edit function is chosen, update this beer's attributes
     if params[:beer][:form_type] == "edit"
     # update beer attributes
-      @beer.update(beer_name: params[:beer][:beer_name], beer_rating_one: params[:beer][:beer_rating_one], 
+      @beer.update(beer_name: params[:beer][:beer_name], short_beer_name: params[:beer][:short_beer_name], beer_rating_one: params[:beer][:beer_rating_one], 
             number_ratings_one: params[:beer][:number_ratings_one], beer_rating_two: params[:beer][:beer_rating_two], 
             number_ratings_two: params[:beer][:number_ratings_two], beer_rating_three: params[:beer][:beer_rating_three],
             number_ratings_three: params[:beer][:number_ratings_three], beer_abv: params[:beer][:beer_abv], 
@@ -205,7 +205,7 @@ class Admin::BeersController < ApplicationController
     
     # Never trust parameters from the scary internet, only allow the white list through.
     def beer_params
-      params.require(:beer).permit(:beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
+      params.require(:beer).permit(:beer_name, :short_beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
       :number_ratings_two, :beer_rating_three, :number_ratings_three,:beer_abv, :beer_ibu, :brewery_id, :beer_image, 
       :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id,
       :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user, :user_addition)
