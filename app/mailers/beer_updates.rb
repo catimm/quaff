@@ -174,4 +174,31 @@ class BeerUpdates < ActionMailer::Base
     mandrill_client.messages.send_template template_name, template_content, message
   end # end of new retailer drink email
   
+  def retailer_drink_help(admin_email, location, beers)
+    # determine if this is prod environment
+    @prod = User.where(email: "carl@drinkknird.com")[0]
+    # mandrill template info
+    template_name = "retailer-drink-help-email"
+    template_content = []
+    message = {
+      merge: true,
+      merge_language: "handlebars",
+      to: [
+        {:email => admin_email}
+      ],
+      inline_css: true,
+      merge_vars: [
+        { rcpt: admin_email,
+          vars: [
+             {name: "location", content: location},
+             {name: "beers", content: beers}
+           ]
+         }
+      ]
+    }
+    
+    if @prod.username == "CarlAdmin"
+      mandrill_client.messages.send_template template_name, template_content, message
+    end
+  end # end of retailer_drink_help email
 end

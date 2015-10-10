@@ -1,6 +1,7 @@
 class DraftBoardsController < ApplicationController
   before_filter :verify_admin
   include QuerySearch
+  include RetailerDrinkHelp
   
   def show
     @board_type = params[:format]
@@ -128,6 +129,9 @@ class DraftBoardsController < ApplicationController
           end # end BeerLocation 'if save'
         end # end of test to determine if drink "row" was deleted and should be ignored
       end # end of loop to run through each drink in the saved params
+      
+      # check to see if any drinks added need immediate admin attention
+      retailer_drink_help(@draft.id)
       
       redirect_to retailer_path(session[:retail_id])
     else 
@@ -276,6 +280,9 @@ class DraftBoardsController < ApplicationController
         @removed_beer_location.update_attributes(beer_is_current: "no", removed_at: Time.now)
       end # end of loop to update removed drinks
     end # end of check on whether there are any drinks to remove
+    
+    # check to see if any drinks added need immediate admin attention
+    retailer_drink_help(params[:id])
     
     redirect_to retailer_path(session[:retail_id])
     
