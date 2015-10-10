@@ -208,6 +208,9 @@
 }
 
 /* Draft Board Row */
+th {
+	font-size: 20px;
+}
 .draft-board-row {
   padding: 3px 6px !important;
   color: #747474;
