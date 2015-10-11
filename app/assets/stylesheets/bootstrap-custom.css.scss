@@ -270,7 +270,10 @@ label {
   }
 }
 .index-abv-div {
-  border-right: 1px solid $soft-border;
+  border-left: 1px solid $soft-border;
+  height: 14px;
+}
+.index-ibu-div {
   border-left: 1px solid $soft-border;
   height: 14px;
 }
@@ -280,7 +283,7 @@ label {
 
 }
 .index-beer-rating {
-  color: $special-text;
+  color: $action-background;
   margin-top: 5px;
   font-size: 32px;
   font-weight: 500;
@@ -2334,6 +2337,11 @@ input[type="checkbox"] {
   .brewery-image-holder-full-page {
     padding-top: 10px;
     display: inline;
+  }
+  .brewery-image-holder-full {
+    height: 85px;
+    padding: 0;
+    margin: 10px 0 0 0; 
   }
   .brewery-image-holder-empty-full-page {
     margin: 10px 0 0 10px;

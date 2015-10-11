@@ -23,7 +23,7 @@
 									<div class="col-xs-4 brewery-image-holder">	
 										<% if !beer.brewery.image.nil? %>
 											<div class="brewery-image-holder-full text-center">
-												<p>show image</p>
+												<img class="img-responsive center-block" alt="Responsive image" src="<%= beer.brewery.image %>">
 											</div>	
 										<% else %>
 											<div class="brewery-image-holder-empty text-center">

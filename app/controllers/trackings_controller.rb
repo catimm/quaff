@@ -10,7 +10,7 @@ class TrackingsController < ApplicationController
     @time = Time.now
     @beer_id = params[:format]
     @this_beer = Beer.where(id: @beer_id)[0]
-    @locations = Location.all.order(:short_name)
+    @locations = Location.live_location.order(:short_name)
     # find if user is tracking this beer already
     @user_beer_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: @beer_id, removed_at: nil).where("removed_at IS NULL")
     Rails.logger.debug("User Tracking info #{@user_beer_tracking.inspect}")
