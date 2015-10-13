@@ -30,6 +30,13 @@ class BeerLocation < ActiveRecord::Base
   scope :current, -> { where(beer_is_current: "yes").
     joins(:location).merge(Location.live_location)
     }
+    
+  # this scope is for current drinks at actual locations
+  scope :current_drinks, ->(beer_id) { 
+    where(:beer_id => beer_id).
+    where(:beer_is_current => "yes").
+    joins(:location).merge(Location.live_location)
+    }
   
   scope :active_beers, ->(location_id) { 
     where(:location_id => location_id).
