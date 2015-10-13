@@ -64,7 +64,7 @@
 								</div>
 								<div class="row no-margin">	
 									<div class="col-xs-12">
-										<% @location_beers = BeerLocation.current_drinks(beer.id).order("created_at DESC") %>
+										<% @location_beers = BeerLocation.all_drinks(beer.id).order("created_at DESC") %>
 										<% if @location_beers.empty? %>
 											<h6 class="tile-subheader">This beer hasn't been on tap in Seattle since before April 2015...</h6>
 										<% elsif @location_beers.map{|a| a.beer_is_current}.include?("yes") %>
