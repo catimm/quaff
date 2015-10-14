@@ -1,5 +1,6 @@
 class InvitationsController < Devise::InvitationsController
   before_filter :authenticate_user!
+  before_filter :verify_admin
   
   def new
     super
@@ -48,4 +49,10 @@ class InvitationsController < Devise::InvitationsController
       respond_with_navigational(resource){ render :edit }
     end
   end
+  
+  private
+  def verify_admin
+    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2
+  end
+  
 end

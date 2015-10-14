@@ -46,6 +46,7 @@ class User < ActiveRecord::Base
   has_many :user_notification_preferences
   has_many :user_style_preferences
   has_many :user_locations
+  has_many :user_subscriptions
   
   # set user roles for cancancan
   def super_admin?
@@ -70,6 +71,14 @@ class User < ActiveRecord::Base
   
   def user?
     self.role.role_name == "user"
+  end
+  
+  def free?
+    self.subscription.subscription_level == "free"
+  end
+  
+  def retain?
+    self.subscription.subscription_level == "retain"
   end
   
   # get recepient emails for Mandrill
