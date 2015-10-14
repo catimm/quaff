@@ -1555,9 +1555,8 @@ $beer-header-lines-to-show-fp: 1;
 .styles-header-fixed {
   position: fixed;
   height: 47px;
-  margin-top: 69px;
-  padding-bottom: 70px;
-  width: 100%;
+  margin-top: 10px !important;
+  width: 100% !important;
   background: #fff;
   z-index: 3000;
 }
@@ -1566,9 +1565,11 @@ $beer-header-lines-to-show-fp: 1;
 }
 .style-preference-section-fixed {
   position: fixed;
-  height: 106px;
+  height: 100px;
+  width: 90%;
   margin-top: -95px;
-  z-index: 4000;
+  z-index: 3000;
+  background: #fff;
 }
 .desktop-style-preference-view {
   margin-top: 150px;
@@ -2069,6 +2070,7 @@ input[type="checkbox"] {
     padding-bottom: 0;
   }
   .dropdown-menu {
+    z-index: 10000 !important;
     li {
       a {
         color: $mobile-navbar-text !important;

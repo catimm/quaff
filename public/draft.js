@@ -14,7 +14,7 @@ window.onload = function() {
    iframe.style.cellspacing = "0";
    iframe.style.width = "100%";
    iframe.scrolling = "no";
-   iframe.src = "http://drinkknird.com/draft/" + id +"." + page_type;
+   iframe.src = "https://drinkknird.com/draft/" + id +"." + page_type;
    document.body.appendChild(iframe);
 
 	//jquery
