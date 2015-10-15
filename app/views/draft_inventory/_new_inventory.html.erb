@@ -1,0 +1,102 @@
+<%= f.fields_for :beer_locations, @draft_drink do |ff| %>
+		<div class="row new-draft-row" id="new-draft-row-<%= ff.index %>" >
+					<div class="col-xs-6 remove-draft-button visible-xs text-right">
+						<%= ff.link_to_remove do %>
+							<i class="fa fa-trash-o"></i>	
+						<% end %>
+					</div>
+					<div class="col-xs-12 col-sm-5">	
+						<%= ff.hidden_field :beer_id %>
+						<% if @draft_board_form == "edit" %>
+							<div class="row no-margin search-field">
+								<div class="col-sm-12 drink-search-holder">	
+									<% if !ff.object.beer.nil? %>
+											<% if !ff.object.beer.brewery.short_brewery_name.nil? %>
+												<% @beer_name = ff.object.beer.brewery.short_brewery_name + " " + ff.object.beer.beer_name %>
+											<% else %>
+												<% @beer_name = ff.object.beer.brewery.brewery_name + " " + ff.object.beer.beer_name %>
+											<% end %>
+											<div class="beers-search">
+												<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+													<div class="input-group">
+											 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search edit-form" %>
+													</div>
+												<% end %>
+											</div>
+									<% else %>
+										<div class="beers-search">
+											<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+												<div class="input-group testing">
+										 	    	<%= text_field_tag :query, params[:query], id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search edit-form" %>
+												</div>
+											<% end %>
+										</div>
+									<% end %>
+								</div>
+							</div>
+						<% else %>
+							<div class="row no-margin search-field">
+								<div class="col-xs-12 drink-search-holder">	
+									<% if !ff.object.beer.nil? %>
+											<% if !ff.object.beer.brewery.short_brewery_name.nil? %>
+												<% @beer_name = ff.object.beer.brewery.short_brewery_name + " " + ff.object.beer.beer_name %>
+											<% else %>
+												<% @beer_name = ff.object.beer.brewery.brewery_name + " " + ff.object.beer.beer_name %>
+											<% end %>
+											<div class="beers-search">
+												<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+													<div class="input-group">
+											 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search new-form" %>
+													</div>
+												<% end %>
+											</div>
+									<% else %>
+										<div class="beers-search">
+											<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+												<div class="input-group testing">
+										 	    	<%= text_field_tag :query, params[:query], id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search new-form" %>
+												</div>
+											<% end %>
+										</div>
+									<% end %>
+								</div>
+							</div>
+						<% end %>
+						<div class="row no-margin new-draft-info" id="new-draft-info-<%= ff.index %>">
+							<% if @draft_board_form == "edit" || @draft_board_form == "new_error" %>
+								<%= render 'new_inventory_info_for_edit', this_drink: ff.object.beer %>
+							<% end %>
+						</div>	
+					</div>
+					<div class="col-xs-12 col-sm-5 draft-details-row-container">
+						<%= render 'new_inventory_details', :ff => ff %>
+						<%= ff.link_to_add :draft_details, class: 'btn btn-default btn-primary formButton-add-details' do %>
+							<i class="fa fa-plus"> Add a drink size</i>
+						<% end %>
+						
+					</div>			
+					
+					<div class="col-sm-1 no-padding-right remove-draft-button visible-sm visible-md visible-lg">
+						<%= ff.link_to_remove do %>
+							<i class="fa fa-trash-o"></i>	
+						<% end %>
+					</div>
+			</div>	
+			<div class="row no-margin">
+				<div class="col-sm-3">
+					<%= ff.radio_button :generally_available, true, :checked => true, :class => "generally-available-inventory" %> 
+					<%= ff.label :generally_available, ' Make generally available', :value => true %>
+				</div>
+				<div class="col-sm-3">
+					<%= ff.radio_button :generally_available, false, :class => "specific-use-inventory" %>
+					<%= ff.label :generally_available, ' Make "on deck" for a specific tap', :value => false %>
+				</div>
+				<div class="col-sm-5 on-deck-for hidden">
+					<h5 class="on-deck-for-title">On deck for:</h5>
+					<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink, 0) %>
+					<%= ff.select :tap_number,  options, {}, { :class => "form-control" } %>
+				</div>
+			</div>
+			<hr>
+<% end %>	
+

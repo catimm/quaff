@@ -23,6 +23,9 @@ class BeerLocation < ActiveRecord::Base
   accepts_nested_attributes_for :draft_details, :reject_if => :all_blank, :allow_destroy => true
   #validates_uniqueness_of :tap_number, :scope => :draft_board_id, :presence => {message: "Seems you have two tap numbers the same; you should change one.)"}
   
+  # add attribute so user can choose to make drink in inventory generally available or attach to specific tap
+  attr_accessor :generally_available
+  
   # this scope is for the admin page
   scope :all_current, -> { where(beer_is_current: "yes") }
   
@@ -41,4 +44,10 @@ class BeerLocation < ActiveRecord::Base
     where(:location_id => location_id).
     where(:beer_is_current => "yes")
     }
+    
+    # connect drink name and tap number for inventory management form
+    def connect_draft_drink
+      "Tap #{tap_number}: #{beer.brewery.short_brewery_name} #{beer.beer_name}"
+    end
+  
 end

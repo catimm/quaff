@@ -13,57 +13,91 @@
 			</div>
 		</div>
 		<hr>
-		<% if @draft_board.blank? %>
-			<div class="row no-margin ">
-				<div class="col-xs-4 col-sm-3 col-md-2 retail-account-col text-right no-padding-right">
-					<h5>Create a draft board:</h5>
+		<div class="row no-margin">
+			<div class="col-sm-1 text-center no-padding">
+				<h4 class="retail-manage-header">Manage Draft Board</h4>
+			</div>
+			<div class="col-sm-11">
+				<% if @draft_board.blank? %>
+					<div class="row no-margin ">
+						<div class="col-xs-8 col-sm-5 col-md-4">
+							<%= link_to new_draft_board_path(@retailer.id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
+								<i class="fa fa-plus"> Create new draft board</i>
+							<% end %>
+						</div>
+					</div>
+				<% else %>
+					<div class="row no-margin ">
+						<div class="col-xs-12">
+							<% if !@last_draft_board_update.nil? %>
+								<h5 class="last-updated">Last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
+							<% end %>
+						</div>
+						<div class="col-xs-8 col-sm-4 col-md-4">
+							<%= link_to edit_draft_board_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+								<i class="fa fa-pencil"> Edit board</i>
+							<% end %>
+						</div>
+						<% if !@draft_inventory.blank? %>
+							<div class="col-xs-0 col-sm-5 col-md-1 or-option text-center">
+								<p>or</p>
+							</div> 
+							<div class="col-xs-8 col-sm-4 col-md-4">
+								<%= link_to edit_draft_board_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+									<i class="fa fa-refresh"> Quickly swap drinks</i>
+								<% end %>
+							</div>
+						<% end %>
+					</div>		
+					<div class="row no-margin ">	
+						<div class="col-xs-8 col-sm-4 col-md-4">
+							<%= link_to draft_board_path(@draft_board[0].id, "column"), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
+								<i class="fa fa-chevron-right"> View web board</i>
+							<% end %>
+						</div>
+						<div class="col-xs-0 col-sm-5 col-md-1 or-option text-center">
+							<p>or</p>
+						</div> 
+						<div class="col-xs-8 col-sm-4 col-md-4">
+							<%= link_to draft_board_path(@draft_board[0].id, "row"), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
+								<i class="fa fa-chevron-right"> View internal board</i>
+							<% end %>
+						</div>
+					</div>		
+				<% end %>
+			</div>
+		</div>
+		<% if !@draft_board.blank? %>
+		<hr>
+			<div class="row no-margin">
+				<div class="col-sm-1 text-center no-padding">
+					<h4 class="retail-manage-header">Manage Draft Inventory</h4>
 				</div>
-				<div class="col-xs-8 col-sm-5 col-md-4 retail-account-col">
-					<%= link_to new_draft_board_path(@retailer.id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
-						<i class="fa fa-plus"> New draft board</i>
+				<div class="col-sm-11">
+					<% if @draft_inventory.blank? %>
+						<div class="row no-margin ">
+							<div class="col-xs-8 col-sm-5 col-md-4">
+								<%= link_to edit_draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
+									<i class="fa fa-plus"> Create inventory</i>
+								<% end %>
+							</div>
+						</div>
+					<% else %>
+						<div class="row no-margin ">
+							<div class="col-xs-12">
+								<% if !@last_draft_inventory_update.nil? %>
+									<h5 class="last-updated">Last updated: <%= (@last_draft_inventory_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
+								<% end %>
+							</div>
+							<div class="col-xs-8 col-sm-4 col-md-4">
+								<%= link_to edit_draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+									<i class="fa fa-plus"> Add inventory</i>
+								<% end %>
+							</div>
+						</div>			
 					<% end %>
 				</div>
 			</div>
-		<% else %>
-			<div class="row no-margin ">
-				<div class="col-xs-4 col-sm-3 col-md-2 retail-account-col text-right no-padding-right">
-					<h5>Edit your draft board:</h5>
-				</div>
-				<div class="col-xs-8 col-sm-4 col-md-3 retail-account-col">
-					<%= link_to edit_draft_board_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
-						<i class="fa fa-pencil"> Edit board</i>
-					<% end %>
-				</div>
-				<div class="col-xs-12 visible-xs text-center">
-					<% if !@last_draft_board_update.nil? %>
-						<h3 class="retail-account-last-updated-container"><span class="last-updated">(last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h3>
-					<% end %>
-				</div>
-				<div class="col-sm-5 col-md-7 visible-sm visible-md visible-lg">
-					<% if !@last_draft_board_update.nil? %>
-						<h3 class="retail-account-last-updated-container"><span class="last-updated">(last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h3>
-					<% end %>
-				</div>
-			</div>		
-			<div class="row no-margin ">	
-				<div class="col-xs-4 col-sm-3 col-md-2 retail-account-col text-right no-padding-right">
-					<h5>View your draft board:</h5>
-				</div>
-				<div class="col-xs-8 col-sm-4 col-md-3 retail-account-col">
-					<%= link_to draft_board_path(@draft_board[0].id, "column"), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
-						<i class="fa fa-chevron-right"> Web style</i>
-					<% end %>
-				</div>
-				<div class="col-xs-0 col-sm-5 col-md-7 retail-account-filler-col">
-				</div>
-				<div class="col-xs-4 col-sm-3 col-md-2 retail-account-filler-col text-right no-padding-right">
-				</div> 
-				<div class="col-xs-8 col-sm-4 col-md-3 retail-account-col">
-					<%= link_to draft_board_path(@draft_board[0].id, "row"), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
-						<i class="fa fa-chevron-right"> Internal board style</i>
-					<% end %>
-				</div>
-			</div>		
 		<% end %>
 	</div>
 <%= render 'layouts/footer' %>

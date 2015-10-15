@@ -23,7 +23,8 @@ ready = function() {
 	                    type: beer.type,
 	                   	ibu: beer.ibu,
 	                   	abv: beer.abv,
-	                   	form: beer.form
+	                   	form: beer.form,
+	                   	use: beer.use
 	                };
 	            });
 	       }
@@ -51,13 +52,16 @@ ready = function() {
 				    	if(window.location.href.indexOf("draft_boards") > -1) {
 				    		return ['<div class="empty-message"><a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink">',
 					        'Not found. Click here to add it.','</a></div>'].join('\n');
+				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
+				    		return ['<div class="empty-message"><a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink">',
+					        'Not found. Click here to add it.','</a></div>'].join('\n');
 				    	} else {
 					      	return ['<div class="empty-message"><a href="'+ BASE_URL +'searches/add_beer">',
 					        'Not found. Click here to suggest we add it!','</a></div>'].join('\n');
 					    }
 				     },
 				    suggestion: function(data) {
-					    if(data.source == "retailer") {
+					    if(data.source == "retailer" || data.source == "retailer") {
 					    	return '<p>' + data.beer +'</p>';	    	
 						} else {
 							return '<p><a href="'+ BASE_URL +'breweries/'+ data.brewery_id +'/beers/'+ data.beer_id +'">' + data.beer + '</a></p>';
@@ -67,18 +71,26 @@ ready = function() {
 	        }).on('typeahead:selected', function (obj, datum) {   
 			    if(datum.source == "retailer") {
 					//console.log(datum);
-					if(datum.form == "edit") {
+					if (datum.use == "draft_inventory"){
 						$.ajax({
-					        url : "/draft_boards/edit",
-					        type : "get",
-					        data : { chosen_drink: JSON.stringify(datum) }
-					    });	
-					} else  {
-						$.ajax({
-					        url : "/draft_boards/new",
+					        url : "/draft_inventory/edit",
 					        type : "get",
 					        data : { chosen_drink: JSON.stringify(datum) }
 					    });
+					} else {
+						if(datum.form == "edit") {
+							$.ajax({
+						        url : "/draft_boards/edit",
+						        type : "get",
+						        data : { chosen_drink: JSON.stringify(datum) }
+						    });
+						} else {
+							$.ajax({
+						        url : "/draft_boards/new",
+						        type : "get",
+						        data : { chosen_drink: JSON.stringify(datum) }
+						    });
+						}
 					} 	
 				}
 	    	});

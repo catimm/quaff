@@ -1904,6 +1904,15 @@ input[type="checkbox"] {
   margin: 10px 0;
   width: 100%;
 }
+.retail-manage-header {
+  text-align: center;
+  line-height: 1.3;
+}
+// Inventory Management page
+.on-deck-for-title {
+  display: inline;
+  color: $less-emphasized-text;
+}
 
 // Draft edit page
  .draft-edit-top-row-container {

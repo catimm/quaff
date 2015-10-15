@@ -21,6 +21,17 @@ class BreweriesController < ApplicationController
       temp_drink = Hash.new
       if request_url.include? "draft_boards"
         temp_drink[:source] = "retailer"
+        temp_drink[:use] = "draft-board"
+        if !result.beer_type_id.nil?
+          temp_drink[:type] = result.beer_type.beer_type_name
+        end
+        temp_drink[:ibu] = result.beer_ibu
+        temp_drink[:abv] = result.beer_abv
+        temp_drink[:form] = session[:form]
+      end
+      if request_url.include? "draft_inventory"
+        temp_drink[:source] = "retailer"
+        temp_drink[:use] = "draft-inventory"
         if !result.beer_type_id.nil?
           temp_drink[:type] = result.beer_type.beer_type_name
         end
