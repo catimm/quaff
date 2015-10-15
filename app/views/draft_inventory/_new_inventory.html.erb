@@ -5,17 +5,13 @@
 							<i class="fa fa-trash-o"></i>	
 						<% end %>
 					</div>
-					<div class="col-xs-12 col-sm-5">	
+					<div class="col-xs-12 col-sm-4">	
 						<%= ff.hidden_field :beer_id %>
 						<% if @draft_board_form == "edit" %>
 							<div class="row no-margin search-field">
 								<div class="col-sm-12 drink-search-holder">	
 									<% if !ff.object.beer.nil? %>
-											<% if !ff.object.beer.brewery.short_brewery_name.nil? %>
-												<% @beer_name = ff.object.beer.brewery.short_brewery_name + " " + ff.object.beer.beer_name %>
-											<% else %>
-												<% @beer_name = ff.object.beer.brewery.brewery_name + " " + ff.object.beer.beer_name %>
-											<% end %>
+											<% @beer_name = ff.object.beer.join_drink_name %>
 											<div class="beers-search">
 												<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
 													<div class="input-group">
@@ -38,11 +34,7 @@
 							<div class="row no-margin search-field">
 								<div class="col-xs-12 drink-search-holder">	
 									<% if !ff.object.beer.nil? %>
-											<% if !ff.object.beer.brewery.short_brewery_name.nil? %>
-												<% @beer_name = ff.object.beer.brewery.short_brewery_name + " " + ff.object.beer.beer_name %>
-											<% else %>
-												<% @beer_name = ff.object.beer.brewery.brewery_name + " " + ff.object.beer.beer_name %>
-											<% end %>
+											<% @beer_name = ff.object.beer.join_drink_name %>
 											<div class="beers-search">
 												<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
 													<div class="input-group">
@@ -68,6 +60,10 @@
 							<% end %>
 						</div>	
 					</div>
+					<div class="col-sm-2 keg-size-holder">
+						<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
+						<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
+					</div>
 					<div class="col-xs-12 col-sm-5 draft-details-row-container">
 						<%= render 'new_inventory_details', :ff => ff %>
 						<%= ff.link_to_add :draft_details, class: 'btn btn-default btn-primary formButton-add-details' do %>
@@ -75,28 +71,50 @@
 						<% end %>
 						
 					</div>			
-					
 					<div class="col-sm-1 no-padding-right remove-draft-button visible-sm visible-md visible-lg">
 						<%= ff.link_to_remove do %>
 							<i class="fa fa-trash-o"></i>	
 						<% end %>
 					</div>
 			</div>	
-			<div class="row no-margin">
-				<div class="col-sm-3">
-					<%= ff.radio_button :generally_available, true, :checked => true, :class => "generally-available-inventory" %> 
-					<%= ff.label :generally_available, ' Make generally available', :value => true %>
+			<% if ff.object.tap_number.nil? %>
+				<div class="row no-margin">
+					<div class="col-sm-3">
+						<div>
+							<%= ff.radio_button :generally_available, true, :checked => true, :class => "generally-available-inventory" %> 
+							<%= ff.label :generally_available, ' Make generally available', :value => true %>
+						</div>
+						<div>
+							<%= ff.radio_button :generally_available, false, :class => "specific-use-inventory" %>
+							<%= ff.label :generally_available, ' Make "on deck" for a specific tap', :value => false %>
+						</div>
+					</div>
+
+					<div class="col-sm-4 on-deck-for hidden">
+						<h5 class="on-deck-for-title">On deck for:</h5>
+						<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink) %>
+						<%= ff.select :tap_number,  options, {prompt: 'Select Tap'}, { :class => "form-control" } %>
+					</div>
 				</div>
-				<div class="col-sm-3">
-					<%= ff.radio_button :generally_available, false, :class => "specific-use-inventory" %>
-					<%= ff.label :generally_available, ' Make "on deck" for a specific tap', :value => false %>
+			<% else %>
+				<div class="row no-margin">
+					<div class="col-sm-3">
+						<div>
+							<%= ff.radio_button :generally_available, true, :class => "generally-available-inventory" %> 
+							<%= ff.label :generally_available, ' Make generally available', :value => true %>
+						</div>
+						<div>
+							<%= ff.radio_button :generally_available, false, :checked => true, :class => "specific-use-inventory" %>
+							<%= ff.label :generally_available, ' Make "on deck" for a specific tap', :value => false %>
+						</div>
+					</div>
+					<div class="col-sm-4 on-deck-for show">
+						<h5 class="on-deck-for-title">On deck for:</h5>
+						<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink, ff.object.tap_number) %>
+						<%= ff.select :tap_number,  options, {}, { :class => "form-control" } %>
+					</div>
 				</div>
-				<div class="col-sm-5 on-deck-for hidden">
-					<h5 class="on-deck-for-title">On deck for:</h5>
-					<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink, 0) %>
-					<%= ff.select :tap_number,  options, {}, { :class => "form-control" } %>
-				</div>
-			</div>
+			<% end %>
 			<hr>
 <% end %>	
 

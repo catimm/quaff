@@ -1913,7 +1913,9 @@ input[type="checkbox"] {
   display: inline;
   color: $less-emphasized-text;
 }
-
+.keg-size-holder {
+  padding: 3.5px 0 0 0;
+}
 // Draft edit page
  .draft-edit-top-row-container {
     background: #fff;

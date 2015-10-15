@@ -53,7 +53,7 @@ ready = function() {
 				    		return ['<div class="empty-message"><a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink">',
 					        'Not found. Click here to add it.','</a></div>'].join('\n');
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
-				    		return ['<div class="empty-message"><a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink">',
+				    		return ['<div class="empty-message"><a data-toggle="modal" data-target="#add_drink" href="/draft_inventory/new_drink">',
 					        'Not found. Click here to add it.','</a></div>'].join('\n');
 				    	} else {
 					      	return ['<div class="empty-message"><a href="'+ BASE_URL +'searches/add_beer">',

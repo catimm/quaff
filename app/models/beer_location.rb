@@ -11,6 +11,8 @@
 #  removed_at      :datetime
 #  tap_number      :integer
 #  draft_board_id  :integer
+#  keg_size        :float
+#  went_live       :datetime
 #
 
 class BeerLocation < ActiveRecord::Base
@@ -43,6 +45,13 @@ class BeerLocation < ActiveRecord::Base
   scope :active_beers, ->(location_id) { 
     where(:location_id => location_id).
     where(:beer_is_current => "yes")
+    }
+    
+    # create scope for draft inventory
+    scope :draft_inventory, ->(draft_board_id) {
+      where(:draft_board_id => draft_board_id).
+      where(:beer_is_current => "hold").
+      joins(:beer).merge(Beer.order_by_drink_name)
     }
     
     # connect drink name and tap number for inventory management form

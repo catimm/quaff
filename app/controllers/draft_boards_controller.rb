@@ -327,7 +327,7 @@ class DraftBoardsController < ApplicationController
         new_beer.save!
       end
      # find current number of drinks on draft board
-     number_of_drinks = BeerLocation.where(draft_board_id: @draft_board.id).count
+     number_of_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").count
      # add new drink to retailer draft board
      new_drink_number = number_of_drinks + 1
      new_draft_board_drink = BeerLocation.new(:beer_id => new_beer.id, :location_id => @retail_id, 
@@ -336,15 +336,15 @@ class DraftBoardsController < ApplicationController
     # send email to admins to update new drink info
     if @related_brewery.empty?
       @admin_emails.each do |admin_email|
-        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, new_brewery.id, @this_drink_name, new_beer.id).deliver
+        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, new_brewery.id, @this_drink_name, new_beer.id, "draft board").deliver
       end
     else
       @admin_emails.each do |admin_email|
-        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, @related_brewery[0].id, @this_drink_name, new_beer.id).deliver
+        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, @related_brewery[0].id, @this_drink_name, new_beer.id, "draft board").deliver
       end
     end
     # redirect back to updated draft edit page
-    redirect_to edit_draft_board_path(session[:retail_id])
+    redirect_to edit_draft_board_path(session[:draft_board_id])
   end
   
   private

@@ -11,6 +11,8 @@
 #  removed_at      :datetime
 #  tap_number      :integer
 #  draft_board_id  :integer
+#  keg_size        :float
+#  went_live       :datetime
 #
 
 require 'test_helper'

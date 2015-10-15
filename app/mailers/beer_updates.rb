@@ -150,7 +150,7 @@ class BeerUpdates < ActionMailer::Base
     end
   end # end of porting email
   
-    def new_retailer_drink_email(email, retailer, brewery_name, brewery_id, beer_name, beer_id)
+    def new_retailer_drink_email(email, retailer, brewery_name, brewery_id, beer_name, beer_id, source)
     template_name = "new-retailer-drink-email"
     template_content = []
     message = {
@@ -166,7 +166,8 @@ class BeerUpdates < ActionMailer::Base
              {name: "brewery_name", content: brewery_name},
              {name: "brewery_id", content: brewery_id},
              {name: "beer_name", content: beer_name},
-             {name: "beer_id", content: beer_id}
+             {name: "beer_id", content: beer_id},
+             {name: "source", content: source}
            ]
          }
       ]

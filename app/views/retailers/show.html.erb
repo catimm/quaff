@@ -94,7 +94,14 @@
 									<i class="fa fa-plus"> Add inventory</i>
 								<% end %>
 							</div>
-						</div>			
+						</div>
+						<div class="row no-margin ">	
+							<div class="col-xs-8 col-sm-4 col-md-4">
+								<%= link_to draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
+									<i class="fa fa-chevron-right"> View inventory list</i>
+								<% end %>
+							</div>
+						</div>				
 					<% end %>
 				</div>
 			</div>

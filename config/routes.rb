@@ -59,10 +59,13 @@ Rails.application.routes.draw do
   get 'draft_boards/new_drink' => 'draft_boards#add_new_drink', :as => 'retailer_add_new_drink'
   post 'draft_boards/new_drink' => 'draft_boards#create_new_drink', :as => 'retailer_create_new_drink'
   resources :draft_boards
+  get '/draft_inventory/:id(.:format)' => 'draft_inventory#show', :as => 'draft_inventory'
   get '/draft_inventory/new(.:format)' => 'draft_inventory#new', :as => 'new_draft_inventory'
   get '/draft_inventory/:id/edit(.:format)' => 'draft_inventory#edit', :as => 'edit_draft_inventory'
   get '/draft_inventory/edit' => 'draft_inventory#edit'
   patch '/draft_inventory/:id(.:format)' => 'draft_inventory#update'
+  get 'draft_inventory/new_drink' => 'draft_inventory#add_new_drink', :as => 'retailer_add_new_inventory'
+  post 'draft_inventory/new_drink' => 'draft_inventory#create_new_drink', :as => 'retailer_create_new_inventory'
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'

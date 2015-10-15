@@ -1,0 +1,63 @@
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<th>Maker <span class="draft-board-drink-name">Drink Name</span></th>
+			<th>Style</th>
+			<th class="text-center">Keg size</th>
+			<th class="text-center">Designation</th>
+			<th class="text-center">Added</th>		
+		</thead>
+		<tbody>
+		<% @current_draft_inventory.each do	|drink| %>		
+			<tr>
+				<% if !drink.beer.short_beer_name.nil? %>
+					<% if drink.beer.collab == true %>
+						<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+						<td class="draft-board-row-name"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+					<% elsif drink.beer.brewery.short_brewery_name.nil? %>
+						<td class="draft-board-row-name table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+					<% else %>
+						<td class="draft-board-row-name table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+					<% end %>
+				<% else %>
+					<% if drink.beer.collab == true %>
+						<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+						<td class="draft-board-row-name"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<% elsif drink.beer.brewery.short_brewery_name.nil? %>
+						<td class="draft-board-row-name table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<% else %>
+						<td class="draft-board-row-name table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+					<% end %>
+				<% end %>
+				<% if !drink.beer.beer_type_id.nil? %>
+					<td class="draft-board-row-style"><%= drink.beer.beer_type.beer_type_name %></td>
+				<% else %>
+					<td class="draft-board-row-style">N/A</td>
+				<% end %>
+				<% if !drink.keg_size.nil? %>
+					<% if drink.keg_size == 5.16 %>
+						<% @keg_size = "1/6 BBL" %>
+					<% elsif drink.keg_size == 7.75 %>
+						<% @keg_size = "1/4 BBL" %>
+					<% elsif drink.keg_size == 10.3 %>
+						<% @keg_size = "1/3 BBL" %>
+					<% elsif drink.keg_size == 13.2 %>
+						<% @keg_size = "Euro BBL" %>
+					<% else %>
+						<% @keg_size = "1/2 BBL" %>
+					<% end %>
+					<td class="draft-board-row-abv text-center"><%= @keg_size %></td>
+				<% else %>
+					<td class="draft-board-row-abv text-center">N/A</td>
+				<% end %>
+				<% if !drink.tap_number.nil? %>
+					<td class="draft-board-row-ibu text-center">Tap <%= drink.tap_number %></td>
+				<% else %>
+					<td class="draft-board-row-ibu text-center">TBD</td>
+				<% end %>
+				<td class="draft-board-row-style"><%= drink.created_at.strftime("%b %e, %Y") %></td>
+			</tr>
+		<% end %>
+		</tbody>
+	</table>
+</div>

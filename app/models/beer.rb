@@ -86,6 +86,15 @@ class Beer < ActiveRecord::Base
     "#{beer_name} [id: #{id}]"
   end
   
+  # join long maker and drink name together
+  def join_drink_name
+    if brewery.short_brewery_name.nil?
+      "#{brewery.brewery_name} #{beer_name}"
+    else
+      "#{brewery.short_brewery_name} #{beer_name}"
+    end
+  end
+  
   # scope all beers connected with a brewery (whether a collab beer or not)
   scope :all_brewery_beers, ->(brewery_id) {
     collab_test = BeerBreweryCollab.where(brewery_id: brewery_id).pluck(:beer_id)
@@ -99,6 +108,13 @@ class Beer < ActiveRecord::Base
       non_collab_beers(brewery_id).order(:beer_name)
     end
   }
+  
+  # scope order beers by name for inventory management
+  scope :order_by_drink_name, -> {
+    joins(:brewery).merge(Brewery.order_by_brewery_name).
+    order(:beer_name) 
+  }
+  
   # scope all non-collab beers
   scope :non_collab_beers, ->(brewery_id) {
     where(brewery_id: brewery_id)

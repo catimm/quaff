@@ -1,9 +1,9 @@
 $(function() {
 	$(document).on('click', '.generally-available-inventory', function () {
-		$(this).parent().siblings('.on-deck-for').removeClass("show").addClass("hidden");
+		$(this).parent().parent().siblings('.on-deck-for').removeClass("show").addClass("hidden");
 	});
 	
 	$(document).on('click', '.specific-use-inventory', function () {
-		$(this).parent().siblings('.on-deck-for').removeClass("hidden").addClass("show");
+		$(this).parent().parent().siblings('.on-deck-for').removeClass("hidden").addClass("show");
 	});
 });
