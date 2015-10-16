@@ -38,7 +38,7 @@
 								<i class="fa fa-pencil"> Edit board</i>
 							<% end %>
 						</div>
-						<% if !@draft_inventory.blank? %>
+						<% if !@draft_inventory.blank? && @subscription_plan == 2 %>
 							<div class="col-xs-0 col-sm-5 col-md-1 or-option text-center">
 								<p>or</p>
 							</div> 
@@ -67,7 +67,7 @@
 				<% end %>
 			</div>
 		</div>
-		<% if !@draft_board.blank? %>
+		<% if !@draft_board.blank? && @subscription_plan == 2 %>
 		<hr>
 			<div class="row no-margin">
 				<div class="col-sm-1 text-center no-padding">

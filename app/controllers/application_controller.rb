@@ -44,6 +44,7 @@ class ApplicationController < ActionController::Base
     @user = current_user
     if current_user.role_id == 1 || current_user.role_id == 5 || current_user.role_id == 6
       session[:retail_id] = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
+      session[:subscription] = UserSubscription.where(user_id: current_user.id).pluck(:subscription_id)[0]
     end
     return locations_path
   end

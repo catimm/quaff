@@ -2,6 +2,7 @@ class RetailersController < ApplicationController
   before_filter :verify_admin
   
   def show
+    @subscription_plan = session[:subscription]
     @retailer = Location.find(params[:id])
     Rails.logger.debug("Draft Board #{@retailer.inspect}")
     @draft_board = DraftBoard.where(location_id: params[:id])

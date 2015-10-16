@@ -92,7 +92,9 @@ class DraftBoardsController < ApplicationController
                                          beer_id: drink[1][:beer_id], 
                                          beer_is_current: "yes", 
                                          tap_number: drink[1][:tap_number],
-                                         draft_board_id: @draft.id)
+                                         draft_board_id: @draft.id,
+                                         keg_size: drink[1][:keg_size],
+                                         went_live: Time.now)
              if @new_beer_location_drink.save
                # add size/cost of new draft drink
                if !drink[1][:draft_details_attributes].blank?
@@ -223,7 +225,7 @@ class DraftBoardsController < ApplicationController
           # grab this BeerLocation record
           @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "yes").first
           # update tap number to ensure it's currently accurate
-          @current_beer_location.update_attributes(tap_number: drink[1][:tap_number])
+          @current_beer_location.update_attributes(tap_number: drink[1][:tap_number], keg_size: drink[1][:keg_size])
           # delete all related size/cost information
           DraftDetail.where(beer_location_id: @current_beer_location.id).destroy_all
           # add size/cost info to ensure it is currently accurate
@@ -247,7 +249,9 @@ class DraftBoardsController < ApplicationController
                                         beer_id: @beer_id, 
                                         beer_is_current: "yes", 
                                         tap_number: drink[1][:tap_number],
-                                        draft_board_id: params[:id])
+                                        draft_board_id: params[:id],
+                                        keg_size: drink[1][:keg_size],
+                                        went_live: Time.now)
             if @new_beer_location_drink.save
               # add size/cost of new draft drink
               if !drink[1][:draft_details_attributes].blank?
