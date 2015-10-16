@@ -143,6 +143,8 @@ class DraftBoardsController < ApplicationController
   end # end of create action
   
   def edit
+    # indicate which edit method/view is needed
+    @board_type = params[:format]
     #Rails.logger.debug("New Element ID #: #{session.inspect}")
     # set draft board id as session id so no errors are thrown when jquery calls are sent
     if params.has_key?(:id) 
@@ -345,6 +347,29 @@ class DraftBoardsController < ApplicationController
     end
     # redirect back to updated draft edit page
     redirect_to edit_draft_board_path(session[:draft_board_id])
+  end
+  
+  def quick_draft_edit
+    # set draft board id as session id so no errors are thrown when jquery calls are sent
+    if params.has_key?(:id) 
+      session[:draft_board_id] = params[:id]
+    end
+    # indicate which form this is
+    @draft_board_form = "edit"
+    session[:form] = "edit"
+    # get retailer info for header/title
+    @retail_id = session[:retail_id]
+    @retailer = Location.find(@retail_id)
+    # get draft board #/info
+    @draft_board_id = session[:draft_board_id]
+    # get draft board details
+    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "yes").order(:tap_number)
+    # get draft inventory details
+    @current_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "hold")
+    #Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
+    # find last time this draft board was updated
+    @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
+    
   end
   
   private

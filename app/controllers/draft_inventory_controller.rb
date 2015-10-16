@@ -4,15 +4,14 @@ class DraftInventoryController < ApplicationController
   include RetailerDrinkHelp
   
   def show    
-    @draft_board_id = params[:id]
     # get retailer info
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
     # get draft board info
-    @draft_board = DraftBoard.find(@draft_board_id)
+    @draft_board = DraftBoard.find_by(location_id: @retail_id)
     #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
     # get draft board details
-    @current_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "hold")
+    @current_draft_inventory = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold")
     # get last updated info
     @last_draft_board_update = @current_draft_inventory.order(:updated_at).reverse_order.first 
   end

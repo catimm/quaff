@@ -1,15 +1,20 @@
 <div class="table-responsive">
 	<table class="table table-striped">
 		<thead>
+			<th class="text-center">Tap</th>
 			<th>Maker <span class="draft-board-drink-name">Drink Name</span></th>
 			<th>Style</th>
 			<th class="text-center">Keg size</th>
-			<th class="text-center">Designation</th>
 			<th class="text-center">Added</th>		
 		</thead>
 		<tbody>
 		<% @current_draft_inventory.each do	|drink| %>		
 			<tr>
+				<% if !drink.tap_number.nil? %>
+					<td class="draft-board-row-ibu text-center">Tap <%= drink.tap_number %></td>
+				<% else %>
+					<td class="draft-board-row-ibu text-center">TBD</td>
+				<% end %>
 				<% if !drink.beer.short_beer_name.nil? %>
 					<% if drink.beer.collab == true %>
 						<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
@@ -49,11 +54,6 @@
 					<td class="draft-board-row-abv text-center"><%= @keg_size %></td>
 				<% else %>
 					<td class="draft-board-row-abv text-center">N/A</td>
-				<% end %>
-				<% if !drink.tap_number.nil? %>
-					<td class="draft-board-row-ibu text-center">Tap <%= drink.tap_number %></td>
-				<% else %>
-					<td class="draft-board-row-ibu text-center">TBD</td>
 				<% end %>
 				<td class="draft-board-row-style"><%= drink.created_at.strftime("%b %e, %Y") %></td>
 			</tr>

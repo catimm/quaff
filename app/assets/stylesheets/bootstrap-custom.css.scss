@@ -1916,6 +1916,17 @@ input[type="checkbox"] {
 .keg-size-holder {
   padding: 3.5px 0 0 0;
 }
+.search-footer-message {
+  color: $normal-text;
+  padding-left: 10px;
+}
+.formButton-draft-edit {
+  margin-top: 15px;
+  width: 100%;
+  color: $mobile-navbar-text;
+  text-align: center;
+  padding: 3px 6px;
+}
 // Draft edit page
  .draft-edit-top-row-container {
     background: #fff;
