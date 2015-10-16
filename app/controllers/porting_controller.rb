@@ -3,7 +3,7 @@ class PortingController < ApplicationController
   
   def index
     # set user id of user these drinks should be associated with
-    @rating_user_id = 3
+    @rating_user_id = 14
     @rating_user = User.where(id: @rating_user_id)[0]
     # create variable to hold total count of drinks added
     @total_drinks_added = 0
