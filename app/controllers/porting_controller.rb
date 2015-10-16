@@ -18,7 +18,7 @@ class PortingController < ApplicationController
     
     # grab json file
     root = Rails.root.to_s #make sure string    
-    f = File.read("#{root}/app/assets/port/gavin1.json")
+    f = File.read("#{root}/app/assets/port/tony1.json")
     # parse json file
     port_hash = JSON.parse(f)
     # determine total number of user rated drinks added to database
@@ -130,7 +130,7 @@ class PortingController < ApplicationController
         Rails.logger.debug("This is firing, so it thinks this brewery IS NOT in the DB")
         # first add new brewery to breweries table & add correct collab status
         new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_city => @this_brewery_city, 
-                                    :brewery_state => @this_brewery_state, :collab => false)
+                                    :brewery_state_short => @this_brewery_state, :collab => false)
         # if successfully saved, add new brewery to counter
         if new_brewery.save
           @total_new_breweries += 1
