@@ -112,5 +112,20 @@ $(function() {
 		$(document).trigger('refresh_autonumeric');
 		
 	});	
+	
+	// add logic for quick swap
+	$(document).on('click', '.quick-swap-button', function () {
+		var tap_number = $(this).parent().data("tap");
+		$(this).parent().parent().addClass("row_highlight");
+		$("td[data-tap='" + tap_number + "']").parent().addClass("row_highlight");
+		// prevent page from jumping to the top after click event
+		return false;
+	});
+	$(document).click(function (e) {
+		e.preventDefault();
+		$('.row_highlight').removeClass('row_highlight');
+		// prevent page from jumping to the top after click event
+		return false;
+	});
 
 });

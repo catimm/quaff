@@ -1452,10 +1452,11 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 14px !important;
   a {
     line-height: 24px !important;
-    text-align: left !important;
-    color: $dark-gray !important;
+    text-align: center !important;
+    color: $mobile-navbar-text !important;
     font-size: 14px !important;
     margin-left: 0 !important;
+    padding: 3px 6px !important;
   }
 }
 //
@@ -1926,6 +1927,15 @@ input[type="checkbox"] {
   color: $mobile-navbar-text;
   text-align: center;
   padding: 3px 6px;
+}
+// Quick Swap page
+.tbd-button {
+  padding: 7px 4px !important;
+  font-size: 13px !important;
+  letter-spacing: -0.5px;
+}
+.row_highlight {
+  background: $current-beer-complete-background !important;
 }
 // Draft edit page
  .draft-edit-top-row-container {
