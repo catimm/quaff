@@ -121,10 +121,10 @@ $(function() {
 		// prevent page from jumping to the top after click event
 		return false;
 	});
-	//$(document).click(function (e) {
-	//	$('.row_highlight').removeClass('row_highlight');
-		// prevent page from jumping to the top after click event
-
-	//});
+	$(document).on('click', '.quick-swap-container', function () {
+		if ($('tr').hasClass('row_highlight')) {
+			$('.row_highlight').removeClass('row_highlight');
+		}
+	});
 
 });
