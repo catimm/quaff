@@ -2058,7 +2058,7 @@ task :check_the_yard => :environment do
       @split_beer_name.each do |word|
         @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%")
         if @related_brewery.blank?
-          @alt_brewery_name = @alt_brewery_name.where("name like ?", "%#{word}%")
+          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{word}%")
           if !@alt_brewery_name.blank?
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
@@ -2285,7 +2285,7 @@ task :check_the_dray => :environment do
       @split_beer_name.each do |word|
         @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%")
         if @related_brewery.blank?
-          @alt_brewery_name = @alt_brewery_name.where("name like ?", "%#{word}%")
+          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{word}%")
           if !@alt_brewery_name.blank?
             @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
             @initial_beer_name.slice! word
