@@ -115,16 +115,70 @@ $(function() {
 	
 	// add logic for quick swap
 	$(document).on('click', '.quick-swap-button', function () {
+		// remove other row highlights if already highlighted
+		if ($('tr').hasClass('swap_chosen')) {
+			$('.swap_chosen').removeClass('swap_chosen');
+		}
+		if ($('tr').hasClass('swap_option')) {
+			$('.swap_option').removeClass('swap_option');
+		}
+		
+		// get tap number of the row chosen & add a chosen highlight to it
 		var tap_number = $(this).parent().data("tap");
-		$(this).parent().parent().addClass("row_highlight");
-		$("td[data-tap='" + tap_number + "']").parent().addClass("row_highlight");
+		$(this).parent().parent().addClass("swap_chosen");
+		
+		// get tap numbers of inventory predesignated for a specific tap
+		var current_inventory_tap_array = [];
+		$(".current-inventory-table").children().children(".swap-button-holder").each(function() {;
+		  if ($(this).data("tap") !== 0) {
+		  	current_inventory_tap_array.push($(this).data("tap"));
+		  }
+		});
+		var unique_tap_array = GetUnique(current_inventory_tap_array);
+			
+		// highlight available options to swap with	
+		if ($(this).parent().parent().parent().hasClass("current-draft-table")){
+			if($.inArray(tap_number, unique_tap_array) !== -1) {
+				$(".current-inventory-table").children().children("td[data-tap='" + tap_number + "']").parent().addClass("swap_option");
+			} else {
+				$(".current-inventory-table").children().children("td[data-tap='0']").parent().addClass("swap_option");
+			}
+		} else if ($(this).parent().parent().parent().hasClass("current-inventory-table") ) {
+			if($.inArray(tap_number, unique_tap_array) !== -1) {
+				$(".current-draft-table").children().children("td[data-tap='" + tap_number + "']").parent().addClass("swap_option");
+			} else {
+				$(".current-draft-table").children().children(".swap-button-holder").each(function() {
+					if($.inArray($(this).data("tap"), unique_tap_array) === -1) {
+						$(this).parent().addClass("swap_option");
+					}
+				});
+				//$(".current-draft-table").children().children("td[data-tap='0']").parent().addClass("swap_option");
+			}
+		}
+		
 		// prevent page from jumping to the top after click event
 		return false;
 	});
-	$(document).on('click', '.quick-swap-container', function () {
-		if ($('tr').hasClass('row_highlight')) {
-			$('.row_highlight').removeClass('row_highlight');
+	$(document).on('click', 'body', function () {
+		if ($('tr').hasClass('swap_chosen')) {
+			$('.swap_chosen').removeClass('swap_chosen');
+		}
+		if ($('tr').hasClass('swap_option')) {
+			$('.swap_option').removeClass('swap_option');
 		}
 	});
+	
+	// function for unique arrays
+	function GetUnique(inputArray) {
+		var outputArray = [];
+		for (var i = 0; i < inputArray.length; i++)
+		{
+			if ((jQuery.inArray(inputArray[i], outputArray)) == -1)
+			{
+				outputArray.push(inputArray[i]);
+			}
+		}
+		return outputArray;
+	}
 
 });

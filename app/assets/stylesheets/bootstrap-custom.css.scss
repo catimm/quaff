@@ -15,6 +15,7 @@ $black: #000;
 $dark-blue: #4780b4;
 $bright-blue: #0087cb;
 $light-blue: #17B1FB;
+$super-light-blue: #71CDF9;
 $bright-orange: #ffa200;
 $light-orange: #FFC764;
 $bright-aqua-blue: #24a8ac;
@@ -24,6 +25,7 @@ $light-purple: #C267BE;
 $bright-green: #00a03e;
 $light-green: #40C170;
 $extra-light-green: #65D48E;
+$super-light-green: #90E7B0;
 $light-yellow: #FFD759;
 $light-red: #FB575F;
 $extra-light-red: #FE6165;
@@ -52,7 +54,9 @@ $value-prop-icon-background-border: $bright-purple;
 $current-beer-complete-background: $extra-light-green;
 $current-beer-usable-background: $light-orange;
 $current-beer-attention-needed-background: $extra-light-red;
-$current-beer-attention-needed-text: $light-red; 
+$current-beer-attention-needed-text: $light-red;
+$quick-swap-options: $super-light-green; 
+$quick-swap-chosen: $super-light-blue;
 
 @font-face {
     font-family: 'novecento_sans_widenormal';
@@ -1934,8 +1938,11 @@ input[type="checkbox"] {
   font-size: 13px !important;
   letter-spacing: -0.5px;
 }
-.row_highlight {
-  background: $current-beer-complete-background !important;
+.swap_chosen {
+  background: $quick-swap-chosen !important;
+}
+.swap_option {
+  background: $quick-swap-options !important;
 }
 // Draft edit page
  .draft-edit-top-row-container {

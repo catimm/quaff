@@ -33,10 +33,10 @@
 						<th class="text-center">Keg size</th>
 						<th class="text-center">Added</th>		
 					</thead>
-					<tbody>
+					<tbody class="current-draft-table">
 					<% @current_draft_board.each do	|drink| %>		
 						<tr>
-							<td class="text-center" data-tap=<%= drink.tap_number %>><%= link_to drink.tap_number, "#", :class => "btn btn-default btn-success formButton-search-footer quick-swap-button"  %></td>
+							<td class="text-center swap-button-holder" data-tap=<%= drink.tap_number %>><%= link_to drink.tap_number, "#", :class => "btn btn-default btn-primary formButton-search-footer quick-swap-button"  %></td>
 							<% if !drink.beer.short_beer_name.nil? %>
 								<% if drink.beer.collab == true %>
 									<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
@@ -94,13 +94,13 @@
 					<th class="text-center">Keg size</th>
 					<th class="text-center">Added</th>		
 				</thead>
-				<tbody>
+				<tbody class="current-inventory-table">
 				<% @current_draft_inventory.each do	|drink| %>		
 					<tr>
 						<% if !drink.tap_number.nil? %>
-							<td class="text-center" data-tap=<%= drink.tap_number %>><%= link_to drink.tap_number, "#", :class => "btn btn-default btn-success formButton-search-footer quick-swap-button"  %></td>
+							<td class="text-center swap-button-holder" data-tap=<%= drink.tap_number %>><%= link_to drink.tap_number, "#", :class => "btn btn-default btn-primary formButton-search-footer quick-swap-button"  %></td>
 						<% else %>
-							<td class="text-center" data-tap="0"><%= link_to "TBD", "#", :class => "btn btn-default btn-success formButton-search-footer tbd-button quick-swap-button"  %></td>
+							<td class="text-center swap-button-holder" data-tap="0"><%= link_to "TBD", "#", :class => "btn btn-default btn-primary formButton-search-footer tbd-button quick-swap-button"  %></td>
 						<% end %>
 						<% if !drink.beer.short_beer_name.nil? %>
 							<% if drink.beer.collab == true %>
