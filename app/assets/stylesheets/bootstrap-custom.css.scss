@@ -1944,6 +1944,17 @@ input[type="checkbox"] {
 .swap_option {
   background: $quick-swap-options !important;
 }
+.swap-choose-button-holder {
+  width: 20%;
+}
+.swap-drink-holder {
+  width: 60%;
+  text-align: left;
+}
+.swap-drink-type {
+  width: 20%;
+  text-align: left;
+}
 // Draft edit page
  .draft-edit-top-row-container {
     background: #fff;

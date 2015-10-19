@@ -27,6 +27,8 @@ class BeerLocation < ActiveRecord::Base
   
   # add attribute so user can choose to make drink in inventory generally available or attach to specific tap
   attr_accessor :generally_available
+  # add attribute to replace drink on drink quick swap page
+  attr_accessor :tap_to_replace
   
   # this scope is for the admin page
   scope :all_current, -> { where(beer_is_current: "yes") }

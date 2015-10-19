@@ -370,10 +370,66 @@ class DraftBoardsController < ApplicationController
     @current_draft_board = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "yes").order(:tap_number)
     # get draft inventory details
     @current_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "hold")
+    # get recently removed draft details
+    @recently_removed_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "no")
     #Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
     
+  end
+  
+  def choose_swap_drinks
+    @swap_drinks = BeerLocation.new
+    @current_draft_board = params[:board_id]
+    @table_selected = params[:format]
+    @tap_to_replace = params[:tap_id]
+    @location_drinks = BeerLocation.where(draft_board_id: @current_draft_board)
+    @current_draft_drinks = @location_drinks.where(beer_is_current: "yes")
+    @inventory_draft_drinks = @location_drinks.where(beer_is_current: "hold")
+    @inventory_predetermined_tap_numbers = @inventory_draft_drinks.where.not(tap_number: nil).pluck(:tap_number)
+    @removed_draft_drinks = @location_drinks.where(beer_is_current: "no")
+    if @table_selected == "current"
+      @predetermined_taps = @inventory_draft_drinks.where(tap_number: params[:tap_id])
+      #Rails.logger.debug("Predetermined taps: #{@predetermined_taps.inspect}")
+      @general_taps = @inventory_draft_drinks.where(tap_number: nil)
+      #Rails.logger.debug("General taps: #{@general_taps.inspect}")
+      if !@predetermined_taps.blank?
+        @swap_options = @predetermined_taps
+      else
+        @swap_options = @general_taps
+      end
+    elsif @table_selected == "inventory"
+      @predetermined_taps = @current_draft_drinks.where(tap_number: params[:tap_id])
+      Rails.logger.debug("Predetermined taps: #{@predetermined_taps.inspect}")
+      Rails.logger.debug("Inventory predetermined: #{@inventory_predetermined_taps.inspect}")
+      @general_taps = @current_draft_drinks.where.not(tap_number: @inventory_predetermined_tap_numbers)
+      Rails.logger.debug("General taps: #{@general_taps.inspect}")
+      if !@predetermined_taps.blank?
+        Rails.logger.debug("No matching tap numbers")
+        @swap_options = @predetermined_taps
+      else
+        Rails.logger.debug("Matching tap numbers")
+        @swap_options = @general_taps
+      end
+    else
+      
+    end
+    render :partial => 'draft_boards/swap_drink_options'
+  end
+  
+  def execute_swap_drinks
+    # get new drink beer_location id
+    @new_drink_to_add = BeerLocation.find(params[:beer_location][:id])
+    # update new drink info
+    @new_drink_to_add.update_attributes(tap_number: params[:beer_location][:tap_to_replace], beer_is_current: "yes", went_live: Time.now)
+    # get drink to replace beer_location id
+    @drink_to_replace = BeerLocation.where(draft_board_id: params[:beer_location][:draft_board_id], 
+                        beer_is_current: "yes", tap_number: params[:beer_location][:tap_to_replace])[0]
+    # update replaced drink info
+    @drink_to_replace.update_attributes(beer_is_current: "no", removed_at: Time.now)
+  
+    # redirect back to quick swap board
+    redirect_to quick_draft_edit_path(params[:beer_location][:draft_board_id])
   end
   
   private

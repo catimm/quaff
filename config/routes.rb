@@ -54,6 +54,8 @@ Rails.application.routes.draw do
   root :to => 'home#index'
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
+  get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'
+  post '/draft_boards/swap_drinks' => 'draft_boards#execute_swap_drinks'
   get '/search-bloodhound-engine.js' => 'draft_boards#edit'
   get '/draft_boards/edit' => 'draft_boards#edit'
   get 'draft_boards/quick_draft_edit/:id(.:format)' => 'draft_boards#quick_draft_edit', :as => 'quick_draft_edit'
@@ -67,7 +69,6 @@ Rails.application.routes.draw do
   get '/draft_inventory/:id/edit(.:format)' => 'draft_inventory#edit', :as => 'edit_draft_inventory'
   get '/draft_inventory/edit' => 'draft_inventory#edit'
   patch '/draft_inventory/:id(.:format)' => 'draft_inventory#update'
-
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
