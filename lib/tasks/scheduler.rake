@@ -1098,12 +1098,14 @@ task :check_beer_junction => :environment do
             else # found in Alternative Brewery Table
               Rails.logger.debug("Found brewery in Alt Brewery Table")
               if index == 0 # if first collaborator, make this the default brewery name for the matching process below
+                Rails.logger.debug("Thinks this is 1st brewewry")
                 @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
                 # make certain this brewery is flagged as having collaboration beers
                 if @related_brewery[0].collab != true
                   @related_brewery[0].update_attributes(collab: "1")
                 end
               else 
+                Rails.logger.debug("Thinks this is 2nd brewewry")
                 @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
                 # make certain this brewery is flagged as having collaboration beers
                 if @temp_collab[0].collab != true
