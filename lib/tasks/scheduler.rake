@@ -1104,6 +1104,9 @@ task :check_beer_junction => :environment do
                 if @related_brewery[0].collab != true
                   @related_brewery[0].update_attributes(collab: "1")
                 end
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @related_brewery
+                Rails.logger.debug("Brewery Collaborators variable: #{@brewery_collaborators.inspect}")
               else 
                 Rails.logger.debug("Thinks this is 2nd brewewry")
                 @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
@@ -1112,8 +1115,6 @@ task :check_beer_junction => :environment do
                   @temp_collab[0].update_attributes(collab: "1")
                 end
               end
-              # add this brewery to brewery collaborator array for use below
-              @brewery_collaborators << @collaborator_brewery[0]
             end
           else # found in Brewery Table
             Rails.logger.debug("Found brewery in Brewery Table")
