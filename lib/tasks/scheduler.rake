@@ -1131,6 +1131,7 @@ task :check_beer_junction => :environment do
             @brewery_collaborators << @collaborator_brewery[0]
           end
         end
+        Rails.logger.debug("Final related brewery info: #{@related_brewery.inspect}")
       else
         # if beer is not a collaboration, do a "normal" brewery name check
         @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
