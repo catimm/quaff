@@ -1296,9 +1296,9 @@ task :check_beer_junction => :environment do
           # for collab scenario--make sure collab table is populated properly
           if @collab_beer
             @brewery_collaborators.each do |collaborator|
-              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: new_beer.id)
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator[0].id, beer_id: new_beer.id)
               if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
-                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
+                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator[0].id, :beer_id => new_beer.id)
                 collab_insert.save
               end
             end
