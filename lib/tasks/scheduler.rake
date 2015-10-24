@@ -1114,6 +1114,8 @@ task :check_beer_junction => :environment do
                 if @temp_collab[0].collab != true
                   @temp_collab[0].update_attributes(collab: "1")
                 end
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @temp_collab
               end
             end
           else # found in Brewery Table
@@ -1121,16 +1123,13 @@ task :check_beer_junction => :environment do
             if index == 0 # if first collaborator, make this the default brewery name for the matching process below
               Rails.logger.debug("This is firing on first iteration through")
               @related_brewery = @collaborator_brewery
-              Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
-              Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
-              # add this brewery to brewery collaborator array for use below
-              @brewery_collaborators << @related_brewery
-              Rails.logger.debug("Brewery Collaborators variable: #{@brewery_collaborators.inspect}")
             end
             # make certain this brewery is flagged as having collaboration beers
             if @collaborator_brewery[0].collab != true
                 @collaborator_brewery[0].update_attributes(collab: "1")
             end
+            # add this brewery to brewery collaborator array for use below
+            @brewery_collaborators << @related_brewery
           end
         end
         Rails.logger.debug("Final related brewery info: #{@related_brewery.inspect}")
@@ -1198,6 +1197,7 @@ task :check_beer_junction => :environment do
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
           if @collab_beer # for collab scenario--make sure collab table is populated properly
+            Rails.logger.debug("Brewery Collabs Near Error: #{@brewery_collaborators.inspect}")
             @brewery_collaborators.each do |collaborator|
               Rails.logger.debug("Collab Info Near Error: #{collaborator.inspect}")
               Rails.logger.debug("Recognized Beer Info Near Error: #{@recognized_beer.inspect}")
