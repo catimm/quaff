@@ -1201,7 +1201,7 @@ task :check_beer_junction => :environment do
             @brewery_collaborators.each do |collaborator|
               Rails.logger.debug("Collab Info Near Error: #{collaborator.inspect}")
               Rails.logger.debug("Recognized Beer Info Near Error: #{@recognized_beer.inspect}")
-              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
+              @collab_check = BeerBreweryCollab.where(brewery_id: collaborator[0].id, beer_id: @recognized_beer.id)
               if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
                 collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
                 collab_insert.save
