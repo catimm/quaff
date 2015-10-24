@@ -1078,12 +1078,15 @@ task :check_beer_junction => :environment do
         @each_collaborator = @this_brewery_name.split('/').map(&:strip)
         # run each collaborator against database check
         @each_collaborator.each_with_index do |collaborator, index|
+          Rails.logger.debug("Collab Brewery Name: #{collaborator.inspect}")
           @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
           Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
           if @collaborator_brewery.blank? # not found in Brewery Table
+            Rails.logger.debug("Didn't find brewery in Brewery Table")
             # check to see if alternative brewery name table
             @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
             if @alt_brewery_name.blank? # not found in Alternative Brewery Table
+              Rails.logger.debug("Didn't find brewery in Alt Brewery Table")
               # since brewery isn't found in either Brewery Table, insert it
               new_brewery = Brewery.new(:brewery_name => collaborator, :collab => true)
               new_brewery.save
@@ -1093,6 +1096,7 @@ task :check_beer_junction => :environment do
               # add new brewery to brewery collaborator array for use below
               @brewery_collaborators << new_brewery
             else # found in Alternative Brewery Table
+              Rails.logger.debug("Found brewery in Alt Brewery Table")
               if index == 0 # if first collaborator, make this the default brewery name for the matching process below
                 @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
                 # make certain this brewery is flagged as having collaboration beers
@@ -1110,6 +1114,7 @@ task :check_beer_junction => :environment do
               @brewery_collaborators << @collaborator_brewery[0]
             end
           else # found in Brewery Table
+            Rails.logger.debug("Found brewery in Brewery Table")
             if index == 0 # if first collaborator, make this the default brewery name for the matching process below
               Rails.logger.debug("This is firing on first iteration through")
               @related_brewery = @collaborator_brewery
