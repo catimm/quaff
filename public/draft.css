@@ -88,12 +88,12 @@
 	border-radius: 10px;
 }	
 .draft-brewery-image-holder-variable-web {
-  	height: 85px;
+  	height: 100px;
  	padding: 0;
-  	margin: 10px 0 0 0;
+  	margin: 5px 0 0 0;
 }
 .origin-variable-web {
-  	margin: 0 0 0 7.5px;
+  	margin: 2.5px 0 0 5px;
   	font-size: 11px;
 }
 .column-header-variable-web {

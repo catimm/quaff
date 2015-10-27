@@ -14,7 +14,7 @@ class Draft::DrinksController < ApplicationController
     # get draft board details
     @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
     # get last updated info
-    @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
+    @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:updated_at).reverse_order.first 
     
     # determine whether a drink size column shows in row view
     @taster_size = 0
