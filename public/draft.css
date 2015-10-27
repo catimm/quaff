@@ -88,7 +88,7 @@
 	border-radius: 10px;
 }	
 .draft-brewery-image-holder-variable-web {
-  	height: 100px;
+  	height: 100px !important;
  	padding: 0;
   	margin: 5px 0 0 0;
 }
