@@ -11,7 +11,11 @@
 							<i class="fa fa-trash-o"></i>	
 						<% end %>
 					</div>
-					<div class="col-sm-1 text-center tap-number-holder visible-sm visible-md visible-lg">
+					<div class="col-sm-1 text-center tap-number-holder visible-sm no-padding-right">
+						<p>Tap #</p>
+						<%= ff.text_field :tap_number, :class => "form-control mobile-tap-number" %>
+					</div>
+					<div class="col-md-1 text-center tap-number-holder visible-md visible-lg">
 						<p>Tap #</p>
 						<%= ff.text_field :tap_number, :class => "form-control mobile-tap-number" %>
 					</div>

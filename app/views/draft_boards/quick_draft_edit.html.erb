@@ -20,6 +20,12 @@
 							<% end %>
 						</div>
 					</div>
+					<div class="col-xs-6 col-sm-2">
+						<%= link_to "Cancel", retailer_path(session[:retail_id]), class: 'btn btn-default formButton-cancel-draft-board-edit' %>
+					</div>
+					<div class="col-xs-6 col-sm-2">
+						<%= link_to "Save", retailer_path(session[:retail_id]), class: "btn btn-default btn-success formButton-draft-edit" %>
+					</div>
 			</div>
 		</div>
 		<div class="row no-margin">
@@ -107,7 +113,7 @@
 							</td>
 						<% else %>
 							<td class="text-center swap-button-holder" data-tap="0"<%= drink.tap_number %>><%= link_to "TBD", 
-								swap_drinks_path(drink.draft_board_id, 0, "inventory"), :class => "btn btn-default btn-primary formButton-search-footer quick-swap-button",
+								swap_drinks_path(drink.draft_board_id, 0, "inventory"), :class => "btn btn-default btn-primary formButton-search-footer tbd-button quick-swap-button",
 								data: {toggle: "modal", target: "#swap_drinks"}  %>
 							</td>
 						<% end %>
