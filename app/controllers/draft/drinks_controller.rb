@@ -52,6 +52,7 @@ class Draft::DrinksController < ApplicationController
           @total_number_of_sizes = @this_number_of_sizes
         end
       end
+    end
       # set width of columns that hold drink graphics and info
       if @total_number_of_sizes <= 4
         @column_class = "col-sm-3"
