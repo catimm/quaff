@@ -819,13 +819,13 @@ $beer-header-lines-to-show-fp: 1;
   text-align: center;
 }
 .draft-size-holder {
-  margin: 5px 7.5px 0 0;
+  margin: 5px 0 0 0;
   padding-right: 0 !important;
   padding-left: 8px !important;
   height: 32px;
 }
 .draft-size-holder-growler {
-  margin: 5px 7.5px 0 0;
+  margin: 5px 0 0 0;
   padding-right: 0 !important;
   padding-left: 2px !important;
   height: 32px;
@@ -2261,13 +2261,13 @@ input[type="checkbox"] {
     margin: 0 !important;
   }
   .draft-size-holder {
-    margin: 5px 7.5px 0 0;
+    margin: 5px 0 0 0;
     padding-right: 0 !important;
     padding-left: 5px !important;
     height: 32px;
   }
   .draft-size-holder-growler {
-    margin: 5px 7.5px 0 0;
+    margin: 5px 0 0 0;
     padding-right: 0 !important;
     padding-left: 2px !important;
     height: 32px;
@@ -2297,6 +2297,14 @@ input[type="checkbox"] {
     font-size: 12px;
     margin: 2.5px 0;
     text-align: center; 
+  }
+  // Quick Swap page
+  .swap-choose-button {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+  .retailer-page-title {
+    font-size: 20px !important;
   }
   // locations index page
   .overview-tile {

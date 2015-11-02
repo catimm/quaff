@@ -1,6 +1,6 @@
 <%= f.fields_for :beer_locations, @draft_drink do |ff| %>
 		<div class="row new-draft-row" id="new-draft-row-<%= ff.index %>" >
-					<div class="col-xs-6 remove-draft-button visible-xs text-right">
+					<div class="col-xs-12 remove-draft-button visible-xs text-right">
 						<%= ff.link_to_remove do %>
 							<i class="fa fa-trash-o"></i>	
 						<% end %>
@@ -60,11 +60,12 @@
 							<% end %>
 						</div>	
 					</div>
-					<div class="col-sm-2 keg-size-holder">
+					<div class="col-xs-1 visible-xs"></div>
+					<div class="col-xs-10 col-sm-2 keg-size-holder">
 						<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
 						<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
 					</div>
-					<div class="col-xs-12 col-sm-5 draft-details-row-container">
+					<div class="col-xs-12 col-sm-5 draft-details-row-container no-padding">
 						<%= render 'new_inventory_details', :ff => ff %>
 						<%= ff.link_to_add :draft_details, class: 'btn btn-default btn-primary formButton-add-details' do %>
 							<i class="fa fa-plus"> Add a drink size</i>
@@ -79,7 +80,7 @@
 			</div>	
 			<% if ff.object.tap_number.nil? %>
 				<div class="row no-margin">
-					<div class="col-sm-3">
+					<div class="col-sm-5 col-md-3">
 						<div>
 							<%= ff.radio_button :generally_available, true, :checked => true, :class => "generally-available-inventory" %> 
 							<%= ff.label :generally_available, ' Make generally available', :value => true %>
@@ -90,7 +91,7 @@
 						</div>
 					</div>
 
-					<div class="col-sm-4 on-deck-for hidden">
+					<div class="col-sm-5 col-md-4 on-deck-for hidden">
 						<h5 class="on-deck-for-title">On deck for:</h5>
 						<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink) %>
 						<%= ff.select :tap_number,  options, {prompt: 'Select Tap'}, { :class => "form-control" } %>
@@ -98,7 +99,7 @@
 				</div>
 			<% else %>
 				<div class="row no-margin">
-					<div class="col-sm-3">
+					<div class="col-sm-5 col-md-3">
 						<div>
 							<%= ff.radio_button :generally_available, true, :class => "generally-available-inventory" %> 
 							<%= ff.label :generally_available, ' Make generally available', :value => true %>
@@ -108,7 +109,7 @@
 							<%= ff.label :generally_available, ' Make "on deck" for a specific tap', :value => false %>
 						</div>
 					</div>
-					<div class="col-sm-4 on-deck-for show">
+					<div class="col-sm-5 col-md-4 on-deck-for show">
 						<h5 class="on-deck-for-title">On deck for:</h5>
 						<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink, ff.object.tap_number) %>
 						<%= ff.select :tap_number,  options, {}, { :class => "form-control" } %>

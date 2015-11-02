@@ -24,45 +24,45 @@ class DraftBoardsController < ApplicationController
     @half_growler_size = 0
     @growler_size = 0
     @beer_location_ids = @current_draft_board.pluck(:id)
-    @drink_details = DraftDetail.where(beer_location_id: @beer_location_ids)
-    @drink_details.each do |details|
+    @current_draft_board.each do |draft_drink|
+      @drink_details = DraftDetail.where(beer_location_id: draft_drink.id)
       @this_number_of_sizes = 0
-      if details.drink_size > 0 && details.drink_size <= 5
-        @taster_size += 1
-        @this_number_of_sizes += 1
-      end
-      if details.drink_size > 5 && details.drink_size <= 12
-        @tulip_size += 1
-        @this_number_of_sizes += 1
-      end
-      if details.drink_size > 12 && details.drink_size <= 22
-        @pint_size += 1
-        @this_number_of_sizes += 1
-      end
-      if details.drink_size == 32
-        @half_growler_size += 1
-        @this_number_of_sizes += 1
-      end
-      if details.drink_size == 64
-        @growler_size += 1
-        @this_number_of_sizes += 1
-      end
-      if @this_number_of_sizes > @total_number_of_sizes
-        @total_number_of_sizes = @this_number_of_sizes
+      @drink_details.each do |details|  
+        if details.drink_size > 0 && details.drink_size <= 5
+          @taster_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size > 5 && details.drink_size <= 12
+          @tulip_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size > 12 && details.drink_size <= 22
+          @pint_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size == 32
+          @half_growler_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size == 64
+          @growler_size += 1
+          @this_number_of_sizes += 1
+        end
+        if @this_number_of_sizes > @total_number_of_sizes
+          @total_number_of_sizes = @this_number_of_sizes
+        end
       end
     end
     Rails.logger.debug("Total # of sizes: #{@total_number_of_sizes.inspect}")
     # set width of columns that hold drink graphics and info
-    if @total_number_of_sizes > 4
-      @column_class = "col-sm-2"
-    elsif @total_number_of_sizes > 3
+    if @total_number_of_sizes <= 4
       @column_class = "col-sm-3"
-    elsif @total_number_of_sizes > 2
-      @column_class = "col-sm-4"
+      @column_class_xs = "col-xs-3"
     else
       @column_class = "col-sm-4"
+      @column_class_xs = "col-xs-4"
     end
-    
+    Rails.logger.debug("Column size is: #{@column_class.inspect}")
   end
   
   def new

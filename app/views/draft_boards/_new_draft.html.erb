@@ -19,7 +19,7 @@
 						<p>Tap #</p>
 						<%= ff.text_field :tap_number, :class => "form-control mobile-tap-number" %>
 					</div>
-					<div class="col-xs-12 col-sm-4 no-padding">	
+					<div class="col-xs-12 col-sm-4 col-md-4 no-padding">	
 						<%= ff.hidden_field :beer_id %>
 						<% if @draft_board_form == "edit" %>
 							<div class="row no-margin search-field">
@@ -82,7 +82,8 @@
 							<% end %>
 						</div>	
 					</div>
-					<div class="col-sm-2 keg-size-holder">
+					<div class="col-xs-1 visible-xs"></div>
+					<div class="col-xs-10 col-sm-2 keg-size-holder">
 						<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
 						<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
 					</div>
