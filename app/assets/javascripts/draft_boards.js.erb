@@ -123,41 +123,6 @@ $(function() {
 			$('.swap_option').removeClass('swap_option');
 		}
 		
-		// get tap number of the row chosen & add a chosen highlight to it
-		//var tap_number = $(this).parent().data("tap");
-		//$(this).parent().parent().addClass("swap_chosen");
-		
-		// get tap numbers of inventory predesignated for a specific tap
-		//var current_inventory_tap_array = [];
-		//$(".current-inventory-table").children().children(".swap-button-holder").each(function() {;
-		//  if ($(this).data("tap") !== 0) {
-		//  	current_inventory_tap_array.push($(this).data("tap"));
-		//  }
-		//});
-		//var unique_tap_array = GetUnique(current_inventory_tap_array);
-			
-		// highlight available options to swap with	
-		//if ($(this).parent().parent().parent().hasClass("current-draft-table")){
-		//	if($.inArray(tap_number, unique_tap_array) !== -1) {
-		//		$(".current-inventory-table").children().children("td[data-tap='" + tap_number + "']").parent().addClass("swap_option");
-		//	} else {
-		//		$(".current-inventory-table").children().children("td[data-tap='0']").parent().addClass("swap_option");
-		//	}
-		//} else if ($(this).parent().parent().parent().hasClass("current-inventory-table") ) {
-		//	if($.inArray(tap_number, unique_tap_array) !== -1) {
-		//		$(".current-draft-table").children().children("td[data-tap='" + tap_number + "']").parent().addClass("swap_option");
-		//	} else {
-		//		$(".current-draft-table").children().children(".swap-button-holder").each(function() {
-		//			if($.inArray($(this).data("tap"), unique_tap_array) === -1) {
-		//				$(this).parent().addClass("swap_option");
-		//			}
-		//		});
-				//$(".current-draft-table").children().children("td[data-tap='0']").parent().addClass("swap_option");
-		//	}
-		//}
-		
-		// prevent page from jumping to the top after click event
-		//return false;
 	});
 	$(document).on('click', 'body', function () {
 		if ($('tr').hasClass('swap_chosen')) {
@@ -168,17 +133,19 @@ $(function() {
 		}
 	});
 	
-	// function for unique arrays
-	//function GetUnique(inputArray) {
-	//	var outputArray = [];
-	//	for (var i = 0; i < inputArray.length; i++)
-	//	{
-	//		if ((jQuery.inArray(inputArray[i], outputArray)) == -1)
-	//		{
-	//			outputArray.push(inputArray[i]);
-	//		}
-	//	}
-	//	return outputArray;
-	//}
+	// add logic to show special designation colors
+	$(document).on('click', '.special-designation-option', function () {
+		if ($(this).parent().siblings('.special-designation-color').hasClass("hidden")) {
+			$(this).parent().siblings('.special-designation-color').removeClass("hidden").addClass("show");
+		} else {
+			$(this).parent().siblings('.special-designation-color').removeClass("show").addClass("hidden");
+		}
+	});
+	
+	// show color when a special designation color is chosen
+	$(document).on('change', '.special-designation-colors', function () {
+		var color = $(this).val();
+		$(this).siblings('.color-prompt').removeClass().addClass("color-prompt " + color);
+	});
 
 });

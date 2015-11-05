@@ -45,6 +45,13 @@ class DraftInventoryController < ApplicationController
     # get current draft board info for 'on deck' drinks
     @current_draft_drinks = BeerLocation.where(draft_board_id: @draft.id, beer_is_current: "yes")
     
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    # determine whether user has changed internal draft board view
+    if @subscription_plan == 2
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+    end
+    
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
       if !params[:chosen_drink].nil?

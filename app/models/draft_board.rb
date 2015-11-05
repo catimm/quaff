@@ -11,6 +11,7 @@
 class DraftBoard < ActiveRecord::Base
   belongs_to :location
   has_many :beer_locations
+  has_many :internal_draft_board_preferences
   accepts_nested_attributes_for :beer_locations, :reject_if => :all_blank, :allow_destroy => true
   
   # scope only drinks currently available on draft board

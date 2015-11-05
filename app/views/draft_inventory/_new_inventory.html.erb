@@ -5,65 +5,90 @@
 							<i class="fa fa-trash-o"></i>	
 						<% end %>
 					</div>
-					<div class="col-xs-12 col-sm-4 no-padding">	
-						<%= ff.hidden_field :beer_id %>
-						<% if @draft_board_form == "edit" %>
-							<div class="row no-margin search-field">
-								<div class="col-sm-12 drink-search-holder">	
-									<% if !ff.object.beer.nil? %>
-											<% @beer_name = ff.object.beer.join_drink_name %>
+					<div class="col-xs-12 col-sm-6 no-padding">	
+						<div class="row no-margin">
+							<%= ff.hidden_field :beer_id %>
+							<% if @draft_board_form == "edit" %>
+								<div class="row no-margin search-field">
+									<div class="col-sm-12 drink-search-holder">	
+										<% if !ff.object.beer.nil? %>
+												<% @beer_name = ff.object.beer.join_drink_name %>
+												<div class="beers-search">
+													<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+														<div class="input-group">
+												 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search edit-form" %>
+														</div>
+													<% end %>
+												</div>
+										<% else %>
 											<div class="beers-search">
 												<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
-													<div class="input-group">
-											 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search edit-form" %>
+													<div class="input-group testing">
+											 	    	<%= text_field_tag :query, params[:query], id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search edit-form" %>
 													</div>
 												<% end %>
 											</div>
-									<% else %>
-										<div class="beers-search">
-											<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
-												<div class="input-group testing">
-										 	    	<%= text_field_tag :query, params[:query], id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search edit-form" %>
-												</div>
-											<% end %>
-										</div>
-									<% end %>
+										<% end %>
+									</div>
 								</div>
-							</div>
-						<% else %>
-							<div class="row no-margin search-field">
-								<div class="col-xs-12 drink-search-holder">	
-									<% if !ff.object.beer.nil? %>
-											<% @beer_name = ff.object.beer.join_drink_name %>
+							<% else %>
+								<div class="row no-margin search-field">
+									<div class="col-xs-12 drink-search-holder">	
+										<% if !ff.object.beer.nil? %>
+												<% @beer_name = ff.object.beer.join_drink_name %>
+												<div class="beers-search">
+													<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+														<div class="input-group">
+												 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search new-form" %>
+														</div>
+													<% end %>
+												</div>
+										<% else %>
 											<div class="beers-search">
 												<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
-													<div class="input-group">
-											 	    	<%= text_field_tag :query, (params[:query] or @beer_name), id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search new-form" %>
+													<div class="input-group testing">
+											 	    	<%= text_field_tag :query, params[:query], id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search new-form" %>
 													</div>
 												<% end %>
 											</div>
-									<% else %>
-										<div class="beers-search">
-											<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
-												<div class="input-group testing">
-										 	    	<%= text_field_tag :query, params[:query], id: "query-#{ff.index}", name: "query-#{ff.index}", size: 30, placeholder: "Search by beer or brewery", class: "form-control typeahead retailer-search new-form" %>
-												</div>
-											<% end %>
-										</div>
-									<% end %>
+										<% end %>
+									</div>
 								</div>
-							</div>
-						<% end %>
+							<% end %>
+						</div>
 						<div class="row no-margin new-draft-info" id="new-draft-info-<%= ff.index %>">
 							<% if @draft_board_form == "edit" || @draft_board_form == "new_error" %>
 								<%= render 'new_inventory_info_for_edit', this_drink: ff.object.beer %>
 							<% end %>
 						</div>	
-					</div>
-					<div class="col-xs-1 visible-xs"></div>
-					<div class="col-xs-10 col-sm-2 keg-size-holder">
-						<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
-						<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
+						<div class="row no-margin">
+							<div class="col-xs-10 col-sm-4 keg-size-holder no-padding-right">
+								<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
+								<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
+							</div>
+							<% if @subscription_plan == 2 && @internal_board_preferences[0].special_designations == true %>
+								<% if ff.object.special_designation == true %>
+									<% @color_option_setting = "show" %>
+									<% @color_to_show = ff.object.special_designation_color %>
+								<% else %>
+									<% @color_option_setting = "hidden" %>
+									<% @color_to_show = "" %>
+								<% end %>
+								<div class="col-xs-6 col-sm-6 col-md-3 text-right">
+									<h6 class="special-designation-option">Highlight prices</h6>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-1 no-padding-left special-designation-input">
+									<%= ff.check_box :special_designation, { :class => "special-designation-option" } %>
+								</div>
+								<div class="col-sm-5 col-md-4 special-designation-color <%= @color_option_setting %> no-padding-left">
+									<h5 class="color-prompt <%= @color_to_show %>">Color:</h5>
+									<%= ff.select(:special_designation_color, 
+										[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],['Orange', 'special-designated-orange'],
+										['Purple', 'special-designated-purple'],['Red', 'special-designated-red'],['Yellow', 'special-designated-yellow'] ], 
+										{prompt: 'Select Color'}, { :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
+								</div>
+							<% end %>
+						</div>
 					</div>
 					<div class="col-xs-12 col-sm-5 draft-details-row-container no-padding">
 						<%= render 'new_inventory_details', :ff => ff %>

@@ -4,6 +4,15 @@ class DraftBoardsController < ApplicationController
   include RetailerDrinkHelp
   
   def show
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    # set column border default
+    @column_border_class = ""
+    # set default font size
+    @row_font = "row-font-m"
+    @row_drink_font = "row-drink-font-m"
+    @row_n_a_font = "row-n-a-font-m"
+    
     @board_type = params[:format]
     # get retailer info
     @retail_id = session[:retail_id]
@@ -15,6 +24,38 @@ class DraftBoardsController < ApplicationController
     @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
     # get last updated info
     @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
+    
+    # determine whether user has changed internal draft board view
+    if @subscription_plan == 2
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id)
+      # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
+      if @internal_board_preferences[0].column_names == true
+        @column_border_class = "draft-board-row-column-border"
+      end
+      if !@internal_board_preferences[0].font_size.nil?
+        if @internal_board_preferences[0].font_size == 1
+          @row_font = "row-font-vs"
+          @row_drink_font = "row-drink-font-vs"
+          @row_n_a_font = "row-n-a-font-vs"
+        elsif @internal_board_preferences[0].font_size == 2
+          @row_font = "row-font-s"
+          @row_drink_font = "row-drink-font-s"
+          @row_n_a_font = "row-n-a-font-s"
+        elsif @internal_board_preferences[0].font_size == 3
+          @row_font = "row-font-m"
+          @row_drink_font = "row-drink-font-m"
+          @row_n_a_font = "row-n-a-font-m"
+        elsif @internal_board_preferences[0].font_size == 4
+          @row_font = "row-font-l"
+          @row_drink_font = "row-drink-font-l"
+          @row_n_a_font = "row-n-a-font-l"
+        else
+          @row_font = "row-font-vl"
+          @row_drink_font = "row-drink-font-vl"
+          @row_n_a_font = "row-n-a-font-vl"
+        end
+      end
+    end
     
     # determine whether a drink size column shows in row view
     @total_number_of_sizes = 0
@@ -53,7 +94,7 @@ class DraftBoardsController < ApplicationController
         end
       end
     end
-    Rails.logger.debug("Total # of sizes: #{@total_number_of_sizes.inspect}")
+    #Rails.logger.debug("Total # of sizes: #{@total_number_of_sizes.inspect}")
     # set width of columns that hold drink graphics and info
     if @total_number_of_sizes <= 4
       @column_class = "col-sm-3"
@@ -62,15 +103,20 @@ class DraftBoardsController < ApplicationController
       @column_class = "col-sm-4"
       @column_class_xs = "col-xs-4"
     end
-    Rails.logger.debug("Column size is: #{@column_class.inspect}")
+    #Rails.logger.debug("Column size is: #{@column_class.inspect}")
   end
   
   def new
+    # get user info
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
     @draft = DraftBoard.new
     @draft_drink = @draft.beer_locations.build
     @draft_drink_details = @draft_drink.draft_details.build
+    
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    
     session[:form] = "new"
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
@@ -188,6 +234,13 @@ class DraftBoardsController < ApplicationController
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
     
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    # determine whether user has changed internal draft board view
+    if @subscription_plan == 2
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+    end
+    
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
       if !params[:chosen_drink].nil?
@@ -246,7 +299,8 @@ class DraftBoardsController < ApplicationController
           # grab this BeerLocation record
           @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "yes").first
           # update tap number to ensure it's currently accurate
-          @current_beer_location.update_attributes(tap_number: drink[1][:tap_number], keg_size: drink[1][:keg_size])
+          @current_beer_location.update_attributes(tap_number: drink[1][:tap_number], keg_size: drink[1][:keg_size],
+                                 special_designation: drink[1][:special_designation], special_designation_color: drink[1][:special_designation_color])
           # delete all related size/cost information
           DraftDetail.where(beer_location_id: @current_beer_location.id).destroy_all
           # add size/cost info to ensure it is currently accurate
@@ -272,6 +326,8 @@ class DraftBoardsController < ApplicationController
                                         tap_number: drink[1][:tap_number],
                                         draft_board_id: params[:id],
                                         keg_size: drink[1][:keg_size],
+                                        special_designation: drink[1][:special_designation],
+                                        special_designation_color: drink[1][:special_designation_color],
                                         went_live: Time.now)
             if @new_beer_location_drink.save
               # add size/cost of new draft drink

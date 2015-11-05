@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151015213710) do
+ActiveRecord::Schema.define(version: 20151105000224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 20151015213710) do
   create_table "beer_locations", force: :cascade do |t|
     t.integer  "beer_id"
     t.integer  "location_id"
-    t.string   "beer_is_current", limit: 255
+    t.string   "beer_is_current",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "removed_at"
@@ -48,6 +48,8 @@ ActiveRecord::Schema.define(version: 20151015213710) do
     t.integer  "draft_board_id"
     t.float    "keg_size"
     t.datetime "went_live"
+    t.boolean  "special_designation"
+    t.string   "special_designation_color"
   end
 
   create_table "beer_styles", force: :cascade do |t|
@@ -141,6 +143,16 @@ ActiveRecord::Schema.define(version: 20151015213710) do
     t.integer  "beer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "internal_draft_board_preferences", force: :cascade do |t|
+    t.integer  "draft_board_id"
+    t.boolean  "separate_names"
+    t.boolean  "column_names"
+    t.boolean  "special_designations"
+    t.integer  "font_size"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   create_table "invitation_requests", force: :cascade do |t|

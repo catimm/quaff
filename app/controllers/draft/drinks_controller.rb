@@ -3,7 +3,16 @@ class Draft::DrinksController < ApplicationController
   layout false
   
   def show 
-    Rails.logger.debug("Params info: #: #{params.inspect}")
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    # set column border default
+    @column_border_class = ""
+    # set default font size
+    @row_font = "row-font-m"
+    @row_drink_font = "row-drink-font-m"
+    @row_n_a_font = "row-n-a-font-m"
+    
+    #Rails.logger.debug("Params info: #: #{params.inspect}")
     @board_type = params[:format]
     # get retailer info
     @retail_id = params[:id]
@@ -15,6 +24,38 @@ class Draft::DrinksController < ApplicationController
     @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
     # get last updated info
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:updated_at).reverse_order.first 
+    
+    # determine whether user has changed internal draft board view
+    if @subscription_plan == 2
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id)
+      # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
+      if @internal_board_preferences[0].column_names == true
+        @column_border_class = "draft-board-row-column-border"
+      end
+      if !@internal_board_preferences[0].font_size.nil?
+        if @internal_board_preferences[0].font_size == 1
+          @row_font = "row-font-vs"
+          @row_drink_font = "row-drink-font-vs"
+          @row_n_a_font = "row-n-a-font-vs"
+        elsif @internal_board_preferences[0].font_size == 2
+          @row_font = "row-font-s"
+          @row_drink_font = "row-drink-font-s"
+          @row_n_a_font = "row-n-a-font-s"
+        elsif @internal_board_preferences[0].font_size == 3
+          @row_font = "row-font-m"
+          @row_drink_font = "row-drink-font-m"
+          @row_n_a_font = "row-n-a-font-m"
+        elsif @internal_board_preferences[0].font_size == 4
+          @row_font = "row-font-l"
+          @row_drink_font = "row-drink-font-l"
+          @row_n_a_font = "row-n-a-font-l"
+        else
+          @row_font = "row-font-vl"
+          @row_drink_font = "row-drink-font-vl"
+          @row_n_a_font = "row-n-a-font-vl"
+        end
+      end
+    end
     
     # determine whether a drink size column shows in row view
     @total_number_of_sizes = 0

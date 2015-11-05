@@ -15,7 +15,7 @@
 		<hr>
 		<div class="row no-margin">
 			<div class="col-sm-1 text-center no-padding">
-				<h4 class="retail-manage-header">Manage Draft Board</h4>
+				<h4 class="retail-manage-header">Manage Draft Board Drinks</h4>
 			</div>
 			<div class="col-sm-11">
 				<% if @draft_board.blank? %>
@@ -104,6 +104,10 @@
 						</div>				
 					<% end %>
 				</div>
+			</div>
+			<hr>
+			<div class="row no-margin">
+				<%= render 'internal_draft_preferences' %>
 			</div>
 		<% end %>
 	</div>

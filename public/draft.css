@@ -229,13 +229,61 @@ th {
 	color: #000000;
 }
 /* Draft Board Row--variable-internal */
-.row-variable-internal {
-	font-size: 22px !important;
-}
 .draft-board-row-name-variable-internal {
 	padding: 3px 6px !important;
-	font-size: 25px !important;
 	color: #000000;
+}
+td.n-a-draft-board-format {
+      padding: 10px 0 !important; 
+   }
+.draft-board-row-column-border {
+  border-right: 1px solid $normal-text;
+  border-left: 1px solid $normal-text;
+}
+.row-font-vs {
+  font-size: 10px !important; 
+}
+.row-font-s {
+  font-size: 12px !important;
+}
+.row-font-m {
+  font-size: 14px !important;
+}
+.row-font-l {
+  font-size: 16px !important;
+}
+.row-font-vl {
+  font-size: 18px !important;
+}
+.row-drink-font-vs {
+  font-size: 12px !important; 
+}
+.row-drink-font-s {
+  font-size: 14px !important;
+}
+.row-drink-font-m {
+  font-size: 16px !important;
+}
+.row-drink-font-l {
+  font-size: 18px !important;
+}
+.row-drink-font-vl {
+  font-size: 20px !important;
+}
+.row-n-a-font-vs {
+  font-size: 9px !important; 
+}
+.row-n-a-font-s {
+  font-size: 11px !important;
+}
+.row-n-a-font-m {
+  font-size: 13px !important;
+}
+.row-n-a-font-l {
+  font-size: 15px !important;
+}
+.row-n-a-font-vl {
+  font-size: 17px !important;
 }
 .row-variable-percent-sign {
 	font-size: 14px;

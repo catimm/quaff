@@ -1,0 +1,70 @@
+<div class="col-sm-1 text-center no-padding">
+	<h4 class="retail-manage-header">Manage Internal Board View</h4>
+</div>
+<div class="col-sm-11">
+	<div class="row no-margin ">
+		<%= form_for @internal_board_preferences, :url => {:action => 'update_internal_board_preferences'} do |f| %>
+			<%= f.hidden_field :draft_board_id, :value => @draft_board[0].id %>
+			<div class="col-xs-12 col-sm-6 col-md-5">
+				<div class="row no-margin">
+					<div class="col-xs-6 col-sm-6 col-md-2 no-padding">
+						<h6 class="board-preference-options">Option 1:</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6 no-padding-right">
+						<h6 class="board-preference-options">Separate brewery/drink names into two columns</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-2 text-right no-padding board-preference-labels">
+						<%= label :separate_names, 'Yes' %>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-1 board-preference-inputs">
+						<%= f.check_box :separate_names %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-6 col-sm-6 col-md-2 no-padding">
+						<h6 class="board-preference-options">Option 2:</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6 no-padding-right">
+						<h6 class="board-preference-options">Add borders to columns</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-2 text-right no-padding board-preference-labels">
+						<%= label :column_names, 'Yes' %>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-1 board-preference-inputs">
+						<%= f.check_box :column_names %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-6 col-sm-6 col-md-2 no-padding">
+						<h6 class="board-preference-options">Option 3:</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6 no-padding-right">
+						<h6 class="board-preference-options">Indicate special price/drink designations</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-2 text-right no-padding board-preference-labels">
+						<%= label :special_designations, 'Yes' %>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-1 board-preference-inputs">
+						<%= f.check_box :special_designations %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-6 col-sm-6 col-md-2 no-padding">
+						<h6 class="board-preference-options">Option 4:</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6 no-padding-right">
+						<h6 class="board-preference-options">Change font size</h6>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-1">
+						<%= f.select(:font_size, 
+							[ ['Very small', 1],['Small', 2],['Med', 3],['Large', 4],['Very large', 5] ], 
+							{}, { :class => "btn btn-default dropdown-toggle font-preference" }) %>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-5 col-md-4">
+				<%= f.submit "Save preferences", class: "btn btn-success formButton-view-draft-board" %>	
+			</div>
+		<% end %>
+	</div>
+</div>
