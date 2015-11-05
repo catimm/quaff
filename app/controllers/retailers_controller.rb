@@ -7,12 +7,12 @@ class RetailersController < ApplicationController
     #Rails.logger.debug("Draft Board #{@retailer.inspect}")
     @draft_board = DraftBoard.where(location_id: params[:id])
     #Rails.logger.debug("Draft Board #{@draft_board.inspect}")
-    session[:draft_board_id] = @draft_board[0].id
-    # get internal draft board preferences
-    @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: session[:draft_board_id]).first
-    Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
-    # find last time this draft board was updated
     if !@draft_board.blank?
+      session[:draft_board_id] = @draft_board[0].id
+      # get internal draft board preferences
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: session[:draft_board_id]).first
+      #Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
+      # find last time this draft board was updated
       @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board[0].id).order(:updated_at).reverse_order.first
       # find if draft inventory exists
       @draft_inventory = BeerLocation.where(draft_board_id: @draft_board[0].id, beer_is_current: "hold")
