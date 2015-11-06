@@ -84,27 +84,29 @@
 								<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
 								<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
 							</div>
-							<% if @subscription_plan == 2 && @internal_board_preferences[0].special_designations == true %>
-								<% if ff.object.special_designation == true %>
-									<% @color_option_setting = "show" %>
-									<% @color_to_show = ff.object.special_designation_color %>
-								<% else %>
-									<% @color_option_setting = "hidden" %>
-									<% @color_to_show = "" %>
+							<% if @subscription_plan == 2 && !@internal_board_preferences.nil? %>
+								<% if  @internal_board_preferences[0].special_designations == true %>
+									<% if ff.object.special_designation == true %>
+										<% @color_option_setting = "show" %>
+										<% @color_to_show = ff.object.special_designation_color %>
+									<% else %>
+										<% @color_option_setting = "hidden" %>
+										<% @color_to_show = "" %>
+									<% end %>
+									<div class="col-xs-6 col-sm-6 col-md-3 text-right">
+										<h6 class="special-designation-option">Highlight prices</h6>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-1 no-padding-left special-designation-input">
+										<%= ff.check_box :special_designation, { :class => "special-designation-option" } %>
+									</div>
+									<div class="col-sm-5 col-md-4 special-designation-color <%= @color_option_setting %> no-padding-left">
+										<h5 class="color-prompt <%= @color_to_show %>">Color:</h5>
+										<%= ff.select(:special_designation_color, 
+											[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],['Orange', 'special-designated-orange'],
+											['Purple', 'special-designated-purple'],['Red', 'special-designated-red'],['Yellow', 'special-designated-yellow'] ], 
+											{prompt: 'Select Color'}, { :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
+									</div>
 								<% end %>
-								<div class="col-xs-6 col-sm-6 col-md-3 text-right">
-									<h6 class="special-designation-option">Highlight prices</h6>
-								</div>
-								<div class="col-xs-6 col-sm-6 col-md-1 no-padding-left special-designation-input">
-									<%= ff.check_box :special_designation, { :class => "special-designation-option" } %>
-								</div>
-								<div class="col-sm-5 col-md-4 special-designation-color <%= @color_option_setting %> no-padding-left">
-									<h5 class="color-prompt <%= @color_to_show %>">Color:</h5>
-									<%= ff.select(:special_designation_color, 
-										[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],['Orange', 'special-designated-orange'],
-										['Purple', 'special-designated-purple'],['Red', 'special-designated-red'],['Yellow', 'special-designated-yellow'] ], 
-										{prompt: 'Select Color'}, { :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
-								</div>
 							<% end %>
 						</div>	
 					</div>
