@@ -198,7 +198,7 @@ class BeerUpdates < ActionMailer::Base
       ]
     }
     
-    if @prod.username == "CarlAdmin"
+    if !@prod.nil?
       mandrill_client.messages.send_template template_name, template_content, message
     end
   end # end of retailer_drink_help email

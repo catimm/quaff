@@ -123,11 +123,11 @@
 						</div>
 						<div class="col-xs-12 col-sm-5 col-md-4">
 							<% if @subscription_plan == 1 %>
-								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to upgrade?'} do %>
 									<i class="fa fa-plus"> Upgrade Plan</i>
 								<% end %>
 							<% else %>
-								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to downgrade?'} do %>
 									<i class="fa fa-minus"> Downgrade Plan</i>
 								<% end %>
 							<% end %>
