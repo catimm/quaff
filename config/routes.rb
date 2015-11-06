@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   get '/draft_inventory/edit' => 'draft_inventory#edit'
   patch '/draft_inventory/:id(.:format)' => 'draft_inventory#update'
   patch '/retailers/update_internal_board_preferences' => 'retailers#update_internal_board_preferences', :as => 'update_internal_board_preferences'
+  get '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans'
   resources :retailers
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'

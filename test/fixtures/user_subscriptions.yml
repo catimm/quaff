@@ -3,7 +3,7 @@
 # Table name: user_subscriptions
 #
 #  id              :integer          not null, primary key
-#  user_id         :integer
+#  location_id     :integer
 #  subscription_id :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null

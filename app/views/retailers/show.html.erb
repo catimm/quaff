@@ -67,7 +67,7 @@
 				<% end %>
 			</div>
 		</div>
-		<% if !@draft_board.blank? && @subscription_plan == 2 %>
+		<% if !@draft_board.blank? && @subscription_plan == 2 && !@internal_board_preferences.nil? %>
 		<hr>
 			<div class="row no-margin">
 				<div class="col-sm-1 text-center no-padding">
@@ -108,6 +108,32 @@
 			<hr>
 			<div class="row no-margin">
 				<%= render 'internal_draft_preferences' %>
+			</div>
+		<% end %>
+		<% if !@draft_board.blank? %>
+			<hr>
+			<div class="row no-margin">
+				<div class="col-sm-1 text-center no-padding">
+					<h4 class="retail-manage-header">Manage Your Plan</h4>
+				</div>
+				<div class="col-sm-11">
+					 <div class="row no-margin">
+						<div class="col-xs-12">
+							<h5>Your current plan is <%= @user_plan %>.</h5>
+						</div>
+						<div class="col-xs-12 col-sm-5 col-md-4">
+							<% if @subscription_plan == 1 %>
+								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+									<i class="fa fa-plus"> Upgrade Plan</i>
+								<% end %>
+							<% else %>
+								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+									<i class="fa fa-minus"> Downgrade Plan</i>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>	
 			</div>
 		<% end %>
 	</div>

@@ -24,6 +24,7 @@ class Location < ActiveRecord::Base
   has_many :location_trackings
   has_many :user_locations
   has_many :users, through: :user_locations
+  has_many :location_subscriptions
   has_one :draft_board
   
   # adding temp variables for ratings/rankings

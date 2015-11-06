@@ -11,12 +11,18 @@ class RetailersController < ApplicationController
       session[:draft_board_id] = @draft_board[0].id
       # get internal draft board preferences
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: session[:draft_board_id]).first
-      #Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
+      Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
       # find last time this draft board was updated
       @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board[0].id).order(:updated_at).reverse_order.first
       # find if draft inventory exists
       @draft_inventory = BeerLocation.where(draft_board_id: @draft_board[0].id, beer_is_current: "hold")
       #Rails.logger.debug("Draft Inventory #{@draft_inventory.inspect}")
+    end
+    # get subscription plan
+    if @subscription_plan == 1
+      @user_plan = "Free"
+    else
+      @user_plan = "Retain"
     end
     
     # find last time this draft board inventory was updated
@@ -33,6 +39,26 @@ class RetailersController < ApplicationController
   
   def edit
     
+  end
+  
+  def change_plans
+    @subscription_plan = session[:subscription]
+    @subscription = LocationSubscription.where(location_id: params[:format]).first
+    if @subscription_plan == 1
+      @subscription.update_attributes(subscription_id: 2)
+      @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: params[:id], separate_names: false,
+                                     column_names: false, special_designations: false, font_size: 3)
+      if @internal_draft_preferences.save
+        session[:subscription] = 2
+      end
+    end
+    if @subscription_plan == 2
+      @subscription.update_attributes(subscription_id: 1)
+      @internal_draft_preferences = InternalDraftBoardPreference.find_by(draft_board_id: params[:id]).destroy
+      session[:subscription] = 1
+    end
+    
+    redirect_to retailer_path(session[:retail_id])
   end
   
   def update_internal_board_preferences
