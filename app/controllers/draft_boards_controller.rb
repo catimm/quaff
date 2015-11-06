@@ -116,6 +116,10 @@ class DraftBoardsController < ApplicationController
     
     # get subscription plan
     @subscription_plan = session[:subscription]
+    # determine whether user has changed internal draft board view
+    if @subscription_plan == 2
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+    end
     
     session[:form] = "new"
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
