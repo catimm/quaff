@@ -15,6 +15,7 @@
 #  went_live                 :datetime
 #  special_designation       :boolean
 #  special_designation_color :string
+#  show_up_next              :boolean
 #
 
 require 'test_helper'

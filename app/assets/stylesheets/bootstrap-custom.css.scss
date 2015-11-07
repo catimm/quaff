@@ -870,6 +870,13 @@ $beer-header-lines-to-show-fp: 1;
   margin: 2.5px 0;
   text-align: center; 
 }
+  .next-up-drink-info {
+    margin: 10px 0 0 0 !important;
+    color: $combined-brewery-text;
+  }
+  .next-up-empty-holder {
+    height: 25px !important;
+  }
 // Draft Board Row Page
 .draft-board-row-maker-name {
   color: $normal-text;
@@ -2035,6 +2042,26 @@ input[type="checkbox"] {
   text-align: center;
   padding: 3px 6px;
 }
+.coming-soon-option-row {
+  margin: 0 -15px 0 0;
+}
+.coming-soon-option {
+    margin-top: 2.5px;
+    font-size: 14px;
+    color: $normal-text;
+    display: inline;
+}
+.coming-soon-input {
+  margin-top: 0;
+  input {
+    -ms-transform: scale(1.3); /* IE */
+    -moz-transform: scale(1.3); /* FF */
+    -webkit-transform: scale(1.3); /* Safari and Chrome */
+    -o-transform: scale(1.3); /* Opera */
+    padding: 10px;
+    display: inline;
+  }
+}
 // Quick Swap page
 .tbd-button {
   padding: 7px 4px !important;
@@ -2128,10 +2155,23 @@ input[type="checkbox"] {
       }
     }
 }
+.special-designation-input {
+  margin-top: 10px !important;
+  padding-left: 20px !important;
+  input {
+    -ms-transform: scale(1.3); /* IE */
+    -moz-transform: scale(1.3); /* FF */
+    -webkit-transform: scale(1.3); /* Safari and Chrome */
+    -o-transform: scale(1.3); /* Opera */
+    padding: 10px;
+    display: inline;
+  }
+}
 .special-designation-option {
     margin-top: 15px;
     font-size: 14px;
     color: $normal-text;
+    display: inline;
 }
 .color-prompt {
   display: inline;
@@ -2139,7 +2179,7 @@ input[type="checkbox"] {
   padding: 9px 4px !important;
 }
 .special-designation-color {
-   margin-top: 6px;
+   margin-top: 10px;
    font-size: 14px;
    color: $normal-text;
 }
@@ -2173,16 +2213,7 @@ input[type="checkbox"] {
 .font-preference {
   height: 34px !important;
 }
-.special-designation-input {
-  margin-top: 10px !important;
-  input {
-    -ms-transform: scale(1.3); /* IE */
-    -moz-transform: scale(1.3); /* FF */
-    -webkit-transform: scale(1.3); /* Safari and Chrome */
-    -o-transform: scale(1.3); /* Opera */
-    padding: 10px;
-  }
-}
+
 .special-designation-color {
   select {
     option[val="1"]{
@@ -2465,6 +2496,7 @@ input[type="checkbox"] {
     margin: 2.5px 0;
     text-align: center; 
   }
+
   // Quick Swap page
   .swap-choose-button {
     font-size: 12px;

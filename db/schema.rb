@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151106053415) do
+ActiveRecord::Schema.define(version: 20151106220734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20151106053415) do
     t.datetime "went_live"
     t.boolean  "special_designation"
     t.string   "special_designation_color"
+    t.boolean  "show_up_next"
   end
 
   create_table "beer_styles", force: :cascade do |t|
@@ -149,10 +150,9 @@ ActiveRecord::Schema.define(version: 20151106053415) do
     t.integer  "draft_board_id"
     t.boolean  "separate_names"
     t.boolean  "column_names"
-    t.boolean  "special_designations"
     t.integer  "font_size"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "invitation_requests", force: :cascade do |t|

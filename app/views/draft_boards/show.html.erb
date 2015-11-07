@@ -26,6 +26,49 @@
 				<%= render 'current_row_draft_board' %>
 			</div>
 		<% end %>
+		<% if !@g_a_next_drinks.blank? %>
+			<div class="row no-margin ">
+				<div class="col-xs-12">
+					<h5 class="next-up-drink-info">Going on tap soon: 
+						<% @g_a_next_drinks.each do |next_drink| %>
+							<% if next_drink == @g_a_next_drinks.last %>
+								<% if !next_drink.beer.beer_type_id.nil? %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>
+									<% end %>
+								<% else %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %>
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %>
+									<% end %>
+								<% end %>
+							<% else %>
+								<% if !next_drink.beer.beer_type_id.nil? %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>, 
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>, 
+									<% end %>
+								<% else %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %>, 
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %>, 
+									<% end %>
+								<% end %>
+							<% end %>
+						<% end %>
+					</h5>
+				</div>
+			</div>
+		<% end %>
 	</div>
 
 <%= render 'layouts/footer' %>

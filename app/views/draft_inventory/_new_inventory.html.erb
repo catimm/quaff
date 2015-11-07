@@ -62,33 +62,29 @@
 							<% end %>
 						</div>	
 						<div class="row no-margin">
-							<div class="col-xs-10 col-sm-4 keg-size-holder no-padding-right">
+							<div class="col-xs-10 col-sm-4 keg-size-holder">
 								<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
 								<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
 							</div>
-							<% if @subscription_plan == 2 && @internal_board_preferences[0].special_designations == true %>
-								<% if ff.object.special_designation == true %>
-									<% @color_option_setting = "show" %>
-									<% @color_to_show = ff.object.special_designation_color %>
-								<% else %>
-									<% @color_option_setting = "hidden" %>
-									<% @color_to_show = "" %>
-								<% end %>
-								<div class="col-xs-6 col-sm-6 col-md-3 text-right">
-									<h6 class="special-designation-option">Highlight prices</h6>
-								</div>
-								<div class="col-xs-6 col-sm-6 col-md-1 no-padding-left special-designation-input">
-									<%= ff.check_box :special_designation, { :class => "special-designation-option" } %>
-								</div>
-								<div class="col-sm-5 col-md-4 special-designation-color <%= @color_option_setting %> no-padding-left">
-									<h5 class="color-prompt <%= @color_to_show %>">Color:</h5>
-									<%= ff.select(:special_designation_color, 
-										[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],['Orange', 'special-designated-orange'],
-										['Purple', 'special-designated-purple'],['Red', 'special-designated-red'],['Yellow', 'special-designated-yellow'] ], 
-										{prompt: 'Select Color'}, { :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
-								</div>
+							<% if ff.object.special_designation == true %>
+								<% @color_option_setting = "show" %>
+								<% @color_to_show = ff.object.special_designation_color %>
+							<% else %>
+								<% @color_option_setting = "hidden" %>
+								<% @color_to_show = "" %>
 							<% end %>
-						</div>
+							<div class="col-xs-12 col-sm-4 col-md-4 special-designation-input">
+								<%= ff.check_box :special_designation, { :class => "special-designation-option" } %>
+								<h6 class="special-designation-option">Highlight prices</h6>
+							</div>	
+							<div class="col-sm-4 col-md-4 special-designation-color <%= @color_option_setting %> no-padding">
+								<h5 class="color-prompt <%= @color_to_show %>">Color:</h5>
+								<%= ff.select(:special_designation_color, 
+									[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],['Orange', 'special-designated-orange'],
+									['Purple', 'special-designated-purple'],['Red', 'special-designated-red'],['Yellow', 'special-designated-yellow'] ], 
+									{prompt: 'Select Color'}, { :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
+							</div>
+					</div>
 					</div>
 					<div class="col-xs-12 col-sm-5 draft-details-row-container no-padding">
 						<%= render 'new_inventory_details', :ff => ff %>
@@ -115,11 +111,16 @@
 							<%= ff.label :generally_available, ' Make "on deck" for a specific tap', :value => false %>
 						</div>
 					</div>
-
 					<div class="col-sm-5 col-md-4 on-deck-for hidden">
 						<h5 class="on-deck-for-title">On deck for:</h5>
 						<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink) %>
 						<%= ff.select :tap_number,  options, {prompt: 'Select Tap'}, { :class => "form-control" } %>
+					</div>
+				</div>
+				<div class="row coming-soon-option-row">
+					<div class="col-xs-6 col-sm-1 col-md-4 coming-soon-input coming-soon-wording">
+						<%= ff.check_box :show_up_next %>
+						<h6 class="coming-soon-option">Show customers this is coming soon</h6>
 					</div>
 				</div>
 			<% else %>
@@ -137,7 +138,13 @@
 					<div class="col-sm-5 col-md-4 on-deck-for show">
 						<h5 class="on-deck-for-title">On deck for:</h5>
 						<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink, ff.object.tap_number) %>
-						<%= ff.select :tap_number,  options, {}, { :class => "form-control" } %>
+						<%= ff.select :tap_number,  options, {}, { :class => "form-control tap-number-option-list" } %>
+					</div>
+				</div>
+				<div class="row coming-soon-option-row">
+					<div class="col-xs-6 col-sm-1 col-md-4 coming-soon-input up-next-wording">
+						<%= ff.check_box :show_up_next %>
+						<h6 class="coming-soon-option">Show customers this is next on tap</h6>
 					</div>
 				</div>
 			<% end %>

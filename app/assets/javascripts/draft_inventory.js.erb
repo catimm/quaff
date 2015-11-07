@@ -1,9 +1,12 @@
 $(function() {
 	$(document).on('click', '.generally-available-inventory', function () {
 		$(this).parent().parent().siblings('.on-deck-for').removeClass("show").addClass("hidden");
+		$(this).parent().parent().siblings('.on-deck-for').children('.tap-number-option-list').val('');
+		$(this).parent().parent().parent().siblings('.coming-soon-option-row').children('.coming-soon-wording').children('.coming-soon-option').html("Show customers this is coming soon");
 	});
 	
 	$(document).on('click', '.specific-use-inventory', function () {
 		$(this).parent().parent().siblings('.on-deck-for').removeClass("hidden").addClass("show");
+		$(this).parent().parent().parent().siblings('.coming-soon-option-row').children('.coming-soon-wording').children('.coming-soon-option').html("Show customers this is next on tap");
 	});
 });
