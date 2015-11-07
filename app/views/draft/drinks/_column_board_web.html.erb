@@ -93,6 +93,44 @@
 						<% end %>
 					<% end %>
 				</div>
+				<% if !@next_up_drinks.blank? %>
+					<% @next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: drink.tap_number, beer_is_current: "hold", show_up_next: true)[0] %>
+					<% if !@next_up.blank? %>
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<% if !@next_up.beer.beer_type_id.nil? %>
+									<% if @next_up.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
+										<h5 class="next-up-drink-info no-overflow">Next up: <%= @collab_brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
+									<% else %>
+										<h5 class="next-up-drink-info no-overflow">Next up: <%= @next_up.beer.brewery.short_brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
+									<% end %>
+								<% else %>
+									<% if @next_up.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
+										<h5 class="next-up-drink-info no-overflow">Next up: <%= @collab_brewery_name %> <%= @next_up.beer.beer_name %></h5>
+									<% else %>
+										<h5 class="next-up-drink-info no-overflow">Next up: <%= @next_up.beer.brewery.short_brewery_name %> <%= @next_up.beer.beer_name %></h5>
+									<% end %>
+								<% end %>
+							</div>
+						</div>
+					<% else %>
+						<% if drink.tap_number.even? %>
+							<% @previous_tap_number = drink.tap_number - 1 %>
+							<% @previous_next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: @previous_tap_number, beer_is_current: "hold", show_up_next: true)[0] %>
+							<% if !@previous_next_up.blank? %>
+								<div class="row next-up-empty-holder"></div>
+							<% end %>
+						<% else %>
+							<% @next_tap_number = drink.tap_number + 1 %>
+							<% @next_next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: @next_tap_number, beer_is_current: "hold", show_up_next: true)[0] %>
+							<% if !@next_next_up.blank? %>
+								<div class="row next-up-empty-holder"></div>
+							<% end %>
+						<% end %>
+					<% end %>
+				<% end %>
 			</div>
 		</div>
 	<hr/>
@@ -189,7 +227,31 @@
 					</div>
 				<% end %>
 			<% end %>
-		</div>		
+		</div>	
+		<% if !@next_up_drinks.blank? %>
+					<% @next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: drink.tap_number, beer_is_current: "hold", show_up_next: true)[0] %>
+					<% if !@next_up.blank? %>
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<% if !@next_up.beer.beer_type_id.nil? %>
+									<% if @next_up.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
+										<h5 class="next-up-drink-info">Next up: <%= @collab_brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
+									<% else %>
+										<h5 class="next-up-drink-info">Next up: <%= @next_up.beer.brewery.short_brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
+									<% end %>
+								<% else %>
+									<% if @next_up.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
+										<h5 class="next-up-drink-info">Next up: <%= @collab_brewery_name %> <%= @next_up.beer.beer_name %></h5>
+									<% else %>
+										<h5 class="next-up-drink-info">Next up: <%= @next_up.beer.brewery.short_brewery_name %> <%= @next_up.beer.beer_name %></h5>
+									<% end %>
+								<% end %>
+							</div>
+						</div>
+					<% end %>
+		<% end %>	
 	<hr/>
 	</div>
 <% end %>

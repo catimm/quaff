@@ -61,7 +61,7 @@ class DraftBoardsController < ApplicationController
     
     # get generally available "next drinks up", if any exist
     @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true, tap_number: nil)
-    Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
+    #Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
     
     # determine whether a drink size column shows in row view
     @total_number_of_sizes = 0

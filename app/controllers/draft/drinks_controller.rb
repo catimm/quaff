@@ -22,6 +22,8 @@ class Draft::DrinksController < ApplicationController
     #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
     # get draft board details
     @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
+    # find if any "next up" drinks exist
+    @next_up_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true)
     # get last updated info
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:updated_at).reverse_order.first 
     
@@ -56,6 +58,10 @@ class Draft::DrinksController < ApplicationController
         end
       end
     end
+    
+    # get generally available "next drinks up", if any exist
+    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true, tap_number: nil)
+    #Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
     
     # determine whether a drink size column shows in row view
     @total_number_of_sizes = 0

@@ -137,7 +137,13 @@
   	margin: 2.5px 0;
 	line-height: 1.2;
 }
-
+.next-up-drink-info {
+  margin: 10px 0 0 0 !important;
+  color: #747474;
+}
+.next-up-empty-holder {
+  height: 25px !important;
+}
 /* Draft Board Column--variable-internal */
 .tap-number-variable-internal {
 	top: 5px;
