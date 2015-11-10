@@ -5,8 +5,7 @@
   <script type="text/javascript">
 	  var BASE_URL = '<%= root_url %>';
 	</script>
-  <%= include_gon %>
-  <%= Gon::Base.render_data({}) %>
+  <%= include_gon(:init => true) %>
   
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
   	<meta property="og:title" content="Knird - Drink what you love. Love what you drink." />

@@ -382,7 +382,7 @@ class DraftBoardsController < ApplicationController
   end # end of update action
   
   def add_new_drink
-    Rails.logger.debug("Hitting the add new drink method")
+    #Rails.logger.debug("Hitting the add new drink method")
     @add_new_drink = Beer.new
     render :partial => '/draft_boards/new_drink'
   end

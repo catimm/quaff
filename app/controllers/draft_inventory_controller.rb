@@ -23,6 +23,8 @@ class DraftInventoryController < ApplicationController
   end
   
   def edit
+    gon.source = session[:gon_source]
+    @add_new_drink = Beer.new
     #Rails.logger.debug("New Element ID #: #{session.inspect}")
     # set draft board id as session id so no errors are thrown when jquery calls are sent
     if params.has_key?(:id) 
@@ -171,7 +173,7 @@ class DraftInventoryController < ApplicationController
     if !@removed_drink_ids.nil?
       @removed_drink_ids.each do |update|
         # grab this BeerLocation record
-        @removed_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: update, beer_is_current: "yes").first
+        @removed_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: update).first
         # update removed drink info
         @removed_beer_location.update_attributes(beer_is_current: "no", removed_at: Time.now)
       end # end of loop to update removed drinks
@@ -179,14 +181,25 @@ class DraftInventoryController < ApplicationController
     
     # check to see if any drinks added need immediate admin attention
     #retailer_drink_help(params[:id])
+    if params[:save_from_button].present?
+      session.delete(:gon_source)
+      session[:gon_source] = "normal"
+      gon.source = session[:gon_source]
+      redirect_to retailer_path(session[:retail_id]) and return
+    else 
+      session.delete(:gon_source)
+      session[:gon_source] = "new_drink"
+      gon.source = session[:gon_source]
+      # redirect back to updated draft edit page
+      redirect_to edit_draft_inventory_path(session[:draft_board_id])
+    end
     
-    redirect_to retailer_path(session[:retail_id])
   end
   
   def add_new_drink
-    Rails.logger.debug("Hitting the add new drink method")
-    @add_new_drink = Beer.new
-    render :partial => '/draft_inventory/new_drink'
+    #Rails.logger.debug("Hitting the add new drink method")
+    #@add_new_drink = Beer.new     
+    #render :partial => '/draft_inventory/new_drink'
   end
   
   def create_new_drink
@@ -224,7 +237,11 @@ class DraftInventoryController < ApplicationController
      # add new drink to retailer draft inventory
      new_draft_board_drink = BeerLocation.new(:beer_id => new_beer.id, :location_id => @retail_id, 
                               :draft_board_id => @draft_board.id, :beer_is_current => "hold")
-     new_draft_board_drink.save!
+     if new_draft_board_drink.save
+       session.delete(:gon_source)
+       session[:gon_source] = "normal"
+       gon.source = session[:gon_source]
+     end
     # send email to admins to update new drink info
     if @related_brewery.empty?
       @admin_emails.each do |admin_email|

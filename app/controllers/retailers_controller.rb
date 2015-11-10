@@ -2,6 +2,7 @@ class RetailersController < ApplicationController
   before_filter :verify_admin
   
   def show
+    gon.source = session[:gon_source]
     @subscription_plan = session[:subscription]
     @retailer = Location.find(params[:id])
     #Rails.logger.debug("Draft Board #{@retailer.inspect}")

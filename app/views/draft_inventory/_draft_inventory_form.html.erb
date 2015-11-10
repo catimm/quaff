@@ -1,4 +1,4 @@
-<%= nested_form_for @draft, :url => url_for(:controller => 'draft_inventory', :action => 'update') do |f| %>
+<%= nested_form_for @draft, :url => url_for(:controller => 'draft_inventory', :action => 'update'), :html => {:id => "inventory_form"} do |f| %>
 	<div class="container draft-board-container">
 		<div class="row no-margin draft-edit-top-row-container">
 			<div class="row no-margin draft-edit-top-row">
@@ -24,7 +24,7 @@
 						<%= link_to "Cancel", retailer_path(session[:retail_id]), class: 'btn btn-default formButton-cancel-draft-board-edit' %>
 					</div>
 				<div class="col-xs-6 col-sm-2">
-					<%= f.submit "Save", class: "btn btn-default btn-success formButton-draft-edit" %>
+					<%= f.submit "Save", name: 'save_from_button', class: "btn btn-default btn-success formButton-draft-edit" %>
 				</div>
 			</div>
 			<%- flash.each do |name, msg| -%>
@@ -44,5 +44,32 @@
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		<h3>Add a new drink</h3>
 	</div>
-	<div class="modal-body"></div>
+	<div class="modal-body">
+		<div>
+	<div class="text-center">
+		<%= form_for @add_new_drink, :url => {:action => 'create_new_drink'} do |f| %> 
+			<div class="row"> 
+				<div class="col-xs-12">
+		      		<%= f.text_field :associated_brewery, :class => "form-control", placeholder: "Brewewry name" %> 
+				</div>
+			</div>
+			<div class="row"> 
+				<div class="col-xs-12">
+			 		<%= f.text_field :beer_name, :class => "form-control", placeholder: "Drink name" %> 
+				</div>
+			</div>
+			<div class="row"> 
+				<div class="col-xs-12">
+			 		<%= f.text_field :beer_abv, :class => "form-control", placeholder: "Drink ABV (optional, if known)" %> 
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+	     			<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %> 
+				</div>
+			</div>
+		<% end %> 
+	</div>
+</div>
+	</div>
 </div>

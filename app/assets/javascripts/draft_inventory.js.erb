@@ -1,4 +1,5 @@
 $(function() {
+	console.log(gon.source);
 	$(document).on('click', '.generally-available-inventory', function () {
 		$(this).parent().parent().siblings('.on-deck-for').removeClass("show").addClass("hidden");
 		$(this).parent().parent().siblings('.on-deck-for').children('.tap-number-option-list').val('');
@@ -9,4 +10,29 @@ $(function() {
 		$(this).parent().parent().siblings('.on-deck-for').removeClass("hidden").addClass("show");
 		$(this).parent().parent().parent().siblings('.coming-soon-option-row').children('.coming-soon-wording').children('.coming-soon-option').html("Show customers this is next on tap");
 	});
+	
+	$(document).on('click', '.formButton-search-footer', function () {
+		$("#inventory_form").submit();
+		// prevent page from jumping to the top after click event
+		return false;
+	});
+	
+	var modal_show;
+		modal_show = function() {
+			alert(gon.drink_source);
+			if (gon.drink_source == "new_drink") {
+				$("#add_drink").modal("show");
+			} else {
+				$("#add_drink").modal("hide");
+			}
+		}
+	$(document).on('ready', function() {
+			if (gon.source == "new_drink") {
+				$("#add_drink").modal("show");
+			} else {
+				$("#add_drink").modal("hide");
+			}
+	});
 });
+	
+	

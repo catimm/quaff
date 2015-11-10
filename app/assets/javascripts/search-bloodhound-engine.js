@@ -54,7 +54,7 @@ ready = function() {
 				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
-				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/draft_inventory/new_drink" class="btn btn-default btn-success formButton-search-footer">',
+				    		return ['<div class="search-footer-message">Not here? <a href="#" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else {
 					      	return ['<div class="empty-message">Not here? <a href="'+ BASE_URL +'searches/add_beer" class="btn btn-default btn-success formButton-search-footer">',
@@ -73,7 +73,7 @@ ready = function() {
 				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
-				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/draft_inventory/new_drink" class="btn btn-default btn-success formButton-search-footer">',
+				    		return ['<div class="search-footer-message">Not here? <a href="#" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
 				    	}
 					}
