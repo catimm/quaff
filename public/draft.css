@@ -247,53 +247,77 @@ td.n-a-draft-board-format {
   border-left: 1px solid #747474;
 }
 .row-font-vs {
-  font-size: 10px !important; 
+  font-size: 18px !important; 
 }
 .row-font-s {
-  font-size: 12px !important;
-}
-.row-font-m {
-  font-size: 14px !important;
-}
-.row-font-l {
-  font-size: 16px !important;
-}
-.row-font-vl {
-  font-size: 18px !important;
-}
-.row-drink-font-vs {
-  font-size: 12px !important; 
-}
-.row-drink-font-s {
-  font-size: 14px !important;
-}
-.row-drink-font-m {
-  font-size: 16px !important;
-}
-.row-drink-font-l {
-  font-size: 18px !important;
-}
-.row-drink-font-vl {
   font-size: 20px !important;
 }
+.row-font-m {
+  font-size: 22px !important;
+}
+.row-font-l {
+  font-size: 24px !important;
+}
+.row-font-vl {
+  font-size: 26px !important;
+}
+.row-drink-font-vs {
+  font-size: 20px !important; 
+}
+.row-drink-font-s {
+  font-size: 22px !important;
+}
+.row-drink-font-m {
+  font-size: 24px !important;
+}
+.row-drink-font-l {
+  font-size: 26px !important;
+}
+.row-drink-font-vl {
+  font-size: 28px !important;
+}
 .row-n-a-font-vs {
-  font-size: 9px !important; 
+  font-size: 17px !important; 
 }
 .row-n-a-font-s {
-  font-size: 11px !important;
+  font-size: 19px !important;
 }
 .row-n-a-font-m {
-  font-size: 13px !important;
+  font-size: 21px !important;
 }
 .row-n-a-font-l {
-  font-size: 15px !important;
+  font-size: 23px !important;
 }
 .row-n-a-font-vl {
-  font-size: 17px !important;
+  font-size: 25px !important;
 }
 .row-variable-percent-sign {
 	font-size: 14px;
 }
+.special-designated-blue {
+  background-color: #91D8FA;
+  color: #fff;
+}
+.special-designated-green {
+  background-color: #6EDF99;
+  color: #fff;
+}
+.special-designated-orange {
+  background-color: #FCC769;
+  color: #fff;
+}
+.special-designated-purple {
+  background-color: #D4A6D2;
+  color: #fff;
+}
+.special-designated-red {
+  background-color: #FF8585;
+  color: #fff;
+}
+.special-designated-yellow {
+  background-color: #FFEE97;
+}
+
 /* Universal padding and margin classes */
 .no-padding {
   padding: 0 !important;
