@@ -29,7 +29,7 @@
 		<tbody class="table-bordered">
 		<% @current_draft_board.each do	|drink| %>		
 			<tr>
-				<td class="draft-board-row text-center"><%= drink.tap_number %></td>
+				<td class="draft-board-row text-center <%= @column_border_class %> <%= @row_font %>"><%= drink.tap_number %></td>
 				<% if @subscription_plan == 2 && @internal_board_preferences[0].separate_names == true %>
 					<% if !drink.beer.short_beer_name.nil? %>
 						<% if drink.beer.collab == true %>
@@ -83,14 +83,14 @@
 					<td class="draft-board-row <%= @row_n_a_font %>">N/A</td>
 				<% end %>
 				<% if !drink.beer.beer_abv.nil? %>
-					<td class="draft-board-row text-center <%= @row_font %>"><%= drink.beer.beer_abv %><span class="row-variable-percent-sign">%</span></td>
+					<td class="draft-board-row text-center <%= @column_border_class %> <%= @row_font %>"><%= drink.beer.beer_abv %><span class="row-variable-percent-sign">%</span></td>
 				<% else %>
-					<td class="draft-board-row text-center <%= @row_n_a_font %>">N/A</td>
+					<td class="draft-board-row text-center <%= @column_border_class %> <%= @row_n_a_font %>">N/A</td>
 				<% end %>
 				<% if !drink.beer.beer_ibu.nil? %>
-					<td class="draft-board-row text-center <%= @row_font %>"><%= drink.beer.beer_ibu %></td>
+					<td class="draft-board-row text-center <%= @column_border_class %> <%= @row_font %>"><%= drink.beer.beer_ibu %></td>
 				<% else %>
-					<td class="draft-board-row text-center <%= @row_n_a_font %>">N/A</td>
+					<td class="draft-board-row text-center <%= @column_border_class %> <%= @row_n_a_font %>">N/A</td>
 				<% end %>
 				<% @taster = "N/A" %>
 				<% @tulip = "N/A" %>

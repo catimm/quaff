@@ -243,8 +243,8 @@ td.n-a-draft-board-format {
       padding: 10px 0 !important; 
    }
 .draft-board-row-column-border {
-  border-right: 1px solid $normal-text;
-  border-left: 1px solid $normal-text;
+  border-right: 1px solid #747474;
+  border-left: 1px solid #747474;
 }
 .row-font-vs {
   font-size: 10px !important; 
