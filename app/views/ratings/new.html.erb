@@ -5,22 +5,24 @@
 		<div class="col-sm-6 col-xs-12 rating-tile">
 			<div class="row">
 				<div class="col-sm-3 col-xs-4 brewery-image-holder">	
+					<div class="brewery-image-holder-full-page">	
 						<% if !@this_beer.brewery.image.nil? %>
 							<div class="brewery-image-holder-full text-center">
-								<p>show image</p>
+								<img class="img-responsive center-block" alt="Responsive image" src="<%= @this_beer.brewery.image %>">
 							</div>	
 						<% else %>
-							<div class="brewery-image-holder-empty text-center">
+							<div class="brewery-image-holder-empty-full-page text-center">
 								<h1><i class="fa fa-beer"></i></h1>
 							</div>
 						<% end %>
 					</div>
-					<div class="col-sm-9 col-xs-8 no-padding-left">
-						<h5 class="tile-header beer-tile-header"><%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %></h5>
-						<% if @location != "0" %>
-							<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
-						<% end %>
-					</div>			
+				</div>
+				<div class="col-sm-9 col-xs-8 no-padding-left">
+					<h5 class="tile-header beer-tile-header"><%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %></h5>
+					<% if @location != "0" %>
+						<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
+					<% end %>
+				</div>			
 			</div>
 			<%= form_for @user_beer_rating, :url => {:controller => "ratings", :action => "create"} do |rate| %>
 			<%= rate.hidden_field :user_id, :value => @user.id %>
