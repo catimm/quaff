@@ -60,7 +60,7 @@
   text-overflow: ellipsis;
 }
 .draft-board-drink-name {
-  color: #0087cb;
+  color: #0087cb !important;
 }
 .draft-subheader {
   color: #909090;
