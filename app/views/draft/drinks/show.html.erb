@@ -69,4 +69,10 @@
 			</div>
 		<% end %>
 	<script type="text/javascript" src="https://drinkknird.com/iframeResizer.contentWindow.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+		    var drink_container_height = $(".drink-container").first().height();
+		    $(".drink-container").css("max-height", drink_container_height);
+		});
+	</script>
 </body>
