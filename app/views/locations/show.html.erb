@@ -64,7 +64,7 @@
 							<div class="row no-margin our-best-guess">
 								<div class="col-xs-12">
 									<% if beer.user_rating %>
-										<% if beer.user_rating == beer.best_guess %>
+										<% if (((beer.user_rating) * 2).round)/2.0) == (((beer.best_guess) * 2).round)/2.0) %>
 											<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((beer.best_guess) * 2).round)/2.0) %></span> and you rated it:</p>
 											<h1 class="user-rating"><%= (((beer.user_rating * 2).round)/2.0) %></h1>
 										<% else %>
