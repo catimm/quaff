@@ -30,9 +30,9 @@
 
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable, :registerable
-  devise :invitable, :database_authenticatable, 
-         :recoverable, :rememberable, :trackable, :validatable
+  # :confirmable, :lockable, :timeoutable and :registerable
+  devise :invitable, :database_authenticatable, :omniauthable,
+         :recoverable, :rememberable, :trackable, :validatable, :omniauth_providers => [:facebook, :twitter]
   
   # for ActsAsTaggableOn gem
   acts_as_tagger
@@ -92,5 +92,39 @@ class User < ActiveRecord::Base
   
   # to fix a devise error when trying to set new password
   def after_password_reset; end
+  
+  def apply_omniauth(omni)
+    authentications.build(:provider => omni['provider'],
+    :uid => omni['uid'],
+    :token => omni['credentials']['token'],
+    :token_secret => omni['credentials']['secret'])
+  end
+  
+  def ensure_authentication_token
+    if self.authentication_token.blank?
+      new_token = ""
+      loop do
+        new_token = SecureRandom.base64(15).tr('+/=lIO0', 'pqrsxyz')
+        # break token unless to_adapter.find_first({ :authentication_token => token })
+        break unless User.where(:authentication_token => new_token).count > 0
+      end
+      self.authentication_token = new_token
+    end
+  end
+
+    
+  # let devise know that a password isn't required if the user logs in through Facebook
+  def password_required?
+    (authentications.empty? || !password.blank?) && super
+  end
+  
+  # tell devise to not show the password field for the edit settings page if user logs in through Facebook
+  def update_with_password(params, *options)
+    if encrypted_password.blank?
+      update_attributes(params, *options)
+    else
+      super
+    end
+  end
   
 end

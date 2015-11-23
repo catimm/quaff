@@ -19,6 +19,12 @@ class RetailersController < ApplicationController
       @draft_inventory = BeerLocation.where(draft_board_id: @draft_board[0].id, beer_is_current: "hold")
       #Rails.logger.debug("Draft Inventory #{@draft_inventory.inspect}")
     end
+    
+    # check user's Omniauth authorization status
+    @fb_authentication = Authentication.where(user_id: current_user.id, provider: "facebook")
+    Rails.logger.debug("FB Authentication #{@fb_authentication.inspect}")
+    @twitter_authentication = Authentication.where(user_id: current_user.id, provider: "twitter")
+    
     # get subscription plan
     if @subscription_plan == 1
       @user_plan = "Free"

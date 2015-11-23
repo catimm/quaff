@@ -107,6 +107,30 @@
 			</div>
 			<hr>
 			<div class="row no-margin">
+				<div class="col-sm-1 text-center no-padding">
+					<h4 class="retail-manage-header">Manage Social Media</h4>
+				</div>
+				<div class="col-sm-11">
+					<div class="row no-margin ">
+						<div class="col-xs-12">
+							<h5 class="last-updated">Connect your Facebook and Twitter accounts so you can post new drinks when they become available.</h5>
+						</div>
+						<div class="col-xs-12 col-sm-5 col-md-4">
+							<% if !@fb_authentication.blank? %>
+								<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-linkedin" do %>
+							  		<i class="fa fa-facebook"></i>Disconnect Facebook
+							  	<% end %>
+							<% else %>
+								<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-linkedin" do %>
+							  		<i class="fa fa-facebook"></i>Connect Facebook
+							  	<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr>
+			<div class="row no-margin">
 				<%= render 'internal_draft_preferences' %>
 			</div>
 		<% end %>

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-  devise_for :users, controllers: { invitations: "invitations" }
+  devise_for :users, controllers: { invitations: "invitations", omniauth_callbacks: "authentications" }
   resources :users do
     resources :drinks, :ratings, :rewards, :trackings   
   end

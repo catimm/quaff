@@ -23,7 +23,6 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-
 # enable jquery & json functionality
 gem 'jquery-ui-rails'
 gem 'json'
@@ -43,6 +42,13 @@ gem 'nokogiri'
 # devise gem to manage user credentials and invites
 gem 'devise'
 gem 'devise_invitable'
+# add omniauth capabilities
+gem 'omniauth'
+gem 'omniauth-facebook'
+gem 'omniauth-twitter'
+gem 'fb_graph'
+gem "koala", "~> 1.8.0rc1"
+gem "omnicontacts"
 # to paginate the results on the page
 gem 'will_paginate'
 # for filtering functionality and views
