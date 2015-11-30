@@ -54,7 +54,7 @@ class RetailersController < ApplicationController
     if @subscription_plan == 1
       @subscription.update_attributes(subscription_id: 2)
       @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: params[:id], separate_names: false,
-                                     column_names: false, special_designations: false, font_size: 3)
+                                     column_names: false, font_size: 3)
       if @internal_draft_preferences.save
         session[:subscription] = 2
       end
