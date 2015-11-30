@@ -50,4 +50,9 @@ class AuthenticationsController < ApplicationController
   
   end # end of facebook method
   
+  def failure
+    flash[:error] = "Something went wrong; #{params[:message]}. Please try again!"
+    redirect_to retailer_path(session[:retail_id])
+  end # end of failure method
+  
 end

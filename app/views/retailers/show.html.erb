@@ -12,6 +12,9 @@
 				</div>
 			</div>
 		</div>
+		<%- flash.each do |name, msg| -%>
+				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+			<%- end -%>
 		<hr>
 		<div class="row no-margin">
 			<div class="col-xs-12 text-center">
