@@ -2,8 +2,13 @@
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
   # Set up for Facebook & Twitter Omniauth
-  config.omniauth :facebook, ENV['FB_ID'], ENV['FB_SECRET'], :scope => 'manage_pages, publish_pages'
+  config.omniauth :facebook, ENV['FB_ID'], ENV['FB_SECRET'], 
+  { :scope => 'manage_pages, publish_pages', 
+    :client_options => {:ssl => {:ca_file => 'lib/ca-bundle.crt'}},
+    :strategy_class => OmniAuth::Strategies::Facebook
+  }
   config.omniauth :twitter, ENV['TWITTER_ID'], ENV['TWITTER_SECRET']
+
   
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
