@@ -15,6 +15,8 @@
 #  collab              :boolean
 #  dont_include        :boolean
 #  brewery_state_long  :string
+#  facebook_url        :string
+#  twitter_url         :string
 #
 
 class Brewery < ActiveRecord::Base

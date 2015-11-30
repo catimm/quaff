@@ -64,6 +64,10 @@ class User < ActiveRecord::Base
     self.role.role_name == "retailer"
   end
   
+  def retailer_test?
+    self.role.role_name == "retailer_test"
+  end
+  
   def super_user?
     self.role.role_name == "super_user"
   end

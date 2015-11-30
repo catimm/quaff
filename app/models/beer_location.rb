@@ -16,6 +16,8 @@
 #  special_designation       :boolean
 #  special_designation_color :string
 #  show_up_next              :boolean
+#  facebook_share            :datetime
+#  twitter_share             :datetime
 #
 
 class BeerLocation < ActiveRecord::Base
@@ -32,6 +34,8 @@ class BeerLocation < ActiveRecord::Base
   attr_accessor :generally_available
   # add attribute to replace drink on drink quick swap page
   attr_accessor :tap_to_replace
+  # add attribute for facebook post
+  attr_accessor :facebook_post
   
   # this scope is for the admin page
   scope :all_current, -> { where(beer_is_current: "yes") }

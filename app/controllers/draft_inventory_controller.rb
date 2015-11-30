@@ -258,7 +258,7 @@ class DraftInventoryController < ApplicationController
   
   private
   def verify_admin
-    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6
+    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6 || current_user.role_id == 7
   end
   
 end # end of draft inventory controller

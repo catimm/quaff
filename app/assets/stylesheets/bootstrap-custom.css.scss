@@ -35,6 +35,8 @@ $light-yellow: #FFD759;
 $light-red: #FB575F;
 $extra-light-red: #FE6165;
 $faded-red: #FF8585;
+$facebook-blue-color: #3b5998;
+$twitter-blue-color: #1dcaff;
 
 
 // Functional use of colors for project
@@ -69,6 +71,8 @@ $special-designated-orange: $faded-orange;
 $special-designated-purple: $faded-purple;
 $special-designated-red: $faded-red;
 $special-designated-yellow: $faded-yellow;
+$facebook-button-color: $facebook-blue-color;
+$twitter-button-color: $twitter-blue-color;
 
 @font-face {
     font-family: 'novecento_sans_widenormal';
@@ -975,6 +979,15 @@ $beer-header-lines-to-show-fp: 1;
     margin-top: 7.5px;
     font-size: 14px;
     color: $normal-text;
+  }
+  h6 {
+    margin-top: 10px;
+    font-size: 14px;
+    color: $normal-text;
+    span {
+      font-size: 10px;
+      color: #000;
+    }
   }
 }
 .board-preference-inputs {
@@ -2020,9 +2033,34 @@ input[type="checkbox"] {
   width: 100%;
 }
 .retail-manage-header {
-  text-align: center;
+  text-align: left;
+  font-size: 20px;
   line-height: 1.3;
 }
+.retailer-section-instructions {
+  margin: 0 0 10px 0 !important;
+}
+.btn-social-icon.btn-facebook {
+  float: left;
+}
+.social-connected-on {
+  margin: 0;
+  text-align: center;
+}
+.social-facebook-row {
+  margin-bottom: 20px !important;
+}
+.btn-social-disconnect {
+  color: $normal-text;
+  width: 100%;
+  text-align: left;
+  margin: 0 !important;
+  .fa.fa-times {
+    float: right;
+    padding-top: 3px !important;
+  }
+}
+
 // Inventory Management page
 .on-deck-for-title {
   display: inline;
@@ -2214,7 +2252,20 @@ input[type="checkbox"] {
 .special-designated-yellow {
   background-color: $special-designated-yellow;
 }
-
+.social-share-row {
+  margin-top: 15px !important;
+}
+.social-share-directions {
+  color: $normal-text;
+  margin: 0 5px 10px 0;
+}
+.facebook-share {
+  float: left;
+  margin-right: 10px;
+}
+.twitter-share {
+  float: left;
+}
 .font-preference {
   height: 34px !important;
 }
@@ -2286,6 +2337,19 @@ input[type="checkbox"] {
         font-size: 20px;
       }
     }
+}
+// Retailer Facebook post page
+.suggested-facebook-post {
+  span {
+    font-weight: 600;
+  }
+}
+.btn-add-suggestion {
+  width: 100%;
+}
+.facebook-post-input {
+  margin-top: 15px;
+  height: 82px !important;
 }
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */

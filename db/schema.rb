@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120025121) do
+ActiveRecord::Schema.define(version: 20151124220906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20151120025121) do
     t.string   "token_secret"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.integer  "location_id"
   end
 
   create_table "beer_brewery_collabs", force: :cascade do |t|
@@ -61,6 +62,8 @@ ActiveRecord::Schema.define(version: 20151120025121) do
     t.boolean  "special_designation"
     t.string   "special_designation_color"
     t.boolean  "show_up_next"
+    t.datetime "facebook_share"
+    t.datetime "twitter_share"
   end
 
   create_table "beer_styles", force: :cascade do |t|
@@ -133,6 +136,8 @@ ActiveRecord::Schema.define(version: 20151120025121) do
     t.boolean  "collab"
     t.boolean  "dont_include"
     t.string   "brewery_state_long"
+    t.string   "facebook_url"
+    t.string   "twitter_url"
   end
 
   create_table "draft_boards", force: :cascade do |t|
@@ -200,6 +205,8 @@ ActiveRecord::Schema.define(version: 20151120025121) do
     t.string   "logo_med"
     t.string   "logo_large"
     t.boolean  "ignore_location"
+    t.string   "facebook_url"
+    t.string   "twitter_url"
   end
 
   create_table "pg_search_documents", force: :cascade do |t|

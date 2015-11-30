@@ -104,7 +104,24 @@
 										{prompt: 'Select Color'}, { :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
 								</div>
 							<% end %>
-						</div>	
+						</div>
+						<% if !@fb_authentication.blank? || !@twitter_authentication.blank? %>
+							<div class="row no-margin social-share-row">
+								<div class="col-xs-12">
+									<h5 class="social-share-directions">Tell your customers this drink is now available:</h5>
+									<% if !@fb_authentication.blank? %>
+										<%= link_to share_on_facebook_path, :class => "btn btn-social-icon btn-facebook facebook-share" do %>
+									  		<i class="fa fa-facebook"></i>
+									  	<% end %>
+									 <% end %>
+									 <% if !@twitter_authentication.blank? %>
+										<%= link_to "#", :class => "btn btn-social-icon btn-twitter twitter-share" do %>
+									  		<i class="fa fa-twitter"></i>
+									  	<% end %>
+									 <% end %>
+								</div>
+							</div>	
+						<% end %>
 					</div>
 					<div class="col-xs-12 col-sm-4 draft-details-row-container no-padding">
 						<%= render 'new_draft_details', :ff => ff %>

@@ -68,6 +68,7 @@ class Beer < ActiveRecord::Base
   attr_accessor :number_of_ratings # to hold the number of times a user has rated this beer
   attr_accessor :likes_style # to hold drink style liked/disliked by user
   attr_accessor :this_beer_descriptors # to hold list of descriptors user typically likes/dislikes
+  attr_accessor :top_descriptor_list # to hold list of top drink descriptors
   attr_accessor :beer_style_name_one
   attr_accessor :beer_style_name_two
   attr_accessor :recommendation_rationale # to note if recommendation is based on style or type
@@ -178,6 +179,26 @@ class Beer < ActiveRecord::Base
     where("rating_two_na IS NULL OR rating_two_na = ?", false).
     where("rating_three_na IS NULL OR rating_three_na = ?", false).
     where(beer_rating_two: nil, beer_rating_three: nil) 
+  }
+  
+  # get unique beer descriptors
+  scope :beer_descriptors, ->(how_many) {
+    # create empty array to hold top descriptors list for beer being rated
+    @this_beer_descriptors = Array.new
+    # find all descriptors for this drink
+    @this_beer_all_descriptors = self.descriptors
+    # Rails.logger.debug("this beer's descriptors: #{@this_beer_all_descriptors.inspect}")
+    @this_beer_all_descriptors.each do |descriptor|
+      @descriptor = descriptor["name"]
+      @this_beer_descriptors << @descriptor
+    end
+    
+    # attach count to each descriptor type to find the drink's most common descriptors
+    @this_beer_descriptor_count = @this_beer_descriptors.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
+    # put descriptors in descending order of importance
+    @this_beer_descriptor_count = Hash[@this_beer_descriptor_count.sort_by{ |_, v| -v }]
+    # grab top 5 of most common descriptors for this drink
+    @this_beer_descriptor_count.first(how_many)
   }
   
   # save actual tags without quotes

@@ -17,6 +17,9 @@ class Ability
     elsif user.retailer?
        can [:read, :create, :update], :all
       cannot :manage, Brewery
+   elsif user.retailer_test?
+       can [:read, :create, :update], :all
+      cannot :manage, Brewery
     elsif user.super_user?
       can [:read, :create, :update], :all
       cannot :manage, Brewery 

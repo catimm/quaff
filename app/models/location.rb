@@ -16,6 +16,8 @@
 #  logo_med        :string
 #  logo_large      :string
 #  ignore_location :boolean
+#  facebook_url    :string
+#  twitter_url     :string
 #
 
 class Location < ActiveRecord::Base

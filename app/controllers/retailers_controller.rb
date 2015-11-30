@@ -21,9 +21,9 @@ class RetailersController < ApplicationController
     end
     
     # check user's Omniauth authorization status
-    @fb_authentication = Authentication.where(user_id: current_user.id, provider: "facebook")
+    @fb_authentication = Authentication.where(location_id: params[:id], provider: "facebook")
     Rails.logger.debug("FB Authentication #{@fb_authentication.inspect}")
-    @twitter_authentication = Authentication.where(user_id: current_user.id, provider: "twitter")
+    @twitter_authentication = Authentication.where(location_id: params[:id], provider: "twitter")
     
     # get subscription plan
     if @subscription_plan == 1
@@ -78,7 +78,7 @@ class RetailersController < ApplicationController
   
   private
   def verify_admin
-    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6
+    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6 || current_user.role_id == 7
   end
   
   # Never trust parameters from the scary internet, only allow the white list through.

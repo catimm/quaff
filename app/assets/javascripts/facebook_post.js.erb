@@ -1,0 +1,108 @@
+$(function() {
+	// add logic to generate suggested post text
+	$(document).on('change', '.btn-add-suggestion', function () {
+		// get beer_location id for the drink being posted about
+		drink_href = $(this).parent().parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href');
+		drink_href_split = drink_href.split('/');
+		beer_location_id = drink_href_split[3];
+		if ( beer_location_id.indexOf('.') !== -1 ) {
+		    beer_location_id_split = beer_location_id.split('.');
+		    beer_location_id_final = beer_location_id_split[0];     
+		} else {
+			beer_location_id_final = beer_location_id;
+		}
+		
+		// Clear previous text from URL input
+		$(this).parent().parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '');
+		
+		if($(this).val() == "yes") {
+		    var post_text = "";
+		    $(this).parent().parent().siblings('.add-mentions-holder-row').removeClass('show').addClass('hide');
+		    $(this).parent().parent().siblings('.add-mentions-holder-row').children('.add-mentions-holder-col').children('.btn-add-mentions').val('no');
+		    $(this).parent().parent().siblings('.add-mentions-holder-row').children('.add-mentions-holder-col').children('.btn-add-mentions').prop('checked', false);
+		    $(this).val("no");
+		} else {
+		    var post_text = $(this).siblings('#suggested-facebook-text').val();
+		    var post_text_final = btoa(post_text);
+		    $(this).parent().parent().siblings('.add-mentions-holder-row').removeClass('hide').addClass('show');
+		    $(this).val("yes");
+		}
+		// Add text for user to see in input
+		$(this).parent().parent().parent().siblings('.facebook-input-holder-col').children('.facebook-input-holder-row').children('.facebook-post-input').val(post_text);
+		
+		// Add text that will be sent via the URL
+		$(this).parent().parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '/draft_boards/share_on_facebook/' + beer_location_id_final + '.' +post_text_final);
+	});
+	
+	// add logic to generate mentions in suggested post text
+	$(document).on('change', '.btn-add-mentions', function () {
+		// get beer_location id for the drink being posted about
+		drink_href = $(this).parent().parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href');
+		drink_href_split = drink_href.split('/');
+		beer_location_id = drink_href_split[3];
+		if ( beer_location_id.indexOf('.') !== -1 ) {
+		    beer_location_id_split = beer_location_id.split('.');
+		    beer_location_id_final = beer_location_id_split[0];     
+		} else {
+			beer_location_id_final = beer_location_id;
+		}
+		
+		// Clear previous text from URL input
+		$(this).parent().parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '');
+		
+		if($(this).val() == "yes") {
+		    // if not, make it revert to what post text was prior
+		    var post_text = $(this).parent().parent().siblings('.suggested-text-holder-row').children('.suggested-text-holder-col').children('#suggested-facebook-text').val();
+		    console.log("No mentions post:" + post_text);
+		    var post_text_final = btoa(post_text);
+		    console.log("No mentions encoded post:" + post_text_final);
+		    $(this).val("no");
+		} else {
+		    var post_text = $(this).siblings('#suggested-facebook-text-with-mentions').val();
+		    console.log("Mentions post:" + post_text);
+		    var post_text_for_url = $(this).siblings('#suggested-facebook-post-with-mentions').val();
+		    console.log("Mentions post for url:" + post_text_for_url);
+		    var post_text_final = btoa(post_text_for_url);
+		    console.log("Mentions encoded post:" + post_text_final);
+		    $(this).val("yes");
+		}
+		// Add text for user to see in input
+		$(this).parent().parent().parent().siblings('.facebook-input-holder-col').children('.facebook-input-holder-row').children('.facebook-post-input').val(post_text);
+
+		// Add text that will be sent via the URL
+		$(this).parent().parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '/draft_boards/share_on_facebook/' + beer_location_id_final + '.' +post_text_final);
+		console.log($(this).parent().parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href'));
+	});
+	
+	var timer;
+	
+	// add logic to change final post text if user types changes
+	$(document).on('keyup', '.facebook-post-input', function () {
+		// get beer_location id for the drink being posted about
+		drink_href = $(this).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href');
+		drink_href_split = drink_href.split('/');
+		beer_location_id = drink_href_split[3];
+		if ( beer_location_id.indexOf('.') !== -1 ) {
+		    beer_location_id_split = beer_location_id.split('.');
+		    beer_location_id_final = beer_location_id_split[0];     
+		} else {
+			beer_location_id_final = beer_location_id;
+		}
+		
+		//clear any interval on key up
+		clearInterval(timer);
+		
+		// Clear previous text from URL input
+		$(this_input).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '');
+		
+		// Grab current input
+		var post_text = $(this).val();
+		var this_input = $(this);
+	    
+	    timer = setTimeout(function() { //then give it a second to see if the user is finished
+	    	var post_text_final = btoa(post_text);
+			$(this_input).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '/draft_boards/share_on_facebook/' + beer_location_id_final + '.' + post_text_final);
+	    }, 1000);
+
+	});
+});

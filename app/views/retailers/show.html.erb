@@ -14,10 +14,14 @@
 		</div>
 		<hr>
 		<div class="row no-margin">
-			<div class="col-sm-1 text-center no-padding">
-				<h4 class="retail-manage-header">Manage Draft Board Drinks</h4>
+			<div class="col-xs-12 text-center">
+				<% if @draft_board.blank? %>
+					<h4 class="retail-manage-header">Manage Draft Board Drinks</h4>
+				<% else %>
+					<h4 class="retail-manage-header">Manage Draft Board Drinks <span class="last-updated"> (Last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h4>
+				<% end %>
 			</div>
-			<div class="col-sm-11">
+			<div class="col-xs-12">
 				<% if @draft_board.blank? %>
 					<div class="row no-margin ">
 						<div class="col-xs-8 col-sm-5 col-md-4">
@@ -28,11 +32,6 @@
 					</div>
 				<% else %>
 					<div class="row no-margin ">
-						<div class="col-xs-12">
-							<% if !@last_draft_board_update.nil? %>
-								<h5 class="last-updated">Last updated: <%= (@last_draft_board_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
-							<% end %>
-						</div>
 						<div class="col-xs-12 col-sm-5 col-md-4">
 							<%= link_to edit_draft_board_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
 								<i class="fa fa-pencil"> Edit board</i>
@@ -70,10 +69,14 @@
 		<% if !@draft_board.blank? && @subscription_plan == 2 && !@internal_board_preferences.nil? %>
 		<hr>
 			<div class="row no-margin">
-				<div class="col-sm-1 text-center no-padding">
-					<h4 class="retail-manage-header">Manage Draft Inventory</h4>
+				<div class="col-xs-12">
+					<% if @draft_inventory.blank? %>
+						<h4 class="retail-manage-header">Manage Draft Inventory</h4>
+					<% else %>
+						<h4 class="retail-manage-header">Manage Draft Inventory <span class="last-updated"> (Last updated: <%= (@last_draft_inventory_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h4>
+					<% end %>
 				</div>
-				<div class="col-sm-11">
+				<div class="col-xs-12">
 					<% if @draft_inventory.blank? %>
 						<div class="row no-margin ">
 							<div class="col-xs-12 col-sm-5 col-md-4">
@@ -84,11 +87,6 @@
 						</div>
 					<% else %>
 						<div class="row no-margin ">
-							<div class="col-xs-12">
-								<% if !@last_draft_inventory_update.nil? %>
-									<h5 class="last-updated">Last updated: <%= (@last_draft_inventory_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
-								<% end %>
-							</div>
 							<div class="col-xs-12 col-sm-5 col-md-4">
 								<%= link_to edit_draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
 									<i class="fa fa-plus"> Add inventory</i>
@@ -106,23 +104,65 @@
 				</div>
 			</div>
 			<hr>
+			<% if current_user.role_id == 1 || current_user.role_id == 7 %>
 			<div class="row no-margin">
-				<div class="col-sm-1 text-center no-padding">
+				<div class="col-xs-12">
 					<h4 class="retail-manage-header">Manage Social Media</h4>
 				</div>
-				<div class="col-sm-11">
+				<div class="col-xs-12">
 					<div class="row no-margin ">
 						<div class="col-xs-12">
-							<h5 class="last-updated">Connect your Facebook and Twitter accounts so you can post new drinks when they become available.</h5>
-						</div>
-						<div class="col-xs-12 col-sm-5 col-md-4">
-							<% if !@fb_authentication.blank? %>
-								<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-linkedin" do %>
-							  		<i class="fa fa-facebook"></i>Disconnect Facebook
-							  	<% end %>
+							<% if !@fb_authentication.blank? && !@twitter_authentication.blank? %>
+								<h5 class="retailer-section-instructions">Both your Facebook and Twitter accounts are connected.  You can now post to those accounts and share when new drinks become available on tap.</h5>
+							<% elsif !@fb_authentication.blank? && @twitter_authentication.blank? %>
+								<h5 class="retailer-section-instructions">Your Facebook account is connected, so you can now post to Facebook and share when new drinks become available on tap.</br> Now connect your Twitter account!</h5>
+							<% elsif @fb_authentication.blank? && !@twitter_authentication.blank? %>
+								<h5 class="retailer-section-instructions">Your Twitter account is connected, so you can now post to Twitter and share when new drinks become available on tap.</br> Now connect your Facebook account!</h5>
 							<% else %>
-								<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-linkedin" do %>
+								<h5 class="retailer-section-instructions">Connect your Facebook and Twitter accounts so you can post to those accounts and share new drinks when they become available on tap.</h5>
+							<% end %>
+						</div>
+					</div>
+					<div class="row no-margin social-facebook-row">
+						<% if !@fb_authentication.blank? %>
+							<div class="col-xs-12 col-sm-5 col-md-4">
+								<%= link_to facebook_post_options_path, :class => "btn btn-block btn-social btn-facebook" do %>
+							  		<i class="fa fa-facebook"></i>Post Drinks to Facebook
+							  	<% end %>
+							 </div>
+							 <div class="col-xs-12 col-sm-4 col-md-3">
+								<h5 class="social-connected-on last-updated">Facebook was connected on <%= (@fb_authentication[0].created_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
+							 </div>
+							 <div class="col-xs-12 col-sm-4 col-md-3">
+							 	<%= link_to user_omniauth_authorize_path(:facebook), data: { confirm: "Are you sure you no longer want to post to Facebook?" }, :class => "btn btn-default btn-social-disconnect" do %>
+							  		Disconnect Facebook <i class="fa fa-times"></i>
+							  	<% end %>
+							 </div>
+						<% else %>
+							<div class="col-xs-12 col-sm-5 col-md-4">
+								<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-facebook" do %>
 							  		<i class="fa fa-facebook"></i>Connect Facebook
+							  	<% end %>
+							 </div>
+						<% end %>
+					</div>
+					<div class="row no-margin ">
+						<div class="col-xs-12 col-sm-5 col-md-4">
+							<% if !@twitter_authentication.blank? %>
+								<div class="col-xs-12 col-sm-6 col-md-5">
+								<%= link_to "#", :class => "btn btn-social-icon btn-twitter" do %>
+							  		<i class="fa fa-twitter"></i>
+							  	<% end %>
+								<h5 class="social-connected-on last-updated">Connected on <%= (@twitter_authentication[0].created_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
+							 </div>
+							 <div class="col-xs-12 col-sm-4 col-md-3">
+							 	<%= link_to user_omniauth_authorize_path(:twitter), data: { confirm: "Are you sure you no longer want to post to Twitter?" }, :class => "btn btn-default btn-social-disconnect" do %>
+							  		Disconnect Twitter <i class="fa fa-times"></i>
+							  	<% end %>
+							 </div>
+							<% else %>
+								<%= link_to user_omniauth_authorize_path(:twitter), :class => "btn btn-block btn-social btn-twitter" do %>
+							  		<i class="fa fa-twitter"></i>Connect Twitter
 							  	<% end %>
 							<% end %>
 						</div>
@@ -130,6 +170,7 @@
 				</div>
 			</div>
 			<hr>
+			<% end %>
 			<div class="row no-margin">
 				<%= render 'internal_draft_preferences' %>
 			</div>
@@ -137,14 +178,16 @@
 		<% if !@draft_board.blank? %>
 			<hr>
 			<div class="row no-margin">
-				<div class="col-sm-1 text-center no-padding">
+				<div class="col-xs-12 text-center no-padding">
 					<h4 class="retail-manage-header">Manage Your Plan</h4>
 				</div>
-				<div class="col-sm-11">
+				<div class="col-xs-12">
 					 <div class="row no-margin">
 						<div class="col-xs-12">
-							<h5>Your current plan is <%= @user_plan %>.</h5>
+							<h5 class="retailer-section-instructions">Your current plan is <%= @user_plan %>.</h5>
 						</div>
+					</div>
+					<div class="row no-margin">
 						<div class="col-xs-12 col-sm-5 col-md-4">
 							<% if @subscription_plan == 1 %>
 								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to upgrade?'} do %>

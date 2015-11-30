@@ -10,6 +10,7 @@
 #  token_secret :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  location_id  :integer
 #
 
 class Authentication < ActiveRecord::Base

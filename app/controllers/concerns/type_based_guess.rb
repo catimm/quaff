@@ -1,5 +1,6 @@
 module TypeBasedGuess
   extend ActiveSupport::Concern
+  include DrinkDescriptors
   
   def type_based_guess(this_beer)
     # to note that this drink recommendation is based on type input
@@ -12,27 +13,8 @@ module TypeBasedGuess
     # find all drinks of same type rated by user
     @same_type_rated_by_user = UserBeerRating.where(user_id: current_user.id, beer_type_id: this_beer_type_id)
     # create empty array to hold top descriptors list for beer being rated
-    @this_beer_descriptors = Array.new
-    # find all descriptors for this drink
-    @this_beer_all_descriptors = Beer.find(this_beer.id).descriptors
-    # Rails.logger.debug("this beer's descriptors: #{@this_beer_all_descriptors.inspect}")
-    @this_beer_all_descriptors.each do |descriptor|
-      @descriptor = descriptor["name"]
-      @this_beer_descriptors << @descriptor
-    end
-    # Rails.logger.debug("this beer's descriptor list: #{@this_beer_top_descriptors.inspect}")
-    # attach count to each descriptor type to find the drink's most common descriptors
-    @this_beer_descriptor_count = @this_beer_descriptors.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
-    # put descriptors in descending order of importance
-    @this_beer_descriptor_count = Hash[@this_beer_descriptor_count.sort_by{ |_, v| -v }]
-    # grab top 5 of most common descriptors for this drink
-    @this_beer_descriptors_final_hash = @this_beer_descriptor_count.first(5)
-    # create empty array to hold final list of top liked descriptors
-    @this_beer_top_descriptors = Array.new
-    # fill array with user's most liked descriptors
-    @this_beer_descriptors_final_hash.each do |key, value|
-      @this_beer_top_descriptors << key
-    end
+    @this_beer_top_descriptors = drink_descriptors(this_beer, 5)
+    Rails.logger.debug("top descriptors: #{@this_beer_top_descriptors.inspect}")
     
     # find top 3 qualities for drinks of this type rated by this user as >=8
     @same_type_rated_by_user_good = @same_type_rated_by_user.where("user_beer_rating >= ?", 8)

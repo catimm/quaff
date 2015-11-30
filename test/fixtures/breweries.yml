@@ -15,6 +15,8 @@
 #  collab              :boolean
 #  dont_include        :boolean
 #  brewery_state_long  :string
+#  facebook_url        :string
+#  twitter_url         :string
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

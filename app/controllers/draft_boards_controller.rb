@@ -2,6 +2,8 @@ class DraftBoardsController < ApplicationController
   before_filter :verify_admin
   include QuerySearch
   include RetailerDrinkHelp
+  include DrinkDescriptors
+  require "base64"
   
   def show
     # get subscription plan
@@ -127,6 +129,10 @@ class DraftBoardsController < ApplicationController
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
     end
     
+    # get social platform info
+    @fb_authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
+    @twitter_authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter")
+    
     session[:form] = "new"
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
@@ -250,6 +256,10 @@ class DraftBoardsController < ApplicationController
     if @subscription_plan == 2
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
     end
+    
+    # get social platform info
+    @fb_authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
+    @twitter_authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter")
     
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
@@ -519,9 +529,41 @@ class DraftBoardsController < ApplicationController
     redirect_to quick_draft_edit_path(params[:beer_location][:draft_board_id])
   end
   
+  def facebook_post_options
+    # get retailer info
+    @retailer = Location.find_by_id(session[:retail_id])
+    # get retailer facebook authentication info
+    @authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
+    @page_graph = Koala::Facebook::API.new(@authentication[0].token)
+    
+    # get draft board details
+    @current_draft_board = BeerLocation.where(draft_board_id: session[:draft_board_id], beer_is_current: "yes").order(:tap_number)
+    @current_draft_board.each do |drink|
+      drink_descriptors(drink.beer, 3)
+      Rails.logger.debug("Drink descriptors: #{drink.beer.top_descriptor_list.inspect}")
+    end
+    # create instance for form
+    @facebook_post = BeerLocation.new
+  end
+  
+  def share_on_facebook
+    @beer_location_id = params[:id]
+    @post_message = Base64.decode64(params[:format])
+    Rails.logger.debug("Post message: #{@post_message.inspect}")
+    @authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
+    @page_graph = Koala::Facebook::API.new(@authentication[0].token)
+    @page_graph.put_connections(@authentication[0].uid, 'feed', { message: @post_message })
+    
+    # add posted date to Beer Locations table
+    @beer_location_update = BeerLocation.update(@beer_location_id, facebook_share: Time.now)
+    
+    # redirect back to updated draft edit page
+    redirect_to facebook_post_options_path
+  end
+  
   private
   def verify_admin
-    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6
+    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6 || current_user.role_id == 7
   end
 
   def drink_params
