@@ -17,7 +17,7 @@ class AuthenticationsController < ApplicationController
     Rails.logger.debug("Retailer info #{@retailer.inspect}")
     # using the Koala gem
     @user_graph = Koala::Facebook::API.new(token) 
-    Rails.logger.debug("Graph info: #{@graph.inspect}")
+    Rails.logger.debug("Graph info: #{@user_graph.inspect}")
     
     if @authentication
       #profile = @user_graph.get_connections('me', 'permissions')
@@ -51,7 +51,7 @@ class AuthenticationsController < ApplicationController
   end # end of facebook method
   
   def failure
-    flash[:error] = "Something went wrong; #{params[:message]}. Please try again!"
+    flash[:error] = "Something went wrong; #{params[:error][:message]}. Please try again!"
     redirect_to retailer_path(session[:retail_id])
   end # end of failure method
   
