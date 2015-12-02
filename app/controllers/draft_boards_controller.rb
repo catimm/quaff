@@ -3,6 +3,7 @@ class DraftBoardsController < ApplicationController
   include QuerySearch
   include RetailerDrinkHelp
   include DrinkDescriptors
+  include TwitterTweet
   require "base64"
   
   def show
@@ -350,6 +351,9 @@ class DraftBoardsController < ApplicationController
                                         special_designation_color: drink[1][:special_designation_color], 
                                         went_live: Time.now)
             if @new_beer_location_drink.save
+              # execute auto Tweet for Retailers who want to automatically send tweets of new drinks
+              @tweet = "Now on tap: " + @new_beer_location_drink.beer.brewery.short_brewery_name + "'s " + @new_beer_location_drink.beer.beer_name 
+              twitter_tweet.update(@tweet)
               # add size/cost of new draft drink
               if !drink[1][:draft_details_attributes].blank?
                 drink[1][:draft_details_attributes].each do |details|

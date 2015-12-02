@@ -134,7 +134,7 @@
 								  	<% end %>
 								 </div>
 								 <div class="col-xs-12 col-sm-4 col-md-3">
-									<h5 class="social-connected-on last-updated">Facebook was connected on <%= (@fb_authentication[0].created_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
+									<h5 class="social-connected-on last-updated">Facebook was connected on:<br> <%= (@fb_authentication[0].created_at).strftime("%b %e, %Y @ %l:%M %p") %></h5>
 								 </div>
 								 <div class="col-xs-12 col-sm-4 col-md-3">
 								 	<%= link_to user_omniauth_authorize_path(:facebook), data: { confirm: "Are you sure you no longer want to post to Facebook?" }, :class => "btn btn-default btn-social-disconnect" do %>
@@ -150,25 +150,27 @@
 							<% end %>
 						</div>
 						<div class="row no-margin ">
-							<div class="col-xs-12 col-sm-5 col-md-4">
 								<% if !@twitter_authentication.blank? %>
-									<div class="col-xs-12 col-sm-6 col-md-5">
-									<%= link_to "#", :class => "btn btn-social-icon btn-twitter" do %>
-								  		<i class="fa fa-twitter"></i>
-								  	<% end %>
-									<h5 class="social-connected-on last-updated">Connected on <%= (@twitter_authentication[0].created_at).strftime("%B %e, %Y @ %l:%M %p") %></h5>
-								 </div>
-								 <div class="col-xs-12 col-sm-4 col-md-3">
-								 	<%= link_to user_omniauth_authorize_path(:twitter), data: { confirm: "Are you sure you no longer want to post to Twitter?" }, :class => "btn btn-default btn-social-disconnect" do %>
-								  		Disconnect Twitter <i class="fa fa-times"></i>
-								  	<% end %>
-								 </div>
+									<div class="col-xs-12 col-sm-5 col-md-4">
+										<%= link_to facebook_post_options_path, :class => "btn btn-block btn-social btn-twitter" do %>
+									  		<i class="fa fa-twitter"></i>Post Drinks to Twitter
+									  	<% end %>
+									 </div>
+									 <div class="col-xs-12 col-sm-4 col-md-3">
+										<h5 class="social-connected-on last-updated">Twitter was connected on:<br> <%= (@twitter_authentication[0].created_at).strftime("%b %e, %Y @ %l:%M %p") %></h5>
+									 </div>
+									 <div class="col-xs-12 col-sm-4 col-md-3">
+									 	<%= link_to user_omniauth_authorize_path(:twitter), data: { confirm: "Are you sure you no longer want to post to Twitter?" }, :class => "btn btn-default btn-social-disconnect" do %>
+									  		Disconnect Twitter <i class="fa fa-times"></i>
+									  	<% end %>
+									 </div>
 								<% else %>
-									<%= link_to user_omniauth_authorize_path(:twitter), :class => "btn btn-block btn-social btn-twitter" do %>
-								  		<i class="fa fa-twitter"></i>Connect Twitter
-								  	<% end %>
+									<div class="col-xs-12 col-sm-5 col-md-4">
+										<%= link_to user_omniauth_authorize_path(:twitter), :class => "btn btn-block btn-social btn-twitter" do %>
+									  		<i class="fa fa-twitter"></i>Connect Twitter
+									  	<% end %>
+									</div>
 								<% end %>
-							</div>
 						</div>
 					</div>
 				</div>

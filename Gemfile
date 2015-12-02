@@ -48,6 +48,7 @@ gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'fb_graph'
 gem "koala", "~> 1.8.0rc1"
+gem 'twitter'
 gem "omnicontacts"
 # to paginate the results on the page
 gem 'will_paginate'
