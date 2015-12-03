@@ -55,7 +55,7 @@ class AuthenticationsController < ApplicationController
       Rails.logger.debug("Omniauth token #{token.inspect}")
       token_secret = omni['credentials']['secret']
       Rails.logger.debug("Omniauth secret token #{token_secret.inspect}")
-      @authenticate = Authentication.new(user_id: @registered.id, provider: omni['provider'], uid: omni['uid'], token: token, token_secret: token_secret, location_id: @retailer.id)
+      @authenticate = Authentication.new(user_id: @registered.id, provider: omni['provider'], uid: omni['uid'], token: token, token_secret: token_secret, location_id: @retailer.id, auto_tweet: true)
       @authenticate.save!
     end
     

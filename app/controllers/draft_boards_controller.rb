@@ -4,6 +4,7 @@ class DraftBoardsController < ApplicationController
   include RetailerDrinkHelp
   include DrinkDescriptors
   include TwitterTweet
+  include TweetCreator
   require "base64"
   
   def show
@@ -180,6 +181,18 @@ class DraftBoardsController < ApplicationController
                                          keg_size: drink[1][:keg_size],
                                          went_live: Time.now)
              if @new_beer_location_drink.save
+               # execute Auto Tweet for Retailers who want to automatically send tweets of new drinks
+                # first make sure this user has the right access
+                if session[:subscription] == 2
+                  # now check what the user's auto tweet preference is
+                  @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
+                  if @authentication.auto_tweet == true
+                    @tweet = tweet_creator(@new_beer_location_drink.id)
+                    twitter_tweet.update(@tweet)
+                    # update Beer Location table to reflect a tweet was made
+                    @new_beer_location_drink.update_attributes(twitter_share: Time.now)
+                  end
+                end
                # add size/cost of new draft drink
                if !drink[1][:draft_details_attributes].blank?
                 drink[1][:draft_details_attributes].each do |details|
@@ -352,8 +365,17 @@ class DraftBoardsController < ApplicationController
                                         went_live: Time.now)
             if @new_beer_location_drink.save
               # execute auto Tweet for Retailers who want to automatically send tweets of new drinks
-              @tweet = "Now on tap: " + @new_beer_location_drink.beer.brewery.short_brewery_name + "'s " + @new_beer_location_drink.beer.beer_name 
-              twitter_tweet.update(@tweet)
+                # first make sure this user has the right access
+                if session[:subscription] == 2
+                  # now check what the user's auto tweet preference is
+                  @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
+                  if @authentication.auto_tweet == true
+                    @tweet = tweet_creator(@new_beer_location_drink.id)
+                    twitter_tweet.update(@tweet)
+                    # update Beer Location table to reflect a tweet was made
+                    @new_beer_location_drink.update_attributes(twitter_share: Time.now)
+                  end
+                end
               # add size/cost of new draft drink
               if !drink[1][:draft_details_attributes].blank?
                 drink[1][:draft_details_attributes].each do |details|
@@ -563,6 +585,36 @@ class DraftBoardsController < ApplicationController
     
     # redirect back to updated draft edit page
     redirect_to facebook_post_options_path
+  end
+  
+  def twitter_tweet_options
+    # get retailer info
+    @retailer = Location.find_by_id(session[:retail_id])
+    # get retailer facebook authentication info
+    @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter")
+    
+    # get draft board details
+    @current_draft_board = BeerLocation.where(draft_board_id: session[:draft_board_id], beer_is_current: "yes").order(:tap_number)
+    @current_draft_board.each do |drink|
+      drink_descriptors(drink.beer, 3)
+      Rails.logger.debug("Drink descriptors: #{drink.beer.top_descriptor_list.inspect}")
+    end
+    # create instance for form
+    @twitter_post = BeerLocation.new
+  end
+  
+  def share_on_twitter
+    @beer_location_id = params[:id]
+    @tweet = Base64.decode64(params[:format])
+    Rails.logger.debug("Tweet: #{@tweet.inspect}")
+    twitter_tweet.update(@tweet)
+    
+    # add posted date to Beer Locations table
+    @beer_location_update = BeerLocation.update(@beer_location_id, twitter_share: Time.now)
+
+    # redirect back to updated draft edit page
+    redirect_to twitter_tweet_options_path
+
   end
   
   private

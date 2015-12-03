@@ -1,0 +1,101 @@
+<%= render 'layouts/header_retailer' %> 
+	<div class="container">
+		<div class="row no-margin">
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-10">
+					<div class="row img-responsive retailer-logo-image-med" alt="Responsive image" style="background-image: url(<%= @retailer.logo_med %>)">
+						<h3 class="retailer-page-title">Twitter tweet page</h3>
+					</div>
+				</div>
+				<div class="col-xs-6 col-sm-2">
+					<%= link_to "Back", retailer_path(session[:retail_id]), class: 'btn btn-default formButton-cancel-draft-board-edit' %>
+				</div>
+			</div>
+		</div>
+		<h3>Currently on draft</h3>
+		<% @current_draft_board.each do	|drink| %>		
+			<% if !drink.beer.short_beer_name.nil? %>
+				<% @beer_name = drink.beer.short_beer_name %>
+			<% else %>
+				<% @beer_name = drink.beer.beer_name %>
+			<% end %>
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-5 col-md-4">
+					<div class="row no-margin">
+						<div class="col-xs-12">
+							<% if drink.beer.collab == true %>
+								<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+								<h4 class="draft-board-row-name"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h4>
+							<% elsif drink.beer.brewery.short_brewery_name.nil? %>
+								<h4 class="draft-board-row-name table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h4>
+							<% else %>
+								<h4 class="draft-board-row-name table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h4>
+							<% end %>
+						</div>
+					</div>
+					<div class="row no-margin suggested-text-holder-row">			
+							<% if !drink.beer.top_descriptor_list.blank? %>
+								<% @top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
+								<% if !drink.beer.beer_type.nil? %>
+									<% if !drink.beer.brewery.twitter_url.nil? %>
+										<% @suggested_tweet = "Now available: @" + drink.beer.brewery.twitter_url + " " + @beer_name + "--a " + @top_descriptors + " " + drink.beer.beer_type.beer_type_short_name + ". Come in and try it before it's gone!" %>
+									<% else %>
+										<% @suggested_tweet = "Now available: " + drink.beer.brewery.brewery_name + "'s " + @beer_name + "--a " + @top_descriptors + " " + drink.beer.beer_type.beer_type_short_name + ". Come in and try it before it's gone!" %>
+									<% end %>
+								<% else %>
+									<% if !drink.beer.brewery.twitter_url.nil? %>
+										<% @suggested_tweet = "Now available: @" + drink.beer.brewery.twitter_url + " " + @beer_name + "--described as " + @top_descriptors + ". Come in and try it before it's gone!" %>
+									<% else %>
+										<% @suggested_tweet = "Now available: " + drink.beer.brewery.brewery_name + "'s " + @beer_name + "--described as " + @top_descriptors + ". Come in and try it before it's gone!" %>
+									<% end %>
+								<% end %>
+							<% else %>
+								<% if !drink.beer.beer_type.nil? %>
+									<% if !drink.beer.brewery.twitter_url.nil? %>
+										<% @suggested_tweet = "Now available: @" + drink.beer.brewery.twitter_url + " " + @beer_name + "--a tasty " + drink.beer.beer_type.beer_type_short_name + ". Come in and try it before it's gone!" %>
+									<% else %>
+										<% @suggested_tweet = "Now available: " + drink.beer.brewery.brewery_name + "'s " + @beer_name + "--a tasty " + drink.beer.beer_type.beer_type_short_name + ". Come in and try it before it's gone!" %>
+									<% end %>
+								<% else %>
+									<% if !drink.beer.brewery.twitter_url.nil? %>
+										<% @suggested_tweet = "Now available: @" + drink.beer.brewery.twitter_url + " " + @beer_name + ". Come in and try it before it's gone!" %>
+									<% else %>
+										<% @suggested_tweet = "Now available: " + drink.beer.brewery.brewery_name + "'s " + @beer_name + ". Come in and try it before it's gone!" %>
+									<% end %>
+								<% end %>
+							<% end %>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-5 col-md-5 twitter-input-holder-col">
+					<div class="row no-margin twitter-input-holder-row">
+						<%= text_area_tag 'twitter-tweet', @suggested_tweet, placeholder: 'Type post or generate suggested post.', class: "form-control twitter-tweet-input" %>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-2 col-md-3 post-button-holder-col">
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding" id="<%= drink.id %>-tweeted">
+							<% if !drink.twitter_share.nil? %>
+								<h6 class="last-updated social-status">Tweeted:  <%= drink.twitter_share.strftime("%b %e, %Y @ %l:%M %p") %></h6>
+							<% else %>
+								<h6 class="last-updated social-status">Status: Not yet tweeted</h6>
+							<% end %>
+						</div>
+					</div>
+					<div class="row no-margin post-button-holder-row">
+						<div class="col-xs-12 post-button-holder no-padding">
+							<%= link_to share_on_twitter_path(drink.id, @final_tweet), :class => "btn btn-block btn-social btn-twitter" do %>
+								<i class="fa fa-twitter"></i>Post Message
+						  	<% end %>
+						</div>
+					</div>
+					<div class="row no-margin character-holder-row">
+						<div class="col-xs-12 no-padding character-holder">
+							<h6 class="last-updated">Characters: </h6>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr>
+		<% end %>	
+	</div>
+<%= render 'layouts/footer' %>

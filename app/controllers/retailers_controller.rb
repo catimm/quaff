@@ -22,8 +22,7 @@ class RetailersController < ApplicationController
     
     # check user's Omniauth authorization status
     @fb_authentication = Authentication.where(location_id: params[:id], provider: "facebook")
-    Rails.logger.debug("FB Authentication #{@fb_authentication.inspect}")
-    @twitter_authentication = Authentication.where(location_id: params[:id], provider: "twitter")
+    @twitter_authentication = Authentication.where(location_id: params[:id], provider: "twitter").first
     
     # get subscription plan
     if @subscription_plan == 1
@@ -46,6 +45,22 @@ class RetailersController < ApplicationController
   
   def edit
     
+  end
+  
+  def update_twitter_view
+    @current_status = params[:id]
+    if @current_status == "yes"
+      @auto_tweet = false
+    else
+      @auto_tweet = true
+    end
+    # check user's Omniauth authorization status
+    @fb_authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
+    @twitter_authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
+    @twitter_authentication.update_attributes(auto_tweet: @auto_tweet)
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
   end
   
   def change_plans

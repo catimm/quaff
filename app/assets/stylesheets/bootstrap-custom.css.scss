@@ -73,6 +73,7 @@ $special-designated-red: $faded-red;
 $special-designated-yellow: $faded-yellow;
 $facebook-button-color: $facebook-blue-color;
 $twitter-button-color: $twitter-blue-color;
+$warning-red: $light-red;
 
 @font-face {
     font-family: 'novecento_sans_widenormal';
@@ -2043,6 +2044,33 @@ input[type="checkbox"] {
 .btn-social-icon.btn-facebook {
   float: left;
 }
+.btn-social-icon.btn-twitter {
+  float: left;
+}
+.auto-tweet-text-holder {
+  width: 70%;
+  float: left;
+  margin-left: 5px;
+  .auto-tweet-text {
+    margin: 2px 0 0 0;
+  }
+}
+.twitter-manual-tweet-row-holder {
+  margin: 5px 0 0 0 !important;
+}
+.manual-tweet-text-holder {
+  float: left;
+  margin-right: 20px;
+  .auto-tweet-text {
+    margin: 2px 0 0 0;
+  }
+}
+.auto-tweet-holder {
+  float: left;
+  .auto-tweet-option {
+    margin-left: 7.5px;
+  }
+}
 .social-connected-on {
   margin: 0;
   text-align: center;
@@ -2060,7 +2088,15 @@ input[type="checkbox"] {
     padding-top: 3px !important;
   }
 }
-
+.social-status {
+  margin-top: 0;
+}
+.twitter-tweet-input {
+  height: 84px !important;
+}
+.tweet-warning {
+  color: $warning-red;
+}
 // Inventory Management page
 .on-deck-for-title {
   display: inline;

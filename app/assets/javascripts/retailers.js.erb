@@ -7,4 +7,17 @@ $(function() {
 		  'padding-right' : padding_width
 	});
 	$(".retail-account-last-updated-container").css('margin-left', -padding_width);
+	
+	// add logic to show/hide manual tweet link/button
+	$(document).on('change', '#auto-tweet-option', function () {
+		if ($(this).val() == "no") {
+			$(this).attr("value", "yes");
+		} else {
+			$(this).attr("value", "no");
+		}
+		$.ajax({
+		  type: "POST",
+		  url: "/retailers/update_twitter_view/" + $(this).val()
+		});
+	});
 });

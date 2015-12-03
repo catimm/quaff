@@ -108,71 +108,8 @@
 			</div>
 			<hr>
 			<% if current_user.role_id == 1 || current_user.role_id == 7 %>
-				<div class="row no-margin">
-					<div class="col-xs-12">
-						<h4 class="retail-manage-header">Manage Social Media</h4>
-					</div>
-					<div class="col-xs-12">
-						<div class="row no-margin ">
-							<div class="col-xs-12">
-								<% if !@fb_authentication.blank? && !@twitter_authentication.blank? %>
-									<h5 class="retailer-section-instructions">Both your Facebook and Twitter accounts are connected.  You can now post to those accounts and share when new drinks become available on tap.</h5>
-								<% elsif !@fb_authentication.blank? && @twitter_authentication.blank? %>
-									<h5 class="retailer-section-instructions">Your Facebook account is connected, so you can now post to Facebook and share when new drinks become available on tap.</br> Now connect your Twitter account!</h5>
-								<% elsif @fb_authentication.blank? && !@twitter_authentication.blank? %>
-									<h5 class="retailer-section-instructions">Your Twitter account is connected, so you can now post to Twitter and share when new drinks become available on tap.</br> Now connect your Facebook account!</h5>
-								<% else %>
-									<h5 class="retailer-section-instructions">Connect your Facebook and Twitter accounts so you can post to those accounts and share new drinks when they become available on tap.</h5>
-								<% end %>
-							</div>
-						</div>
-						<div class="row no-margin social-facebook-row">
-							<% if !@fb_authentication.blank? %>
-								<div class="col-xs-12 col-sm-5 col-md-4">
-									<%= link_to facebook_post_options_path, :class => "btn btn-block btn-social btn-facebook" do %>
-								  		<i class="fa fa-facebook"></i>Post Drinks to Facebook
-								  	<% end %>
-								 </div>
-								 <div class="col-xs-12 col-sm-4 col-md-3">
-									<h5 class="social-connected-on last-updated">Facebook was connected on:<br> <%= (@fb_authentication[0].created_at).strftime("%b %e, %Y @ %l:%M %p") %></h5>
-								 </div>
-								 <div class="col-xs-12 col-sm-4 col-md-3">
-								 	<%= link_to user_omniauth_authorize_path(:facebook), data: { confirm: "Are you sure you no longer want to post to Facebook?" }, :class => "btn btn-default btn-social-disconnect" do %>
-								  		Disconnect Facebook <i class="fa fa-times"></i>
-								  	<% end %>
-								 </div>
-							<% else %>
-								<div class="col-xs-12 col-sm-5 col-md-4">
-									<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-facebook" do %>
-								  		<i class="fa fa-facebook"></i>Connect Facebook
-								  	<% end %>
-								 </div>
-							<% end %>
-						</div>
-						<div class="row no-margin ">
-								<% if !@twitter_authentication.blank? %>
-									<div class="col-xs-12 col-sm-5 col-md-4">
-										<%= link_to facebook_post_options_path, :class => "btn btn-block btn-social btn-twitter" do %>
-									  		<i class="fa fa-twitter"></i>Post Drinks to Twitter
-									  	<% end %>
-									 </div>
-									 <div class="col-xs-12 col-sm-4 col-md-3">
-										<h5 class="social-connected-on last-updated">Twitter was connected on:<br> <%= (@twitter_authentication[0].created_at).strftime("%b %e, %Y @ %l:%M %p") %></h5>
-									 </div>
-									 <div class="col-xs-12 col-sm-4 col-md-3">
-									 	<%= link_to user_omniauth_authorize_path(:twitter), data: { confirm: "Are you sure you no longer want to post to Twitter?" }, :class => "btn btn-default btn-social-disconnect" do %>
-									  		Disconnect Twitter <i class="fa fa-times"></i>
-									  	<% end %>
-									 </div>
-								<% else %>
-									<div class="col-xs-12 col-sm-5 col-md-4">
-										<%= link_to user_omniauth_authorize_path(:twitter), :class => "btn btn-block btn-social btn-twitter" do %>
-									  		<i class="fa fa-twitter"></i>Connect Twitter
-									  	<% end %>
-									</div>
-								<% end %>
-						</div>
-					</div>
+				<div class="row no-margin" id="social-media-preferences">
+					<%= render 'social_media_preferences' %>
 				</div>
 				<hr>
 			<% end %>

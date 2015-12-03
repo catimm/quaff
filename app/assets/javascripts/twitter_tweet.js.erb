@@ -1,0 +1,69 @@
+$(function() {
+	$('textarea').each(function() {
+	  // get beer_location id for the drink being tweeted about
+		drink_href = $(this).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href');
+		drink_href_split = drink_href.split('/');
+		beer_location_id = drink_href_split[3];
+		if ( beer_location_id.indexOf('.') !== -1 ) {
+		    beer_location_id_split = beer_location_id.split('.');
+		    beer_location_id_final = beer_location_id_split[0];     
+		} else {
+			beer_location_id_final = beer_location_id;
+		}
+		
+	  var input_text = $(this).val();
+	  var twitter_text_encoded = btoa(input_text);
+	  $(this).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '/draft_boards/share_on_twitter/' + beer_location_id_final + '.' + twitter_text_encoded);
+	  var tweet_length = input_text.length;
+	  if (tweet_length > 140) {
+	  	 $(this).parent().parent().siblings('.post-button-holder-col').children('.character-holder-row').children('.character-holder').children('.last-updated').addClass('tweet-warning');
+	  	 $(this).parent().parent().siblings('.post-button-holder-col').children('.character-holder-row').children('.character-holder').children('.last-updated').html("Characters: " + tweet_length);
+	  	 $(this).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr("disabled", "disabled");
+	  } else {
+	  	 $(this).parent().parent().siblings('.post-button-holder-col').children('.character-holder-row').children('.character-holder').children('.last-updated').html("Characters: " + tweet_length);
+	  }
+	 
+	});
+	
+	var timer;
+	
+	// add logic to change final post text if user types changes
+	$(document).on('keyup', '.twitter-tweet-input', function () {
+		// get beer_location id for the drink being posted about
+		drink_href = $(this).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href');
+		drink_href_split = drink_href.split('/');
+		beer_location_id = drink_href_split[3];
+		if ( beer_location_id.indexOf('.') !== -1 ) {
+		    beer_location_id_split = beer_location_id.split('.');
+		    beer_location_id_final = beer_location_id_split[0];     
+		} else {
+			beer_location_id_final = beer_location_id;
+		}
+		
+		//clear any interval on key up
+		clearInterval(timer);
+		
+		// Clear previous text from URL input
+		$(this_input).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '');
+		
+		// Grab current input
+		var post_text = $(this).val();
+		var this_input = $(this);
+	    
+	    timer = setTimeout(function() { //then give it a second to see if the user is finished
+	    	var post_text_final = btoa(post_text);
+			var tweet_length = post_text.length;
+			  if (tweet_length > 140) {
+			  	 $(this_input).parent().parent().siblings('.post-button-holder-col').children('.character-holder-row').children('.character-holder').children('.last-updated').addClass('tweet-warning');
+			  	 $(this_input).parent().parent().siblings('.post-button-holder-col').children('.character-holder-row').children('.character-holder').children('.last-updated').html("Characters: " + tweet_length);
+			  	 $(this_input).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').prop('disabled', true);
+			  } else {
+			  	 $(this_input).parent().parent().siblings('.post-button-holder-col').children('.character-holder-row').children('.character-holder').children('.last-updated').removeClass('tweet-warning');
+			  	 $(this_input).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').removeAttr('disabled');
+			  	 $(this_input).parent().parent().siblings('.post-button-holder-col').children('.character-holder-row').children('.character-holder').children('.last-updated').html("Characters: " + tweet_length);
+			  	 $(this_input).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '/draft_boards/share_on_twitter/' + beer_location_id_final + '.' + post_text_final);
+			  }
+	    }, 1000);
+
+	});
+});
