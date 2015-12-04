@@ -71,24 +71,26 @@
 									</div>
 								<% end %>
 						</div>
-						<div class="row twitter-manual-tweet-row-holder">
-							<div class="col-xs-12 col-sm-8 col-md-6">
-								<div class="board-preference-labels no-padding manual-tweet-text-holder">
-									<h6 class="manual-tweet-text">Disable auto tweets about new drinks:<span data-toggle="tooltip" title="Select this box to turn off automated tweets about newly available drinks on draft."> [?]</span></h6>
-								</div>
-								<div class="board-preference-labels auto-tweet-holder">
-									<%= label_tag 'auto-tweet', 'Yes' %>
-								</div>
-								<% if @twitter_authentication.auto_tweet == true %>
-									<div class="board-preference-inputs no-padding auto-tweet-holder">
-										<input type="checkbox" name="auto-tweet-option" id="auto-tweet-option" value="no" class="auto-tweet-option">
+						<% if !@twitter_authentication.blank? %>
+							<div class="row twitter-manual-tweet-row-holder">
+								<div class="col-xs-12 col-sm-8 col-md-6">
+									<div class="board-preference-labels no-padding manual-tweet-text-holder">
+										<h6 class="manual-tweet-text">Disable auto tweets about new drinks:<span data-toggle="tooltip" title="Select this box to turn off automated tweets about newly available drinks on draft."> [?]</span></h6>
 									</div>
-								<% else %>
-									<div class="board-preference-inputs no-padding auto-tweet-holder">
-										<input type="checkbox" name="auto-tweet-option" id="auto-tweet-option" checked="checked" value="yes" class="auto-tweet-option">
+									<div class="board-preference-labels auto-tweet-holder">
+										<%= label_tag 'auto-tweet', 'Yes' %>
 									</div>
-								<% end %>
+									<% if @twitter_authentication.auto_tweet == true %>
+										<div class="board-preference-inputs no-padding auto-tweet-holder">
+											<input type="checkbox" name="auto-tweet-option" id="auto-tweet-option" value="no" class="auto-tweet-option">
+										</div>
+									<% else %>
+										<div class="board-preference-inputs no-padding auto-tweet-holder">
+											<input type="checkbox" name="auto-tweet-option" id="auto-tweet-option" checked="checked" value="yes" class="auto-tweet-option">
+										</div>
+									<% end %>
+								</div>
 							</div>
-						</div>
+						<% end %>
 					</div>
 				
