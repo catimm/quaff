@@ -100,11 +100,31 @@ class RetailersController < ApplicationController
   end
   
   def update_internal_board_preferences
-    @draft_board = InternalDraftBoardPreference.find_by(draft_board_id: params[:internal_draft_board_preference][:draft_board_id])
-    Rails.logger.debug("Draft Board ID #{@draft_board.inspect}")
-    @preferences = InternalDraftBoardPreference.update(@draft_board.id, user_preferences)
-    @preferences.save
-    redirect_to retailer_path(session[:retail_id])
+    @draft_board = InternalDraftBoardPreference.find_by(draft_board_id: session[:draft_board_id])
+    if params[:id] == "separate_names"
+      if params[:format] == "yes"
+        @draft_board.update_attributes(separate_names: true)
+      else
+        @draft_board.update_attributes(separate_names: false)
+      end
+    elsif params[:id] == "column_names"
+      if params[:format] == "yes"
+        @draft_board.update_attributes(column_names: true)
+      else
+        @draft_board.update_attributes(column_names: false)
+      end
+    else 
+      @draft_board.update_attributes(font_size: params[:format])
+    end
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    #@draft_board = InternalDraftBoardPreference.find_by(draft_board_id: params[:internal_draft_board_preference][:draft_board_id])
+    #Rails.logger.debug("Draft Board ID #{@draft_board.inspect}")
+    #@preferences = InternalDraftBoardPreference.update(@draft_board.id, user_preferences)
+    #@preferences.save
+    #redirect_to retailer_path(session[:retail_id])
   end
   
   private

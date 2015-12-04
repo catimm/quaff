@@ -72,7 +72,7 @@ Rails.application.routes.draw do
   get '/draft_inventory/:id/edit(.:format)' => 'draft_inventory#edit', :as => 'edit_draft_inventory'
   get '/draft_inventory/edit' => 'draft_inventory#edit'
   patch '/draft_inventory/:id(.:format)' => 'draft_inventory#update'
-  patch '/retailers/update_internal_board_preferences' => 'retailers#update_internal_board_preferences', :as => 'update_internal_board_preferences'
+  post '/retailers/update_internal_board_preferences/:id(.:format)' => 'retailers#update_internal_board_preferences', :as => 'update_internal_board_preferences'
   post '/retailers/update_twitter_view/:id' => 'retailers#update_twitter_view'
   get '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans'
   resources :retailers
