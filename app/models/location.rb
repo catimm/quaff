@@ -18,6 +18,15 @@
 #  ignore_location :boolean
 #  facebook_url    :string
 #  twitter_url     :string
+#  address         :string
+#  phone_number    :string
+#  email           :string
+#  hours_one       :string
+#  hours_two       :string
+#  hours_three     :string
+#  hours_four      :string
+#  logo_holder     :string
+#  image_holder    :string
 #
 
 class Location < ActiveRecord::Base

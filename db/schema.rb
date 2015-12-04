@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151202064358) do
+ActiveRecord::Schema.define(version: 20151204020917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -208,6 +208,15 @@ ActiveRecord::Schema.define(version: 20151202064358) do
     t.boolean  "ignore_location"
     t.string   "facebook_url"
     t.string   "twitter_url"
+    t.string   "address"
+    t.string   "phone_number"
+    t.string   "email"
+    t.string   "hours_one"
+    t.string   "hours_two"
+    t.string   "hours_three"
+    t.string   "hours_four"
+    t.string   "logo_holder"
+    t.string   "image_holder"
   end
 
   create_table "pg_search_documents", force: :cascade do |t|

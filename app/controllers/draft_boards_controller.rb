@@ -164,6 +164,9 @@ class DraftBoardsController < ApplicationController
     # add retailer info in case form upload doesn't work and form gets shown again 
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
+    # check location's subscription level to be used below to create InternalDraftBoardPreference record if needed
+    @subscription = LocationSubscription.find_by(location_id: session[:retail_id])
+    
     @draft = DraftBoard.new(location_id: session[:retail_id])
     if @draft.save
       params[:draft_board][:beer_locations_attributes].each do |drink|
@@ -229,6 +232,12 @@ class DraftBoardsController < ApplicationController
         end # end of test to determine if drink "row" was deleted and should be ignored
       end # end of loop to run through each drink in the saved params
       
+      # check to see if location has already upgraded subscription plan and needs an InternalDraftBoardPreference record create 
+      if @subscription.subscription_id == 2
+        @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft.id, 
+                                      separate_names: false, column_names: false, font_size: 3)
+        @internal_draft_preferences.save
+      end
       # check to see if any drinks added need immediate admin attention
       retailer_drink_help(@draft.id)
       

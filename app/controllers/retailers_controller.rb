@@ -11,7 +11,7 @@ class RetailersController < ApplicationController
     if !@draft_board.blank?
       session[:draft_board_id] = @draft_board[0].id
       # get internal draft board preferences
-      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: session[:draft_board_id]).first
+      @internal_board_preferences = InternalDraftBoardPreference.find_by(draft_board_id: session[:draft_board_id])
       Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
       # find last time this draft board was updated
       @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board[0].id).order(:updated_at).reverse_order.first
@@ -44,7 +44,19 @@ class RetailersController < ApplicationController
   end
   
   def edit
+    @retailer = Location.find(params[:id])
+  end
+  
+  def update
+    @facebook_url = params[:location][:facebook_url]
+    Rails.logger.debug("FB URL #{@facebook_url.inspect}")
+    @facebook_split = @facebook_url.split('/')
+    Rails.logger.debug("FB URL Split #{@facebook_split.inspect}")
+    params[:location][:facebook_url] = @facebook_split[3]
+    Rails.logger.debug("New FB Params #{params[:location][:facebook_url].inspect}")
+    @details = Location.update(params[:id], location_details)
     
+    redirect_to retailer_path(params[:id])
   end
   
   def update_twitter_view
@@ -66,18 +78,22 @@ class RetailersController < ApplicationController
   def change_plans
     @subscription_plan = session[:subscription]
     @subscription = LocationSubscription.where(location_id: params[:format]).first
+    # check to see if a location draft board exists
+    @draft_board = DraftBoard.find_by(location_id: session[:retail_id])
+    
     if @subscription_plan == 1
       @subscription.update_attributes(subscription_id: 2)
-      @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: params[:id], separate_names: false,
-                                     column_names: false, font_size: 3)
-      if @internal_draft_preferences.save
-        session[:subscription] = 2
+      session[:subscription] = 2
+      if !@draft_board.blank?
+        @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft_board.id, 
+                                      separate_names: false, column_names: false, font_size: 3)
+        @internal_draft_preferences.save
       end
     end
     if @subscription_plan == 2
       @subscription.update_attributes(subscription_id: 1)
-      @internal_draft_preferences = InternalDraftBoardPreference.find_by(draft_board_id: params[:id]).destroy
       session[:subscription] = 1
+      @internal_draft_preferences = InternalDraftBoardPreference.find_by(draft_board_id: @draft_board.id).destroy
     end
     
     redirect_to retailer_path(session[:retail_id])
@@ -100,6 +116,11 @@ class RetailersController < ApplicationController
     def user_preferences
       params.require(:internal_draft_board_preference).permit(:separate_names, :column_names, :special_designations,   
       :font_size)
+    end
+    
+    def location_details
+      params.require(:location).permit(:homepage, :beerpage, :short_name, :neighborhood, :facebook_url, :twitter_url,   
+      :address, :phone_number, :email, :hours_one, :hours_two, :hours_three, :hours_four, :logo_holder, :image_holder)
     end
     
 end # end of controller

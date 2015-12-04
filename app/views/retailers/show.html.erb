@@ -13,7 +13,7 @@
 			</div>
 		</div>
 		<%- flash.each do |name, msg| -%>
-				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) && name == "error" %>
 			<%- end -%>
 		<hr>
 		<div class="row no-margin">
@@ -119,7 +119,10 @@
 				</div>
 			<% end %>
 		<% end %>
-		<% if !@draft_board.blank? %>
+			<hr>
+			<div class="row no-margin">
+				<%= render 'location_details' %>
+			</div>
 			<hr>
 			<div class="row no-margin">
 				<div class="col-xs-12 text-center no-padding">
@@ -133,19 +136,12 @@
 					</div>
 					<div class="row no-margin">
 						<div class="col-xs-12 col-sm-5 col-md-4">
-							<% if @subscription_plan == 1 %>
-								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to upgrade?'} do %>
-									<i class="fa fa-plus"> Upgrade Plan</i>
-								<% end %>
-							<% else %>
-								<%= link_to change_plans_path(@draft_board[0].id, @retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to downgrade?'} do %>
-									<i class="fa fa-minus"> Downgrade Plan</i>
-								<% end %>
+							<%= link_to change_plans_path(@retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to upgrade?'} do %>
+								<i class="fa fa-retweet"> Change Plan</i>
 							<% end %>
 						</div>
 					</div>
 				</div>	
 			</div>
-		<% end %>
 	</div>
 <%= render 'layouts/footer' %>

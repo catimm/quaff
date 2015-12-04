@@ -1,0 +1,17 @@
+<%= render 'layouts/header' %> 
+<div class="container admin-container">
+	<div class="row header-row">
+		<div class="page-header">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="row img-responsive retailer-logo-image-med" alt="Responsive image" style="background-image: url(<%= @retailer.logo_med %>)">
+						<h3 class="retailer-page-title"><%= @retailer.short_name %>'s Details <span class="last-updated">(last updated: <%= (@retailer.updated_at).strftime("%B %e, %Y @ %l:%M %p") %> by <%= @edited_by %>)</span></h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<%= render 'location_details_form' %>	
+	</div>
+</div>

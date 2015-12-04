@@ -1,0 +1,181 @@
+				<div class="col-xs-12">
+					<h4 class="retail-manage-header">Manage Your Location Details</h4>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-12 col-sm-6">
+						 <div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Logo:</h5>
+							</div>
+							<div class="col-xs-8 retail-page-logo-holder no-padding-left">
+								<img class="img-responsive retailer-logo-image-small" alt="Responsive image" src="<%= @retailer.logo_small %>">
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Full name:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<h5 class="retailer-info-text"><%= @retailer.name %></h5>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Short name:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.short_name.blank? %>	
+									<h5 class="retailer-info-text"><%= @retailer.short_name %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No short name provided.</h5>
+								<% end %>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Website:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.homepage.blank? %>
+									<h5 class="retailer-info-text"><%= link_to @retailer.homepage, :target => '_blank' %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No homepage provided.</h5>
+								<% end %>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Beer List Page:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.beerpage.blank? %>
+									<h5 class="retailer-info-text"><%= link_to @retailer.beerpage, :target => '_blank' %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No beer page provided.</h5>
+								<% end %>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Facebook Page:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.facebook_url.blank? %>
+									<h5 class="retailer-info-text"><%= link_to "https://www.facebook.com/" + @retailer.facebook_url, :target => '_blank' %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No Facebook account provided.</h5>
+								<% end %>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Twitter Page:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.twitter_url.blank? %>
+									<h5 class="retailer-info-text"><%= link_to "https://twitter.com/" + @retailer.twitter_url, :target => '_blank' %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No Twitter account provided.</h5>
+								<% end %>					
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Image:</h5>
+							</div>
+							<% if !@retailer.image_url.blank? %>	
+								<div class="col-xs-8 retail-image-holder no-padding-left">
+									<img class="img-responsive retailer-image-small" alt="Responsive image" src="<%= @retailer.image_url %>">
+								</div>
+							<% else %>
+								<h5 class="retailer-info-text retailer-data-missing">No image provided.</h5>
+							<% end %>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Address:</h5>
+							</div>
+							<% if !@retailer.address.blank? %>	
+								<h5 class="retailer-info-text"><%= @retailer.address %></h5>
+							<% else %>
+								<h5 class="retailer-info-text retailer-data-missing">No address provided.</h5>
+							<% end %>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Neighborhood:</h5>
+							</div>
+							<% if !@retailer.neighborhood.blank? %>	
+								<h5 class="retailer-info-text"><%= @retailer.neighborhood %></h5>
+							<% else %>
+								<h5 class="retailer-info-text retailer-data-missing">No neighborhood provided.</h5>
+							<% end %>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Phone Number:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.phone_number.blank? %>	
+									<h5 class="retailer-info-text"><%= @retailer.phone_number %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No phone number provided.</h5>
+								<% end %>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Email:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.email.blank? %>
+									<h5 class="retailer-info-text"><%= @retailer.email %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No email provided.</h5>
+								<% end %>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-4 text-right">
+								<h5 class="retailer-info-text retailer-info-header">Hours:</h5>
+							</div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.hours_one.blank? %>
+									<h5 class="retailer-info-text"><%= @retailer.hours_one %></h5>
+								<% else %>
+									<h5 class="retailer-info-text retailer-data-missing">No hours provided.</h5>
+								<% end %>
+							</div>
+							<div class="col-xs-4 text-right"></div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.hours_two.blank? %>
+									<h5 class="retailer-info-text"><%= @retailer.hours_two %></h5>
+								<% end %>
+							</div>
+							<div class="col-xs-4 text-right"></div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.hours_three.blank? %>
+									<h5 class="retailer-info-text"><%= @retailer.hours_three %></h5>
+								<% end %>
+							</div>
+							<div class="col-xs-4 text-right"></div>
+							<div class="col-xs-8 no-padding-left">
+								<% if !@retailer.hours_four.blank? %>
+									<h5 class="retailer-info-text"><%= @retailer.hours_four %></h5>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="row no-margin">
+						<div class="col-xs-0 col-sm-3 col-md-4"></div>
+						<div class="col-xs-12 col-sm-5 col-md-4">
+							<%= link_to edit_retailer_path(@retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+								<i class="fa fa-wrench"> Update Location Details</i>
+							<% end %>
+						</div>
+					</div>	
+				</div>

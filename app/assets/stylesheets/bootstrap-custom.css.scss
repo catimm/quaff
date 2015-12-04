@@ -803,6 +803,9 @@ p {
   padding: 0;
   margin: 10px 0 0 0;
 }
+  .beer-mug-holder {
+    font-size: 40px !important;
+  }
 .drink-origin {
   margin: 0 0 0 5px;
   font-size: 11px;
@@ -1971,7 +1974,7 @@ div.jqcloud span.w1 { color: $light-blue; }
     margin: 0 auto;
   }
 }
-.edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, #new_user, #new_user_beer_rating, #edit_user {
+.edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, .edit_location, #new_user, #new_user_beer_rating, #edit_user {
   input, select, ul {
     margin-bottom: 7.5px;
   }
@@ -2097,6 +2100,27 @@ input[type="checkbox"] {
 .tweet-warning {
   color: $warning-red;
 }
+.retail-page-logo-holder {
+  height: 40px;
+}
+.retailer-info-header {
+  font-weight: 500;
+}
+.retailer-info-text {
+  color: $normal-text;
+}
+.retailer-data-missing {
+  font-style: italic;
+}
+.retail-image-holder {
+  height: 80px;
+}
+.retailer-image-small {
+      background-repeat: no-repeat;
+      height: 80px;
+      margin: 0;
+      padding: 0; 
+  }
 // Inventory Management page
 .on-deck-for-title {
   display: inline;
