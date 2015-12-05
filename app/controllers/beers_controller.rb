@@ -88,7 +88,7 @@ class BeersController < ApplicationController
      # if brewery does not exist in DB, insert info into Breweries and Beers tables
      if @related_brewery.empty?
         # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_state => @this_beer_origin, :collab => false)
+        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :collab => false)
         new_brewery.save!
         # then add new beer to beers table       
         new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :user_addition => true, :touched_by_user => current_user.id)
