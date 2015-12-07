@@ -11,14 +11,16 @@
 				</div>
 			</div>
 		</div>
-		<div class="row no-margin ">
-			<div class="col-xs-6 col-sm-3 col-md-2 draft-details-header-holder text-right">
-				<%= link_to "Draft Details", retailer_path(@retailer.id), class: 'retailer-account-options live-view' %>
+		<% if current_user.role_id == 1 || current_user.role_id == 5 ||  current_user.role_id == 7 %>
+			<div class="row no-margin ">
+				<div class="col-xs-6 col-sm-3 col-md-2 text-right">
+					<%= link_to "Draft Details", retailer_path(@retailer.id), class: 'retailer-account-options live-view' %>
+				</div>
+				<div class="col-xs-6 col-sm-3 col-md-2 account-details-header-holder text-center">
+					<%= link_to "Account Details", retailer_path(@retailer.id, "location"), class: 'retailer-account-options' %>
+				</div>
 			</div>
-			<div class="col-xs-6 col-sm-3 col-md-2 text-center">
-				<%= link_to "Account Details", retailer_path(@retailer.id, "location"), class: 'retailer-account-options' %>
-			</div>
-		</div>
+		<% end %>
 		<%- flash.each do |name, msg| -%>
 				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) && name == "error" %>
 			<%- end -%>
@@ -77,53 +79,57 @@
 			</div>
 		</div>
 		<% if !@draft_board.blank? && @subscription_plan == 2 %>
-		<hr>
-			<div class="row no-margin">
-				<div class="col-xs-12">
-					<% if @draft_inventory.blank? %>
-						<h4 class="retail-manage-header">Draft Inventory</h4>
-					<% else %>
-						<h4 class="retail-manage-header">Draft Inventory <span class="last-updated"> (Last updated: <%= (@last_draft_inventory_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h4>
-					<% end %>
+			<% if current_user.role_id == 1 || current_user.role_id == 5 || current_user.role_id == 7 %>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<% if @draft_inventory.blank? %>
+							<h4 class="retail-manage-header">Draft Inventory</h4>
+						<% else %>
+							<h4 class="retail-manage-header">Draft Inventory <span class="last-updated"> (Last updated: <%= (@last_draft_inventory_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h4>
+						<% end %>
+					</div>
+					<div class="col-xs-12">
+						<% if @draft_inventory.blank? %>
+							<div class="row no-margin ">
+								<div class="col-xs-12 col-sm-5 col-md-4">
+									<%= link_to edit_draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
+										<i class="fa fa-plus"> Create inventory</i>
+									<% end %>
+								</div>
+							</div>
+						<% else %>
+							<div class="row no-margin ">
+								<div class="col-xs-12 col-sm-5 col-md-4">
+									<%= link_to edit_draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+										<i class="fa fa-plus"> Add inventory</i>
+									<% end %>
+								</div>
+							</div>
+							<div class="row no-margin ">	
+								<div class="col-xs-12 col-sm-5 col-md-4">
+									<%= link_to draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
+										<i class="fa fa-chevron-right"> View inventory list</i>
+									<% end %>
+								</div>
+							</div>				
+						<% end %>
+					</div>
 				</div>
-				<div class="col-xs-12">
-					<% if @draft_inventory.blank? %>
-						<div class="row no-margin ">
-							<div class="col-xs-12 col-sm-5 col-md-4">
-								<%= link_to edit_draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
-									<i class="fa fa-plus"> Create inventory</i>
-								<% end %>
-							</div>
-						</div>
-					<% else %>
-						<div class="row no-margin ">
-							<div class="col-xs-12 col-sm-5 col-md-4">
-								<%= link_to edit_draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
-									<i class="fa fa-plus"> Add inventory</i>
-								<% end %>
-							</div>
-						</div>
-						<div class="row no-margin ">	
-							<div class="col-xs-12 col-sm-5 col-md-4">
-								<%= link_to draft_inventory_path(@draft_board[0].id), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
-									<i class="fa fa-chevron-right"> View inventory list</i>
-								<% end %>
-							</div>
-						</div>				
-					<% end %>
-				</div>
-			</div>
-			<hr>
+			<% end %>
 			<% if current_user.role_id == 1 || current_user.role_id == 7 %>
+				<hr>
 				<div class="row no-margin" id="social-media-preferences">
 					<%= render 'social_media_preferences' %>
 				</div>
-				<hr>
 			<% end %>
 			<% if !@internal_board_preferences.nil? %>
-				<div class="row no-margin" id="internal-draft-preferences">
-					<%= render 'internal_draft_preferences' %>
-				</div>
+				<% if current_user.role_id == 1 || current_user.role_id == 5 || current_user.role_id == 7 %>
+					<hr>
+					<div class="row no-margin" id="internal-draft-preferences">
+						<%= render 'internal_draft_preferences' %>
+					</div>
+				<% end %>
 			<% end %>
 		<% end %>
 	</div>

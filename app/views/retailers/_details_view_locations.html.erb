@@ -11,29 +11,34 @@
 				</div>
 			</div>
 		</div>
-		<div class="row no-margin ">
-			<div class="col-xs-6 col-sm-3 col-md-2 draft-details-header-holder text-right">
-				<%= link_to "Draft Details", retailer_path(@retailer.id), class: 'retailer-account-options' %>
+		<% if current_user.role_id == 1 || current_user.role_id == 5 ||  current_user.role_id == 7 %>
+			<div class="row no-margin ">
+				<div class="col-xs-6 col-sm-3 col-md-2 text-right">
+					<%= link_to "Draft Details", retailer_path(@retailer.id), class: 'retailer-account-options' %>
+				</div>
+				<div class="col-xs-6 col-sm-3 col-md-2 account-details-header-holder text-center">
+					<%= link_to "Account Details", retailer_path(@retailer.id, "location"), class: 'retailer-account-options live-view' %>
+				</div>
 			</div>
-			<div class="col-xs-6 col-sm-3 col-md-2 text-center">
-				<%= link_to "Account Details", retailer_path(@retailer.id, "location"), class: 'retailer-account-options live-view' %>
-			</div>
-		</div>
+		<% end %>
 		<%- flash.each do |name, msg| -%>
 				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) && name == "error" %>
 			<%- end -%>
 		<hr>
 		<% if @subscription_plan == 2 %>
-			<% if current_user.role_id == 1 || current_user.role_id == 5 %>
+			<% if current_user.role_id == 1 || current_user.role_id == 5 ||  current_user.role_id == 7 %>
 				<div class="row no-margin" id="team_authorization">
 					<%= render 'team_authorization' %>
 				</div>
 			<% end %>
 		<% end %>
+		<% if current_user.role_id == 1 || current_user.role_id == 5 ||  current_user.role_id == 7 %>
 			<hr>
 			<div class="row no-margin">
 				<%= render 'location_details' %>
 			</div>
+		<% end %>
+		<% if current_user.role_id == 1 || @current_user_role.owner == true ||  current_user.role_id == 7 %>
 			<hr>
 			<div class="row no-margin">
 				<div class="col-xs-12 text-center">
@@ -54,6 +59,7 @@
 					</div>
 				</div>	
 			</div>
+		<% end %>
 	</div>
 	<div id="invite-team-member" class="modal">
 		<div class="modal-header">

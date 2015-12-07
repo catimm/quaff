@@ -76,6 +76,7 @@ Rails.application.routes.draw do
   post '/retailers/update_twitter_view/:id' => 'retailers#update_twitter_view'
   post '/retailers/update_team_roles/:id(.:format)' => 'retailers#update_team_roles'
   get '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans'
+  get '/retailers/remove_team_member/:id' => 'retailers#remove_team_member', :as => 'remove_team_member'
   devise_scope :user do
     get '/retailers/invite_team_member_new/:id' => 'invitations#invite_team_member_new', :as => 'invite_team_member'
     post '/invitations/invite_team_member_new/:id' => 'invitations#invite_team_member_create'

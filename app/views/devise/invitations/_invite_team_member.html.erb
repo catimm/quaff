@@ -14,13 +14,22 @@
 	<div class="row"> 
 		<div class="col-sm-1"></div>
 		<div class="col-xs-12 col-sm-10">
-			<%= f.select(:role_id, options_for_select([["Owner", "owner"], 
-										["Admin", "admin"], 
-										["User", "user"]]), 
-										{:prompt => 'Choose access level for team member',  
-										:class => 'form-control team-member-access-dropdown'},
-										{:required => true,
-										:class => 'form-control'})  %>
+			<% if @current_team_user.owner == true %>
+				<%= f.select(:role_id, options_for_select([["Owner", "owner"], 
+											["Admin", "admin"], 
+											["User", "user"]]), 
+											{:prompt => 'Choose access level for team member',  
+											:class => 'form-control team-member-access-dropdown'},
+											{:required => true,
+											:class => 'form-control'})  %>
+			<% else %>
+				<%= f.select(:role_id, options_for_select([["Admin", "admin"], 
+											["User", "user"]]), 
+											{:prompt => 'Choose access level for team member',  
+											:class => 'form-control team-member-access-dropdown'},
+											{:required => true,
+											:class => 'form-control'})  %>
+			<% end %>
 		</div>
 	</div>
 	<div class="row"> 

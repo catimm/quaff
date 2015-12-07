@@ -2032,8 +2032,8 @@ input[type="checkbox"] {
   font-family: inherit !important;
 }
 // Retail account page
-.draft-details-header-holder {
-  border-right: 1px solid $less-emphasized-text;
+.account-details-header-holder {
+  border-left: 1px solid $less-emphasized-text;
 }
 .retailer-account-options {
   color: $normal-text;
@@ -2127,7 +2127,7 @@ input[type="checkbox"] {
   }
 }
 .team-member-name-column {
-  width: 40% !important;
+  width: 37% !important;
   padding-left: 5px !important;
 }
 .team-user-status-column {
@@ -2136,11 +2136,34 @@ input[type="checkbox"] {
   border-left: 1px solid $soft-border;
   border-right: 1px solid $soft-border;
 }
+.remove-team-member-column {
+  width: 3% !important;
+  text-align: center;
+  a {
+    i {
+      color: $less-emphasized-text;
+      font-size: 20px;
+      font-weight: 400 !important;
+    }
+  }
+  .remove-team-member-button-owner {
+    i {
+      color: $gray-body-background;
+      font-size: 20px;
+      font-weight: 400 !important;
+    }
+  }
+}
 .team-member-access-dropdown {
   options {
     color: #555555 !important;
     font-size: 14px !important;
    }
+}
+.not-active-team-member {
+  color: $less-emphasized-text;
+  font-size: 12px;
+  font-style: italic;
 }
 .retail-page-logo-holder {
   height: 40px;

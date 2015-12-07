@@ -25,6 +25,47 @@ class UserMailer < ActionMailer::Base
     mandrill_client.messages.send_template template_name, template_content, message
   end
   
+  def add_team_email(invited, inviter, location)
+    template_name = "add-team-email"
+    template_content = []
+    message = {
+      to: [{email: invited.email}],
+      inline_css: true,
+      merge_vars: [
+        {rcpt: invited.email,
+         vars: [
+           {name: "invited", content: invited.first_name},
+           {name: "inviter", content: inviter.first_name},
+           {name: "inviter_email", content: inviter.email},
+           {name: "location", content: location.name}
+         ]}
+      ]
+    }
+    mandrill_client.messages.send_template template_name, template_content, message
+  end
+  
+  def new_team_email(invited, inviter, location)
+    url = "http://www.drinkknird.com/users/invitation/accept?invitation_token="
+    template_name = "new-team-email"
+    template_content = []
+    message = {
+      to: [{email: invited.email}],
+      inline_css: true,
+      merge_vars: [
+        {rcpt: invited.email,
+         vars: [
+           {name: "invited", content: invited.first_name},
+           {name: "inviter", content: inviter.first_name},
+           {name: "inviter_email", content: inviter.email},
+           {name: "url", content: url},
+           {name: "token", content: invited.raw_invitation_token},
+           {name: "location", content: location.name}
+         ]}
+      ]
+    }
+    mandrill_client.messages.send_template template_name, template_content, message
+  end
+  
   def welcome_email(user)
     Rails.logger.debug("User info is: #{user.inspect}")
     url = "http://www.drinkknird.com/users/"

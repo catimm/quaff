@@ -53,12 +53,18 @@ class InvitationsController < Devise::InvitationsController
   # method to allow retailer admin/owner to invite others
   def invite_team_member_new
     @new_team_member = User.new
+    @current_team_user = UserLocation.where(user_id: current_user.id, location_id: session[:retail_id]).first
     render :partial => 'invite_team_member'
   end
   
   # method to allow retailer admin/owner to invite others
   def invite_team_member_create
-    @search_for_user = User.find_by_email(params[:user][:email])
+    # find info about location
+    @location = Location.find_by_id(params[:id])
+    # find if invited person is already a user
+    @invited_user = User.find_by_email(params[:user][:email])
+    
+    # set variables for new user
     if params[:user][:role_id] == "owner"
       @role_id = 5
       @owner = true
@@ -69,15 +75,33 @@ class InvitationsController < Devise::InvitationsController
       @role_id = 6
       @owner = false
     end
-    if !@search_for_user.blank?
-      @search_for_user.update_attributes(role_id: @role_id)
-      @new_user_to_location = UserLocation.new(user_id: @search_for_user.id, location_id: params[:id], owner: @owner)
+    
+    # add user
+    if !@invited_user.blank?
+      # update invited person's Role Id in the User Model
+      @invited_user.update_attributes(role_id: @role_id)
+      # add invited person to the User Location table
+      @new_user_to_location = UserLocation.new(user_id: @invited_user.id, location_id: @location.id, owner: @owner)
       @new_user_to_location.save!
+      # send original email invitation
+      UserMailer.add_team_email(@invited_user, current_user, @location).deliver_now
     else
-      
+      # add invited person to User model
+      @invited_user = User.invite!(invite_params, current_inviter) do |u|
+        # Skip sending the default Devise Invitable e-mail
+        u.skip_invitation = true
+      end
+      # Set the value for :invitation_sent_at because we skip calling the Devise Invitable method deliver_invitation which normally sets this value
+      # Also update invited person's Role Id in the User Model
+      @invited_user.update_attributes(invitation_sent_at: Time.now.utc, role_id: @role_id)
+      # add invited person to the User Location table
+      @new_user_to_location = UserLocation.new(user_id: @invited_user.id, location_id: @location.id, owner: @owner)
+      @new_user_to_location.save!
+      # send original email invitation
+      UserMailer.new_team_email(@invited_user, current_user, @location).deliver_now
     end
     
-    redirect_to retailer_path(params[:id], "location") 
+    redirect_to retailer_path(@location.id, "location") 
   end
   
   private

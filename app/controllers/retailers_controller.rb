@@ -1,5 +1,6 @@
 class RetailersController < ApplicationController
   before_filter :verify_admin
+  respond_to :html, :json, :js
   
   def show
     gon.source = session[:gon_source]
@@ -33,18 +34,22 @@ class RetailersController < ApplicationController
     
     # get team member authorizations
     @team_authorizations = UserLocation.where(location_id: params[:id])
-    Rails.logger.debug("Team info #{@team_authorizations.inspect}")
+    @current_user_role = @team_authorizations.where(user_id: current_user.id).first
+    
     # check if there is currently only one owner
     @owners = 0
     @team_authorizations.each do |member|
       if member.owner == true
         @owners = @owners + 1
       end
+      if member.owner == true && current_user.id == member.user_id
+        @current_team_user = "owner"
+      end
     end
     if @owners < 2
       @only_owner = true
     end
-    
+    Rails.logger.debug("Current user role: #{@current_team_user.inspect}")
     # find last time this draft board inventory was updated
     if !@draft_inventory.blank?
       @last_draft_inventory_update = BeerLocation.where(draft_board_id: @draft_board[0].id, beer_is_current: "hold").order(:updated_at).reverse_order.first
@@ -69,11 +74,11 @@ class RetailersController < ApplicationController
   
   def update
     @facebook_url = params[:location][:facebook_url]
-    Rails.logger.debug("FB URL #{@facebook_url.inspect}")
+    #Rails.logger.debug("FB URL #{@facebook_url.inspect}")
     @facebook_split = @facebook_url.split('/')
-    Rails.logger.debug("FB URL Split #{@facebook_split.inspect}")
+    #Rails.logger.debug("FB URL Split #{@facebook_split.inspect}")
     params[:location][:facebook_url] = @facebook_split[3]
-    Rails.logger.debug("New FB Params #{params[:location][:facebook_url].inspect}")
+    #Rails.logger.debug("New FB Params #{params[:location][:facebook_url].inspect}")
     @details = Location.update(params[:id], location_details)
     
     redirect_to retailer_path(params[:id], "location")
@@ -137,28 +142,26 @@ class RetailersController < ApplicationController
       @draft_board.update_attributes(font_size: params[:format])
     end
     
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-    #@draft_board = InternalDraftBoardPreference.find_by(draft_board_id: params[:internal_draft_board_preference][:draft_board_id])
-    #Rails.logger.debug("Draft Board ID #{@draft_board.inspect}")
-    #@preferences = InternalDraftBoardPreference.update(@draft_board.id, user_preferences)
-    #@preferences.save
-    #redirect_to retailer_path(session[:retail_id])
+    render :nothing => true, status: :ok
+    #respond_to do |format|
+      #format.js
+    #end # end of redirect to jquery
   end
   
   def update_team_roles
-    @team_member_user_id = params[:format]
+    @team_member_info = params[:id].split("-")
+    @team_member_role = @team_member_info[0]
+    @team_member_user_id = @team_member_info[1] 
     @user_member = User.find_by_id(@team_member_user_id)
     @user_location = UserLocation.where(user_id: @team_member_user_id, location_id: session[:retail_id]).first
-    if params[:id] == "owner"
+    if @team_member_role == "owner"
       if @user_member.role_id != 5
         @user_member.update_attributes(role_id: 5)
       end
       if @user_location.owner == false
         @user_location.update_attributes(owner: true)
       end
-    elsif params[:id] == "admin"
+    elsif @team_member_role == "admin"
       if @user_member.role_id != 5
         @user_member.update_attributes(role_id: 5)
       end
@@ -173,9 +176,43 @@ class RetailersController < ApplicationController
         @user_location.update_attributes(owner: false)
       end
     end
+    
+    # get retailer info
+    @retailer = Location.find(session[:retail_id])
+    
+    # get team member authorizations
+    @team_authorizations = UserLocation.where(location_id: session[:retail_id])
+    @current_user_role = @team_authorizations.where(user_id: current_user.id).first
+    
+    # check if there is currently only one owner
+    @owners = 0
+    @team_authorizations.each do |member|
+      if member.owner == true
+        @owners = @owners + 1
+      end
+      if member.owner == true && current_user.id == member.user_id
+        @current_team_user = "owner"
+      end
+    end
+    if @owners < 2
+      @only_owner = true
+    end
+    Rails.logger.debug("Current user role: #{@current_team_user.inspect}")
     respond_to do |format|
       format.js
     end # end of redirect to jquery
+  end
+  
+  def remove_team_member
+    # find team member info
+    @user_location = UserLocation.find_by_id(params[:id])
+    @user_info = User.find_by_id(@user_location.user_id)
+    # update team member's role id
+    @user_info.update_attributes(role_id: 4)
+    # remove team member from User Location table
+    @user_location.destroy!
+    
+    redirect_to retailer_path(session[:retail_id], "location")
   end
   
   private

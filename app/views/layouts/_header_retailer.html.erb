@@ -19,7 +19,11 @@
 					<% if can? :edit, Brewery %>
 					 	<li class="navLinks"><%= link_to "Find next drink", locations_path %></li>
 				    	<li class="navLinks dropdown">
-				          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+				          <% if current_user.role_id == 1 || current_user.role_id == 2 %>
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+				          <% else %>
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.username %> <span class="caret"></span></a>
+				          <% end %>
 				          <ul class="dropdown-menu">
 				            <li><%= link_to "My beer preferences", users_path(:user_id => current_user.id) %></li>
 							 <li role="separator" class="divider"></li>
@@ -37,7 +41,11 @@
 					<% elsif can? :edit, DraftBoard %>
 						<li class="navLinks"><%= link_to "Find next drink", locations_path %></li>
 				    	<li class="navLinks dropdown">
-				          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+				          <% if current_user.role_id == 1 || current_user.role_id == 2 %>
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+				          <% else %>
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.username %> <span class="caret"></span></a>
+				          <% end %>
 				          <ul class="dropdown-menu">
 				            <li><%= link_to "My beer preferences", users_path(:user_id => current_user.id) %></li>
 							 <li role="separator" class="divider"></li>
@@ -51,7 +59,11 @@
 					<% else %>
 						<li class="navLinks"><%= link_to "Find next drink", locations_path %></li>
 				    	<li class="navLinks dropdown">
-				          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.username %> <span class="caret"></span></a>
+				          <% if current_user.role_id == 1 || current_user.role_id == 2 %>
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+				          <% else %>
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.username %> <span class="caret"></span></a>
+				          <% end %>
 				          <ul class="dropdown-menu">
 				            <li><%= link_to "My beer preferences", users_path(:user_id => current_user.id) %></li>
 							 <li role="separator" class="divider"></li>
