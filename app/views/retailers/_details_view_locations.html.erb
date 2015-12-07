@@ -1,0 +1,64 @@
+<div class="container draft-board-container">
+		<div class="row no-margin ">
+			<div class="col-sm-12 visible-sm visible-md visible-lg">
+				<div class="row img-responsive retailer-logo-image-med" alt="Responsive image" style="background-image: url(<%= @retailer.logo_med %>)">
+					<h3 class="retailer-page-title"><%= @retailer.short_name %>'s Account</h3>
+				</div>
+			</div>
+			<div class="col-xs-12 visible-xs">
+				<div class="row img-responsive retailer-logo-image-small" alt="Responsive image" style="background-image: url(<%= @retailer.logo_small %>)">
+					<h3 class="retailer-page-title-mobile"><%= @retailer.short_name %>'s Account</h3>
+				</div>
+			</div>
+		</div>
+		<div class="row no-margin ">
+			<div class="col-xs-6 col-sm-3 col-md-2 draft-details-header-holder text-right">
+				<%= link_to "Draft Details", retailer_path(@retailer.id), class: 'retailer-account-options' %>
+			</div>
+			<div class="col-xs-6 col-sm-3 col-md-2 text-center">
+				<%= link_to "Account Details", retailer_path(@retailer.id, "location"), class: 'retailer-account-options live-view' %>
+			</div>
+		</div>
+		<%- flash.each do |name, msg| -%>
+				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) && name == "error" %>
+			<%- end -%>
+		<hr>
+		<% if @subscription_plan == 2 %>
+			<% if current_user.role_id == 1 || current_user.role_id == 5 %>
+				<div class="row no-margin" id="team_authorization">
+					<%= render 'team_authorization' %>
+				</div>
+			<% end %>
+		<% end %>
+			<hr>
+			<div class="row no-margin">
+				<%= render 'location_details' %>
+			</div>
+			<hr>
+			<div class="row no-margin">
+				<div class="col-xs-12 text-center">
+					<h4 class="retail-manage-header">Your Plan</h4>
+				</div>
+				<div class="col-xs-12">
+					 <div class="row no-margin">
+						<div class="col-xs-12">
+							<h5 class="retailer-section-instructions">Your current plan is <%= @user_plan %>.</h5>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12 col-sm-5 col-md-4">
+							<%= link_to change_plans_path(@retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to upgrade?'} do %>
+								<i class="fa fa-retweet"> Change Plan</i>
+							<% end %>
+						</div>
+					</div>
+				</div>	
+			</div>
+	</div>
+	<div id="invite-team-member" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Invite a team member</h3>
+		</div>
+		<div class="modal-body"></div>
+	</div>

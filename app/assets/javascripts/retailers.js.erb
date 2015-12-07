@@ -53,4 +53,16 @@ $(function() {
 		  url: "/retailers/update_internal_board_preferences/" + preference + "." + $(this).val()
 		});
 	});
+	
+	// add logic to change a team member's authorization level
+	$(document).on('change', '.team-member-authorization', function () {
+		var id = $(this).attr('id').split(".");
+		var user_info = id[1].split("-");
+		var user_id = user_info[0]
+		var role = $(this).val();
+		$.ajax({
+		  type: "POST",
+		  url: "/retailers/update_team_roles/" + role + "." + user_id
+		});
+	});
 });

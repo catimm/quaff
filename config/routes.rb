@@ -74,7 +74,13 @@ Rails.application.routes.draw do
   patch '/draft_inventory/:id(.:format)' => 'draft_inventory#update'
   post '/retailers/update_internal_board_preferences/:id(.:format)' => 'retailers#update_internal_board_preferences', :as => 'update_internal_board_preferences'
   post '/retailers/update_twitter_view/:id' => 'retailers#update_twitter_view'
+  post '/retailers/update_team_roles/:id(.:format)' => 'retailers#update_team_roles'
   get '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans'
+  devise_scope :user do
+    get '/retailers/invite_team_member_new/:id' => 'invitations#invite_team_member_new', :as => 'invite_team_member'
+    post '/invitations/invite_team_member_new/:id' => 'invitations#invite_team_member_create'
+  end
+  
   resources :retailers
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'

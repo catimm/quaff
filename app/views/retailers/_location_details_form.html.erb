@@ -12,7 +12,7 @@
 		<%= f.text_field :beerpage, :class => "form-control", placeholder: "Beer Page URL" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
-		<% if !@retailer.facebook_url.nil? %>	
+		<% if !@retailer.facebook_url.blank? %>	
 			<% @facebook_value_to_show = "https://facebook.com/" + @retailer.facebook_url %>
 		<% else %>
 			<% @facebook_value_to_show = "" %>
@@ -20,7 +20,7 @@
 		<%= f.text_field :facebook_url, :class => "form-control", placeholder: "Facebook URL", :value => @facebook_value_to_show %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
-		<% if !@retailer.twitter_url.nil? %>
+		<% if !@retailer.twitter_url.blank? %>
 			<% @twitter_value_to_show = "https://twitter.com/" + @retailer.twitter_url %>
 		<% else %>
 			<% @twitter_value_to_show = "" %>

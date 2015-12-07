@@ -31,9 +31,29 @@ class RetailersController < ApplicationController
       @user_plan = "Retain"
     end
     
+    # get team member authorizations
+    @team_authorizations = UserLocation.where(location_id: params[:id])
+    Rails.logger.debug("Team info #{@team_authorizations.inspect}")
+    # check if there is currently only one owner
+    @owners = 0
+    @team_authorizations.each do |member|
+      if member.owner == true
+        @owners = @owners + 1
+      end
+    end
+    if @owners < 2
+      @only_owner = true
+    end
+    
     # find last time this draft board inventory was updated
     if !@draft_inventory.blank?
       @last_draft_inventory_update = BeerLocation.where(draft_board_id: @draft_board[0].id, beer_is_current: "hold").order(:updated_at).reverse_order.first
+    end
+    
+    if !params[:format].blank?
+      if params[:format] == "location"
+        @location_page = "yes"
+      end
     end
   end
   
@@ -56,7 +76,7 @@ class RetailersController < ApplicationController
     Rails.logger.debug("New FB Params #{params[:location][:facebook_url].inspect}")
     @details = Location.update(params[:id], location_details)
     
-    redirect_to retailer_path(params[:id])
+    redirect_to retailer_path(params[:id], "location")
   end
   
   def update_twitter_view
@@ -125,6 +145,37 @@ class RetailersController < ApplicationController
     #@preferences = InternalDraftBoardPreference.update(@draft_board.id, user_preferences)
     #@preferences.save
     #redirect_to retailer_path(session[:retail_id])
+  end
+  
+  def update_team_roles
+    @team_member_user_id = params[:format]
+    @user_member = User.find_by_id(@team_member_user_id)
+    @user_location = UserLocation.where(user_id: @team_member_user_id, location_id: session[:retail_id]).first
+    if params[:id] == "owner"
+      if @user_member.role_id != 5
+        @user_member.update_attributes(role_id: 5)
+      end
+      if @user_location.owner == false
+        @user_location.update_attributes(owner: true)
+      end
+    elsif params[:id] == "admin"
+      if @user_member.role_id != 5
+        @user_member.update_attributes(role_id: 5)
+      end
+      if @user_location.owner == true
+        @user_location.update_attributes(owner: false)
+      end
+    else
+      if @user_member.role_id != 6
+        @user_member.update_attributes(role_id: 6)
+      end
+      if @user_location.owner == true
+        @user_location.update_attributes(owner: false)
+      end
+    end
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
   end
   
   private

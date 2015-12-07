@@ -1,0 +1,84 @@
+<div class="col-xs-12 text-center">
+	<h4 class="retail-manage-header">Team Authorization</h4>
+</div>
+<div class="col-md-1"></div>
+<div class="col-xs-12 col-md-10">
+	<div class="row no-margin">
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+					<th>Team Member<br> </th>
+					<th class="text-center">User<br><span class="team-user-info">Access 'Draft Board', 'Social Media', and 'Drink Menu'</span></th>
+					<th class="text-center">Admin<br><span class="team-user-info">Access everything except 'Your Plan'</span></th>
+					<th class="text-center">Owner<br><span class="team-user-info">Full access<br>&nbsp;</span></th>
+				</thead>
+				<tbody class="team-status-table">
+				<% @team_authorizations.each do	|member| %>		
+					<% if member.owner == true %>
+						<% @status = "owner" %>
+					<% elsif member.user.role_id == 5 %>
+						<% @status = "admin" %>
+					<% else %>
+						<% @status = "user" %>
+					<% end %>
+					<tr>
+						<td class="team-member-name-column"><%= member.user.first_name %> (<%= member.user.email %>)</td>
+						<% if member.owner == true && @only_owner == true %>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="user" class="team-member-authorization" disabled="disabled" data-toggle="tooltip" title="There must be one owner; currently this it." />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="admin" class="team-member-authorization" disabled="disabled" data-toggle="tooltip" title="There must be one owner; currently this it." />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="owner" class="team-member-authorization" disabled="disabled" data-toggle="tooltip" title="There must be one owner; currently this it." checked="checked" />
+							</td>
+						<% elsif member.owner == true %>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="user" class="team-member-authorization" />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="admin" class="team-member-authorization" />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="owner" class="team-member-authorization" checked="checked" />
+							</td>
+						<% elsif member.user.role_id == 5 %>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="user" class="team-member-authorization" />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="admin" class="team-member-authorization" checked="checked" />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="owner" class="team-member-authorization" />
+							</td>
+						<% else %>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="user" class="team-member-authorization" checked="checked" />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="admin" class="team-member-authorization" />
+							</td>
+							<td class="team-user-status-column">
+								<input id="user_status.<%= member.user_id %>-<%= member.id %>" name="user_status[<%= member.user_id %>]" type="radio" value="owner" class="team-member-authorization" />
+							</td>
+						<% end %>
+					</tr>
+				<% end %>
+				</tbody>
+			</table>
+		</div>						
+	</div>
+</div>	
+<div class="col-xs-12">
+	<div class="row no-margin">
+		<div class="col-xs-0 col-sm-3 col-md-4"></div>
+		<div class="col-xs-12 col-sm-5 col-md-4">
+			<%= link_to invite_team_member_path(@retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit',
+					data: {toggle: "modal", target: "#invite-team-member"} do %>
+				<i class="fa fa-plus"> Invite Team Members</i>
+			<% end %>
+		</div>
+	</div>
+</div>

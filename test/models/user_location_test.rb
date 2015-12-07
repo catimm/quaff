@@ -7,6 +7,7 @@
 #  location_id :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  owner       :boolean
 #
 
 require 'test_helper'

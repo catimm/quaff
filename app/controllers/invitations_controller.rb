@@ -50,9 +50,39 @@ class InvitationsController < Devise::InvitationsController
     end
   end
   
+  # method to allow retailer admin/owner to invite others
+  def invite_team_member_new
+    @new_team_member = User.new
+    render :partial => 'invite_team_member'
+  end
+  
+  # method to allow retailer admin/owner to invite others
+  def invite_team_member_create
+    @search_for_user = User.find_by_email(params[:user][:email])
+    if params[:user][:role_id] == "owner"
+      @role_id = 5
+      @owner = true
+    elsif params[:user][:role_id] == "admin"
+      @role_id = 5
+      @owner = false
+    else
+      @role_id = 6
+      @owner = false
+    end
+    if !@search_for_user.blank?
+      @search_for_user.update_attributes(role_id: @role_id)
+      @new_user_to_location = UserLocation.new(user_id: @search_for_user.id, location_id: params[:id], owner: @owner)
+      @new_user_to_location.save!
+    else
+      
+    end
+    
+    redirect_to retailer_path(params[:id], "location") 
+  end
+  
   private
   def verify_admin
-    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2
+    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5
   end
   
 end
