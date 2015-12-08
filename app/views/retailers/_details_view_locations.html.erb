@@ -41,23 +41,7 @@
 		<% if current_user.role_id == 1 || @current_user_role.owner == true ||  current_user.role_id == 7 %>
 			<hr>
 			<div class="row no-margin">
-				<div class="col-xs-12 text-center">
-					<h4 class="retail-manage-header">Your Plan</h4>
-				</div>
-				<div class="col-xs-12">
-					 <div class="row no-margin">
-						<div class="col-xs-12">
-							<h5 class="retailer-section-instructions">Your current plan is <%= @user_plan %>.</h5>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 col-sm-5 col-md-4">
-							<%= link_to change_plans_path(@retailer.id), class: 'btn btn-default btn-success formButton-draft-board-edit', data: { confirm:'Are you sure you want to upgrade?'} do %>
-								<i class="fa fa-retweet"> Change Plan</i>
-							<% end %>
-						</div>
-					</div>
-				</div>	
+				<%= render 'retailer_plan' %>
 			</div>
 		<% end %>
 	</div>

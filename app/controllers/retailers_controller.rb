@@ -35,6 +35,7 @@ class RetailersController < ApplicationController
     # get team member authorizations
     @team_authorizations = UserLocation.where(location_id: params[:id])
     @current_user_role = @team_authorizations.where(user_id: current_user.id).first
+    @team_authorization_last_updated = @team_authorizations.order(:updated_at)
     
     # check if there is currently only one owner
     @owners = 0
@@ -155,26 +156,26 @@ class RetailersController < ApplicationController
     @user_member = User.find_by_id(@team_member_user_id)
     @user_location = UserLocation.where(user_id: @team_member_user_id, location_id: session[:retail_id]).first
     if @team_member_role == "owner"
-      if @user_member.role_id != 5
+      #if @user_member.role_id != 5
         @user_member.update_attributes(role_id: 5)
-      end
-      if @user_location.owner == false
+      #end
+      #if @user_location.owner == false
         @user_location.update_attributes(owner: true)
-      end
+      #end
     elsif @team_member_role == "admin"
-      if @user_member.role_id != 5
+      #if @user_member.role_id != 5
         @user_member.update_attributes(role_id: 5)
-      end
-      if @user_location.owner == true
+      #end
+      #if @user_location.owner == true
         @user_location.update_attributes(owner: false)
-      end
+      #end
     else
-      if @user_member.role_id != 6
+      #if @user_member.role_id != 6
         @user_member.update_attributes(role_id: 6)
-      end
-      if @user_location.owner == true
+      #end
+      #if @user_location.owner == true
         @user_location.update_attributes(owner: false)
-      end
+      #end
     end
     
     # get retailer info
@@ -183,6 +184,7 @@ class RetailersController < ApplicationController
     # get team member authorizations
     @team_authorizations = UserLocation.where(location_id: session[:retail_id])
     @current_user_role = @team_authorizations.where(user_id: current_user.id).first
+    @team_authorization_last_updated = @team_authorizations.order(:updated_at)
     
     # check if there is currently only one owner
     @owners = 0
