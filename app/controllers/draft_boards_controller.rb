@@ -189,11 +189,13 @@ class DraftBoardsController < ApplicationController
                 if session[:subscription] == 2
                   # now check what the user's auto tweet preference is
                   @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
-                  if @authentication.auto_tweet == true
-                    @tweet = tweet_creator(@new_beer_location_drink.id)
-                    twitter_tweet.update(@tweet)
-                    # update Beer Location table to reflect a tweet was made
-                    @new_beer_location_drink.update_attributes(twitter_share: Time.now)
+                  if !@authentication.blank?
+                    if @authentication.auto_tweet == true
+                      @tweet = tweet_creator(@new_beer_location_drink.id)
+                      twitter_tweet.update(@tweet)
+                      # update Beer Location table to reflect a tweet was made
+                      @new_beer_location_drink.update_attributes(twitter_share: Time.now)
+                    end
                   end
                 end
                # add size/cost of new draft drink
@@ -378,11 +380,13 @@ class DraftBoardsController < ApplicationController
                 if session[:subscription] == 2
                   # now check what the user's auto tweet preference is
                   @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
-                  if @authentication.auto_tweet == true
-                    @tweet = tweet_creator(@new_beer_location_drink.id)
-                    twitter_tweet.update(@tweet)
-                    # update Beer Location table to reflect a tweet was made
-                    @new_beer_location_drink.update_attributes(twitter_share: Time.now)
+                  if !@authentication.blank?
+                    if @authentication.auto_tweet == true
+                      @tweet = tweet_creator(@new_beer_location_drink.id)
+                      twitter_tweet.update(@tweet)
+                      # update Beer Location table to reflect a tweet was made
+                      @new_beer_location_drink.update_attributes(twitter_share: Time.now)
+                    end
                   end
                 end
               # add size/cost of new draft drink
