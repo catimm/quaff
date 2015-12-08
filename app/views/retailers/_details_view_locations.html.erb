@@ -40,7 +40,7 @@
 		<% end %>
 		<% if current_user.role_id == 1 || @current_user_role.owner == true ||  current_user.role_id == 7 %>
 			<hr>
-			<div class="row no-margin">
+			<div class="row no-margin" id="change-plans">
 				<%= render 'retailer_plan' %>
 			</div>
 		<% end %>

@@ -2186,6 +2186,61 @@ input[type="checkbox"] {
       margin: 0;
       padding: 0; 
   }
+.retailer-plan-header {
+  color: $normal-text;
+  font-size: 18px;
+  text-align: center;
+  .retailer-plan-info {
+    color: $less-emphasized-text;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 400;
+  }
+}
+.feature-list-column {
+  color: $normal-text;
+  font-size: 18px;
+}
+.feature-show-column {
+  width: 15% !important;
+  font-size: 18px;
+  border-left: 1px solid $soft-border;
+  border-right: 1px solid $soft-border;
+  text-align: center;
+  font-weight: 500;
+}
+.feature-included {
+  color: $user-action;
+}
+.feature-not-included {
+  color: $normal-text;
+}
+.current-plan-text {
+  color: $action-background;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.2 !important;
+}
+.change-plan-button-holder {
+  text-align: center;
+  a {
+    margin-top: 6px !important;
+  }
+}
+.formButton-change-plan {
+  width: 90%;
+}
+.selected-plan-column {
+  border-left: 3px solid $action-background;
+  border-right: 3px solid $action-background !important;
+}
+.selected-plan-column.top-row {
+  border-top: 3px solid $action-background !important;
+}
+.selected-plan-column.last-row {
+  border-bottom: 3px solid $action-background;
+}
 // Inventory Management page
 .on-deck-for-title {
   display: inline;

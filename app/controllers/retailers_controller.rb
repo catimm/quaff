@@ -5,6 +5,7 @@ class RetailersController < ApplicationController
   def show
     gon.source = session[:gon_source]
     @subscription_plan = session[:subscription]
+    @retailer_subscription = LocationSubscription.where(location_id: params[:id]).first
     @retailer = Location.find(params[:id])
     #Rails.logger.debug("Draft Board #{@retailer.inspect}")
     @draft_board = DraftBoard.where(location_id: params[:id])
@@ -103,7 +104,7 @@ class RetailersController < ApplicationController
   
   def change_plans
     @subscription_plan = session[:subscription]
-    @subscription = LocationSubscription.where(location_id: params[:format]).first
+    @subscription = LocationSubscription.where(location_id: params[:id]).first
     # check to see if a location draft board exists
     @draft_board = DraftBoard.find_by(location_id: session[:retail_id])
     
@@ -122,7 +123,7 @@ class RetailersController < ApplicationController
       @internal_draft_preferences = InternalDraftBoardPreference.find_by(draft_board_id: @draft_board.id).destroy
     end
     
-    redirect_to retailer_path(session[:retail_id])
+    redirect_to retailer_path(session[:retail_id], "location")
   end
   
   def update_internal_board_preferences
