@@ -26,24 +26,31 @@ class UsersController < ApplicationController
   end
   
   def show
-    @user = User.find(current_user.id)
-    @user_notifications = UserNotificationPreference.find_by(user_id: @user.id)
-    # Rails.logger.debug("User notifications: #{@user_notifications.inspect}")
+    @user = User.find_by_id(current_user.id)
+    Rails.logger.debug("User info: #{@user.inspect}")
+    @user_notifications = UserNotificationPreference.where(user_id: @user.id).first
+    Rails.logger.debug("User notifications: #{@user_notifications.inspect}")
   end
   
   def update
-    if params[:id] == "user"
-      # update user info
-      User.update(current_user.id, username: params[:user][:username], first_name: params[:user][:first_name],
+    # update user info if submitted
+    if !params[:user].blank?
+      User.update(params[:id], username: params[:user][:username], first_name: params[:user][:first_name],
                   email: params[:user][:email])
-    elsif params[:id] == "notification_preferences"
+      # set saved message
+      @message = "Your profile is updated!"
+    end
+    # update user preferences if submitted
+    if !params[:user_notification_preference].blank?
       @user_preference = UserNotificationPreference.where(user_id: current_user.id)[0]
       UserNotificationPreference.update(@user_preference.id, preference_one: params[:user_notification_preference][:preference_one], threshold_one: params[:user_notification_preference][:threshold_one],
                   preference_two: params[:user_notification_preference][:preference_two], threshold_two: params[:user_notification_preference][:threshold_two])
+      # set saved message
+      @message = "Your notification preferences are updated!"
     end
     
     # set saved message
-    flash[:success] = "You're updated!"            
+    flash[:success] = @message         
     # redirect back to user account page
     redirect_to user_path(current_user.id)
   end
@@ -59,8 +66,9 @@ class UsersController < ApplicationController
       redirect_to user_path(current_user.id)
     else
       # set saved message
-      flash[:failure] = "Sorry, invalid current password..."
-      render "show"
+      flash[:failure] = "Sorry, invalid password."
+      # redirect back to user account page
+      redirect_to user_path(current_user.id)
     end
   end
   

@@ -7,7 +7,7 @@
 		<%= f.submit "Update profile", class: "btn btn-default btn-success formButton" %>
 	<% end %>
 	<%- flash.each do |name, msg| -%>
-		<% if msg == "You're updated!" || msg == "Sorry, incorrect current password..." || msg == "New password saved!" %>
+		<% if name == "success" || name == "failure" %>
 			<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
 		<% end %>
 	<%- end -%>
