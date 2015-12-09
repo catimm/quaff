@@ -102,7 +102,7 @@ $(function() {
 	    timer = setTimeout(function() { //then give it a second to see if the user is finished
 	    	var post_text_final = btoa(post_text);
 			$(this_input).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href', '/draft_boards/share_on_facebook/' + beer_location_id_final + '.' + post_text_final);
-	    }, 1000);
+	    }, 500);
 
 	});
 });

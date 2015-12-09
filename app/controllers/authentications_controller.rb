@@ -5,29 +5,33 @@ class AuthenticationsController < ApplicationController
   
     def facebook
     omni = request.env["omniauth.auth"]
-    Rails.logger.debug("Omniauth info: #{omni.inspect}")
+    #Rails.logger.debug("Omniauth info: #{omni.inspect}")
     token = omni['credentials']['token']
-    Rails.logger.debug("Omniauth token #{token.inspect}")
+    #Rails.logger.debug("Omniauth token #{token.inspect}")
     token_secret = omni['credentials']['secret']
-    Rails.logger.debug("Omniauth secret token #{token_secret.inspect}")
-    @authentication = Authentication.find_by_provider_and_uid(omni['provider'], omni['uid'])
+    #Rails.logger.debug("Omniauth secret token #{token_secret.inspect}")
     @registered = User.find_by_id(current_user.id)
-    Rails.logger.debug("User info #{@registered.inspect}")
+    #Rails.logger.debug("User info #{@registered.inspect}")
     @retailer = Location.find_by_id(session[:retail_id])
-    Rails.logger.debug("Retailer info #{@retailer.inspect}")
+    #Rails.logger.debug("Retailer info #{@retailer.inspect}")
+    
     # using the Koala gem
     @user_graph = Koala::Facebook::API.new(token) 
-    Rails.logger.debug("Graph info: #{@user_graph.inspect}")
+    #Rails.logger.debug("Graph info: #{@user_graph.inspect}")
+    # get page info
+    @page_info = @user_graph.get_object(@retailer.facebook_url)
+    #Rails.logger.debug("Page info: #{@page_info.inspect}")
+    @page_id = @page_info["id"]
+    #Rails.logger.debug("Page ID #{@page_id.inspect}")
+    # find out if page/user is already authenticated
+    @authentication = Authentication.where(provider: omni['provider'], uid: @page_id).first
+    #Rails.logger.debug("Authentication info #{@authentication.inspect}")
+    
     
     if @authentication
       @user_graph.delete_connections('me', 'permissions', {app_id: '498922646949761' }) # Delete app_reques
       @authentication.destroy
     else
-      @page_info = @user_graph.get_object(@retailer.facebook_url)
-      #Rails.logger.debug("Page info: #{@page_info.inspect}")
-      @page_id = @page_info["id"]
-      #Rails.logger.debug("Page ID #{@page_id.inspect}")
-      #Rails.logger.debug("User Page info: #{@pages.inspect}")
       @page_access_token = @user_graph.get_page_access_token(@page_id)
       #Rails.logger.debug("Page Access Token: #{@page_access_token.inspect}")
       @authenticate = Authentication.new(user_id: @registered.id, provider: omni['provider'], uid: @page_id, token: @page_access_token, location_id: @retailer.id)
