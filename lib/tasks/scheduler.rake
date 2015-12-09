@@ -96,19 +96,21 @@ task :check_pine_box => :environment do
             else # found in Alternative Brewery Table
               if index == 0 # if first collaborator, make this the default brewery name for the matching process below
                 @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @related_brewery
                 # make certain this brewery is flagged as having collaboration beers
                 if @related_brewery[0].collab != true
                   @related_brewery[0].update_attributes(collab: "1")
                 end
               else 
                 @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @temp_collab
                 # make certain this brewery is flagged as having collaboration beers
                 if @temp_collab[0].collab != true
                   @temp_collab[0].update_attributes(collab: "1")
                 end
               end
-              # add this brewery to brewery collaborator array for use below
-              @brewery_collaborators << @collaborator_brewery[0]
             end
           else # found in Brewery Table
             if index == 0 # if first collaborator, make this the default brewery name for the matching process below
@@ -434,19 +436,21 @@ task :check_chucks_85 => :environment do
             else # found in Alternative Brewery Table
               if index == 0 # if first collaborator, make this the default brewery name for the matching process below
                 @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @related_brewery
                 # make certain this brewery is flagged as having collaboration beers
                 if @related_brewery[0].collab != true
                   @related_brewery[0].update_attributes(collab: "1")
                 end
               else 
                 @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @temp_collab
                 # make certain this brewery is flagged as having collaboration beers
                 if @temp_collab[0].collab != true
                   @temp_collab[0].update_attributes(collab: "1")
                 end
               end
-              # add this brewery to brewery collaborator array for use below
-              @brewery_collaborators << @collaborator_brewery[0]
             end
           else # found in Brewery Table
             if index == 0 # if first collaborator, make this the default brewery name for the matching process below
@@ -765,12 +769,16 @@ task :check_chucks_cd => :environment do
             else # found in Alternative Brewery Table
               if index == 0 # if first collaborator, make this the default brewery name for the matching process below
                 @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @related_brewery
                 # make certain this brewery is flagged as having collaboration beers
                 if @related_brewery[0].collab != true
                   @related_brewery[0].update_attributes(collab: "1")
                 end
               else 
                 @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @temp_collab
                 # make certain this brewery is flagged as having collaboration beers
                 if @temp_collab[0].collab != true
                   @temp_collab[0].update_attributes(collab: "1")
@@ -1440,19 +1448,21 @@ task :check_beveridge_place => :environment do
             else # found in Alternative Brewery Table
               if index == 0 # if first collaborator, make this the default brewery name for the matching process below
                 @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @related_brewery
                 # make certain this brewery is flagged as having collaboration beers
                 if @related_brewery[0].collab != true
                   @related_brewery[0].update_attributes(collab: "1")
                 end
               else 
                 @temp_collab = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                # add this brewery to brewery collaborator array for use below
+                @brewery_collaborators << @temp_collab
                 # make certain this brewery is flagged as having collaboration beers
                 if @temp_collab[0].collab != true
                   @temp_collab[0].update_attributes(collab: "1")
                 end
               end
-              # add this brewery to brewery collaborator array for use below
-              @brewery_collaborators << @collaborator_brewery[0]
             end
           else # found in Brewery Table
             if index == 0 # if first collaborator, make this the default brewery name for the matching process below
