@@ -1,5 +1,5 @@
 $(function() {
-	$('textarea').each(function() {
+	$('.twitter-tweet-input').each(function() {
 	  // get beer_location id for the drink being tweeted about
 		drink_href = $(this).parent().parent().siblings('.post-button-holder-col').children('.post-button-holder-row').children('.post-button-holder').children('a').attr('href');
 		drink_href_split = drink_href.split('/');
