@@ -109,8 +109,10 @@ html {
 }
 body {
   padding-top: 50px;
+  padding-bottom: 20px;
   margin-bottom: 50px !important;
   overflow-x: hidden;
+
 }
 .brand-font {
    font-family: 'sansationregular' !important;
@@ -2529,7 +2531,7 @@ input[type="checkbox"] {
 }
 .facebook-post-input {
   margin-top: 15px;
-  height: 82px !important;
+  height: 100px !important;
 }
 //Change font size when screen size changes
 /* Extra small devices (phones, less than 768px) */
