@@ -1535,8 +1535,11 @@ task :check_beveridge_place => :environment do
         end # end loop to check each drink name against this drink
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
+          Rails.logger.debug("Recognized beer (1538): #{@recognized_beer.inspect}")
           if @collab_beer # for collab scenario--make sure collab table is populated properly
+            Rails.logger.debug("Brewery Collaborators (1540): #{@brewery_collaborators.inspect}")
             @brewery_collaborators.each do |collaborator|
+              Rails.logger.debug("This Collaborator (1542): #{collaborator.inspect}")
               @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
               if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
                 collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
