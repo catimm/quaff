@@ -12,12 +12,12 @@ production:
   SEARCHBOX_URL: http://paas:cbc4f45f96b2a107ed8ae6db7884d11c@dwalin-us-east-1.searchly.com
   
 # FB credentials -- for real app
-#FB_ID: 498342563674436
-#FB_SECRET: f84a0ec00a08b497f549fef4a0015f26 
+FB_ID: 498342563674436
+FB_SECRET: f84a0ec00a08b497f549fef4a0015f26 
 
 # FB credentials -- for test app
-FB_ID: 498922646949761
-FB_SECRET: af1c9f8c5c0152948fdd7795abf6a8fd
+#FB_ID: 498922646949761
+#FB_SECRET: af1c9f8c5c0152948fdd7795abf6a8fd
 
 # Twitter credentials
 TWITTER_ID: 7CnOkRwWwkyin0BDDe4SQuO89
