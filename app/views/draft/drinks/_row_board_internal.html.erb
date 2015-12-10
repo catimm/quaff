@@ -1,29 +1,29 @@
 	<table class="table table-striped">
 		<thead>
-			<th class="text-center">Tap</th>
+			<th class="text-center"><%= @internal_board_preferences[0].tap_title %></th>
 			<% if @subscription_plan == 2 && @internal_board_preferences[0].separate_names == true %>
-				<th>Maker</th>
-				<th class="draft-board-drink-name">Drink</th>
+				<th><%= @internal_board_preferences[0].maker_title %></th>
+				<th class="draft-board-drink-name"><%= @internal_board_preferences[0].drink_title %></th>
 			<% else %>
-				<th>Maker <span class="draft-board-drink-name">Drink</span></th>
+				<th><%= @internal_board_preferences[0].maker_title %> <span class="draft-board-drink-name"><%= @internal_board_preferences[0].drink_title %></span></th>
 			<% end %>
-			<th>Style</th>
-			<th class="text-center">ABV</th>
-			<th class="text-center">IBU</th>
+			<th><%= @internal_board_preferences[0].style_title %></th>
+			<th class="text-center"><%= @internal_board_preferences[0].abv_title %></th>
+			<th class="text-center"><%= @internal_board_preferences[0].ibu_title %></th>
 			<% if @taster_size >= 1 %>
-				<th class="text-center">Taster</th>
+				<th class="text-center"><%= @internal_board_preferences[0].taster_title %></th>
 			<% end %>
 			<% if @tulip_size >= 1 %>
-				<th class="text-center">Schooner</th>
+				<th class="text-center"><%= @internal_board_preferences[0].tulip_title %></th>
 			<% end %>
 			<% if @pint_size >= 1 %>
-				<th class="text-center">Pint</th>
+				<th class="text-center"><%= @internal_board_preferences[0].pint_title %></th>
 			<% end %>
 			<% if @half_growler_size >= 1 %>
-				<th class="text-center">1/2 G</th>
+				<th class="text-center"><%= @internal_board_preferences[0].half_growler_title %></th>
 			<% end %>
 			<% if @growler_size >= 1 %>
-				<th class="text-center">Growler</th>
+				<th class="text-center"><%= @internal_board_preferences[0].growler_title %></th>
 			<% end %>
 		</thead>
 		<tbody class="table-bordered">
