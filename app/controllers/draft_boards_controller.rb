@@ -41,22 +41,27 @@ class DraftBoardsController < ApplicationController
       end
       if !@internal_board_preferences.font_size.nil?
         if @internal_board_preferences.font_size == 1
+          @header_font = "header-font-vs"
           @row_font = "row-font-vs"
           @row_drink_font = "row-drink-font-vs"
           @row_n_a_font = "row-n-a-font-vs"
         elsif @internal_board_preferences.font_size == 2
+          @header_font = "header-font-s"
           @row_font = "row-font-s"
           @row_drink_font = "row-drink-font-s"
           @row_n_a_font = "row-n-a-font-s"
         elsif @internal_board_preferences.font_size == 3
+          @header_font = "header-font-m"
           @row_font = "row-font-m"
           @row_drink_font = "row-drink-font-m"
           @row_n_a_font = "row-n-a-font-m"
         elsif @internal_board_preferences.font_size == 4
+          @header_font = "header-font-l"
           @row_font = "row-font-l"
           @row_drink_font = "row-drink-font-l"
           @row_n_a_font = "row-n-a-font-l"
         else
+          @header_font = "header-font-vl"
           @row_font = "row-font-vl"
           @row_drink_font = "row-drink-font-vl"
           @row_n_a_font = "row-n-a-font-vl"
@@ -722,22 +727,27 @@ class DraftBoardsController < ApplicationController
       end
       if !@internal_board_preferences.font_size.nil?
         if @internal_board_preferences.font_size == 1
+          @header_font = "header-font-vs"
           @row_font = "row-font-vs"
           @row_drink_font = "row-drink-font-vs"
           @row_n_a_font = "row-n-a-font-vs"
         elsif @internal_board_preferences.font_size == 2
+          @header_font = "header-font-s"
           @row_font = "row-font-s"
           @row_drink_font = "row-drink-font-s"
           @row_n_a_font = "row-n-a-font-s"
         elsif @internal_board_preferences.font_size == 3
+          @header_font = "header-font-m"
           @row_font = "row-font-m"
           @row_drink_font = "row-drink-font-m"
           @row_n_a_font = "row-n-a-font-m"
         elsif @internal_board_preferences.font_size == 4
+          @header_font = "header-font-l"
           @row_font = "row-font-l"
           @row_drink_font = "row-drink-font-l"
           @row_n_a_font = "row-n-a-font-l"
         else
+          @header_font = "header-font-vl"
           @row_font = "row-font-vl"
           @row_drink_font = "row-drink-font-vl"
           @row_n_a_font = "row-n-a-font-vl"

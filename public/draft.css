@@ -246,6 +246,21 @@ td.n-a-draft-board-format {
   border-right: 1px solid #747474;
   border-left: 1px solid #747474;
 }
+.header-font-vs {
+  font-size: 14px !important; 
+}
+.header-font-s {
+  font-size: 16px !important;
+}
+.header-font-m {
+  font-size: 18px !important;
+}
+.header-font-l {
+  font-size: 20px !important;
+}
+.header-font-vl {
+  font-size: 20px !important;
+}
 .row-font-vs {
   font-size: 18px !important; 
 }
