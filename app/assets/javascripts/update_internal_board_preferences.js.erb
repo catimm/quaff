@@ -1,0 +1,72 @@
+// add logic to update internal prefences
+	$(document).on('change', '#separate_names', function () {
+		if ($(this).val() == "no") {
+			$(this).attr("value", "yes");
+		} else {
+			$(this).attr("value", "no");
+		}
+		var preference = $(this).attr('id')
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_boards/update_internal_board_preferences/" + preference + "-" + $(this).val()
+		});
+	});
+	$(document).on('change', '#column_names', function () {
+		if ($(this).val() == "no") {
+			$(this).attr("value", "yes");
+		} else {
+			$(this).attr("value", "no");
+		}
+		var preference = $(this).attr('id')
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_boards/update_internal_board_preferences/" + preference + "-" + $(this).val()
+		});
+	});
+	$(document).on('change', '#font_size', function () {
+		var preference = $(this).attr('id')
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_boards/update_internal_board_preferences/" + preference + "-" + $(this).val()
+		});
+	});
+
+	var timer;
+	
+	$(document).on('keyup', '.title_input', function () {	
+		//clear any interval on key up
+		clearInterval(timer);
+		
+		// Grab current input
+		var this_id = $(this).attr('id');
+		var id_info = this_id.split("_");
+		var title_id = id_info[0];
+		var value = $(this).val();
+	    
+	    timer = setTimeout(function() { //then give it a second to see if the user is finished
+	    	var data = title_id + "-" + value;
+	    	var final_data = btoa(data);
+			$.ajax({
+			  type: "POST",
+			  url: "/draft_boards/update_internal_board_preferences/titles-" + final_data
+			});
+	    }, 1000);
+	});
+$(function () {
+	// check to see if glass sizes exist before giving Retailer option to change header text
+	if( $('#taster-option-holder').length ) {
+	     $('.taster-option-holder').removeClass("hidden");
+	}
+	if( $('#tulip-option-holder').length ) {
+	     $('.tulip-option-holder').removeClass("hidden");
+	}
+	if( $('#pint-option-holder').length ) {
+	     $('.pint-option-holder').removeClass("hidden");
+	}
+	if( $('#half-growler-option-holder').length ) {
+	     $('.half-growler-option-holder').removeClass("hidden");
+	}
+	if( $('#growler-option-holder').length ) {
+	     $('.growler-option-holder').removeClass("hidden");
+	}
+});

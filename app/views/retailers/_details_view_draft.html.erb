@@ -123,13 +123,5 @@
 					<%= render 'social_media_preferences' %>
 				</div>
 			<% end %>
-			<% if !@internal_board_preferences.nil? %>
-				<% if current_user.role_id == 1 || current_user.role_id == 5 || current_user.role_id == 7 %>
-					<hr>
-					<div class="row no-margin" id="internal-draft-preferences">
-						<%= render 'internal_draft_preferences' %>
-					</div>
-				<% end %>
-			<% end %>
 		<% end %>
 	</div>

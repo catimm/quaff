@@ -113,8 +113,11 @@ class RetailersController < ApplicationController
       session[:subscription] = 2
       if !@draft_board.blank?
         @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft_board.id, 
-                                      separate_names: false, column_names: false, font_size: 3)
-        @internal_draft_preferences.save
+                                      separate_names: false, column_names: false, font_size: 3, tap_title: "#",
+                                      maker_title: "Maker", drink_title: "Drink", style_title: "Style", abv_title: "ABV",
+                                      ibu_title: "IBU", taster_title: "Taster", tulip_title: "Tulip", pint_title: "Pint",
+                                      half_growler_title: "1/2 G", growler_title: "Growler")
+        @internal_draft_preferences.save 
       end
     end
     if @subscription_plan == 2
@@ -124,30 +127,6 @@ class RetailersController < ApplicationController
     end
     
     redirect_to retailer_path(session[:retail_id], "location")
-  end
-  
-  def update_internal_board_preferences
-    @draft_board = InternalDraftBoardPreference.find_by(draft_board_id: session[:draft_board_id])
-    if params[:id] == "separate_names"
-      if params[:format] == "yes"
-        @draft_board.update_attributes(separate_names: true)
-      else
-        @draft_board.update_attributes(separate_names: false)
-      end
-    elsif params[:id] == "column_names"
-      if params[:format] == "yes"
-        @draft_board.update_attributes(column_names: true)
-      else
-        @draft_board.update_attributes(column_names: false)
-      end
-    else 
-      @draft_board.update_attributes(font_size: params[:format])
-    end
-    
-    render :nothing => true, status: :ok
-    #respond_to do |format|
-      #format.js
-    #end # end of redirect to jquery
   end
   
   def update_team_roles
@@ -204,6 +183,7 @@ class RetailersController < ApplicationController
     respond_to do |format|
       format.js
     end # end of redirect to jquery
+    #render :nothing => true, status: :ok
   end
   
   def remove_team_member

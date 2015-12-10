@@ -980,6 +980,9 @@ $beer-header-lines-to-show-fp: 1;
     font-size: 14px;
     color: $normal-text;
 }
+.internal-board-option-header {
+  float: left;
+}
 .board-preference-labels {
   label {
     margin-top: 7.5px;
@@ -997,13 +1000,30 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 .board-preference-inputs {
-  margin-top: 5px !important;
-  input {
+  .separate_names, .column_names {
+    margin: 8px 0 0 10px !important;
     -ms-transform: scale(1.3); /* IE */
     -moz-transform: scale(1.3); /* FF */
     -webkit-transform: scale(1.3); /* Safari and Chrome */
     -o-transform: scale(1.3); /* Opera */
     padding: 10px;
+  }
+  select {
+    margin: 0 0 0 10px !important;
+  }
+}
+.change-column-title {
+  margin-bottom: 5px !important;
+}
+.title-header-explainer {
+  color: $normal-text;
+  margin-bottom: 5px !important;
+}
+.title-holder-row {
+  div {
+    input {
+      width: 95%;
+    }
   }
 }
 // Sign-up & log-in pages

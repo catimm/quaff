@@ -6,6 +6,7 @@ class DraftBoardsController < ApplicationController
   include TwitterTweet
   include TweetCreator
   require "base64"
+  respond_to :html, :json, :js
   
   def show
     # get subscription plan
@@ -33,25 +34,25 @@ class DraftBoardsController < ApplicationController
     
     # determine whether user has changed internal draft board view
     if @subscription_plan == 2
-      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id)
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id).first
       # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
-      if @internal_board_preferences[0].column_names == true
+      if @internal_board_preferences.column_names == true
         @column_border_class = "draft-board-row-column-border"
       end
-      if !@internal_board_preferences[0].font_size.nil?
-        if @internal_board_preferences[0].font_size == 1
+      if !@internal_board_preferences.font_size.nil?
+        if @internal_board_preferences.font_size == 1
           @row_font = "row-font-vs"
           @row_drink_font = "row-drink-font-vs"
           @row_n_a_font = "row-n-a-font-vs"
-        elsif @internal_board_preferences[0].font_size == 2
+        elsif @internal_board_preferences.font_size == 2
           @row_font = "row-font-s"
           @row_drink_font = "row-drink-font-s"
           @row_n_a_font = "row-n-a-font-s"
-        elsif @internal_board_preferences[0].font_size == 3
+        elsif @internal_board_preferences.font_size == 3
           @row_font = "row-font-m"
           @row_drink_font = "row-drink-font-m"
           @row_n_a_font = "row-n-a-font-m"
-        elsif @internal_board_preferences[0].font_size == 4
+        elsif @internal_board_preferences.font_size == 4
           @row_font = "row-font-l"
           @row_drink_font = "row-drink-font-l"
           @row_n_a_font = "row-n-a-font-l"
@@ -628,6 +629,177 @@ class DraftBoardsController < ApplicationController
     # redirect back to updated draft edit page
     redirect_to twitter_tweet_options_path
 
+  end
+  
+  def update_internal_board_preferences
+    @data = params[:id].split("-")
+    @option = @data[0]
+    #Rails.logger.debug("Option: #{@option.inspect}")
+    if @option == "titles"
+      @data = Base64.decode64(@data[1])
+      #Rails.logger.debug("Data: #{@data.inspect}")
+      @final_data = @data.split("-")
+      #Rails.logger.debug("Final Data: #{@final_data.inspect}")
+      @value = @final_data[0]
+      #Rails.logger.debug("Value: #{@value.inspect}")
+      @title_value = @final_data[1]
+      #Rails.logger.debug("Title value: #{@title_value.inspect}")
+    else
+      @value = @data[1]
+      @title_value = @data[2]
+    end
+    @draft_board = InternalDraftBoardPreference.find_by(draft_board_id: session[:draft_board_id])
+    if @option == "separate_names"
+      if @value == "yes"
+        @draft_board.update_attributes(separate_names: true)
+      else
+        @draft_board.update_attributes(separate_names: false)
+      end
+    elsif @option == "column_names"
+      if @value == "yes"
+        @draft_board.update_attributes(column_names: true)
+      else
+        @draft_board.update_attributes(column_names: false)
+      end
+    elsif @option == "titles"
+      if @value == "tap"
+        @draft_board.update_attributes(tap_title: @title_value)
+      elsif @value == "maker"
+        @draft_board.update_attributes(maker_title: @title_value)
+      elsif @value == "drink"
+        @draft_board.update_attributes(drink_title: @title_value)
+      elsif @value == "style"
+        @draft_board.update_attributes(style_title: @title_value)
+      elsif @value == "abv"
+        @draft_board.update_attributes(abv_title: @title_value)
+      elsif @value == "ibu"
+        @draft_board.update_attributes(ibu_title: @title_value)
+      elsif @value == "taster"
+        @draft_board.update_attributes(taster_title: @title_value)
+      elsif @value == "tulip"
+        @draft_board.update_attributes(tulip_title: @title_value)
+      elsif @value == "pint"
+        @draft_board.update_attributes(pint_title: @title_value)
+      elsif @value == "growler"
+        @draft_board.update_attributes(growler_title: @title_value)
+      else
+        @draft_board.update_attributes(half_growler_title: @title_value)
+      end
+    else 
+      @draft_board.update_attributes(font_size: @value)
+    end
+    
+    # original code from Show method to set up draft board
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    # set column border default
+    @column_border_class = ""
+    # set default font size
+    @row_font = "row-font-m"
+    @row_drink_font = "row-drink-font-m"
+    @row_n_a_font = "row-n-a-font-m"
+    
+    @board_type = params[:format]
+    # get retailer info
+    @retail_id = session[:retail_id]
+    @retailer = Location.find(@retail_id)
+    # get draft board info
+    @draft_board = DraftBoard.find_by(location_id: @retail_id)
+    #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
+    # get draft board details
+    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
+    # find if any "next up" drinks exist
+    @next_up_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true)
+    # get last updated info
+    @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
+    
+    # determine whether user has changed internal draft board view
+    if @subscription_plan == 2
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id).first
+      # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
+      if @internal_board_preferences.column_names == true
+        @column_border_class = "draft-board-row-column-border"
+      end
+      if !@internal_board_preferences.font_size.nil?
+        if @internal_board_preferences.font_size == 1
+          @row_font = "row-font-vs"
+          @row_drink_font = "row-drink-font-vs"
+          @row_n_a_font = "row-n-a-font-vs"
+        elsif @internal_board_preferences.font_size == 2
+          @row_font = "row-font-s"
+          @row_drink_font = "row-drink-font-s"
+          @row_n_a_font = "row-n-a-font-s"
+        elsif @internal_board_preferences.font_size == 3
+          @row_font = "row-font-m"
+          @row_drink_font = "row-drink-font-m"
+          @row_n_a_font = "row-n-a-font-m"
+        elsif @internal_board_preferences.font_size == 4
+          @row_font = "row-font-l"
+          @row_drink_font = "row-drink-font-l"
+          @row_n_a_font = "row-n-a-font-l"
+        else
+          @row_font = "row-font-vl"
+          @row_drink_font = "row-drink-font-vl"
+          @row_n_a_font = "row-n-a-font-vl"
+        end
+      end
+    end
+    
+    # get generally available "next drinks up", if any exist
+    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true, tap_number: nil)
+    #Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
+    
+    # determine whether a drink size column shows in row view
+    @total_number_of_sizes = 0
+    @taster_size = 0
+    @tulip_size = 0
+    @pint_size = 0
+    @half_growler_size = 0
+    @growler_size = 0
+    @beer_location_ids = @current_draft_board.pluck(:id)
+    @current_draft_board.each do |draft_drink|
+      @drink_details = DraftDetail.where(beer_location_id: draft_drink.id)
+      @this_number_of_sizes = 0
+      @drink_details.each do |details|  
+        if details.drink_size > 0 && details.drink_size <= 5
+          @taster_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size > 5 && details.drink_size <= 12
+          @tulip_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size > 12 && details.drink_size <= 22
+          @pint_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size == 32
+          @half_growler_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size == 64
+          @growler_size += 1
+          @this_number_of_sizes += 1
+        end
+        if @this_number_of_sizes > @total_number_of_sizes
+          @total_number_of_sizes = @this_number_of_sizes
+        end
+      end
+    end
+    #Rails.logger.debug("Total # of sizes: #{@total_number_of_sizes.inspect}")
+    # set width of columns that hold drink graphics and info
+    if @total_number_of_sizes <= 4
+      @column_class = "col-sm-3"
+      @column_class_xs = "col-xs-3"
+    else
+      @column_class = "col-sm-4"
+      @column_class_xs = "col-xs-4"
+    end
+    #Rails.logger.debug("Column size is: #{@column_class.inspect}")
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
   end
   
   private

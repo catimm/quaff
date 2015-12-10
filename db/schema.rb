@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151206224806) do
+ActiveRecord::Schema.define(version: 20151209224613) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,8 +167,19 @@ ActiveRecord::Schema.define(version: 20151206224806) do
     t.boolean  "separate_names"
     t.boolean  "column_names"
     t.integer  "font_size"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "tap_title"
+    t.string   "maker_title"
+    t.string   "drink_title"
+    t.string   "style_title"
+    t.string   "abv_title"
+    t.string   "ibu_title"
+    t.string   "taster_title"
+    t.string   "tulip_title"
+    t.string   "pint_title"
+    t.string   "half_growler_title"
+    t.string   "growler_title"
   end
 
   create_table "invitation_requests", force: :cascade do |t|

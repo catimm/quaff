@@ -1,198 +1,121 @@
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<th class="text-center">Tap</th>
-			<% if @subscription_plan == 2 && @internal_board_preferences[0].separate_names == true %>
-				<th>Maker</th>
-				<th class="draft-board-drink-name">Drink</th>
-			<% else %>
-				<th>Maker <span class="draft-board-drink-name">Drink</span></th>
-			<% end %>
-			<th class="">Style</th>
-			<th class="text-center">ABV</th>
-			<th class="text-center">IBU</th>
-			<% if @taster_size >= 1 %>
-				<th class="text-center">Taster</th>
-			<% end %>
-			<% if @tulip_size >= 1 %>
-				<th class="text-center">Tulip</th>
-			<% end %>
-			<% if @pint_size >= 1 %>
-				<th class="text-center">Pint</th>
-			<% end %>
-			<% if @half_growler_size >= 1 %>
-				<th class="text-center">1/2 G</th>
-			<% end %>
-			<% if @growler_size >= 1 %>
-				<th class="text-center">Growler</th>
-			<% end %>
-		</thead>
-		<tbody class="table-bordered">
-		<% @current_draft_board.each do	|drink| %>		
-			<tr>
-				<td class="draft-board-row-tap text-center <%= @column_border_class %> <%= @row_font %>"><%= drink.tap_number %></td>
-				<% if @subscription_plan == 2 && @internal_board_preferences[0].separate_names == true %>
-					<% if !drink.beer.short_beer_name.nil? %>
-						<% if drink.beer.collab == true %>
-							<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-							<td class="draft-board-row-maker <%= @row_drink_font %>"><%= @collab_brewery_name %></td>
-							<td class="draft-board-row-drink draft-board-drink-name <%= @row_drink_font %>"><%= drink.beer.short_beer_name %></td>
-						<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-							<td class="draft-board-row-maker table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.brewery_name %></td>
-							<td class="draft-board-row-drink draft-board-drink-name table-condensed <%= @row_drink_font %>"><%= drink.beer.short_beer_name %></td>
-						<% else %>
-							<td class="draft-board-row-maker table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.short_brewery_name %></td>
-							<td class="draft-board-row-drink draft-board-drink-name table-condensed <%= @row_drink_font %>"><%= drink.beer.short_beer_name %></td>
-						<% end %>
-					<% else %>
-						<% if drink.beer.collab == true %>
-							<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-							<td class="draft-board-row-maker <%= @row_drink_font %>"><%= @collab_brewery_name %></td>
-							<td class="draft-board-row-drink <%= @row_drink_font %>"><%= drink.beer.beer_name %></td>
-						<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-							<td class="draft-board-row-maker table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.brewery_name %></td>
-							<td class="draft-board-row-drink table-condensed <%= @row_drink_font %>"><%= drink.beer.beer_name %></td>
-						<% else %>
-							<td class="draft-board-row-maker table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.short_brewery_name %></td>
-							<td class="draft-board-row-drink table-condensed <%= @row_drink_font %>"><%= drink.beer.beer_name %></td>
-						<% end %>
-					<% end %>
-				<% else %>
-					<% if !drink.beer.short_beer_name.nil? %>
-						<% if drink.beer.collab == true %>
-							<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-							<td class="draft-board-row-name <%= @row_drink_font %>"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
-						<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-							<td class="draft-board-row-name table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
-						<% else %>
-							<td class="draft-board-row-name table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
-						<% end %>
-					<% else %>
-						<% if drink.beer.collab == true %>
-							<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-							<td class="draft-board-row-name <%= @row_drink_font %>"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
-						<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-							<td class="draft-board-row-name table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
-						<% else %>
-							<td class="draft-board-row-name table-condensed <%= @row_drink_font %>"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
-						<% end %>
-					<% end %>
-				<% end %>
-				<% if !drink.beer.beer_type_id.nil? %>
-					<td class="draft-board-row-style <%= @row_font %>"><%= drink.beer.beer_type.beer_type_short_name %></td>
-				<% else %>
-					<td class="draft-board-row-style n-a-draft-board-format-style <%= @row_n_a_font %>">N/A</td>
-				<% end %>
-				<% if !drink.beer.beer_abv.nil? %>
-					<td class="draft-board-row-abv text-center <%= @column_border_class %> <%= @row_font %>"><%= (drink.beer.beer_abv).round(1) %><span class="row-percent-sign">%</span></td>
-				<% else %>
-					<td class="draft-board-row-abv text-center n-a-draft-board-format <%= @column_border_class %> <%= @row_n_a_font %>">N/A</td>
-				<% end %>
-				<% if !drink.beer.beer_ibu.nil? %>
-					<td class="draft-board-row-ibu text-center <%= @column_border_class %> <%= @row_font %>"><%= drink.beer.beer_ibu %></td>
-				<% else %>
-					<td class="draft-board-row-ibu text-center n-a-draft-board-format <%= @column_border_class %> <%= @row_n_a_font %>">N/A</td>
-				<% end %>
-				<% @taster = "N/A" %>
-				<% @tulip = "N/A" %>
-				<% @pint = "N/A" %>
-				<% @half_growler = "N/A" %>
-				<% @growler = "N/A" %>
-				<% @draft_details = DraftDetail.where(beer_location_id: drink.id) %>
-				<% @draft_details.each do |details| %>
-					<% if details.drink_size > 0 && details.drink_size <= 5 %>
-						<% @taster = number_to_currency(details.drink_cost) %>
-					<% end %>
-					<% if details.drink_size > 5 && details.drink_size <= 12 %>
-						<% @tulip = number_to_currency(details.drink_cost) %>
-					<% end %>
-					<% if details.drink_size > 12 && details.drink_size <= 22 %>
-						<% @pint = number_to_currency(details.drink_cost) %>
-					<% end %>
-					<% if details.drink_size == 32 %>
-						<% @half_growler = number_to_currency(details.drink_cost) %>
-					<% end %>
-					<% if details.drink_size == 64 %>
-						<% @growler = number_to_currency(details.drink_cost) %>
-					<% end %>
-				<% end %>
-				<% if @taster_size >= 1 %>
-					<% if @subscription_plan == 2 && drink.special_designation == true %>
-						<% if @taster == "N/A" %>
-							<td class="draft-board-row-taster text-center n-a-draft-board-format <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_n_a_font %>"><%= @taster %></td>
-						<% else %>
-							<td class="draft-board-row-taster text-center <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_font %>"><%= @taster %></td>
-						<% end %>
-					<% else %>
-						<% if @taster == "N/A" %>
-							<td class="draft-board-row-taster text-center n-a-draft-board-format <%= @column_border_class %> <%= @row_n_a_font %>"><%= @taster %></td>
-						<% else %>
-							<td class="draft-board-row-taster text-center <%= @column_border_class %> <%= @row_font %>"><%= @taster %></td>
-						<% end %>
-					<% end %>
-				<% end %>
-				<% if @tulip_size >= 1 %>
-					<% if @subscription_plan == 2 && drink.special_designation == true %>
-						<% if @tulip == "N/A" %>
-							<td class="draft-board-row-tulip text-center n-a-draft-board-format <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_n_a_font %>"><%= @tulip %></td>
-						<% else %>
-							<td class="draft-board-row-tulip text-center <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_font %>"><%= @tulip %></td>
-						<% end %>
-					<% else %>
-						<% if @tulip == "N/A" %>
-							<td class="draft-board-row-tulip text-center n-a-draft-board-format <%= @column_border_class %> <%= @row_n_a_font %>"><%= @tulip %></td>
-						<% else %>
-							<td class="draft-board-row-tulip text-center <%= @column_border_class %> <%= @row_font %>"><%= @tulip %></td>
-						<% end %>
-					<% end %>
-				<% end %>
-				<% if @pint_size >= 1 %>
-					<% if @subscription_plan == 2 && drink.special_designation == true %>
-						<% if @pint == "N/A" %>
-							<td class="draft-board-row-pint text-center n-a-draft-board-format <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_n_a_font %>"><%= @pint %></td>
-						<% else %>
-							<td class="draft-board-row-pint text-center <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_font %>"><%= @pint %></td>
-						<% end %>
-					<% else %>
-						<% if @pint == "N/A" %>
-							<td class="draft-board-row-pint text-center n-a-draft-board-format <%= @column_border_class %> <%= @row_n_a_font %>"><%= @pint %></td>
-						<% else %>
-							<td class="draft-board-row-pint text-center <%= @column_border_class %> <%= @row_font %>"><%= @pint %></td>
-						<% end %>
-					<% end %>
-				<% end %>
-				<% if @half_growler_size >= 1 %>
-					<% if @subscription_plan == 2 && drink.special_designation == true %>
-						<% if @half_growler == "N/A" %>
-							<td class="draft-board-row-growler text-center n-a-draft-board-format <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_n_a_font %>"><%= @half_growler %></td>
-						<% else %>
-							<td class="draft-board-row-growler text-center <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_font %>"><%= @half_growler %>
-						<% end %>
-					<% else %>
-						<% if @half_growler == "N/A" %>
-							<td class="draft-board-row-growler text-center n-a-draft-board-format <%= @column_border_class %> <%= @row_n_a_font %>"><%= @half_growler %></td>
-						<% else %>
-							<td class="draft-board-row-growler text-center <%= @column_border_class %> <%= @row_font %>"><%= @half_growler %></td>
-						<% end %>
-					<% end %>
-				<% end %>
-				<% if @growler_size >= 1 %>
-					<% if @subscription_plan == 2 && drink.special_designation == true %>
-						<% if @growler == "N/A" %>
-							<td class="draft-board-row-growler text-center n-a-draft-board-format <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_n_a_font %>"><%= @growler %></td>
-						<% else %>
-							<td class="draft-board-row-growler text-center <%= drink.special_designation_color %> <%= @column_border_class %> <%= @row_font %>"><%= @growler %></td>
-						<% end %>
-					<% else %>
-						<% if @growler == "N/A" %>
-							<td class="draft-board-row-growler text-center n-a-draft-board-format <%= @column_border_class %> <%= @row_n_a_font %>"><%= @growler %></td>
-						<% else %>
-							<td class="draft-board-row-growler text-center <%= @column_border_class %> <%= @row_font %>"><%= @growler %></td>
-						<% end %>
-					<% end %>
-				<% end %>
-			</tr>
+<% if !@draft_board.blank? && @subscription_plan == 2 %>
+	<% if !@internal_board_preferences.nil? %>
+		<% if current_user.role_id == 1 || current_user.role_id == 5 || current_user.role_id == 7 %>
+			<div class="col-xs-12 no-padding">
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<h5 class="retailer-section-instructions">Change how your internal draft board looks by choosing one or more of the following options:</h5>
+					</div>
+				</div>
+				<div class="row no-margin">
+						<%= hidden_field_tag :draft_board_id, :value => @draft_board.id %>
+						<div class="col-xs-12 col-sm-4 col-md-5 board-preference-inputs">
+							<h6 class="board-preference-options internal-board-option-header">Separate Maker/Drink names into two columns:</h6>
+							<% if @internal_board_preferences.separate_names == true %>
+								<input type="checkbox" name="separate_names" id="separate_names" checked="checked" value="yes" class="separate_names">
+							<% else %>
+								<input type="checkbox" name="separate_names" id="separate_names" value="no" class="separate_names">
+							<% end %>
+						</div>
+						<div class="col-xs-12 col-sm-4 col-md-3 board-preference-inputs">
+							<h6 class="board-preference-options internal-board-option-header">Add borders to columns:</h6>
+							<% if @internal_board_preferences.column_names == true %>
+								<input type="checkbox" name="column_names" id="column_names" checked="checked" value="yes" class="column_names">
+							<% else %>
+								<input type="checkbox" name="column_names" id="column_names" value="no" class="column_names">
+							<% end %>
+						</div>
+						<div class="col-xs-12 col-sm-4 col-md-3 board-preference-inputs">
+								<h6 class="board-preference-options internal-board-option-header">Change font size:</h6>
+									<select id="font_size" name="font_size" class="btn btn-default dropdown-toggle font-preference">
+										<% if @internal_board_preferences.font_size == 1 %>
+											<option value="1" selected>Very small</option>
+										<% else %>
+											<option value="1">Very small</option>
+										<% end %>
+										<% if @internal_board_preferences.font_size == 2 %>
+											<option value="2" selected>Small</option>
+										<% else %>
+											<option value="2">Small</option>
+										<% end %>
+										<% if @internal_board_preferences.font_size == 3 %>
+											<option value="3" selected>Med</option>
+										<% else %>
+											<option value="3">Med</option>
+										<% end %>
+										<% if @internal_board_preferences.font_size == 4 %>
+											<option value="4" selected>Large</option>
+										<% else %>
+											<option value="4">Large</option>
+										<% end %>
+										<% if @internal_board_preferences.font_size == 5 %>
+											<option value="5" selected>Very large</option>
+										<% else %>
+											<option value="5">Very large</option>
+										<% end %>
+			    					</select>		
+						</div>
+						<div class="col-xs-12 board-preference-inputs">
+							<div class="row">
+								<div class="col-xs-12">
+									<h6 class="board-preference-options internal-board-option-header change-column-title">Change column titles:</h6>
+								</div>
+							</div>
+							<div class="row no-margin title-holder-row">	
+								<div class="col-xs-12 col-sm-1 no-padding">
+									<h6 class="title-header-explainer">Tap: </h6>
+									<input type="text" id="tap_title_input" name="tap_title_input" value="<%= @internal_board_preferences.tap_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding">
+									<h6 class="title-header-explainer">Maker: </h6>
+									<input type="text" id="maker_title_input" name="maker_title_input" value="<%= @internal_board_preferences.maker_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding">
+									<h6 class="title-header-explainer">Drink: </h6>
+									<input type="text" id="drink_title_input" name="drink_title_input" value="<%= @internal_board_preferences.drink_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding">
+									<h6 class="title-header-explainer">Style: </h6>
+									<input type="text" id="style_title_input" name="style_title_input" value="<%= @internal_board_preferences.style_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding">
+									<h6 class="title-header-explainer">ABV: </h6>
+									<input type="text" id="abv_title_input" name="abv_title_input" value="<%= @internal_board_preferences.abv_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding">
+									<h6 class="title-header-explainer">IBU: </h6>
+									<input type="text" id="ibu_title_input" name="ibu_title_input" value="<%= @internal_board_preferences.ibu_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding taster-option-holder hidden">
+									<h6 class="title-header-explainer">1oz - 5oz: </h6>
+									<input type="text" id="taster_title_input" name="taster_title_input" value="<%= @internal_board_preferences.taster_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding tulip-option-holder hidden">
+									<h6 class="title-header-explainer">6oz - 12oz: </h6>
+									<input type="text" id="tulip_title_input" name="tulip_title_input" value="<%= @internal_board_preferences.tulip_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding pint-option-holder hidden">
+									<h6 class="title-header-explainer">13oz - 22oz: </h6>
+									<input type="text" id="pint_title_input" name="pint_title_input" value="<%= @internal_board_preferences.pint_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding half-growler-option-holder hidden">
+									<h6 class="title-header-explainer">32oz: </h6>
+									<input type="text" id="half_growler_title_input" name="half_growler_title_input" value="<%= @internal_board_preferences.half_growler_title %>" class="title_input form-control" />
+								</div>
+								<div class="col-xs-12 col-sm-1 no-padding growler-option-holder hidden">
+									<h6 class="title-header-explainer">64oz: </h6>
+									<input type="text" id="growler_title_input" name="growler_title_input" value="<%= @internal_board_preferences.growler_title %>" class="title_input form-control" />
+								</div>
+							</div>
+						</div>
+				</div>
+			<hr />
+			</div>
 		<% end %>
-		</tbody>
-	</table>
+	<% end %>
+<% end %>
+<div class="col-xs-12 no-padding">
+	<div class="row no-margin" id="updated-draft-board-row">
+		<%= render 'draft_board_row' %>
+	</div>
 </div>

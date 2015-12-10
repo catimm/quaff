@@ -21,39 +21,6 @@ $(function() {
 		});
 	});
 	
-	// add logic to update internal prefences
-	$(document).on('change', '#separate_names', function () {
-		if ($(this).val() == "no") {
-			$(this).attr("value", "yes");
-		} else {
-			$(this).attr("value", "no");
-		}
-		var preference = $(this).attr('id')
-		$.ajax({
-		  type: "POST",
-		  url: "/retailers/update_internal_board_preferences/" + preference + "." + $(this).val()
-		});
-	});
-	$(document).on('change', '#column_names', function () {
-		if ($(this).val() == "no") {
-			$(this).attr("value", "yes");
-		} else {
-			$(this).attr("value", "no");
-		}
-		var preference = $(this).attr('id')
-		$.ajax({
-		  type: "POST",
-		  url: "/retailers/update_internal_board_preferences/" + preference + "." + $(this).val()
-		});
-	});
-	$(document).on('change', '#font_size', function () {
-		var preference = $(this).attr('id')
-		$.ajax({
-		  type: "POST",
-		  url: "/retailers/update_internal_board_preferences/" + preference + "." + $(this).val()
-		});
-	});
-	
 	// add logic to change a team member's authorization level
 	$(document).on('change', '.team-member-authorization', function () {
 		var id = $(this).attr('id').split(".");

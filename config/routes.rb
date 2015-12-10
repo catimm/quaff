@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   get '/draft_boards/share_on_facebook/:id(.:format)' => 'draft_boards#share_on_facebook', :as => 'share_on_facebook'
   get '/draft_boards/twitter_tweet_options' => 'draft_boards#twitter_tweet_options', :as => 'twitter_tweet_options'
   get '/draft_boards/share_on_twitter/:id(.:format)' => 'draft_boards#share_on_twitter', :as => 'share_on_twitter'
+  post '/draft_boards/update_internal_board_preferences/:id' => 'draft_boards#update_internal_board_preferences', :as => 'update_internal_board_preferences'
   resources :draft_boards
   get '/draft_inventory/new_drink' => 'draft_inventory#add_new_drink'
   post '/draft_inventory/new_drink' => 'draft_inventory#create_new_drink'
@@ -72,7 +73,6 @@ Rails.application.routes.draw do
   get '/draft_inventory/:id/edit(.:format)' => 'draft_inventory#edit', :as => 'edit_draft_inventory'
   get '/draft_inventory/edit' => 'draft_inventory#edit'
   patch '/draft_inventory/:id(.:format)' => 'draft_inventory#update'
-  post '/retailers/update_internal_board_preferences/:id(.:format)' => 'retailers#update_internal_board_preferences', :as => 'update_internal_board_preferences'
   post '/retailers/update_twitter_view/:id' => 'retailers#update_twitter_view'
   post '/retailers/update_team_roles/:id(.:format)' => 'retailers#update_team_roles'
   get '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans'
