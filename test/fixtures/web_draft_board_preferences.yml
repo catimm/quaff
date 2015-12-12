@@ -1,0 +1,25 @@
+# == Schema Information
+#
+# Table name: web_draft_board_preferences
+#
+#  id                       :integer          not null, primary key
+#  draft_board_id           :integer
+#  show_up_next             :boolean
+#  show_descriptors         :boolean
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  show_next_type           :string
+#  show_next_general_number :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  draft_board_id: 1
+  show_up_next: false
+  show_descriptors: false
+
+two:
+  draft_board_id: 1
+  show_up_next: false
+  show_descriptors: false

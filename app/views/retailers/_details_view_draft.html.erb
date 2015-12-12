@@ -11,7 +11,7 @@
 				</div>
 			</div>
 		</div>
-		<% if current_user.role_id == 1 || current_user.role_id == 5 ||  current_user.role_id == 7 %>
+		<% if current_user.role_id == 1 || current_user.role_id == 5 %>
 			<div class="row no-margin ">
 				<div class="col-xs-6 col-sm-3 col-md-2 text-right">
 					<%= link_to "Draft Details", retailer_path(@retailer.id), class: 'retailer-account-options live-view' %>
@@ -79,7 +79,7 @@
 			</div>
 		</div>
 		<% if !@draft_board.blank? && @subscription_plan == 2 %>
-			<% if current_user.role_id == 1 || current_user.role_id == 5 || current_user.role_id == 7 %>
+			<% if current_user.role_id == 1 || current_user.role_id == 5 %>
 				<hr>
 				<div class="row no-margin">
 					<div class="col-xs-12">
@@ -117,7 +117,7 @@
 					</div>
 				</div>
 			<% end %>
-			<% if current_user.role_id == 1 || current_user.role_id == 7 %>
+			<% if current_user.role_id == 1 || current_user.role_id == 5 %>
 				<hr>
 				<div class="row no-margin" id="social-media-preferences">
 					<%= render 'social_media_preferences' %>

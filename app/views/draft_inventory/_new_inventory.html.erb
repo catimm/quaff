@@ -117,12 +117,6 @@
 						<%= ff.select :tap_number,  options, {prompt: 'Select Tap'}, { :class => "form-control" } %>
 					</div>
 				</div>
-				<div class="row coming-soon-option-row">
-					<div class="col-xs-6 col-sm-1 col-md-4 coming-soon-input coming-soon-wording">
-						<%= ff.check_box :show_up_next %>
-						<h6 class="coming-soon-option">Show customers this is coming soon</h6>
-					</div>
-				</div>
 			<% else %>
 				<div class="row no-margin">
 					<div class="col-sm-5 col-md-3">
@@ -139,12 +133,6 @@
 						<h5 class="on-deck-for-title">On deck for:</h5>
 						<% options = options_from_collection_for_select(@current_draft_drinks, :tap_number, :connect_draft_drink, ff.object.tap_number) %>
 						<%= ff.select :tap_number,  options, {}, { :class => "form-control tap-number-option-list" } %>
-					</div>
-				</div>
-				<div class="row coming-soon-option-row">
-					<div class="col-xs-6 col-sm-1 col-md-4 coming-soon-input up-next-wording">
-						<%= ff.check_box :show_up_next %>
-						<h6 class="coming-soon-option">Show customers this is next on tap</h6>
 					</div>
 				</div>
 			<% end %>

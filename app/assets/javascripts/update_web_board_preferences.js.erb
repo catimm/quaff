@@ -1,0 +1,39 @@
+$(function () {
+
+});
+// add logic to update internal prefences
+	$(document).on('change', '.show_next', function () {
+		if ($(this).val() == "no") {
+			$(this).attr("value", "yes");
+			$('#show-next-type-holder').removeClass('hidden');
+			$('#show-next-type-holder').addClass('show');
+		} else {
+			$(this).attr("value", "no");
+			$('#show-next-type-holder').removeClass('show');
+			$('#show-next-type-holder').addClass('hidden');
+		}
+		var preference = $(this).attr('id')
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_boards/update_web_board_preferences/" + preference + "-" + $(this).val()
+		});
+	});
+	$(document).on('change', '.show_next_type', function () {
+		var preference = $(this).attr('id')
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_boards/update_web_board_preferences/" + preference + "-" + $(this).val()
+		});
+	});
+	$(document).on('change', '#show_descriptors', function () {
+		if ($(this).val() == "no") {
+			$(this).attr("value", "yes");
+		} else {
+			$(this).attr("value", "no");
+		}
+		var preference = $(this).attr('id')
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_boards/update_web_board_preferences/" + preference + "-" + $(this).val()
+		});
+	});

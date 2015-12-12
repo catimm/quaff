@@ -27,15 +27,20 @@ class DraftBoardsController < ApplicationController
     #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
     # get draft board details
     @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
-    # find if any "next up" drinks exist
-    @next_up_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true)
     # get last updated info
     @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
     
+    # get descriptors for each drink currently on draft
+    @current_draft_board.each do |drink|
+      drink_descriptors(drink.beer, 3)
+    end
+    
     # determine whether user has changed internal draft board view
     if @subscription_plan == 2
+      # get internal draft board preferences
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id).first
-      # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
+      # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}") 
+      # set effects of internal draft board preferences
       if @internal_board_preferences.column_names == true
         @column_border_class = "draft-board-row-column-border"
       end
@@ -69,8 +74,24 @@ class DraftBoardsController < ApplicationController
       end
     end
     
+    # get internal draft board preferences
+    @web_board_preferences = WebDraftBoardPreference.where(draft_board_id: @draft_board.id).first
+    #Rails.logger.debug("Web board preferences: #{@web_board_preferences.inspect}")
+    if @web_board_preferences.show_up_next == true && @web_board_preferences.show_next_type == "specific"
+      @display_plus_one = true
+    else
+      @display_plus_one = false
+    end
+    if @display_plus_one == true && @web_board_preferences.show_descriptors == true
+       @display_height = "both"
+    elsif @display_plus_one == true || @web_board_preferences.show_descriptors == true
+      @display_height = "one"
+    else
+      @display_height = "none"
+    end
+    
     # get generally available "next drinks up", if any exist
-    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true, tap_number: nil)
+    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", tap_number: nil)
     #Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
     
     # determine whether a drink size column shows in row view
@@ -797,6 +818,115 @@ class DraftBoardsController < ApplicationController
       end
     end
     #Rails.logger.debug("Total # of sizes: #{@total_number_of_sizes.inspect}")
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+  end
+  
+  def update_web_board_preferences
+    @data = params[:id].split("-")
+    @option = @data[0]
+    #Rails.logger.debug("Option: #{@option.inspect}")
+    @value = @data[1]
+    @title_value = @data[2]
+    @draft_board = WebDraftBoardPreference.find_by(draft_board_id: session[:draft_board_id])
+    if @option == "show_next"
+      if @value == "yes"
+        @draft_board.update_attributes(show_up_next: true)
+      else
+        @draft_board.update_attributes(show_up_next: false)
+      end
+    elsif @option == "show_descriptors"
+      if @value == "yes"
+        @draft_board.update_attributes(show_descriptors: true)
+      else
+        @draft_board.update_attributes(show_descriptors: false)
+      end
+    else 
+      @draft_board.update_attributes(show_next_type: @value)
+    end
+    
+    # original code from Show method to set up draft board
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    
+    @board_type = params[:format]
+    # get retailer info
+    @retail_id = session[:retail_id]
+    @retailer = Location.find(@retail_id)
+    # get draft board info
+    @draft_board = DraftBoard.find_by(location_id: @retail_id)
+    #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
+    # get draft board details
+    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
+    # find if any "next up" drinks exist
+    @next_up_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold")
+    # get last updated info
+    @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
+    
+    # get descriptors for each drink currently on draft
+    @current_draft_board.each do |drink|
+      drink_descriptors(drink.beer, 3)
+    end
+    
+    # get internal draft board preferences
+    @web_board_preferences = WebDraftBoardPreference.where(draft_board_id: @draft_board.id).first
+    #Rails.logger.debug("Web board preferences: #{@web_board_preferences.inspect}")
+    if @web_board_preferences.show_up_next == true && @web_board_preferences.show_next_type == "specific"
+      @display_plus_one = true
+    else
+      @display_plus_one = false
+    end
+    if @display_plus_one == true && @web_board_preferences.show_descriptors == true
+       @display_height = "both"
+    elsif @display_plus_one == true || @web_board_preferences.show_descriptors == true
+      @display_height = "one"
+    else
+      @display_height = "none"
+    end
+    
+    # get generally available "next drinks up", if any exist
+    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", tap_number: nil)
+    #Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
+    
+    # determine whether a drink size column shows in row view
+    @total_number_of_sizes = 0
+    @taster_size = 0
+    @tulip_size = 0
+    @pint_size = 0
+    @half_growler_size = 0
+    @growler_size = 0
+    @beer_location_ids = @current_draft_board.pluck(:id)
+    @current_draft_board.each do |draft_drink|
+      @drink_details = DraftDetail.where(beer_location_id: draft_drink.id)
+      @this_number_of_sizes = 0
+      @drink_details.each do |details|  
+        if details.drink_size > 0 && details.drink_size <= 5
+          @taster_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size > 5 && details.drink_size <= 12
+          @tulip_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size > 12 && details.drink_size <= 22
+          @pint_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size == 32
+          @half_growler_size += 1
+          @this_number_of_sizes += 1
+        end
+        if details.drink_size == 64
+          @growler_size += 1
+          @this_number_of_sizes += 1
+        end
+        if @this_number_of_sizes > @total_number_of_sizes
+          @total_number_of_sizes = @this_number_of_sizes
+        end
+      end
+    end
     # set width of columns that hold drink graphics and info
     if @total_number_of_sizes <= 4
       @column_class = "col-sm-3"
@@ -805,7 +935,6 @@ class DraftBoardsController < ApplicationController
       @column_class = "col-sm-4"
       @column_class_xs = "col-xs-4"
     end
-    #Rails.logger.debug("Column size is: #{@column_class.inspect}")
     
     respond_to do |format|
       format.js

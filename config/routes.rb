@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   get '/draft_boards/twitter_tweet_options' => 'draft_boards#twitter_tweet_options', :as => 'twitter_tweet_options'
   get '/draft_boards/share_on_twitter/:id(.:format)' => 'draft_boards#share_on_twitter', :as => 'share_on_twitter'
   post '/draft_boards/update_internal_board_preferences/:id' => 'draft_boards#update_internal_board_preferences', :as => 'update_internal_board_preferences'
+  post '/draft_boards/update_web_board_preferences/:id' => 'draft_boards#update_web_board_preferences', :as => 'update_web_board_preferences'
   resources :draft_boards
   get '/draft_inventory/new_drink' => 'draft_inventory#add_new_drink'
   post '/draft_inventory/new_drink' => 'draft_inventory#create_new_drink'

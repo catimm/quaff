@@ -884,6 +884,15 @@ $beer-header-lines-to-show-fp: 1;
     margin: 10px 0 0 0 !important;
     color: $combined-brewery-text;
   }
+  .display-with-no-extra {
+    height: 110px !important;
+  }
+  .display-with-one-extra {
+    height: 135px !important;
+  }
+  .display-with-two-extra {
+    height: 160px !important;
+  }
   .next-up-empty-holder {
     height: 25px !important;
   }
@@ -995,7 +1004,7 @@ $beer-header-lines-to-show-fp: 1;
     font-size: 14px;
     color: $normal-text;
 }
-.internal-board-option-header {
+.internal-board-option-header, .web-board-option-header {
   float: left;
 }
 .board-preference-labels {
@@ -1014,8 +1023,16 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
 }
+.next-up-preference-header {
+  margin: 0 7.5px 0 0 !important;
+  float: left;
+}
+.show_next_type {
+  margin: 0 !important;
+  display: inline-block;
+}
 .board-preference-inputs {
-  .separate_names, .column_names {
+  .separate_names, .column_names, .show_next, .show_descriptors {
     margin: 8px 0 0 10px !important;
     -ms-transform: scale(1.3); /* IE */
     -moz-transform: scale(1.3); /* FF */
@@ -1187,6 +1204,9 @@ $beer-header-lines-to-show-fp: 1;
 }
 .beer-info {
   margin-bottom: 5px;
+}
+.column-board-descriptors {
+  color: $action-background;
 }
 .our-best-guess {
   margin: 10px 0;

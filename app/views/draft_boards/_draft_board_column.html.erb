@@ -1,0 +1,304 @@
+<% @current_draft_board.each do	|drink| %>
+	<div class="col-sm-6 visible-sm visible-md visible-lg">
+		<% if @display_height == "both" %>
+			<div class="row no-margin display-with-two-extra">
+		<% elsif @display_height == "one" %>
+			<div class="row no-margin display-with-one-extra">
+		<% else %>
+			<div class="row no-margin display-with-no-extra">
+		<% end %>
+			<div class="col-sm-2 no-padding draft-board-column-image-holder-div">
+				<div class="draft-board-column-tap-number text-center"><%= drink.tap_number %></div>
+				<% if !drink.beer.brewery.image.nil? %>
+					<div class="column-draft-image-holder">
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+					</div>
+					
+				<% else %>
+					<div class="column-draft-image-holder">
+						<div class="beer-mug-holder"><i class="fa fa-beer"></i></div>
+					</div>
+				<% end %>
+				<% if !drink.beer.brewery.brewery_state_long.nil? %>
+					<h6 class="tile-subheader drink-origin"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_long %></i></h6>
+				<% elsif !drink.beer.brewery.brewery_state_short.nil? %>
+					<h6 class="tile-subheader drink-origin"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_short %></i></h6>
+				<% else %>
+					<h6 class="tile-subheader drink-origin"></h6>
+				<% end %>
+			</div>
+			<div class="col-sm-10 no-padding">
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<% if drink.beer.collab == true %>
+							<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+							<h5 class="drink-header-draft-pretty"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
+						<% else %>
+							<h5 class="drink-header-draft-pretty"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
+						<% end %>
+					</div>
+					<div class="col-xs-12">
+						<% if !drink.beer.beer_type_id.nil? %>
+							<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer.beer_type.beer_type_name %></h5>
+						<% else %>
+							<h5 class="tile-subheader beer-info">Style unknown</h5>
+						<% end %>
+					</div>
+					<div class="col-xs-6 col-sm-4 col-md-3 no-padding-right abv-div-draft-board">
+						<% if !drink.beer.beer_abv.nil? %>
+							<h6 class="tile-subheader beer-info"><%= drink.beer.beer_abv %>% ABV</h6>
+						<% else %>
+							<h6 class="tile-subheader beer-info">ABV N/A</h6>
+						<% end %>
+					</div>
+					<% if !drink.beer.beer_ibu.nil? %>
+						<div class="col-xs-6 col-sm-4 col-md-3 no-padding-left text-center ibu-div">
+							<h6 class="tile-subheader beer-info"><%= drink.beer.beer_ibu %> IBUs</h6>
+						</div>
+					<% end %>
+				</div>
+				<div class="row no-margin">
+					<% @draft_details = DraftDetail.where(beer_location_id: drink.id).order(:drink_size) %>
+					<% @draft_details.each do |details| %>
+						<% if details.drink_size > 0 && details.drink_size <= 5 %>
+							<div class="<%= @column_class %> draft-size-holder">
+								<img class="draft-pretty-icon icon-taster" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/taster-small.png" />
+								<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+								<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+							</div>
+						<% end %>
+						<% if details.drink_size > 5 && details.drink_size <= 12 %>
+							<div class="<%= @column_class %> draft-size-holder">
+								<img class="draft-pretty-icon icon-tulip" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/tulip.png" />
+								<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+								<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+							</div>
+						<% end %>
+						<% if details.drink_size > 12 && details.drink_size <= 22 %>
+							<div class="<%= @column_class %> draft-size-holder">
+								<img class="draft-pretty-icon icon-nonic" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/pint.png" />
+								<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+								<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+							</div>
+						<% end %>
+						<% if details.drink_size == 32 %>
+							<div class="<%= @column_class %> draft-size-holder">
+								<img class="draft-pretty-icon icon-half-growler" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/growler32.png" />
+								<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+								<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+							</div>
+						<% end %>
+						<% if details.drink_size == 64 %>
+							<div class="<%= @column_class %> draft-size-holder-growler">
+								<img class="draft-pretty-icon icon-growler" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/growler64.png" />
+								<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+								<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+							</div>
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+			<% if @web_board_preferences.show_descriptors == true %>
+				<% if !drink.beer.top_descriptor_list.blank? %>
+					<div class="col-xs-12">
+						<% @top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
+						<% if !drink.beer.short_beer_name.nil? %>
+							<h5 class="next-up-drink-info"><span class="column-board-descriptors"><%= drink.beer.short_beer_name %></span> is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
+						<% else %>
+							<h5 class="next-up-drink-info"><span class="column-board-descriptors"><%= drink.beer.beer_name %></span> is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
+						<% end %>
+					</div>
+				<% end %>
+			<% end %>
+			<% if @web_board_preferences.show_up_next == true %>
+				<% if @web_board_preferences.show_next_type == "specific" %>
+					<% @next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: drink.tap_number, beer_is_current: "hold")[0] %>
+					<% if !@next_up.blank? %>
+						<% if @next_up.beer.collab == true %>
+							<% @brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
+						<% else %>
+							<% @brewery_name = @next_up.beer.brewery.short_brewery_name %>
+						<% end %>
+						<div class="col-xs-12">
+							<% if !@next_up.beer.beer_type_id.nil? && !@next_up.beer.top_descriptor_list.blank? %>
+								<% @next_up_top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
+								<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %>--a <%= @next_up_top_descriptors %> <%= @next_up.beer.beer_type.beer_type_short_name %>.</h5>
+							<% elsif !@next_up.beer.beer_type_id.nil? %>
+								<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
+							<% else %>
+								<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %></h5>
+							<% end %>
+						</div>
+					<% end %>
+				<% end %>
+			<% end %>
+		</div>
+	<hr/>
+	</div>
+	<div class="col-xs-12 visible-xs">
+		<div class="row no-margin">
+			<div class="col-xs-3 no-padding">
+				<div class="draft-board-column-tap-number tap-number-variable-web text-center"><%= drink.tap_number %></div>
+				<% if !drink.beer.brewery.image.nil? %>
+					<div class="draft-brewery-image-holder-variable-web">
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+					</div>		
+				<% else %>
+					<div>
+						<h1><i class="fa fa-beer"></i></h1>
+					</div>
+				<% end %>
+				<% if !drink.beer.brewery.brewery_state_long.nil? %>
+					<h6 class="tile-subheader drink-origin origin-variable-web"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_long %></i></h6>
+				<% elsif !drink.beer.brewery.brewery_state_short.nil? %>
+					<h6 class="tile-subheader drink-origin origin-variable-web"><i class="fa fa-map-marker"> <%= drink.beer.brewery.brewery_state_short %></i></h6>
+				<% else %>
+					<h6 class="tile-subheader drink-origin origin-variable-web"></h6>
+				<% end %>
+			</div>
+			<div class="col-xs-9 no-padding">
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<% if drink.beer.collab == true %>
+							<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+							<h5 class="drink-header-draft-column-mobile"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
+						<% else %>
+							<h5 class="drink-header-draft-column-mobile"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></h5>
+						<% end %>
+					</div>
+					<div class="col-xs-12">
+						<% if !drink.beer.beer_type_id.nil? %>
+							<h5 class="draft-subheader draft-type-retailer-mobile no-overflow"><%= drink.beer.beer_type.beer_type_name %></h5>
+						<% else %>
+							<h5 class="draft-subheader draft-type-retailer-mobile">Style unknown</h5>
+						<% end %>
+					</div>
+					<div class="col-xs-6 no-padding-right">
+						<% if !drink.beer.beer_abv.nil? %>
+							<h6 class="draft-subheader"><%= drink.beer.beer_abv %>% ABV</h6>
+						<% else %>
+							<h6 class="draft-subheader">ABV N/A</h6>
+						<% end %>
+					</div>
+					<% if !drink.beer.beer_ibu.nil? %>
+						<div class="col-xs-6 no-padding-left text-center">
+							<h6 class="draft-subheader ibu-div ibu-variable-web"><%= drink.beer.beer_ibu %> IBUs</h6>
+						</div>
+					<% end %>
+				</div>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<% @draft_details = DraftDetail.where(beer_location_id: drink.id).order(:drink_size) %>
+			<% @draft_details.each do |details| %>
+				<% if details.drink_size > 0 && details.drink_size <= 5 %>
+					<div class="<%= @column_class_xs %> draft-size-holder">
+						<img class="img-responsive draft-column-icons icon-taster" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/taster-small.png" />
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= details.drink_size %> oz.</p>					
+					</div>
+				<% end %>
+				<% if details.drink_size > 5 && details.drink_size <= 12 %>
+					<div class="<%= @column_class_xs %> draft-size-holder">
+						<img class="img-responsive draft-column-icons icon-tulip" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/tulip.png" />
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= details.drink_size %> oz.</p>								
+					</div>
+				<% end %>
+				<% if details.drink_size > 12 && details.drink_size <= 22 %>
+					<div class="<%= @column_class_xs %> draft-size-holder">
+						<img class="img-responsive draft-column-icons icon-nonic" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/pint.png" />
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= details.drink_size %> oz.</p>			
+					</div>
+				<% end %>
+				<% if details.drink_size == 32 %>
+					<div class="<%= @column_class_xs %> draft-size-holder">
+						<img class="img-responsive draft-column-icons icon-half-growler" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/growler32.png" />							
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= details.drink_size %> oz.</p>	
+					</div>
+				<% end %>
+				<% if details.drink_size == 64 %>
+					<div class="<%= @column_class_xs %> draft-size-holder-growler">
+						<img class="img-responsive draft-column-icons icon-growler" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/growler64.png" />
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>
+						<p class="draft-column-size-and-cost size-and-cost-web"><%= details.drink_size %> oz.</p>	
+					</div>
+				<% end %>
+			<% end %>
+		</div>	
+		<% if @web_board_preferences.show_up_next == true %>
+					<% @next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: drink.tap_number, beer_is_current: "hold")[0] %>
+					<% if @web_board_preferences.show_next_type == "specific" %>
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<% if !@next_up.nil? %>
+									<% if !@next_up.beer.beer_type_id.nil? %>
+										<% if @next_up.beer.collab == true %>
+											<% @collab_brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
+											<h5 class="next-up-drink-info">Next up: <%= @collab_brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
+										<% else %>
+											<h5 class="next-up-drink-info">Next up: <%= @next_up.beer.brewery.short_brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
+										<% end %>
+									<% else %>
+										<% if @next_up.beer.collab == true %>
+											<% @collab_brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
+											<h5 class="next-up-drink-info">Next up: <%= @collab_brewery_name %> <%= @next_up.beer.beer_name %></h5>
+										<% else %>
+											<h5 class="next-up-drink-info">Next up: <%= @next_up.beer.brewery.short_brewery_name %> <%= @next_up.beer.beer_name %></h5>
+										<% end %>
+									<% end %>
+								<% end %>	
+							</div>
+						</div>
+					<% end %>
+		<% end %>	
+	<hr/>
+	</div>
+<% end %>
+<% if @web_board_preferences.show_up_next == true %>
+	<% if @web_board_preferences.show_next_type == "general" %>
+			<div class="row no-margin ">
+				<div class="col-xs-12">
+					<h5 class="next-up-drink-info">Going on tap soon: 
+						<% @g_a_next_drinks.each do |next_drink| %>
+							<% if next_drink == @g_a_next_drinks.last %>
+								<% if !next_drink.beer.beer_type_id.nil? %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>
+									<% end %>
+								<% else %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %>
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %>
+									<% end %>
+								<% end %>
+							<% else %>
+								<% if !next_drink.beer.beer_type_id.nil? %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>, 
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %> <%= next_drink.beer.beer_type.beer_type_short_name %>, 
+									<% end %>
+								<% else %>
+									<% if next_drink.beer.collab == true %>
+										<% @collab_brewery_name = Beer.collab_brewery_name(next_drink.beer.id) %>
+										<%= @collab_brewery_name %> <%= next_drink.beer.beer_name %>, 
+									<% else %>
+										<%= next_drink.beer.brewery.short_brewery_name %> <%= next_drink.beer.beer_name %>, 
+									<% end %>
+								<% end %>
+							<% end %>
+						<% end %>
+					</h5>
+				</div>
+			</div>
+		<% end %>
+	<% end %>

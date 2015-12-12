@@ -15,7 +15,6 @@
 #  went_live                 :datetime
 #  special_designation       :boolean
 #  special_designation_color :string
-#  show_up_next              :boolean
 #  facebook_share            :datetime
 #  twitter_share             :datetime
 #
