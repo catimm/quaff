@@ -1031,6 +1031,19 @@ $beer-header-lines-to-show-fp: 1;
   margin: 0 !important;
   display: inline-block;
 }
+#show-next-type-number {
+  margin-top: 11.5px;
+  margin-left: -35px;
+}
+.next-general-number {
+  float: left;
+}
+.next_general_number {
+  float: left;
+  width: 15% !important;
+  margin: 0 7.5px !important;
+  padding: 6px !important;
+}
 .board-preference-inputs {
   .separate_names, .column_names, .show_next, .show_descriptors {
     margin: 8px 0 0 10px !important;
@@ -2724,6 +2737,10 @@ input[type="checkbox"] {
   // Draft board column view page
   .retailer-logo-image-small {
     margin: 5px 0 0 0 !important;
+  }
+  #show-next-type-number {
+    margin-top: 14px;
+    margin-left: -25px;
   }
   .last-updated {
     font-size: 12px;

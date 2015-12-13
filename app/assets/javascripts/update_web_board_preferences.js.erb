@@ -3,14 +3,21 @@ $(function () {
 });
 // add logic to update internal prefences
 	$(document).on('change', '.show_next', function () {
+		//alert($('input[name="show_next_type_general"]:checked').val());
 		if ($(this).val() == "no") {
 			$(this).attr("value", "yes");
 			$('#show-next-type-holder').removeClass('hidden');
 			$('#show-next-type-holder').addClass('show');
+			if ( $('input[name="show_next_type_general"]:checked').val() == "general" ) {
+				$('#show-next-type-number').removeClass('hidden');
+				$('#show-next-type-number').addClass('show');
+			}
 		} else {
 			$(this).attr("value", "no");
 			$('#show-next-type-holder').removeClass('show');
 			$('#show-next-type-holder').addClass('hidden');
+			$('#show-next-type-number').removeClass('show');
+			$('#show-next-type-number').addClass('hidden');
 		}
 		var preference = $(this).attr('id')
 		$.ajax({
@@ -19,6 +26,17 @@ $(function () {
 		});
 	});
 	$(document).on('change', '.show_next_type', function () {
+		if ($(this).val() == "general") {
+			$('#show-next-type-number').removeClass('hidden');
+			$('#show-next-type-number').addClass('show');
+			$(this).attr('checked', 'checked');
+			$('#show_next_type_specific').attr('checked', false);
+		} else {
+			$('#show-next-type-number').removeClass('show');
+			$('#show-next-type-number').addClass('hidden');
+			$(this).attr('checked', 'checked');
+			$('#show_next_type_general').attr('checked', false);
+		}
 		var preference = $(this).attr('id')
 		$.ajax({
 		  type: "POST",
@@ -37,3 +55,11 @@ $(function () {
 		  url: "/draft_boards/update_web_board_preferences/" + preference + "-" + $(this).val()
 		});
 	});
+	$(document).on('change', '#next_general_number', function () {
+		var preference = 'number'
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_boards/update_web_board_preferences/" + preference + "-" + $(this).val()
+		});
+	});
+	

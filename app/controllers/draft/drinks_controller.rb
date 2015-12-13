@@ -62,11 +62,45 @@ class Draft::DrinksController < ApplicationController
           @row_n_a_font = "row-n-a-font-vl"
         end
       end
-    end
+      
+      # get web draft board preferences
+      @web_board_preferences = WebDraftBoardPreference.where(draft_board_id: @draft_board.id).first
+      #Rails.logger.debug("Web board preferences: #{@web_board_preferences.inspect}")
+      if @web_board_preferences.show_up_next == true && @web_board_preferences.show_next_type == "specific"
+        @display_plus_one = true
+      else
+        @display_plus_one = false
+      end
+      if @display_plus_one == true && @web_board_preferences.show_descriptors == true
+         @display_height = "both"
+      elsif @display_plus_one == true || @web_board_preferences.show_descriptors == true
+        @display_height = "one"
+      else
+        @display_height = "none"
+      end
     
-    # get generally available "next drinks up", if any exist
-    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true, tap_number: nil)
-    #Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
+      # get generally available "next drinks up", if any exist
+      @g_a_next_drink_ids = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", tap_number: nil).pluck(:beer_id)
+      @g_a_drink_count = @g_a_next_drink_ids.count
+      @drink_ranking = Beer.where(id: @g_a_next_drink_ids).sort_by(&:beer_rating).reverse.first(@web_board_preferences.show_next_general_number)
+      @general_next_drinks = Array.new
+      @drink_ranking.each do |drink|
+        # set brewery name
+        if !drink.brewery.short_brewery_name.nil?
+          @brewery = drink.brewery.short_brewery_name
+        else
+          @brewery = drink.brewery.brewery_name
+        end
+        # set drink name
+        if !drink.short_beer_name.nil?
+          @drink = drink.short_beer_name
+        else
+          @drink = drink.beer_name
+        end
+        @final_input = @brewery + " " + @drink
+        @general_next_drinks << @final_input
+      end
+    end
     
     # determine whether a drink size column shows in row view
     @total_number_of_sizes = 0
