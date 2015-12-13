@@ -283,9 +283,26 @@ class DraftBoardsController < ApplicationController
       
       # check to see if location has already upgraded subscription plan and needs an InternalDraftBoardPreference record create 
       if @subscription.subscription_id == 2
-        @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft.id, 
-                                      separate_names: false, column_names: false, font_size: 3)
-        @internal_draft_preferences.save
+        # check if internal draft preferences already exist
+        @internal_draft_preferences_check = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+        # if internal draft preferences don't exist
+        if @internal_draft_preferences_check.blank?
+          @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft.id, 
+                                                separate_names: false, column_names: false, font_size: 3, tap_title: "#",
+                                                maker_title: "Maker", drink_title: "Drink", style_title: "Style", 
+                                                abv_title: "ABV", ibu_title: "IBU", taster_title: "Taster", tulip_title: "Tulip", 
+                                                pint_title: "Pint", half_growler_title: "1/2 G", growler_title: "Growler")
+          @internal_draft_preferences.save
+        end
+        # check if web draft preferences already exist
+        @web_draft_preferences_check = WebDraftBoardPreference.where(draft_board_id: @draft.id)
+        # if internal draft preferences don't exist
+        if @web_draft_preferences_check.blank?
+          @web_draft_preferences = WebDraftBoardPreference.new(draft_board_id: @draft.id, 
+                                        show_up_next: false, show_descriptors: true, show_next_type: "specific", 
+                                        show_next_general_number: 3)
+          @web_draft_preferences.save
+        end
       end
       # check to see if any drinks added need immediate admin attention
       retailer_drink_help(@draft.id)

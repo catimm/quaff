@@ -112,12 +112,18 @@ class RetailersController < ApplicationController
       @subscription.update_attributes(subscription_id: 2)
       session[:subscription] = 2
       if !@draft_board.blank?
+        # set up internal draft preferences
         @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft_board.id, 
                                       separate_names: false, column_names: false, font_size: 3, tap_title: "#",
                                       maker_title: "Maker", drink_title: "Drink", style_title: "Style", abv_title: "ABV",
                                       ibu_title: "IBU", taster_title: "Taster", tulip_title: "Tulip", pint_title: "Pint",
                                       half_growler_title: "1/2 G", growler_title: "Growler")
-        @internal_draft_preferences.save 
+        @internal_draft_preferences.save
+        # set up web draft prefrences
+        @web_draft_preferences = WebDraftBoardPreference.new(draft_board_id: @draft_board.id, 
+                                        show_up_next: false, show_descriptors: true, show_next_type: "specific", 
+                                        show_next_general_number: 3)
+        @web_draft_preferences.save 
       end
     end
     if @subscription_plan == 2
