@@ -25,39 +25,44 @@ class Draft::DrinksController < ApplicationController
     # get last updated info
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:updated_at).reverse_order.first 
     
-      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id)
-      # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
-      if @internal_board_preferences[0].column_names == true
-        @column_border_class = "draft-board-row-column-border"
+    # get descriptors for each drink currently on draft
+    @current_draft_board.each do |drink|
+      drink_descriptors(drink.beer, 3)
+    end
+    
+    @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id)
+    # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
+    if @internal_board_preferences[0].column_names == true
+      @column_border_class = "draft-board-row-column-border"
+    end
+    if !@internal_board_preferences[0].font_size.nil?
+      if @internal_board_preferences[0].font_size == 1
+        @header_font = "header-font-vs"
+        @row_font = "row-font-vs"
+        @row_drink_font = "row-drink-font-vs"
+        @row_n_a_font = "row-n-a-font-vs"
+      elsif @internal_board_preferences[0].font_size == 2
+        @header_font = "header-font-s"
+        @row_font = "row-font-s"
+        @row_drink_font = "row-drink-font-s"
+        @row_n_a_font = "row-n-a-font-s"
+      elsif @internal_board_preferences[0].font_size == 3
+        @header_font = "header-font-m"
+        @row_font = "row-font-m"
+        @row_drink_font = "row-drink-font-m"
+        @row_n_a_font = "row-n-a-font-m"
+      elsif @internal_board_preferences[0].font_size == 4
+        @header_font = "header-font-l"
+        @row_font = "row-font-l"
+        @row_drink_font = "row-drink-font-l"
+        @row_n_a_font = "row-n-a-font-l"
+      else
+        @header_font = "header-font-vl"
+        @row_font = "row-font-vl"
+        @row_drink_font = "row-drink-font-vl"
+        @row_n_a_font = "row-n-a-font-vl"
       end
-      if !@internal_board_preferences[0].font_size.nil?
-        if @internal_board_preferences[0].font_size == 1
-          @header_font = "header-font-vs"
-          @row_font = "row-font-vs"
-          @row_drink_font = "row-drink-font-vs"
-          @row_n_a_font = "row-n-a-font-vs"
-        elsif @internal_board_preferences[0].font_size == 2
-          @header_font = "header-font-s"
-          @row_font = "row-font-s"
-          @row_drink_font = "row-drink-font-s"
-          @row_n_a_font = "row-n-a-font-s"
-        elsif @internal_board_preferences[0].font_size == 3
-          @header_font = "header-font-m"
-          @row_font = "row-font-m"
-          @row_drink_font = "row-drink-font-m"
-          @row_n_a_font = "row-n-a-font-m"
-        elsif @internal_board_preferences[0].font_size == 4
-          @header_font = "header-font-l"
-          @row_font = "row-font-l"
-          @row_drink_font = "row-drink-font-l"
-          @row_n_a_font = "row-n-a-font-l"
-        else
-          @header_font = "header-font-vl"
-          @row_font = "row-font-vl"
-          @row_drink_font = "row-drink-font-vl"
-          @row_n_a_font = "row-n-a-font-vl"
-        end
-      
+    
       # get web draft board preferences
       @web_board_preferences = WebDraftBoardPreference.where(draft_board_id: @draft_board.id).first
       #Rails.logger.debug("Web board preferences: #{@web_board_preferences.inspect}")
