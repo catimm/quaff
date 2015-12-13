@@ -96,10 +96,6 @@
   	margin: 5px 0 0 5px;
   	font-size: 11px;
 }
-.next-up-drink-info {
-    margin: 10px 0 0 0 !important;
-    color: #747474;
-  }
 .column-header-variable-web {
 	height: 19.2px; /* Fallback for non-webkit */
   	margin: 10px auto 5px auto;
@@ -144,10 +140,21 @@
 .next-up-drink-info {
   margin: 10px 0 0 0 !important;
   color: #747474;
+  font-weight: 400 !important;
 }
-.next-up-empty-holder {
-  height: 25px !important;
+.column-board-descriptors {
+  color: #0087cb;
 }
+.display-with-no-extra {
+    height: 110px !important;
+}
+.display-with-one-extra {
+   height: 135px !important;
+}
+.display-with-two-extra {
+   height: 160px !important;
+}
+
 /* Draft Board Column--variable-internal */
 .tap-number-variable-internal {
 	top: 5px;
