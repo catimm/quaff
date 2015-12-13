@@ -3,8 +3,6 @@ class Draft::DrinksController < ApplicationController
   layout false
   
   def show 
-    # get subscription plan
-    @subscription_plan = session[:subscription]
     # set column border default
     @column_border_class = ""
     # set default font size
@@ -27,8 +25,6 @@ class Draft::DrinksController < ApplicationController
     # get last updated info
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:updated_at).reverse_order.first 
     
-    # determine whether user has changed internal draft board view
-    if @subscription_plan == 2
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id)
       # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
       if @internal_board_preferences[0].column_names == true
@@ -61,7 +57,6 @@ class Draft::DrinksController < ApplicationController
           @row_drink_font = "row-drink-font-vl"
           @row_n_a_font = "row-n-a-font-vl"
         end
-      end
       
       # get web draft board preferences
       @web_board_preferences = WebDraftBoardPreference.where(draft_board_id: @draft_board.id).first
