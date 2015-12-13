@@ -1,5 +1,6 @@
 class Draft::DrinksController < ApplicationController
   before_filter :allow_iframe_requests
+  include DrinkDescriptors
   layout false
   
   def show 
