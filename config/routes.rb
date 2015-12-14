@@ -82,7 +82,8 @@ Rails.application.routes.draw do
     get '/retailers/invite_team_member_new/:id' => 'invitations#invite_team_member_new', :as => 'invite_team_member'
     post '/invitations/invite_team_member_new/:id' => 'invitations#invite_team_member_create'
   end
-  
+  get '/print_menus(.:format)' => 'print_menus#index', :as => 'print_menus'
+  get '/print_menus/:id(.:format)' => 'print_menus#show', :as => 'print_menu'
   resources :retailers
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'

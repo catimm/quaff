@@ -83,6 +83,9 @@ gem 'autonumeric-rails'
 gem 'rack-cors', :require => 'rack/cors'
 # using New Relic to monitor app performance
 gem 'newrelic_rpm'
+# using PDFKit to print drink menu html pages to pdf
+gem 'pdfkit'
+gem 'wkhtmltopdf-binary'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

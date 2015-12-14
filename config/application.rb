@@ -39,5 +39,8 @@ module BestiesCode
       end
     end # end of Rack::Cors config
     
+    # add pdfKit middleware
+    config.middleware.use PDFKit::Middleware, :print_media_type => true
+    
   end
 end

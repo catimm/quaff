@@ -1069,6 +1069,13 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
 }
+// Draft Print Menu
+.print-menu-extra-size {
+  font-size: 85%;
+}
+.print-menu-extra-italic {
+  font-style: italic;
+}
 // Sign-up & log-in pages
 .box {
   background: #fff;

@@ -1,0 +1,15 @@
+<%= render 'layouts/header_retailer' %> 
+	
+	<div class="row no-margin">
+		<div class="col-sm-8"></div>
+		<div class="col-xs-12 col-sm-2">
+			<%= link_to "Back", retailer_path(session[:retail_id]), class: 'btn btn-default formButton-cancel-draft-board-edit' %>
+		</div>
+		<div class="col-xs-12 col-sm-2">
+			<%= link_to "Print", "#", class: 'btn btn-success formButton-cancel-draft-board-edit' %>
+		</div>
+		<div class="col-xs-12">
+			<%= render 'menu_view' %>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>
