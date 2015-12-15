@@ -84,7 +84,9 @@ gem 'rack-cors', :require => 'rack/cors'
 # using New Relic to monitor app performance
 gem 'newrelic_rpm'
 # using PDFKit to print drink menu html pages to pdf
-gem 'pdfkit'
+#gem 'pdfkit'
+# using Wicked PDF to print drink menu html pages to pdf
+gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 
 # Use ActiveModel has_secure_password

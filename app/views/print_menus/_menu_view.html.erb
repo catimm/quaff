@@ -19,7 +19,7 @@
 				<th class="text-center"><%= @internal_board_preferences.pint_title %></th>
 			<% end %>
 		</thead>
-		<tbody class="table-bordered">
+		<tbody>
 		<% @current_draft_board.each do	|drink| %>		
 			<tr>
 				<td class="draft-board-row text-center <%= @column_border_class %> <%= @row_font %>"><%= drink.tap_number %></td>

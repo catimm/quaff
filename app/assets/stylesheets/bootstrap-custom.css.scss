@@ -584,6 +584,10 @@ $beer-header-lines-to-show-fp: 1;
   padding: 12.5px 0 0 67.5px;
   margin: 0;
 }
+.print-menu-retailer-page-title {
+  padding: 15px 0 0 67.5px;
+  margin: 0;
+}
 .retailer-page-title.with-update-text {
   float: left;
 }
@@ -595,6 +599,13 @@ $beer-header-lines-to-show-fp: 1;
     height: 70px;
     margin: 10px 0 0 0;
     padding: 5px; 
+}
+.print-menu-retailer-logo-image-med {
+    img {
+      margin: 0;
+      padding: 0;
+      float: left;
+    }
 }
 .overview-tile, .overview-tile-2 {
   margin: 15px 0 20px 0;
@@ -1070,8 +1081,21 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 // Draft Print Menu
+.table.pdf-menu-table {
+    font-size: 12px !important;
+    td, th {
+      padding: 8px 6px !important;
+    }
+  }
+.special-print-pint-column {
+    width: 10.25% !important;
+  }
+.print-menu-tap-column {
+  padding: 0 !important;
+}
 .print-menu-extra-size {
   font-size: 85%;
+  color: $less-emphasized-text !important;
 }
 .print-menu-extra-italic {
   font-style: italic;
@@ -3035,7 +3059,6 @@ input[type="checkbox"] {
   }
 }
 
-
 /* Patch for for bootstrap-modal. Include BEFORE bootstrap-modal.css!*/
 
 body.modal-open, 
@@ -3295,3 +3318,42 @@ ul {
 p {
   font-family: inherit !important;
 }
+
+
+/* Add CSS for pdf print format */
+@media print {
+  .print-menu-retailer-logo-image-med {
+    img {
+      margin: 0;
+      padding: 0; 
+      float: left;
+    }
+  }
+  .print-menu-retailer-page-title {
+    padding: 15px 0 0 67.5px;
+    margin: 0;
+  }
+  .special-print-pint-column {
+    width: 10.25% !important;
+  }
+  .last-updated {
+    color: $less-emphasized-text;
+    font-size: 14px;
+  }
+  .table.pdf-menu-table {
+    font-size: 12px !important;
+    td, th {
+      padding: 8px 6px !important;
+    }
+  }
+  .print-menu-tap-column {
+    padding: 0 !important;
+  }
+  .print-menu-extra-size {
+    font-size: 85%;
+    color: $less-emphasized-text !important;
+  }
+  .print-menu-extra-italic {
+    font-style: italic;
+  }
+} /* End of CSS for pdf print format */

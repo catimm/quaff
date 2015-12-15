@@ -63,7 +63,7 @@
 					<div class="row no-margin ">	
 						<div class="col-xs-12 col-sm-5 col-md-4">
 							<%= link_to draft_board_path(@draft_board[0].id, "column"), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
-								<i class="fa fa-chevron-right"> Edit/View web board</i>
+								<i class="fa fa-chevron-right"> View/Edit web board</i>
 							<% end %>
 						</div>
 						<div class="col-xs-12 col-sm-1 col-md-1 or-option text-center">
@@ -71,7 +71,7 @@
 						</div> 
 						<div class="col-xs-12 col-sm-5 col-md-4">
 							<%= link_to draft_board_path(@draft_board[0].id, "row"), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
-								<i class="fa fa-chevron-right"> Edit/View internal board</i>
+								<i class="fa fa-chevron-right"> View/Edit internal board</i>
 							<% end %>
 						</div>
 					</div>		
@@ -120,13 +120,21 @@
 				<hr>
 				<div class="row no-margin">
 					<div class="col-xs-12">
-						<h4 class="retail-manage-header">Print Menus</h4>
+						<h4 class="retail-manage-header">Print Draft Menu</h4>
 					</div>
 					<div class="col-xs-12">
 						<div class="row no-margin ">	
 							<div class="col-xs-12 col-sm-5 col-md-4">
-								<%= link_to print_menu_path(@draft_board[0].id), class: 'btn btn-default btn-primary formButton-view-draft-board' do %>
-									<i class="fa fa-chevron-right"> View drink menu</i>
+								<%= link_to print_menus_path(@draft_board[0].id, :format => 'pdf'), class: 'btn btn-default btn-success formButton-view-draft-board', :target => "_blank" do %>
+									<i class="fa fa-chevron-right"> View/Print drink menu (vertical)</i>
+								<% end %>
+							</div>
+							<div class="col-xs-12 col-sm-1 col-md-1 or-option text-center">
+								<p>or</p>
+							</div>
+							<div class="col-xs-12 col-sm-5 col-md-4">
+								<%= link_to print_menu_path(@draft_board[0].id, :format => 'pdf'), class: 'btn btn-default btn-success formButton-view-draft-board', :target => "_blank" do %>
+									<i class="fa fa-chevron-right"> View/Print drink menu (horizontal)</i>
 								<% end %>
 							</div>
 						</div>
