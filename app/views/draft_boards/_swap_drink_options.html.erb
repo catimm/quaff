@@ -1,17 +1,19 @@
 <div>
 	<div class="text-center">
-		<% @swap_options.each do |drink| %>
-			<%= form_for @swap_drinks, :url => {:action => 'execute_swap_drinks'} do |f| %>
-				<%= f.hidden_field :draft_board_id, :value => @current_draft_board %>
-				<%= f.hidden_field :id, :value => drink.id %>
-				<%= f.hidden_field :tap_to_replace, :value => @tap_to_replace %>
 				<div class="table-responsive">
 					<table class="table table-striped">
 						<tbody>
+							<% @swap_options.each do |drink| %>
+								<%= form_for @swap_drinks, :url => {:action => 'execute_swap_drinks'} do |f| %>
+									<%= f.hidden_field :draft_board_id, :value => @current_draft_board %>
+									<%= f.hidden_field :id, :value => drink.id %>
+									<%= f.hidden_field :tap_to_replace, :value => @tap_to_replace %>
 							<tr>
 								<td class="swap-choose-button-holder">
 									<%= f.submit "Swap", class: "btn btn-success swap-choose-button" %>
 								</td>
+								<td class="swap-drink-holder table-condensed"><%= @changing_tap_brewery %> <%= ("<span class=draft-board-drink-name>"+ @changing_tap_beer +"</span>").html_safe %></td>
+								<td class="swap-drink-holder-exchange"><i class="fa fa-exchange"></i></td>
 								<% if !drink.beer.short_beer_name.nil? %>
 									<% if drink.beer.collab == true %>
 										<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
@@ -31,17 +33,12 @@
 										<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
 									<% end %>
 								<% end %>
-								<% if !drink.beer.beer_type_id.nil? %>
-									<td class="swap-drink-type"><%= drink.beer.beer_type.beer_type_name %></td>
-								<% else %>
-									<td class="swap-drink-type">N/A</td>
-								<% end %>
 							</tr>
+							<% end %>			
+						<% end %>
 						</tbody>
 						
 					</table>
 				</div>
-			<% end %>			
-		<% end %>
 	</div>
 </div>

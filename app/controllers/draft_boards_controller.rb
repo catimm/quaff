@@ -589,7 +589,28 @@ class DraftBoardsController < ApplicationController
     @inventory_predetermined_tap_numbers = @inventory_draft_drinks.where.not(tap_number: nil).pluck(:tap_number)
     @removed_draft_drinks = @location_drinks.where(beer_is_current: "no")
     if @table_selected == "current"
-      @predetermined_taps = @inventory_draft_drinks.where(tap_number: params[:tap_id])
+      @changing_tap = @current_draft_drinks.where(tap_number: @tap_to_replace).first
+    else
+      @changing_tap = @inventory_draft_drinks.where(tap_number: @tap_to_replace).first
+    end
+    # get changing tap brewery name
+    if @changing_tap.beer.collab == true
+      @changing_tap_brewery = Beer.collab_brewery_name(@changing_tap.beer.id)
+    else
+      if !@changing_tap.beer.brewery.short_brewery_name.nil?
+        @changing_tap_brewery = @changing_tap.beer.brewery.short_brewery_name
+      else
+        @changing_tap_brewery = @changing_tap.beer.brewery.brewery_name
+      end
+    end
+    # get changing tap drink name
+    if !@changing_tap.beer.short_beer_name.nil?
+      @changing_tap_beer = @changing_tap.beer.short_beer_name
+    else 
+      @changing_tap_beer = @changing_tap.beer.beer_name
+    end
+    if @table_selected == "current"
+      @predetermined_taps = @inventory_draft_drinks.where(tap_number: @tap_to_replace)
       #Rails.logger.debug("Predetermined taps: #{@predetermined_taps.inspect}")
       @general_taps = @inventory_draft_drinks.where(tap_number: nil)
       #Rails.logger.debug("General taps: #{@general_taps.inspect}")
@@ -599,7 +620,7 @@ class DraftBoardsController < ApplicationController
         @swap_options = @general_taps
       end
     elsif @table_selected == "inventory"
-      @predetermined_taps = @current_draft_drinks.where(tap_number: params[:tap_id])
+      @predetermined_taps = @current_draft_drinks.where(tap_number: @tap_to_replace)
       Rails.logger.debug("Predetermined taps: #{@predetermined_taps.inspect}")
       Rails.logger.debug("Inventory predetermined: #{@inventory_predetermined_taps.inspect}")
       @general_taps = @current_draft_drinks.where.not(tap_number: @inventory_predetermined_tap_numbers)
