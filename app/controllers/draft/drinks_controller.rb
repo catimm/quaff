@@ -4,6 +4,8 @@ class Draft::DrinksController < ApplicationController
   layout false
   
   def show 
+    # get subscription plan
+    @subscription_plan = session[:subscription]
     # set column border default
     @column_border_class = ""
     # set default font size

@@ -56,7 +56,7 @@ class RatingsController < ApplicationController
       end
     end
     # now redirect back to locations page
-    redirect_to locations_path
+    redirect_to brewery_beer_path(@beer.brewery.id, @beer)
   end
   
   private
