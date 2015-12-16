@@ -446,7 +446,9 @@ class DraftBoardsController < ApplicationController
                   @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
                   if !@authentication.blank?
                     if @authentication.auto_tweet == true
+                      Rails.logger.debug("New Drink ID: #{@new_beer_location_drink.id.inspect}")
                       @tweet = tweet_creator(@new_beer_location_drink.id)
+                      Rails.logger.debug("The Tweet: #{@tweet.inspect}")
                       twitter_tweet.update(@tweet)
                       # update Beer Location table to reflect a tweet was made
                       @new_beer_location_drink.update_attributes(twitter_share: Time.now)
