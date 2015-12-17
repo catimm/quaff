@@ -238,8 +238,8 @@ class DraftBoardsController < ApplicationController
                   @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
                   if !@authentication.blank?
                     if @authentication.auto_tweet == true
-                      @tweet = tweet_creator(@new_beer_location_drink.id)
-                      twitter_tweet.update(@tweet)
+                      @tweet = tweet_creator(@new_beer_location_drink)
+                      twitter_tweet.update(@new_beer_location_drink.twitter_tweet)
                       # update Beer Location table to reflect a tweet was made
                       @new_beer_location_drink.update_attributes(twitter_share: Time.now)
                     end
@@ -439,17 +439,21 @@ class DraftBoardsController < ApplicationController
                                         special_designation_color: drink[1][:special_designation_color], 
                                         went_live: Time.now)
             if @new_beer_location_drink.save
+              Rails.logger.debug("New Drink Saved")
               # execute auto Tweet for Retailers who want to automatically send tweets of new drinks
                 # first make sure this user has the right access
                 if session[:subscription] == 2
+                  Rails.logger.debug("Subscription level is 2")
                   # now check what the user's auto tweet preference is
                   @authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter").first
                   if !@authentication.blank?
+                    Rails.logger.debug("Found Authentication")
                     if @authentication.auto_tweet == true
+                      Rails.logger.debug("Auto Tweet is Set")
                       Rails.logger.debug("New Drink ID: #{@new_beer_location_drink.id.inspect}")
-                      @tweet = tweet_creator(@new_beer_location_drink.id)
-                      Rails.logger.debug("The Tweet: #{@tweet.inspect}")
-                      twitter_tweet.update(@tweet)
+                      @tweet = tweet_creator(@new_beer_location_drink)
+                      Rails.logger.debug("The Tweet: #{@new_beer_location_drink.twitter_tweet.inspect}")
+                      twitter_tweet.update(@new_beer_location_drink.twitter_tweet)
                       # update Beer Location table to reflect a tweet was made
                       @new_beer_location_drink.update_attributes(twitter_share: Time.now)
                     end

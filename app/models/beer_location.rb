@@ -35,6 +35,8 @@ class BeerLocation < ActiveRecord::Base
   attr_accessor :tap_to_replace
   # add attribute for facebook post
   attr_accessor :facebook_post
+  # add attribute for twitter tweet
+  attr_accessor :twitter_tweet
   
   # this scope is for the admin page
   scope :all_current, -> { where(beer_is_current: "yes") }
