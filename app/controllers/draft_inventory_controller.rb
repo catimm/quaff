@@ -114,8 +114,7 @@ class DraftInventoryController < ApplicationController
           @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "hold").first
           # update tap number to ensure it's currently accurate
           @current_beer_location.update_attributes(tap_number: drink[1][:tap_number], keg_size: drink[1][:keg_size],
-                                 special_designation: drink[1][:special_designation], special_designation_color: drink[1][:special_designation_color],
-                                 show_up_next: drink[1][:show_up_next])
+                                 special_designation: drink[1][:special_designation], special_designation_color: drink[1][:special_designation_color])
           # delete all related size/cost information
           DraftDetail.where(beer_location_id: @current_beer_location.id).destroy_all
           # add size/cost info to ensure it is currently accurate
@@ -142,8 +141,7 @@ class DraftInventoryController < ApplicationController
                                         draft_board_id: params[:id],
                                         keg_size: drink[1][:keg_size],
                                         special_designation: drink[1][:special_designation],
-                                        special_designation_color: drink[1][:special_designation_color],
-                                        show_up_next: drink[1][:show_up_next])
+                                        special_designation_color: drink[1][:special_designation_color])
             if @new_beer_location_drink.save
               # add size/cost of new draft drink
               if !drink[1][:draft_details_attributes].blank?

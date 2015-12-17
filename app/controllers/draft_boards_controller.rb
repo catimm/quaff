@@ -229,6 +229,8 @@ class DraftBoardsController < ApplicationController
                                          tap_number: drink[1][:tap_number],
                                          draft_board_id: @draft.id,
                                          keg_size: drink[1][:keg_size],
+                                         special_designation: drink[1][:special_designation],
+                                         special_designation_color: drink[1][:special_designation_color],
                                          went_live: Time.now)
              if @new_beer_location_drink.save
                # execute Auto Tweet for Retailers who want to automatically send tweets of new drinks
@@ -799,7 +801,7 @@ class DraftBoardsController < ApplicationController
     # get draft board details
     @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
     # find if any "next up" drinks exist
-    @next_up_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true)
+    @next_up_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold")
     # get last updated info
     @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
     
@@ -841,7 +843,7 @@ class DraftBoardsController < ApplicationController
     end
     
     # get generally available "next drinks up", if any exist
-    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", show_up_next: true, tap_number: nil)
+    @g_a_next_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "hold", tap_number: nil)
     #Rails.logger.debug("GA Next Drinks #: #{@g_a_next_drinks.inspect}")
     
     # determine whether a drink size column shows in row view
