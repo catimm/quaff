@@ -5,9 +5,9 @@
 	<% else %>
 		<% @alt_beer_names.each do |n| %>
 			<% if n == @alt_beer_names.last %> 
-				<h5><%= n.name %></h5>
+				<h5><%= n.name %> (id: <%= n.id %>)</h5>
 			<% else %>
-				<h5><%= n.name %>, </h5>
+				<h5><%= n.name %> (id: <%= n.id %>), </h5>
 			<% end %>
 		<% end %>	
 	<% end %>
