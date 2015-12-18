@@ -129,12 +129,15 @@ task :check_pine_box => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
         if @related_brewery.empty?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-          if !@alt_brewery_name.empty?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-          end
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+              end
+            end
         end
       end
       
@@ -469,12 +472,15 @@ task :check_chucks_85 => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-          end
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
+        if @related_brewery.empty?
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+              end
+            end
         end
       end
       
@@ -804,12 +810,15 @@ task :check_chucks_cd => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-          end
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
+        if @related_brewery.empty?
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+              end
+            end
         end
       end
       
@@ -1143,12 +1152,15 @@ task :check_beer_junction => :environment do
         Rails.logger.debug("Final related brewery info: #{@related_brewery.inspect}")
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-          end
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
+        if @related_brewery.empty?
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+              end
+            end
         end
       end
       
@@ -1481,14 +1493,15 @@ task :check_beveridge_place => :environment do
         end
       else
         # if beer is not a collaboration, do a "normal" brewery name check
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
-        # Rails.logger.debug("Find if Brewery is in breweries table: #{@related_brewery.inspect}")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-          # Rails.logger.debug("Find if Brewery is in alt_breweries table: #{@alt_brewery_name.inspect}")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-          end
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
+        if @related_brewery.empty?
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+              end
+            end
         end
       end
       
@@ -1763,15 +1776,19 @@ task :check_fremont_beer_garden => :environment do
         # first grab name of guest brewery
         @this_beer_name.slice! "Guest: "
         @this_brewery_name = @this_beer_name.split.first(2).join(' ')
-        # find if brewery is in brewery table
-        @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-          # Rails.logger.debug("Find if Brewery is in alt_breweries table: #{@alt_brewery_name.inspect}")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-          end
+        
+        # if beer is not a collaboration, do a "normal" brewery name check
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
+        if @related_brewery.empty?
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+              end
+            end
         end
+        
         # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
         if @related_brewery.empty?
           new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :collab => false)
@@ -2081,14 +2098,18 @@ task :check_the_yard => :environment do
       @split_beer_name = @initial_beer_name.split(/\s+/)
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
-        @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{word}%")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-            @initial_beer_name.slice! word
-            @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
-          end
+        # if beer is not a collaboration, do a "normal" brewery name check
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
+        if @related_brewery.empty?
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                @initial_beer_name.slice! word
+                @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+              end
+            end
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
@@ -2308,14 +2329,18 @@ task :check_the_dray => :environment do
       @split_beer_name = @initial_beer_name.split(/\s+/)
       # cycle through split words to find brewery
       @split_beer_name.each do |word|
-        @related_brewery = @breweries.where("brewery_name like ? OR short_brewery_name like ?", "%#{word}%", "%#{word}%")
-        if @related_brewery.blank?
-          @alt_brewery_name = AltBreweryName.where("name like ?", "%#{word}%")
-          if !@alt_brewery_name.blank?
-            @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-            @initial_beer_name.slice! word
-            @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
-          end
+        # if beer is not a collaboration, do a "normal" brewery name check
+        @related_brewery = Brewery.where(brewery_name: @this_brewery_name)
+        if @related_brewery.empty?
+            @related_brewery = Brewery.where(short_brewery_name: @this_brewery_name)
+            if @related_brewery.empty?
+              @alt_brewery_name = AltBreweryName.where(name: @this_brewery_name)
+              if !@alt_brewery_name.empty?
+                @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
+                @initial_beer_name.slice! word
+                @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
+              end
+            end
         else
           @initial_beer_name.slice! word
           @this_beer_name = @initial_beer_name.strip # remove leading and trailing white spaces
