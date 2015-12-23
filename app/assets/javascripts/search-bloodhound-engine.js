@@ -80,7 +80,7 @@ ready = function() {
 				}
 	        }).on('typeahead:selected', function (obj, datum) {   
 			    if(datum.source == "retailer") {
-					console.log(datum);
+					//console.log(datum);
 					if (datum.use == "draft-inventory"){
 						$.ajax({
 					        url : "/draft_inventory/edit", //"+ datum.beer_id +"/
