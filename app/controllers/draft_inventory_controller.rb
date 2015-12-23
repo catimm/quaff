@@ -16,14 +16,9 @@ class DraftInventoryController < ApplicationController
     @last_draft_board_update = @current_draft_inventory.order(:updated_at).reverse_order.first 
   end
   
-  def new
-  end
-  
-  def create    
-  end
-  
   def edit
     gon.source = session[:gon_source]
+    # instantiate new drink in case user adds a new drink
     @add_new_drink = Beer.new
     #Rails.logger.debug("New Element ID #: #{session.inspect}")
     # set draft board id as session id so no errors are thrown when jquery calls are sent
@@ -40,7 +35,7 @@ class DraftInventoryController < ApplicationController
     @draft_board = session[:draft_board_id]
     @draft = DraftBoard.find(@draft_board)
     @draft_drink = BeerLocation.draft_inventory(@draft.id)
-    Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
+    #Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
     @draft_drink_details = DraftDetail.where(beer_location_id: @draft_drink)
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
@@ -52,17 +47,20 @@ class DraftInventoryController < ApplicationController
     # determine whether user has changed internal draft board view
     if @subscription_plan == 2
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+      # check drink price updates
+      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
     end
     
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
+       Rails.logger.debug("Thinks there is a chosen drink param")
       if !params[:chosen_drink].nil?
-        #Rails.logger.debug("Thinks there is a chosen drink")
-        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
+        Rails.logger.debug("Thinks there is a chosen drink")
+        Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
         @chosen_drink = JSON.parse(params[:chosen_drink])
         @new_inventory_info_id = session[:draft_info_id]
         @unique_number = session[:draft_info_number]
-        #Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
+        Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
         Rails.logger.debug("New Element ID #: #{@new_inventory_info_id.inspect}")
         Rails.logger.debug("Unique Number #: #{@unique_number.inspect}")
         respond_to do |format|
@@ -102,9 +100,9 @@ class DraftInventoryController < ApplicationController
     @new_inventory.each do |drink|
       # first make sure this item should be added (ie wasn't deleted)
       @destroy = drink[1][:_destroy]
+      @beer_id = drink[1][:beer_id].to_i
       if @destroy != "1"
         # check if this beer is already on draft and should be updated
-        @beer_id = drink[1][:beer_id].to_i
         if @current_inventory_drink_ids.include? @beer_id
           Rails.logger.debug("Beer ID #: #{@beer_id.inspect}")
           Rails.logger.debug("Thinks drink is already on draft")
@@ -162,6 +160,14 @@ class DraftInventoryController < ApplicationController
             end # end of if/else the new drink location saves properly
           end # end of check on whether drink has a proper beer_id
         end # end of if/else to determine if draft drink is new or being updated
+      else # if drink row was deleted but data already exists, change beer_is_current status to "no"
+        # check if this beer is already on draft and should be updated
+        if @current_inventory_drink_ids.include? @beer_id
+          # grab this BeerLocation record
+          @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "hold").first
+          # update current status so beer no longer shows on the inventory list
+          @current_beer_location.update_attributes(beer_is_current: "no")
+        end # end of test to make sure drinnk is currently in inventory list
       end # end of test to determine if drink "row" was deleted and should be ignored
     end # end of loop to run through each drink in the saved params
   
@@ -252,6 +258,78 @@ class DraftInventoryController < ApplicationController
     end
     # redirect back to updated draft edit page
     redirect_to edit_draft_inventory_path(session[:draft_board_id])
+  end
+  
+  def update_price_tier_options
+    # get param data
+    @data = params[:id].split("-")
+    @drink_id = @data[0]
+    @value = @data[1]
+    
+    # get needed info and set variables to page shows properly on "refresh"
+    
+    # instantiate new drink in case user adds a new drink
+    gon.source = session[:gon_source]
+    @add_new_drink = Beer.new
+    # indicate which form this is
+    @draft_board_form = "edit"
+    session[:form] = "edit"
+    # get retailer info for header/title
+    @retail_id = session[:retail_id]
+    @retailer = Location.find(@retail_id)
+    # get draft board #/info
+    @draft_board = session[:draft_board_id]
+    @draft = DraftBoard.find(@draft_board)
+    @draft_drink = BeerLocation.draft_inventory(@draft.id)
+    #Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
+    @draft_drink_details = DraftDetail.where(beer_location_id: @draft_drink)
+    # find last time this draft board was updated
+    @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
+    # get current draft board info for 'on deck' drinks
+    @current_draft_drinks = BeerLocation.where(draft_board_id: @draft.id, beer_is_current: "yes")
+    
+    # get subscription plan
+    @subscription_plan = session[:subscription]
+    # determine whether user has changed internal draft board view
+    if @subscription_plan == 2
+      @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+      # check drink price updates
+      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
+    end
+    
+    # find if drink is new or already exists in inventory
+    @drink = BeerLocation.where(location_id: session[:retail_id], beer_id: @drink_id, beer_is_current: "hold").first
+    # add price tier id to beer locations table
+    @price_tier_id = @drink.update_attributes(price_tier_id: @value)
+    # if new, add it to beer_locations table
+    if @drink.blank?
+      @drink = BeerLocation.new(location_id: session[:retail_id], beer_id: @drink_id, beer_is_current: "hold", 
+                                draft_board_id: @draft.id, price_tier_id: @value)
+      @drink.save!
+    end
+    
+    # get this tier's drink prices
+    @drink_price_tier = DrinkPriceTier.find_by_id(@value)
+    #Rails.logger.debug("Drink Price Tier: #{@drink_price_tier.inspect}")
+    @drink_price_tier_details = DrinkPriceTierDetail.where(drink_price_tier_id: @value)
+    #Rails.logger.debug("Drink Price Tier Details: #{@drink_price_tier_details.inspect}")
+    
+    # delete any other related drink details if any already exist
+    @old_details = DraftDetail.where(beer_location_id: @drink.id)
+    if !@old_details.blank?
+      @old_details.delete_all
+    end
+    
+    # add price tier details to related drink details
+    @drink_price_tier_details.each do |details|
+      @drink_details = DraftDetail.new(beer_location_id: @drink.id, drink_size: details.drink_size, drink_cost: details.drink_cost)
+      @drink_details.save!
+    end
+    
+    # refresh info on page to show tier prices associated with drink
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
   end
   
   private

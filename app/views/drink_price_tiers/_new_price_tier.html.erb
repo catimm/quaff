@@ -1,0 +1,21 @@
+<%= f.fields_for :drink_price_tiers do |ff| %>
+	<%= ff.hidden_field :draft_board_id, value: @draft.id %>
+	<div class="row draft-details-row" id="draft-details-row-<%= ff.index %>">
+		<div class="col-sm-2 col-md-2"></div>
+		<div class="col-xs-4 col-sm-4 col-md-3 no-padding-right draft-cost-input">
+			<%= ff.text_field :tier_name, :class => "form-control", placeholder: "Choose a tier name" %>
+		</div>
+		<div class="col-xs-12 col-sm-4 draft-details-row-container no-padding">
+			<%= render 'new_price_tier_details', :ff => ff %>
+			<%= ff.link_to_add :drink_price_tier_details, class: 'btn btn-default btn-primary formButton-add-details' do %>
+				<i class="fa fa-plus"> Add a drink size</i>
+			<% end %>
+		</div>			
+		<div class="col-sm-1 no-padding-right remove-draft-button visible-sm visible-md visible-lg">
+			<%= ff.link_to_remove do %>
+				<i class="fa fa-trash-o"></i>	
+			<% end %>
+		</div>
+	</div>	
+	<hr>
+<% end %>	

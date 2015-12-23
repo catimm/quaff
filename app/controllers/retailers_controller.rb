@@ -38,6 +38,12 @@ class RetailersController < ApplicationController
     @current_user_role = @team_authorizations.where(user_id: current_user.id).first
     @team_authorization_last_updated = @team_authorizations.order(:updated_at)
     
+    # check drink price updates
+    @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft_board[0].id)
+    Rails.logger.debug("Drink Price Tiers: #{@drink_price_tiers.inspect}")
+    @last_drink_prices_update = @drink_price_tiers.order(:updated_at).reverse_order.first
+    Rails.logger.debug("Drink Prices Last Updated: #{@last_drink_prices_update.inspect}")
+    
     # check if there is currently only one owner
     @owners = 0
     @team_authorizations.each do |member|

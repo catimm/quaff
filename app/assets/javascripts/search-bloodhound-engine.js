@@ -80,10 +80,10 @@ ready = function() {
 				}
 	        }).on('typeahead:selected', function (obj, datum) {   
 			    if(datum.source == "retailer") {
-					//console.log(datum);
-					if (datum.use == "draft_inventory"){
+					console.log(datum);
+					if (datum.use == "draft-inventory"){
 						$.ajax({
-					        url : "/draft_inventory/edit",
+					        url : "/draft_inventory/edit", //"+ datum.beer_id +"/
 					        type : "get",
 					        data : { chosen_drink: JSON.stringify(datum) }
 					    });

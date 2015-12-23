@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151211235754) do
+ActiveRecord::Schema.define(version: 20151223200535) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 20151211235754) do
     t.string   "special_designation_color"
     t.datetime "facebook_share"
     t.datetime "twitter_share"
+    t.integer  "price_tier_id"
   end
 
   create_table "beer_styles", force: :cascade do |t|
@@ -159,6 +160,21 @@ ActiveRecord::Schema.define(version: 20151211235754) do
     t.integer  "beer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "drink_price_tier_details", force: :cascade do |t|
+    t.integer  "drink_price_tier_id"
+    t.integer  "drink_size"
+    t.decimal  "drink_cost",          precision: 5, scale: 2
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+  end
+
+  create_table "drink_price_tiers", force: :cascade do |t|
+    t.integer  "draft_board_id"
+    t.string   "tier_name"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "internal_draft_board_preferences", force: :cascade do |t|

@@ -116,6 +116,83 @@
 						<% end %>
 					</div>
 				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<% if @drink_price_tiers.blank? %>
+							<h4 class="retail-manage-header">Drink Price Tiers</h4>
+						<% else %>
+							<h4 class="retail-manage-header">Drink Price Tiers <span class="last-updated"> (Last updated: <%= (@last_drink_prices_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h4>
+						<% end %>
+					</div>
+					<div class="col-xs-12">
+						<div class="row no-margin ">
+							<% if @drink_price_tiers.blank? %>
+								<div class="col-xs-12 col-sm-5 col-md-4">
+									<%= link_to new_drink_price_tier_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
+										<i class="fa fa-plus"> Create drink price tiers</i>
+									<% end %>
+								</div>
+							<% else %>
+								<div class="col-xs-12 col-sm-5 col-md-4">
+									<%= link_to edit_drink_price_tier_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+										<i class="fa fa-plus"> Edit drink price tiers</i>
+									<% end %>
+								</div>				
+							<% end %>
+							<div class="col-xs-12 col-sm-7 col-md-8 visible-sm visibl-md visible-lg">
+								<div class="row no-margin">
+									<h5 class="retailer-section-instructions">Current drink price tiers:</h5>
+								</div>
+								<% @drink_price_tiers.each do |tier| %>
+									<div class="row no-margin">
+										<div class="col-sm-2">
+											<h5 class="price-tier-name"><%= tier.tier_name %></h5>
+										</div>
+										<% tier.drink_price_tier_details.each do |details| %>
+											<% if details.drink_size > 0 && details.drink_size <= 5 %>
+												<div class="col-sm-2 draft-size-holder">
+													<img class="draft-pretty-icon icon-taster" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/taster-small.png" />
+													<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+													<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+												</div>
+											<% end %>
+											<% if details.drink_size > 5 && details.drink_size <= 12 %>
+												<div class="col-sm-2 draft-size-holder">
+													<img class="draft-pretty-icon icon-tulip" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/tulip.png" />
+													<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+													<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+												</div>
+											<% end %>
+											<% if details.drink_size > 12 && details.drink_size <= 22 %>
+												<div class="col-sm-2 draft-size-holder">
+													<img class="draft-pretty-icon icon-nonic" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/pint.png" />
+													<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+													<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+												</div>
+											<% end %>
+											<% if details.drink_size == 32 %>
+												<div class="col-sm-2 draft-size-holder">
+													<img class="draft-pretty-icon icon-half-growler" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/growler32.png" />
+													<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+													<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+												</div>
+											<% end %>
+											<% if details.drink_size == 64 %>
+												<div class="col-sm-2 draft-size-holder-growler">
+													<img class="draft-pretty-icon icon-growler" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/icons/growler64.png" />
+													<p class="draft-pretty-draft-size"><%= details.drink_size %> oz.</p>
+													<p class="draft-pretty-draft-cost"><%= number_to_currency(details.drink_cost, :unit => "$") %></p>	
+												</div>
+											<% end %>
+										<% end %>
+								</div>
+								<hr>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
 			<% end %>
 				<hr>
 				<div class="row no-margin">

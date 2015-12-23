@@ -1,5 +1,4 @@
 $(function() {
-	console.log(gon.source);
 	$(document).on('click', '.generally-available-inventory', function () {
 		$(this).parent().parent().siblings('.on-deck-for').removeClass("show").addClass("hidden");
 		$(this).parent().parent().siblings('.on-deck-for').children('.tap-number-option-list').val('');
@@ -19,7 +18,6 @@ $(function() {
 	
 	var modal_show;
 		modal_show = function() {
-			alert(gon.drink_source);
 			if (gon.drink_source == "new_drink") {
 				$("#add_drink").modal("show");
 			} else {
@@ -32,6 +30,16 @@ $(function() {
 			} else {
 				$("#add_drink").modal("hide");
 			}
+	});
+	
+	$(document).on('change', '.price-tier-options', function () {
+		
+		var drink_id = $(this).parent().attr("id");
+		$.ajax({
+		  type: "POST",
+		  url: "/draft_inventory/update_price_tier_options/" + drink_id + "-" + $(this).val()
+		});
+		
 	});
 });
 	

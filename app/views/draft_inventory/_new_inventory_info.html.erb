@@ -1,4 +1,4 @@
-<div class="col-sm-3 draft-abv-holder no-padding-right">
+<div class="col-sm-2 draft-abv-holder no-padding-right">
 	<% if !@chosen_drink['abv'].nil? %>
 		<h6 class="tile-subheader draft-abv"><%= @chosen_drink['abv'] %>% ABV</h6>
 	<% else %>
@@ -12,10 +12,16 @@
 		<h6 class="tile-subheader retail-edit-beer-info draft-ibu">IBUs N/A</h6>
 	<% end %>
 </div>
-<div class="col-sm-6 no-padding draft-type-holder">
+<div class="col-sm-4 no-padding draft-type-holder">
 	<% if !@chosen_drink['type'].nil? %>
 		<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type"><%= @chosen_drink['type'] %></h5>
 	<% else %>
 		<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type">Unknown Style</h5>
 	<% end %>
 </div>
+<% if !@drink_price_tiers.blank?  %>
+	<div class="col-xs-4 col-sm-3 draft-price-tier-options no-padding" id="<%= @chosen_drink['beer_id'] %>">
+		<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name"),
+						prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
+	</div>
+<% end %>

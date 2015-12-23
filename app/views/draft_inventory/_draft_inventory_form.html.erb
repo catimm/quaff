@@ -1,4 +1,4 @@
-<%= nested_form_for @draft, :url => url_for(:controller => 'draft_inventory', :action => 'update'), :html => {:id => "inventory_form"} do |f| %>
+<%= nested_form_for @draft, :url => specific_draft_inventory_update_path(session[:draft_board_id]), :html => {:id => "inventory_form"} do |f| %>
 	<div class="container draft-board-container">
 		<div class="row no-margin draft-edit-top-row-container">
 			<div class="row no-margin draft-edit-top-row">

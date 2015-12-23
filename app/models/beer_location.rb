@@ -17,6 +17,7 @@
 #  special_designation_color :string
 #  facebook_share            :datetime
 #  twitter_share             :datetime
+#  price_tier_id             :integer
 #
 
 class BeerLocation < ActiveRecord::Base

@@ -2459,6 +2459,12 @@ input[type="checkbox"] {
       }
     }
 }
+.retailer-search.edit-form {
+    width: 100% !important;
+    border-radius: 4px !important;
+    margin-top: 4px !important;
+    margin-bottom: 10px !important;
+}
 .retail-edit-beer-info {
   margin-top: 2.5px;
   margin-bottom: 0;
@@ -2577,6 +2583,18 @@ input[type="checkbox"] {
   font-size: 12px;
   margin-bottom: 0;
 }
+.tier-number-text {
+  color: $normal-text;
+  weight: 500;
+  width: 60px;
+  vertical-align: middle !important;
+  padding-top: 3px;
+  margin-bottom: 0;
+}
+.price-tier-name {
+  color: $normal-text;
+  weight: 500;
+}
 .draft-size-input { 
   margin-right: 5px;
   .drink-size {
@@ -2621,6 +2639,11 @@ input[type="checkbox"] {
         font-size: 20px;
       }
     }
+}
+// Price Tier CSS
+.price-tier-options {
+    margin-left: -20px;
+    height: 28px !important;
 }
 // Retailer Facebook post page
 .suggested-facebook-post {

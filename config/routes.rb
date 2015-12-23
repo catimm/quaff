@@ -67,13 +67,17 @@ Rails.application.routes.draw do
   post '/draft_boards/update_internal_board_preferences/:id' => 'draft_boards#update_internal_board_preferences', :as => 'update_internal_board_preferences'
   post '/draft_boards/update_web_board_preferences/:id' => 'draft_boards#update_web_board_preferences', :as => 'update_web_board_preferences'
   resources :draft_boards
+  post '/drink_price_tiers(.:format)' => 'drink_price_tiers#create', :as => 'create_drink_price_tier'
+  patch '/drink_price_tiers/:id(.:format)' => 'drink_price_tiers#update', :as => 'update_drink_price_tier'
+  patch '/drink_price_tiers/:id/edit' => 'drink_price_tiers#update'
+  resources :drink_price_tiers
   get '/draft_inventory/new_drink' => 'draft_inventory#add_new_drink'
   post '/draft_inventory/new_drink' => 'draft_inventory#create_new_drink'
-  get '/draft_inventory/:id(.:format)' => 'draft_inventory#show', :as => 'draft_inventory'
-  get '/draft_inventory/new(.:format)' => 'draft_inventory#new', :as => 'new_draft_inventory'
-  get '/draft_inventory/:id/edit(.:format)' => 'draft_inventory#edit', :as => 'edit_draft_inventory'
   get '/draft_inventory/edit' => 'draft_inventory#edit'
-  patch '/draft_inventory/:id(.:format)' => 'draft_inventory#update'
+  get '/draft_inventory/:id/edit(.:format)' => 'draft_inventory#edit', :as => 'edit_draft_inventory'
+  post '/draft_inventory/:id' => 'draft_inventory#update', :as => 'specific_draft_inventory_update'
+  post '/draft_inventory/update_price_tier_options/:id' => 'draft_inventory#update_price_tier_options'
+  resources :draft_inventory
   post '/retailers/update_twitter_view/:id' => 'retailers#update_twitter_view'
   post '/retailers/update_team_roles/:id(.:format)' => 'retailers#update_team_roles'
   get '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans'

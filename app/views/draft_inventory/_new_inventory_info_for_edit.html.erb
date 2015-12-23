@@ -1,5 +1,5 @@
 <% if !this_drink.nil? %>
-	<div class="col-xs-4 col-sm-3 draft-abv-holder no-padding-right">
+	<div class="col-xs-4 col-sm-2 draft-abv-holder no-padding-right">
 		<% if !this_drink.beer_abv.nil? %>
 			<h6 class="tile-subheader draft-abv"><%= this_drink.beer_abv %>% ABV</h6>
 		<% else %>
@@ -13,7 +13,7 @@
 			<h6 class="tile-subheader retail-edit-beer-info draft-ibu">IBUs N/A</h6>
 		<% end %>
 	</div>
-	<div class="col-xs-4 col-sm-6 no-padding draft-type-holder">
+	<div class="col-xs-4 col-sm-4 no-padding draft-type-holder">
 		<% if !this_drink.beer_type.nil? %>
 			<% if !this_drink.beer_type.beer_type_name.nil? %>
 				<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type"><%= this_drink.beer_type.beer_type_name %></h5>
@@ -24,4 +24,16 @@
 			<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type">Unknown Style</h5>
 		<% end %>
 	</div>
+	<% if !@drink_price_tiers.blank?  %>
+		<div class="col-xs-4 col-sm-3 draft-price-tier-options no-padding" id="<%= this_drink.id %>">
+			<% @beer_location_record = BeerLocation.where(location_id: session[:retail_id], beer_id: this_drink.id, beer_is_current: "hold").first %>
+			<% if !@beer_location_record.price_tier_id.nil? %>
+				<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name", @beer_location_record.price_tier_id),
+								prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
+			<% else %>
+				<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name"),
+								prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
+			<% end %>
+		</div>
+	<% end %>
 <% end %>
