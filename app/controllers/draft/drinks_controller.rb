@@ -7,7 +7,7 @@ class Draft::DrinksController < ApplicationController
     # get subscription plan
     @subscription_plan = session[:subscription]
     # set column border default
-    @column_border_class = ""
+    @column_border_class = "testing-blisting"
     # set default font size
     @row_font = "row-font-m"
     @row_drink_font = "row-drink-font-m"
