@@ -5,9 +5,10 @@ class Draft::DrinksController < ApplicationController
   
   def show 
     # get subscription plan
-    @subscription_plan = session[:subscription]
+    @subscription_data = LocationSubscription.where(location_id: params[:id]).first
+    @subscription_plan = @subscription_data.subscription_id
     # set column border default
-    @column_border_class = "testing-blisting"
+    @column_border_class = ""
     # set default font size
     @row_font = "row-font-m"
     @row_drink_font = "row-drink-font-m"
