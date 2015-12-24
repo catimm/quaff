@@ -254,8 +254,8 @@ td.n-a-draft-board-format {
       padding: 10px 0 !important; 
    }
 .draft-board-row-column-border {
-  border-right: 1px solid #747474;
-  border-left: 1px solid #747474;
+  border-right: 1px solid #545454;
+  border-left: 1px solid #545454;
 }
 .header-font-vs {
   font-size: 14px !important; 
@@ -332,8 +332,12 @@ td.n-a-draft-board-format {
   background-color: #FCC769;
   color: #fff;
 }
-.special-designated-purple {
+.special-designated-light-purple {
   background-color: #D4A6D2;
+  color: #fff;
+}
+.special-designated-dark-purple {
+  background-color: #8064A2;
   color: #fff;
 }
 .special-designated-red {

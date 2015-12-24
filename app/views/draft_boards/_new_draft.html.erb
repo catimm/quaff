@@ -99,9 +99,11 @@
 								<div class="col-sm-5 col-md-4 special-designation-color <%= @color_option_setting %> no-padding-left">
 									<h5 class="color-prompt <%= @color_to_show %>">Color:</h5>
 									<%= ff.select(:special_designation_color, 
-										[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],['Orange', 'special-designated-orange'],
-										['Purple', 'special-designated-purple'],['Red', 'special-designated-red'],['Yellow', 'special-designated-yellow'] ], 
-										{prompt: 'Select Color'}, { :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
+										[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],
+										['Orange', 'special-designated-orange'],['Purple (light)', 'special-designated-light-purple'],
+										['Purple (dark)', 'special-designated-dark-purple'],['Red', 'special-designated-red'],
+										['Yellow', 'special-designated-yellow'] ],{prompt: 'Select Color'}, 
+										{ :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
 								</div>
 							<% end %>
 						</div>

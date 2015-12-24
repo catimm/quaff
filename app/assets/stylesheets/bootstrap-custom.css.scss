@@ -11,6 +11,8 @@ $extra-light-gray: #e7e7e7;
 $light-gray: #f0f0f0;
 $medium-gray: #909090;
 $dark-gray: #747474;
+$extra-dark-gray: #545454;
+$extra-extra-dark-gray: #242424;
 $black: #000;
 $dark-blue: #4780b4;
 $bright-blue: #0087cb;
@@ -24,6 +26,7 @@ $bright-aqua-blue: #24a8ac;
 $light-aqua-blue: #6FD0D4;
 $bright-purple: #982395;
 $light-purple: #C267BE;
+$dark-purple: #8064A2;
 $faded-purple: #D4A6D2;
 $bright-green: #00a03e;
 $light-green: #40C170;
@@ -44,6 +47,8 @@ $gray-body-background: $light-gray;
 $soft-border: $extra-light-gray;
 $header-text: $black;
 $normal-text: $dark-gray;
+$dark-border: $extra-dark-gray;
+$extra-dark-border: $extra-extra-dark-gray;
 $combined-brewery-text: $dark-gray;
 $combined-drink-text: $bright-blue;
 $less-emphasized-text: $medium-gray;
@@ -68,7 +73,8 @@ $quick-swap-chosen: $super-light-blue;
 $special-designated-blue: $faded-blue;
 $special-designated-green: $faded-green;
 $special-designated-orange: $faded-orange;
-$special-designated-purple: $faded-purple;
+$special-designated-light-purple: $faded-purple;
+$special-designated-dark-purple: $dark-purple;
 $special-designated-red: $faded-red;
 $special-designated-yellow: $faded-yellow;
 $facebook-button-color: $facebook-blue-color;
@@ -945,8 +951,8 @@ $beer-header-lines-to-show-fp: 1;
    }
 }
 .draft-board-row-column-border {
-  border-right: 1px solid $normal-text;
-  border-left: 1px solid $normal-text;
+  border-right: 1px solid $dark-border;
+  border-left: 1px solid $dark-border;
 }
 .header-font-vs {
   font-size: 10px !important; 
@@ -2531,8 +2537,12 @@ input[type="checkbox"] {
   background-color: $special-designated-orange;
   color: #fff;
 }
-.special-designated-purple {
-  background-color: $special-designated-purple;
+.special-designated-light-purple {
+  background-color: $special-designated-light-purple;
+  color: #fff;
+}
+.special-designated-dark-purple {
+  background-color: $special-designated-dark-purple;
   color: #fff;
 }
 .special-designated-red {
