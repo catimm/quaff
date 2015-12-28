@@ -17,7 +17,8 @@
 		<% else %>
 			<% @facebook_value_to_show = "" %>
 		<% end %>
-		<%= f.text_field :facebook_url, :class => "form-control", placeholder: "Facebook URL", :value => @facebook_value_to_show %>
+		<%= f.text_field :facebook_url, :class => "form-control", placeholder: "https://www.facebook.com/[YOUR PAGE NAME]", 
+						:value => @facebook_value_to_show %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<% if !@retailer.twitter_url.blank? %>

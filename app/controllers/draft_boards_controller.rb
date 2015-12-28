@@ -679,12 +679,26 @@ class DraftBoardsController < ApplicationController
   end
   
   def share_on_facebook
+    # make sure specific session variables are clear
+    [:facebook_reauthenticate, :facebook_post_id, :facebook_post_message].each { |k| session.delete(k) }
+    # get [params data]
     @beer_location_id = params[:id]
     @post_message = Base64.decode64(params[:format])
     Rails.logger.debug("Post message: #{@post_message.inspect}")
     @authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
+    Rails.logger.debug("Authentication info: #{@authentication.inspect}")
     @page_graph = Koala::Facebook::API.new(@authentication[0].token)
-    @page_graph.put_connections(@authentication[0].uid, 'feed', { message: @post_message })
+    Rails.logger.debug("Page Graph info: #{@page_graph.inspect}")
+    begin
+      @post_message = @page_graph.put_connections(@authentication[0].uid, 'feed', { message: @post_message })
+    rescue Koala::Facebook::AuthenticationError
+    #if @authentication
+      @authentication[0].update_attributes(token: nil)
+      session[:facebook_reauthenticate] = "needed"
+      session[:facebook_post_id] = @beer_location_id
+      session[:facebook_post_message] = params[:format]
+      redirect_to user_omniauth_authorize_path(:facebook) and return
+    end
     
     # add posted date to Beer Locations table
     @beer_location_update = BeerLocation.update(@beer_location_id, facebook_share: Time.now)

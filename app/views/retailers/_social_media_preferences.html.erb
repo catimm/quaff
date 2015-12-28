@@ -17,26 +17,37 @@
 							</div>
 						</div>
 						<div class="row no-margin social-facebook-row">
-							<% if !@fb_authentication.blank? %>
-								<div class="col-xs-12 col-sm-5 col-md-4">
-									<%= link_to facebook_post_options_path, :class => "btn btn-block btn-social btn-facebook" do %>
-								  		<i class="fa fa-facebook"></i>Post Drinks to Facebook
-								  	<% end %>
-								 </div>
-								 <div class="col-xs-12 col-sm-4 col-md-3">
-									<h5 class="social-connected-on last-updated">Facebook was connected on:<br> <%= (@fb_authentication[0].created_at).strftime("%b %e, %Y @ %l:%M %p") %></h5>
-								 </div>
-								 <div class="col-xs-12 col-sm-4 col-md-3">
-								 	<%= link_to user_omniauth_authorize_path(:facebook), data: { confirm: "Are you sure you no longer want to post to Facebook?" }, :class => "btn btn-default btn-social-disconnect" do %>
-								  		Disconnect Facebook <i class="fa fa-times"></i>
-								  	<% end %>
-								 </div>
+							<% if @retailer.facebook_url.nil? %>	
+								<div class="col-xs-12">
+									<div class="btn btn-social-icon btn-facebook"><span class="fa fa-facebook"></span></div>
+									<div class="board-preference-labels no-padding auto-tweet-text-holder">
+										<h6 class="auto-tweet-text">You must first add your Facebook Page URL to your 
+											<%= link_to "Location Details", edit_retailer_path(@retailer.id) %>
+											before connecting to Facebook.</h6>
+									</div>
+								</div>
 							<% else %>
-								<div class="col-xs-12 col-sm-5 col-md-4">
-									<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-facebook" do %>
-								  		<i class="fa fa-facebook"></i>Connect Facebook
-								  	<% end %>
-								 </div>
+								<% if !@fb_authentication.blank? %>
+									<div class="col-xs-12 col-sm-5 col-md-4">
+										<%= link_to facebook_post_options_path, :class => "btn btn-block btn-social btn-facebook" do %>
+									  		<i class="fa fa-facebook"></i>Post Drinks to Facebook
+									  	<% end %>
+									 </div>
+									 <div class="col-xs-12 col-sm-4 col-md-3">
+										<h5 class="social-connected-on last-updated">Facebook was connected on:<br> <%= (@fb_authentication[0].created_at).strftime("%b %e, %Y @ %l:%M %p") %></h5>
+									 </div>
+									 <div class="col-xs-12 col-sm-4 col-md-3">
+									 	<%= link_to user_omniauth_authorize_path(:facebook), data: { confirm: "Are you sure you no longer want to post to Facebook?" }, :class => "btn btn-default btn-social-disconnect" do %>
+									  		Disconnect Facebook <i class="fa fa-times"></i>
+									  	<% end %>
+									 </div>
+								<% else %>
+									<div class="col-xs-12 col-sm-5 col-md-4">
+										<%= link_to user_omniauth_authorize_path(:facebook), :class => "btn btn-block btn-social btn-facebook" do %>
+									  		<i class="fa fa-facebook"></i>Connect Facebook
+									  	<% end %>
+									 </div>
+								<% end %>
 							<% end %>
 						</div>
 						<div class="row no-margin ">
