@@ -93,6 +93,7 @@ class RetailersController < ApplicationController
   end
   
   def update_twitter_view
+    @retailer = Location.find_by_id(session[:retail_id])
     @current_status = params[:id]
     if @current_status == "yes"
       @auto_tweet = false

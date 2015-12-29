@@ -267,7 +267,6 @@ class DraftInventoryController < ApplicationController
     @value = @data[1]
     
     # get needed info and set variables to page shows properly on "refresh"
-    
     # instantiate new drink in case user adds a new drink
     gon.source = session[:gon_source]
     @add_new_drink = Beer.new
@@ -280,7 +279,7 @@ class DraftInventoryController < ApplicationController
     # get draft board #/info
     @draft_board = session[:draft_board_id]
     @draft = DraftBoard.find(@draft_board)
-    @draft_drink = BeerLocation.draft_inventory(@draft.id)
+    @draft_drink = BeerLocation.draft_inventory(@draft.id).order(:updated_at).reverse_order
     #Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
     @draft_drink_details = DraftDetail.where(beer_location_id: @draft_drink)
     # find last time this draft board was updated
@@ -299,13 +298,14 @@ class DraftInventoryController < ApplicationController
     
     # find if drink is new or already exists in inventory
     @drink = BeerLocation.where(location_id: session[:retail_id], beer_id: @drink_id, beer_is_current: "hold").first
-    # add price tier id to beer locations table
-    @price_tier_id = @drink.update_attributes(price_tier_id: @value)
     # if new, add it to beer_locations table
     if @drink.blank?
       @drink = BeerLocation.new(location_id: session[:retail_id], beer_id: @drink_id, beer_is_current: "hold", 
                                 draft_board_id: @draft.id, price_tier_id: @value)
       @drink.save!
+    else
+      # add price tier id to beer locations table
+      @price_tier_id = @drink.update_attributes(price_tier_id: @value)
     end
     
     # get this tier's drink prices

@@ -2,7 +2,7 @@
 <%= ff.fields_for :draft_details do |builder| %>
 	<div class="row draft-details-row" id="draft-details-row-<%= builder.index %>">
 		<div class="col-xs-2 col-sm-2 col-md-2 text-center dropdown draft-size-input size-option-text-holder">
-			<p class="size-option-text">1st size option</p>
+			<p class="size-option-text"><%= (builder.options[:child_index].to_i + 1) %><%= (builder.options[:child_index].to_i + 1).ordinal %> size option</p>
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-3 no-padding-right draft-size-input"> 
 			<%= builder.select(:drink_size, 
