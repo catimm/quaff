@@ -30,12 +30,7 @@ class Admin::BreweriesController < ApplicationController
     
     # count of total live beers
     @number_live_beers = Beer.live_beers.count('id')
-    # get count of total beers that have no info
-    @number_need_attention_beers = Beer.live_beers.need_attention_beers.count('id')
-    # get count of total beers that are complete
-    @number_complete_beers = Beer.live_beers.complete_beers.count('id')
-    # get count of total beers that still need some info
-    @number_usable_incomplete_beers = @number_live_beers - @number_need_attention_beers - @number_complete_beers
+
 
     # establish filters
     #@filterrific = initialize_filterrific(Brewery, params[:filterrific])
