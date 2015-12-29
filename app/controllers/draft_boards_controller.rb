@@ -589,18 +589,16 @@ class DraftBoardsController < ApplicationController
   def choose_swap_drinks
     @swap_drinks = BeerLocation.new
     @current_draft_board = params[:board_id]
-    @table_selected = params[:format]
     @tap_to_replace = params[:tap_id]
+    @format_data = params[:format].split("-")
+    @table_selected = @format_data[0]
+    @beer_location_id = @format_data[1]
     @location_drinks = BeerLocation.where(draft_board_id: @current_draft_board)
     @current_draft_drinks = @location_drinks.where(beer_is_current: "yes")
     @inventory_draft_drinks = @location_drinks.where(beer_is_current: "hold")
     @inventory_predetermined_tap_numbers = @inventory_draft_drinks.where.not(tap_number: nil).pluck(:tap_number)
     @removed_draft_drinks = @location_drinks.where(beer_is_current: "no")
-    if @table_selected == "current"
-      @changing_tap = @current_draft_drinks.where(tap_number: @tap_to_replace).first
-    else
-      @changing_tap = @inventory_draft_drinks.where(tap_number: @tap_to_replace).first
-    end
+    @changing_tap = BeerLocation.find_by_id(@beer_location_id)
     # get changing tap brewery name
     if @changing_tap.beer.collab == true
       @changing_tap_brewery = Beer.collab_brewery_name(@changing_tap.beer.id)
@@ -617,6 +615,7 @@ class DraftBoardsController < ApplicationController
     else 
       @changing_tap_beer = @changing_tap.beer.beer_name
     end
+    # now get list of drinks to swap out
     if @table_selected == "current"
       @predetermined_taps = @inventory_draft_drinks.where(tap_number: @tap_to_replace)
       #Rails.logger.debug("Predetermined taps: #{@predetermined_taps.inspect}")
@@ -636,10 +635,12 @@ class DraftBoardsController < ApplicationController
       if !@predetermined_taps.blank?
         Rails.logger.debug("No matching tap numbers")
         @swap_options = @predetermined_taps
-      else
+      elsif !@general_taps.blank?
         Rails.logger.debug("Matching tap numbers")
         @swap_options = @general_taps
-      end
+      else
+        @swap_options = nil
+     end
     else
       
     end

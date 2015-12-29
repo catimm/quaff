@@ -1,44 +1,47 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h4>Swapping: <%= @changing_tap_brewery %> <%= ("<span class=draft-board-drink-name>"+ @changing_tap_beer +"</span>").html_safe %></h4>
+</div>
 <div>
 	<div class="text-center">
-				<div class="table-responsive">
 					<table class="table table-striped">
 						<tbody>
-							<% @swap_options.each do |drink| %>
-								<%= form_for @swap_drinks, :url => {:action => 'execute_swap_drinks'} do |f| %>
-									<%= f.hidden_field :draft_board_id, :value => @current_draft_board %>
-									<%= f.hidden_field :id, :value => drink.id %>
-									<%= f.hidden_field :tap_to_replace, :value => @tap_to_replace %>
-							<tr>
-								<td class="swap-choose-button-holder">
-									<%= f.submit "Swap", class: "btn btn-success swap-choose-button" %>
-								</td>
-								<td class="swap-drink-holder table-condensed"><%= @changing_tap_brewery %> <%= ("<span class=draft-board-drink-name>"+ @changing_tap_beer +"</span>").html_safe %></td>
-								<td class="swap-drink-holder-exchange"><i class="fa fa-exchange"></i></td>
-								<% if !drink.beer.short_beer_name.nil? %>
-									<% if drink.beer.collab == true %>
-										<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-										<td class="swap-drink-holder"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
-									<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-										<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+							<% if @swap_options.nil? %>
+								<h4>There are currently no options to replace this drink!</h4>
+							<% else %>
+								<% @swap_options.each do |drink| %>
+									<%= form_for @swap_drinks, :url => {:action => 'execute_swap_drinks'} do |f| %>
+										<%= f.hidden_field :draft_board_id, :value => @current_draft_board %>
+										<%= f.hidden_field :id, :value => drink.id %>
+										<%= f.hidden_field :tap_to_replace, :value => @tap_to_replace %>
+								<tr>
+									<td class="swap-choose-button-holder">
+										<%= f.submit "Choose", class: "btn btn-success swap-choose-button" %>
+									</td>
+									<% if !drink.beer.short_beer_name.nil? %>
+										<% if drink.beer.collab == true %>
+											<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+											<td class="swap-drink-holder"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+										<% elsif drink.beer.brewery.short_brewery_name.nil? %>
+											<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+										<% else %>
+											<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+										<% end %>
 									<% else %>
-										<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.short_beer_name+"</span>").html_safe %></td>
+										<% if drink.beer.collab == true %>
+											<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
+											<td class="swap-drink-holder"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+										<% elsif drink.beer.brewery.short_brewery_name.nil? %>
+											<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+										<% else %>
+											<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
+										<% end %>
 									<% end %>
-								<% else %>
-									<% if drink.beer.collab == true %>
-										<% @collab_brewery_name = Beer.collab_brewery_name(drink.beer.id) %>
-										<td class="swap-drink-holder"><%= @collab_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
-									<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-										<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
-									<% else %>
-										<td class="swap-drink-holder table-condensed"><%= drink.beer.brewery.short_brewery_name %> <%= ("<span class=draft-board-drink-name>"+drink.beer.beer_name+"</span>").html_safe %></td>
-									<% end %>
-								<% end %>
-							</tr>
-							<% end %>			
+								</tr>
+								<% end %>			
+							<% end %>
 						<% end %>
 						</tbody>
-						
 					</table>
-				</div>
 	</div>
 </div>
