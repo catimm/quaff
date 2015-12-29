@@ -279,13 +279,6 @@ class DraftInventoryController < ApplicationController
     # get draft board #/info
     @draft_board = session[:draft_board_id]
     @draft = DraftBoard.find(@draft_board)
-    @draft_drink = BeerLocation.draft_inventory(@draft.id).order(:updated_at).reverse_order
-    #Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
-    @draft_drink_details = DraftDetail.where(beer_location_id: @draft_drink)
-    # find last time this draft board was updated
-    @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
-    # get current draft board info for 'on deck' drinks
-    @current_draft_drinks = BeerLocation.where(draft_board_id: @draft.id, beer_is_current: "yes")
     
     # get subscription plan
     @subscription_plan = session[:subscription]
@@ -325,6 +318,15 @@ class DraftInventoryController < ApplicationController
       @drink_details = DraftDetail.new(beer_location_id: @drink.id, drink_size: details.drink_size, drink_cost: details.drink_cost)
       @drink_details.save!
     end
+    
+    # get remaining details for new page
+    @draft_drink = BeerLocation.draft_inventory_with_pricing(@draft.id)
+    Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
+    @draft_drink_details = DraftDetail.where(beer_location_id: @draft_drink)
+    # find last time this draft board was updated
+    @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
+    # get current draft board info for 'on deck' drinks
+    @current_draft_drinks = BeerLocation.where(draft_board_id: @draft.id, beer_is_current: "yes")
     
     # refresh info on page to show tier prices associated with drink
     respond_to do |format|

@@ -65,6 +65,13 @@ class BeerLocation < ActiveRecord::Base
       joins(:beer).merge(Beer.order_by_drink_name)
     }
     
+    # create scope for draft inventory when user adds pre-built pricing tiers
+    scope :draft_inventory_with_pricing, ->(draft_board_id) {
+      where(:draft_board_id => draft_board_id).
+      where(:beer_is_current => "hold").
+      order("created_at ASC")
+    }
+    
     # connect drink name and tap number for inventory management form
     def connect_draft_drink
       "Tap #{tap_number}: #{beer.brewery.short_brewery_name} #{beer.beer_name}"
