@@ -30,6 +30,23 @@ class Admin::BeersController < ApplicationController
     @brewery_alt_names = AltBeerName.new
   end
   
+  def show
+
+    # get list of Beer IDs for live beers that don't yet have any information (top priority)
+    @red_beers = Beer.live_beers.need_attention_beers
+    # Rails.logger.debug("Live & Need Attention beers: #{@need_attention_beers.inspect}")
+    # get list Beer IDs for usable but incomplete beers that still need attention
+    @yellow_beers = Beer.live_beers.usable_incomplete_beers
+    # Rails.logger.debug("Live & Usable/Imcomplete beers: #{@usable_incomplete_beers.inspect}")
+    
+    if params[:format] == "red"
+      @beer_type = "red"
+    else
+      @beer_type = "yellow"
+    end
+
+  end
+  
   def new
     # prepare for new beer
     @beer = Beer.new
@@ -193,6 +210,7 @@ class Admin::BeersController < ApplicationController
     end
   end
 
+  
   private
     # collect existing beer descriptors
     def find_descriptor_tags

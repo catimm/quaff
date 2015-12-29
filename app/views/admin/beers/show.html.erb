@@ -1,0 +1,54 @@
+<%= render 'layouts/header' %> 
+<div class="container admin-container">
+	<div class="row header-row">
+		<div class="page-header">
+			<div class="row">
+				<div class="col-xs-10">
+					<% if @beer_type == "red" %>
+						<h3 class="attention-needed-beer-text"><%= @red_beers.count %> drinks need attention</h3>
+					<% else %>
+						<h3 class="usable-beer-text"><%= @yellow_beers.count %> drinks need attention</h3>
+					<% end %>
+				</div>
+				<div class="col-xs-2">
+					<%= link_to "Back", admin_breweries_path, class: 'btn btn-default formButton-cancel-draft-board-edit' %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row small-padding">
+		<div class="col-sm-1">
+			<h5><strong>Brewery</strong></h5>
+		</div>
+		<div class="col-sm-2">
+			<h5><strong>Drink</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Last Updated</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Beer Type</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Rating</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>ABV</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>IBU</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Tags</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Descriptors</strong></h5>
+		</div>
+	</div>
+	<% if @beer_type == "red" %>
+		<%= render 'red_beers' %>
+	<% else %>
+		<%= render 'yellow_beers' %>
+	<% end %>
+</div>
+<%= render 'layouts/footer' %>
