@@ -5,15 +5,15 @@
 			<div class="row no-margin">
 				<div class="col-sm-7 visible-sm visible-md visible-lg">
 					<h3><%= @brewery_count %> breweries in the database (<%= @beer_count %> beers)</h3>
-					<h4 class="live-beer-count"><%= @number_live_beers %> beers live (<span class="complete-beer-text"><%= @complete_brewery_beers.count %> done</span> / 
-						<%= link_to @usable_incomplete_brewery_beers.count.to_s + " partial", admin_needs_work_beers_path("yellow"), :class => "usable-beer-text" %> /
-						<%= link_to @need_attention_brewery_beers.count.to_s + " need attention", admin_needs_work_beers_path("red"), :class => "attention-needed-beer-text" %>)</h4>
+					<h4 class="live-beer-count"><%= @number_live_beers %> beers live (<span class="complete-beer-text"><%= @number_complete_beers %> done</span> / 
+						<%= link_to @number_usable_incomplete_beers.to_s + " partial", admin_needs_work_beers_path("yellow"), :class => "usable-beer-text" %> /
+						<%= link_to @number_need_attention_beers.to_s + " need attention", admin_needs_work_beers_path("red"), :class => "attention-needed-beer-text" %>)</h4>
 				</div>
 				<div class="col-xs-12 visible-xs">
 					<h4><%= @brewery_count %> breweries (<%= @beer_count %> beers)</h4>
-					<h5 class="live-beer-count"><%= @number_live_beers %> beers (<span class="complete-beer-text"><%= @complete_brewery_beers.count %></span> / 
-						<%= link_to @usable_incomplete_brewery_beers.count.to_s + " partial", admin_needs_work_beers_path("yellow"), :class => "usable-beer-text" %> /
-						<%= link_to @need_attention_brewery_beers.count.to_s + " need attention", admin_needs_work_beers_path("red"), :class => "attention-needed-beer-text" %>)</h5>
+					<h5 class="live-beer-count"><%= @number_live_beers %> beers (<span class="complete-beer-text"><%= @number_complete_beers %></span> / 
+						<%= link_to @number_usable_incomplete_beers.to_s + " partial", admin_needs_work_beers_path("yellow"), :class => "usable-beer-text" %> /
+						<%= link_to @number_need_attention_beers.to_s + " need attention", admin_needs_work_beers_path("red"), :class => "attention-needed-beer-text" %>)</h5>
 				</div>
 				<div class="col-xs-10 col-sm-5 text-right">
 					<%= link_to "Add new brewery", new_admin_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>

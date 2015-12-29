@@ -5,7 +5,9 @@
 			<% if d.brewery.image.blank? %>
 				<h5 class="need-text"><%= link_to d.brewery.brewery_name, admin_brewery_beers_path(d.brewery.id) %></h5>
 			<% else %>
-				<img class="img-responsive center-block" alt="Responsive image" src="<%= d.brewery.image %>">
+				<%= link_to admin_brewery_beers_path(d.brewery.id) do %>
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= d.brewery.image %>">
+				<% end %>
 			<% end %>
 		</div>
 		<div class="col-sm-2">

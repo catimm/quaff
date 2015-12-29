@@ -33,10 +33,10 @@ class Admin::BeersController < ApplicationController
   def show
 
     # get list of Beer IDs for live beers that don't yet have any information (top priority)
-    @red_beers = Beer.live_beers.need_attention_beers
+    @red_beers = Beer.live_beers_by_breweries.need_attention_beers
     # Rails.logger.debug("Live & Need Attention beers: #{@need_attention_beers.inspect}")
     # get list Beer IDs for usable but incomplete beers that still need attention
-    @yellow_beers = Beer.live_beers.usable_incomplete_beers
+    @yellow_beers = Beer.live_beers_by_breweries.usable_incomplete_beers
     # Rails.logger.debug("Live & Usable/Imcomplete beers: #{@usable_incomplete_beers.inspect}")
     
     if params[:format] == "red"
