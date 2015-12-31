@@ -92,7 +92,7 @@ class Admin::BeersController < ApplicationController
       @beer.save
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
-      # first change associations in beer_locations table
+      # change associations in beer_locations table
       @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
       Rails.logger.debug("Beer locations table: #{@beer_locations_to_change.inspect}")
       if !@beer_locations_to_change.empty?
@@ -102,7 +102,7 @@ class Admin::BeersController < ApplicationController
           BeerLocation.update(beers.id, beer_id: params[:beer][:id])
         end
       end
-      # first change associations in alt_beer_names table
+      # change associations in alt_beer_names table
       @alt_beer_names_to_change = AltBeerName.where(beer_id: @beer.id)
       Rails.logger.debug("Alt Beer names table: #{@alt_beer_names_to_change.inspect}")
       if !@alt_beer_names_to_change.empty?
@@ -112,7 +112,7 @@ class Admin::BeersController < ApplicationController
           AltBeerName.update(beers.id, beer_id: params[:beer][:id])
         end
       end
-      # first change associations in user_beer_ratings table
+      # change associations in user_beer_ratings table
       @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @beer.id)
       Rails.logger.debug("User Beer ratings table: #{@user_beer_ratings_to_change.inspect}")
       if !@user_beer_ratings_to_change.empty?
@@ -122,7 +122,7 @@ class Admin::BeersController < ApplicationController
           UserBeerRating.update(beers.id, beer_id: params[:beer][:id])
         end
       end
-      # first change associations in drink_lists table
+      # change associations in drink_lists table
       @drink_lists_to_change = DrinkList.where(beer_id: @beer.id)
       Rails.logger.debug("Drink list table: #{@drink_lists_to_change.inspect}")
       if !@drink_lists_to_change.empty?
@@ -132,7 +132,7 @@ class Admin::BeersController < ApplicationController
           DrinkList.update(beers.id, beer_id: params[:beer][:id])
         end
       end
-      # first change associations in user_beer_trackings table
+      # change associations in user_beer_trackings table
       @user_beer_trackings_to_change = UserBeerTracking.where(beer_id: @beer.id)
       Rails.logger.debug("User Beer trackings table: #{@user_beer_trackings_to_change.inspect}")
       if !@user_beer_trackings_to_change.empty?
@@ -141,6 +141,11 @@ class Admin::BeersController < ApplicationController
           Rails.logger.debug("User Beer trackings loop is firing")
           UserBeerTracking.update(beers.id, beer_id: params[:beer][:id])
         end
+      end
+      # then delete associations with this beer in the collab table
+      @collab_associations = BeerBreweryCollab.where(beer_id: @beer_id)
+      if !@collab_associations.empty?
+        @collab_associations.delete_all
       end
       # then delete this instance of the beer
       @beer.destroy
