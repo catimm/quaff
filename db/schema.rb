@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151223200535) do
+ActiveRecord::Schema.define(version: 20160104212533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,6 +122,7 @@ ActiveRecord::Schema.define(version: 20151223200535) do
     t.integer  "touched_by_user"
     t.boolean  "collab"
     t.string   "short_beer_name"
+    t.boolean  "dont_include"
   end
 
   create_table "breweries", force: :cascade do |t|

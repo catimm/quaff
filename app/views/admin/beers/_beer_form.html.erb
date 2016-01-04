@@ -76,6 +76,11 @@
   		<%= f.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
 	</div>
 	<div class="col-sm-3 col-xs-0"></div>
+	<div class="col-sm-9 col-xs-12">
+		<%= f.label :dont_include, "Avoid showing any related info in Views?" %>
+		<%= f.check_box :dont_include %>
+	</div>		
+	<div class="col-sm-3 col-xs-0"></div>
 	<div class="col-sm-6 col-xs-12 text-center">
 		<%= f.submit "Update", class: "btn btn-default btn-success formButton" %>
 	</div>		

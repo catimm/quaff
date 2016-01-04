@@ -5,7 +5,7 @@ module BestGuess
  
   def best_guess(beer_ids)
     #initial beers
-    @beers = Beer.where(id: beer_ids)
+    @beers = Beer.where(id: beer_ids, dont_include: [false, nil])
     # grab user's style preferences
     @user_style_preferences = UserStylePreference.where(user_id: current_user.id)
     # separate likes from dislikes

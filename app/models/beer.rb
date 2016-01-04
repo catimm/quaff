@@ -30,6 +30,7 @@
 #  touched_by_user      :integer
 #  collab               :boolean
 #  short_beer_name      :string
+#  dont_include         :boolean
 #
 
 class Beer < ActiveRecord::Base
@@ -149,12 +150,12 @@ class Beer < ActiveRecord::Base
   }
   # scope only all drinks shown in admin pages 
   scope :all_live_beers, -> { 
-    joins(:beer_locations).merge(BeerLocation.all_current) 
+    joins(:beer_locations).merge(BeerLocation.all_current)
   }
   
   # scope only drinks currently available 
   scope :live_beers, -> { 
-    joins(:beer_locations).merge(BeerLocation.current) 
+    joins(:beer_locations).merge(BeerLocation.current)
   }
   
   # scope only all drinks shown in admin pages 
@@ -171,7 +172,7 @@ class Beer < ActiveRecord::Base
   # scope beers that don't have all related info in the DB
   scope :need_attention_beers, -> { 
     where(beer_rating_one: nil, beer_rating_two: nil, beer_rating_three: nil, beer_type_id: nil, 
-          rating_one_na: nil, rating_two_na: nil, rating_three_na: nil) 
+          rating_one_na: nil, rating_two_na: nil, rating_three_na: nil, dont_include: [false, nil]) 
     }
   # scope beers that have all related info in the DB
   scope :complete_beers, -> { 
@@ -184,7 +185,7 @@ class Beer < ActiveRecord::Base
     where("rating_one_na = ? OR beer_rating_one IS NOT NULL OR beer_type_id IS NOT NULL", true).
     where("rating_two_na IS NULL OR rating_two_na = ?", false).
     where("rating_three_na IS NULL OR rating_three_na = ?", false).
-    where(beer_rating_two: nil, beer_rating_three: nil) 
+    where(beer_rating_two: nil, beer_rating_three: nil, dont_include: [false, nil]) 
   }
   
   # get unique beer descriptors
