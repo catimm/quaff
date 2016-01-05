@@ -155,7 +155,8 @@ class Beer < ActiveRecord::Base
   
   # scope only drinks currently available 
   scope :live_beers, -> { 
-    joins(:beer_locations).merge(BeerLocation.current)
+    joins(:beer_locations).merge(BeerLocation.current).
+    where(dont_include: [false, nil])
   }
   
   # scope only all drinks shown in admin pages 
