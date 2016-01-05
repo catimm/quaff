@@ -54,6 +54,11 @@ class Brewery < ActiveRecord::Base
     order(:brewery_name) 
   }
   
+  # scope all live breweries
+  scope :live_breweries, -> {
+    where(dont_include: [false, nil]) 
+  }
+  
   #filterrific(
   #  #default_filter_params: { live_brewery_beers: 0 },
   #  available_filters: [

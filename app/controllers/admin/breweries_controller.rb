@@ -5,11 +5,11 @@ class Admin::BreweriesController < ApplicationController
     # grab all Breweries
     @breweries = Brewery.all.order(:brewery_name)
      # to show number of breweries currently at top of page
-    @brewery_count = @breweries.distinct.count('id')
+    @brewery_count = Brewery.live_breweries
     # total number of Breweries in DB
     @total_brewery_count = Brewery.distinct.count('id')
     # indicates all Breweries are currently chosen, so show total number of beers in DB
-    @beer_count = Beer.distinct.count('id')
+    @beer_count = Beer.all_relevant_drinks
     # to create a new Brewery instance
     @brewery = Brewery.new
     # to create a new Brewery Name instance

@@ -153,6 +153,11 @@ class Beer < ActiveRecord::Base
     joins(:beer_locations).merge(BeerLocation.all_current)
   }
   
+  # scope only relevant drinks 
+  scope :all_relevant_drinks, -> { 
+    where(dont_include: [false, nil])
+  }
+  
   # scope only drinks currently available 
   scope :live_beers, -> { 
     where(dont_include: [false, nil]).
