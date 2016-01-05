@@ -4,10 +4,14 @@
 		<div class="page-header">
 			<div class="row">
 				<div class="col-xs-10">
-					<% if @beer_type == "red" %>
-						<h3 class="attention-needed-beer-text"><%= @red_beers.count %> drinks need attention</h3>
+					<% if @beer_type == "live" %>
+						<h3 class="live-beer-count"><%= @live_brewery_beers.length %> drinks are complete</h3>
+					<% elsif @beer_type == "green" %>
+						<h3 class="complete-beer-text"><%= @green_beers.length %> drinks are complete</h3>
+					<% elsif @beer_type == "red" %>
+						<h3 class="attention-needed-beer-text"><%= @red_beers.length %> drinks need attention</h3>
 					<% else %>
-						<h3 class="usable-beer-text"><%= @yellow_beers.count %> drinks need attention</h3>
+						<h3 class="usable-beer-text"><%= @yellow_beers.length %> drinks need attention</h3>
 					<% end %>
 				</div>
 				<div class="col-xs-2">
@@ -16,36 +20,11 @@
 			</div>
 		</div>
 	</div>
-	<div class="row small-padding">
-		<div class="col-sm-1">
-			<h5><strong>Brewery</strong></h5>
-		</div>
-		<div class="col-sm-2">
-			<h5><strong>Drink</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Last Updated</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Beer Type</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Rating</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>ABV</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>IBU</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Tags</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Descriptors</strong></h5>
-		</div>
-	</div>
-	<% if @beer_type == "red" %>
+	<% if @beer_type == "live" %>
+		<%= render 'all_live_beers' %>
+	<% elsif @beer_type == "green" %>
+		<%= render 'green_beers' %>
+	<% elsif @beer_type == "red" %>
 		<%= render 'red_beers' %>
 	<% else %>
 		<%= render 'yellow_beers' %>

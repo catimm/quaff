@@ -1,0 +1,59 @@
+<div class="row small-padding">
+		<div class="col-sm-1">
+			<h5><strong>Number</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Brewery</strong></h5>
+		</div>
+		<div class="col-sm-3">
+			<h5><strong>Drink</strong></h5>
+		</div>
+		<div class="col-sm-1">
+			<h5><strong>Last Updated</strong></h5>
+		</div>
+		<div class="col-sm-2">
+			<h5><strong>Beer Type</strong></h5>
+		</div>
+	</div>
+<% @green_beers.each_with_index do |d, i| %>
+	<% if d.brewery.dont_include != true %>
+		<div class="row small-padding">
+			<div class="col-sm-1">
+				<h5><%= i + 1 %></h5>
+			</div>
+			<div class="col-xs-6 col-sm-1">
+				<% if d.brewery.image.blank? %>
+					<h5 class="need-text"><%= link_to d.brewery.brewery_name, admin_brewery_beers_path(d.brewery.id) %></h5>
+				<% else %>
+					<%= link_to admin_brewery_beers_path(d.brewery.id) do %>
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= d.brewery.image %>">
+					<% end %>
+				<% end %>
+			</div>
+			<div class="col-sm-3">
+				<% if d.beer_name.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<h5><%= (d.updated_at).strftime("%-m/%d/%y")  %></h5>
+			</div>
+			<div class="col-sm-2">
+				<% if d.beer_type.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5><%= d.beer_type.beer_type_name %></h5>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<% if @this_brewery.nil? %>
+					<% @this_brewery = Brewery.find_by(id: d.brewery_id) %>
+				<% end %>
+				<%= link_to "Edit beer", edit_admin_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success" %>
+			</div>
+		</div>
+		<hr/>
+	<% end %>
+<% end %>

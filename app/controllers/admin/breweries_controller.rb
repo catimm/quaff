@@ -15,28 +15,32 @@ class Admin::BreweriesController < ApplicationController
     # to create a new Brewery Name instance
     @brewery_alt_names = AltBreweryName.new
     # get current beer ids
-    @current_beer_ids = BeerLocation.where(beer_is_current: "yes").pluck(:beer_id)
+    @current_beer_ids = Beer.live_beers.pluck(:beer_id)
     # get list of Brewery IDs for those breweries that have a live beer
-    @live_brewery_beers = Brewery.live_brewery_beers
+    @live_brewery_beers = Beer.live_beers
     # get list of Brewery IDs for those breweries that have a live beer that needs works
-    @need_attention_brewery_beers = Brewery.need_attention_brewery_beers
+    @need_attention_brewery_beers = Beer.live_beers.need_attention_beers
     # Rails.logger.debug("Red beers: #{@need_attention_brewery_beers.inspect}")
     # get list of Brewery IDs for those breweries that have a live beer that is complete
-    @complete_brewery_beers = Brewery.complete_brewery_beers
+    @complete_brewery_beers = Beer.live_beers.complete_beers
     # Rails.logger.debug("Green beers: #{@complete_brewery_beers.inspect}")
     # get list of Brewery IDs for those breweries that have a live beer with some info but is not complete
     # @usable_incomplete_brewery_beers = @live_brewery_beers - @need_attention_brewery_beers - @complete_brewery_beers
-    @usable_incomplete_brewery_beers = Brewery.usable_incomplete_brewery_beers
+    @usable_incomplete_brewery_beers = Beer.live_beers.usable_incomplete_beers
     
     # count of total live beers
-    @number_live_beers = Beer.live_beers.count('id')
+    #@number_live_beers = Beer.live_beers.count('id')
+    @number_live_beers = @live_brewery_beers.length
     # get count of total beers that have no info
-    @number_need_attention_beers = Beer.live_beers.need_attention_beers.count('id')
+    #@number_need_attention_beers = Beer.live_beers.need_attention_beers.count('id')
+    @number_need_attention_beers = @need_attention_brewery_beers.length
     # get count of total beers that are complete
-    @number_complete_beers = Beer.live_beers.complete_beers.count('id')
+    #@number_complete_beers = Beer.live_beers.complete_beers.count('id')
+    @number_complete_beers = @complete_brewery_beers.length
     # get count of total beers that still need some info 
-    @number_usable_incomplete_beers = Beer.live_beers.usable_incomplete_beers.count('id')
-
+    #@number_usable_incomplete_beers = Beer.live_beers.usable_incomplete_beers.count('id')
+    @number_usable_incomplete_beers = @usable_incomplete_brewery_beers.length
+    
     # establish filters
     #@filterrific = initialize_filterrific(Brewery, params[:filterrific])
     #@filterrific.select_options = {
