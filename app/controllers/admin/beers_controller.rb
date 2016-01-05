@@ -143,7 +143,7 @@ class Admin::BeersController < ApplicationController
         end
       end
       # then delete associations with this beer in the collab table
-      @collab_associations = BeerBreweryCollab.where(beer_id: @beer_id)
+      @collab_associations = BeerBreweryCollab.where(beer_id: @beer.id)
       if !@collab_associations.empty?
         @collab_associations.delete_all
       end
