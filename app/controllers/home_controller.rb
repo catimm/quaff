@@ -19,10 +19,8 @@ class HomeController < ApplicationController
   def create
     @new_invitation_request = InvitationRequest.create!(invitation_request_params)
     if @new_invitation_request
-      Rails.logger.debug("1st Fires")
       gon.invitation_status = "success"
       respond_to do |format|
-        Rails.logger.debug("2nd Fires")
         format.js { render "home.js.erb" }
       end
     end

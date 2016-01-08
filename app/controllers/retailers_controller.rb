@@ -1,5 +1,5 @@
 class RetailersController < ApplicationController
-  before_filter :verify_admin, :except => [:index]
+  before_filter :verify_admin, :except => [:index, :create]
   respond_to :html, :json, :js
   
   def index
@@ -79,6 +79,16 @@ class RetailersController < ApplicationController
   end
   
   def create
+    @new_info_request = InfoRequest.create!(info_request_params)
+    if @new_info_request
+      @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+      @admin_emails.each do |admin_email|
+        BeerUpdates.info_requested_email(admin_email, params[:info_request][:name], params[:info_request][:email]).deliver_now!
+      end
+      respond_to do |format|
+        format.js { render "info.js.erb" }
+      end
+    end
   end
   
   def edit
@@ -230,6 +240,10 @@ class RetailersController < ApplicationController
     def location_details
       params.require(:location).permit(:homepage, :beerpage, :short_name, :neighborhood, :facebook_url, :twitter_url,   
       :address, :phone_number, :email, :hours_one, :hours_two, :hours_three, :hours_four, :logo_holder, :image_holder)
+    end
+    
+    def info_request_params
+      params.require(:info_request).permit(:email, :name)
     end
     
 end # end of controller

@@ -158,8 +158,8 @@
 		        			<h3 class="index-section-header">We're currently accepting new Seattle retailers--please let us know if you're interested!</h3> 
 		        		</div>
 		        	</div>
-		        	<div class="row request-invitation-row show" id="request-invitation">
-		        		<%= form_for @request_info, :url => {:controller => "home", :action => "create"}, :remote => true do |invite| %>
+		        	<div class="row request-invitation-row show" id="request-info">
+		        		<%= form_for @request_info, :url => {:controller => "retailers", :action => "create"}, :remote => true do |invite| %>
 							<div class="col-xs-2 col-sm-2 text-right no-padding-right">
 								<%= label :email, 'Email' %>
 							</div>
@@ -177,7 +177,7 @@
 							</div>
 						<% end %>
 		        	</div>
-		        	<div class="row request-invitation-row hidden text-center" id="request-invitation-thanks">
+		        	<div class="row request-invitation-row hidden text-center" id="request-info-thanks">
 						<h4 class="invitation-request-response">Thanks for your interest! We'll be in touch soon.</h4>
 		        	</div>       	
 		        </div>

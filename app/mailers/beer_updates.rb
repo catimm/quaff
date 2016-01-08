@@ -87,6 +87,34 @@ class BeerUpdates < ActionMailer::Base
     end
   end # end of user added email
   
+  def info_requested_email(admin_email, name, email)
+    Rails.logger.debug("Name: #{name.inspect}")
+    Rails.logger.debug("Email: #{email.inspect}")
+    # determine if this is prod environment
+    @prod = User.where(email: "carl@drinkknird.com")[0]
+    # mandrill template info
+    template_name = "info-requested-email"
+    template_content = []
+    message = {
+      merge: true,
+      to: [
+        {:email => admin_email}
+      ],
+      inline_css: true,
+      merge_vars: [
+        { rcpt: admin_email,
+          vars: [
+             {name: "name", content: name},
+             {name: "email", content: email}
+           ]
+         }
+      ]
+    }
+    if !@prod.nil?
+      mandrill_client.messages.send_template template_name, template_content, message
+    end
+  end # end of user added email
+  
   def tracking_beer_email(email, beer_name, beer_id, brewery_name, brewery_id, username, location)
 
     website = root_url
