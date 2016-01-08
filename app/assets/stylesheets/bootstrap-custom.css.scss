@@ -120,6 +120,9 @@ body {
   overflow-x: hidden;
 
 }
+.body-retail-index {
+  padding-bottom: 0 !important;
+}
 .brand-font {
    font-family: 'sansationregular' !important;
 }
@@ -365,6 +368,80 @@ label {
 .invitation-request-response {
   color: $action-background;
   font-weight: 600;
+}
+// Retailer index page
+.banner {
+    background: url("https://s3-us-west-2.amazonaws.com/knird/index/craft-beer-bar-adj.jpg") no-repeat fixed center center / cover transparent;
+    background-clip: border-box;
+    background-origin: padding-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 110vh;
+}
+.banner-xs {
+    background: url("https://s3-us-west-2.amazonaws.com/knird/index/home3_adj_xs.jpg") no-repeat fixed center center / cover transparent;
+    background-clip: border-box;
+    background-origin: padding-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 110vh;
+}
+.retailer-valueStatement {
+  padding-top: 34%;
+  padding-left: 20px !important;
+  height:100vh;
+  width: 100%;
+  position: fixed;
+  color: #fff;
+  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
+  text-align: left;
+  div {
+    h1.brand-font {
+      font-size: 500% !important;
+    }
+    h3.brand-subfont {
+      margin-top: 0;
+    }
+  }
+}
+.formButton-index-Banner-retailer {
+  width: 100%;
+  font-size: 18px;
+  margin-top: 41%;
+  margin-left: -50px;
+  background: $action-background;
+}
+.retailer-icon-background {
+  width: 40px;
+  height: 40px;
+  padding: 6px 2px;
+  background: $action-background;
+  border-color: $action-background;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  h3 {
+    color: #fff;
+    margin: 0;
+    .fa.fa-smile-o {
+      font-size: 28px;
+      padding: 0 3px 18px 3px;
+      margin-top: -2px;
+    }
+  }
+}
+.index-section-header-two {
+  width: 85%;
+  text-align: center;
+  margin: 35px 7.5%;
+}
+.request-invitation-section-retailer {
+  padding-bottom: 100px;
 }
 // Search result page
 .search-result-tile {
@@ -2781,6 +2858,87 @@ input[type="checkbox"] {
   width: 100%;
   background: $step-background;
   margin-top: 10px;
+}
+// Retailer index page
+.banner-xs {
+    background: url("https://s3-us-west-2.amazonaws.com/knird/index/craft-beer-bar-adj.jpg") no-repeat fixed center center / cover transparent;
+    background-clip: border-box;
+    background-origin: padding-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 110vh;
+}
+.retailer-valueStatement {
+  padding-top: 25%;
+  padding-left: 5px !important;
+  height:100vh;
+  width: 100%;
+  position: fixed;
+  color: #fff;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.8);
+  text-align: left;
+  div {
+    h1.brand-font {
+      font-size: 400% !important;
+    }
+    h3.brand-subfont {
+      margin-top: 0;
+      font-size: 22px;
+    }
+  }
+}
+.index-section-header-two {
+  font-size: 18px;
+}
+.formButton-index-Banner-retailer {
+  width: 100%;
+  font-size: 18px;
+  margin-top: 41%;
+  margin-left: -50px;
+  background: $action-background;
+}
+.retailer-icon-background {
+  width: 40px;
+  height: 40px;
+  padding: 6px 2px;
+  background: $action-background;
+  border-color: $action-background;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  h3 {
+    color: #fff;
+    margin: 0;
+    .fa.fa-smile-o {
+      font-size: 28px;
+      padding: 0 3px 18px 3px;
+      margin-top: -2px;
+    }
+  }
+}
+.index-section-header-two {
+  width: 95%;
+  text-align: center;
+  margin: 15px 2.5%;
+}
+.request-invitation-section  {
+  .container {
+    table {
+      tbody {
+        tr {
+          td {
+            font-size: 16px !important;
+          }
+        }
+      }
+    }
+  }
+}
+.request-invitation-section-retailer {
+  padding-bottom: 50px;
 }
   // Draft edit page
   .remove-draft-button {

@@ -1,6 +1,11 @@
 class RetailersController < ApplicationController
-  before_filter :verify_admin
+  before_filter :verify_admin, :except => [:index]
   respond_to :html, :json, :js
+  
+  def index
+    # instantiate invitation request 
+    @request_info = InfoRequest.new
+  end
   
   def show
     gon.source = session[:gon_source]
