@@ -370,7 +370,7 @@ label {
   font-weight: 600;
 }
 // Retailer index page
-.banner {
+.banner-retail {
     background: url("https://s3-us-west-2.amazonaws.com/knird/index/craft-beer-bar-adj.jpg") no-repeat fixed center center / cover transparent;
     background-clip: border-box;
     background-origin: padding-box;
@@ -380,7 +380,7 @@ label {
     background-size: cover;
     height: 110vh;
 }
-.banner-xs {
+.banner-xs-retail {
     background: url("https://s3-us-west-2.amazonaws.com/knird/index/home3_adj_xs.jpg") no-repeat fixed center center / cover transparent;
     background-clip: border-box;
     background-origin: padding-box;
@@ -2860,7 +2860,7 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 // Retailer index page
-.banner-xs {
+.banner-xs-retail {
     background: url("https://s3-us-west-2.amazonaws.com/knird/index/craft-beer-bar-adj.jpg") no-repeat fixed center center / cover transparent;
     background-clip: border-box;
     background-origin: padding-box;
