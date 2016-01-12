@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160112065850) do
+ActiveRecord::Schema.define(version: 20160112205342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -221,6 +221,7 @@ ActiveRecord::Schema.define(version: 20160112065850) do
     t.datetime "active_until"
     t.string   "stripe_customer_number"
     t.string   "stripe_subscription_number"
+    t.boolean  "current_trial"
   end
 
   create_table "location_trackings", force: :cascade do |t|

@@ -43,10 +43,6 @@ class RetailersController < ApplicationController
     else
       @user_plan = "Retain"
     end
-    @stripe_list = Stripe::Plan.retrieve('retain_m')
-    Rails.logger.debug("Stripe List: #{@stripe_list.inspect}")
-    @plans = @stripe_list[:data]
-    Rails.logger.debug("Stripe Plans: #{@plans.inspect}")
     
     # get team member authorizations
     @team_authorizations = UserLocation.where(location_id: params[:id])
@@ -126,24 +122,31 @@ class RetailersController < ApplicationController
   end
   
   def choose_initial_plan 
-    if params.has_key?(:stripeToken) # testing whether the user is choosing a paid plan as the initial plan
-      @plan_info = Stripe::Plan.retrieve(params[:plan_id])
+    if params[:format] == "retain_y" # testing whether the user is choosing a paid plan as the initial plan
+      @plan_info = Stripe::Plan.retrieve(params[:format])
+      Rails.logger.debug("Plan info: #{@plan_info.inspect}")
+      #Create a stripe customer object on signup
+      customer = Stripe::Customer.create(
+              :description => @plan_info.statement_descriptor,
+              #:source => params[:stripeToken],
+              :email => current_user.email,
+              :plan => params[:format]
+            )
+      # get the appropriate subscription id
+      @subcription_plan = Subscription.where(subscription_level: params[:format]).first
+      # create a new location_subscription row
+      @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 4,
+                                active_until: 1.month.from_now, current_trial: true)
+    else # else customer is choosing the Free plan as the initial plan
+      @plan_info = Stripe::Plan.retrieve(params[:format])
       #Rails.logger.debug("Plan info: #{plan.inspect}")
       #Create a stripe customer object on signup
       customer = Stripe::Customer.create(
               :description => @plan_info.statement_descriptor,
-              :source => params[:stripeToken],
+              #:source => params[:stripeToken],
               :email => current_user.email,
-              :plan => params[:plan_id]
+              :plan => params[:format]
             )
-      # get the appropriate subscription id
-      @subcription_plan = Subscription.where(subscription_level: params[:plan_id]).first
-      # set a time one month from now
-      #@one_month_from_now = 1.month.from_now
-      # create a new location_subscription row
-      @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: @subcription_plan.id,
-                                active_until: 1.month.from_now)
-    else # else customer is choosing the Free plan as the initial plan
       # create a new location_subscription row
       @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 1)
     end
@@ -230,6 +233,11 @@ class RetailersController < ApplicationController
     end
     render :json => {:status => 200}
   end # end stripe_webhook method
+  
+  def trial_end
+    @retailer = Location.find(params[:format])
+    @retailer_subscription = LocationSubscription.where(location_id: params[:format]).first
+  end # end of trial_end method
   
   def info_request
     @new_info_request = InfoRequest.create!(info_request_params)

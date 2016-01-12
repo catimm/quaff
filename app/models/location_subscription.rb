@@ -10,6 +10,7 @@
 #  active_until               :datetime
 #  stripe_customer_number     :string
 #  stripe_subscription_number :string
+#  current_trial              :boolean
 #
 
 class LocationSubscription < ActiveRecord::Base

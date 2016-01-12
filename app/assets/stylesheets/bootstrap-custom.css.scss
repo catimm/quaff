@@ -47,6 +47,7 @@ $gray-body-background: $light-gray;
 $soft-border: $extra-light-gray;
 $header-text: $black;
 $normal-text: $dark-gray;
+$more-emphasized-text: $extra-dark-gray;
 $dark-border: $extra-dark-gray;
 $extra-dark-border: $extra-extra-dark-gray;
 $combined-brewery-text: $dark-gray;
@@ -838,11 +839,20 @@ p {
 }
 .formButton-free-plan {
   width: 60% !important;
+  margin-bottom: 10px;
+}
+.formButton-start-plan {
+  width: 90% !important;
+  margin-bottom: 10px;
 }
 .feature-list-column-sign-up {
   font-size: 16px;
   color: $normal-text;
   border-top: hidden !important;
+}
+.no-credit-card {
+  font-size: 12px;
+  font-style: italic;
 }
 .retailer-plan-cost {
   color: $user-action;
@@ -874,6 +884,42 @@ p {
         }
       }
   }
+}
+.retail-plan-update-options {
+  text-align: center;
+  border: 1px solid $less-emphasized-text !important;
+  border-radius: 6px;
+}
+.retain-plan-option {
+  margin: 0 20px 0 -15px !important;
+}
+.retailer-plan-delete-option {
+  text-align: center;
+  margin-left: -5px !important;
+}
+.retail-plan-headline {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.retail-plan-header {
+  text-align: center;
+  color: $more-emphasized-text;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.retail-plan-subheader {
+  text-align: center;
+  color: $less-emphasized-text;
+  font-weight: 400;
+  margin-top: 5px;
+}
+.retail-plan-feature-list {
+  text-align: left;
+  color: $normal-text;
+  height: 200px;
+}
+.retail-plan-option-or {
+  color: $normal-text;
 }
 // Rating page
 .rating-tile {
