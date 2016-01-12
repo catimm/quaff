@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160108031449) do
+ActiveRecord::Schema.define(version: 20160112065850) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,8 +216,11 @@ ActiveRecord::Schema.define(version: 20160108031449) do
   create_table "location_subscriptions", force: :cascade do |t|
     t.integer  "location_id"
     t.integer  "subscription_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.datetime "active_until"
+    t.string   "stripe_customer_number"
+    t.string   "stripe_subscription_number"
   end
 
   create_table "location_trackings", force: :cascade do |t|

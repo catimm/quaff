@@ -1,0 +1,106 @@
+<div class="container">
+	<div class="row no-margin">
+		<h3 class="text-center">Select the best plan for you</h3>
+	</div>
+	<div class="row plan-feature-table-row">
+		<table class="table-condensed">
+						<thead>
+							<th class="retailer-plan-header  first-column top-row">Connect</th>
+							<th class="retailer-plan-header">Retain</th>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="feature-list-column-sign-up first-column">Knird App Business Listing + Logo</td>
+								<td class="feature-list-column-sign-up">All Connect features</td>
+							</tr>
+							<tr>
+								<td class="feature-list-column-sign-up first-column">Leverage Knird's database</td>
+								<td class="feature-list-column-sign-up">Share drinks on Facebook & Twitter</td>
+							</tr>
+							<tr>
+								<td class="feature-list-column-sign-up first-column">Simultaneously update all draft lists</td>
+								<td class="feature-list-column-sign-up">Print drink menus</td>
+							</tr>
+							<tr>
+								<td class="feature-list-column-sign-up first-column">As available customer support</td>
+								<td class="feature-list-column-sign-up">Show what's on draft next</td>
+							</tr>
+							<tr>
+								<td class="first-column feature-list-column-sign-up"></td>
+								<td class="feature-list-column-sign-up">Customize draft boards</td>
+							</tr>
+							<tr>
+								<td class="first-column feature-list-column-sign-up"></td>
+								<td class="feature-list-column-sign-up">Manage draft inventory</td>
+							</tr>
+							<tr>
+								<td class="first-column feature-list-column-sign-up"></td>
+								<td class="feature-list-column-sign-up">Assign access rights</td>
+							</tr>
+							<tr>
+								<td class="first-column feature-list-column-sign-up"></td>
+								<td class="feature-list-column-sign-up">10am - 8pm customer support</td>
+							</tr>
+							<tr>
+								<td class="first-column feature-list-column-sign-up"></td>
+								<td class="feature-list-column-sign-up">30 day free trial</td>
+							</tr>
+							<tr>
+								<td class="first-column feature-list-column-sign-up"></td>
+								<td class="feature-list-column-sign-up">Monthly or yearly contract option</td>
+							</tr>
+							<tr class="retail-subscription-button-holder">
+								<td class="first-column">
+									<div class="row no-margin">
+										<div class="col-sm-12">
+											<h5 class="contract-type-header">No contract</h5>
+											<h2 class="retailer-plan-cost">$0<span class="with-contract">/mo</span></h2>
+											<%= link_to "Sign up for Connect", choose_initial_plan_path(@retailer.id, "connect"), class: 'btn btn-default formButton-free-plan' %>
+										</div>
+									</div>
+								</td>
+								<td class="second-column">
+									<div class="row no-margin">
+										<div class="col-sm-6">
+											<h5 class="contract-type-header">1-year contract</h5>
+											<h2 class="retailer-plan-cost">$25<span class="with-contract">/mo</span></h2>
+											<%= form_tag choose_initial_plan_path(@retailer.id), class:"plan-button" do %>
+											<input name="plan_id" type="hidden" value="retain_y"></input>
+	          								<script 
+	          									class="stripe-button" 
+	          									name="Knird" 
+	          									data-description="Retain (yearly contract)"
+	          									data-amount="2500" 
+	          									data-currency="USD" 
+	          									data-email="<%= current_user.email %>" 
+	          									data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+	          									data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+	          									src="https://checkout.stripe.com/checkout.js">
+	          								</script>
+										<% end %>
+										</div>
+										<div class="col-sm-6">
+											<h5 class="contract-type-header">Month-to-month contract</h5>
+											<h2 class="retailer-plan-cost">$30<span class="with-contract">/mo</span></h2>
+											<%= form_tag choose_initial_plan_path(@retailer.id), class:"plan-button" do %>
+											<input name="plan_id" type="hidden" value="retain_m"></input>
+	          								<script 
+	          									class="stripe-button" 
+	          									name="Knird" 
+	          									data-description="Retain (monthly contract)"
+	          									data-amount="3000" 
+	          									data-currency="USD" 
+	          									data-email="<%= current_user.email %>" 
+	          									data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+	          									data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+	          									src="https://checkout.stripe.com/checkout.js">
+	          								</script>
+										<% end %>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+	</div>
+</div>

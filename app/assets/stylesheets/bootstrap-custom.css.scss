@@ -820,6 +820,61 @@ p {
      color: $special-beer;
    }
 }
+// Retailer initial subscription sign up page
+.plan-feature-table-row {
+  table {
+    margin: 15px auto 0 auto !important;
+    float: none !important;
+    text-align: center;
+    width: 80% !important;
+    border: 1px solid #dddddd;
+    padding: 4px !important;
+    tr {
+      .first-column {
+        border-right: 1px solid #dddddd;
+      }
+    }
+  }
+}
+.formButton-free-plan {
+  width: 60% !important;
+}
+.feature-list-column-sign-up {
+  font-size: 16px;
+  color: $normal-text;
+  border-top: hidden !important;
+}
+.retailer-plan-cost {
+  color: $user-action;
+  margin-top: 10px !important;
+}
+.contract-type-header {
+  color: $normal-text; 
+  font-weight: 500;
+}
+.plan-button {
+  margin-bottom: 10px !important;
+}
+.with-contract {
+  color: $less-emphasized-text;
+  font-size: 12px;
+  font-weight: 300 !important;
+}
+.retail-subscription-button-holder {
+  border-top: 1px solid #dddddd !important;
+  .first-column {
+    padding-top: 0 !important;
+  }
+  .second-column {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      div.row {
+        div:first-child {
+          border-right: 1px solid #dddddd !important;
+        }
+      }
+  }
+}
 // Rating page
 .rating-tile {
   margin: 20px 0;
@@ -2391,6 +2446,9 @@ input[type="checkbox"] {
   text-align: center;
   font-weight: 500;
 }
+.last-row-plan-change {
+  border: hidden;
+}
 .feature-included {
   color: $user-action;
 }
@@ -2421,7 +2479,7 @@ input[type="checkbox"] {
   border-top: 3px solid $action-background !important;
 }
 .selected-plan-column.last-row {
-  border-bottom: 3px solid $action-background;
+  border-bottom: 3px solid $action-background !important;
 }
 // Inventory Management page
 .on-deck-for-title {

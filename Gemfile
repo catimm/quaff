@@ -13,6 +13,10 @@ gem 'coffee-rails', '~> 4.0.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer',  platforms: :ruby
 
+group :development do
+  gem 'ultrahook' # to test webhook locally
+end
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
@@ -88,6 +92,8 @@ gem 'newrelic_rpm'
 # using Wicked PDF to print drink menu html pages to pdf
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+# using Strip gem to manage subscription payments
+gem 'stripe'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

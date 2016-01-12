@@ -1,7 +1,11 @@
 <%= render 'layouts/header_retailer' %> 
-	<% if @location_page == "yes" %>
-		<%= render 'details_view_locations' %>
+	<% if @retailer_subscription.nil? %>
+		<%= render 'choose_initial_subscription' %>
 	<% else %>
-		<%= render 'details_view_draft' %>
+		<% if @location_page == "yes" %>
+			<%= render 'details_view_locations' %>
+		<% else %>
+			<%= render 'details_view_draft' %>
+		<% end %>
 	<% end %>
 <%= render 'layouts/footer' %>

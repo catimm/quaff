@@ -1,6 +1,8 @@
 class RetailersController < ApplicationController
-  before_filter :verify_admin, :except => [:index, :create]
+  before_filter :verify_admin, :except => [:index, :create, :stripe_webhooks]
   respond_to :html, :json, :js
+  require "stripe"
+  require 'json'
   
   def index
     # instantiate invitation request 
@@ -9,8 +11,12 @@ class RetailersController < ApplicationController
   
   def show
     gon.source = session[:gon_source]
-    @subscription_plan = session[:subscription]
     @retailer_subscription = LocationSubscription.where(location_id: params[:id]).first
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     @retailer = Location.find(params[:id])
     #Rails.logger.debug("Draft Board #{@retailer.inspect}")
     @draft_board = DraftBoard.where(location_id: params[:id])
@@ -31,12 +37,16 @@ class RetailersController < ApplicationController
     @fb_authentication = Authentication.where(location_id: params[:id], provider: "facebook")
     @twitter_authentication = Authentication.where(location_id: params[:id], provider: "twitter").first
     
-    # get subscription plan
+    # get subscription information
     if @subscription_plan == 1
       @user_plan = "Free"
     else
       @user_plan = "Retain"
     end
+    @stripe_list = Stripe::Plan.retrieve('retain_m')
+    Rails.logger.debug("Stripe List: #{@stripe_list.inspect}")
+    @plans = @stripe_list[:data]
+    Rails.logger.debug("Stripe Plans: #{@plans.inspect}")
     
     # get team member authorizations
     @team_authorizations = UserLocation.where(location_id: params[:id])
@@ -79,16 +89,7 @@ class RetailersController < ApplicationController
   end
   
   def create
-    @new_info_request = InfoRequest.create!(info_request_params)
-    if @new_info_request
-      @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
-      @admin_emails.each do |admin_email|
-        BeerUpdates.info_requested_email(admin_email, params[:info_request][:name], params[:info_request][:email]).deliver_now!
-      end
-      respond_to do |format|
-        format.js { render "info.js.erb" }
-      end
-    end
+
   end
   
   def edit
@@ -124,6 +125,32 @@ class RetailersController < ApplicationController
     end # end of redirect to jquery
   end
   
+  def choose_initial_plan 
+    if params.has_key?(:stripeToken) # testing whether the user is choosing a paid plan as the initial plan
+      @plan_info = Stripe::Plan.retrieve(params[:plan_id])
+      #Rails.logger.debug("Plan info: #{plan.inspect}")
+      #Create a stripe customer object on signup
+      customer = Stripe::Customer.create(
+              :description => @plan_info.statement_descriptor,
+              :source => params[:stripeToken],
+              :email => current_user.email,
+              :plan => params[:plan_id]
+            )
+      # get the appropriate subscription id
+      @subcription_plan = Subscription.where(subscription_level: params[:plan_id]).first
+      # set a time one month from now
+      #@one_month_from_now = 1.month.from_now
+      # create a new location_subscription row
+      @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: @subcription_plan.id,
+                                active_until: 1.month.from_now)
+    else # else customer is choosing the Free plan as the initial plan
+      # create a new location_subscription row
+      @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 1)
+    end
+    flash[:notice] = "Successfully created a charge"
+    redirect_to retailer_path(params[:id])
+  end
+  
   def change_plans
     @subscription_plan = session[:subscription]
     @subscription = LocationSubscription.where(location_id: params[:id]).first
@@ -155,6 +182,66 @@ class RetailersController < ApplicationController
     end
     
     redirect_to retailer_path(session[:retail_id], "location")
+  end # change_plans method
+  
+  def stripe_webhooks
+    begin
+      event_json = JSON.parse(request.body.read)
+      event_object = event_json['data']['object']
+      #refer event types here https://stripe.com/docs/api#event_types
+      Rails.logger.debug("Event info: #{event_object['customer'].inspect}")
+      case event_json['type']
+        when 'invoice.payment_succeeded'
+          Rails.logger.debug("Successful invoice paid event")
+        when 'invoice.payment_failed'
+           Rails.logger.debug("Failed invoice event")
+        when 'charge.succeeded'
+           Rails.logger.debug("Successful charge event")
+           # get the customer number
+           @stripe_customer_number = event_object['customer']
+           @location_subscription = LocationSubscription.where(stripe_customer_number: @stripe_customer_number).first
+           @location_subscription.update_attributes(active_until: 1.month.from_now)
+        when 'charge.failed'
+           Rails.logger.debug("Failed charge event")
+        when 'customer.subscription.deleted'
+           Rails.logger.debug("Customer deleted event")
+        when 'customer.subscription.updated'
+           Rails.logger.debug("Subscription updated event")
+        when 'customer.subscription.trial_will_end'
+          Rails.logger.debug("Subscription trial soon ending event")
+        when 'customer.created'
+          Rails.logger.debug("Customer created event")
+          # get the customer number
+          @stripe_customer_number = event_object['id']
+          @stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
+          # get the user's info
+          @user_email = event_object['email']
+          Rails.logger.debug("User's email: #{@user_email.inspect}")
+          @user_id = User.where(email: @user_email).pluck(:id)
+          @user_location = UserLocation.where(user_id: @user_id).first
+          @location_subscription = LocationSubscription.where(location_id: @user_location.location_id).first
+          # update the user's info
+          @location_subscription.update_attributes(stripe_customer_number: @stripe_customer_number, 
+                                                  stripe_subscription_number: @stripe_subscription_number)
+      end
+    rescue Exception => ex
+      render :json => {:status => 422, :error => "Webhook call failed"}
+      return
+    end
+    render :json => {:status => 200}
+  end # end stripe_webhook method
+  
+  def info_request
+    @new_info_request = InfoRequest.create!(info_request_params)
+    if @new_info_request
+      @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+      @admin_emails.each do |admin_email|
+        BeerUpdates.info_requested_email(admin_email, params[:info_request][:name], params[:info_request][:email]).deliver_now!
+      end
+      respond_to do |format|
+        format.js { render "info.js.erb" }
+      end
+    end
   end
   
   def update_team_roles

@@ -78,7 +78,7 @@
 				<% end %>
 			</div>
 		</div>
-		<% if !@draft_board.blank? && @subscription_plan == 2 %>
+		<% if !@draft_board.blank? && @subscription_plan == "retain" %>
 			<% if current_user.role_id == 1 || current_user.role_id == 5 %>
 				<hr>
 				<div class="row no-margin">
