@@ -220,13 +220,11 @@ class RetailersController < ApplicationController
           subscription.save
         end
       end
+      
+      # change location_subscription table to reflect new plan info
+      @original_subscription.update_attributes(subscription_id: @new_subscription_info.id, current_trial: false)
     end
-    
-    
-    
-    # change location_subscription table to reflect new plan info
-    @original_subscription.update_attributes(subscription_id: @new_subscription_info.id, current_trial: false)
-    
+
     # check to see if a location draft board exists
     @draft_board = DraftBoard.find_by(location_id: session[:retail_id])
     
