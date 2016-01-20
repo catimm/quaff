@@ -2,7 +2,7 @@
 	<h4 class="retail-manage-header">Your Plan <span class="last-updated"> (Last updated: <%= (@retailer_subscription.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h4>
 </div>
 <div class="container" id="retailer-plan-container">
-	<% if @retailer_subscription.current_trial == true %>
+	<% if @retailer_subscription.current_trial == true || @retailer_subscription.subscription_id == 2 %>
 		<%= render 'retailer_during_trial' %>
 	<% else %>
 		<%= render 'retailer_after_trial' %>

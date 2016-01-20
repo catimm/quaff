@@ -1,4 +1,4 @@
-if Rails.env == 'production'
+if Rails.env != 'development'
   Rails.configuration.stripe = {
     :publishable_key => ENV['STRIPE_ID'],
     :secret_key      => ENV['STRIPE_SECRET']
