@@ -152,7 +152,7 @@ class RetailersController < ApplicationController
       #Rails.logger.debug("Plan info: #{plan.inspect}")
       #Create a stripe customer object on signup
       customer = Stripe::Customer.create(
-              :description => "Knird services",
+              :description => @plan_info.statement_descriptor,
               #:source => params[:stripeToken],
               :email => current_user.email,
               :plan => params[:format]
@@ -172,25 +172,58 @@ class RetailersController < ApplicationController
     @new_subscription_info = Subscription.where(subscription_level: params[:format]).first
     Rails.logger.debug("New subscription info: #{@new_subscription_info.inspect}")
     session[:subscription] = @new_subscription_info.id
-    
-    # update Stripe with new info
+    # set @new_plan variable
     if params[:format] == "free"
       @new_plan = "connect"
     else 
       @new_plan = params[:format]
     end
-    if !@original_subscription.stripe_customer_number.blank?
-      customer = Stripe::Customer.retrieve(@original_subscription.stripe_customer_number)
-      @plan_info = Stripe::Plan.retrieve(@new_plan)
-      # Rails.logger.debug("Customer: #{customer.inspect}")
-      if !@original_subscription.stripe_subscription_number.blank?
-        customer.description = @plan_info.statement_descriptor
-        customer.save
-        subscription = customer.subscriptions.retrieve(@original_subscription.stripe_subscription_number)
-        subscription.plan = @new_plan
-        subscription.save
+    # determine if user was previously using a free Retain account
+    if @original_subscription.subscription_id == 2 # create new Stripe account
+      if params[:format] == "retain_y" # testing whether the user is choosing a paid plan as the initial plan
+        @plan_info = Stripe::Plan.retrieve(params[:format])
+        Rails.logger.debug("Plan info: #{@plan_info.inspect}")
+        #Create a stripe customer object on signup
+        customer = Stripe::Customer.create(
+                :description => @plan_info.statement_descriptor,
+                #:source => params[:stripeToken],
+                :email => current_user.email,
+                :plan => @new_plan
+              )
+        # get the appropriate subscription id
+        @subcription_plan = Subscription.where(subscription_level: params[:format]).first
+        # create a new location_subscription row
+        @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 4,
+                                  active_until: 1.month.from_now, current_trial: true)
+      else # else customer is choosing the Free plan as the initial plan
+        @plan_info = Stripe::Plan.retrieve(@new_plan)
+        #Rails.logger.debug("Plan info: #{plan.inspect}")
+        #Create a stripe customer object on signup
+        customer = Stripe::Customer.create(
+                :description => @plan_info.statement_descriptor,
+                #:source => params[:stripeToken],
+                :email => current_user.email,
+                :plan => @new_plan
+              )
+        # create a new location_subscription row
+        @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 1)
+      end
+    else # update Stripe with new info
+      if !@original_subscription.stripe_customer_number.blank?
+        customer = Stripe::Customer.retrieve(@original_subscription.stripe_customer_number)
+        @plan_info = Stripe::Plan.retrieve(@new_plan)
+        # Rails.logger.debug("Customer: #{customer.inspect}")
+        if !@original_subscription.stripe_subscription_number.blank?
+          customer.description = @plan_info.statement_descriptor
+          customer.save
+          subscription = customer.subscriptions.retrieve(@original_subscription.stripe_subscription_number)
+          subscription.plan = @new_plan
+          subscription.save
+        end
       end
     end
+    
+    
     
     # change location_subscription table to reflect new plan info
     @original_subscription.update_attributes(subscription_id: @new_subscription_info.id, current_trial: false)
