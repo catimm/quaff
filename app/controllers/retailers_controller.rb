@@ -192,9 +192,8 @@ class RetailersController < ApplicationController
               )
         # get the appropriate subscription id
         @subcription_plan = Subscription.where(subscription_level: params[:format]).first
-        # create a new location_subscription row
-        @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 4,
-                                  active_until: 1.month.from_now, current_trial: true)
+        # update the location_subscription row
+        @original_subscription.update_attributes(subscription_id: 4, active_until: 1.month.from_now, current_trial: true)
       else # else customer is choosing the Free plan as the initial plan
         @plan_info = Stripe::Plan.retrieve(@new_plan)
         #Rails.logger.debug("Plan info: #{plan.inspect}")
@@ -205,8 +204,8 @@ class RetailersController < ApplicationController
                 :email => current_user.email,
                 :plan => @new_plan
               )
-        # create a new location_subscription row
-        @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 1)
+        # update the location_subscription row
+        @original_subscription.update_attributes(subscription_id: 1, current_trial: false)
       end
     else # update Stripe with new info
       if !@original_subscription.stripe_customer_number.blank?
