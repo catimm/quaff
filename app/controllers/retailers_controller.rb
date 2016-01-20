@@ -201,18 +201,24 @@ class RetailersController < ApplicationController
     # add/delete draft board customization tables for user as appropriate
     if @original_subscription.subscription_id == 1
       if !@draft_board.blank?
+        @internal_draft_preference_check = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id)
         # set up internal draft preferences
-        @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft_board.id, 
-                                      separate_names: false, column_names: false, font_size: 3, tap_title: "#",
-                                      maker_title: "Maker", drink_title: "Drink", style_title: "Style", abv_title: "ABV",
-                                      ibu_title: "IBU", taster_title: "Taster", tulip_title: "Tulip", pint_title: "Pint",
-                                      half_growler_title: "1/2 G", growler_title: "Growler")
-        @internal_draft_preferences.save
+        if @internal_draft_preference_check.blank?
+          @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft_board.id, 
+                                        separate_names: false, column_names: false, font_size: 3, tap_title: "#",
+                                        maker_title: "Maker", drink_title: "Drink", style_title: "Style", abv_title: "ABV",
+                                        ibu_title: "IBU", taster_title: "Taster", tulip_title: "Tulip", pint_title: "Pint",
+                                        half_growler_title: "1/2 G", growler_title: "Growler")
+          @internal_draft_preferences.save
+        end
+        @web_draft_preference_check = WebDraftBoardPreference.where(draft_board_id: @draft_board.id)
         # set up web draft prefrences
-        @web_draft_preferences = WebDraftBoardPreference.new(draft_board_id: @draft_board.id, 
-                                        show_up_next: false, show_descriptors: true, show_next_type: "specific", 
-                                        show_next_general_number: 3)
-        @web_draft_preferences.save 
+        if @web_draft_preference_check.blank? 
+          @web_draft_preferences = WebDraftBoardPreference.new(draft_board_id: @draft_board.id, 
+                                          show_up_next: false, show_descriptors: true, show_next_type: "specific", 
+                                          show_next_general_number: 3)
+          @web_draft_preferences.save 
+        end
       end
     end
     #if @new_subscription_info.id == 1
