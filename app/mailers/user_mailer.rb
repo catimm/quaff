@@ -86,4 +86,22 @@ class UserMailer < ActionMailer::Base
     mandrill_client.messages.send_template template_name, template_content, message
   end
 
+  def expiring_trial_email(owner, location)
+    Rails.logger.debug("Owner info: #{owner.first_name.inspect}")
+    Rails.logger.debug("Location info: #{location.name.inspect}")
+    template_name = "expiring-trial-email"
+    template_content = []
+    message = {
+      to: [{email: owner.email}],
+      inline_css: true,
+      merge_vars: [
+        {rcpt: owner.email,
+         vars: [
+           {name: "owner", content: owner.first_name},
+           {name: "location", content: location.name}
+         ]}
+      ]
+    }
+    mandrill_client.messages.send_template template_name, template_content, message
+  end
 end

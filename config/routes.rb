@@ -83,7 +83,8 @@ Rails.application.routes.draw do
   post '/retailers/info_request' => 'retailers#info_request'
   post '/stripe-webhooks' => 'retailers#stripe_webhooks'
   match '/retailers/choose_initial_plan/:id(.:format)' => 'retailers#choose_initial_plan', :as => 'choose_initial_plan', via: [:get, :post]
-  get '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans'
+  match '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans', via: [:get, :post]
+  get '/retailers/retailer_delete_plan/:id' => 'retailers#delete_plan', :as => 'retailer_delete_plan'
   get '/retailers/trial_end(.:format)' => 'retailers#trial_end', :as => 'trial_end'
   get '/retailers/remove_team_member/:id' => 'retailers#remove_team_member', :as => 'remove_team_member'
   devise_scope :user do

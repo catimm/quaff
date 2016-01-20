@@ -6,6 +6,11 @@ class Draft::DrinksController < ApplicationController
   def show 
     # get subscription plan
     @subscription_data = LocationSubscription.where(location_id: params[:id]).first
+    if @subscription_data.blank? || @subscription_data.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     @subscription_plan = @subscription_data.subscription_id
     # set column border default
     @column_border_class = ""

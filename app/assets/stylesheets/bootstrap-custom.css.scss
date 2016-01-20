@@ -838,8 +838,13 @@ p {
   }
 }
 .formButton-free-plan {
-  width: 60% !important;
+  width: 90% !important;
   margin-bottom: 10px;
+}
+.formButton-paid-plan {
+  width: 100% !important;
+  margin-bottom: 10px;
+  padding: 6px !important;
 }
 .formButton-start-plan {
   width: 90% !important;
@@ -2502,11 +2507,14 @@ input[type="checkbox"] {
   color: $normal-text;
 }
 .current-plan-text {
-  color: $action-background;
+  color: $user-action;
   font-size: 18px;
   text-align: center;
   font-weight: 500;
   line-height: 1.2 !important;
+}
+.current-plan-border {
+  border: 3px solid $user-action;
 }
 .change-plan-button-holder {
   text-align: center;

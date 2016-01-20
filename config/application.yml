@@ -12,7 +12,7 @@ production:
   SEARCHBOX_URL: http://paas:cbc4f45f96b2a107ed8ae6db7884d11c@dwalin-us-east-1.searchly.com
   
 # FB credentials -- for real app
-FB_ID: 498342563674436
+FB_ID: "498342563674436"
 FB_SECRET: f84a0ec00a08b497f549fef4a0015f26 
 
 # FB credentials -- for test app

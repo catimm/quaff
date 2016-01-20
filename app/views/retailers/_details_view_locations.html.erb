@@ -31,9 +31,9 @@
 					<%= render 'team_authorization' %>
 				</div>
 			<% end %>
+			<hr>
 		<% end %>
 		<% if current_user.role_id == 1 || current_user.role_id == 5 %>
-			<hr>
 			<div class="row no-margin">
 				<%= render 'location_details' %>
 			</div>

@@ -17,6 +17,16 @@ class RetailersController < ApplicationController
     else
       @subscription_plan = "retain"
     end
+    if !@retailer_subscription.blank?
+      if @retailer_subscription.subscription.subscription_level == "free"
+        @current_plan = "Free"
+      elsif @retailer_subscription.subscription.subscription_level == "retain_y"
+        @current_plan = "Retain Yearly"
+      else 
+        @current_plan = "Retain Monthly"
+      end
+    end
+    session[:retail_id] = params[:id]
     @retailer = Location.find(params[:id])
     #Rails.logger.debug("Draft Board #{@retailer.inspect}")
     @draft_board = DraftBoard.where(location_id: params[:id])
@@ -142,7 +152,7 @@ class RetailersController < ApplicationController
       #Rails.logger.debug("Plan info: #{plan.inspect}")
       #Create a stripe customer object on signup
       customer = Stripe::Customer.create(
-              :description => @plan_info.statement_descriptor,
+              :description => "Knird services",
               #:source => params[:stripeToken],
               :email => current_user.email,
               :plan => params[:format]
@@ -153,16 +163,43 @@ class RetailersController < ApplicationController
     flash[:notice] = "Successfully created a charge"
     redirect_to retailer_path(params[:id])
   end
-  
-  def change_plans
-    @subscription_plan = session[:subscription]
-    @subscription = LocationSubscription.where(location_id: params[:id]).first
+    
+  def change_plans 
+    # get user's current plan info
+    @original_subscription = LocationSubscription.where(location_id: params[:id]).first
+    Rails.logger.debug("Original Subscription info: #{@original_subscription.inspect}")
+    # get info of plan user would like to change to
+    @new_subscription_info = Subscription.where(subscription_level: params[:format]).first
+    Rails.logger.debug("New subscription info: #{@new_subscription_info.inspect}")
+    session[:subscription] = @new_subscription_info.id
+    
+    # update Stripe with new info
+    if params[:format] == "free"
+      @new_plan = "connect"
+    else 
+      @new_plan = params[:format]
+    end
+    if !@original_subscription.stripe_customer_number.blank?
+      customer = Stripe::Customer.retrieve(@original_subscription.stripe_customer_number)
+      @plan_info = Stripe::Plan.retrieve(@new_plan)
+      # Rails.logger.debug("Customer: #{customer.inspect}")
+      if !@original_subscription.stripe_subscription_number.blank?
+        customer.description = @plan_info.statement_descriptor
+        customer.save
+        subscription = customer.subscriptions.retrieve(@original_subscription.stripe_subscription_number)
+        subscription.plan = @new_plan
+        subscription.save
+      end
+    end
+    
+    # change location_subscription table to reflect new plan info
+    @original_subscription.update_attributes(subscription_id: @new_subscription_info.id, current_trial: false)
+    
     # check to see if a location draft board exists
     @draft_board = DraftBoard.find_by(location_id: session[:retail_id])
     
-    if @subscription_plan == 1
-      @subscription.update_attributes(subscription_id: 2)
-      session[:subscription] = 2
+    # add/delete draft board customization tables for user as appropriate
+    if @original_subscription.subscription_id == 1
       if !@draft_board.blank?
         # set up internal draft preferences
         @internal_draft_preferences = InternalDraftBoardPreference.new(draft_board_id: @draft_board.id, 
@@ -178,42 +215,80 @@ class RetailersController < ApplicationController
         @web_draft_preferences.save 
       end
     end
-    if @subscription_plan == 2
-      @subscription.update_attributes(subscription_id: 1)
-      session[:subscription] = 1
-      @internal_draft_preferences = InternalDraftBoardPreference.find_by(draft_board_id: @draft_board.id).destroy
-    end
+    #if @new_subscription_info.id == 1
+    #  @internal_draft_preferences = InternalDraftBoardPreference.find_by(draft_board_id: @draft_board.id).destroy
+    #  @web_draft_preferences = WebDraftBoardPreference.find_by(draft_board_id: @draft_board.id).destroy
+    #end
     
     redirect_to retailer_path(session[:retail_id], "location")
   end # change_plans method
+  
+  def delete_plan
+    # get user's current plan info
+    @location_subscription = LocationSubscription.where(location_id: params[:id]).first
+    # delete Stripe subscription
+    customer = Stripe::Customer.retrieve(@location_subscription.stripe_customer_number)
+    customer.subscriptions.retrieve(@location_subscription.stripe_subscription_number).delete
+    # now destroy the location subscription table data
+    @location_subscription.destroy!
+    
+    redirect_to retailer_path(params[:id])
+  end # end of delete_plan method
   
   def stripe_webhooks
     begin
       event_json = JSON.parse(request.body.read)
       event_object = event_json['data']['object']
       #refer event types here https://stripe.com/docs/api#event_types
-      Rails.logger.debug("Event info: #{event_object['customer'].inspect}")
+      #Rails.logger.debug("Event info: #{event_object['customer'].inspect}")
       case event_json['type']
         when 'invoice.payment_succeeded'
-          Rails.logger.debug("Successful invoice paid event")
+          #Rails.logger.debug("Successful invoice paid event")
         when 'invoice.payment_failed'
-           Rails.logger.debug("Failed invoice event")
+          #Rails.logger.debug("Failed invoice event")
         when 'charge.succeeded'
-           Rails.logger.debug("Successful charge event")
+           #Rails.logger.debug("Successful charge event")
            # get the customer number
            @stripe_customer_number = event_object['customer']
            @location_subscription = LocationSubscription.where(stripe_customer_number: @stripe_customer_number).first
            @location_subscription.update_attributes(active_until: 1.month.from_now)
         when 'charge.failed'
-           Rails.logger.debug("Failed charge event")
+           #Rails.logger.debug("Failed charge event")
+           # get the customer number
+           @stripe_customer_number = event_object['customer']
+           @location_subscription = LocationSubscription.where(stripe_customer_number: @stripe_customer_number).first
+           if @location_subscription.current_trial == true
+             if !@location_subscription.stripe_customer_number.blank?
+                customer = Stripe::Customer.retrieve(@location_subscription.stripe_customer_number)
+                @plan_info = Stripe::Plan.retrieve("connect")
+                # Rails.logger.debug("Customer: #{customer.inspect}")
+                if !@location_subscription.stripe_subscription_number.blank?
+                  customer.description = @plan_info.statement_descriptor
+                  customer.save
+                  subscription = customer.subscriptions.retrieve(@location_subscription.stripe_subscription_number)
+                  subscription.plan = "connect"
+                  subscription.save
+                end
+              end
+           end
+           # change location_subscription table to reflect new plan info
+           @location_subscription.update_attributes(subscription_id: "1", current_trial: false)
         when 'customer.subscription.deleted'
-           Rails.logger.debug("Customer deleted event")
+           #Rails.logger.debug("Customer deleted event")
         when 'customer.subscription.updated'
-           Rails.logger.debug("Subscription updated event")
+           #Rails.logger.debug("Subscription updated event")
         when 'customer.subscription.trial_will_end'
           Rails.logger.debug("Subscription trial soon ending event")
+          # get the customer number
+          @stripe_customer_number = event_object['customer']
+          @location_subscription = LocationSubscription.where(stripe_customer_number: @stripe_customer_number).first
+          @location_owner = UserLocation.where(location_id: @location_subscription.location_id, owner: true).first
+          @location_info = Location.where(id: @location_subscription.location_id).first
+          @owner_info = User.where(id: @location_owner.user_id).first
+          # send email notice of expiring trial
+          UserMailer.expiring_trial_email(@owner_info, @location_info).deliver_now
         when 'customer.created'
-          Rails.logger.debug("Customer created event")
+          #Rails.logger.debug("Customer created event")
           # get the customer number
           @stripe_customer_number = event_object['id']
           @stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
@@ -233,11 +308,6 @@ class RetailersController < ApplicationController
     end
     render :json => {:status => 200}
   end # end stripe_webhook method
-  
-  def trial_end
-    @retailer = Location.find(params[:format])
-    @retailer_subscription = LocationSubscription.where(location_id: params[:format]).first
-  end # end of trial_end method
   
   def info_request
     @new_info_request = InfoRequest.create!(info_request_params)

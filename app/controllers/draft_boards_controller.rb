@@ -9,8 +9,6 @@ class DraftBoardsController < ApplicationController
   respond_to :html, :json, :js
   
   def show
-    # get subscription plan
-    @subscription_plan = session[:subscription]
     # set column border default
     @column_border_class = ""
     # set default font size
@@ -22,6 +20,13 @@ class DraftBoardsController < ApplicationController
     # get retailer info
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
+    @retailer_subscription = LocationSubscription.where(location_id: @retail_id).first
+    Rails.logger.debug("Location Info: #{@retailer_subscription.inspect}")
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     # get draft board info
     @draft_board = DraftBoard.find_by(location_id: @retail_id)
     #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
@@ -36,7 +41,7 @@ class DraftBoardsController < ApplicationController
     end
     
     # if user has a plan that allows for changes to draft boards
-    if @subscription_plan == 2
+    if @subscription_plan == "retain" 
       # determine whether user has changed internal draft board view
       # get internal draft board preferences
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id).first
@@ -172,9 +177,14 @@ class DraftBoardsController < ApplicationController
     @draft_drink_details = @draft_drink.draft_details.build
     
     # get subscription plan
-    @subscription_plan = session[:subscription]
+    @retailer_subscription = LocationSubscription.where(location_id: @retail_id).first
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     # determine whether user has changed internal draft board view
-    if @subscription_plan == 2
+    if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
     end
     
@@ -342,9 +352,14 @@ class DraftBoardsController < ApplicationController
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
     
     # get subscription plan
-    @subscription_plan = session[:subscription]
+    @retailer_subscription = LocationSubscription.where(location_id: @retail_id).first
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     # determine whether user has changed internal draft board view
-    if @subscription_plan == 2
+    if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
     end
     
@@ -798,7 +813,13 @@ class DraftBoardsController < ApplicationController
     
     # original code from Show method to set up draft board
     # get subscription plan
-    @subscription_plan = session[:subscription]
+    @retail_id = session[:retail_id]
+    @retailer_subscription = LocationSubscription.where(location_id: @retail_id).first
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     # set column border default
     @column_border_class = ""
     # set default font size
@@ -821,7 +842,7 @@ class DraftBoardsController < ApplicationController
     @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
     
     # determine whether user has changed internal draft board view
-    if @subscription_plan == 2
+    if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id).first
       # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
       if @internal_board_preferences.column_names == true
@@ -930,7 +951,13 @@ class DraftBoardsController < ApplicationController
     
     # original code from Show method to set up draft board
     # get subscription plan
-    @subscription_plan = session[:subscription]
+    @retail_id = session[:retail_id]
+    @retailer_subscription = LocationSubscription.where(location_id: @retail_id).first
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     
     @board_type = params[:format]
     # get retailer info

@@ -1,0 +1,140 @@
+<div class="row no-margin">
+			<h4 class="retail-plan-headline">You're currently enrolled in the <span class="retailer-plan-cost"><%= @current_plan %></span> plan. To change plans, choose a different option below.</h4>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-4 retail-plan-update-options retain-plan-option">
+				<div class="row no-margin">
+					<div class="col-sm-12">
+						<h3 class="retail-plan-header">Retain</h3>
+						<h6 class="retail-plan-subheader">your customers</h6>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10 no-padding">
+						<ul class="retail-plan-feature-list">
+							<li>All Connect Plan features</li>
+							<li>Share drinks on Facebook & Twitter</li>
+							<li>Print drink menus</li>
+							<li>Show what's on draft next</li>
+							<li>Customize draft boards</li>
+							<li>Manage draft inventory</li>
+							<li>Assign access rights</li>
+							<li>10am - 8pm customer support</li>
+							<li>Monthly or yearly contract option</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<% if @current_plan == "Retain Yearly" %>
+						<div class="col-sm-5 no-padding current-plan-border">
+					<% else %>
+						<div class="col-sm-5 no-padding">
+					<% end %>
+						<h5 class="contract-type-header">1-year contract</h5>
+						<h2 class="retailer-plan-cost">$25<span class="with-contract">/mo</span></h2>
+						<% if @current_plan != "Retain Yearly" && @current_plan != "Free" %>
+							<%= link_to "Change to Yearly", change_plans_path(@retailer.id, "retain_y"), class: 'btn btn-primary formButton-paid-plan' %>
+						<% elsif  @current_plan == "Retain Yearly" %>
+							<h5 class="current-plan-text">Current Plan</h5>
+						<% else %>
+							<%= form_tag change_plans_path(@retailer.id, "retain_y"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="retain_y"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		name="Knird" 
+					          		data-description="Retain (yearly contract)"
+					          		data-amount="2500" 
+					          		data-currency="USD" 
+					          		data-email="<%= current_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						<% end %>
+					</div>
+					<div class="col-sm-2 no-padding">
+						<h5 class="retail-plan-option-or">or</h5>
+					</div>
+					<% if @current_plan == "Retain Monthly" %>
+						<div class="col-sm-5 no-padding current-plan-border">
+					<% else %>
+						<div class="col-sm-5 no-padding">
+					<% end %>
+						<h5 class="contract-type-header">1-month contract</h5>
+						<h2 class="retailer-plan-cost">$30<span class="with-contract">/mo</span></h2>
+						<% if @current_plan != "Retain Monthly" && @current_plan != "Free" %>
+							<%= link_to "Change to Monthly", change_plans_path(@retailer.id, "retain_m"), class: 'btn btn-primary formButton-paid-plan' %>
+						<% elsif  @current_plan == "Retain Monthly" %>
+							<h5 class="current-plan-text">Current Plan</h5>
+						<% else %>
+							<%= form_tag change_plans_path(@retailer.id, "retain_m"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="retain_m"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		name="Knird" 
+					          		data-description="Retain (monthly contract)"
+					          		data-amount="3000" 
+					          		data-currency="USD" 
+					          		data-email="<%= current_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4 retail-plan-update-options no-padding">
+				<div class="row no-margin">
+					<div class="col-sm-12">
+						<h3 class="retail-plan-header">Connect</h3>
+						<h6 class="retail-plan-subheader">with customers</h6>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-10">
+						<ul class="retail-plan-feature-list">
+							<li>Knird App Business Listing + Logo</li>
+							<li>Leverage Knird's database</li>
+							<li>Simultaneously update all draft lists</li>
+							<li>As available customer support</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row-no-margin">
+					<div class="col-sm-2"></div>
+					<% if @current_plan == "Free" %>
+						<div class="col-sm-8 no-padding current-plan-border">
+					<% else %>
+						<div class="col-sm-8 no-padding">
+					<% end %>
+						<h5 class="contract-type-header">No contract</h5>
+						<h2 class="retailer-plan-cost">$0<span class="with-contract">/mo</span></h2>
+						<% if @current_plan != "Free" %>
+							<%= link_to "Change to Connect", change_plans_path(@retailer.id, "free"), class: 'btn btn-default formButton-free-plan' %>
+						<% else %>
+							<h5 class="current-plan-text">Current Plan</h5>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-4"></div>
+			<div class="col-sm-4 retailer-plan-delete-option">
+				<h5 class="retail-plan-option-or">or</h5>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-4"></div>
+			<div class="col-sm-4 retailer-plan-delete-option">
+				<%= link_to retailer_delete_plan_path(@retailer.id), class: 'btn btn-default btn-danger changeButton delete-acct', data: {confirm: "Delete your account?"} do %>
+					<i class="fa fa-minus"> delete account</i>
+				<% end %>
+			</div>
+		</div>

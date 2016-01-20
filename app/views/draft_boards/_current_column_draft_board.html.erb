@@ -1,4 +1,4 @@
-<% if !@draft_board.blank? && @subscription_plan == 2 %>
+<% if !@draft_board.blank? && @subscription_plan == "retain" %>
 	<% if !@web_board_preferences.nil? %>
 		<% if current_user.role_id == 1 || current_user.role_id == 5 %>
 			<div class="col-xs-12 no-padding">
