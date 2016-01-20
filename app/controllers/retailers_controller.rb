@@ -180,9 +180,8 @@ class RetailersController < ApplicationController
     end
     # determine if user was previously using a free Retain account
     if @original_subscription.subscription_id == 2 # create new Stripe account
-      if params[:format] == "retain_y" # testing whether the user is choosing a paid plan as the initial plan
         @plan_info = Stripe::Plan.retrieve(params[:format])
-        Rails.logger.debug("Plan info: #{@plan_info.inspect}")
+        #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
         #Create a stripe customer object on signup
         customer = Stripe::Customer.create(
                 :description => @plan_info.statement_descriptor,
@@ -190,23 +189,6 @@ class RetailersController < ApplicationController
                 :email => current_user.email,
                 :plan => @new_plan
               )
-        # get the appropriate subscription id
-        @subcription_plan = Subscription.where(subscription_level: params[:format]).first
-        # update the location_subscription row
-        @original_subscription.update_attributes(subscription_id: 4, active_until: 1.month.from_now, current_trial: true)
-      else # else customer is choosing the Free plan as the initial plan
-        @plan_info = Stripe::Plan.retrieve(@new_plan)
-        #Rails.logger.debug("Plan info: #{plan.inspect}")
-        #Create a stripe customer object on signup
-        customer = Stripe::Customer.create(
-                :description => @plan_info.statement_descriptor,
-                #:source => params[:stripeToken],
-                :email => current_user.email,
-                :plan => @new_plan
-              )
-        # update the location_subscription row
-        @original_subscription.update_attributes(subscription_id: 1, current_trial: false)
-      end
     else # update Stripe with new info
       if !@original_subscription.stripe_customer_number.blank?
         customer = Stripe::Customer.retrieve(@original_subscription.stripe_customer_number)
@@ -220,11 +202,11 @@ class RetailersController < ApplicationController
           subscription.save
         end
       end
-      
-      # change location_subscription table to reflect new plan info
-      @original_subscription.update_attributes(subscription_id: @new_subscription_info.id, current_trial: false)
     end
-
+    
+    # update the location_subscription row
+    @original_subscription.update_attributes(subscription_id: @new_subscription_info.id, active_until: 1.month.from_now, current_trial: false)
+    
     # check to see if a location draft board exists
     @draft_board = DraftBoard.find_by(location_id: session[:retail_id])
     
