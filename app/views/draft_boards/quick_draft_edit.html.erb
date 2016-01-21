@@ -109,14 +109,12 @@
 					<tr>
 						<% @drink_info = "inventory-" + drink.id.to_s %>
 						<% if !drink.tap_number.nil? %>
-							<td class="text-center swap-button-holder" data-tap=<%= drink.tap_number %>><%= link_to drink.tap_number, 
-								swap_drinks_path(drink.draft_board_id, drink.tap_number, @drink_info), :class => "btn btn-default btn-primary formButton-search-footer quick-swap-button",
-								data: {toggle: "modal", target: "#swap_drinks"}  %>
+							<td class="text-center swap-button-holder"><%= link_to drink.tap_number, 
+								"#", :class => "btn btn-default btn-primary formButton-search-footer quick-swap-button"  %>
 							</td>
 						<% else %>
-							<td class="text-center swap-button-holder" data-tap="0"<%= drink.tap_number %>><%= link_to "TBD", 
-								swap_drinks_path(drink.draft_board_id, 0, @drink_info), :class => "btn btn-default btn-primary formButton-search-footer tbd-button quick-swap-button",
-								data: {toggle: "modal", target: "#swap_drinks"}  %>
+							<td class="text-center swap-button-holder"><%= link_to "TBD", 
+								"#", :class => "btn btn-default btn-primary formButton-search-footer tbd-button quick-swap-button" %>
 							</td>
 						<% end %>
 						<% if !drink.beer.short_beer_name.nil? %>

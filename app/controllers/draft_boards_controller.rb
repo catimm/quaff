@@ -594,8 +594,8 @@ class DraftBoardsController < ApplicationController
     # get draft inventory details
     @current_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "hold")
     # get recently removed draft details
-    @recently_removed_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "no")
-    #Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
+    @recently_removed_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "no").where('removed_at >= ?', 1.week.ago).reverse_order
+    #Rails.logger.debug("Recently removed: #: #{@recently_removed_draft_inventory.inspect}")
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
     
@@ -664,17 +664,17 @@ class DraftBoardsController < ApplicationController
   
   def execute_swap_drinks
     # get new drink beer_location id
-    @new_drink_to_add = BeerLocation.find(params[:beer_location][:id])
+    @new_drink_to_add = BeerLocation.find(params[:format])
     # update new drink info
-    @new_drink_to_add.update_attributes(tap_number: params[:beer_location][:tap_to_replace], beer_is_current: "yes", went_live: Time.now)
+    @new_drink_to_add.update_attributes(tap_number: params[:id], beer_is_current: "yes", went_live: Time.now)
     # get drink to replace beer_location id
-    @drink_to_replace = BeerLocation.where(draft_board_id: params[:beer_location][:draft_board_id], 
-                        beer_is_current: "yes", tap_number: params[:beer_location][:tap_to_replace])[0]
+    @drink_to_replace = BeerLocation.where(draft_board_id: session[:draft_board_id], 
+                        beer_is_current: "yes", tap_number: params[:id])[0]
     # update replaced drink info
     @drink_to_replace.update_attributes(beer_is_current: "no", removed_at: Time.now)
   
     # redirect back to quick swap board
-    redirect_to quick_draft_edit_path(params[:beer_location][:draft_board_id])
+    redirect_to quick_draft_edit_path(session[:draft_board_id])
   end
   
   def facebook_post_options
