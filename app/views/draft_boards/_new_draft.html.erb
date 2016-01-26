@@ -80,9 +80,9 @@
 							<% end %>
 						</div>
 						<div class="row no-margin">
-							<div class="col-xs-10 col-sm-4 keg-size-holder no-padding-right">
-								<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
-								<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
+							<div class="col-xs-10 col-sm-5 drink-category-holder">
+								<% category_options = options_from_collection_for_select(@drink_categories, 'id', 'category_name' ) %>
+								<%= ff.select :drink_category_id, category_options, {prompt: 'Select Drink Category'}, { class: 'form-control' } %>
 							</div>
 							<% if @subscription_plan == "retain" %>
 								<% if ff.object.special_designation == true %>
@@ -92,7 +92,7 @@
 									<% @color_option_setting = "hidden" %>
 									<% @color_to_show = "" %>
 								<% end %>
-								<div class="col-xs-12 col-sm-6 col-md-4 special-designation-input">
+								<div class="col-xs-12 col-sm-3 special-designation-input no-padding">
 									<%= ff.check_box :special_designation, { :class => "special-designation-option" } %>
 									<h6 class="special-designation-option">Highlight prices</h6>
 								</div>

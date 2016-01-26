@@ -42,6 +42,8 @@ class DraftBoardsController < ApplicationController
     
     # if user has a plan that allows for changes to draft boards
     if @subscription_plan == "retain" 
+      # check drink price updates
+      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
       # determine whether user has changed internal draft board view
       # get internal draft board preferences
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id).first
@@ -186,6 +188,8 @@ class DraftBoardsController < ApplicationController
     # determine whether user has changed internal draft board view
     if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+      # check drink price updates
+      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
     end
     
     # get social platform info
@@ -241,6 +245,7 @@ class DraftBoardsController < ApplicationController
                                          keg_size: drink[1][:keg_size],
                                          special_designation: drink[1][:special_designation],
                                          special_designation_color: drink[1][:special_designation_color],
+                                         drink_category_id: drink[1][:drink_category_id],
                                          went_live: Time.now)
              if @new_beer_location_drink.save
                # execute Auto Tweet for Retailers who want to automatically send tweets of new drinks
@@ -361,11 +366,16 @@ class DraftBoardsController < ApplicationController
     # determine whether user has changed internal draft board view
     if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
+      # check drink price updates
+      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
     end
     
     # get social platform info
     @fb_authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
     @twitter_authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter")
+    
+    # get collection of drink categories if Retailer has set them
+    @drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
     
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
@@ -426,7 +436,9 @@ class DraftBoardsController < ApplicationController
           @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "yes").first
           # update tap number to ensure it's currently accurate
           @current_beer_location.update_attributes(tap_number: drink[1][:tap_number], keg_size: drink[1][:keg_size],
-                                 special_designation: drink[1][:special_designation], special_designation_color: drink[1][:special_designation_color])
+                                 special_designation: drink[1][:special_designation], 
+                                 special_designation_color: drink[1][:special_designation_color],
+                                 drink_category_id: drink[1][:drink_category_id])
           # delete all related size/cost information
           DraftDetail.where(beer_location_id: @current_beer_location.id).destroy_all
           # add size/cost info to ensure it is currently accurate
@@ -454,6 +466,7 @@ class DraftBoardsController < ApplicationController
                                         keg_size: drink[1][:keg_size],
                                         special_designation: drink[1][:special_designation],
                                         special_designation_color: drink[1][:special_designation_color], 
+                                        drink_category_id: drink[1][:drink_category_id],
                                         went_live: Time.now)
             if @new_beer_location_drink.save
               Rails.logger.debug("New Drink Saved")
@@ -843,6 +856,8 @@ class DraftBoardsController < ApplicationController
     
     # determine whether user has changed internal draft board view
     if @subscription_plan == "retain"
+      # check drink price updates
+      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft_board.id).first
       # Rails.logger.debug("Internal Board #{@internal_board_preferences.inspect}")
       if @internal_board_preferences.column_names == true

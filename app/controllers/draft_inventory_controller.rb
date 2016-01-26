@@ -53,6 +53,8 @@ class DraftInventoryController < ApplicationController
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
       # check drink price updates
       @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
+      # get collection of drink categories if Retailer has set them
+      @drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
     end
     
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
@@ -63,6 +65,7 @@ class DraftInventoryController < ApplicationController
         Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
         @chosen_drink = JSON.parse(params[:chosen_drink])
         @new_inventory_info_id = session[:draft_info_id]
+        @new_drink_details_id = "drink-details-info-" + session[:draft_info_number]
         @unique_number = session[:draft_info_number]
         Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
         Rails.logger.debug("New Element ID #: #{@new_inventory_info_id.inspect}")
@@ -116,7 +119,8 @@ class DraftInventoryController < ApplicationController
           @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "hold").first
           # update tap number to ensure it's currently accurate
           @current_beer_location.update_attributes(tap_number: drink[1][:tap_number], keg_size: drink[1][:keg_size],
-                                 special_designation: drink[1][:special_designation], special_designation_color: drink[1][:special_designation_color])
+                                 special_designation: drink[1][:special_designation], special_designation_color: drink[1][:special_designation_color],
+                                 drink_category_id: drink[1][:drink_category_id])
           # delete all related size/cost information
           DraftDetail.where(beer_location_id: @current_beer_location.id).destroy_all
           # add size/cost info to ensure it is currently accurate
@@ -143,7 +147,8 @@ class DraftInventoryController < ApplicationController
                                         draft_board_id: params[:id],
                                         keg_size: drink[1][:keg_size],
                                         special_designation: drink[1][:special_designation],
-                                        special_designation_color: drink[1][:special_designation_color])
+                                        special_designation_color: drink[1][:special_designation_color],
+                                        drink_category_id: drink[1][:drink_category_id])
             if @new_beer_location_drink.save
               # add size/cost of new draft drink
               if !drink[1][:draft_details_attributes].blank?
@@ -295,6 +300,8 @@ class DraftInventoryController < ApplicationController
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
       # check drink price updates
       @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
+      # get collection of drink categories if Retailer has set them
+      @drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
     end
     
     # find if drink is new or already exists in inventory

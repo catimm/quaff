@@ -2540,7 +2540,7 @@ input[type="checkbox"] {
   display: inline;
   color: $less-emphasized-text;
 }
-.keg-size-holder {
+.drink-category-holder {
   margin-top: 10px;
 }
 .search-footer-message {
@@ -2686,7 +2686,6 @@ input[type="checkbox"] {
 }
 .special-designation-input {
   margin-top: 10px !important;
-  padding-left: 20px !important;
   input {
     -ms-transform: scale(1.3); /* IE */
     -moz-transform: scale(1.3); /* FF */
@@ -2881,8 +2880,8 @@ input[type="checkbox"] {
 }
 // Price Tier Page
 .price-tier-options {
-    margin-left: -20px;
-    height: 28px !important;
+  height: 32px;
+  width: 100%;
 }
 // Retailer Facebook post page
 .suggested-facebook-post {

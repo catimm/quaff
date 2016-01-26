@@ -18,6 +18,7 @@
 #  facebook_share            :datetime
 #  twitter_share             :datetime
 #  price_tier_id             :integer
+#  drink_category_id         :integer
 #
 
 class BeerLocation < ActiveRecord::Base

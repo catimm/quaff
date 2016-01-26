@@ -16,49 +16,33 @@ $(function() {
 	}
 	// count number of drink sizes in each row & adjust drink size count
 	$(document).on('click', '.formButton-add-details.add_nested_fields', function () {
-	    var siblings = 0
-	    $(this).siblings().each(function() {
-	    	if ($(this).css('display') != 'none') {
-    			siblings++;
-    			if(siblings == 1) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("1st size option");
-    			}
-    			if(siblings == 2) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("2nd size option");
-    			}
-    			if(siblings == 3) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("3rd size option");
-    			}
-    			if(siblings == 4) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("4th size option");
-    			}
-    			if(siblings == 5) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("5th size option");
-    			}
-			}
+	    $(this).siblings(':visible').each(function(index) {
+    		$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html(ordinal_suffix_of(index));
 	    });
 	    if (siblings >= 5) {
 	    	$('.formButton-add-details.add_nested_fields').hide();
 	    } 
 	});
+	function ordinal_suffix_of(i) {
+	    var j = i % 10,
+	        k = i % 100;
+	    if (j == 1 && k != 11) {
+	        return i + "st size";
+	    }
+	    if (j == 2 && k != 12) {
+	        return i + "nd size";
+	    }
+	    if (j == 3 && k != 13) {
+	        return i + "rd size";
+	    }
+	    return i + "th size";
+	}
 	$(document).on('click', '.remove_nested_fields', function () {
 	    var siblings = 0
 	    $(this).parent().parent().parent().siblings().each(function(value) {
-	    	if ($(this).css('display') != 'none') {
-    			siblings++;
-    			if(siblings == 1) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("1st size option");
-    			}
-    			if(siblings == 2) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("2nd size option");
-    			}
-    			if(siblings == 3) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("3rd size option");
-    			}
-    			if(siblings == 4) {
-    				$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html("4th size option");
-    			}
-			}
+	    	$(this).siblings(':visible').each(function(index) {
+	    		$(this).children(".draft-details-row").children(".size-option-text-holder").children(".size-option-text").html(ordinal_suffix_of(index));
+		    });
 	    });
 	    if (siblings <= 4) {
 	    	$(this).parent().parent().parent().siblings('.formButton-add-details.add_nested_fields').show();

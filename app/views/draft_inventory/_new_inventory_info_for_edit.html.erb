@@ -24,16 +24,4 @@
 			<h5 class="tile-subheader retail-edit-beer-info no-overflow draft-type">Unknown Style</h5>
 		<% end %>
 	</div>
-	<% if !@drink_price_tiers.blank?  %>
-		<div class="col-xs-4 col-sm-3 draft-price-tier-options no-padding" id="<%= this_drink.id %>">
-			<% @beer_location_record = BeerLocation.where(location_id: session[:retail_id], beer_id: this_drink.id, beer_is_current: "hold").first %>
-			<% if !@beer_location_record.price_tier_id.nil? %>
-				<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name", @beer_location_record.price_tier_id),
-								prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
-			<% else %>
-				<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name"),
-								prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
-			<% end %>
-		</div>
-	<% end %>
 <% end %>
