@@ -15,6 +15,8 @@ class DraftBoard < ActiveRecord::Base
   has_many :internal_draft_board_preferences  
   has_many :drink_price_tiers
   accepts_nested_attributes_for :drink_price_tiers, :reject_if => :all_blank, :allow_destroy => true
+  has_many :drink_categories
+  accepts_nested_attributes_for :drink_categories, :reject_if => :all_blank, :allow_destroy => true
   
   # scope only drinks currently available on draft board
   scope :live_draft_board, ->(location_id) { 

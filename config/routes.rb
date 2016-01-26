@@ -71,6 +71,9 @@ Rails.application.routes.draw do
   patch '/drink_price_tiers/:id(.:format)' => 'drink_price_tiers#update', :as => 'update_drink_price_tier'
   patch '/drink_price_tiers/:id/edit' => 'drink_price_tiers#update'
   resources :drink_price_tiers
+  post '/drink_categories/create(.:format)' => 'drink_categories#create', :as => 'create_drink_category'
+  post '/drink_categories/:id/update' => 'drink_categories#update', :as => 'update_drink_category'
+  resources :drink_categories
   get '/draft_inventory/new_drink' => 'draft_inventory#add_new_drink'
   post '/draft_inventory/new_drink' => 'draft_inventory#create_new_drink'
   get '/draft_inventory/edit' => 'draft_inventory#edit'

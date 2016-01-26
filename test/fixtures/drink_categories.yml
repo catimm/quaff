@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: drink_categories
+#
+#  id                :integer          not null, primary key
+#  draft_board_id    :integer
+#  category_name     :string
+#  category_position :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  draft_board_id: 1
+  category_name: MyString
+  category_position_integer: MyString
+
+two:
+  draft_board_id: 1
+  category_name: MyString
+  category_position_integer: MyString

@@ -136,7 +136,7 @@
 							<% else %>
 								<div class="col-xs-12 col-sm-5 col-md-4">
 									<%= link_to edit_drink_price_tier_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
-										<i class="fa fa-plus"> Edit drink price tiers</i>
+										<i class="fa fa-wrench"> Edit drink price tiers</i>
 									<% end %>
 								</div>				
 							<% end %>
@@ -191,6 +191,31 @@
 								<% end %>
 							</div>
 						</div>
+					</div>
+				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<% if @drink_categories.blank? %>
+							<h4 class="retail-manage-header">Drink Categories</h4>
+						<% else %>
+							<h4 class="retail-manage-header">Drink Categories <span class="last-updated"> (Last updated: <%= (@last_drink_category_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h4>
+						<% end %>
+					</div>
+					<div class="col-xs-12">
+						<% if @drink_categories.blank? %>
+							<div class="col-xs-12 col-sm-5 col-md-4">
+								<%= link_to new_drink_category_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-add-draft-board' do %>
+									<i class="fa fa-plus"> Create drink categories</i>
+								<% end %>
+							</div>
+						<% else %>
+							<div class="col-xs-12 col-sm-5 col-md-4">
+								<%= link_to edit_drink_category_path(@draft_board[0].id), class: 'btn btn-default btn-success formButton-draft-board-edit' do %>
+									<i class="fa fa-wrench"> Edit drink categories</i>
+								<% end %>
+							</div>				
+						<% end %>
 					</div>
 				</div>
 			<% end %>

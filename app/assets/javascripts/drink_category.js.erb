@@ -1,0 +1,62 @@
+var reset_page;
+reset_page = function() {
+	// set number of fields available
+		var number_of_fields = $('.fields:visible').length;
+		//console.log("number of fields: " + number_of_fields);
+	    $('.fields:visible').each(function(index) {
+	    	//console.log("number on index: " + index)
+	    	var last_row = (number_of_fields - 1);
+	    	$(this).children('.category-position-number').val(index + 1);
+			$(this).children('.drink-category-row').children('.drink-category-show-as').children('h4').html(index + 1);
+			$(this).children('.drink-category-row').children('.drink-category-show-as').children('sup').html(ordinal_suffix_of(index + 1));
+			if (index == 0)	 {
+				$(this).children('.drink-category-row').children('.arrow-holder').children('.up-arrow').addClass('hidden');
+			} else if (index != last_row) {
+				$(this).children('.drink-category-row').children('.arrow-holder').children('.down-arrow').removeClass('hidden');
+				$(this).children('.drink-category-row').children('.arrow-holder').children('.up-arrow').removeClass('hidden');
+			} else {
+				//console.log("last row number: " + last_row)
+				$(this).children('.drink-category-row').children('.arrow-holder').children('.down-arrow').addClass('hidden');
+			}
+		});
+}
+
+// reset page when it initially loads
+$(document).ready(reset_page);
+
+// reset shown number when a new field is added
+$(document).on('click', '.formButton-add-category.add_nested_fields', function () {
+	reset_page();
+});
+// reset shown number when a new field is deleted
+$(document).on('click', '.remove_nested_fields', function () {
+	reset_page();
+});
+function ordinal_suffix_of(i) {
+    var j = i % 10,
+        k = i % 100;
+    if (j == 1 && k != 11) {
+        return "st";
+    }
+    if (j == 2 && k != 12) {
+        return "nd";
+    }
+    if (j == 3 && k != 13) {
+        return "rd";
+    }
+    return "th";
+}
+$(function() {
+	// move field up a row when up button is clicked
+	$(document).on('click', '.up-arrow', function () {
+	    var field_above = $(this).parent().parent().parent().prev();
+	    $(this).parent().parent().parent().insertBefore(field_above);
+	    reset_page();
+	});
+	// move field down a row when up button is clicked
+	$(document).on('click', '.down-arrow', function () {
+		var field_below = $(this).parent().parent().parent().next();
+		$(this).parent().parent().parent().insertAfter(field_below);
+		reset_page();
+	});
+});

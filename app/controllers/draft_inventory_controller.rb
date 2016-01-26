@@ -31,6 +31,12 @@ class DraftInventoryController < ApplicationController
     # get retailer info for header/title
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
+    @retailer_subscription = LocationSubscription.where(location_id: @retail_id).first
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     # get draft board #/info
     @draft_board = session[:draft_board_id]
     @draft = DraftBoard.find(@draft_board)
@@ -42,10 +48,8 @@ class DraftInventoryController < ApplicationController
     # get current draft board info for 'on deck' drinks
     @current_draft_drinks = BeerLocation.where(draft_board_id: @draft.id, beer_is_current: "yes")
     
-    # get subscription plan
-    @subscription_plan = session[:subscription]
     # determine whether user has changed internal draft board view
-    if @subscription_plan == 2
+    if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
       # check drink price updates
       @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
@@ -276,14 +280,18 @@ class DraftInventoryController < ApplicationController
     # get retailer info for header/title
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
+    @retailer_subscription = LocationSubscription.where(location_id: @retail_id).first
+    if @retailer_subscription.blank? || @retailer_subscription.subscription_id == 1
+      @subscription_plan = "connect"
+    else
+      @subscription_plan = "retain"
+    end
     # get draft board #/info
     @draft_board = session[:draft_board_id]
     @draft = DraftBoard.find(@draft_board)
-    
-    # get subscription plan
-    @subscription_plan = session[:subscription]
+
     # determine whether user has changed internal draft board view
-    if @subscription_plan == 2
+    if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
       # check drink price updates
       @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)

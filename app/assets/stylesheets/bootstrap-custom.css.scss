@@ -2840,7 +2840,46 @@ input[type="checkbox"] {
       }
     }
 }
-// Price Tier CSS
+// Drink Category Page
+.drink-category-show-as {
+  height: 34px;
+  h6.category-show-text {
+    float: left;
+    color: $less-emphasized-text;
+    font-size: 12px !important;
+    margin: 2px 7.5px 0 0;
+  }
+  h4.category-show-text {
+    float: left;
+    color: $action-background;
+    font-size: 32px !important;
+    margin: 0;
+  }
+  sup {
+        color: $action-background;
+        font-size: 14px;
+        top: 1px !important;
+      }
+}
+.formButton-add-category {
+    width: 25%;
+    margin-bottom: 20px;
+  }
+.formButton-move-category {
+  width: 45%;
+  float: left;
+  margin-right: 5px;
+}
+.remove-draft-button-2 {
+    a {
+      i {
+        color: $less-emphasized-text;
+        font-size: 24px;
+        font-weight: 400 !important;
+      }
+    }
+}
+// Price Tier Page
 .price-tier-options {
     margin-left: -20px;
     height: 28px !important;
