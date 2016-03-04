@@ -3,16 +3,19 @@
 		<div class="col-xs-2">
 			<p class="size-option-text text-center"> price tier</p>
 		</div>
-		<div class="col-xs-10 col-sm-5 draft-price-tier-options no-padding" id="<%= ff.object.beer.id %>">
-			<% @beer_location_record = BeerLocation.where(location_id: session[:retail_id], beer_id: ff.object.beer.id, beer_is_current: "yes").first %>
-			<% if !@beer_location_record.price_tier_id.nil? %>
-				<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name", @beer_location_record.price_tier_id),
-								prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
-			<% else %>
-				<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name"),
-								prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
-			<% end %>
+		<% if false %>
+		<div class="col-xs-10 col-sm-5 draft-price-tier-options no-padding" id="<%= ff.object.beer.id %>">	 
+				<% @beer_location_record = BeerLocation.where(location_id: session[:retail_id], beer_id: ff.object.beer.id, beer_is_current: "yes").first %>
+				<% if !@beer_location_record.price_tier_id.nil? %>
+					<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name", @beer_location_record.price_tier_id),
+									prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
+				<% else %>
+					<%= select_tag "price-tier", options_from_collection_for_select(@drink_price_tiers, "id", "tier_name"),
+									prompt: 'Select Price Tier', class: "btn btn-default dropdown-toggle price-tier-options" %>
+				<% end %>
+			
 		</div>
+		<% end %>
 		<div class="col-xs-10 col-sm-5 keg-size-holder">
 			<% options = options_for_select([["1/6 BBL (5.16gal)", "5.16"], ["1/4 BBL (7.75gal)", "7.75"], ["1/3 BBL (10.3gal)", "10.3"], ["Euro BBL (13.2gal)", "13.2"], ["1/2 BBL (15.5gal)", "15.5"]], ff.object.keg_size) %>
 			<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
