@@ -16,6 +16,12 @@ class Admin::BreweriesController < ApplicationController
     @brewery_alt_names = AltBreweryName.new
     # get current beer ids
     @current_beer_ids = Beer.live_beers.pluck(:beer_id)
+    # get list of Brewery IDs for those breweries that have a beer that needs works
+    @all_need_attention_brewery_beers = Beer.need_attention_beers
+    # get list of Brewery IDs for those breweries that have a beer that is complete
+    @all_complete_brewery_beers = Beer.complete_beers
+    # get list of Brewery IDs for those breweries that have a beer with some info but is not complete
+    @all_usable_incomplete_brewery_beers = Beer.usable_incomplete_beers
     # get list of Brewery IDs for those breweries that have a live beer
     @live_brewery_beers = Beer.live_beers
     # get list of Brewery IDs for those breweries that have a live beer that needs works
@@ -27,6 +33,14 @@ class Admin::BreweriesController < ApplicationController
     # get list of Brewery IDs for those breweries that have a live beer with some info but is not complete
     # @usable_incomplete_brewery_beers = @live_brewery_beers - @need_attention_brewery_beers - @complete_brewery_beers
     @usable_incomplete_brewery_beers = Beer.live_beers.usable_incomplete_beers
+    
+    # count of total beers
+    # get count of total beers that have no info
+    @all_number_need_attention_beers = @all_need_attention_brewery_beers.length
+    # get count of total beers that are complete
+    @all_number_complete_beers = @all_complete_brewery_beers.length
+    # get count of total beers that still need some info 
+    @all_number_usable_incomplete_beers = @all_usable_incomplete_brewery_beers.length
     
     # count of total live beers
     #@number_live_beers = Beer.live_beers.count('id')
