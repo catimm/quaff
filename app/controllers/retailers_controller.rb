@@ -47,9 +47,9 @@ class RetailersController < ApplicationController
       @last_drink_prices_update = @drink_price_tiers.order(:updated_at).reverse_order.first
       #Rails.logger.debug("Drink Prices Last Updated: #{@last_drink_prices_update.inspect}")
       # check drink category updates
-      @drink_categories = DrinkCategory.where(draft_board_id: @draft_board[0].id)
+      #@drink_categories = DrinkCategory.where(draft_board_id: @draft_board[0].id)
       #Rails.logger.debug("Drink Price Tiers: #{@drink_price_tiers.inspect}")
-      @last_drink_category_update = @drink_categories.order(:updated_at).reverse_order.first
+      #@last_drink_category_update = @drink_categories.order(:updated_at).reverse_order.first
       #Rails.logger.debug("Drink Prices Last Updated: #{@last_drink_prices_update.inspect}")
     end
     
