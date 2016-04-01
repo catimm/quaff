@@ -52,9 +52,9 @@ class DraftInventoryController < ApplicationController
     if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
       # check drink price updates
-      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
+      #@drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
       # get collection of drink categories if Retailer has set them
-      @drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
+      #@drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
     end
     
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
@@ -299,9 +299,9 @@ class DraftInventoryController < ApplicationController
     if @subscription_plan == "retain"
       @internal_board_preferences = InternalDraftBoardPreference.where(draft_board_id: @draft.id)
       # check drink price updates
-      @drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
+      #@drink_price_tiers = DrinkPriceTier.where(draft_board_id: @draft.id)
       # get collection of drink categories if Retailer has set them
-      @drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
+      #@drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
     end
     
     # find if drink is new or already exists in inventory

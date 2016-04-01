@@ -375,7 +375,7 @@ class DraftBoardsController < ApplicationController
     @twitter_authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter")
     
     # get collection of drink categories if Retailer has set them
-    @drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
+    #@drink_categories = DrinkCategory.where(draft_board_id: session[:draft_board_id])
     
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 

@@ -1,3 +1,4 @@
+<% if false %>
 <% if !@drink_price_tiers.blank?  %>
 	<div class="row no-margin">
 		<div class="col-xs-2">
@@ -18,6 +19,7 @@
 			<%= ff.select :keg_size, options, {prompt: 'Select Keg Size'}, { class: 'form-control' } %>
 		</div>
 	</div>
+<% end %>
 <% end %>
 	<%= ff.fields_for :draft_details do |builder| %>
 		<div class="row draft-details-row" id="draft-details-row-<%= builder.index %>">
