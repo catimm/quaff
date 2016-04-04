@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: user_drink_recommendations
+#
+#  id               :integer          not null, primary key
+#  user_id          :integer
+#  beer_id          :integer
+#  projected_rating :float
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  beer_id: 1
+  projected_rating: 1.5
+
+two:
+  user_id: 1
+  beer_id: 1
+  projected_rating: 1.5
