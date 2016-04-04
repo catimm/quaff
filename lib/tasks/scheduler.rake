@@ -1,8 +1,3 @@
-# 'app/controllers/concerns/user_likes_drink_types.rb'
-require UserLikesDrinkTypes
-#require 'app/controllers/concerns/type_based_guess.rb'
-require TypeBasedGuess
-
 desc "Check Pine Box"
 task :check_pine_box => :environment do
     require 'nokogiri'
@@ -2546,7 +2541,10 @@ end # of user addition task
 
 desc "Assess Drink Recommendations For Users"
 task :assess_drink_recommendations => :environment do
-      # first delete all old rows of assessed drinks
+    include UserLikesDrinkTypes
+    include TypeBasedGuess
+    
+    # first delete all old rows of assessed drinks
     @old_data = UserDrinkRecommendation.delete_all
     
     # get list of Brewery IDs for those breweries that have a beer that is complete
