@@ -28,7 +28,7 @@ module BestGuess
         # Rails.logger.debug("beer type count #{user_beer_type_count.inspect}")
         # if user has rated more than 5 of this beer type, use TypeBasedGuess concern, otherwise, use StyleBasedGuess concern
         if user_beer_type_count >= 5
-          type_based_guess(this_beer)
+          type_based_guess(this_beer, current_user)
         else
           style_based_guess(this_beer)
         end

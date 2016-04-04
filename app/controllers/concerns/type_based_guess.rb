@@ -2,7 +2,7 @@ module TypeBasedGuess
   extend ActiveSupport::Concern
   include DrinkDescriptors
   
-  def type_based_guess(this_beer)
+  def type_based_guess(this_beer, this_user)
     # to note that this drink recommendation is based on type input
     this_beer.recommendation_rationale = "type"
     # set baseline projected rating for this beer
@@ -11,7 +11,7 @@ module TypeBasedGuess
     # find this beer's beer type id
     this_beer_type_id = this_beer.beer_type_id
     # find all drinks of same type rated by user
-    @same_type_rated_by_user = UserBeerRating.where(user_id: current_user.id, beer_type_id: this_beer_type_id)
+    @same_type_rated_by_user = UserBeerRating.where(user_id: this_user.id, beer_type_id: this_beer_type_id)
     # create empty array to hold top descriptors list for beer being rated
     @this_beer_top_descriptors = drink_descriptors(this_beer, 5)
     Rails.logger.debug("top descriptors: #{@this_beer_top_descriptors.inspect}")

@@ -72,7 +72,7 @@ class Admin::RecommendationsController < ApplicationController
       @compiled_assessed_drinks = Array.new
       
       @assessed_drinks.each do |drink|
-        type_based_guess(drink)
+        type_based_guess(drink, user)
         @individual_drink_info = Hash.new
         @individual_drink_info["user_id"] = user.id
         @individual_drink_info["beer_id"] = drink.id
