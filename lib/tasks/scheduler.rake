@@ -1,4 +1,6 @@
+require 'app/controllers/concerns/user_likes_drink_types.rb'
 include UserLikesDrinkTypes
+require 'app/controllers/concerns/type_based_guess.rb'
 include TypeBasedGuess
 
 desc "Check Pine Box"
