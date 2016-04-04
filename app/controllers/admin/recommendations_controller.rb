@@ -18,8 +18,7 @@ class Admin::RecommendationsController < ApplicationController
     # determine viable drinks for each user
     @users.each do |user|
       # get all drink styles the user claims to like
-      @user_style_likes = UserStylePreference.where(user_preference: "like").pluck(:beer_style_id) 
-      @user_style_likes = @user_style_likes.uniq
+      @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
       
       # get all drink types the user has rated favorably
       @user_preferred_drink_types = user_likes_drink_types(user.id)
