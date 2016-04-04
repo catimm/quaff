@@ -1,7 +1,7 @@
-require 'app/controllers/concerns/user_likes_drink_types.rb'
-include UserLikesDrinkTypes
-require 'app/controllers/concerns/type_based_guess.rb'
-include TypeBasedGuess
+# 'app/controllers/concerns/user_likes_drink_types.rb'
+require UserLikesDrinkTypes
+#require 'app/controllers/concerns/type_based_guess.rb'
+require TypeBasedGuess
 
 desc "Check Pine Box"
 task :check_pine_box => :environment do
