@@ -2558,8 +2558,7 @@ task :assess_drink_recommendations => :environment do
     # determine viable drinks for each user
     @users.each do |user|
       # get all drink styles the user claims to like
-      @user_style_likes = UserStylePreference.where(user_preference: "like").pluck(:beer_style_id) 
-      @user_style_likes = @user_style_likes.uniq
+      @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
       
       # get all drink types the user has rated favorably
       @user_preferred_drink_types = user_likes_drink_types(user.id)
@@ -2594,7 +2593,7 @@ task :assess_drink_recommendations => :environment do
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
-      Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
+      #Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
       
       # now filter the complete drinks available against the drink types the user likes
       # first create an array to hold each viable drink
@@ -2613,11 +2612,13 @@ task :assess_drink_recommendations => :environment do
       
       @assessed_drinks.each do |drink|
         type_based_guess(drink, user)
-        @individual_drink_info = Hash.new
-        @individual_drink_info["user_id"] = user.id
-        @individual_drink_info["beer_id"] = drink.id
-        @individual_drink_info["projected_rating"] = drink.best_guess
-        @compiled_assessed_drinks << @individual_drink_info
+        if drink.best_guess >= 7.75
+          @individual_drink_info = Hash.new
+          @individual_drink_info["user_id"] = user.id
+          @individual_drink_info["beer_id"] = drink.id
+          @individual_drink_info["projected_rating"] = drink.best_guess
+          @compiled_assessed_drinks << @individual_drink_info
+        end
       end # end of loop adding assessed drinks to array
       
       # sort the array of hashes by projected rating and keep top 500

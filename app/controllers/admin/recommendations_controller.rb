@@ -53,7 +53,7 @@ class Admin::RecommendationsController < ApplicationController
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
-      Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
+      #Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
       
       # now filter the complete drinks available against the drink types the user likes
       # first create an array to hold each viable drink
@@ -72,11 +72,13 @@ class Admin::RecommendationsController < ApplicationController
       
       @assessed_drinks.each do |drink|
         type_based_guess(drink, user)
-        @individual_drink_info = Hash.new
-        @individual_drink_info["user_id"] = user.id
-        @individual_drink_info["beer_id"] = drink.id
-        @individual_drink_info["projected_rating"] = drink.best_guess
-        @compiled_assessed_drinks << @individual_drink_info
+        if drink.best_guess >= 7.75
+          @individual_drink_info = Hash.new
+          @individual_drink_info["user_id"] = user.id
+          @individual_drink_info["beer_id"] = drink.id
+          @individual_drink_info["projected_rating"] = drink.best_guess
+          @compiled_assessed_drinks << @individual_drink_info
+        end
       end # end of loop adding assessed drinks to array
       
       # sort the array of hashes by projected rating and keep top 500
