@@ -277,6 +277,13 @@ GEM
       elasticsearch (>= 1)
       hashie
     simple_oauth (0.3.1)
+    sorted (2.0.3)
+    sorted-actionview (0.0.2)
+      sorted (~> 2.0.0)
+    sorted-activerecord (0.1.2)
+      activerecord (>= 4.0.0)
+      activesupport
+      sorted (~> 2.0.2)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -370,6 +377,8 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   searchkick
+  sorted-actionview
+  sorted-activerecord
   strip_attributes
   stripe
   thin

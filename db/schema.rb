@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160404000757) do
+ActiveRecord::Schema.define(version: 20160411063751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,13 @@ ActiveRecord::Schema.define(version: 20160404000757) do
     t.integer  "brewery_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "beer_formats", force: :cascade do |t|
+    t.integer  "beer_id"
+    t.integer  "size_format_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "beer_locations", force: :cascade do |t|
@@ -215,6 +222,16 @@ ActiveRecord::Schema.define(version: 20160404000757) do
     t.string   "growler_title"
   end
 
+  create_table "inventories", force: :cascade do |t|
+    t.integer  "beer_id"
+    t.integer  "stock"
+    t.integer  "demand"
+    t.integer  "order_queue"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "format_id"
+  end
+
   create_table "invitation_requests", force: :cascade do |t|
     t.string   "email"
     t.string   "status"
@@ -282,6 +299,12 @@ ActiveRecord::Schema.define(version: 20160404000757) do
     t.string   "role_name",  limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "size_formats", force: :cascade do |t|
+    t.string   "format_name"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|

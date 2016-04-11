@@ -108,7 +108,30 @@ $warning-red: $light-red;
     font-style: normal;
 
 }
+@font-face {
+    font-family: 'sansationregular';
+    src: url('sansation-regular-webfont.eot');
+    src: url('sansation-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('sansation-regular-webfont.woff2') format('woff2'),
+         url('sansation-regular-webfont.woff') format('woff'),
+         url('sansation-regular-webfont.ttf') format('truetype'),
+         url('sansation-regular-webfont.svg#sansationregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
 
+}
+
+@font-face{
+    font-family:'FontAwesome';
+    font-weight:normal;
+    font-style:normal;
+    src:url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?v=4.3.0');
+    src:url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'),
+        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'),
+        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'),
+        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'),
+        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+}
 
 html {
   position: relative;
@@ -2319,6 +2342,33 @@ input[type="checkbox"] {
   z-index: 1000;
   font-family: inherit !important;
 }
+// Admin drink recommendation page
+.dropdown-title {
+  float: left;
+  color: $less-emphasized-text;
+  margin-right: 5px;
+}
+.filter-options {
+  height: 32px;
+  width: 80%;
+}
+.admin-recommendation-table th .current {
+  padding-right: 12px;
+}
+.admin-recommendation-table th .asc:before {
+  content: "\f0d8";
+  font-family: FontAwesome;
+  left:-5px;
+  position:absolute;
+  top:0;
+}
+.admin-recommendation-table th .desc:before {
+  content: "\f0d7";
+  font-family: FontAwesome;
+  left:-5px;
+  position:absolute;
+  top:0;
+}
 // Retail account page
 .account-details-header-holder {
   border-left: 1px solid $less-emphasized-text;
@@ -2839,6 +2889,7 @@ input[type="checkbox"] {
       }
     }
 }
+
 // Drink Category Page
 .drink-category-show-as {
   height: 34px;

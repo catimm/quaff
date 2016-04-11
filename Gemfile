@@ -59,6 +59,9 @@ gem 'will_paginate'
 # for filtering functionality and views
 gem 'chosen-rails'
 gem 'filterrific'
+# trying a different sorting gem set
+gem 'sorted-activerecord'
+gem 'sorted-actionview'
 # for sending email through Mandrill
 gem 'mandrill-api', require: "mandrill"
 # providing authorization

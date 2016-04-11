@@ -1,0 +1,17 @@
+# == Schema Information
+#
+# Table name: formats
+#
+#  id          :integer          not null, primary key
+#  format_name :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  format_name: MyString
+
+two:
+  format_name: MyString

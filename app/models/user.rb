@@ -46,6 +46,7 @@ class User < ActiveRecord::Base
   has_many :user_notification_preferences
   has_many :user_style_preferences
   has_many :user_locations
+  has_many :user_drink_recommendations
   
   # set user roles for cancancan
   def super_admin?
@@ -96,6 +97,11 @@ class User < ActiveRecord::Base
   
   # to fix a devise error when trying to set new password
   def after_password_reset; end
+  
+  # for filterrific sorting of admin drink recommendation page
+  def self.options_for_select
+    order('LOWER(username)').map { |e| [e.username, e.id] }
+  end
   
   #def apply_omniauth(omni)
   #  authentications.build(:provider => omni['provider'],

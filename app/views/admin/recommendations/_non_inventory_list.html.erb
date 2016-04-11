@@ -1,0 +1,32 @@
+<div id="filterrific_results">
+
+  <div>
+    <h4>Non-inventory List</h4>
+  </div>
+
+  <table class="table table-striped admin-recommendation-table">
+    <tr>
+      <th><%= sortable "beers.beer_name", "Drink" %></th>
+      <th><%= sortable "projected_rating", "Rating" %></th>
+      <th>Format</th>
+      <th>Demand</th>
+      <th>Order Queue</th>
+    </tr>
+    <% drinks.each do |drink| %>
+      <tr>
+        <td><%= drink.beer.beer_name %></td>
+        <td><%= drink.projected_rating %></td>
+        <% if !drink.beer.size_formats.empty? %>
+	        <% if !drink.beer.size_formats.format_name.empty? %>
+	        	<td><%= drink.beer.size_formats.format_name %></td>
+	       	<% end %>
+	    <% else %>
+	    	<td>TBD</td>
+	    <% end %>
+        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
+        <td><%= @tally %></td>
+        <td><%= link_to "Add it", "#", :class => "btn btn-success edit-beer-info" %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

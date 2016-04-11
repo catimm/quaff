@@ -1,11 +1,14 @@
+<%= render 'layouts/header' %> 
 <div class="container">
-	<div class="row header-row stay-in-place">
-			<div class="row no-margin">
-				<div class="col-sm-7 visible-sm visible-md visible-lg">
-					<h4><%= @users %></h4>
-					<h4 class="live-beer-count"><%= @all_number_complete_brewery_beers.to_s + " available" %></h4>
-					<h4 class="live-beer-count"><%= @available_assessed_drinks.to_s + " relevant" %></h4>
-				</div>
+	<div class="row header-row">
+		<div class="page-header">
+			<div class="row">
+				<h2>Drink recommendations</h2>
 			</div>
+		</div>
 	</div>
+	
+	<%= render(partial: 'inventory_list', locals: { drinks: @inventory_drink_recommendations }) %>
+	<%= render(partial: 'non_inventory_list', locals: { drinks: @non_inventory_drink_recommendations }) %>
 </div>
+<%= render 'layouts/footer' %>

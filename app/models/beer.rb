@@ -46,16 +46,20 @@ class Beer < ActiveRecord::Base
 
   belongs_to :brewery
   belongs_to :beer_type
+  
   has_many :alt_beer_names
   has_many :beer_locations
   has_many :locations, through: :beer_locations
-  
+  has_many :beer_formats
+  has_many :size_formats, through: :beer_formats
   has_many :user_beer_ratings
   has_many :users, through: :user_beer_ratings
   has_many :drink_lists
   has_many :users, through: :drink_lists
   has_many :user_beer_trackings
   has_many :beer_brewery_collabs
+  has_many :user_drink_recommendations
+  has_many :inventories
   
   # to keep search function indexed properly
   after_commit :reindex_brewery
@@ -148,6 +152,18 @@ class Beer < ActiveRecord::Base
     end
     collab_brewery_names  
   }
+  
+  # scope drinks in stock 
+  scope :drinks_in_stock, -> { 
+    joins(:inventories).merge(Inventory.in_stock)
+  }
+  
+  # scope drinks not in stock
+  scope :drinks_empty_stock, -> { 
+    joins(:inventories).merge(Inventory.empty_stock)
+  }
+  
+  
   # scope only all drinks shown in admin pages 
   scope :all_live_beers, -> { 
     joins(:beer_locations).merge(BeerLocation.all_current)
@@ -306,6 +322,10 @@ class Beer < ActiveRecord::Base
     end
   end
   
+  # for filterrific sorting of admin drink recommendation page
+  def self.options_for_select
+    order('LOWER(beer_name)').map { |e| [e.beer_name, e.id] }
+  end
   #filterrific(
   #default_filter_params: { sorted_by: 'beer_rating_desc' },
   #available_filters: [

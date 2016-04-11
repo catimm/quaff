@@ -1,0 +1,27 @@
+# == Schema Information
+#
+# Table name: inventories
+#
+#  id          :integer          not null, primary key
+#  beer_id     :integer
+#  stock       :integer
+#  demand      :integer
+#  order_queue :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  format_id   :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  beer_id: 1
+  stock: 1
+  demand: 1
+  order_queue: 1
+
+two:
+  beer_id: 1
+  stock: 1
+  demand: 1
+  order_queue: 1
