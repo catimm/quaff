@@ -10,6 +10,7 @@
 
 class SizeFormat < ActiveRecord::Base
   has_many :inventories
+  has_many :size_formats, through: :inventories
   has_many :beer_formats
-  has_many :beers, through: :beer_formats
+  has_many :size_formats, through: :beer_formats
 end

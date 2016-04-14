@@ -2,14 +2,14 @@
 #
 # Table name: inventories
 #
-#  id          :integer          not null, primary key
-#  beer_id     :integer
-#  stock       :integer
-#  demand      :integer
-#  order_queue :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  format_id   :integer
+#  id             :integer          not null, primary key
+#  stock          :integer
+#  demand         :integer
+#  order_queue    :integer
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  size_format_id :integer
+#  beer_id        :integer
 #
 
 class Inventory < ActiveRecord::Base
@@ -18,12 +18,17 @@ class Inventory < ActiveRecord::Base
 
   # scope inventory stock 
   scope :in_stock, -> { 
-    where("stock >= ?", 1)
+    where("stock >= ? OR order_queue >= ?", 1, 1)
+  }
+  
+  # scope drinks not tracked in inventory
+  scope :not_in_inventory,   -> { 
+    where arel_table[:beer_id].eq(nil) 
   }
   
    # scope inventory not in stock 
   scope :empty_stock, -> { 
-    where(stock: [false, nil, 0])
+    where(stock: [false, nil])
   }
   
   # scope inventory in demand but not in stock 

@@ -20,8 +20,8 @@ class UserDrinkRecommendation < ActiveRecord::Base
   }
   
   # scope recommended drinks not in stock
-  scope :recommended_empty_stock, -> {
-    joins(:beer).merge(Beer.drinks_empty_stock)
+  scope :recommended_not_in_inventory, -> {
+    joins(:beer).merge(Beer.drinks_not_in_inventory)
   }
   
     # get tally of a particular drink

@@ -10,23 +10,52 @@
       <th><%= sortable "projected_rating", "Rating" %></th>
       <th>Format</th>
       <th>Demand</th>
-      <th>Order Queue</th>
+      <th>Order?</th>
     </tr>
     <% drinks.each do |drink| %>
-      <tr>
-        <td><%= drink.beer.beer_name %></td>
-        <td><%= drink.projected_rating %></td>
-        <% if !drink.beer.size_formats.empty? %>
-	        <% if !drink.beer.size_formats.format_name.empty? %>
-	        	<td><%= drink.beer.size_formats.format_name %></td>
-	       	<% end %>
-	    <% else %>
-	    	<td>TBD</td>
-	    <% end %>
-        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
-        <td><%= @tally %></td>
-        <td><%= link_to "Add it", "#", :class => "btn btn-success edit-beer-info" %></td>
-      </tr>
+    	<% if !drink.beer.inventories.empty? %>
+	    	<% drink.beer.inventories.each do |inventory| %>
+		      <tr>
+		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+		        <td><%= drink.projected_rating %></td>
+			    <td><%= inventory.size_format.format_name %></td>
+		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
+		        <td><%= @tally %></td>
+		        <% if inventory.order_queue.nil? %>
+		        	<td><%= link_to admin_order_queue_new_path(drink.beer_id), :class => "btn btn-success edit-beer-info", data: {toggle: "modal", target: "#order_queue_new"} do %> 
+		        			<i class="fa fa-plus"></i>
+						<% end %>
+		        	</td>
+		        <% else %>
+		        	<td><%= inventory.order_queue %></td>
+		        <% end %>
+		      </tr>
+		    <% end %>
+		<% else %>
+			<tr>
+		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+		        <td><%= drink.projected_rating %></td>
+			   	<% if !drink.beer.beer_formats.empty? %>
+			   		<td>
+				   		<% drink.beer.beer_formats.each_with_index do |format, index| %>
+					   		<% if index == drink.beer.beer_formats.size - 1 %>
+					   			<%= format.size_format.format_name %>
+					   		<% else %>
+				 				<%= format.size_format.format_name %>,</br>
+				  			<% end %>
+				   		<% end %>
+			   		</td>
+			   	<% else %>
+			   		<td>TBD</td>
+			   	<% end %>
+		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
+		        <td><%= @tally %></td>
+		        <td><%= link_to admin_order_queue_new_path(drink.beer_id), :class => "btn btn-success edit-beer-info", data: {toggle: "modal", target: "#order_queue_new"} do %> 
+		        		<i class="fa fa-plus"></i>
+		        	<% end %>
+		       	</td>
+		      </tr>
+		<% end %>
     <% end %>
   </table>
 </div>

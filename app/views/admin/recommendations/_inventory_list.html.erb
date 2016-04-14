@@ -9,19 +9,52 @@
       <th><%= sortable "beers.beer_name", "Drink" %></th>
       <th><%= sortable "projected_rating", "Rating" %></th>
       <th>Format</th>
-      <th>Available</th>
-      <th>User Queue</th>
+      <th>Demand</th>
+      <th>In Stock</th>
+      <th>Reserved</th>
+      <th>Ordering</th>
+      <th>Status</th>
+      <th>Order?</th>
+      <th>Include?</th>
     </tr>
     <% drinks.each do |drink| %>
-      <tr>
-        <td><%= drink.beer.beer_name %></td>
-        <td><%= drink.projected_rating %></td>
-        <% if !drink.beer.size_formats.format_name.empty? %>
-        	<td><%= drink.beer.size_formats.format_name %></td>
-       	<% end %>
-        <td><%= drink.beer.inventory.stock %></td>
-        <td><%= link_to "Add it", "#", :class => "btn btn-success edit-beer-info" %></td>
-      </tr>
+    	<% drink.beer.inventories.each do |inventory| %>
+	      <tr>
+	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+	        <td><%= drink.projected_rating %></td>
+	        <td><%= inventory.size_format.format_name %></td>
+	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
+		    <td><%= @tally %></td>
+	        <td>
+	        	<% if inventory.stock.nil? %>
+	        		0
+	        	<% else %>
+	        		<%= inventory.stock %>
+	        	<% end %>
+	        </td>
+	        <td>
+	        	<% if inventory.demand.nil? %>
+	        		0
+	        	<% else %>
+	        		<%= inventory.demand %>
+	        	<% end %>
+	        </td>
+	        <td>
+	        	<% if inventory.order_queue.nil? %>
+	        		0
+	        	<% else %>
+	        		<%= inventory.order_queue %>
+	        	<% end %>
+	        </td>
+	        <% @inventory_status = (inventory.stock.to_i + inventory.order_queue.to_i) - inventory.demand.to_i %>
+	        <td><%= @inventory_status %></td>
+	        <td><%= link_to "#", :class => "btn btn-success edit-beer-info" do %>
+	        		<i class="fa fa-plus"></i>
+	        	<% end %>
+	        </td>
+	        <td><%= check_box_tag 'accept' %></td>
+	      </tr>
+	    <% end %>
     <% end %>
   </table>
 </div>

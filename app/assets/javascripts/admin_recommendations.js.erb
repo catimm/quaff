@@ -1,0 +1,11 @@
+$(function() {
+	
+	// add logic to filter a table based on user chose 
+	$(document).on('change', '#user-drink-recommendations', function () {
+		var user_id = $(this).val();
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/" + user_id
+		});
+	});
+});

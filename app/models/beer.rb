@@ -50,6 +50,8 @@ class Beer < ActiveRecord::Base
   has_many :alt_beer_names
   has_many :beer_locations
   has_many :locations, through: :beer_locations
+  has_many :inventories
+  has_many :size_formats, through: :inventories
   has_many :beer_formats
   has_many :size_formats, through: :beer_formats
   has_many :user_beer_ratings
@@ -59,7 +61,6 @@ class Beer < ActiveRecord::Base
   has_many :user_beer_trackings
   has_many :beer_brewery_collabs
   has_many :user_drink_recommendations
-  has_many :inventories
   
   # to keep search function indexed properly
   after_commit :reindex_brewery
@@ -159,10 +160,9 @@ class Beer < ActiveRecord::Base
   }
   
   # scope drinks not in stock
-  scope :drinks_empty_stock, -> { 
-    joins(:inventories).merge(Inventory.empty_stock)
+  scope :drinks_not_in_inventory, -> { 
+    joins(:inventories).merge(Inventory.not_in_inventory)
   }
-  
   
   # scope only all drinks shown in admin pages 
   scope :all_live_beers, -> { 

@@ -128,7 +128,10 @@ Rails.application.routes.draw do
   post '/users/notification_preferences' => 'user#notification_preferences', :as => 'user_notification_preference'
   # user beer preferences
   post '/styles' => 'users#style_preferences', :as => 'user_style_preference'
-  
+  # let admin get form to add drink to order queue
+  get 'admin/recommendations/order_queue_new/:id' => 'admin/recommendations#order_queue_new', :as => 'admin_order_queue_new'
+  # let admin add drink to order queue
+  post 'admin/recommendations/order_queue_create' => 'admin/recommendations#order_queue_create', :as => 'admin_order_queue_create'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -12,5 +12,17 @@
 class BeerFormat < ActiveRecord::Base
   belongs_to :beer
   belongs_to :size_format
+  
+  has_many :inventories
+  
+  # scope drinks in stock 
+  scope :drink_formats_in_stock, -> { 
+    joins(:inventories).merge(Inventory.in_stock)
+  }
+  
+  # scope drinks not in stock
+  scope :drink_formats_empty_stock, -> { 
+    joins(:inventories).merge(Inventory.empty_stock)
+  }
 
 end
