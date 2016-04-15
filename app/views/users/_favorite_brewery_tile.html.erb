@@ -1,0 +1,8 @@
+<% @brewery_info = Brewery.where(id: brewery.brewery_id)[0] %>
+<div class="fav-drink-tile">
+	<% if @brewery_info.image.blank? %>
+		<h5 class="fav-brewery"><%= @brewery_info.short_brewery_name %></h5>
+	<% else %>
+		<img class="img-responsive center-block" alt="Responsive image" src="<%= @brewery_info.image %>">
+	<% end %>
+</div>

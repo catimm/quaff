@@ -47,7 +47,13 @@ class ApplicationController < ActionController::Base
       @location_id = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
       session[:subscription] = LocationSubscription.where(location_id: @location_id).pluck(:subscription_id)[0]
     end
-    return locations_path
+    # set a different first view based on the user type
+    if current_user.role_id == 5
+      @first_view = retailer_path(session[:retail_id])
+    else
+      @first_view = locations_path
+    end
+    return @first_view
   end
   
   def after_sign_out_path_for(resource_or_scope)

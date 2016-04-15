@@ -51,6 +51,9 @@ Rails.application.routes.draw do
   end
   
   root :to => 'home#index'
+  # route to user profile page
+  get '/users/profile/:id' => 'users#profile', :as => 'user_profile'
+  
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'

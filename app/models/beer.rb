@@ -115,6 +115,7 @@ class Beer < ActiveRecord::Base
       non_collab_beers(brewery_id).order(:beer_name)
     end
   }
+ 
   
   # scope order beers by name for inventory management
   scope :order_by_drink_name, -> {
@@ -163,6 +164,21 @@ class Beer < ActiveRecord::Base
   scope :drinks_not_in_inventory, -> { 
     joins(:inventories).merge(Inventory.not_in_inventory)
   }
+  
+  # scope drinks rated from same brewery
+  scope :rating_group_brewery, ->(user_id) {
+    joins(:user_beer_ratings).
+    group('beers.brewery_id').
+    select('sum(user_beer_ratings.user_beer_rating) as brewery_rating').
+    order('brewery_rating desc').
+    limit(5)
+  }
+  #  scope :mostplayed, ->(player) { 
+  #    select('details.*, count(heros.id) AS hero_count').
+  #    joins(:hero).where('player_id = ?', player.id).
+  #    group('hero_id').
+  #    order('hero_count DESC').limit(3) }
+  #}
   
   # scope only all drinks shown in admin pages 
   scope :all_live_beers, -> { 

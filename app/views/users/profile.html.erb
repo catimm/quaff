@@ -1,0 +1,60 @@
+<%= render 'layouts/header' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-sm-2">
+				
+			</div>
+			<div class="col-sm-2 no-padding">
+				<h1 class="user-name"><%= @user.first_name %></h1>
+				<h5 class="user-high-level-info">Rated <%= @user_ratings.size %> drinks</h5>
+				<h5 class="user-high-level-info">Joined <%= (@user.created_at).strftime("%b %Y") %></h5>
+			</div>
+			<div class="col-sm-8 no-padding">
+				<div class="row no-margin">
+					<h5 class="user-high-level-info">Favorite drinks</h5>
+					<% @top_rated_drinks.each do |drink| %>
+						<div class="col-sm-2 fav-drink-col">
+							<%= render(partial: 'favorite_drink_tile', locals: { drink: drink }) %>
+						</div>
+					<% end%>
+				</div>
+				<div class="row no-margin">
+					<h5 class="user-high-level-info">Favorite breweries</h5>
+					<% @user_ratings_by_brewery.each do |brewery| %>
+						<div class="col-sm-2 fav-drink-col">
+							<%= render(partial: 'favorite_brewery_tile', locals: { brewery: brewery }) %>
+						</div>
+					<% end%>
+				</div>
+				<div class="row no-margin">
+					<h5 class="user-high-level-info">Favorite drink types</h5>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="col-sm-8">
+				<h3 class="recent-ratings-header">Recent ratings</h3>
+				<div class="row no-margin recent-rating-holder">
+					<% @recent_user_ratings.each do |rating| %>
+						<div class="col-sm-4">
+							<%= render(partial: 'rating_card', locals: { drink: rating }) %>
+						</div>
+					<% end%>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="row no-margin">
+					<h4>Favorite breweries</h4>
+				</div>
+				<div class="row no-margin">
+					<h4>Favorite drinks</h4>
+				</div>
+				<div class="row no-margin">
+					<h4>Favorite drink types</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

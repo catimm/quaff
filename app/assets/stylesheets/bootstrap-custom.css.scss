@@ -40,6 +40,7 @@ $extra-light-red: #FE6165;
 $faded-red: #FF8585;
 $facebook-blue-color: #3b5998;
 $twitter-blue-color: #1dcaff;
+$extra-light-blue-gray: #f7fafa;
 
 
 // Functional use of colors for project
@@ -81,6 +82,7 @@ $special-designated-yellow: $faded-yellow;
 $facebook-button-color: $facebook-blue-color;
 $twitter-button-color: $twitter-blue-color;
 $warning-red: $light-red;
+$soft-gray-background: $extra-light-blue-gray;
 
 @font-face {
     font-family: 'novecento_sans_widenormal';
@@ -763,6 +765,7 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 $beer-header-font-size: 14px;
+$beer-header-font-size: 1vw;
 $beer-header-line-height: 1.1;
 $beer-header-lines-to-show: 2;
 .beer-tile-header {
@@ -780,6 +783,7 @@ $beer-header-lines-to-show: 2;
   text-decoration: underline;
 }
 .tile-subheader {
+  font-size: 1vw; 
   color: $less-emphasized-text;
   margin-top: 0;
 }
@@ -1985,7 +1989,179 @@ $beer-header-lines-to-show-fp: 1;
     color: $best-guess-text;
   }
 }
+// User Profile Page
+.first-row {
+  background: $soft-gray-background;
+  margin-top: 10px !important;
+  border-bottom: 1px solid $soft-border;
+  min-height: 200px;
+}
+.first-row-container {
+  height: 180px;
+  margin-top: 10px;
+}
+.user-name {
+  font-weight: 500;
+}
+.user-high-level-info {
+  color: $normal-text;
+}
+.recent-rating-holder {
+  border-right: 1px solid $soft-border;
+}
+.recent-ratings-header {
+  margin: 10px 0 0 0 !important;
+}
+// Favorite drink tile
+.fav-drink-col {
+  padding: 0 7.5px !important;
+}
+.fav-drink-tile {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 100%;
+  height: 100px;
+  position: relative;
+}
+.fav-drink-brewery {
+  text-align: center;
+  color: $normal-text;
+  font-size: 14px;
+  font-size: 1.1vw;
+}
+.fav-drink-drink {
+  text-align: center;
+  color: $user-rating-text;
+  font-size: 14px;
+  font-size: 1.1vw;
+}
+// Favorite Breweries Tile CSS
+.fav-brewery {
+  text-align: center;
+  margin-top: 30px;
+  color: $normal-text;
+  font-size: 14px;
+  font-size: 1.1vw;
+}
+// Rating tile CSS
+.rating-tile {
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 100%;
+  height: 355px;
+  position: relative;
+}
+.ratings-image-holder-row {
+  height:80px; 
+  margin-bottom: 7.5px !important;
+}  
+.ratings-image-holder-column {
+  height: 70px;
+  padding: 10px 0 0 10px !important;
+}
+.brewery-image-holder-empty-ratings-page {
+  padding: 0;
+  height: 75px;
+  border: 1px solid $gray-body-background;
+  color: $normal-text;
+  h2 {
+    font-size: 32px;
+  }
+}
+.user-ratings-col {
+  padding-top: 10px !important;
+  text-align: center;
+}
+.recent-user-rating {
+  font-size: 72px;
+  font-size: 3vw;
+  font-weight: 500;
+  color: $user-rating-text;
+}
+.recent-user-rating-context {
+  font-size: 12px;
+  font-size: 1vw;
+  color: $less-emphasized-text;
+}
+.ratings-tile-rows-descriptors {
+  height: 45px;
+  margin: 5px 0 !important;
+}
+.bottom-ratings-tile-rows {
+  margin: 5px 0 !important;
+}
+.past-user-descriptors-ratings {
+  padding: 10px 0 0 5px !important;
+  p {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: $normal-text;
+    line-height: 1.3;
+    display: inline;
+    vertical-align: top;
+  }
+}
+.recent-user-ratings-tile-subtitle-headers {
+  p {
+    margin-bottom: 2.5px;
+    font-size: 12px;
+    font-size: 0.9vw;
+    font-weight: 500;
+    color: $normal-text;
+    line-height: 1.3;
+    vertical-align: top;
+  }
+}
+$descriptor-font-size: 12px;
+$descriptor-font-size: 1vw;
+$descriptor-line-height: 1.1;
+$descriptor-lines-to-show: 2;
+.recent-user-rating-descriptions {
+  color: $user-rating-text;
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $descriptor-font-size*$descriptor-line-height*$descriptor-lines-to-show; /* Fallback for non-webkit */
+  margin: 0;
+  font-size: $descriptor-font-size;
+  line-height: $descriptor-line-height;
+  -webkit-line-clamp: $descriptor-lines-to-show;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recent-user-rating-descriptions-none {
+  color: $less-emphasized-text;
+  font-size: 12px;
+  font-size: 1vw;
+  margin: 0;
+}
+.recent-rating-tile-second-last-row {
+  position: absolute; 
+  bottom: 30px; 
+  width: 100%; 
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 26%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  padding-top: 12px; 
+}
 
+.recent-rating-tile-last-row {
+  position: absolute; 
+  bottom: 0; 
+  width: 100%; 
+  height: 30px; 
+  background: $special-designated-green;
+}
+.rated-on-date {
+  color: #fff;
+  text-align: center;
+  
+}
 // Beer Preferences css style
 .preferences-header-fixed {
   position: fixed;

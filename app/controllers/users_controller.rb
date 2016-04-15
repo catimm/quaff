@@ -55,6 +55,26 @@ class UsersController < ApplicationController
     redirect_to user_path(current_user.id)
   end
   
+  def profile
+    # get user info
+    @user = User.find(current_user.id)
+    # get user ratings history
+    @user_ratings = UserBeerRating.where(user_id: @user.id)
+    @recent_user_ratings = @user_ratings.order(created_at: :desc).first(21)
+    # get top rated drinks
+    @top_rated_drinks = @user_ratings.order(user_beer_rating: :desc).first(5)
+    # get top rated breweries
+    @user_ratings_by_brewery = @user_ratings.rating_breweries
+   
+    Rails.logger.debug("User ratings by brewery: #{@user_ratings_by_brewery.first.brewery_rating.inspect}")
+    @user_ratings_by_brewery.each do |brewery_group|
+      Rails.logger.debug("User ratings by brewery: #{brewery_group.brewery_rating.inspect}")
+      Rails.logger.debug("The brewery: #{brewery_group.brewery_id.inspect}")
+    end
+    #current_user.courses.select('courses.*, subscriptions.state').group_by(&:state)
+    #@voted_cars = @user.car_votes.order('car_votes.created_at DESC').group_by { |r| r.car.created_at.to_date }
+  end # end profile method
+  
   def update_password
     @user = User.find(current_user.id)
     if @user.update_with_password(user_params)
