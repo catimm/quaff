@@ -19,6 +19,7 @@
 class UserBeerRating < ActiveRecord::Base
   belongs_to :user
   belongs_to :beer
+  belongs_to :beer_type
   
   accepts_nested_attributes_for :beer, :update_only => true
 
@@ -28,10 +29,6 @@ class UserBeerRating < ActiveRecord::Base
   end
 
   # scope drinks rated from same brewery
-  scope :rating_breweries, ->(user_id) { 
-    joins(:beer).merge(Beer.rating_group_brewery(user_id))
-  }
-  
   scope :rating_breweries, -> {
     joins(:beer).
     group('beers.brewery_id').
@@ -40,6 +37,17 @@ class UserBeerRating < ActiveRecord::Base
     order('brewery_rating desc').
     limit(5)
   }
+  
+  # scope drinks rated by drink type
+  scope :rating_drink_types, -> {
+    joins(:beer_type).
+    group('beer_types.id').
+    having('COUNT(*) >= ?', 5).
+    select('beer_types.id as type_id, avg(user_beer_ratings.user_beer_rating) as type_rating').
+    order('type_rating desc').
+    limit(5)
+  }
+  
   #  scope :mostplayed, ->(player) { 
   #    select('details.*, count(heros.id) AS hero_count').
   #    joins(:hero).where('player_id = ?', player.id).

@@ -65,14 +65,10 @@ class UsersController < ApplicationController
     @top_rated_drinks = @user_ratings.order(user_beer_rating: :desc).first(5)
     # get top rated breweries
     @user_ratings_by_brewery = @user_ratings.rating_breweries
-   
-    Rails.logger.debug("User ratings by brewery: #{@user_ratings_by_brewery.first.brewery_rating.inspect}")
-    @user_ratings_by_brewery.each do |brewery_group|
-      Rails.logger.debug("User ratings by brewery: #{brewery_group.brewery_rating.inspect}")
-      Rails.logger.debug("The brewery: #{brewery_group.brewery_id.inspect}")
-    end
-    #current_user.courses.select('courses.*, subscriptions.state').group_by(&:state)
-    #@voted_cars = @user.car_votes.order('car_votes.created_at DESC').group_by { |r| r.car.created_at.to_date }
+    # get top rated drink types
+    @user_ratings_by_type = @user_ratings.rating_drink_types
+    Rails.logger.debug("User ratings by type: #{@user_ratings_by_type.inspect}")
+
   end # end profile method
   
   def update_password

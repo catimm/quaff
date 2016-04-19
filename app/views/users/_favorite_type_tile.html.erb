@@ -1,0 +1,11 @@
+<% @type_info = BeerType.where(id: type.type_id)[0] %>
+<div class="fav-type-tile">
+	<% if @type_info.beer_style.style_image_url.blank? %>
+		<h5 class="fav-brewery"><%= @type_info.beer_type_name %></h5>
+	<% else %>
+		<div class="fav-type-image-container">
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= @type_info.beer_style.style_image_url %>">
+		</div>
+		<h5 class="fav-type-with-image"><%= @type_info.beer_type_name %></h5>
+	<% end %>
+</div>

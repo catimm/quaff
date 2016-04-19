@@ -17,4 +17,6 @@ class BeerType < ActiveRecord::Base
   has_many :beer_type_relationships
   has_many :beers
   accepts_nested_attributes_for :beers
+  has_many :user_beer_ratings
+  
 end

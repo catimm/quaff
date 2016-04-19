@@ -2046,6 +2046,30 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 14px;
   font-size: 1.1vw;
 }
+// Favorite Type Tile CSS
+.fav-type-tile {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 100%;
+  height: 100px;
+  position: relative;
+  text-align: center !important;
+}
+.fav-type-image-container {
+  height: 60px;
+  width: 60px;
+  margin-left: 20px !important;
+}
+.fav-type-with-image {
+  text-align: center;
+  margin: 2.5px 0 0 0 !important;
+  color: $normal-text !important;
+  font-size: 14px;
+  font-size: 1.1vw;
+}
 // Rating tile CSS
 .rating-tile {
   margin-bottom: 10px;

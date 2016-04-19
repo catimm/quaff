@@ -28,6 +28,11 @@
 				</div>
 				<div class="row no-margin">
 					<h5 class="user-high-level-info">Favorite drink types</h5>
+					<% @user_ratings_by_type.each do |type| %>
+						<div class="col-sm-2 fav-drink-col">
+							<%= render(partial: 'favorite_type_tile', locals: { type: type }) %>
+						</div>
+					<% end%>
 				</div>
 			</div>
 		</div>
