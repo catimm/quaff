@@ -1,8 +1,26 @@
 <% @brewery_info = Brewery.where(id: brewery.brewery_id)[0] %>
-<div class="fav-drink-tile">
-	<% if @brewery_info.image.blank? %>
-		<h5 class="fav-brewery"><%= @brewery_info.short_brewery_name %></h5>
-	<% else %>
-		<img class="img-responsive center-block" alt="Responsive image" src="<%= @brewery_info.image %>">
-	<% end %>
+<div class="fav-brewery-tile">
+	<div class="row">
+			<% if @brewery_info.image.blank? %>
+				<div class="col-sm-12">
+					<h5 class="fav-brewery"><%= @brewery_info.short_brewery_name %></h5>
+				</div>
+			<% else %>
+				<div class="col-sm-9">
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= @brewery_info.image %>">
+				</div>
+			<% end %>
+	</div>
+	<div class="row fav-brewery-details-row">
+		<div class="col-sm-12 padding-10">
+			<p class="category-title">drinks rated: </p>
+			<h5 class="drinks-rated no-margin"> <%= (brewery.drinks_rated).floor %></h5>
+		</div>
+	</div>
+	<div class="row fav-brewery-details-row">
+		<div class="col-sm-12 padding-10">
+			<p class="category-title">avg. rating: </p>
+			<h5 class="brewery-avg-rating no-margin"> <%= ((((brewery.brewery_rating) * 2).round)/2.0) %><span>/10</span></h5>
+		</div>
+	</div>
 </div>

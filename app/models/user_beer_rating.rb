@@ -33,7 +33,7 @@ class UserBeerRating < ActiveRecord::Base
     joins(:beer).
     group('beers.brewery_id').
     having('COUNT(*) >= ?', 5).
-    select('beers.brewery_id as brewery_id, avg(user_beer_ratings.user_beer_rating) as brewery_rating').
+    select('beers.brewery_id as brewery_id, avg(user_beer_ratings.user_beer_rating) as brewery_rating, sum(user_beer_ratings.user_beer_rating) as drinks_rated').
     order('brewery_rating desc').
     limit(5)
   }

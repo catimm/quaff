@@ -71,6 +71,15 @@ class UsersController < ApplicationController
 
   end # end profile method
   
+  def activity
+    # get user info
+    @user = User.find(current_user.id)
+    # get user ratings history
+    @user_ratings = UserBeerRating.where(user_id: @user.id)
+    @recent_user_ratings = @user_ratings.order(created_at: :desc).first(24)
+
+  end # end activity method
+  
   def update_password
     @user = User.find(current_user.id)
     if @user.update_with_password(user_params)

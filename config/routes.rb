@@ -53,6 +53,7 @@ Rails.application.routes.draw do
   root :to => 'home#index'
   # route to user profile page
   get '/users/profile/:id' => 'users#profile', :as => 'user_profile'
+  get '/users/activity/:id' => 'users#activity', :as => 'user_activity'
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
