@@ -1,0 +1,3 @@
+$(function() {
+	$(".descriptors_for_<%= @this_drink_type.id %>").html("<%= escape_javascript(render 'drink_descriptors_form' ) %>");
+});

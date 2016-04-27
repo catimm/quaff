@@ -18,8 +18,15 @@
 	</div>
 	<div class="row">
 		<div class="container">
-			<div class="col-sm-12">
+			<div class="col-sm-12" id="fav-drink-types">
 				<h3 class="recent-ratings-header">Favorite drink types</h3>
+				<hr>
+				<% @user_ratings_by_type.each do |type| %>	
+					<%= render(partial: 'favorite_drink_type', locals: { type: type }) %>
+				<% end%>
+			</div>
+			<div class="col-sm-12" id="fav-drink-types-container">
+				<%= will_paginate @user_ratings_by_type, renderer: BootstrapPagination::Rails%>
 			</div>
 		</div>
 	</div>

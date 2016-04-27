@@ -116,7 +116,6 @@ class Beer < ActiveRecord::Base
     end
   }
  
-  
   # scope order beers by name for inventory management
   scope :order_by_drink_name, -> {
     joins(:brewery).merge(Brewery.order_by_brewery_name).

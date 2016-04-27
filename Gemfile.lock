@@ -332,6 +332,8 @@ GEM
       rack (>= 1.0)
     wicked_pdf (1.0.3)
     will_paginate (3.0.7)
+    will_paginate-bootstrap (1.0.1)
+      will_paginate (>= 3.0.3)
     wkhtmltopdf-binary (0.9.9.3)
 
 PLATFORMS
@@ -389,4 +391,5 @@ DEPENDENCIES
   ultrahook
   wicked_pdf
   will_paginate
+  will_paginate-bootstrap
   wkhtmltopdf-binary

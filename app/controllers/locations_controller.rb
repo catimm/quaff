@@ -42,7 +42,7 @@ class LocationsController < ApplicationController
       end
       full_beer_array = [beer_array,cloud_array]
       final_array << full_beer_array
-      # Rails.logger.debug("Each beer descriptors: #{final_array.inspect}")
+      Rails.logger.debug("Each beer descriptors: #{final_array.inspect}")
     end
 
     gon.beer_array = final_array

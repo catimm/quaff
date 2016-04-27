@@ -1,28 +1,9 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!
+  include DrinkTypeDescriptors
   
   def index
-    # get list of styles
-    @styles = BeerStyle.all
-    # get user style preferences
-    @user_styles = UserStylePreference.where(user_id: current_user.id)
-    # Rails.logger.debug("User style preferences: #{@user_styles.inspect}")
-    # get list of styles the user likes 
-    @user_likes = @user_styles.where(user_preference: "like")
-    # Rails.logger.debug("User style likes: #{@user_likes.inspect}")
-    # get list of styles the user dislikes
-    @user_dislikes = @user_styles.where(user_preference: "dislike")
-    # Rails.logger.debug("User style dislikes: #{@user_dislikes.inspect}")
-    # add user preference to style info
-    @styles.each do |this_style|
-      if @user_dislikes.map{|a| a.beer_style_id}.include? this_style.id
-        this_style.user_preference == 1
-      elsif @user_likes.map{|a| a.beer_style_id}.include? this_style.id
-        this_style.user_preference == 2
-      else 
-        this_style.user_preference == 0
-      end
-    end
+
   end
   
   def show
@@ -66,9 +47,38 @@ class UsersController < ApplicationController
     # get top rated breweries
     @user_ratings_by_brewery = @user_ratings.rating_breweries
     # get top rated drink types
-    @user_ratings_by_type = @user_ratings.rating_drink_types
-    Rails.logger.debug("User ratings by type: #{@user_ratings_by_type.inspect}")
-
+    @user_ratings_by_type = @user_ratings.rating_drink_types.paginate(:page => params[:page], :per_page => 5)
+    #Rails.logger.debug("User ratings by type: #{@user_ratings_by_type.inspect}")  
+ 
+    # create array to hold descriptors cloud
+    @final_descriptors_cloud = Array.new
+    
+    # get top descriptors for drink types the user likes
+    @user_ratings_by_type.each do |rating_drink_type|
+      @drink_type_descriptors = drink_type_descriptors(rating_drink_type)
+      @final_descriptors_cloud << @drink_type_descriptors
+    end
+    # send full array to JQCloud
+    gon.drink_type_descriptor_array = @final_descriptors_cloud
+    
+    # get top rated drink types
+    @user_ratings_by_type_ids = @user_ratings.rating_drink_types
+    @user_ratings_by_type_ids.each do |drink_type|
+      # get drink type info
+      @drink_type = BeerType.find_by_id(drink_type.type_id)
+      # get ids of all drinks of this drink type
+      @drink_ids_of_this_drink_type = Beer.where(beer_type_id: drink_type.type_id).pluck(:id)   
+      # get all descriptors associated with this drink type
+      @final_descriptor_array = Array.new
+      @drink_ids_of_this_drink_type.each do |drink|
+        @drink_descriptors = Beer.find(drink).descriptors
+        @drink_descriptors.each do |descriptor|
+          @final_descriptor_array << descriptor["name"]
+        end
+      end
+      @drink_type.all_type_descriptors = @final_descriptor_array.uniq
+      Rails.logger.debug("All descriptors by type: #{@drink_type.all_type_descriptors.inspect}") 
+    end
   end # end profile method
   
   def activity
@@ -76,9 +86,60 @@ class UsersController < ApplicationController
     @user = User.find(current_user.id)
     # get user ratings history
     @user_ratings = UserBeerRating.where(user_id: @user.id)
-    @recent_user_ratings = @user_ratings.order(created_at: :desc).first(24)
-
+    @recent_user_ratings = @user_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
+    
   end # end activity method
+  
+  def preferences
+    # get info for user style preferences
+    # get list of styles
+    @styles = BeerStyle.all
+    # get user style preferences
+    @user_styles = UserStylePreference.where(user_id: current_user.id)
+    Rails.logger.debug("User style preferences: #{@user_styles.inspect}")
+    # get list of styles the user likes 
+    @user_likes = @user_styles.where(user_preference: "like")
+    # Rails.logger.debug("User style likes: #{@user_likes.inspect}")
+    # get list of styles the user dislikes
+    @user_dislikes = @user_styles.where(user_preference: "dislike")
+    # Rails.logger.debug("User style dislikes: #{@user_dislikes.inspect}")
+    # add user preference to style info
+    @styles.each do |this_style|
+      if @user_dislikes.map{|a| a.beer_style_id}.include? this_style.id
+        this_style.user_preference == 1
+      elsif @user_likes.map{|a| a.beer_style_id}.include? this_style.id
+        this_style.user_preference == 2
+      else 
+        this_style.user_preference == 0
+      end
+    end
+    
+  end # end preferences method
+  
+  def add_drink_descriptors
+    # get drink type information
+    @this_drink_type = BeerType.find_by_id(params[:id])
+    # get ids of all drinks of this drink type
+    @drink_ids_of_this_drink_type = Beer.where(beer_type_id: params[:id]).pluck(:id)
+    # get all descriptors associated with this drink type
+    @final_descriptor_array = Array.new
+    @drink_ids_of_this_drink_type.each do |drink|
+      @drink_descriptors = Beer.find(drink).descriptors
+      @drink_descriptors.each do |descriptor|
+        @final_descriptor_array << descriptor["name"]
+      end
+    end
+    @final_descriptor_array = @final_descriptor_array.uniq
+    Rails.logger.debug("Final list of descriptors: #{@final_descriptor_array.inspect}")
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+  end # end add_drink_descriptors method
+  
+  def create_drink_descriptors
+    
+  end # end create_drink_descriptors method
   
   def update_password
     @user = User.find(current_user.id)

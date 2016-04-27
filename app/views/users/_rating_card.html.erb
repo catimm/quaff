@@ -1,4 +1,4 @@
-<div class="rating-tile">
+<div class="recent-rating-tile">
 	<div class="row no-margin ratings-image-holder-row">
 		<div class="col-sm-6 no-padding ratings-image-holder-column">
 			<% if !drink.beer.brewery.image.blank? %>
@@ -10,7 +10,12 @@
 			<% end %>
 		</div>
 		<div class="col-sm-6 no-padding user-ratings-col">
-			<h1 class="recent-user-rating"><%= drink.user_beer_rating %><span class="recent-user-rating-context">/10</span></h1>
+			<% if drink.user_beer_rating == 10.0 %>
+				<% @drink_rating = (drink.user_beer_rating).floor %>
+			<% else %>
+				<% @drink_rating = drink.user_beer_rating %>
+			<% end %>
+			<h1 class="recent-user-rating"><%= @drink_rating %><span class="recent-user-rating-context">/10</span></h1>
 		</div>
 	</div>
 	<div class="row no-margin">

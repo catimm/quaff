@@ -1,4 +1,29 @@
+
 $(function () {
+	// default word cloud if no descriptors exist 
+	var word_array = [
+          {text: "descriptors", weight: 15},
+          {text: "no", weight: 7},
+          {text: "yet", weight: 4},
+          // ...as many words as you want
+      ];
+	 if (gon.drink_type_descriptor_array != undefined) {
+			 // create word cloud and return to view
+		     for (i = 0; i < gon.drink_type_descriptor_array.length; i++) { 
+			    if ( gon.drink_type_descriptor_array[i][1].length > 0 ) {
+				    $("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(gon.drink_type_descriptor_array[i][1], {
+				  		autoResize: true
+				     });
+				 } else {
+					$("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(word_array, {
+				  		autoResize: true
+				     });
+				 }
+			 }
+	 } else {
+	 	return;
+	 }
+	 
 	// show user profile block when this link is clicked, if it isn't already showing
 	$("#user-profile-link").on("click", function() {
 		if ($("#user-profile").hasClass("hidden")) {
@@ -183,4 +208,31 @@ $(function () {
 	navbar_search_width = $("#header-navbar").children(".input-group").width() + 20;
 	// make the dropdown search result box match the width of the search input box
 	$(".tt-menu").width(navbar_search_width);
+	
+	
+	// to add already used descriptor to this user's list of descriptors for drink type
+	$(document).on("click", ".token-input-list-facebook_rating li", function() {
+		var target_id = $(this).parent().siblings('form').children('input.form-control').attr('id');
+		var target = "#" + target_id
+		$(this).addClass("hide");
+		var descriptor = $(this).children('p').html();
+		$(target).tokenInput("add", {id: descriptor, name: descriptor});
+		return false;
+	});
+	
+	var timer;
+	
+	$( ".add-descriptors-field" ).each(function() {
+	  var this_id = $(this).attr('id');
+	  $("#" + this_id).tokenInput('/beers/descriptors.json', {
+			theme: 'facebook',
+			placeholder: 'Choose from list or add your own (separate w/comma)',
+			minChars: 2,
+		    allowFreeTagging: true,
+		    preventDuplicates: true,
+		    zindex: 9999,
+		    hintText: 'Type drink descriptor (e.g. citrusy, piney, etc.)'
+		});
+	});
+
 });

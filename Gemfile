@@ -56,6 +56,7 @@ gem 'twitter'
 gem "omnicontacts"
 # to paginate the results on the page
 gem 'will_paginate'
+gem 'will_paginate-bootstrap'
 # for filtering functionality and views
 gem 'chosen-rails'
 gem 'filterrific'

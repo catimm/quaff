@@ -1,0 +1,30 @@
+<%= render 'layouts/header' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-sm-5 no-padding">
+				<h1 class="section-header">Drink Preferences</h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="col-sm-12">
+				<h3 class="recent-ratings-header">Preferred styles</h3>
+				<h5>Choose 
+					<span class="tiny-style-indicator tiny-like-style text-center">
+						<i class="fa fa-check"></i>
+					</span>&nbsp;&nbsp;&nbsp;&nbsp; if you like a style or 
+					<span class="tiny-style-indicator tiny-dislike-style text-center">
+						<i class="fa fa-times"></i>
+					</span> &nbsp;&nbsp;&nbsp;&nbsp; if you don't. 
+					<span class="style-choose-neither">
+						<span>Choose neither</span> if you don't have a strong preference either way.
+					</span>
+				</h5>
+				<div class="row no-margin recent-rating-holder">
+					<%= render 'user_styles' %>
+				</div>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

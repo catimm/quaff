@@ -1,0 +1,22 @@
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Add up to 5 descriptors that describe the <%= @this_drink_type.beer_type_name %>s you really like.</h3>
+	</div>
+	<div class="modal-body">
+		<p>Click a word bubble to add it to your descriptor list OR type in your own.</p>
+		<% if !@final_descriptor_array.blank? %>
+			<ul class="token-input-list-facebook_rating", id="<%= @this_drink_type.id %>">
+				<% @final_descriptor_array.each do |descriptor| %>
+					<li class="token-input-token-facebook_rating">
+						<p><%= descriptor %></p>
+						<span class="token-input-delete-token-facebook_rating">+</span>
+					</li>
+				<% end %>
+			</ul>
+		<% end %>
+		<%= form_for create_drink_descriptors_path do |f| %>
+		    <%= f.text_field :descriptor_list_tokens, :id => "drink_type_descriptors_#{@this_drink_type.id}", :class => "form-control add-descriptors-field", :placeholder => "Your descriptor list" %>
+			<%= f.submit "Add descriptors", :class => "form-control btn btn-default btn-success submit-descriptors-button" %>
+		<% end %>
+	</div>

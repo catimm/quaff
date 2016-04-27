@@ -48,6 +48,8 @@ class User < ActiveRecord::Base
   has_many :user_locations
   has_many :user_drink_recommendations
   
+  attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
+  
   # set user roles for cancancan
   def super_admin?
     self.role.role_name == "super_admin"

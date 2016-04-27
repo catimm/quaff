@@ -1,0 +1,33 @@
+<% @drink_info = Beer.where(id: drink.beer_id)[0] %>
+<div class="fav-drink-type-tile">
+	<div class="row no-margin ratings-image-holder-row">
+		<div class="col-sm-6 no-padding fav-drink-type-image-holder-column">
+			<% if !drink.beer.brewery.image.blank? %>
+				<img class="img-responsive center-block" alt="Responsive image" src="<%= @drink_info.brewery.image %>">
+			<% else %>
+				<div class="brewery-image-holder-empty-fav-drink-type-page text-center">
+					<% if @drink_info.collab == true %>
+						<h2><%= @drink_info.collab_brewery_name(beer.id) %></h2>
+					<% elsif @drink_info.brewery.short_brewery_name.nil? %>
+						<h2><%= @drink_info.brewery.brewery_name %></h2>
+					<% else %>
+						<h2><%= @drink_info.brewery.short_brewery_name %></h2>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+		<div class="col-sm-6 no-padding user-ratings-col">
+			<% if drink.average_drink_rating == 10.0 %>
+				<% @drink_rating = (drink.average_drink_rating).floor %>
+			<% else %>
+				<% @drink_rating = (drink.average_drink_rating).round(2) %>
+			<% end %>
+			<h1 class="fav-drink-type-user-rating"><%= @drink_rating %><span class="recent-user-rating-context">/10</span></h1>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-12 padding-10">
+			<%= link_to @drink_info.beer_name, brewery_beer_path(@drink_info.brewery.id, drink.beer.id), :class => 'fav-drink-type-drink-name' %>
+		</div>
+	</div>
+</div>

@@ -54,6 +54,9 @@ Rails.application.routes.draw do
   # route to user profile page
   get '/users/profile/:id' => 'users#profile', :as => 'user_profile'
   get '/users/activity/:id' => 'users#activity', :as => 'user_activity'
+  get '/users/preferences/:id' => 'users#preferences', :as => 'user_preferences'
+  get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
+  post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"

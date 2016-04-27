@@ -42,7 +42,7 @@
 				            <li><%= link_to "Wishlist", "#" %></li>
 				            <li><%= link_to "Activity", "#" %></li>
 				            <li><%= link_to "Profile", "#" %></li>
-				            <li><%= link_to "Preferences", users_path(:user_id => current_user.id) %></li>
+				            <li><%= link_to "Preferences", user_preferences_path(current_user.id) %></li>
 							<li class="dropdown-header">My settings</li>
 							<li><%= link_to "Deliveries", "#" %></li>
 							<li><%= link_to "Payments", "#" %></li>
@@ -87,7 +87,7 @@
 				            <li class="dropdown-link"><%= link_to "Wishlist", "#" %></li>
 				            <li class="dropdown-link"><%= link_to "Activity", user_activity_path(current_user.id) %></li>
 				            <li class="dropdown-link"><%= link_to "Profile", user_profile_path(current_user.id) %></li>
-				            <li class="dropdown-link"><%= link_to "Preferences", users_path(:user_id => current_user.id) %></li>
+				            <li class="dropdown-link"><%= link_to "Preferences", user_preferences_path(current_user.id) %></li>
 							<li class="dropdown-header">My settings</li>
 							<li class="dropdown-link"><%= link_to "Deliveries", "#" %></li>
 							<li class="dropdown-link"><%= link_to "Payments", "#" %></li>

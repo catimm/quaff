@@ -19,4 +19,40 @@ class BeerType < ActiveRecord::Base
   accepts_nested_attributes_for :beers
   has_many :user_beer_ratings
   
+  # to implement descriptor tags on each drink type
+  acts_as_taggable_on :descriptors
+  attr_reader :descriptor_list_tokens
+  
+  attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
+  attr_accessor :all_type_descriptors # to hold list of drink type descriptors
+  
+  def drink_type_descriptors
+    # get related drinks
+    @associated_drinks = Beer.where(beer_type_id: self.id)
+    # create array to hold descriptors
+    @descriptors_holder = Array.new
+    # find all descriptors for this drink type
+    @associated_drinks.each do |drink|
+      @this_drink_type_all_descriptors = drink.descriptors
+      @this_drink_type_all_descriptors.each do |descriptor|
+        @descriptor = descriptor["name"]
+        @descriptors_holder << @descriptor
+      end
+    end
+    # attach count to each descriptor type to find the drink type's most common descriptors
+    @this_drink_descriptor_count = @descriptors_holder.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
+    Rails.logger.debug("Descriptors by count-1 #{@this_drink_descriptor_count.inspect}")
+    # put descriptors in descending order of importance
+    @this_drink_descriptor_count = Hash[@this_drink_descriptor_count.sort_by{ |_, v| -v }]
+    Rails.logger.debug("Descriptors by count-2 #{@this_drink_descriptor_count.inspect}")
+    
+    @this_drink_top_descriptors = Array.new
+    # fill array descriptors only, in descending order
+    @this_drink_descriptor_count.each do |key, value|
+      @this_drink_top_descriptors << key
+    end
+    Rails.logger.debug("Final Descriptors: #{@this_drink_top_descriptors.inspect}")
+    @this_drink_top_descriptors
+  end
+  
 end

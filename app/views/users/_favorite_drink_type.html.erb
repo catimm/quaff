@@ -1,0 +1,64 @@
+<% @type_info = BeerType.where(id: type.type_id)[0] %>
+<% @top_drink_types = UserBeerRating.top_drinks_of_type(type.type_id).paginate(:page => params[:page], :per_page => 3) %>
+<div class="row no-margin">
+	<div class="col-sm-2">
+		<h4 class="fav-type-with-image"><%= @type_info.beer_type_name %></h4>
+		<% if @type_info.beer_style.style_image_url.blank? %>
+			<div>
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% else %>
+			<div class="fav-type-image-container">
+				<img class="img-responsive center-block" alt="Responsive image" src="<%= @type_info.beer_style.style_image_url %>">
+			</div>
+		<% end %>
+		<p class="fav-drink-section-info">Average rating: </p>
+		<h1 class="average-drink-type-rating"><%= type.type_rating.round(2) %><span class="recent-user-rating-context">/10</span></h1>
+	</div>	
+	<div class="col-sm-3 padding-5">
+		<p class="fav-drink-section-info descriptor-header">You like these drinks when described as: </p>
+		<div class="cloud-holder" id="drink_type_<%= type.type_id %>"></div>
+		<p class="fav-drink-section-info">Get more accurate recommendations:</p>
+		<%= link_to "#", class: "btn btn-default btn-success add-descriptors-button", remote: true, data: {toggle: "modal", target: "#drink_type_descriptors_new_#{@type_info.id}"} do %>
+			<i class="fa fa-plus"> add/emphasize descriptors</i>
+		<% end %>
+	</div>
+	<div class="col-sm-7 no-padding-right">
+		<p class="fav-drink-section-info">Favorite drinks of this type:</p>
+		<div class="row no-margin recent-rating-holder">
+			<% @top_drink_types.each do |rating| %>
+				<div class="col-sm-4 padding-10">
+					<%= render(partial: 'top_favorite_drink_types', locals: { drink: rating }) %>
+				</div>
+			<% end%>
+		</div>
+	</div>
+</div>
+<hr>
+<div id="drink_type_descriptors_new_<%= @type_info.id %>" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Add up to 5 descriptors that describe the <%= @type_info.beer_type_name %>s you really like.</h3>
+	</div>
+	<div class="modal-body">
+		<p>Click a word bubble to add it to your descriptor list OR type in your own.</p>
+		<% if !@type_info.drink_type_descriptors.blank? %>
+			<ul class="token-input-list-facebook_rating", id="<%= @type_info.id %>">
+				<% @type_info.drink_type_descriptors.each_with_index do |descriptor, index| %>
+					<% if index <= 14 %>
+						<li class="token-input-token-facebook_rating">
+							<p><%= descriptor %></p>
+							<span class="token-input-delete-token-facebook_rating">+</span>
+						</li>
+					<% end %>
+				<% end %>
+			</ul>
+		<% end %>
+		<%= form_for create_drink_descriptors_path, 
+				id: "drink_type_#{@type_info.id}",
+    			namespace: "drink_type_#{@type_info.id}" do |f| %>
+		    <%= f.text_field :descriptor_list_tokens, :class => "form-control add-descriptors-field", :placeholder => "Choose from list or add your own (separate w/comma)" %>
+			<%= f.submit "Add descriptors", :class => "form-control btn btn-default btn-success submit-descriptors-button" %>
+		<% end %>
+	</div>
+</div>
