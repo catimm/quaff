@@ -43,9 +43,10 @@ class UserBeerRating < ActiveRecord::Base
   # scope drinks rated by drink type--to find most liked drink types
   scope :rating_drink_types, -> {
     joins(:beer_type).
+    joins(:beer).
     group('beer_types.id').
     having('COUNT(*) >= ?', 5).
-    select('beer_types.id as type_id, avg(user_beer_ratings.user_beer_rating) as type_rating').
+    select('beer_types.id as type_id, avg(user_beer_ratings.user_beer_rating) as type_rating, beers.count as drink_count').
     order('type_rating desc')
   }
   

@@ -25,8 +25,35 @@ module DrinkTypeDescriptors
       new_hash["weight"] = value
       descriptor_array << new_hash
     end
+    #Rails.logger.debug("Check descriptor list--before: #{descriptor_array.inspect}")
+    # get descriptors user has specifically added to a drink type, if available
+    # first get drink type info
+    @drink_type = BeerType.find_by_id(rating_drink_type.type_id)
+    # get all descriptors associated to drink type by user
+    @user_drink_type_descriptors = @drink_type.descriptors_from(current_user)
+    #Rails.logger.debug("User drink type descriptor list 1: #{@user_drink_type_descriptors.inspect}")
+ 
+    descriptor_array.each do |hash|
+      if @user_drink_type_descriptors.include? hash["text"]
+        hash["weight"] = hash["weight"] + 5
+        @user_drink_type_descriptors.delete(hash["text"])
+      end
+    end
+    # add remaining descriptors if any exist
+    if !@user_drink_type_descriptors.empty?
+      #Rails.logger.debug("This runs")
+      @user_drink_type_descriptors.each do |descriptor|
+        new_hash = Hash.new
+        new_hash["text"] = descriptor
+        new_hash["weight"] = 5
+        descriptor_array << new_hash
+      end
+    end
+    #Rails.logger.debug("Check descriptor list--after: #{descriptor_array.inspect}")
+    #Rails.logger.debug("User drink type descriptor list 2: #{@user_drink_type_descriptors.inspect}")
+    
     @this_drink_type_descriptors = [drink_type_array,descriptor_array]
-
+    #Rails.logger.debug("Weighted descriptor list: #{@this_drink_type_descriptors.inspect}")
     rating_drink_type.top_type_descriptor_list = @this_drink_type_descriptors
     
   end # end of method

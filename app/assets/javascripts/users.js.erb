@@ -226,12 +226,14 @@ $(function () {
 	  var this_id = $(this).attr('id');
 	  $("#" + this_id).tokenInput('/beers/descriptors.json', {
 			theme: 'facebook',
+			tokenLimit: 5,
 			placeholder: 'Choose from list or add your own (separate w/comma)',
 			minChars: 2,
 		    allowFreeTagging: true,
 		    preventDuplicates: true,
 		    zindex: 9999,
-		    hintText: 'Type drink descriptor (e.g. citrusy, piney, etc.)'
+		    hintText: 'Type drink descriptor (e.g. citrusy, piney, etc.)',
+		    prePopulate: $("#" + this_id).data('load')
 		});
 	});
 

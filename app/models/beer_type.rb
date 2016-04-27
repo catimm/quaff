@@ -26,6 +26,7 @@ class BeerType < ActiveRecord::Base
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   attr_accessor :all_type_descriptors # to hold list of drink type descriptors
   
+  # sets available descriptor bubbles for user to add
   def drink_type_descriptors
     # get related drinks
     @associated_drinks = Beer.where(beer_type_id: self.id)
@@ -41,18 +42,22 @@ class BeerType < ActiveRecord::Base
     end
     # attach count to each descriptor type to find the drink type's most common descriptors
     @this_drink_descriptor_count = @descriptors_holder.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
-    Rails.logger.debug("Descriptors by count-1 #{@this_drink_descriptor_count.inspect}")
+    #Rails.logger.debug("Descriptors by count-1 #{@this_drink_descriptor_count.inspect}")
     # put descriptors in descending order of importance
     @this_drink_descriptor_count = Hash[@this_drink_descriptor_count.sort_by{ |_, v| -v }]
-    Rails.logger.debug("Descriptors by count-2 #{@this_drink_descriptor_count.inspect}")
+    #Rails.logger.debug("Descriptors by count-2 #{@this_drink_descriptor_count.inspect}")
     
     @this_drink_top_descriptors = Array.new
     # fill array descriptors only, in descending order
     @this_drink_descriptor_count.each do |key, value|
       @this_drink_top_descriptors << key
     end
-    Rails.logger.debug("Final Descriptors: #{@this_drink_top_descriptors.inspect}")
-    @this_drink_top_descriptors
+    #Rails.logger.debug("Final Descriptors: #{@this_drink_top_descriptors.inspect}")
+    
+    # get all descriptors associated to drink type by user, if they exist
+    @user_drink_type_descriptors = self.descriptors_from(@user)
+    # get final list, minus the descriptors the user already has chosen, if exist
+    @this_drink_top_descriptors = @this_drink_top_descriptors - @user_drink_type_descriptors
   end
   
 end

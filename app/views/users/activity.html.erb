@@ -3,6 +3,7 @@
 		<div class="container first-row-container">
 			<div class="col-sm-5 no-padding">
 				<h1 class="section-header">Drink Activity</h1>
+				<h4 class="drinks-rated no-margin"> <%= (@user_ratings.count).floor %> drinks rated since <%= (@user.created_at).strftime("%b %e, %Y") %></h4>
 			</div>
 		</div>
 	</div>

@@ -1,4 +1,4 @@
-<% @type_info = BeerType.where(id: type.type_id)[0] %>
+<% @type_info = BeerType.find_by_id(type.type_id) %>
 <% @top_drink_types = UserBeerRating.top_drinks_of_type(type.type_id).paginate(:page => params[:page], :per_page => 3) %>
 <div class="row no-margin">
 	<div class="col-sm-2">
@@ -14,6 +14,7 @@
 		<% end %>
 		<p class="fav-drink-section-info">Average rating: </p>
 		<h1 class="average-drink-type-rating"><%= type.type_rating.round(2) %><span class="recent-user-rating-context">/10</span></h1>
+		<h5 class="drinks-rated no-margin"> <%= (type.drink_count).floor %> drinks rated</h5>
 	</div>	
 	<div class="col-sm-3 padding-5">
 		<p class="fav-drink-section-info descriptor-header">You like these drinks when described as: </p>
@@ -41,7 +42,7 @@
 		<h3>Add up to 5 descriptors that describe the <%= @type_info.beer_type_name %>s you really like.</h3>
 	</div>
 	<div class="modal-body">
-		<p>Click a word bubble to add it to your descriptor list OR type in your own.</p>
+		<p>Add a word bubble if any exist OR type your own.</p>
 		<% if !@type_info.drink_type_descriptors.blank? %>
 			<ul class="token-input-list-facebook_rating", id="<%= @type_info.id %>">
 				<% @type_info.drink_type_descriptors.each_with_index do |descriptor, index| %>
@@ -54,10 +55,12 @@
 				<% end %>
 			</ul>
 		<% end %>
-		<%= form_for create_drink_descriptors_path, 
+		<%= form_for @new_descriptors, :url => create_drink_descriptors_path, 
 				id: "drink_type_#{@type_info.id}",
     			namespace: "drink_type_#{@type_info.id}" do |f| %>
-		    <%= f.text_field :descriptor_list_tokens, :class => "form-control add-descriptors-field", :placeholder => "Choose from list or add your own (separate w/comma)" %>
+		    <% @drink_type_descriptors = @type_info.owner_tags_on(@user, :descriptors).map{|t| {id: t.name, name: t.name }} %>
+		    <%= f.hidden_field :id, :value => @type_info.id %>
+		    <%= f.text_field :descriptor_list_tokens, data: { load: @drink_type_descriptors }, :class => "form-control add-descriptors-field" %>
 			<%= f.submit "Add descriptors", :class => "form-control btn btn-default btn-success submit-descriptors-button" %>
 		<% end %>
 	</div>

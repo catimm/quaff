@@ -79,6 +79,10 @@ class UsersController < ApplicationController
       @drink_type.all_type_descriptors = @final_descriptor_array.uniq
       Rails.logger.debug("All descriptors by type: #{@drink_type.all_type_descriptors.inspect}") 
     end
+    
+    # set up new descriptor form
+    @new_descriptors = BeerType.new
+    
   end # end profile method
   
   def activity
@@ -116,29 +120,13 @@ class UsersController < ApplicationController
     
   end # end preferences method
   
-  def add_drink_descriptors
-    # get drink type information
-    @this_drink_type = BeerType.find_by_id(params[:id])
-    # get ids of all drinks of this drink type
-    @drink_ids_of_this_drink_type = Beer.where(beer_type_id: params[:id]).pluck(:id)
-    # get all descriptors associated with this drink type
-    @final_descriptor_array = Array.new
-    @drink_ids_of_this_drink_type.each do |drink|
-      @drink_descriptors = Beer.find(drink).descriptors
-      @drink_descriptors.each do |descriptor|
-        @final_descriptor_array << descriptor["name"]
-      end
-    end
-    @final_descriptor_array = @final_descriptor_array.uniq
-    Rails.logger.debug("Final list of descriptors: #{@final_descriptor_array.inspect}")
-    
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-  end # end add_drink_descriptors method
-  
   def create_drink_descriptors
-    
+    # get info for the descriptor attribution
+    @user = current_user
+    @drink = BeerType.find(params[:beer_type][:id])
+    # post additional drink type descriptors to the descriptors list
+    @user.tag(@drink, :with => params[:beer_type][:descriptor_list_tokens], :on => :descriptors)
+    redirect_to user_profile_path(current_user.id)
   end # end create_drink_descriptors method
   
   def update_password
@@ -196,7 +184,7 @@ class UsersController < ApplicationController
   end
   
   private
-
+     
   def user_params
     # NOTE: Using `strong_parameters` gem
     params.require(:user).permit(:password, :password_confirmation, :current_password)
