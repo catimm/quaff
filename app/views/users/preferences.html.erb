@@ -4,27 +4,18 @@
 			<div class="col-sm-5 no-padding">
 				<h1 class="section-header">Drink Preferences</h1>
 			</div>
+			<div class="col-sm-2"></div>
+			<div class="col-sm-1">
+				<h4 class="drink-preference-view-option chosen" id="styles">Styles</h4>
+			</div>
+			<div class="col-sm-3">
+				<h4 class="drink-preference-view-option" id="fav-drinks">Favorite drinks</h4>
+			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="container">
-			<div class="col-sm-12">
-				<h3 class="recent-ratings-header">Preferred styles</h3>
-				<h5>Choose 
-					<span class="tiny-style-indicator tiny-like-style text-center">
-						<i class="fa fa-check"></i>
-					</span>&nbsp;&nbsp;&nbsp;&nbsp; if you like a style or 
-					<span class="tiny-style-indicator tiny-dislike-style text-center">
-						<i class="fa fa-times"></i>
-					</span> &nbsp;&nbsp;&nbsp;&nbsp; if you don't. 
-					<span class="style-choose-neither">
-						<span>Choose neither</span> if you don't have a strong preference either way.
-					</span>
-				</h5>
-				<div class="row no-margin recent-rating-holder">
-					<%= render 'user_styles' %>
-				</div>
-			</div>
+		<div class="container" id="preference-view-choice">
+			<%= render 'user_styles' %>
 		</div>
 	</div>
 <%= render 'layouts/footer' %>

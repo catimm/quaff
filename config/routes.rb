@@ -57,6 +57,8 @@ Rails.application.routes.draw do
   get '/users/preferences/:id' => 'users#preferences', :as => 'user_preferences'
   get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
   post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'
+  post '/users/update_styles_preferences/:id' => 'users#style_preferences', :as => 'user_style_preference'
+  post '/users/change_preference_view/:id' => 'users#change_preference_view', :as => 'change_preference_view'
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
@@ -133,8 +135,6 @@ Rails.application.routes.draw do
   post '/admin/beers/locations/:beer_id' => 'admin/beers#clean_location', :as => 'admin_clean_location'
   # user account updates
   post '/users/notification_preferences' => 'user#notification_preferences', :as => 'user_notification_preference'
-  # user beer preferences
-  post '/styles' => 'users#style_preferences', :as => 'user_style_preference'
   # let admin get form to add drink to order queue
   get 'admin/recommendations/order_queue_new/:id' => 'admin/recommendations#order_queue_new', :as => 'admin_order_queue_new'
   # let admin add drink to order queue

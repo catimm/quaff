@@ -1,0 +1,11 @@
+$(function() {
+	alert("this fires");
+	//first clear the holding div
+	$('#preference-view-choice').empty();
+	// now add current content
+	if ( @view == "styles" ) {
+		$("#preference-view-choice").html("<%= escape_javascript(render 'user_styles' ) %>");
+	} else {
+		$("#preference-view-choice").html("<%= escape_javascript(render 'user_favorite_drinks' ) %>");
+	}
+});

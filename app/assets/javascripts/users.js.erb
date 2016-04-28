@@ -1,29 +1,4 @@
-
 $(function () {
-	// default word cloud if no descriptors exist 
-	var word_array = [
-          {text: "descriptors", weight: 15},
-          {text: "no", weight: 7},
-          {text: "yet", weight: 4},
-          // ...as many words as you want
-      ];
-	 if (gon.drink_type_descriptor_array != undefined) {
-			 // create word cloud and return to view
-		     for (i = 0; i < gon.drink_type_descriptor_array.length; i++) { 
-			    if ( gon.drink_type_descriptor_array[i][1].length > 0 ) {
-				    $("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(gon.drink_type_descriptor_array[i][1], {
-				  		autoResize: true
-				     });
-				 } else {
-					$("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(word_array, {
-				  		autoResize: true
-				     });
-				 }
-			 }
-	 } else {
-	 	return;
-	 }
-	 
 	// show user profile block when this link is clicked, if it isn't already showing
 	$("#user-profile-link").on("click", function() {
 		if ($("#user-profile").hasClass("hidden")) {
@@ -113,6 +88,7 @@ $(function () {
 
 	// allow user to dislike beer style
 	$(".dislike-style").on("click", function() {
+		var this_style_id = $(this).parent().attr('id');
 		if ($(this).siblings(".dislike-style-chosen").hasClass("hidden")) {
 			// change view/UI
 			$(this).removeClass("show").addClass("hidden");
@@ -126,28 +102,34 @@ $(function () {
 			if ($(this).siblings(".like-style").hasClass("hidden")) {
 				$(this).siblings(".like-style").removeClass("hidden").addClass("show");
 			}
-			// change user preference form value
-			$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(1);
 		}
+		$.ajax({
+		  type: "POST",
+		  url: "/users/update_styles_preferences/dislike-" + this_style_id
+		});
 		// prevent page from jumping to the top after click event
 		return false;
 	});
 	// allow user to reverse dislike of beer style
 	$(".dislike-style-chosen").on("click", function() {
+		var this_style_id = $(this).parent().attr('id');
 		if ($(this).hasClass("show")) {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
 			// remove overlay
 			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
-		// change user preference form value
-		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
+		$.ajax({
+		  type: "POST",
+		  url: "/users/update_styles_preferences/neutral-" + this_style_id
+		});
 		// prevent page from jumping to the top after click event
 		return false;
 	});
 	
 	// allow user to like beer style
 	$(".like-style").on("click", function() {
+		var this_style_id = $(this).parent().attr('id');
 		if ($(this).siblings(".like-style-chosen").hasClass("hidden")) {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).siblings(".like-style-chosen").removeClass("hidden").addClass("show");
@@ -160,22 +142,27 @@ $(function () {
 			if ($(this).siblings(".dislike-style").hasClass("hidden")) {
 				$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
 			}
-			// change user preference form value
-			$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(2);
 		}
+		$.ajax({
+		  type: "POST",
+		  url: "/users/update_styles_preferences/like-" + this_style_id
+		});
 		// prevent page from jumping to the top after click event
 		return false;
 	});
 	// allow user to reverse like of beer style
 	$(".like-style-chosen").on("click", function() {
+		var this_style_id = $(this).parent().attr('id');
 		if ($(this).hasClass("show")) {
 			$(this).removeClass("show").addClass("hidden");
 			$(this).siblings(".like-style").removeClass("hidden").addClass("show");
 			// remove overlay
 			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
 		}
-		// change user preference form value
-		$(this).parent(".overview-tile-3").siblings("#styles__user_preference").val(0);
+		$.ajax({
+		  type: "POST",
+		  url: "/users/update_styles_preferences/neutral-" + this_style_id
+		});
 		// prevent page from jumping to the top after click event
 		return false;
 	});
@@ -209,6 +196,33 @@ $(function () {
 	// make the dropdown search result box match the width of the search input box
 	$(".tt-menu").width(navbar_search_width);
 	
+	// add hover effect to drink preferences page
+	$(document).on("mouseover", ".drink-preference-view-option", function() {
+		$(this).addClass("almost-chosen");
+	});
+	
+	// add hover effect to drink preferences page
+	$(document).on("mouseout", ".drink-preference-view-option", function() {
+		$(this).removeClass("almost-chosen");
+	});
+	
+	// change page view if drink preferences are changed
+	$(document).on("click", ".drink-preference-view-option", function() {
+		// first change CSS of view links
+		$('.drink-preference-view-option').removeClass("chosen");
+		if($(this).hasClass("chosen")) {
+			$(this).removeClass("chosen");
+		} else {
+			$(this).addClass("chosen");
+		}
+		// send info to controller to actually change view
+		var new_view = $(this).attr('id');
+		alert(new_view);
+		$.ajax({
+		  type: "POST",
+		  url: "/users/change_preference_view/" + new_view
+		});
+	});
 	
 	// to add already used descriptor to this user's list of descriptors for drink type
 	$(document).on("click", ".token-input-list-facebook_rating li", function() {
@@ -219,8 +233,6 @@ $(function () {
 		$(target).tokenInput("add", {id: descriptor, name: descriptor});
 		return false;
 	});
-	
-	var timer;
 	
 	$( ".add-descriptors-field" ).each(function() {
 	  var this_id = $(this).attr('id');
@@ -236,5 +248,28 @@ $(function () {
 		    prePopulate: $("#" + this_id).data('load')
 		});
 	});
-
+	
+		// default word cloud if no descriptors exist 
+	var word_array = [
+          {text: "descriptors", weight: 15},
+          {text: "no", weight: 7},
+          {text: "yet", weight: 4},
+          // ...as many words as you want
+      ];
+	 if (gon.drink_type_descriptor_array != undefined) {
+			 // create word cloud and return to view
+		     for (i = 0; i < gon.drink_type_descriptor_array.length; i++) { 
+			    if ( gon.drink_type_descriptor_array[i][1].length > 0 ) {
+				    $("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(gon.drink_type_descriptor_array[i][1], {
+				  		autoResize: true
+				     });
+				 } else {
+					$("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(word_array, {
+				  		autoResize: true
+				     });
+				 }
+			 }
+	 } else {
+	 	return;
+	 }
 });
