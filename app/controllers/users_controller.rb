@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!
   include DrinkTypeDescriptors
+  include CreateNewDrink
   
   def index
 
@@ -35,6 +36,10 @@ class UsersController < ApplicationController
     # redirect back to user account page
     redirect_to user_path(current_user.id)
   end
+  
+  def wishlist 
+    
+  end # end of wishlist
   
   def profile
     # get user info
@@ -95,47 +100,23 @@ class UsersController < ApplicationController
   end # end activity method
   
   def preferences
-    # get list of styles
-    @styles = BeerStyle.all
-    # get user style preferences
-    @user_styles = UserStylePreference.where(user_id: current_user.id)
-    Rails.logger.debug("User style preferences: #{@user_styles.inspect}")
-    # get last time user styles was updated
-    @style_last_updated = @user_styles.sort_by(&:updated_at).first
-    @style_preference_updated = @style_last_updated.updated_at
-    # get list of styles the user likes 
-    @user_likes = @user_styles.where(user_preference: "like")
-    # Rails.logger.debug("User style likes: #{@user_likes.inspect}")
-    # get list of styles the user dislikes
-    @user_dislikes = @user_styles.where(user_preference: "dislike")
-    # Rails.logger.debug("User style dislikes: #{@user_dislikes.inspect}")
-    # add user preference to style info
-    @styles.each do |this_style|
-      if @user_dislikes.map{|a| a.beer_style_id}.include? this_style.id
-        this_style.user_preference == 1
-      elsif @user_likes.map{|a| a.beer_style_id}.include? this_style.id
-        this_style.user_preference == 2
-      else 
-        this_style.user_preference == 0
-      end
-    end
-    
-  end # end preferences method
-  
-  def change_preference_view
-    @view = params[:id]
+    # get proper view
+    @view = params[:format]
     Rails.logger.debug("current view: #{@view.inspect}")
-    
-    # in case the view is Styles
-      if @view == "styles"
+    # prapre for Styles view  
+    if @view == "styles"
+      # set chosen style variable for link CSS
+      @styles_chosen = "chosen"
       # get list of styles
       @styles = BeerStyle.all
       # get user style preferences
       @user_styles = UserStylePreference.where(user_id: current_user.id)
-      Rails.logger.debug("User style preferences: #{@user_styles.inspect}")
+      #Rails.logger.debug("User style preferences: #{@user_styles.inspect}")
       # get last time user styles was updated
-      @style_last_updated = @user_styles.sort_by(&:updated_at).first
-      @style_preference_updated = @style_last_updated.updated_at
+      if !@user_styles.blank?
+        @style_last_updated = @user_styles.sort_by(&:updated_at).reverse.first
+        @preference_updated = @style_last_updated.updated_at
+      end
       # get list of styles the user likes 
       @user_likes = @user_styles.where(user_preference: "like")
       # Rails.logger.debug("User style likes: #{@user_likes.inspect}")
@@ -152,13 +133,95 @@ class UsersController < ApplicationController
           this_style.user_preference == 0
         end
       end
+    else # prepare for drinks view
+      session[:form] = "fav-drink"
+      # set chosen style variable for link CSS
+      @drinks_chosen = "chosen"
+      # get user favorite drinks
+      @user_fav_drinks = UserFavDrink.where(user_id: current_user.id)
+      # get last time user styles was updated
+      if !@user_fav_drinks.blank?
+        @style_last_updated = @user_fav_drinks.sort_by(&:updated_at).reverse.first
+        @preference_updated = @style_last_updated.updated_at
+      end
+      
+      # make sure there are 5 records in the fav drinks variable
+      @drink_count = @user_fav_drinks.size
+      if @drink_count < 5
+        @drink_rank_array = Array.new
+        @total_array = [1, 2, 3, 4, 5]
+        @user_fav_drinks.each do |drink|
+          @drink_rank_array << drink.drink_rank
+        end
+        @final_array = @total_array - @drink_rank_array
+        @final_array.each do |rank|
+          @empty_drink = UserFavDrink.new(drink_rank: rank)
+          @user_fav_drinks << @empty_drink
+        end
+      end
+      @final_drink_order = @user_fav_drinks.sort_by(&:drink_rank)
+      Rails.logger.debug("Final user drinks: #{@testing_this.inspect}")
+    end # end of preparing either styles or drinks view
+    
+    # instantiate new drink in case user adds a new drink
+    @add_new_drink = Beer.new
+    
+  end # end preferences method
+  
+  def add_fav_drink
+    # get drink info
+    @chosen_drink = JSON.parse(params[:chosen_drink])
+    Rails.logger.debug("Chosen drink info: #{@chosen_drink.inspect}")
+    Rails.logger.debug("Chosen drink beer id: #{@chosen_drink["beer_id"].inspect}")
+    # find if drink rank already exists
+    @old_drink = UserFavDrink.where(user_id: current_user.id, drink_rank: @chosen_drink["form"]).first
+    # if an old drink ranking exists, destroy it first
+    if !@old_drink.blank?
+      @old_drink.destroy!
     end
+    # add new drink info to the DB
+    @new_fav_drink = UserFavDrink.new(user_id: current_user.id, beer_id: @chosen_drink["beer_id"], drink_rank: @chosen_drink["form"])
+    @new_fav_drink.save!
+    # set update time info
+    @preference_updated = @new_fav_drink.updated_at
     
     respond_to do |format|
       format.js
     end # end of redirect to jquery
+  end
+  
+  def remove_fav_drink
+    # get drink rating to remove
+    @drink_rank_to_remove = params[:id]
+    # find correct drink in DB
+    @drink_to_remove = UserFavDrink.where(user_id: current_user.id, drink_rank: @drink_rank_to_remove).first
+    @drink_to_remove.destroy!
     
-  end # end change_preference_view method
+    # set update time info
+    @preference_updated = Time.now
+    
+    #redirect_to :action => 'preferences', :id => current_user.id, :format => "drinks"
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end
+  
+  def add_drink
+    @new_drink = create_new_drink(params[:beer][:associated_brewery], params[:beer][:beer_name])
+    Rails.logger.debug("new drink info: #{@new_drink.inspect}")
+    # add new drink info to the DB
+    @new_fav_drink = UserFavDrink.new(user_id: current_user.id, beer_id: @new_drink.id, drink_rank: session[:search_form_id])
+    @new_fav_drink.save!
+
+    redirect_to :action => "preferences", :id => current_user.id, :format => "drinks"
+  end # end of add_drink method
+  
+  def set_search_box_id
+    session[:search_form_id] = params[:id]
+    @form_id = session[:search_form_id]
+    render :nothing => true
+  end
   
   def create_drink_descriptors
     # get info for the descriptor attribution
@@ -211,7 +274,7 @@ class UsersController < ApplicationController
     end
     
     # get last time user styles was updated
-    @style_preference_updated = Time.now
+    @preference_updated = Time.now
         
     respond_to do |format|
       format.js

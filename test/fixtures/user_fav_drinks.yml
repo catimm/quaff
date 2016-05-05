@@ -1,19 +1,21 @@
 # == Schema Information
 #
-# Table name: user_beer_trackings
+# Table name: user_fav_drinks
 #
 #  id         :integer          not null, primary key
 #  user_id    :integer
 #  beer_id    :integer
-#  removed_at :datetime
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  drink_rank :integer
 #
 
-class UserBeerTracking < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :beer
-  
-  has_many :location_trackings
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-end
+one:
+  user_id: 1
+  beer_id: 1
+
+two:
+  user_id: 1
+  beer_id: 1

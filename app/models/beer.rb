@@ -58,9 +58,11 @@ class Beer < ActiveRecord::Base
   has_many :users, through: :user_beer_ratings
   has_many :drink_lists
   has_many :users, through: :drink_lists
-  has_many :user_beer_trackings
+  has_many :wishlists
   has_many :beer_brewery_collabs
   has_many :user_drink_recommendations
+  has_many :user_fav_drinks
+  
   
   # to keep search function indexed properly
   after_commit :reindex_brewery

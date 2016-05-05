@@ -10,10 +10,9 @@ ready = function() {
         remote: { 
         	url:'/breweries/autocomplete?query=%QUERY',
         	wildcard: '%QUERY',
-			filter: function (beers) {
-	            //console.log(beers);
+			filter: function (beers) {	
 	            // $.map converts the JSON array into a JavaScript array
-	            return $.map(beers, function (beer) {
+	            return $.map(beers, function (beer) { 
 	                return {
 	                    beer: beer.brewery_name + ' ' + beer.beer_name,
 	                    beer_id: beer.beer_id,
@@ -26,7 +25,7 @@ ready = function() {
 	                   	form: beer.form,
 	                   	use: beer.use
 	                };
-	            });
+	        	});
 	       }
         }
 	 });
@@ -48,7 +47,7 @@ ready = function() {
 	          limit: 7,
 	          displayKey: 'beer',
 	          source: numbers.ttAdapter(),
-	          templates: {
+	          templates: { 
 				    empty: function() {
 				    	if(window.location.href.indexOf("draft_boards") > -1) {
 				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink" class="btn btn-default btn-success formButton-search-footer">',
@@ -56,14 +55,21 @@ ready = function() {
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
 				    		return ['<div class="search-footer-message">Not here? <a href="#" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
+				    	} else if((window.location.href.indexOf("preferences") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
+				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/users/new_drink" class="btn btn-default btn-success formButton-search-footer">',
+					        'Add it.','</a></div>'].join('\n');
 				    	} else {
-					      	return ['<div class="empty-message">Not here? <a href="'+ BASE_URL +'searches/add_beer" class="btn btn-default btn-success formButton-search-footer">',
+					      	return ['<div class="empty-message">Not here? <a href="'+ BASE_URL +'searches/add_drink" class="btn btn-default btn-success">',
 					        'Suggest we add it!','</a></div>'].join('\n');
 					    }
 				     },
 				    suggestion: function(data) {
-					    if(data.source == "retailer" || data.source == "retailer") {
-					    	return '<p>' + data.beer +'</p>';    	
+					    if(window.location.href.indexOf("draft_boards") > -1) {
+				    		return '<p>' + data.beer +'</p>';
+				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
+				    		return '<p>' + data.beer +'</p>';
+				    	} else if((window.location.href.indexOf("preferences") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
+				    		return '<p>' + data.beer +'</p>';   	
 						} else {
 							return '<p><a href="'+ BASE_URL +'breweries/'+ data.brewery_id +'/beers/'+ data.beer_id +'">' + data.beer + '</a></p>';
 						}
@@ -75,7 +81,13 @@ ready = function() {
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
 				    		return ['<div class="search-footer-message">Not here? <a href="#" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
-				    	}
+				    	} else if((window.location.href.indexOf("preferences") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
+				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/users/new_drink" class="btn btn-default btn-success formButton-search-footer">',
+					        'Add it.','</a></div>'].join('\n');
+				    	} else {
+					      	return ['<div class="empty-message">Not here? <a href="'+ BASE_URL +'searches/add_drink" class="btn btn-default btn-success">',
+					        'Suggest we add it!','</a></div>'].join('\n');
+					    }
 					}
 				}
 	        }).on('typeahead:selected', function (obj, datum) {   
@@ -85,6 +97,12 @@ ready = function() {
 						$.ajax({
 					        url : "/draft_inventory/edit", //"+ datum.beer_id +"/
 					        type : "get",
+					        data : { chosen_drink: JSON.stringify(datum) }
+					    });
+					} else if (datum.use == "preferences") {
+						$.ajax({
+					        url : "/users/add_fav_drink", //"+ datum.beer_id +"/
+					        type : "post",
 					        data : { chosen_drink: JSON.stringify(datum) }
 					    });
 					} else {

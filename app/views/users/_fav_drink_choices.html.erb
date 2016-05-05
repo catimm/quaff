@@ -1,0 +1,31 @@
+<% @final_drink_order.each do |drink| %>
+	<div class="row no-margin">
+		<div class="col-xs-11 col-sm-6 fav-drink-form-holder">
+			<% Rails.logger.debug("Drink info: #{drink.inspect}") %>
+			<% @id = drink.drink_rank %>
+				<% if !drink.id.nil? %>
+					<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+				  		<% @drink_name = drink.beer.join_drink_name %>
+		  				<% if drink.drink_rank == 1 %>
+				  			<%= text_field_tag :query, (params[:query] or @drink_name), id: @id, name: @id, size: 30, placeholder: "#{@id.ordinalize} favorite drink", class: "form-control typeahead fav-drink-field" %>
+				  		<% else %>
+				  			<%= text_field_tag :query, (params[:query] or @drink_name), id: @id, name: @id, size: 30, placeholder: "Favorite drink", class: "form-control typeahead fav-drink-field" %> 
+						<% end %>
+					<% end %>
+				<% else %>
+					<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>
+						<% if drink.drink_rank == 1 %>
+				  			<%= text_field_tag :query, (params[:query]), id: @id, name: @id, size: 30, placeholder: "#{@id.ordinalize} favorite drink", class: "form-control typeahead fav-drink-field" %>
+				  		<% else %>
+				  			<%= text_field_tag :query, (params[:query]), id: @id, name: @id, size: 30, placeholder: "Favorite drink", class: "form-control typeahead fav-drink-field" %> 
+						<% end %>
+					<% end %>
+				<% end %>
+		</div>
+		<div class="col-xs-1 col-sm-6 remove-fav-drink-holder">
+			<%= link_to "#", class: "tiny-style-indicator tiny-dislike-style text-center remove-fav-drink" do %>
+				<i class="fa fa-times"></i>
+			<% end %>
+		</div>
+	</div>
+<% end %>

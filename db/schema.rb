@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160414055213) do
+ActiveRecord::Schema.define(version: 20160505224229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -251,13 +251,6 @@ ActiveRecord::Schema.define(version: 20160414055213) do
     t.boolean  "trial_ended"
   end
 
-  create_table "location_trackings", force: :cascade do |t|
-    t.integer  "user_beer_tracking_id"
-    t.integer  "location_id"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
-
   create_table "locations", force: :cascade do |t|
     t.string   "name",            limit: 255
     t.string   "homepage",        limit: 255
@@ -347,20 +340,20 @@ ActiveRecord::Schema.define(version: 20160414055213) do
     t.integer  "beer_type_id"
   end
 
-  create_table "user_beer_trackings", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "beer_id"
-    t.datetime "removed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "user_drink_recommendations", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
     t.float    "projected_rating"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+  end
+
+  create_table "user_fav_drinks", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "beer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "drink_rank"
   end
 
   create_table "user_locations", force: :cascade do |t|
@@ -431,6 +424,14 @@ ActiveRecord::Schema.define(version: 20160414055213) do
     t.datetime "updated_at",               null: false
     t.string   "show_next_type"
     t.integer  "show_next_general_number"
+  end
+
+  create_table "wishlists", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "beer_id"
+    t.datetime "removed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

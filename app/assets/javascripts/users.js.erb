@@ -1,4 +1,25 @@
 $(function () {
+	// send form id to session variable
+	$(".fav-drink-field").one("focus", function() {
+		var this_form_id = $(this).attr('id');
+		$.ajax({
+		  type: "POST",
+		  url: "/users/set_search_box_id/" + this_form_id
+		});
+	});
+	
+	// remove fav drink
+	$(".remove-fav-drink").on("click", function() {
+		var this_form_id = $(this).parent().siblings(".fav-drink-form-holder").children("form").children("span").children(".form-control.typeahead.fav-drink-field.tt-input").attr('id');
+		$(this).parent().siblings(".fav-drink-form-holder").children("form").children("span").children(".form-control.typeahead.fav-drink-field.tt-input").val('');
+		$.ajax({
+		  type: "POST",
+		  url: "/users/remove_fav_drink/" + this_form_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	});
+	
 	// show user profile block when this link is clicked, if it isn't already showing
 	$("#user-profile-link").on("click", function() {
 		if ($("#user-profile").hasClass("hidden")) {
@@ -206,23 +227,6 @@ $(function () {
 		$(this).removeClass("almost-chosen");
 	});
 	
-	// change page view if drink preferences are changed
-	$(document).on("click", ".drink-preference-view-option", function() {
-		// first change CSS of view links
-		$('.drink-preference-view-option').removeClass("chosen");
-		if($(this).hasClass("chosen")) {
-			$(this).removeClass("chosen");
-		} else {
-			$(this).addClass("chosen");
-		}
-		// send info to controller to actually change view
-		var new_view = $(this).attr('id');
-		alert(new_view);
-		$.ajax({
-		  type: "POST",
-		  url: "/users/change_preference_view/" + new_view
-		});
-	});
 	
 	// to add already used descriptor to this user's list of descriptors for drink type
 	$(document).on("click", ".token-input-list-facebook_rating li", function() {

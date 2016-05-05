@@ -1,0 +1,21 @@
+<div>
+	<div class="text-center">
+		<%= form_for @add_new_drink, :url => {:action => 'add_drink'} do |f| %> 
+			<div class="row"> 
+				<div class="col-xs-12">
+		      		<%= f.text_field :associated_brewery, :class => "form-control", placeholder: "Brewery/Cidery name" %> 
+				</div>
+			</div>
+			<div class="row"> 
+				<div class="col-xs-12">
+			 		<%= f.text_field :beer_name, :class => "form-control", placeholder: "Drink name" %> 
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+	     			<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %> 
+				</div>
+			</div>
+		<% end %> 
+	</div>
+</div>

@@ -1923,6 +1923,7 @@ $beer-header-lines-to-show-fp: 1;
     font-size: 14px !important;
     margin-left: 0 !important;
     padding: 3px 6px !important;
+    z-index: 9999 !important;
   }
 }
 //
@@ -2026,8 +2027,10 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 50px;
 }
 .drink-preference-view-option {
-  margin-top: 30px;
+  margin-top: 30px !important;
   color: $normal-text;
+  font-size: 18px;
+  display: block;
 }
 .drink-preference-view-option.chosen {
   color: $header-text;
@@ -2482,7 +2485,16 @@ $style-header-lines-to-show: 1;
   height: 36px;
   top: 70px;
 }
-
+div.fav-drink-form-holder .twitter-typeahead {
+  width: 100% !important;
+}
+.remove-fav-drink-holder {
+  height: 38px;
+  padding: 14px 0 0 0 !important;
+  .tiny-dislike-style {
+    padding: 0 !important;
+  }
+}
 // CSS for 5 equal columns
 .col-xs-5ths,
 .col-sm-5ths,
@@ -2645,7 +2657,7 @@ div.jqcloud span.w1 { color: $light-blue; }
     margin: 0 auto;
   }
 }
-.edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, .edit_location, #new_user, #new_user_beer_rating, #edit_user {
+#new_user_fav_drink, .edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, .edit_location, #new_user, #new_user_beer_rating, #edit_user {
   input, select, ul {
     margin-bottom: 7.5px;
   }
@@ -2653,6 +2665,7 @@ div.jqcloud span.w1 { color: $light-blue; }
     margin: 5px 0 5px 5px;
   }
 }
+
 .edit_user {
   margin-top: 15px;
 }

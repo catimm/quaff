@@ -73,7 +73,7 @@ class SearchesController < ApplicationController
     end # end of 1st loop
   end # end index action
   
-  def add_beer
+  def add_drink
     @new_beer = Beer.new
   end # end add_beer action
 end

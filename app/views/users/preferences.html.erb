@@ -6,16 +6,50 @@
 			</div>
 			<div class="col-sm-2"></div>
 			<div class="col-sm-1">
-				<h4 class="drink-preference-view-option chosen" id="styles">Styles</h4>
+				<%= link_to "Styles", user_preferences_path(current_user.id, 'styles'), class: "drink-preference-view-option #{@styles_chosen}", id: "styles" %>
 			</div>
 			<div class="col-sm-3">
-				<h4 class="drink-preference-view-option" id="fav-drinks">Favorite drinks</h4>
+				<%= link_to "Favorite drinks", user_preferences_path(current_user.id, 'drinks'), class: "drink-preference-view-option #{@drinks_chosen}", id: "fav-drinks" %>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="container" id="preference-view-choice">
-			<%= render 'user_styles' %>
+			<% if @view == "styles"%>
+				<%= render 'user_styles' %>
+			<% else %>
+				<%= render 'user_favorite_drinks' %>
+			<% end %>
+		</div>
+	</div>
+	<div id="add_drink" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Add a new drink</h3>
+		</div>
+		<div class="modal-body">
+			<div class="text-center">
+				<%= form_for @add_new_drink, :url => {:action => 'add_drink'} do |f| %> 
+					<div class="row"> 
+						<div class="col-xs-12">
+				      		<%= f.text_field :associated_brewery, :class => "form-control", placeholder: "Brewery/Cidery name" %> 
+						</div>
+					</div>
+					<div class="row"> 
+						<div class="col-xs-12">
+					 		<%= f.text_field :beer_name, :class => "form-control", placeholder: "Drink name" %> 
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12">
+			     			<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %> 
+						</div>
+					</div>
+				<% end %> 
+			</div>
+	</div>
+</div>
+			
 		</div>
 	</div>
 <%= render 'layouts/footer' %>

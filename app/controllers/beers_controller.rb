@@ -3,6 +3,7 @@ class BeersController < ApplicationController
   before_filter :find_descriptor_tags, only: [:show]
   include BestGuess
   include QuerySearch
+  include CreateNewDrink
   
   def index
     if params[:format].present?
@@ -75,44 +76,22 @@ class BeersController < ApplicationController
     @this_brewery_name = params[:beer][:associated_brewery]
     @this_beer_name = params[:beer][:beer_name]
     @rate_beer_now = params[:beer][:rate_beer_now]
-    @track_beer = params[:beer][:track_beer_now]
-    Rails.logger.debug("Track beer #{@track_beer.inspect}")
-    # check if this brewery is already in system
-    @related_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{@this_brewery_name}%", "%#{@this_brewery_name}%").where(collab: false)
-    if @related_brewery.empty?
-       @alt_brewery_name = AltBreweryName.where("name like ?", "%#{@this_brewery_name}%")
-       if !@alt_brewery_name.empty?
-         @related_brewery = Brewery.where(id: @alt_brewery_name[0].brewery_id)
-       end
-     end
-     # if brewery does not exist in DB, insert info into Breweries and Beers tables
-     if @related_brewery.empty?
-        # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :collab => false)
-        new_brewery.save!
-        # then add new beer to beers table       
-        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => new_brewery.id, :user_addition => true, :touched_by_user => current_user.id)
-        new_beer.save!
-      else # since this brewery exists in the breweries table, fadd beer to beers table
-        new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :user_addition => true, :touched_by_user => current_user.id)
-        new_beer.save!
-      end
+    @wishlist = params[:beer][:track_beer_now]
+    #Rails.logger.debug("Track beer #{@track_beer.inspect}")
+    # create new drink
+    @new_drink = create_new_drink(@this_brewery_name, @this_beer_name)
       
-      # add beer to user tracking and location tracking tables if user wants to track  beer
-      if @track_beer == "1"
-        new_user_tracking = UserBeerTracking.new(user_id: current_user.id, beer_id: new_beer.id)
-        if new_user_tracking.save
-          new_user_location = LocationTracking.new(user_beer_tracking_id: new_user_tracking.id, location_id: 0)
-          new_user_location.save!
-        end
-      end
+    # add beer to user tracking and location tracking tables if user wants to track  beer
+    if @wishlist == "1"
+      new_user_tracking = UserBeerTracking.new(user_id: current_user.id, beer_id: new_beer.id)
+    end
       
-      #redirect at end of action
-      if @rate_beer_now == "1"
-        redirect_to new_user_rating_path(current_user.id, new_beer.id)
-      else 
-        redirect_to locations_path
-      end
+    #redirect at end of action
+    if @rate_beer_now == "1"
+      redirect_to new_user_rating_path(current_user.id, new_beer.id)
+    else 
+      redirect_to locations_path
+    end
   end
   
   def add_beer
@@ -120,7 +99,7 @@ class BeersController < ApplicationController
   end # end add_beer action
   
   def descriptors
-    Rails.logger.debug("Descriptors is called too")
+    #Rails.logger.debug("Descriptors is called too")
     descriptors = Beer.descriptor_counts.by_tag_name(params[:q]).map{|t| {id: t.name, name: t.name }}
   
     respond_to do |format|

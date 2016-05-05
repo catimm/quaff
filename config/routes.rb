@@ -56,9 +56,12 @@ Rails.application.routes.draw do
   get '/users/activity/:id' => 'users#activity', :as => 'user_activity'
   get '/users/preferences/:id' => 'users#preferences', :as => 'user_preferences'
   get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
+  post '/users/add_drink/:id' => 'users#add_drink', :as => 'add_drink'
   post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'
   post '/users/update_styles_preferences/:id' => 'users#style_preferences', :as => 'user_style_preference'
-  post '/users/change_preference_view/:id' => 'users#change_preference_view', :as => 'change_preference_view'
+  post '/users/add_fav_drink' => 'users#add_fav_drink', :as => 'add_fav_drink'
+  post '/users/set_search_box_id/:id' => 'users#set_search_box_id', :as => 'set_search_box_id'
+  post '/users/remove_fav_drink/:id' => 'users#remove_fav_drink', :as => 'remove_fav_drink'
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
@@ -113,7 +116,7 @@ Rails.application.routes.draw do
   get 'locations' => 'locations#index'
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
-  get 'searches/add_beer' => 'searches#add_beer', :as => 'user_add_beer'
+  get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
   get 'users/:user_id/ratings/new(.:format)/:retailer_id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
 
   # admin routes
