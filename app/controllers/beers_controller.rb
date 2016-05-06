@@ -18,28 +18,12 @@ class BeersController < ApplicationController
     @user_id = current_user.id
     # grab beer info
     @beer = Beer.where(id: params[:id])[0]
-    Rails.logger.debug("Beer info #{@beer.inspect}")
+    #Rails.logger.debug("Beer info #{@beer.inspect}")
     # find if user is tracking this beer already
-    @user_beer_tracking = UserBeerTracking.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL")
-    Rails.logger.debug("User Tracking info #{@user_beer_tracking.inspect}")
-    if !@user_beer_tracking.empty?
-      @tracking_locations = LocationTracking.where(user_beer_tracking_id: @user_beer_tracking[0].id)
-      Rails.logger.debug("Tracking Location info #{@tracking_locations.inspect}")
-    end
-    # grab ids of current beers for this location
-    @beer_locations = BeerLocation.all_drinks(params[:id])
-    Rails.logger.debug("Locations: #{@beer_locations.inspect}")
-    # find if any beer locations currently have the beer
-    @current_beer_locations = @beer_locations.where(beer_is_current: "yes").pluck(:location_id)
-    Rails.logger.debug("Current locations: #{@current_beer_locations.inspect}")
-    # find most recent locations where beer was located
-    @recent_beer_locations = @beer_locations.where(beer_is_current: "no").order(:removed_at).reverse
-    if @recent_beer_locations
-      @recent_beer_locations.first(3)
-    end
-    Rails.logger.debug("Recent locations: #{@recent_beer_locations.inspect}")
+    @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
+    #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
     @beer = best_guess(@beer.id)[0]
-    Rails.logger.debug("Beer ranking #{@beer.best_guess.inspect}")
+    #Rails.logger.debug("Beer ranking #{@beer.best_guess.inspect}")
     # grab beer ids that will match each jcloud
     # @beers_ids = @beers.pluck(:id)
     @user_drink_list = DrinkList.where(user_id: current_user.id)
@@ -66,7 +50,7 @@ class BeersController < ApplicationController
       new_hash["weight"] = value
       cloud_array << new_hash
     end
-    Rails.logger.debug("Each beer descriptors: #{cloud_array.inspect}")
+    #Rails.logger.debug("Each beer descriptors: #{cloud_array.inspect}")
 
     gon.beer_array = cloud_array
   end
@@ -83,7 +67,7 @@ class BeersController < ApplicationController
       
     # add beer to user tracking and location tracking tables if user wants to track  beer
     if @wishlist == "1"
-      new_user_tracking = UserBeerTracking.new(user_id: current_user.id, beer_id: new_beer.id)
+      new_user_wishlist = Wishlist.new(user_id: current_user.id, beer_id: new_beer.id)
     end
       
     #redirect at end of action
@@ -97,6 +81,26 @@ class BeersController < ApplicationController
   def add_beer
     @new_beer = Beer.new
   end # end add_beer action
+  
+  def change_wishlist_setting
+    @data = params[:id]
+    @data_split = @data.split('-')
+    @wishlist_action = @data_split[0]
+    @drink_id = @data_split[1]
+    
+    if @wishlist_action == "remove"
+      @remove_wishlist = Wishlist.where(user_id: current_user.id, beer_id: @drink_id).where("removed_at IS NULL").first
+      @remove_wishlist.update(removed_at: Time.now)
+      @wishlist = nil
+    else 
+      @wishlist = Wishlist.new(user_id: current_user.id, beer_id: @drink_id)
+      @wishlist.save!
+    end
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+  end # end of change_wishlist_setting
   
   def descriptors
     #Rails.logger.debug("Descriptors is called too")

@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   get '/users/profile/:id' => 'users#profile', :as => 'user_profile'
   get '/users/activity/:id' => 'users#activity', :as => 'user_activity'
   get '/users/preferences/:id' => 'users#preferences', :as => 'user_preferences'
+  get '/users/wishlist/:id' => 'users#wishlist', :as => 'user_wishlist'
   get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
   post '/users/add_drink/:id' => 'users#add_drink', :as => 'add_drink'
   post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'
@@ -118,6 +119,7 @@ Rails.application.routes.draw do
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
   get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
   get 'users/:user_id/ratings/new(.:format)/:retailer_id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
+  post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
 
   # admin routes
   get 'porting' => 'porting#index'

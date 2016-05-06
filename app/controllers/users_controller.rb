@@ -38,7 +38,7 @@ class UsersController < ApplicationController
   end
   
   def wishlist 
-    
+    @wishlist = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
   end # end of wishlist
   
   def profile

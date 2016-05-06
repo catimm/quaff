@@ -97,71 +97,19 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-4 col-xs-12">
+				<div class="col-sm-4 col-xs-12" id=<%= @beer.id %>>
 					<%= link_to new_user_rating_path(@user_id, @beer.id), class: 'btn btn-default btn-success formButton' do %>
 						<i class="fa fa-tasks"> rate drink</i>
 					<% end %>
-					<% if !@current_beer_locations.blank? %>
-						<h4 class="beer-location-status">This beer is currently at:</h4>
-						<ul class="locations-list">
-						<% @current_beer_locations.each do |location| %>
-							<% @this_location = Location.where(id: location)[0] %>
-							<li>
-								<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
-									<p class="location-name-by-image"><%= @this_location.short_name %></p>
-								</div>
-							</li>
-						<% end %>
-						</ul>
+					<% if !@user_rating_for_this_beer.blank? %>
+						<h4 class="beer-location-status">You last drank this on:</h4>
+						<div>
+							<p class="location-name-by-image"><i class="fa fa-calendar"></i> <%= (@user_rating_for_this_beer.first.created_at).strftime("%b %e, %Y") %></p>
+						</div>
 					<% else %>
-						<% if !@recent_beer_locations.blank? %>
-							<h4 class="beer-location-status">This beer was last seen at:</h4>
-							<ul class="locations-list">
-							<% @recent_beer_locations.each_with_index do |location, i| %>
-								<% if i < 3 %>
-									<% @this_location = Location.where(id: location.location_id)[0] %>
-									<li>
-										<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
-											<p class="location-name-by-image"><%= @this_location.short_name %> on <%= (location.removed_at).strftime("%b %e, %Y") %></p>
-										</div>
-										
-									</li>
-								<% end %>
-							<% end %>
-							</ul>
-						<% else %>
-							<h4 class="beer-location-status not-seen-message">This beer hasn't been on tap in Seattle since before April 2015...</h4>
-						<% end %>
+							<h4 class="beer-location-status not-seen-message">You've not yet rated this drink. Get to it!</h4>
 					<% end %>
-					<% if !@user_beer_tracking.empty? %>
-						<h4 class="beer-tracking-status">You're currently tracking this beer at:</h4>
-							<ul class="locations-list">
-							<% @tracking_locations.each_with_index do |location, i| %>
-								<% if location.location_id != 0 %>
-									<% @this_location = Location.where(id: location.location_id)[0] %>
-										<li>
-											<div class="row img-responsive location-logo-image-small" alt="Responsive image" style="background-image: url(<%= @this_location.logo_small %>)">
-												<p class="location-name-by-image"><%= @this_location.short_name %></p>
-											</div>
-										</li>
-								<% else %>
-									<li>
-										<h4 class="beer-location-status">All Seattle locations!</h4>
-									</li>
-								<% end %>	
-							<% end %>
-						<%= link_to new_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
-							<i class="fa fa-pencil"> edit tracking options</i>
-						<% end %>
-						<h6 class="text-center or-option">- or -</h6>
-						<%= link_to edit_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-danger btn-primary formButton-track-beer-stop' do %>
-							<i class="fa fa-minus"> stop tracking beer</i>
-						<% end %>
-					<% else %>
-						<%= link_to new_user_tracking_path(current_user.id, @beer.id), class: 'btn btn-default btn-primary formButton-track-beer' do %>
-							<i class="fa fa-plus"> track beer</i>
-						<% end %>
-					<% end %>
+					<%= render 'wishlist_button', wishlist: @wishlist %>
 				</div>
 			</div>
 			<% if !@user_rating_for_this_beer.blank? %>

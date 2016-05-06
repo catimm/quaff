@@ -614,8 +614,11 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 .location-name-by-image {
-  margin-left: 40px;
+  margin-left: 2.5px;
   padding-top: 7px;
+    i {
+    margin-right: 2.5px;
+  }
 }
 .location-logo-image-small {
     background-repeat: no-repeat;
@@ -627,6 +630,12 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: 20px;
   font-size: 16px;
   line-height: 1.2;
+}
+.wishlist-added-info {
+  font-size: 12px;
+  color: $less-emphasized-text;
+  text-align: center;
+  margin-top: -12.5px;
 }
 .beer-tracking-status {
   margin-top: 30px;

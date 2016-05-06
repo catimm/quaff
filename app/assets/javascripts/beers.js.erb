@@ -48,4 +48,26 @@ $(function() {
 		$(this).removeClass("show").addClass("hidden");
 		$("#more-brewer-description").removeClass("hidden").addClass("show");
 	 });
+	 
+	 // add drink to wishlist
+	 $(document).on("click", ".wishlist-add-drink", function() {
+		var this_drink_id = $(this).parent().attr('id');
+		$.ajax({
+		  type: "POST",
+		  url: "/beers/change_wishlist_setting/add-" + this_drink_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	  });
+	 
+	 // remove drink from wishlist
+	 $(document).on("click", ".wishlist-remove-drink", function() {
+		var this_drink_id = $(this).parent().attr('id');
+		$.ajax({
+		  type: "POST",
+		  url: "/beers/change_wishlist_setting/remove-" + this_drink_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	  });
 });

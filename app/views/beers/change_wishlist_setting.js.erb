@@ -1,0 +1,6 @@
+// insert proper button after wishlist change
+$(function() {
+	$("#<%= @drink_id %>").children(".the-wishlist-button").remove();
+	$("#<%= @drink_id %>").children(".wishlist-added-info").remove();
+	$("#<%= @drink_id %>").append("<%= escape_javascript(render 'wishlist_button', wishlist: @wishlist ) %>");
+});

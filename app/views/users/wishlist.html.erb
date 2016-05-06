@@ -1,0 +1,27 @@
+<%= render 'layouts/header' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-sm-5 no-padding">
+				<h1 class="section-header">Drink Wishlist</h1>
+				<h4 class="drinks-rated no-margin">Dream big. You never know what lies ahead.</h4>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="col-sm-12">
+				<h3 class="recent-ratings-header">Drink you long to savor</h3>
+				<div class="row no-margin recent-rating-holder">
+					<% @wishlist.each do |rating| %>
+						<div class="col-sm-3" id="recent-activity">
+							
+						</div>
+					<% end%>
+				</div>
+				<div class="col-sm-12" id="fav-drink-types-container">
+					<%= will_paginate @wishlist, renderer: BootstrapPagination::Rails %>
+				</div>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

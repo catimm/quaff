@@ -39,7 +39,7 @@
 				          <ul class="dropdown-menu">
 				            <li class="dropdown-header">My drink stuff</li>
 				            <li><%= link_to "Stash", "#" %></li>
-				            <li><%= link_to "Wishlist", "#" %></li>
+				            <li><%= link_to "Wishlist", user_wishlist_path(current_user.id) %></li>  
 				            <li><%= link_to "Activity", "#" %></li>
 				            <li><%= link_to "Profile", "#" %></li>
 				            <li><%= link_to "Preferences", user_preferences_path(current_user.id, 'styles') %></li>
@@ -84,7 +84,7 @@
 				          <ul class="dropdown-menu">
 				            <li class="dropdown-header">My drink stuff</li>
 				            <li class="dropdown-link"><%= link_to "Stash", "#" %></li>
-				            <li class="dropdown-link"><%= link_to "Wishlist", "#" %></li>
+				            <li class="dropdown-link"><%= link_to "Wishlist", user_wishlist_path(current_user.id) %></li>
 				            <li class="dropdown-link"><%= link_to "Activity", user_activity_path(current_user.id) %></li>
 				            <li class="dropdown-link"><%= link_to "Profile", user_profile_path(current_user.id) %></li>
 				            <li class="dropdown-link"><%= link_to "Preferences", user_preferences_path(current_user.id, 'styles') %></li>
