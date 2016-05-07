@@ -1,7 +1,9 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!
-  include DrinkTypeDescriptors
+  include DrinkTypeDescriptorCloud
+  include DrinkDescriptorCloud
   include CreateNewDrink
+  include BestGuess
   
   def index
 
@@ -9,9 +11,9 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find_by_id(current_user.id)
-    Rails.logger.debug("User info: #{@user.inspect}")
+    #Rails.logger.debug("User info: #{@user.inspect}")
     @user_notifications = UserNotificationPreference.where(user_id: @user.id).first
-    Rails.logger.debug("User notifications: #{@user_notifications.inspect}")
+    #Rails.logger.debug("User notifications: #{@user_notifications.inspect}")
   end
   
   def update
@@ -38,8 +40,33 @@ class UsersController < ApplicationController
   end
   
   def wishlist 
-    @wishlist = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
+    @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)
+    #Rails.logger.debug("Wishlist drink ids: #{@wishlist_drink_ids.inspect}")
+    @wishlist = best_guess(@wishlist_drink_ids).sort_by(&:ultimate_rating).reverse.paginate(:page => params[:page], :per_page => 12)
+    #Rails.logger.debug("Wishlist drinks: #{@wishlist.inspect}")
+    
+    # create array to hold descriptors cloud
+    @final_descriptors_cloud = Array.new
+    
+    # get top descriptors for drink types the user likes
+    @wishlist.each do |drink|
+      @drink_id_array = Array.new
+      @drink_type_descriptors = drink_descriptor_cloud(drink)
+      @final_descriptors_cloud << @drink_type_descriptors
+      #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
+    end
+    # send full array to JQCloud
+    gon.drink_descriptor_array = @final_descriptors_cloud
+    #Rails.logger.debug("Gon Drink descriptors: #{gon.drink_descriptor_array.inspect}")
   end # end of wishlist
+  
+  def wishlist_removal
+    @drink_to_remove = Wishlist.where(user_id: current_user.id, beer_id: params[:id]).where("removed_at IS NULL").first
+    @drink_to_remove.update(removed_at: Time.now)
+    
+    redirect_to :action => 'wishlist'
+
+  end # end wishlist removal
   
   def profile
     # get user info
@@ -55,34 +82,37 @@ class UsersController < ApplicationController
     @user_ratings_by_type = @user_ratings.rating_drink_types.paginate(:page => params[:page], :per_page => 5)
     #Rails.logger.debug("User ratings by type: #{@user_ratings_by_type.inspect}")  
  
-    # create array to hold descriptors cloud
-    @final_descriptors_cloud = Array.new
-    
-    # get top descriptors for drink types the user likes
-    @user_ratings_by_type.each do |rating_drink_type|
-      @drink_type_descriptors = drink_type_descriptors(rating_drink_type)
-      @final_descriptors_cloud << @drink_type_descriptors
-    end
-    # send full array to JQCloud
-    gon.drink_type_descriptor_array = @final_descriptors_cloud
-    
-    # get top rated drink types
-    @user_ratings_by_type_ids = @user_ratings.rating_drink_types
-    @user_ratings_by_type_ids.each do |drink_type|
-      # get drink type info
-      @drink_type = BeerType.find_by_id(drink_type.type_id)
-      # get ids of all drinks of this drink type
-      @drink_ids_of_this_drink_type = Beer.where(beer_type_id: drink_type.type_id).pluck(:id)   
-      # get all descriptors associated with this drink type
-      @final_descriptor_array = Array.new
-      @drink_ids_of_this_drink_type.each do |drink|
-        @drink_descriptors = Beer.find(drink).descriptors
-        @drink_descriptors.each do |descriptor|
-          @final_descriptor_array << descriptor["name"]
-        end
+    if !@user_ratings_by_type.blank?
+      # create array to hold descriptors cloud
+      @final_descriptors_cloud = Array.new
+      
+      # get top descriptors for drink types the user likes
+      @user_ratings_by_type.each do |rating_drink_type|
+        @drink_type_descriptors = drink_type_descriptor_cloud(rating_drink_type)
+        @final_descriptors_cloud << @drink_type_descriptors
       end
-      @drink_type.all_type_descriptors = @final_descriptor_array.uniq
-      Rails.logger.debug("All descriptors by type: #{@drink_type.all_type_descriptors.inspect}") 
+      # send full array to JQCloud
+      gon.drink_type_descriptor_array = @final_descriptors_cloud
+      
+      # get top rated drink types
+      @user_ratings_by_type_ids = @user_ratings.rating_drink_types
+      @user_ratings_by_type_ids.each do |drink_type|
+        # get drink type info
+        @drink_type = BeerType.find_by_id(drink_type.type_id)
+        # get ids of all drinks of this drink type
+        @drink_ids_of_this_drink_type = Beer.where(beer_type_id: drink_type.type_id).pluck(:id)   
+        # get all descriptors associated with this drink type
+        @final_descriptor_array = Array.new
+        @drink_ids_of_this_drink_type.each do |drink|
+          @drink_descriptors = Beer.find(drink).descriptors
+          @drink_descriptors.each do |descriptor|
+            @final_descriptor_array << descriptor["name"]
+          end
+        end
+        @drink_type.all_type_descriptors = @final_descriptor_array.uniq
+        #Rails.logger.debug("All descriptors by type: #{@drink_type.all_type_descriptors.inspect}") 
+      end
+      
     end
     
     # set up new descriptor form
@@ -160,7 +190,7 @@ class UsersController < ApplicationController
         end
       end
       @final_drink_order = @user_fav_drinks.sort_by(&:drink_rank)
-      Rails.logger.debug("Final user drinks: #{@testing_this.inspect}")
+      #Rails.logger.debug("Final user drinks: #{@testing_this.inspect}")
     end # end of preparing either styles or drinks view
     
     # instantiate new drink in case user adds a new drink

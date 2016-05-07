@@ -36,15 +36,15 @@ $(function() {
           {text: "descriptors", weight: 3}
           // ...as many words as you want
       ];
-	 if (gon.beer_array != undefined) {
+	 if (gon.location_beer_array != undefined) {
 		 // create word cloud and return to view
-	     for (i = 0; i < gon.beer_array.length; i++) { 
-		    if ( gon.beer_array[i][1].length > 0 ) {
-			    $("#beer_"+gon.beer_array[i][0]).jQCloud(gon.beer_array[i][1], {
+	     for (i = 0; i < gon.location_beer_array.length; i++) { 
+		    if ( gon.location_beer_array[i][1].length > 0 ) {
+			    $("#beer_"+gon.location_beer_array[i][0]).jQCloud(gon.location_beer_array[i][1], {
 			  		autoResize: true
 			     });
 			 } else {
-				$("#beer_"+gon.beer_array[i][0]).jQCloud(word_array, {
+				$("#beer_"+gon.location_beer_array[i][0]).jQCloud(word_array, {
 			  		autoResize: true
 			     });
 			 }

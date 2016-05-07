@@ -9,18 +9,13 @@
 	</div>
 	<div class="row">
 		<div class="container">
-			<div class="col-sm-12">
-				<h3 class="recent-ratings-header">Drink you long to savor</h3>
-				<div class="row no-margin recent-rating-holder">
-					<% @wishlist.each do |rating| %>
-						<div class="col-sm-3" id="recent-activity">
-							
-						</div>
-					<% end%>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<h3 class="recent-ratings-header">Drinks you long to savor</h3>
 				</div>
-				<div class="col-sm-12" id="fav-drink-types-container">
-					<%= will_paginate @wishlist, renderer: BootstrapPagination::Rails %>
-				</div>
+			</div>			
+			<div class="row no-margin">
+				<%= render 'wishlist_drinks' %>
 			</div>
 		</div>
 	</div>

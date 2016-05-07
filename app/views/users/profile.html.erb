@@ -5,29 +5,41 @@
 				<h1 class="section-header">Drink Profile</h1>
 			</div>
 			<div class="col-sm-8 no-padding">
-				<div class="row no-margin">
-					<h5 class="user-high-level-info">Favorite breweries</h5>
-					<% @user_ratings_by_brewery.each do |brewery| %>
-						<div class="col-md-5ths fav-drink-col">
-							<%= render(partial: 'favorite_brewery_tile', locals: { brewery: brewery }) %>
-						</div>
-					<% end%>
-				</div>
+				<% if !@user_ratings_by_brewery.blank? %>
+					<div class="row no-margin">
+						<h5 class="user-high-level-info">Favorite breweries</h5>
+						<% @user_ratings_by_brewery.each do |brewery| %>
+							<div class="col-md-5ths fav-drink-col">
+								<%= render(partial: 'favorite_brewery_tile', locals: { brewery: brewery }) %>
+							</div>
+						<% end%>
+					</div>
+				<% end %>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="container">
-			<div class="col-sm-12" id="fav-drink-types">
-				<h3 class="recent-ratings-header">Favorite drink types</h3>
-				<hr>
+			<div class="row no-margin">
+				<div class="col-sm-12" id="fav-drink-types">
+					<h3 class="recent-ratings-header">Favorite drink types</h3>
+					<hr>
+				</div>
+			</div>
+			<% if !@user_ratings_by_type.blank? %>
 				<% @user_ratings_by_type.each do |type| %>	
 					<%= render(partial: 'favorite_drink_type', locals: { type: type }) %>
 				<% end%>
-			</div>
-			<div class="col-sm-12" id="fav-drink-types-container">
-				<%= will_paginate @user_ratings_by_type, renderer: BootstrapPagination::Rails%>
-			</div>
+				<div class="col-sm-12" id="fav-drink-types-container">
+					<%= will_paginate @user_ratings_by_type, renderer: BootstrapPagination::Rails%>
+				</div>
+			<% else %>
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<h4 class="no-results-empty-message">You haven't provided enough input on drinks you like yet. Time for a drink! And don't forget to rate it....</h4>
+					</div>
+				</div>
+			<% end %>
 		</div>
 	</div>
 <%= render 'layouts/footer' %>

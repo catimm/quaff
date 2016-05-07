@@ -1,0 +1,102 @@
+<% @wishlist.each do |drink| %>
+	<div class="col-sm-4 col-xs-12 beer-tile-container">
+	<%= link_to new_user_rating_path(current_user.id, drink.id), :class => 'rate-beer text-center' do %>
+		<i class="fa fa-thumbs-up"></i>
+		<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
+		<p>rate</p>
+	<% end %>
+	<%= link_to wishlist_removal_path(drink.id), :class => 'remove-drink-from-wishlist', :data => {:confirm => 'You want to remove this from your wishlist?'} do %>
+		<i class="fa fa-times"></i>
+	<% end %>
+	<div class="overview-tile-2">
+		<div class="row no-margin ratings-image-holder-row">
+			<div class="col-sm-5 no-padding wishlist-image-holder-column">
+				<% if !drink.brewery.image.blank? %>
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.brewery.image %>">
+				<% else %>
+					<div class="brewery-image-holder-empty-ratings-page text-center">
+						<h2><i class="fa fa-beer"></i></h2>
+					</div>
+				<% end %>
+			</div>
+			<div class="col-sm-7 wishlist-best-guess">
+				<% if drink.user_rating %>
+					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= ((((drink.best_guess) * 2).round)/2.0) %></span></p>
+					<p>You rated it:</p>
+					<h1 class="user-rating"><%= drink.user_rating.round(2) %><span class="recent-user-rating-context">/10</span></h1>
+				<% else %>
+					<p class="filler-best-guess-text"></p>
+					<p>Our <span class="best-guess">best guess</span> for you:</p>
+					<% if drink.best_guess > 10 %>
+						<% drink.best_guess == 10 %>
+					<% end %>
+					<% if drink.best_guess % 1 == 0 %>
+						<h1 class="best-guess"><%= ((((drink.best_guess) * 2).round)/2.0) %><span class="recent-user-rating-context">/10</span></h1>
+					<% else %>
+						<h1 class="best-guess"><%= ((((drink.best_guess) * 2).round)/2.0) %><span class="recent-user-rating-context">/10</span></h1>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-10">
+				<% if drink.collab == true %>
+					<% @title_header = (Beer.collab_brewery_name(drink.id) + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
+					<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+				<% elsif drink.brewery.short_brewery_name.nil? %>
+					<% @title_header = (drink.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
+					<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+				<% else %>
+					<% @title_header = (drink.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
+					<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+				<% end %>
+			</div>
+			<div class="col-xs-12">
+				<% if !drink.beer_type_id.nil? %>
+					<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer_type.beer_type_name %></h5>
+				<% else %>
+					<h5 class="tile-subheader beer-info">Style unknown</h5>
+				<% end %>
+			</div>
+			<div class="col-xs-6 no-padding-right">
+				<% if !drink.beer_abv.nil? %>
+					<h6 class="tile-subheader beer-info"><%= drink.beer_abv %>% ABV</h6>
+				<% else %>
+					<h6 class="tile-subheader beer-info">ABV N/A</h6>
+				<% end %>
+			</div>
+			<% if !drink.beer_ibu.nil? %>
+				<div class="col-xs-6 no-padding-left text-center ibu-div">
+					<h6 class="tile-subheader beer-info"><%= drink.beer_ibu %> IBUs</h6>
+				</div>
+			<% else %>
+				<div class="col-xs-6"></div>
+			<% end %>	
+		</div>
+		<div class="row no-margin cloud-descriptor-row">
+			<div class="col-xs-12">
+				<p>This drink is described as:</p>
+				<div class="cloud-holder" id="drink_<%= drink.id %>"></div>
+			</div>	
+		</div>
+		<div class="row no-margin list-overview">
+			<div class="col-xs-12 why-statement">
+				<p>Why you might like this:</p>
+				<% if drink.recommendation_rationale == "style" %>
+					<% if  drink.is_hybrid == "yes" %>
+						<%= render 'locations/hybrid_rating_rationale', beer: drink %>
+					<% else %>
+						<%= render 'locations/nonhybrid_rating_rationale', beer: drink %>
+					<% end %>
+				<% else %>
+					<%= render 'locations/type_rating_rationale', beer: drink %>
+				<% end %>
+			</div>
+			<div class="col-xs-12 overview-tile-footer"></div>
+		</div>
+	</div>
+	</div>				
+<% end%>
+<div class="col-sm-12" id="fav-drink-types-container">
+	<%= will_paginate @wishlist, renderer: BootstrapPagination::Rails %>
+</div>

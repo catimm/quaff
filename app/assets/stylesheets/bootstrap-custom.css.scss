@@ -1407,7 +1407,7 @@ $beer-header-lines-to-show-fp: 1;
 .rate-beer {
   width: 36px;
   height: 36px;
-  padding: 7px;
+  padding: 8px 2px 2px 5px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 50%;
@@ -1415,16 +1415,25 @@ $beer-header-lines-to-show-fp: 1;
   background: $step-background;
   color: #fff;
   margin: 0;
-  font-size: 18px;
-  font-weight: 500;
   z-index: 1000;
   position: absolute;
-  top: 0;
-  left: 9px;
+  left: 1px;
   i {
     color: $white;
+    display: block;
+    float: left;
   }
+  p {
+    color: $white;
+    font-size: 9px;
+    text-align: center;
+    padding-right: 3px;      
+  } 
 }
+.rate-beer:hover {
+    text-decoration: none !important;
+  }
+  
 .delete-beer {
   @extend .add-beer;
   background: $less-emphasized-text;
@@ -2088,6 +2097,9 @@ $beer-header-lines-to-show-fp: 1;
 .fav-brewery-image-holder {
   margin-top: 5px;
 }
+.fav-brewery-image-row {
+  height: 84px;
+}
 .category-title {
   float: left;
   font-weight: 400;
@@ -2316,6 +2328,59 @@ $descriptor-lines-to-show: 2;
   color: #fff;
   text-align: center;
   
+}
+// Wishlist css style
+.remove-drink-from-wishlist {
+  position: absolute;
+  right: 18px;
+  top: 22px;
+  background: $current-beer-attention-needed-background;
+  color: $white;
+  font-size: 12px;
+  text-align: center;
+  padding: 2px 0 0 1px;
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  vertical-align: middle;
+  z-index: 1000;
+}
+.wishlist-image-holder-column {
+  height: 125px;
+  padding: 10px 0 0 10px !important;
+}
+.wishlist-best-guess {
+  margin: 10px 0;
+  padding-top: 10px;
+  p {
+    font-size: 12px;
+    color: $less-emphasized-text;
+    text-align: left;
+  }
+  h1 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 500;
+    margin: 10px 0;
+  }
+}
+.filler-best-guess-text {
+  display: block;
+  height:13px;
+}
+.cloud-descriptor-row {
+  p {
+    font-size: 12px;
+    color: $less-emphasized-text;
+    margin: 7.5px 0 0 0;
+  }
+  .cloud-holder {
+    height: 90px;
+    width: 100%;
+    margin-bottom: 5px;
+  }
 }
 // Beer Preferences css style
 .preferences-header-fixed {

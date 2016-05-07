@@ -1,4 +1,5 @@
 $(function () {
+	
 	// send form id to session variable
 	$(".fav-drink-field").one("focus", function() {
 		var this_form_id = $(this).attr('id');
@@ -29,16 +30,19 @@ $(function () {
 			$("#user-notifications-link").removeClass("selected");
 		}
 	});
+	
 	// if this link isn't already active, show underline when mouse over
 	$("#user-profile-link").on("mouseover", function() {
 		if ($("#user-profile").hasClass("hidden")) {
 			$(this).css("text-decoration", "underline");
 		}
 	});
+	
 	// remove underline when mouse out	
 	$("#user-profile-link").on("mouseout", function() {
 		$(this).css("text-decoration", "none");
 	});
+	
 	// show user profile block when this link is clicked, if it isn't already showing
 	$("#user-notifications-link").on("click", function() {
 		if ($("#user-notifications").hasClass("hidden")) {
@@ -48,12 +52,14 @@ $(function () {
 			$("#user-profile-link").removeClass("selected");
 		}
 	});
+	
 	// if this link isn't already active, show underline when mouse over
 	$("#user-notifications-link").on("mouseover", function() {
 		if ($("#user-notifications").hasClass("hidden")) {
 			$(this).css("text-decoration", "underline");
 		}
 	});	
+	
 	// remove underline when mouse out
 	$("#user-notifications-link").on("mouseout", function() {
 		$(this).css("text-decoration", "none");
@@ -77,16 +83,19 @@ $(function () {
 			$("#user-drinks-link").removeClass("selected");
 		}
 	});
+	
 	// if this link isn't already active, show underline when mouse over
 	$("#user-styles-link").on("mouseover", function() {
 		if ($("#user-styles").hasClass("hidden")) {
 			$(this).css("text-decoration", "underline");
 		}
 	});
+	
 	// remove underline when mouse out	
 	$("#user-styles-link").on("mouseout", function() {
 		$(this).css("text-decoration", "none");
 	});
+	
 	// show user profile block when this link is clicked, if it isn't already showing
 	$("#user-drinks-link").on("click", function() {
 		if ($("#user-drinks").hasClass("hidden")) {
@@ -96,17 +105,19 @@ $(function () {
 			$("#user-styles-link").removeClass("selected");
 		}
 	});
+	
 	// if this link isn't already active, show underline when mouse over
 	$("#user-drinks-link").on("mouseover", function() {
 		if ($("#user-drinks").hasClass("hidden")) {
 			$(this).css("text-decoration", "underline");
 		}
 	});	
+	
 	// remove underline when mouse out
 	$("#user-drinks-link").on("mouseout", function() {
 		$(this).css("text-decoration", "none");
 	});
-
+	
 	// allow user to dislike beer style
 	$(".dislike-style").on("click", function() {
 		var this_style_id = $(this).parent().attr('id');
@@ -131,6 +142,7 @@ $(function () {
 		// prevent page from jumping to the top after click event
 		return false;
 	});
+	
 	// allow user to reverse dislike of beer style
 	$(".dislike-style-chosen").on("click", function() {
 		var this_style_id = $(this).parent().attr('id');
@@ -171,6 +183,7 @@ $(function () {
 		// prevent page from jumping to the top after click event
 		return false;
 	});
+
 	// allow user to reverse like of beer style
 	$(".like-style-chosen").on("click", function() {
 		var this_style_id = $(this).parent().attr('id');
@@ -227,7 +240,6 @@ $(function () {
 		$(this).removeClass("almost-chosen");
 	});
 	
-	
 	// to add already used descriptor to this user's list of descriptors for drink type
 	$(document).on("click", ".token-input-list-facebook_rating li", function() {
 		var target_id = $(this).parent().siblings('form').children('input.form-control').attr('id');
@@ -253,13 +265,15 @@ $(function () {
 		});
 	});
 	
-		// default word cloud if no descriptors exist 
+	// default word cloud if no descriptors exist 
 	var word_array = [
           {text: "descriptors", weight: 15},
           {text: "no", weight: 7},
           {text: "yet", weight: 4},
           // ...as many words as you want
       ];
+ 
+	 // descriptor clouds for drink types
 	 if (gon.drink_type_descriptor_array != undefined) {
 			 // create word cloud and return to view
 		     for (i = 0; i < gon.drink_type_descriptor_array.length; i++) { 
@@ -269,6 +283,19 @@ $(function () {
 				     });
 				 } else {
 					$("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(word_array, {
+				  		autoResize: true
+				     });
+				 }
+			 }
+	 } else if (gon.drink_descriptor_array != undefined) {
+			 // create word cloud and return to view
+		     for (i = 0; i < gon.drink_descriptor_array.length; i++) { 
+			    if ( gon.drink_descriptor_array[i][1].length > 0 ) {
+				    $("#drink_"+gon.drink_descriptor_array[i][0]).jQCloud(gon.drink_descriptor_array[i][1], {
+				  		autoResize: true
+				     });
+				 } else {
+					$("#drink_"+gon.drink_descriptor_array[i][0]).jQCloud(word_array, {
 				  		autoResize: true
 				     });
 				 }

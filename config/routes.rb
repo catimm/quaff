@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   get '/users/preferences/:id' => 'users#preferences', :as => 'user_preferences'
   get '/users/wishlist/:id' => 'users#wishlist', :as => 'user_wishlist'
   get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
+  get '/users/wishlist_removal/:id' => 'users#wishlist_removal', :as => 'wishlist_removal'
   post '/users/add_drink/:id' => 'users#add_drink', :as => 'add_drink'
   post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'
   post '/users/update_styles_preferences/:id' => 'users#style_preferences', :as => 'user_style_preference'
@@ -118,7 +119,7 @@ Rails.application.routes.draw do
   get 'locations/update/:id' => 'locations#update', :as => 'brewery_beer_update'
   get 'drinks/update/:id' => 'drinks#update', :as => 'listed_beer_update'
   get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
-  get 'users/:user_id/ratings/new(.:format)/:retailer_id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
+  get 'users/:user_id/ratings/new(.:format)/:id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
 
   # admin routes

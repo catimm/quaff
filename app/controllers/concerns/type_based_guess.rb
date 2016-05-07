@@ -13,9 +13,8 @@ module TypeBasedGuess
     # find all drinks of same type rated by user
     @same_type_rated_by_user = UserBeerRating.where(user_id: this_user.id, beer_type_id: this_beer_type_id)
     # create empty array to hold top descriptors list for beer being rated
-    @this_beer_top_descriptors = drink_descriptors(this_beer, 5)
-    Rails.logger.debug("top descriptors: #{@this_beer_top_descriptors.inspect}")
-    
+    @this_drink_top_descriptors = drink_descriptors(this_beer, 5)
+    #Rails.logger.debug("top descriptors: #{@this_drink_top_descriptors.inspect}")
     # find top 3 qualities for drinks of this type rated by this user as >=8
     @same_type_rated_by_user_good = @same_type_rated_by_user.where("user_beer_rating >= ?", 8)
     # create empty array to hold list of descriptors from highly rated drinks
@@ -49,7 +48,7 @@ module TypeBasedGuess
     # create counter to boost this drink's rating if descriptors match user's preference
     @rating_boost = 0
     # compare this beers descriptor list against descriptors in drinks liked most by user
-    @this_beer_top_descriptors.each do |descriptor_check|
+    @this_drink_top_descriptors.each do |descriptor_check|
       if @descriptors_final_list.include? descriptor_check
         @rating_boost += 1
         @matching_descriptors_likes << descriptor_check
@@ -110,7 +109,7 @@ module TypeBasedGuess
     # create counter to discount this drink's rating if descriptors match user's preference
     @rating_discount = 0
     # compare this beers descriptor list against descriptors in drinks not liked most by user
-    @this_beer_top_descriptors.each do |descriptor_check|
+    @this_drink_top_descriptors.each do |descriptor_check|
       if @descriptors_final_list.include? descriptor_check
         @rating_discount += 1
         @matching_descriptors_dislikes << descriptor_check

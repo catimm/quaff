@@ -1,7 +1,7 @@
-module DrinkTypeDescriptors
+module DrinkTypeDescriptorCloud
   extend ActiveSupport::Concern
   
-  def drink_type_descriptors(rating_drink_type)
+  def drink_type_descriptor_cloud(rating_drink_type)
     # create empty array to hold top descriptors list for beer being rated
     @this_drink_type_descriptors = Array.new
     # find all drinks associated with this drink type that user has rated 8 or higher

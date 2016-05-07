@@ -6,9 +6,9 @@
 			<div class="row">
 				<div class="col-sm-3 col-xs-4 brewery-image-holder">	
 					<div class="brewery-image-holder-full-page">	
-						<% if !@this_beer.brewery.image.nil? %>
+						<% if !@this_drink.brewery.image.nil? %>
 							<div class="brewery-image-holder-full text-center">
-								<img class="img-responsive center-block" alt="Responsive image" src="<%= @this_beer.brewery.image %>">
+								<img class="img-responsive center-block" alt="Responsive image" src="<%= @this_drink.brewery.image %>">
 							</div>	
 						<% else %>
 							<div class="brewery-image-holder-empty-full-page text-center">
@@ -18,19 +18,16 @@
 					</div>
 				</div>
 				<div class="col-sm-9 col-xs-8 no-padding-left">
-					<h5 class="tile-header beer-tile-header"><%= @this_beer.brewery.short_brewery_name %> <%= @this_beer.beer_name %></h5>
-					<% if @location != "0" %>
-						<h6 class="tile-subheader">@ <%= @location.short_name %></h6>
-					<% end %>
+					<h5 class="tile-header beer-tile-header"><%= @this_drink.brewery.short_brewery_name %> <%= @this_drink.beer_name %></h5>
 				</div>			
 			</div>
-			<%= form_for @user_beer_rating, :url => {:controller => "ratings", :action => "create"} do |rate| %>
+			<%= form_for @user_drink_rating, :url => {:controller => "ratings", :action => "create"} do |rate| %>
 			<%= rate.hidden_field :user_id, :value => @user.id %>
 			<%= rate.hidden_field :rated_on, :value => @time %>
-			<%= rate.hidden_field :beer_id, :value => @this_beer.id %>
+			<%= rate.hidden_field :beer_id, :value => @this_drink.id %>
 			<%= rate.hidden_field :projected_rating, :value => @our_best_guess %>
 			<%= rate.hidden_field :current_descriptors, :value => "" %>
-			<%= rate.hidden_field :beer_type_id, :value => @this_beer.beer_type_id %>
+			<%= rate.hidden_field :beer_type_id, :value => @this_drink.beer_type_id %>
 			<div class="row rating-top-row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-10 col-xs-12 rating-holder text-center">
@@ -47,11 +44,6 @@
 	                        'slider-orientation' => 'horizontal' } %> 
 				</div>
 			</div>
-			<% if @location != "0" %>
-				<%= rate.hidden_field :drank_at, :value => @location.short_name %>
-			<% else %>
-				<%= rate.hidden_field :drank_at, :value => "not at location" %>
-			<% end %>
 			<div class="row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-10 col-xs-12 descriptor-holder text-left">
