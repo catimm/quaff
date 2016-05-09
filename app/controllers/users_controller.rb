@@ -39,6 +39,10 @@ class UsersController < ApplicationController
     redirect_to user_path(current_user.id)
   end
   
+  def supply
+    @view = params[:format]
+  end # end of supply method
+  
   def wishlist 
     @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)
     #Rails.logger.debug("Wishlist drink ids: #{@wishlist_drink_ids.inspect}")

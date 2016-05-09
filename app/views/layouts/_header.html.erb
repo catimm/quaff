@@ -38,7 +38,7 @@
 				          <% end %>
 				          <ul class="dropdown-menu">
 				            <li class="dropdown-header">My drink stuff</li>
-				            <li><%= link_to "Stash", "#" %></li>
+				            <li><%= link_to "Supply", user_supply_path(current_user.id) %></li>
 				            <li><%= link_to "Wishlist", user_wishlist_path(current_user.id) %></li>  
 				            <li><%= link_to "Activity", "#" %></li>
 				            <li><%= link_to "Profile", "#" %></li>
@@ -83,7 +83,7 @@
 				          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
 				          <ul class="dropdown-menu">
 				            <li class="dropdown-header">My drink stuff</li>
-				            <li class="dropdown-link"><%= link_to "Stash", "#" %></li>
+				            <li class="dropdown-link"><%= link_to "Supply", user_supply_path(current_user.id) %></li>
 				            <li class="dropdown-link"><%= link_to "Wishlist", user_wishlist_path(current_user.id) %></li>
 				            <li class="dropdown-link"><%= link_to "Activity", user_activity_path(current_user.id) %></li>
 				            <li class="dropdown-link"><%= link_to "Profile", user_profile_path(current_user.id) %></li>
