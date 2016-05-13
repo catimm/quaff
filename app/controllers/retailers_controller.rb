@@ -22,9 +22,6 @@ class RetailersController < ApplicationController
       
       # find last time this draft board was updated
       @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board[0].id).order(:updated_at).reverse_order.first
-      # find if draft inventory exists
-      @draft_inventory = BeerLocation.where(draft_board_id: @draft_board[0].id, beer_is_current: "hold")
-      #Rails.logger.debug("Draft Inventory #{@draft_inventory.inspect}")
     end
   end
   

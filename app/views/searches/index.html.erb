@@ -58,18 +58,6 @@
 										<% @location_beers = BeerLocation.where(beer_id: beer.id).order("created_at DESC") %>
 										<% if @location_beers.empty? %>
 											<h6 class="tile-subheader">This beer hasn't been on tap in Seattle since before April 2015...</h6>
-										<% elsif @location_beers.map{|a| a.beer_is_current}.include?("yes") %>
-											<% @current_beers = @location_beers.where(beer_is_current: "yes") %>
-											<h6 class="tile-subheader">Currently @
-											<% @current_beers.each_with_index do |location, index| %>
-												<% @location = Location.where(id: location.location_id)[0] %>
-												<% if index != @current_beers.size - 1 %>
-													<%= @location.short_name %>,
-												<% else %>
-													<%= @location.short_name %>
-												<% end %>
-											<% end %>
-											</h6>
 										<% else %>
 											<% @most_recent_beer = @location_beers.order("removed_at DESC").first %>
 											<% @most_recent_location = Location.where(id: @most_recent_beer.location_id)[0] %>

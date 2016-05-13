@@ -21,7 +21,7 @@ class DraftBoardsController < ApplicationController
     @draft_board = DraftBoard.find_by(location_id: @retail_id)
     #Rails.logger.debug("Draft Board Info #: #{@draft_board.inspect}")
     # get draft board details
-    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").order(:tap_number)
+    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board.id).order(:tap_number)
     # get last updated info
     @last_draft_board_update = @current_draft_board.order(:updated_at).reverse_order.first 
     
@@ -131,15 +131,9 @@ class DraftBoardsController < ApplicationController
         if @destroy != "1"
           if !@this_drink_id.nil?
             @new_beer_location_drink = BeerLocation.new(location_id: session[:retail_id], 
-                                         beer_id: drink[1][:beer_id], 
-                                         beer_is_current: "yes", 
+                                         beer_id: drink[1][:beer_id],  
                                          tap_number: drink[1][:tap_number],
-                                         draft_board_id: @draft.id,
-                                         keg_size: drink[1][:keg_size],
-                                         special_designation: drink[1][:special_designation],
-                                         special_designation_color: drink[1][:special_designation_color],
-                                         drink_category_id: drink[1][:drink_category_id],
-                                         went_live: Time.now)
+                                         draft_board_id: @draft.id)
              if @new_beer_location_drink.save
                # add size/cost of new draft drink
                if !drink[1][:draft_details_attributes].blank?
@@ -195,8 +189,7 @@ class DraftBoardsController < ApplicationController
     # get draft board #/info
     @draft_board = session[:draft_board_id]
     @draft = DraftBoard.find_by(location_id: @retail_id)
-    @draft_drink = BeerLocation.where(draft_board_id: @draft.id, beer_is_current: "yes").order(:tap_number)
-    Rails.logger.debug("Draft drink info #: #{@draft_drink.inspect}")
+    @draft_drink = BeerLocation.where(draft_board_id: @draft.id).order(:tap_number)
     @draft_drink_details = DraftDetail.where(beer_location_id: @draft_drink)
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
@@ -246,8 +239,7 @@ class DraftBoardsController < ApplicationController
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
     @draft = DraftBoard.find(params[:id])
-    @current_draft_drink_ids = BeerLocation.where(location_id: @draft.location_id, beer_is_current: "yes").pluck(:beer_id)
-    Rails.logger.debug("Draft IDs #: #{@current_draft_drink_ids.inspect}")
+    @current_draft_drink_ids = BeerLocation.where(location_id: @draft.location_id).pluck(:beer_id)
     @still_current_drink_ids = Array.new
     params[:draft_board][:beer_locations_attributes].each do |drink|
       # first make sure this item should be added (ie wasn't deleted)
@@ -288,14 +280,8 @@ class DraftBoardsController < ApplicationController
           if @beer_id != 0  
             @new_beer_location_drink = BeerLocation.new(location_id: @draft.location_id, 
                                         beer_id: @beer_id, 
-                                        beer_is_current: "yes", 
                                         tap_number: drink[1][:tap_number],
-                                        draft_board_id: params[:id],
-                                        keg_size: drink[1][:keg_size],
-                                        special_designation: drink[1][:special_designation],
-                                        special_designation_color: drink[1][:special_designation_color], 
-                                        drink_category_id: drink[1][:drink_category_id],
-                                        went_live: Time.now)
+                                        draft_board_id: params[:id])
             if @new_beer_location_drink.save
               # add size/cost of new draft drink
               if !drink[1][:draft_details_attributes].blank?
@@ -377,11 +363,11 @@ class DraftBoardsController < ApplicationController
         new_beer.save!
       end
      # find current number of drinks on draft board
-     number_of_drinks = BeerLocation.where(draft_board_id: @draft_board.id, beer_is_current: "yes").count
+     number_of_drinks = BeerLocation.where(draft_board_id: @draft_board.id).count
      # add new drink to retailer draft board
      new_drink_number = number_of_drinks + 1
      new_draft_board_drink = BeerLocation.new(:beer_id => new_beer.id, :location_id => @retail_id, 
-                              :draft_board_id => @draft_board.id, :tap_number => new_drink_number, :beer_is_current => "yes")
+                              :draft_board_id => @draft_board.id, :tap_number => new_drink_number)
      new_draft_board_drink.save!
     # send email to admins to update new drink info
     if @related_brewery.empty?
@@ -395,31 +381,6 @@ class DraftBoardsController < ApplicationController
     end
     # redirect back to updated draft edit page
     redirect_to edit_draft_board_path(session[:draft_board_id])
-  end
-  
-  def quick_draft_edit
-    # set draft board id as session id so no errors are thrown when jquery calls are sent
-    if params.has_key?(:id) 
-      session[:draft_board_id] = params[:id]
-    end
-    # indicate which form this is
-    @draft_board_form = "edit"
-    session[:form] = "edit"
-    # get retailer info for header/title
-    @retail_id = session[:retail_id]
-    @retailer = Location.find(@retail_id)
-    # get draft board #/info
-    @draft_board_id = session[:draft_board_id]
-    # get draft board details
-    @current_draft_board = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "yes").order(:tap_number)
-    # get draft inventory details
-    @current_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "hold")
-    # get recently removed draft details
-    @recently_removed_draft_inventory = BeerLocation.where(draft_board_id: @draft_board_id, beer_is_current: "no").where('removed_at >= ?', 1.week.ago).reverse_order
-    #Rails.logger.debug("Recently removed: #: #{@recently_removed_draft_inventory.inspect}")
-    # find last time this draft board was updated
-    @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
-    
   end
   
   

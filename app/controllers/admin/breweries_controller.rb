@@ -55,29 +55,6 @@ class Admin::BreweriesController < ApplicationController
     #@number_usable_incomplete_beers = Beer.live_beers.usable_incomplete_beers.count('id')
     @number_usable_incomplete_beers = @usable_incomplete_brewery_beers.length
     
-    # establish filters
-    #@filterrific = initialize_filterrific(Brewery, params[:filterrific])
-    #@filterrific.select_options = {
-    #    live_brewery_beers: Brewery.options_for_live_brewery_beers
-    #  }
-
-    #Rails.logger.debug("filterrific is: #{@filterrific.inspect}")
-    #@filtered_breweries = @filterrific.find.order(:brewery_name).page(params[:page])
-
-    #Rails.logger.debug("Filtered Breweries: #{@filtered_breweries.inspect}")
-   
-    #if @total_brewery_count == @brewery_count
-    #  #indicates all Breweries are currently chosen, so show total number of beers in DB
-     # @beer_count = Beer.distinct.count('id')
-    #else
-    #  #indicates only current brewery/beers are showing
-    #  @beer_count = BeerLocation.where(beer_is_current: "yes").count('id')
-    #end
-    
-    #respond_to do |format|
-    #  format.html
-    #  format.js
-    #end
   end
   
   def new
