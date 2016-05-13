@@ -2,23 +2,14 @@
 #
 # Table name: beer_locations
 #
-#  id                        :integer          not null, primary key
-#  beer_id                   :integer
-#  location_id               :integer
-#  beer_is_current           :string(255)
-#  created_at                :datetime
-#  updated_at                :datetime
-#  removed_at                :datetime
-#  tap_number                :integer
-#  draft_board_id            :integer
-#  keg_size                  :float
-#  went_live                 :datetime
-#  special_designation       :boolean
-#  special_designation_color :string
-#  facebook_share            :datetime
-#  twitter_share             :datetime
-#  price_tier_id             :integer
-#  drink_category_id         :integer
+#  id             :integer          not null, primary key
+#  beer_id        :integer
+#  location_id    :integer
+#  removed_at     :datetime
+#  tap_number     :integer
+#  draft_board_id :integer
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
 #
 
 require 'test_helper'
