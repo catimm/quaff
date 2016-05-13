@@ -32,7 +32,6 @@
 class Location < ActiveRecord::Base
   has_many :beer_locations
   has_many :beers, -> { order(beer_rating: :desc, number_ratings: :desc) }, through: :beer_locations
-  has_many :location_subscriptions
   has_one :draft_board
   
   # adding temp variables for ratings/rankings

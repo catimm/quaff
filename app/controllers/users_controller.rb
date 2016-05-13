@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   include DrinkDescriptorCloud
   include CreateNewDrink
   include BestGuess
+  include QuerySearch
   
   def index
 
@@ -40,8 +41,144 @@ class UsersController < ApplicationController
   end
   
   def supply
+    # get correct view
     @view = params[:format]
+    # get user supply data
+    @user_supply = UserSupply.where(user_id: current_user.id)
+    #Rails.logger.debug("User Supply 2: #{@user_supply.inspect}")
+    
+    # get data for view
+    if @view == "cooler"
+      @user_cooler = @user_supply.where(supply_type_id: 1)
+      
+      # create array to hold descriptors cloud
+      @final_descriptors_cloud = Array.new
+      
+      # get top descriptors for drink types the user likes
+      @user_cooler.each do |drink|
+        @drink_id_array = Array.new
+        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+        @final_descriptors_cloud << @drink_type_descriptors
+      end
+      # send full array to JQCloud
+      gon.drink_descriptor_array = @final_descriptors_cloud
+      
+      # get best guess for each relevant drink
+      @supply_drink_ids = Array.new
+      @user_cooler.each do |drink|
+        @supply_drink_ids << drink.beer_id
+      end
+      @user_cooler = best_guess(@supply_drink_ids).paginate(:page => params[:page], :per_page => 12)
+      @cooler_chosen = "chosen"
+    elsif @view == "cellar"
+      @user_cellar = @user_supply.where(supply_type_id: 2)
+      
+      # create array to hold descriptors cloud
+      @final_descriptors_cloud = Array.new
+      
+      # get top descriptors for drink types the user likes
+      @user_cellar.each do |drink|
+        @drink_id_array = Array.new
+        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+        @final_descriptors_cloud << @drink_type_descriptors
+      end
+      # send full array to JQCloud
+      gon.drink_descriptor_array = @final_descriptors_cloud
+      
+      # get best guess for each relevant drink
+      @supply_drink_ids = Array.new
+      @user_cellar.each do |drink|
+        @supply_drink_ids << drink.beer_id
+      end
+      @user_cellar = best_guess(@supply_drink_ids).paginate(:page => params[:page], :per_page => 12)
+      @cellar_chosen = "chosen"
+    else 
+      @user_next = @user_supply.where(supply_type_id: 3)
+      
+      # create array to hold descriptors cloud
+      @final_descriptors_cloud = Array.new
+      
+      # get top descriptors for drink types the user likes
+      @user_next.each do |drink|
+        @drink_id_array = Array.new
+        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+        @final_descriptors_cloud << @drink_type_descriptors
+      end
+      # send full array to JQCloud
+      gon.drink_descriptor_array = @final_descriptors_cloud
+      
+      # get best guess for each relevant drink
+      @supply_drink_ids = Array.new
+      @user_next.each do |drink|
+        @supply_drink_ids << drink.beer_id
+      end
+      @user_next = best_guess(@supply_drink_ids).paginate(:page => params[:page], :per_page => 12)
+      @next_chosen = "chosen"
+    end
+    
   end # end of supply method
+  
+  def add_supply_drink
+    
+  end # end add_supply_drink method
+  
+  def drink_search
+    # conduct search
+    query_search(params[:query])
+    
+    # get best guess for each drink found
+    @search_drink_ids = Array.new
+    @final_search_results.each do |drink|
+      @search_drink_ids << drink.id
+    end
+    @final_search_results = best_guess(@final_search_results).paginate(:page => params[:page], :per_page => 12)
+    
+    # create array to hold descriptors cloud
+    @final_descriptors_cloud = Array.new
+    
+    # get top descriptors for drink types the user likes
+    @final_search_results.each do |drink|
+      @drink_id_array = Array.new
+      @drink_type_descriptors = drink_descriptor_cloud(drink)
+      @final_descriptors_cloud << @drink_type_descriptors
+      #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
+    end
+    # send full array to JQCloud
+    gon.drink_search_descriptor_array = @final_descriptors_cloud
+    
+    #Rails.logger.debug("Final Search results in method: #{@final_search_results.inspect}")
+
+    respond_to do |format|
+      format.js
+      format.html
+    end # end of redirect to jquery
+    
+  end # end of drink_search method
+  
+  def change_supply_drink
+    # get drink info
+    @this_info = params[:id]
+    @this_info_split = @this_info.split("-");
+    @this_supply_type_designation = @this_info_split[0]
+    @this_action = @this_info_split[1]
+    @this_drink_id = @this_info_split[2]
+    
+    # get suplly type id
+    @this_supply_type = SupplyType.where(designation: @this_supply_type_designation).first
+    
+    # update User Supply table
+    if @this_action == "remove"
+      @user_supply = UserSupply.where(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id).first
+      @user_supply.destroy!
+    else
+      @user_supply = UserSupply.new(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id)
+      @user_supply.save!
+    end
+    
+    # don't update view
+    render nothing: true
+    
+  end # end of change_supply_drink method
   
   def wishlist 
     @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)
@@ -71,6 +208,17 @@ class UsersController < ApplicationController
     redirect_to :action => 'wishlist'
 
   end # end wishlist removal
+  
+  def supply_removal
+    # get correct supply type
+    @supply_type_id = SupplyType.where(designation: params[:format])
+    # remove drink
+    @drink_to_remove = UserSupply.where(user_id: current_user.id, beer_id: params[:id], supply_type_id: @supply_type_id).first
+    @drink_to_remove.destroy!
+    
+    redirect_to :action => 'supply', :id => current_user.id, :format => params[:format]
+
+  end # end supply removal
   
   def profile
     # get user info

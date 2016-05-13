@@ -1,11 +1,9 @@
-<%= render 'layouts/header_retailer' %> 
-	<% if @retailer_subscription.nil? %>
-		<%= render 'choose_initial_subscription' %>
-	<% else %>
-		<% if @location_page == "yes" %>
-			<%= render 'details_view_locations' %>
-		<% else %>
-			<%= render 'details_view_draft' %>
-		<% end %>
-	<% end %>
+<% if current_user.role_id == 1 || current_user.role_id == 2 %>
+	<%= render 'layouts/header' %> 
+<% elsif current_user.role_id == 5 %>
+	<%= render 'layouts/header_retailer' %> 
+<% end %>
+	
+	<%= render 'details_view_draft' %>
+
 <%= render 'layouts/footer' %>

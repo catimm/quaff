@@ -183,7 +183,25 @@ $(function () {
 		// prevent page from jumping to the top after click event
 		return false;
 	});
-
+	// set search delay function
+	var search_delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	// search for drinks to add to supply
+	$(document).on("keyup", ".supply-drink-search", function() {
+		value = $(this).val();
+		search_delay(function(){
+			$.ajax({
+			  type: "GET",
+			  url: "/users/drink_search/1/" + value
+			});
+	    }, 500 );
+	});
+	
 	// allow user to reverse like of beer style
 	$(".like-style-chosen").on("click", function() {
 		var this_style_id = $(this).parent().attr('id');
@@ -201,6 +219,39 @@ $(function () {
 		return false;
 	});
 	
+	// change drink cooler status
+	$(document).on("click", ".change-cooler-button", function() {
+		// hide this button
+		$(this).addClass('hidden');
+		//show the remove version of button
+		$(this).siblings('*[id*=cooler]').removeClass('hidden');
+		// get id of button
+		var this_id = $(this).attr('id');
+		// send info to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/users/change_supply_drink/" + this_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	});
+	
+	// change drink cellar status
+	$(document).on("click", ".change-cellar-button", function() {
+		// hide this button
+		$(this).addClass('hidden');
+		//show the remove version of button
+		$(this).siblings('*[id*=cellar]').removeClass('hidden');
+		// get id of button
+		var this_id = $(this).attr('id');
+		// send info to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/users/change_supply_drink/" + this_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	});
 	// find width of style preference overview tile
 	style_width = $(".overview-tile-3").width();
 	half_style_width = style_width/2;

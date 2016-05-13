@@ -59,12 +59,17 @@ Rails.application.routes.draw do
   get '/users/supply/:id' => 'users#supply', :as => 'user_supply'
   get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
   get '/users/wishlist_removal/:id' => 'users#wishlist_removal', :as => 'wishlist_removal'
+  get '/users/supply_removal/:id' => 'users#supply_removal', :as => 'supply_removal'
+  get '/users/add_supply_drink/:id' => 'users#add_supply_drink', :as => 'add_supply_drink'
+  get  '/users/drink_search/:id(/:query)' => 'users#drink_search', :as => 'drink_search'
+  post '/users/change_supply_drink/:id' => 'users#change_supply_drink', :as => 'change_supply_drink'
   post '/users/add_drink/:id' => 'users#add_drink', :as => 'add_drink'
   post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'
   post '/users/update_styles_preferences/:id' => 'users#style_preferences', :as => 'user_style_preference'
   post '/users/add_fav_drink' => 'users#add_fav_drink', :as => 'add_fav_drink'
   post '/users/set_search_box_id/:id' => 'users#set_search_box_id', :as => 'set_search_box_id'
   post '/users/remove_fav_drink/:id' => 'users#remove_fav_drink', :as => 'remove_fav_drink'
+  
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
@@ -96,22 +101,10 @@ Rails.application.routes.draw do
   post '/draft_inventory/:id' => 'draft_inventory#update', :as => 'specific_draft_inventory_update'
   post '/draft_inventory/update_price_tier_options/:id' => 'draft_inventory#update_price_tier_options'
   resources :draft_inventory
-  post '/retailers/update_twitter_view/:id' => 'retailers#update_twitter_view'
-  post '/retailers/update_team_roles/:id(.:format)' => 'retailers#update_team_roles'
+  
   post '/retailers/info_request' => 'retailers#info_request'
-  post '/stripe-webhooks' => 'retailers#stripe_webhooks'
-  match '/retailers/choose_initial_plan/:id(.:format)' => 'retailers#choose_initial_plan', :as => 'choose_initial_plan', via: [:get, :post]
-  match '/retailers/change_plans/:id(.:format)' => 'retailers#change_plans', :as => 'change_plans', via: [:get, :post]
-  get '/retailers/retailer_delete_plan/:id' => 'retailers#delete_plan', :as => 'retailer_delete_plan'
-  get '/retailers/trial_end(.:format)' => 'retailers#trial_end', :as => 'trial_end'
-  get '/retailers/remove_team_member/:id' => 'retailers#remove_team_member', :as => 'remove_team_member'
-  devise_scope :user do
-    get '/retailers/invite_team_member_new/:id' => 'invitations#invite_team_member_new', :as => 'invite_team_member'
-    post '/invitations/invite_team_member_new/:id' => 'invitations#invite_team_member_create'
-  end
-  get '/print_menus(.:format)' => 'print_menus#index', :as => 'print_menus'
-  get '/print_menus/:id(.:format)' => 'print_menus#show', :as => 'print_menu'
   resources :retailers
+  
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'

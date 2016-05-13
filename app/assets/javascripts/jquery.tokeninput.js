@@ -476,7 +476,7 @@
           $.each(li_data, function (index, value) {
               insert_token(value);
               checkTokenLimit();
-              input_box.attr("placeholder", null)
+              input_box.attr("placeholder", null);
           });
       }
 
@@ -547,7 +547,7 @@
       // to the [disable] parameter.
       function toggleDisabled(disable) {
           if (typeof disable === 'boolean') {
-              $(input).data("settings").disabled = disable
+              $(input).data("settings").disabled = disable;
           } else {
               $(input).data("settings").disabled = !$(input).data("settings").disabled;
           }
@@ -757,7 +757,7 @@
           // Remove this token from the saved list
           saved_tokens = saved_tokens.slice(0,index).concat(saved_tokens.slice(index+1));
           if (saved_tokens.length == 0) {
-              input_box.attr("placeholder", settings.placeholder)
+              input_box.attr("placeholder", settings.placeholder);
           }
           if(index < selected_token_index) selected_token_index--;
 

@@ -1,5 +1,5 @@
 # == Schema Information
-#
+# Provides drink size and drink cost information for each drink on tap at a retailer
 # Table name: draft_details
 #
 #  id               :integer          not null, primary key

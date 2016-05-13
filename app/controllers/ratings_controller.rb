@@ -2,16 +2,6 @@ class RatingsController < ApplicationController
   before_filter :authenticate_user!
   include BestGuess
   
-  def index
-    @need_user_ratings = UserBeerRating.where(user_id: current_user.id, rated_on: nil).order(:created_at).reverse
-    Rails.logger.debug("empty user ratings: #{@need_user_ratings.inspect}")
-    @user_beer_ratings = UserBeerRating.where(user_id: current_user.id).where.not(rated_on: nil).order(:rated_on).reverse
-    Rails.logger.debug("user beer ratings: #{@user_beer_ratings.inspect}")
-    
-    # allow someone to rate a beer
-    @user_rating = UserBeerRating.new
-  end
-  
   def new
     @user = current_user
     @time = Time.now
@@ -37,14 +27,7 @@ class RatingsController < ApplicationController
     new_user_rating = UserBeerRating.new(rating_params)
     new_user_rating.save!
     @user.tag(@beer, :with => params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens], :on => :descriptors)
-    # if successfully posted, remove drink from drink list
-    if new_user_rating
-      find_drink = DrinkList.where(:user_id => current_user.id, :beer_id => params[:user_beer_rating][:beer_id]).pluck(:id)
-      if !find_drink.empty?
-        destroy_drink = DrinkList.find(find_drink)[0]
-        destroy_drink.destroy!
-      end
-    end
+
     # now redirect back to locations page
     redirect_to brewery_beer_path(@beer.brewery.id, @beer)
   end

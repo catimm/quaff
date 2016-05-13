@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160505224229) do
+ActiveRecord::Schema.define(version: 20160513210403) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,25 +54,6 @@ ActiveRecord::Schema.define(version: 20160505224229) do
     t.integer  "size_format_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
-  end
-
-  create_table "beer_locations", force: :cascade do |t|
-    t.integer  "beer_id"
-    t.integer  "location_id"
-    t.string   "beer_is_current",           limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "removed_at"
-    t.integer  "tap_number"
-    t.integer  "draft_board_id"
-    t.float    "keg_size"
-    t.datetime "went_live"
-    t.boolean  "special_designation"
-    t.string   "special_designation_color"
-    t.datetime "facebook_share"
-    t.datetime "twitter_share"
-    t.integer  "price_tier_id"
-    t.integer  "drink_category_id"
   end
 
   create_table "beer_styles", force: :cascade do |t|
@@ -164,62 +145,12 @@ ActiveRecord::Schema.define(version: 20160505224229) do
     t.integer  "beer_location_id"
   end
 
-  create_table "drink_categories", force: :cascade do |t|
-    t.integer  "draft_board_id"
-    t.string   "category_name"
-    t.integer  "category_position"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-  end
-
-  create_table "drink_lists", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "beer_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "drink_price_tier_details", force: :cascade do |t|
-    t.integer  "drink_price_tier_id"
-    t.integer  "drink_size"
-    t.decimal  "drink_cost",          precision: 5, scale: 2
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
-  end
-
-  create_table "drink_price_tiers", force: :cascade do |t|
-    t.integer  "draft_board_id"
-    t.string   "tier_name"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-  end
-
   create_table "info_requests", force: :cascade do |t|
     t.string   "email"
     t.string   "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "name"
-  end
-
-  create_table "internal_draft_board_preferences", force: :cascade do |t|
-    t.integer  "draft_board_id"
-    t.boolean  "separate_names"
-    t.boolean  "column_names"
-    t.integer  "font_size"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.string   "tap_title"
-    t.string   "maker_title"
-    t.string   "drink_title"
-    t.string   "style_title"
-    t.string   "abv_title"
-    t.string   "ibu_title"
-    t.string   "taster_title"
-    t.string   "tulip_title"
-    t.string   "pint_title"
-    t.string   "half_growler_title"
-    t.string   "growler_title"
   end
 
   create_table "inventories", force: :cascade do |t|
@@ -237,18 +168,6 @@ ActiveRecord::Schema.define(version: 20160505224229) do
     t.string   "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "location_subscriptions", force: :cascade do |t|
-    t.integer  "location_id"
-    t.integer  "subscription_id"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.datetime "active_until"
-    t.string   "stripe_customer_number"
-    t.string   "stripe_subscription_number"
-    t.boolean  "current_trial"
-    t.boolean  "trial_ended"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -288,6 +207,14 @@ ActiveRecord::Schema.define(version: 20160505224229) do
 
   add_index "pg_search_documents", ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id", using: :btree
 
+  create_table "removed_beer_locations", force: :cascade do |t|
+    t.integer  "beer_id"
+    t.integer  "location_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "removed_at"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string   "role_name",  limit: 255
     t.datetime "created_at"
@@ -304,6 +231,12 @@ ActiveRecord::Schema.define(version: 20160505224229) do
     t.string   "subscription_level"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+  end
+
+  create_table "supply_types", force: :cascade do |t|
+    t.string   "designation"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -384,6 +317,14 @@ ActiveRecord::Schema.define(version: 20160505224229) do
     t.datetime "updated_at",      null: false
   end
 
+  create_table "user_supplies", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "beer_id"
+    t.integer  "supply_type_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
     t.string   "encrypted_password",     limit: 255, default: ""
@@ -415,16 +356,6 @@ ActiveRecord::Schema.define(version: 20160505224229) do
   add_index "users", ["invitations_count"], name: "index_users_on_invitations_count", using: :btree
   add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-
-  create_table "web_draft_board_preferences", force: :cascade do |t|
-    t.integer  "draft_board_id"
-    t.boolean  "show_up_next"
-    t.boolean  "show_descriptors"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.string   "show_next_type"
-    t.integer  "show_next_general_number"
-  end
 
   create_table "wishlists", force: :cascade do |t|
     t.integer  "user_id"

@@ -6,13 +6,13 @@
 			</div>
 			<div class="col-sm-2"></div>
 			<div class="col-sm-1">
-				<%= link_to "Cooler", user_supply_path(current_user.id, 'cooler'), class: "drink-preference-view-option #{@styles_chosen}", id: "cooler" %>
+				<%= link_to "Cooler", user_supply_path(current_user.id, 'cooler'), class: "drink-preference-view-option #{@cooler_chosen}", id: "cooler" %>
 			</div>
 			<div class="col-sm-1">
-				<%= link_to "Cellar", user_supply_path(current_user.id, 'cellar'), class: "drink-preference-view-option #{@drinks_chosen}", id: "cellar" %>
+				<%= link_to "Cellar", user_supply_path(current_user.id, 'cellar'), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
 			</div>
 			<div class="col-sm-2">
-				<%= link_to "Next Delivery", user_supply_path(current_user.id, 'next'), class: "drink-preference-view-option #{@drinks_chosen}", id: "next" %>
+				<%= link_to "Next Delivery", user_supply_path(current_user.id, 'next'), class: "drink-preference-view-option #{@next_chosen}", id: "next" %>
 			</div>
 		</div>
 	</div>

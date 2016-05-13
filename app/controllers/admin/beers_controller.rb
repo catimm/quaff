@@ -129,16 +129,6 @@ class Admin::BeersController < ApplicationController
           UserBeerRating.update(beers.id, beer_id: params[:beer][:id])
         end
       end
-      # change associations in drink_lists table
-      @drink_lists_to_change = DrinkList.where(beer_id: @beer.id)
-      Rails.logger.debug("Drink list table: #{@drink_lists_to_change.inspect}")
-      if !@drink_lists_to_change.empty?
-        Rails.logger.debug("Drink list empty test is firing")
-        @drink_lists_to_change.each do |beers|
-          Rails.logger.debug("Drink list loop is firing")
-          DrinkList.update(beers.id, beer_id: params[:beer][:id])
-        end
-      end
       # change associations in user_beer_trackings table
       @user_beer_trackings_to_change = Wishlist.where(beer_id: @beer.id)
       #Rails.logger.debug("User Beer trackings table: #{@user_beer_trackings_to_change.inspect}")

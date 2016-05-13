@@ -42,16 +42,16 @@ class ApplicationController < ActionController::Base
   
   def after_sign_in_path_for(resource)
     @user = current_user
-    if current_user.role_id == 1 || current_user.role_id == 5 || current_user.role_id == 6 || current_user.role_id == 7
+    if current_user.role_id == 1 || current_user.role_id == 5
       session[:retail_id] = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
-      @location_id = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
-      session[:subscription] = LocationSubscription.where(location_id: @location_id).pluck(:subscription_id)[0]
     end
     # set a different first view based on the user type
-    if current_user.role_id == 5
+    if current_user.role_id == 1
+      @first_view = admin_breweries_path
+    elsif  current_user.role_id == 5
       @first_view = retailer_path(session[:retail_id])
     else
-      @first_view = locations_path
+      @first_view = user_supply_path(current_user.id, "cooler")
     end
     return @first_view
   end

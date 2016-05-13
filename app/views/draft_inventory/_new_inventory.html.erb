@@ -62,12 +62,6 @@
 							<% end %>
 						</div>	
 						<div class="row no-margin">
-							<% if false %>
-							<div class="col-xs-10 col-sm-5 drink-category-holder">
-								<% category_options = options_from_collection_for_select(@drink_categories, 'id', 'category_name' ) %>
-								<%= ff.select :drink_category_id, category_options, {prompt: 'Select Drink Category'}, { class: 'form-control' } %>
-							</div>
-							<% end %>
 							<% if ff.object.special_designation == true %>
 								<% @color_option_setting = "show" %>
 								<% @color_to_show = ff.object.special_designation_color %>
@@ -88,16 +82,12 @@
 							</div>
 						</div>
 					</div>
-					<% if ff.object.draft_details.blank? && !@drink_price_tiers.blank? %>
-						<div class="col-xs-12 col-sm-5 draft-details-row-container no-padding" id="drink-details-info-<%= ff.index %>"></div>
-					<% else %>
-						<div class="col-xs-12 col-sm-5 draft-details-row-container no-padding">
-							<%= render 'new_inventory_details', :ff => ff %>
-							<%= ff.link_to_add :draft_details, class: 'btn btn-default btn-primary formButton-add-details' do %>
-								<i class="fa fa-plus"> Add a drink size</i>
-							<% end %>		
-						</div>	
-					<% end %>		
+					<div class="col-xs-12 col-sm-5 draft-details-row-container no-padding">
+						<%= render 'new_inventory_details', :ff => ff %>
+						<%= ff.link_to_add :draft_details, class: 'btn btn-default btn-primary formButton-add-details' do %>
+							<i class="fa fa-plus"> Add a drink size</i>
+						<% end %>		
+					</div>			
 					<div class="col-sm-1 no-padding-right remove-draft-button visible-sm visible-md visible-lg">
 						<%= ff.link_to_remove do %>
 							<i class="fa fa-trash-o"></i>	

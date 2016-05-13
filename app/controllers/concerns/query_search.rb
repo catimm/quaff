@@ -223,5 +223,6 @@ module QuerySearch
       end
     end # end of 1st loop
     @final_search_results = @final_search_results.uniq
+    Rails.logger.debug("Final Search results in query: #{@final_search_results.inspect}")
   end
 end

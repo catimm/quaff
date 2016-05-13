@@ -1,0 +1,28 @@
+<%= render 'layouts/header_no_search' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-xs-12 col-sm-5 no-padding">
+				<h1 class="section-header">Add To Supply</h1>
+				<h4 class="drinks-rated no-margin">First search for drinks and then add them below.</h4>
+			</div>
+			<div class="col-xs-0 col-sm-1"></div>
+			<div class="col-xs-12 col-sm-5 add-supply-search-col">
+				<%= form_tag drink_search_path, method: :get, :remote => true, :id => "header-navbar", class: 'navbar-form', role: 'search' do %>
+				    <div class="input-group">
+				      <%= text_field_tag :query, params[:query], size: 30, placeholder: "Search beers or breweries", class: "form-control supply-drink-search" %>
+					    <div class="input-group-btn">
+					      <%= button_tag(type: "submit", class: "btn btn-default") do %>
+					        <i class="glyphicon glyphicon-search"></i>
+					      <% end %>
+					    </div>
+				    </div>
+				  <% end %>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container" id="add-supply-holder">
+			
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

@@ -31,7 +31,7 @@
 					<%= render(partial: 'favorite_drink_type', locals: { type: type }) %>
 				<% end%>
 				<div class="col-sm-12" id="fav-drink-types-container">
-					<%= will_paginate @user_ratings_by_type, renderer: BootstrapPagination::Rails%>
+					<%= will_paginate @user_ratings_by_type, renderer: BootstrapPagination::Rails %>
 				</div>
 			<% else %>
 				<div class="row no-margin">

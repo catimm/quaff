@@ -9,24 +9,30 @@
 	</div>
 	<div class="row">
 		<div class="container">
-			<div class="col-sm-12">
-				<h3 class="recent-ratings-header">Recent ratings</h3>
-				<% if !@recent_user_ratings.blank? %>
-					<div class="row no-margin recent-rating-holder">
-						<% @recent_user_ratings.each do |rating| %>
-							<div class="col-sm-3" id="recent-activity">
-								<%= render(partial: 'rating_card', locals: { drink: rating }) %>
-							</div>
-						<% end%>
-					</div>
-					<div class="col-sm-12" id="fav-drink-types-container">
-						<%= will_paginate @recent_user_ratings, renderer: BootstrapPagination::Rails %>
-					</div>
-				<% else %>
-					<div class="row no-margin">
-						<h4 class="no-results-empty-message">You haven't rated any drinks yet. Time for a drink! And don't forget to rate it....</h4>
-					</div>
-				<% end %>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<h3 class="recent-ratings-header">Recent ratings</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<% if !@recent_user_ratings.blank? %>
+						<div class="row no-margin recent-rating-holder">
+							<% @recent_user_ratings.each do |rating| %>
+								<div class="col-sm-3" id="recent-activity">
+									<%= render(partial: 'rating_card', locals: { drink: rating }) %>
+								</div>
+							<% end%>
+						</div>
+						<div class="col-sm-12" id="fav-drink-types-container">
+							<%= will_paginate @recent_user_ratings, renderer: BootstrapPagination::Rails %>
+						</div>
+					<% else %>
+						<div class="row no-margin">
+							<h4 class="no-results-empty-message">You haven't rated any drinks yet. Time for a drink! And don't forget to rate it....</h4>
+						</div>
+					<% end %>
+				</div>
 			</div>
 		</div>
 	</div>

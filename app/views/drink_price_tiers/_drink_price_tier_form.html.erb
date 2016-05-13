@@ -5,11 +5,7 @@
 				<% if @drink_price_status == "new" %>
 					<h3 class="retailer-page-title">Create Drink Price Tiers</h3>
 				<% else %>
-					<% if !@last_drink_prices_update.nil? %>
-						<h3 class="retailer-page-title">Edit Drink Price Tiers <span class="last-updated">(last updated: <%= (@last_drink_prices_update.updated_at).strftime("%B %e, %Y @ %l:%M %p") %>)</span></h3>
-					<% else %>
-						<h3 class="retailer-page-title">Edit Drink Price Tiers</h3>
-					<% end %>
+					<h3 class="retailer-page-title">Edit Drink Price Tiers</h3>
 				<% end %>
 			</div>
 		</div>
@@ -18,11 +14,7 @@
 				<% if @drink_price_status == "new" %>
 					<h3 class="retailer-page-title">Create Drink Price Tiers</h3>
 				<% else %>
-					<% if !@last_drink_prices_update.nil? %>
-						<h3 class="retailer-page-title">Edit Drink Price Tiers <span class="last-updated">(updated: <%= (@last_drink_prices_update.updated_at).strftime("%-m.%-d.%y @ %l:%M %p") %>)</span></h3>
-					<% else %>
-						<h3 class="retailer-page-title">Edit Drink Price Tiers</h3>
-					<% end %>
+					<h3 class="retailer-page-title">Edit Drink Price Tiers</h3>
 				<% end %>
 			</div>
 		</div>

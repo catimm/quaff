@@ -79,36 +79,6 @@
 								<%= render 'new_draft_info_for_edit', this_drink: ff.object.beer %>
 							<% end %>
 						</div>
-						<div class="row no-margin">
-							<% if false %>
-							<div class="col-xs-10 col-sm-5 drink-category-holder">
-								<% category_options = options_from_collection_for_select(@drink_categories, 'id', 'category_name' ) %>
-								<%= ff.select :drink_category_id, category_options, {prompt: 'Select Drink Category'}, { class: 'form-control' } %>
-							</div>
-							<% end %>
-							<% if @subscription_plan == "retain" %>
-								<% if ff.object.special_designation == true %>
-									<% @color_option_setting = "show" %>
-									<% @color_to_show = ff.object.special_designation_color %>
-								<% else %>
-									<% @color_option_setting = "hidden" %>
-									<% @color_to_show = "" %>
-								<% end %>
-								<div class="col-xs-12 col-sm-3 special-designation-input no-padding">
-									<%= ff.check_box :special_designation, { :class => "special-designation-option" } %>
-									<h6 class="special-designation-option">Highlight prices</h6>
-								</div>
-								<div class="col-sm-5 col-md-4 special-designation-color <%= @color_option_setting %> no-padding-left">
-									<h5 class="color-prompt <%= @color_to_show %>">Color:</h5>
-									<%= ff.select(:special_designation_color, 
-										[ ['Blue', 'special-designated-blue'],['Green', 'special-designated-green'],
-										['Orange', 'special-designated-orange'],['Purple (light)', 'special-designated-light-purple'],
-										['Purple (dark)', 'special-designated-dark-purple'],['Red', 'special-designated-red'],
-										['Yellow', 'special-designated-yellow'] ],{prompt: 'Select Color'}, 
-										{ :class => "btn btn-default dropdown-toggle special-designation-colors" }) %>
-								</div>
-							<% end %>
-						</div>
 					</div>
 					<div class="col-xs-12 col-sm-4 draft-details-row-container no-padding">
 						<%= render 'new_draft_details', :ff => ff %>

@@ -98,39 +98,15 @@
 					<% end %>
 				</div>
 			</div>
-			<% if @web_board_preferences.show_descriptors == true %>
-				<% if !drink.beer.top_descriptor_list.blank? %>
-					<div class="col-xs-12">
-						<% @top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
-						<% if !drink.beer.short_beer_name.nil? %>
-							<h5 class="next-up-drink-info"><span class="column-board-descriptors"><%= drink.beer.short_beer_name %></span> is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
-						<% else %>
-							<h5 class="next-up-drink-info"><span class="column-board-descriptors"><%= drink.beer.beer_name %></span> is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
-						<% end %>
-					</div>
-				<% end %>
-			<% end %>
-			<% if @web_board_preferences.show_up_next == true %>
-				<% if @web_board_preferences.show_next_type == "specific" %>
-					<% @next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: drink.tap_number, beer_is_current: "hold")[0] %>
-					<% if !@next_up.blank? %>
-						<% if @next_up.beer.collab == true %>
-							<% @brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
-						<% else %>
-							<% @brewery_name = @next_up.beer.brewery.short_brewery_name %>
-						<% end %>
-						<div class="col-xs-12">
-							<% if !@next_up.beer.beer_type_id.nil? && !@next_up.beer.top_descriptor_list.blank? %>
-								<% @next_up_top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
-								<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %>--a <%= @next_up_top_descriptors %> <%= @next_up.beer.beer_type.beer_type_short_name %>.</h5>
-							<% elsif !@next_up.beer.beer_type_id.nil? %>
-								<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
-							<% else %>
-								<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %></h5>
-							<% end %>
-						</div>
+			<% if !drink.beer.top_descriptor_list.blank? %>
+				<div class="col-xs-12">
+					<% @top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
+					<% if !drink.beer.short_beer_name.nil? %>
+						<h5 class="next-up-drink-info"><span class="column-board-descriptors"><%= drink.beer.short_beer_name %></span> is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
+					<% else %>
+						<h5 class="next-up-drink-info"><span class="column-board-descriptors"><%= drink.beer.beer_name %></span> is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
 					<% end %>
-				<% end %>
+				</div>
 			<% end %>
 		</div>
 	<hr/>
@@ -228,49 +204,14 @@
 				<% end %>
 			<% end %>
 		</div>	
-		<% if @web_board_preferences.show_descriptors == true %>
-			<% if !drink.beer.top_descriptor_list.blank? %>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<% @top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
-						<h5 class="next-up-drink-info">This drink is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
-					</div>
+		<% if !drink.beer.top_descriptor_list.blank? %>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<% @top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
+					<h5 class="next-up-drink-info">This drink is described as <span class="column-board-descriptors"><%= @top_descriptors %></span>.</h5>
 				</div>
-			<% end %>
+			</div>
 		<% end %>
-		<% if @web_board_preferences.show_up_next == true %>
-				<% if @web_board_preferences.show_next_type == "specific" %>
-					<% @next_up = BeerLocation.where(draft_board_id: drink.draft_board_id, tap_number: drink.tap_number, beer_is_current: "hold")[0] %>
-					<% if !@next_up.blank? %>
-						<% if @next_up.beer.collab == true %>
-							<% @brewery_name = Beer.collab_brewery_name(@next_up.beer.id) %>
-						<% else %>
-							<% @brewery_name = @next_up.beer.brewery.short_brewery_name %>
-						<% end %>
-						<div class="row no-margin">
-							<div class="col-xs-12 no-padding">
-								<% if !@next_up.beer.beer_type_id.nil? && !@next_up.beer.top_descriptor_list.blank? %>
-									<% @next_up_top_descriptors = drink.beer.top_descriptor_list.to_sentence %>
-									<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %>--a <%= @next_up_top_descriptors %> <%= @next_up.beer.beer_type.beer_type_short_name %>.</h5>
-								<% elsif !@next_up.beer.beer_type_id.nil? %>
-									<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %> <%= @next_up.beer.beer_type.beer_type_short_name %></h5>
-								<% else %>
-									<h5 class="next-up-drink-info no-overflow show-next-up">Next up: <%= @brewery_name %> <%= @next_up.beer.beer_name %></h5>
-								<% end %>
-							</div>
-						</div>
-					<% end %>
-				<% end %>
-			<% end %>
 	<hr/>
 	</div>
-<% end %>
-<% if @web_board_preferences.show_up_next == true %>
-	<% if @web_board_preferences.show_next_type == "general" %>
-		<div class="row no-margin ">
-			<div class="col-xs-12">
-				<h5 class="next-up-drink-info">On tap soon: <%= @general_next_drinks.to_sentence %></h5>
-			</div>
-		</div>
-	<% end %>
 <% end %>

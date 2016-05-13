@@ -272,5 +272,5 @@ class PortingController < ApplicationController
   private
   def verify_super_admin
       redirect_to root_url unless current_user.role_id == 1
-    end
+  end
 end

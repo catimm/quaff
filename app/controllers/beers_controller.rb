@@ -23,17 +23,10 @@ class BeersController < ApplicationController
     @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
     @beer = best_guess(@beer.id)[0]
-    #Rails.logger.debug("Beer ranking #{@beer.best_guess.inspect}")
-    # grab beer ids that will match each jcloud
-    # @beers_ids = @beers.pluck(:id)
-    @user_drink_list = DrinkList.where(user_id: current_user.id)
     
     # get user's ratings for this beer if any exist
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse
     @number_of_ratings = @user_rating_for_this_beer.count
-    
-    # get temporary beer image
-    # @temp_beer_image = @beer.beer_type.beer_style.style_image_url
     
     # send beer ids to javascript file to create jcloud
     beer_descriptor = Array.new

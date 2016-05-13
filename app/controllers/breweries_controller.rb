@@ -3,7 +3,7 @@ class BreweriesController < ApplicationController
   include QuerySearch
   
   def autocomplete
-    Rails.logger.debug("Form info #{session[:form].inspect}")
+    #Rails.logger.debug("Form info #{session[:form].inspect}")
     if params[:query].present?
       query_search(params[:query])
     else
@@ -65,7 +65,7 @@ class BreweriesController < ApplicationController
     else
       render json: @reduced_final_search_results
     end
-  end
+  end # end of autocomplete method
   
-
+  
 end

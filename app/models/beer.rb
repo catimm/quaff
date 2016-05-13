@@ -56,13 +56,11 @@ class Beer < ActiveRecord::Base
   has_many :size_formats, through: :beer_formats
   has_many :user_beer_ratings
   has_many :users, through: :user_beer_ratings
-  has_many :drink_lists
-  has_many :users, through: :drink_lists
   has_many :wishlists
   has_many :beer_brewery_collabs
   has_many :user_drink_recommendations
   has_many :user_fav_drinks
-  
+  has_many :user_supplies
   
   # to keep search function indexed properly
   after_commit :reindex_brewery

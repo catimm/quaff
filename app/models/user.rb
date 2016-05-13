@@ -40,14 +40,13 @@ class User < ActiveRecord::Base
   belongs_to :role       
   has_many :user_beer_ratings
   has_many :beers, through: :user_beer_ratings
-  has_many :drink_lists
-  has_many :beers, through: :drink_lists
   has_many :wishlists
   has_many :user_notification_preferences
   has_many :user_style_preferences
   has_many :user_locations
   has_many :user_drink_recommendations
   has_many :user_fav_drinks
+  has_many :user_supplies
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   
