@@ -172,12 +172,6 @@ class Beer < ActiveRecord::Base
     order('brewery_rating desc').
     limit(5)
   }
-  #  scope :mostplayed, ->(player) { 
-  #    select('details.*, count(heros.id) AS hero_count').
-  #    joins(:hero).where('player_id = ?', player.id).
-  #    group('hero_id').
-  #    order('hero_count DESC').limit(3) }
-  #}
   
   # scope only all drinks shown in admin pages 
   scope :all_live_beers, -> { 

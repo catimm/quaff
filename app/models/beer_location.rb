@@ -27,6 +27,11 @@ class BeerLocation < ActiveRecord::Base
     joins(:location).merge(Location.live_location)
     }
   
+  # this scope is for other locations pages
+  scope :current, -> { 
+    joins(:location).merge(Location.live_location)
+    }
+    
   scope :active_beers, ->(location_id) { 
     where(:location_id => location_id)
     }
