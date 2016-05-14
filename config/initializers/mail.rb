@@ -1,10 +1,10 @@
 ActionMailer::Base.smtp_settings = {
-  address: "smtp.mandrillapp.com",
-  port: 587,
-  authentication: "plain",
-  user_name: "app32989419@heroku.com",
-  password: ENV['MANDRILL_APIKEY'],
-  enable_starttls_auto: true
+    user_name: 'SMTP_Injection',
+    password: ENV['SPARKPOST_API_KEY'],
+    address: 'smtp.sparkpostmail.com',
+    port: 587,
+    enable_starttls_auto: true,
+    format: :html
 }
 
 ActionMailer::Base.delivery_method = :smtp

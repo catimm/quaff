@@ -1,6 +1,7 @@
 class DraftBoardsController < ApplicationController
   before_filter :verify_admin
   include DrinkDescriptors
+  include RetailerDrinkHelp
   require "base64"
   respond_to :html, :json, :js
   
@@ -86,10 +87,7 @@ class DraftBoardsController < ApplicationController
     @draft = DraftBoard.new
     @draft_drink = @draft.beer_locations.build
     @draft_drink_details = @draft_drink.draft_details.build
-    
-    # get social platform info
-    @fb_authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
-    @twitter_authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter")
+   
     
     session[:form] = "new"
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
@@ -127,7 +125,7 @@ class DraftBoardsController < ApplicationController
         # first make sure this item should be added (ie wasn't deleted)
         @destroy = drink[1][:_destroy]
         @this_drink_id = drink[1][:beer_id]
-        Rails.logger.debug("This Drink ID #: #{@this_drink_id.inspect}")
+
         if @destroy != "1"
           if !@this_drink_id.nil?
             @new_beer_location_drink = BeerLocation.new(location_id: session[:retail_id], 
@@ -194,10 +192,6 @@ class DraftBoardsController < ApplicationController
     # find last time this draft board was updated
     @last_draft_board_update = BeerLocation.where(draft_board_id: @draft_board).order(:updated_at).reverse_order.first
     
-    # get social platform info
-    @fb_authentication = Authentication.where(location_id: session[:retail_id], provider: "facebook")
-    @twitter_authentication = Authentication.where(location_id: session[:retail_id], provider: "twitter")
-    
     # accept drink info once a drink is chosen in the search form & grab session variable with unique id
      if params.has_key?(:chosen_drink) 
       if !params[:chosen_drink].nil?
@@ -240,6 +234,7 @@ class DraftBoardsController < ApplicationController
     @retailer = Location.find(@retail_id)
     @draft = DraftBoard.find(params[:id])
     @current_draft_drink_ids = BeerLocation.where(location_id: @draft.location_id).pluck(:beer_id)
+    #Rails.logger.debug("Current draft ids: #{@current_draft_drink_ids.inspect}")
     @still_current_drink_ids = Array.new
     params[:draft_board][:beer_locations_attributes].each do |drink|
       # first make sure this item should be added (ie wasn't deleted)
@@ -248,17 +243,13 @@ class DraftBoardsController < ApplicationController
         # check if this beer is already on draft and should be updated
         @beer_id = drink[1][:beer_id].to_i
         if @current_draft_drink_ids.include? @beer_id
-          Rails.logger.debug("Beer ID #: #{@beer_id.inspect}")
-          Rails.logger.debug("Thinks drink is already on draft")
           # add this beer id to array of still current drinks
           @still_current_drink_ids << @beer_id
           # grab this BeerLocation record
-          @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, beer_is_current: "yes").first
+          @current_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: @beer_id, draft_board_id: @draft.id).first
           # update tap number to ensure it's currently accurate
-          @current_beer_location.update_attributes(tap_number: drink[1][:tap_number], keg_size: drink[1][:keg_size],
-                                 special_designation: drink[1][:special_designation], 
-                                 special_designation_color: drink[1][:special_designation_color],
-                                 drink_category_id: drink[1][:drink_category_id])
+          @current_beer_location.update_attributes(tap_number: drink[1][:tap_number])
+          #Rails.logger.debug("Current drink: #{@current_beer_location.inspect}")
           # delete all related size/cost information
           DraftDetail.where(beer_location_id: @current_beer_location.id).destroy_all
           # add size/cost info to ensure it is currently accurate
@@ -270,13 +261,12 @@ class DraftBoardsController < ApplicationController
                 @new_drink_details = DraftDetail.new(beer_location_id: @current_beer_location.id, 
                                       drink_size: details[1][:drink_size], 
                                       drink_cost: details[1][:drink_cost])
+                #Rails.logger.debug("Current drink details: #{@new_drink_details.inspect}")
                 @new_drink_details.save
               end # end of test to determine if drink details "row" was deleted and should be ignored 
             end # end of loop to add drink details
           end # end validation that drink details exist
         else # if not on draft, add it as new draft item
-          Rails.logger.debug("Beer ID #: #{@beer_id.inspect}")
-          Rails.logger.debug("Thinks drink is NEW")
           if @beer_id != 0  
             @new_beer_location_drink = BeerLocation.new(location_id: @draft.location_id, 
                                         beer_id: @beer_id, 
@@ -307,13 +297,18 @@ class DraftBoardsController < ApplicationController
   
     # determine which drinks are no longer current and need to be updated
     @removed_drink_ids = @current_draft_drink_ids - @still_current_drink_ids
+    #Rails.logger.debug("Removed drink ids: #{@removed_drink_ids.inspect}")
     # cycle through each removed drink and update its Beer Location record
     if !@removed_drink_ids.nil?
-      @removed_drink_ids.each do |update|
+      @removed_drink_ids.each do |drink_id|
+        #Rails.logger.debug("Individual Removed drink: #{drink_id.inspect}")
         # grab this BeerLocation record
-        @removed_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: update, beer_is_current: "yes").first
-        # update removed drink info
-        @removed_beer_location.update_attributes(beer_is_current: "no", removed_at: Time.now)
+        @removed_beer_location = BeerLocation.where(location_id: @draft.location_id, beer_id: drink_id).first
+        # move this drink info to the removed_beer_locations table
+        @newly_removed_drink = RemovedBeerLocation.new(location_id: @draft.location_id, beer_id: drink_id, created_at: @removed_beer_location.created_at, removed_at: Time.now)
+        @newly_removed_drink.save!
+        # remove drink from beer_locations table
+        @removed_beer_location.destroy!
       end # end of loop to update removed drinks
     end # end of check on whether there are any drinks to remove
     

@@ -1,8 +1,7 @@
 class BeerUpdates < ActionMailer::Base
-  
-  def mandrill_client
-    @mandrill_client ||= Mandrill::API.new ENV['MANDRILL_APIKEY']
-  end
+  require 'sparkpost'
+  require 'open-uri'
+  @host = open('https://api.sparkpost.com')
   
   def new_beers_email(admin_email, location, beers)
     # determine if this is prod environment
@@ -178,56 +177,50 @@ class BeerUpdates < ActionMailer::Base
     end
   end # end of porting email
   
-    def new_retailer_drink_email(email, retailer, brewery_name, brewery_id, beer_name, beer_id, source)
-    template_name = "new-retailer-drink-email"
-    template_content = []
-    message = {
-      merge: true,
-      to: [
-        {:email => email}
+  def new_retailer_drink_email(email, retailer, maker, maker_id, drink, drink_id, source)
+    SparkPost::Request.request(open('https://api.sparkpost.com/api/v1/transmissions'), ENV['SPARKPOST_API_KEY'], {
+      recipients: [
+        {
+          address: { email: email },
+          substitution_data: {
+            retailer: retailer,
+            maker: brewery_name,
+            maker_id: brewery_id,
+            drink: beer_name,
+            drink_id: beer_id,
+            source: source
+          }
+        }
       ],
-      inline_css: true,
-      merge_vars: [
-        { rcpt: email,
-          vars: [
-             {name: "retailer", content: retailer},
-             {name: "brewery_name", content: brewery_name},
-             {name: "brewery_id", content: brewery_id},
-             {name: "beer_name", content: beer_name},
-             {name: "beer_id", content: beer_id},
-             {name: "source", content: source}
-           ]
-         }
-      ]
-    }
-    mandrill_client.messages.send_template template_name, template_content, message
+      content: {
+        template_id: 'new-retailer-drink-email'
+      },
+      #substitution_data: {
+      #  title: 'Daily News'
+      #}
+    })
   end # end of new retailer drink email
   
-  def retailer_drink_help(admin_email, location, beers)
-    # determine if this is prod environment
-    @prod = User.where(email: "carl@drinkknird.com")[0]
-    # mandrill template info
-    template_name = "retailer-drink-help-email"
-    template_content = []
-    message = {
-      merge: true,
-      merge_language: "handlebars",
-      to: [
-        {:email => admin_email}
+  def retailer_drink_help(admin_email, retailer, drinks)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
       ],
-      inline_css: true,
-      merge_vars: [
-        { rcpt: admin_email,
-          vars: [
-             {name: "location", content: location},
-             {name: "beers", content: beers}
-           ]
-         }
-      ]
+      content: {
+        template_id: 'retailer-drink-help-email'
+      },
+      substitution_data: {
+        retailer: retailer,
+        drinks: drinks,
+      }
     }
     
-    if !@prod.nil?
-      mandrill_client.messages.send_template template_name, template_content, message
-    end
+    response = sp.transmission.send_payload(payload)
+    p response
+    
   end # end of retailer_drink_help email
 end

@@ -63,8 +63,8 @@ gem 'filterrific'
 # trying a different sorting gem set
 gem 'sorted-activerecord'
 gem 'sorted-actionview'
-# for sending email through Mandrill
-gem 'mandrill-api', require: "mandrill"
+# for sending email through Sparkpost
+gem 'sparkpost'
 # providing authorization
 gem 'cancancan'
 # gem to help with jquery word cloud

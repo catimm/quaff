@@ -109,7 +109,6 @@ GEM
     equalizer (0.0.10)
     erubis (2.7.0)
     eventmachine (1.0.7)
-    excon (0.45.3)
     execjs (2.5.2)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
@@ -169,9 +168,6 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mandrill-api (1.0.53)
-      excon (>= 0.16.0, < 1.0)
-      json (>= 1.7.7, < 2.0)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     mime-types (2.6.1)
@@ -284,6 +280,8 @@ GEM
       activerecord (>= 4.0.0)
       activesupport
       sorted (~> 2.0.2)
+    sparkpost (0.1.4)
+      http (= 0.9.8)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -363,7 +361,6 @@ DEPENDENCIES
   jquery-ui-rails
   json
   koala (~> 1.8.0rc1)
-  mandrill-api
   nested_form!
   newrelic_rpm
   nokogiri
@@ -381,6 +378,7 @@ DEPENDENCIES
   searchkick
   sorted-actionview
   sorted-activerecord
+  sparkpost
   strip_attributes
   stripe
   thin

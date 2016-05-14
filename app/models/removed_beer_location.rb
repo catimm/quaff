@@ -1,20 +1,16 @@
 # == Schema Information
 #
-# Table name: beer_locations
+# Table name: removed_beer_locations
 #
 #  id             :integer          not null, primary key
 #  beer_id        :integer
 #  location_id    :integer
-#  tap_number     :integer
-#  draft_board_id :integer
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#
+#  removed_at     :datetime
 
-require 'test_helper'
+class RemovedBeerLocation < ActiveRecord::Base
+  belongs_to :beer
+  belongs_to :location
 
-class BeerLocationTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
 end

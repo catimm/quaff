@@ -106,6 +106,7 @@ ready = function() {
 					        data : { chosen_drink: JSON.stringify(datum) }
 					    });
 					} else {
+						console.log(datum.form);
 						if(datum.form == "edit") {
 							$.ajax({
 						        url : "/draft_boards/edit",
