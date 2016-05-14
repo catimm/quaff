@@ -1,4 +1,4 @@
-require 'task_helpers/scrape_helper'
+require 'scrape_helper'
 
 desc "Check Pine Box"
 task :check_pine_box => :environment do
