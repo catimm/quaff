@@ -2,11 +2,11 @@ module ScrapeHelper
   def self.process(drink_array, location_id)
     @this_location_id = location_id
     
-    # grab current Pine box beers in DB
-    @pine_box_beer_locations = BeerLocation.where(location_id: @this_location_id)
-    @pine_box_beer_location_ids = @pine_box_beer_locations.pluck(:id)
-    @pine_box_beer_ids = @pine_box_beer_locations.pluck(:beer_id)
-    @pine_box_beer = Beer.where(id: @pine_box_beer_ids)
+    # grab current Location drinks in DB
+    @this_location_beer_locations = BeerLocation.where(location_id: @this_location_id)
+    @this_location_beer_location_ids = @this_location_beer_locations.pluck(:id)
+    @this_location_beer_ids = @this_location_beer_locations.pluck(:beer_id)
+    @this_location_beer = Beer.where(id: @this_location_beer_ids)
 
     # create array of current BeerLocation ids
     @current_beer_location_ids = Array.new
@@ -142,7 +142,7 @@ module ScrapeHelper
           end
           
           # this beer already exists in our beers table, so we need to find out if it is already on tap at this location by mapping against beers at this location
-          if @pine_box_beer.map{|a| a.id}.include? @recognized_beer.id
+          if @this_location_beer.map{|a| a.id}.include? @recognized_beer.id
             # if it matches, find it's beer_locations id 
             this_beer_location_id = BeerLocation.where(location_id: @this_location_id, beer_id: @recognized_beer.id).pluck(:id)[0]
             # now insert its current BeerLocation ID into an array so its status doesn't get changed to "not current"
@@ -183,7 +183,7 @@ module ScrapeHelper
 
           
     # create list of not current Beer Location IDs
-    @not_current_beer_location_ids = @pine_box_beer_location_ids - @current_beer_location_ids
+    @not_current_beer_location_ids = @this_location_beer_location_ids - @current_beer_location_ids
     # change not current beers status in DB
     if !@not_current_beer_location_ids.empty?
       @not_current_beer_location_ids.each do |beer_location_id|

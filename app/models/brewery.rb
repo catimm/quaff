@@ -37,7 +37,6 @@ class Brewery < ActiveRecord::Base
   end
   
   def search_data
-    Rails.logger.debug("This fires in model")
     {
       brewery_name: brewery_name,
       beer_name: beers.map(&:beer_name).join('')
