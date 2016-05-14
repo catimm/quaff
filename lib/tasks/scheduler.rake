@@ -1,4 +1,4 @@
-require 'scrape_helper'
+require "#{Rails.root}/lib/assets/scrape_helper"
 
 desc "Check Pine Box"
 task :check_pine_box => :environment do
