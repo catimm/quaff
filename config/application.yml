@@ -1,7 +1,7 @@
 # Add application configuration variables here, as shown below.
 
 # SparkPost API
-SPARKPOST_API_KEY: b771cf6c07e1bef9f406880eb11eeaafab9f2c6c
+SPARKPOST_API_KEY: ce93d6f1775ac7d88653b8bd45bbf792e2f81b29
 
 staging:
   # Searchbox API

@@ -3,88 +3,28 @@ class BeerUpdates < ActionMailer::Base
   require 'open-uri'
   @host = open('https://api.sparkpost.com')
   
-  def new_beers_email(admin_email, location, beers)
-    # determine if this is prod environment
-    @prod = User.where(email: "carl@drinkknird.com")[0]
-    # mandrill template info
-    template_name = "new-beers-email"
-    template_content = []
-    message = {
-      merge: true,
-      merge_language: "handlebars",
-      to: [
-        {:email => admin_email}
+  def new_db_additions(admin_email, breweries, drinks)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
       ],
-      inline_css: true,
-      merge_vars: [
-        { rcpt: admin_email,
-          vars: [
-             {name: "location", content: location},
-             {name: "beers", content: beers}
-           ]
-         }
-      ]
+      content: {
+        template_id: 'new-db-additions-email'
+      },
+      substitution_data: {
+        breweries: breweries,
+        drinks: drinks,
+      }
     }
     
-    if !@prod.nil?
-      mandrill_client.messages.send_template template_name, template_content, message
-    end
-  end # end of new beers added email
-  
-  def new_breweries_email(admin_email, location, breweries)
-    # determine if this is prod environment
-    @prod = User.where(email: "carl@drinkknird.com")[0]
-    # mandrill template info
-    template_name = "new-breweries-email"
-    template_content = []
-    message = {
-      merge: true,
-      merge_language: "handlebars",
-      to: [
-        {:email => admin_email}
-      ],
-      inline_css: true,
-      merge_vars: [
-        { rcpt: admin_email,
-          vars: [
-             {name: "location", content: location},
-             {name: "breweries", content: breweries}
-           ]
-         }
-      ]
-    }
+    response = sp.transmission.send_payload(payload)
+    p response
     
-    if !@prod.nil?
-      mandrill_client.messages.send_template template_name, template_content, message
-    end
-  end # end of new beers added email
-  
-  def user_added_beers_email(admin_email, user, beers)
-    # determine if this is prod environment
-    @prod = User.where(email: "carl@drinkknird.com")[0]
-    # mandrill template info
-    template_name = "new-beers-email"
-    template_content = []
-    message = {
-      merge: true,
-      merge_language: "handlebars",
-      to: [
-        {:email => admin_email}
-      ],
-      inline_css: true,
-      merge_vars: [
-        { rcpt: admin_email,
-          vars: [
-             {name: "location", content: user},
-             {name: "beers", content: beers}
-           ]
-         }
-      ]
-    }
-    if !@prod.nil?
-      mandrill_client.messages.send_template template_name, template_content, message
-    end
-  end # end of user added email
+  end # end of retailer_drink_help email
   
   def info_requested_email(admin_email, name, email)
     Rails.logger.debug("Name: #{name.inspect}")
@@ -113,34 +53,6 @@ class BeerUpdates < ActionMailer::Base
       mandrill_client.messages.send_template template_name, template_content, message
     end
   end # end of user added email
-  
-  def tracking_beer_email(email, beer_name, beer_id, brewery_name, brewery_id, username, location)
-
-    website = root_url
-    template_name = "tracking-beer-email"
-    template_content = []
-    message = {
-      merge: true,
-      to: [
-        {:email => email}
-      ],
-      inline_css: true,
-      merge_vars: [
-        { rcpt: email,
-          vars: [
-             {name: "beer_name", content: beer_name},
-             {name: "beer_id", content: beer_id},
-             {name: "brewery_name", content: brewery_name},
-             {name: "brewery_id", content: brewery_id},
-             {name: "username", content: username},
-             {name: "location", content: location},
-             {name: "website", content: website}
-           ]
-         }
-      ]
-    }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end # end of tracking beer email
   
   def porting_details_email(username, total_drinks, total_drinks_added, total_new_breweries, total_new_drinks, new_drink_info, new_drink_info_count, no_beer_type_id, no_beer_type_id_count)
     # determine if this is prod environment

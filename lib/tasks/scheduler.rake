@@ -388,3 +388,51 @@ task :assess_drink_recommendations => :environment do
       UserDrinkRecommendation.create(@compiled_assessed_drinks)
    end # end of loop for each user
 end # end of assessing drink recommendations task
+
+desc "Find Recent DB Additions"
+task :find_recent_additionss => :environment do
+    # set admin emails to receive updates
+    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+    
+    # set current Time
+    @now = Time.now
+    # get breweries added by users or locations in last 24 hours
+    @new_breweries = Brewery.where(created_at: (@now - 24.hours)..Time.now)
+    # get drinks added added by users or locations in last 24 hours
+    @new_drinks = Beer.where(created_at: (@now - 24.hours)..Time.now).where('touched_by_user IS NOT NULL OR touched_by_location IS NOT NULL')
+    
+    # create array to hold info new brewery info
+    @new_breweries_for_email = Array.new
+    
+    # prepare new brewery info for email
+    @new_breweries.each do |brewery|
+      this_brewery = brewery.brewery_name + "[id: " + brewery.id.to_s + "]" 
+      @new_breweries_for_email << this_brewery
+    end
+    #Rails.logger.debug("New breweries added: #{@new_breweries_for_email.inspect}")
+    # create array to hold info new drink info
+    @new_drinks_for_email = Array.new
+    
+    # prepare new brewery info for email
+    @new_drinks.each do |drink|
+      # get info about who added it
+      if drink.touched_by_user.nil?
+        @contributor = Location.find(drink.touched_by_location)
+        @contributor_name = @contributor.name
+        @conributor_id = drink.touched_by_location
+      else
+        @contributor = User.find(drink.touched_by_user)
+        @contributor_name = @contributor.username
+        @conributor_id = drink.touched_by_user
+      end
+      this_drink = drink.brewery.brewery_name + "[id: " + drink.brewery.id.to_s + "] " + drink.beer_name + "[id: " + drink.id.to_s + "] (added by: " + @contributor_name + "[id: " + @conributor_id.to_s + "])" 
+      @new_drinks_for_email << this_drink
+    end
+    #Rails.logger.debug("New drinks added: #{@new_drinks_for_email.inspect}")
+    # send admin emails with new drink additions
+    if !@new_breweries_for_email.nil? || !@new_drinks_for_email.nil?
+      @admin_emails.each do |admin_email|
+        BeerUpdates.new_db_additions(admin_email, @new_breweries_for_email, @new_drinks_for_email).deliver_now
+      end
+    end
+end # end of assessing drink recommendations task
