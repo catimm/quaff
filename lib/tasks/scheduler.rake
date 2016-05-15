@@ -390,7 +390,7 @@ task :assess_drink_recommendations => :environment do
 end # end of assessing drink recommendations task
 
 desc "Find Recent DB Additions"
-task :find_recent_additionss => :environment do
+task :find_recent_additions => :environment do
     # set admin emails to receive updates
     @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
     

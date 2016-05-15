@@ -7,13 +7,7 @@
 		<%= f.text_field :beer_name, :class => "form-control", placeholder: "Beer name" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
-		<%= f.text_field :short_beer_name, :class => "form-control", placeholder: "Short beer name" %>
-	</div>
-	<div class="col-sm-6 col-xs-12">
 		<%= f.collection_select :beer_type_id, @beer_types, :id, :beer_type_name, {prompt: "Select a beer type"}, {class: "form-control"} %>
-	</div>
-	<div class="col-sm-6 col-xs-12">
-		<%= f.text_field :original_descriptors, :class => "form-control", placeholder: "Beer descriptors [old field]" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :beer_abv, :class => "form-control", placeholder: "Beer ABV" %>
@@ -75,8 +69,15 @@
 	<div class="col-sm-6 col-xs-12">
   		<%= f.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>
 	</div>
-	<div class="col-sm-3 col-xs-0"></div>
-	<div class="col-sm-9 col-xs-12">
+	<div class="col-xs-12 available-format-row">
+  		<p class="available-format-header">Choose available formats: </p>
+  		<% @size_formats.each do |format| %>
+		  <label class="li">
+		  <%= check_box_tag :size_format_ids, format.id, @beer.size_formats.include?(format), :name => 'beer[size_format_ids][]' %><%= format.format_name %></label>
+		<% end %>
+	</div>
+	<div class="col-sm-4 col-xs-0"></div>
+	<div class="col-sm-8 col-xs-12">
 		<%= f.label :dont_include, "Avoid showing any related info in Views?" %>
 		<%= f.check_box :dont_include %>
 	</div>		

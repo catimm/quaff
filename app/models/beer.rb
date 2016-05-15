@@ -53,8 +53,11 @@ class Beer < ActiveRecord::Base
   has_many :locations, through: :beer_locations
   has_many :inventories
   has_many :size_formats, through: :inventories
+  
   has_many :beer_formats
   has_many :size_formats, through: :beer_formats
+  accepts_nested_attributes_for :beer_formats, :allow_destroy => true  
+  
   has_many :user_beer_ratings
   has_many :users, through: :user_beer_ratings
   has_many :wishlists
@@ -204,21 +207,25 @@ class Beer < ActiveRecord::Base
 
   # scope beers that don't have all related info in the DB
   scope :need_attention_beers, -> { 
-    where(beer_rating_one: nil, beer_rating_two: nil, beer_rating_three: nil, beer_type_id: nil, 
-          rating_one_na: nil, rating_two_na: nil, rating_three_na: nil, dont_include: [false, nil]) 
+    includes(:beer_formats).where(beer_formats: { beer_id: nil })     
     }
   # scope beers that have all related info in the DB
   scope :complete_beers, -> { 
     where("rating_one_na = ? OR beer_rating_one IS NOT NULL", true).
     where("rating_two_na = ? OR beer_rating_two IS NOT NULL", true).
     where("rating_three_na = ? OR beer_rating_three IS NOT NULL", true).
-    where.not(beer_type_id: nil) }
+    where.not(beer_type_id: nil).
+    joins(:beer_formats).
+    where('beer_formats.beer_id IS NOT NULL') }
+    
   # scope beers that have partial related info in the DB
   scope :usable_incomplete_beers, -> {
-    where("rating_one_na = ? OR beer_rating_one IS NOT NULL OR beer_type_id IS NOT NULL", true).
+    where("rating_one_na = ? OR beer_rating_one IS NOT NULL OR beer_type_id IS NOT NULL", true)
     where("rating_two_na IS NULL OR rating_two_na = ?", false).
     where("rating_three_na IS NULL OR rating_three_na = ?", false).
-    where(beer_rating_two: nil, beer_rating_three: nil, dont_include: [false, nil]) 
+    where(beer_rating_two: nil, beer_rating_three: nil, dont_include: [false, nil]).
+    joins(:beer_formats).
+    where('beer_formats.beer_id IS NOT NULL')
   }
   
   # get unique beer descriptors

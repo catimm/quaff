@@ -5,7 +5,7 @@ class Admin::BeersController < ApplicationController
   def index
     # find non-collab beers produced by brewery
     @brewery_beers = Beer.all_brewery_beers(params[:brewery_id]).uniq
-    Rails.logger.debug("Brewery beers: #{@brewery_beers.inspect}")
+    #Rails.logger.debug("Brewery beers: #{@brewery_beers.inspect}")
     #@brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     # find collab beers produced by brewery
     #@collab_brewery_beer_ids = BeerBreweryCollab.where(brewery_id: params[:brewery_id]).pluck(:beer_id)
@@ -57,6 +57,8 @@ class Admin::BeersController < ApplicationController
   def new
     # prepare for new beer
     @beer = Beer.new
+    @beer_format = @beer.beer_formats.build
+    @size_formats = SizeFormat.all
     # grab brewery info
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     # grab list of beer types available
@@ -65,14 +67,25 @@ class Admin::BeersController < ApplicationController
   
   def create
     @beer = Beer.create!(beer_params)
+    
+    # save size formats if included
+    if !params[:beer][:size_format_ids].nil?
+      params[:beer][:size_format_ids].each do |format|
+        @new_drink_format = BeerFormat.new(beer_id: @beer.id, size_format_id: format)
+        @new_drink_format.save!
+      end
+    end
+    
     @beer_types = BeerType.all.order(:beer_type_name)
-    Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
+    #Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
     redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
   end
   
   def edit
     # find the beer to edit
     @beer = Beer.find(params[:id]) 
+    @beer_format = BeerFormat.where(beer_id: @beer.id)
+    @size_formats = SizeFormat.all
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     # grab beer type list for editing
@@ -85,7 +98,7 @@ class Admin::BeersController < ApplicationController
     # if the edit function is chosen, update this beer's attributes
     if params[:beer][:form_type] == "edit"
     # update beer attributes
-      @beer.update(beer_name: params[:beer][:beer_name], short_beer_name: params[:beer][:short_beer_name], beer_rating_one: params[:beer][:beer_rating_one], 
+      @beer.update(beer_name: params[:beer][:beer_name], beer_rating_one: params[:beer][:beer_rating_one], 
             number_ratings_one: params[:beer][:number_ratings_one], beer_rating_two: params[:beer][:beer_rating_two], 
             number_ratings_two: params[:beer][:number_ratings_two], beer_rating_three: params[:beer][:beer_rating_three],
             number_ratings_three: params[:beer][:number_ratings_three], beer_abv: params[:beer][:beer_abv], 
@@ -96,49 +109,53 @@ class Admin::BeersController < ApplicationController
             rating_one_na: params[:beer][:rating_one_na], rating_two_na: params[:beer][:rating_two_na], 
             rating_three_na: params[:beer][:rating_three_na], touched_by_user: params[:beer][:touched_by_user],
             user_addition: params[:beer][:user_addition], dont_include: params[:beer][:dont_include])
-      @beer.save
+      @beer.save!
+      
+      # save size formats if included
+      if !params[:beer][:size_format_ids].nil?
+        params[:beer][:size_format_ids].each do |format|
+          @new_drink_format = BeerFormat.new(beer_id: @beer.id, size_format_id: format)
+          @new_drink_format.save!
+        end
+      end
+      
     # if the delete function is chosen, delete this beer
     elsif params[:beer][:form_type] == "delete"
       # change associations in beer_locations table
       @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
-      Rails.logger.debug("Beer locations table: #{@beer_locations_to_change.inspect}")
       if !@beer_locations_to_change.empty?
-        Rails.logger.debug("Beer locations empty test is firing")
         @beer_locations_to_change.each do |beers|
-          Rails.logger.debug("Beer locations loop is firing")
           BeerLocation.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # change associations in alt_beer_names table
       @alt_beer_names_to_change = AltBeerName.where(beer_id: @beer.id)
-      Rails.logger.debug("Alt Beer names table: #{@alt_beer_names_to_change.inspect}")
       if !@alt_beer_names_to_change.empty?
-        Rails.logger.debug("Alt Beer names empty test is firing")
         @alt_beer_names_to_change.each do |beers|
-          Rails.logger.debug("Alt Beer names loop is firing")
           AltBeerName.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # change associations in user_beer_ratings table
       @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @beer.id)
-      Rails.logger.debug("User Beer ratings table: #{@user_beer_ratings_to_change.inspect}")
       if !@user_beer_ratings_to_change.empty?
-        Rails.logger.debug("User Beer ratings empty test is firing")
         @user_beer_ratings_to_change.each do |beers|
-          Rails.logger.debug("User Beer ratings loop is firing")
           UserBeerRating.update(beers.id, beer_id: params[:beer][:id])
         end
       end
       # change associations in user_beer_trackings table
       @user_beer_trackings_to_change = Wishlist.where(beer_id: @beer.id)
-      #Rails.logger.debug("User Beer trackings table: #{@user_beer_trackings_to_change.inspect}")
       if !@user_beer_trackings_to_change.empty?
-        #Rails.logger.debug("User Beer trackings empty test is firing")
         @user_beer_trackings_to_change.each do |beers|
-          #Rails.logger.debug("User Beer trackings loop is firing")
           Wishlist.update(beers.id, beer_id: params[:beer][:id])
         end
       end
+      # remove formats associated with this drink
+      @drink_formats = BeerFormat.where(beer_id: @beer.id)
+      if !@drink_formats.empty?
+        @drink_formats.delete_all
+      end
+      # then delete this instance of the beer
+      @beer.destroy
       # then delete associations with this beer in the collab table
       @collab_associations = BeerBreweryCollab.where(beer_id: @beer.id)
       if !@collab_associations.empty?
@@ -152,11 +169,9 @@ class Admin::BeersController < ApplicationController
 
   def current_beers
     @brewery_beers = Beer.live_beers.order(:beer_name)
-    Rails.logger.debug("Current Beer Info: #{@brewery_beers.inspect}")
     @beer_count = @brewery_beers.distinct.count('id')
     @beer = Beer.new
     @beer_types = BeerType.all.order(:beer_type_name)
-    Rails.logger.debug("Beer Types: #{@beer_types.inspect}")
   end
   
   def alt_beer_name
@@ -191,18 +206,6 @@ class Admin::BeersController < ApplicationController
     render :partial => 'admin/beers/clean_location'
   end
   
-  def clean_location
-    @beer_id = params[:beer_id] 
-    @location_id = params[:beer_location][:id]
-    @beer_locations = BeerLocation.where(beer_id: @beer_id, location_id: @location_id)
-    @beer_locations.each do |record|
-      if record.beer_is_current == "no"
-        record.destroy!
-      end
-    end
-    redirect_to admin_breweries_path
-  end
-  
   def descriptors
     Rails.logger.debug("Descriptors is called too")
     descriptors = Beer.descriptor_counts.by_tag_name(params[:q]).map{|t| {id: t.name, name: t.name }}
@@ -217,15 +220,12 @@ class Admin::BeersController < ApplicationController
     # collect existing beer descriptors
     def find_descriptor_tags
       @params_info = params[:id]
-      Rails.logger.debug("For Find Descriptor Tags method: #{@params_info.inspect}")
-      Rails.logger.debug("Find Descriptor Tags is called")
       @beer_descriptors = params[:id].present? ? Beer.find(params[:id]).descriptors.map{|t| {id: t.name, name: t.name }} : []
-      Rails.logger.debug("Beer Descriptors: #{@beer_descriptors.inspect}")
      end
     
     # Never trust parameters from the scary internet, only allow the white list through.
     def beer_params
-      params.require(:beer).permit(:beer_name, :short_beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
+      params.require(:beer).permit(:beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
       :number_ratings_two, :beer_rating_three, :number_ratings_three,:beer_abv, :beer_ibu, :brewery_id, :beer_image, 
       :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id,
       :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user, :user_addition, :dont_include)

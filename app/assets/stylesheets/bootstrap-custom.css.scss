@@ -1544,8 +1544,8 @@ $beer-header-lines-to-show-fp: 1;
 }
 
 .page-header {
-  margin: 17.5px 0 0 0;
-  padding: 0;
+  margin: 20px 0 0 0;
+  padding: 0 0 10px 0;
   .best-beer-header {
     margin-top: 5px;
     h3 {
@@ -2739,7 +2739,7 @@ div.jqcloud span.w1 { color: $light-blue; }
   color: $normal-text;
 }
 .brewery-list-holder {
-  margin-top: 140px;
+  margin-top: 155px;
 }
 #brewery_all_val {
   height: 30px;
@@ -2780,6 +2780,16 @@ div.jqcloud span.w1 { color: $light-blue; }
 .rating-na {
   padding-right: 0;
   font-size: 13px;
+}
+.available-format-row {
+  .available-format-header {
+    float: left;
+    margin-right: 5px;
+    color: $less-emphasized-text;
+  }
+  label {
+    margin: 0 5px 5px 5px;
+  }
 }
 .rating-checkbox {
   height: 41.5px;

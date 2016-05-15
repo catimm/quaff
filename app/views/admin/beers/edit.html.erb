@@ -11,13 +11,7 @@
 						<h3><%= @beer.beer_name %> <span class="last-updated">(last updated: <%= (@beer.updated_at).strftime("%B %e, %Y @ %l:%M %p") %> by N/A)</span></h3>
 					<% end %>
 				</div>
-				<% if current_user.role_id == 1 %>
-					<div class="col-sm-2 text-right">
-						<%= link_to "Clean Location", admin_clean_location_prep_path(@beer.id), class: "btn btn-warning delete-beer-info", data: {toggle: "modal", target: "#clean_location"} %>
-					</div>
-				<% else %>
-					<div class="col-sm-2 text-right"></div>
-				<% end %>
+				<div class="col-sm-4 text-right"></div>
 				<div class="col-sm-2 text-right">
 					<%= link_to "Delete", admin_delete_beer_prep_path(@this_brewery.id, @beer.id), class: "btn btn-warning delete-beer-info", data: {toggle: "modal", target: "#delete_beer"} %>
 				</div>
