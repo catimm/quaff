@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160514214948) do
+ActiveRecord::Schema.define(version: 20160517015504) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -139,6 +139,18 @@ ActiveRecord::Schema.define(version: 20160514214948) do
     t.string   "brewery_state_long"
     t.string   "facebook_url"
     t.string   "twitter_url"
+  end
+
+  create_table "delivery_preferences", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "drinks_per_week"
+    t.integer  "drinks_in_cooler"
+    t.integer  "new_percentage"
+    t.integer  "cooler_percentage"
+    t.integer  "small_format_percentage"
+    t.text     "additional"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "draft_boards", force: :cascade do |t|

@@ -1,4 +1,169 @@
 $(function () {
+	// set drink delivery estimate variable
+	var drink_delivery_estimate = gon.drink_delivery_estimate
+	var new_drink_estimate = gon.new_drink_estimate
+	var cooler_drink_estimate = gon.cooler_drink_estimate
+    var cellar_drink_estimate = gon.cellar_drink_estimate
+    var small_format_estimate = gon.small_format_estimate
+    var large_format_estimate = gon.large_format_estimate
+	
+	// set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	// for new vs repeat slider
+	$("#new_percentage").slider({
+		tooltip: 'hide'
+	});
+	$("#new_percentage").on("change", function(slideEvt) {
+		var new_value = slideEvt.value.newValue;
+		var repeat_value = (100 - new_value);
+		$("#new-preference").text(new_value);
+		$("#new-preference-2").text(new_value);
+		$("#repeat-preference").text(repeat_value);
+		
+		// set estimate value
+		if (drink_delivery_estimate != 0) {
+			var new_drink_estimate = Math.round((drink_delivery_estimate * new_value)/100)
+			var new_drink_delivery_estimate = "~ " + new_drink_estimate + " will be new to you"
+		} 
+		// insert estimate value statement	
+		$("#new_drink_estimate").text(new_drink_delivery_estimate);
+		
+		// send data to controller
+		delay(function(){
+			$.ajax({
+			  type: "POST",
+			  url: "/users/update_delivery/new_percentage-" + new_value
+			});
+	    }, 1000 );
+	});
+	
+	// for cooler vs cellar slider
+	$("#cooler_percentage").slider({
+		tooltip: 'hide'
+	});
+	$("#cooler_percentage").on("change", function(slideEvt) {
+		var cooler_value = slideEvt.value.newValue;
+		var cellar_value = (100 - cooler_value);
+		$("#cooler-preference").text(cooler_value);
+		$("#cooler-preference-2").text(cooler_value);
+		$("#cellar-preference").text(cellar_value);
+		
+		// set estimate value
+		if (drink_delivery_estimate != 0) {
+			var cooler_drink_estimate = Math.round((drink_delivery_estimate * cooler_value)/100)
+			var cellar_drink_estimate = (drink_delivery_estimate - cooler_drink_estimate)
+			var cooler_drink_delivery_estimate = "~ " + cooler_drink_estimate + " for your cooler; " + cellar_drink_estimate + " for your cellar"
+		}
+		// insert estimate value statement	
+		$("#cooler_drink_estimate").text(cooler_drink_delivery_estimate);
+		
+		// send data to controller
+		delay(function(){
+			$.ajax({
+			  type: "POST",
+			  url: "/users/update_delivery/cooler_percentage-" + cooler_value
+			});
+	    }, 1000 );
+	});
+	
+	// for small vs large format slider
+	$("#small_percentage").slider({
+		tooltip: 'hide'
+	});
+	$("#small_percentage").on("change", function(slideEvt) {
+		var small_value = slideEvt.value.newValue;
+		var large_value = (100 - small_value);
+		$("#small-preference").text(small_value);
+		$("#small-preference-2").text(small_value);
+		$("#large-preference").text(large_value);
+		
+		// set estimate value
+		if (drink_delivery_estimate != 0) {
+			var small_format_estimate = Math.round((drink_delivery_estimate * small_value)/100)
+			var large_format_estimate = (drink_delivery_estimate - small_format_estimate)
+			var small_format_delivery_estimate = "~ " + small_format_estimate + " in small format; " + large_format_estimate + " in large"
+		}
+		// insert estimate value statement	
+		$("#small_format_estimate").text(small_format_delivery_estimate);
+		
+		// send data to controller
+		delay(function(){
+			$.ajax({
+			  type: "POST",
+			  url: "/users/update_delivery/small_format_percentage-" + small_value
+			});
+	    }, 1000 );
+	});
+	
+	// send drinks/week delivery preference to controller
+	$("#delivery_preference_drinks_per_week").on("change", function() {
+		var drinks_per_week = $(this).val();
+		$.ajax({
+		  type: "POST",
+		  url: "/users/update_delivery/drinks_per_week-" + drinks_per_week
+		});
+	});
+	
+	// send max drinks in cellar delivery preference to controller
+	$("#delivery_preference_drinks_in_cooler").on("change", function() {
+		var drinks_in_cooler = $(this).val();
+		$.ajax({
+		  type: "POST",
+		  url: "/users/update_delivery/drinks_in_cooler-" + drinks_in_cooler
+		});
+	});
+	
+	// send additional delivery preferences to controller
+	$(document).on("keyup", "#delivery_preference_additional", function() {
+		var additional = $(this).val();
+		delay(function(){
+			alert(additional);
+			$.ajax({
+			  type: "POST",
+			  url: "/users/update_delivery/additional-" + additional
+			});
+	    }, 1000 );
+		
+	});
+	
+	// get width of estimate column
+	estimate_column_width = $("#estimate-column").width();
+	// make estimate tile holder same width as column
+	$("#scroller").width(estimate_column_width);
+	
+	// set function for sticky scroller
+	function moveScroller() {
+	    var move = function() {
+	        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
+	        var ot = $("#scroller-anchor").offset().top;
+	        var s = $("#scroller");
+	        if(st > ot) {
+	            s.css({
+	                position: "fixed",
+	                top: "100px"
+	            });
+	        } else {
+	            if(st <= ot) {
+	                s.css({
+	                    position: "relative",
+	                    top: ""
+	                });
+	            }
+	        }
+	    };
+	    $(window).scroll(move);
+	    move();
+	}
+	$(document).on("scroll", function() {
+	    moveScroller();
+	});
 	
 	// send form id to session variable
 	$(".fav-drink-field").one("focus", function() {
@@ -183,18 +348,11 @@ $(function () {
 		// prevent page from jumping to the top after click event
 		return false;
 	});
-	// set search delay function
-	var search_delay = (function(){
-	  var timer = 0;
-	  return function(callback, ms){
-	    clearTimeout (timer);
-	    timer = setTimeout(callback, ms);
-	  };
-	})();
+	
 	// search for drinks to add to supply
 	$(document).on("keyup", ".supply-drink-search", function() {
 		value = $(this).val();
-		search_delay(function(){
+		delay(function(){
 			$.ajax({
 			  type: "GET",
 			  url: "/users/drink_search/1/" + value

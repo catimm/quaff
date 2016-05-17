@@ -294,6 +294,13 @@ label {
   margin-top: 70%;
   background: $action-background;
 }
+::-webkit-input-placeholder, :-moz-placeholder, ::-moz-placeholder, :-ms-input-placeholder {
+  color: $gray-body-background;
+  font-size: 11px;
+  position: relative;
+  z-index: 1000;
+  font-family: inherit !important;
+}
 .formButton-index-Banner2 {
   width: 100%;
   font-size: 18px;
@@ -2009,7 +2016,7 @@ $beer-header-lines-to-show-fp: 1;
 .changeButton.delete-acct {
   background: $current-beer-attention-needed-background;
   width: 50%;
-  margin-top: 5px;
+  margin-top: 15px;
   margin-bottom: 10px;
 }
 .changeButton.change-password {
@@ -2270,6 +2277,110 @@ $beer-header-lines-to-show-fp: 1;
   color: $combined-drink-text !important;
   line-height: 1;
   text-decoration: underline;
+}
+// User Delivery Preference Page
+.new_delivery_preference {
+  margin-bottom: 40px;
+  select {
+    margin-top: 20px;
+  }
+}
+.delivery-preference-prompt {
+  color: $normal-text;
+}
+#delivery-new-slider.slider.slider-horizontal {
+  width: 100% !important;
+  margin-top: 30px !important;
+}
+#delivery-new-slider .slider-selection {
+  background: $action-background;
+}
+#delivery-cooler-slider.slider.slider-horizontal {
+  width: 100% !important;
+  margin-top: 30px !important;
+}
+#delivery-cooler-slider .slider-selection {
+  background: $action-background;
+}
+#delivery-format-slider.slider.slider-horizontal {
+  width: 100% !important;
+  margin-top: 30px !important;
+}
+#delivery-format-slider .slider-selection {
+  background: $action-background;
+}
+.delivery-preference-percentage {
+  font-weight: 500;
+  margin-bottom: 20px;
+  .preference-label {
+    display: block !important;
+    font-size: 60%;
+    line-height: 0.9 !important;
+  }
+}
+.delivery-preference-percentage.new, .delivery-preference-percentage.cooler, .delivery-preference-percentage.small-format {
+  color: $action-background;
+}
+.delivery-preference-percentage.repeat, .delivery-preference-percentage.cellar, .delivery-preference-percentage.large-format {
+  color: $normal-text;
+}
+.delivery-preference-confirmation-message {
+  color: $normal-text;
+  span {
+    color: $action-background;
+    font-weight: 500;
+  }
+}
+#delivery-new-slider .slider-handle {
+  background: $action-background;
+}
+.delivery-additional-request {
+  ::-webkit-input-placeholder {
+    font-size: 14px !important;
+  }
+  :-moz-placeholder { 
+    font-size: 14px !important;
+  }
+  ::-moz-placeholder {  
+    font-size: 14px !important;
+  }
+  :-ms-input-placeholder {  
+    font-size: 14px !important;
+  }
+}
+#scroller-anchor {
+  margin-top: -30px !important;
+}
+.estimated-delivery-price-holder {
+  margin: -30px 0 10px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  padding-left: 10px;
+}
+.estimated-delivery-price-header {
+  color: $normal-text;
+  margin: 10px 0;
+}
+.estimation-list {
+  color: $normal-text;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  li {
+    color: $normal-text;
+  }
+}
+.estimation-text {
+  color: $normal-text;
+}
+.cost-range-text {
+  color: $step-background;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-right: 10px;
 }
 // Rating tile CSS
 .recent-rating-tile {
@@ -2850,13 +2961,7 @@ input[type="checkbox"] {
   background: $step-background;
   border-color: #4cae4c !important;
 }
-::-webkit-input-placeholder, :-moz-placeholder, ::-moz-placeholder, :-ms-input-placeholder {
-  color: $gray-body-background;
-  font-size: 11px;
-  position: relative;
-  z-index: 1000;
-  font-family: inherit !important;
-}
+
 // Admin drink recommendation page
 .dropdown-title {
   float: left;

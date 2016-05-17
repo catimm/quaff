@@ -1,0 +1,37 @@
+# == Schema Information
+#
+# Table name: delivery_preferences
+#
+#  id                      :integer          not null, primary key
+#  user_id                 :integer
+#  drinks_per_week         :integer
+#  drinks_in_cooler        :integer
+#  new_percentage          :integer
+#  cooler_percentage       :integer
+#  small_format_percentage :integer
+#  additional              :text
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  drinks_per_week: 1
+  drinks_in_cooler: 1
+  new_percentage: 1
+  cooler_percentage: 1
+  small_format_percentage: 1
+  cost_notification_percentage: 1
+  additional: MyText
+
+two:
+  user_id: 1
+  drinks_per_week: 1
+  drinks_in_cooler: 1
+  new_percentage: 1
+  cooler_percentage: 1
+  small_format_percentage: 1
+  cost_notification_percentage: 1
+  additional: MyText

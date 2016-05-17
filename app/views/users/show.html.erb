@@ -1,21 +1,45 @@
 <%= render 'layouts/header' %> 
-<div class="container">
-	<div class="row no-margin">
-		<div class="col-xs-12">
-			<h1 class="user-account-header"><%= current_user.username %></h1>
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-sm-5 no-padding">
+			<h1 class="section-header">Profile Settings</h1>
+			<h4 class="drinks-rated no-margin"><%= current_user.username %> joined <%= (current_user.created_at).strftime("%b %e, %Y") %></h4>
 		</div>
 	</div>
-	<div class="row no-margin">
-		<div class="col-xs-12">
-			<h5 class="account-options selected" id="user-profile-link">Profile</h5>
-			<h5 class="account-options" id="user-notifications-link">Notifications</h5>
+</div>
+<div class="row">
+	<div class="container" id="preference-view-choice">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<%= form_for @user do |f| %>
+					<%= f.hidden_field :user_form, :value => "profile" %>
+					<%= f.text_field :username, :class => "form-control", placeholder: "Username" %>
+					<%= f.text_field :first_name, :class => "form-control", placeholder: "First name" %>
+					<%= f.text_field :email, :class => "form-control", placeholder: "Email" %>
+					<%= f.submit "Update profile", class: "btn btn-default btn-success formButton" %>
+				<% end %>
+				<%- flash.each do |name, msg| -%>
+					<% if name == "success" || name == "failure" %>
+						<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+					<% end %>
+				<%- end -%>
+				<%= link_to "change password", "#", class: 'btn btn-default btn-danger changeButton change-password', id: 'change-password-button' %>
+				<div class="password-change-form hidden">
+					<%= form_for(@user, :url => { :action => "update_password" } ) do |f| %>
+						<%= f.password_field :current_password, :class => "form-control", placeholder: "Current password" %>
+						<%= f.password_field :password, :class => "form-control", placeholder: "New password" %>
+						<%= f.password_field :password_confirmation, :class => "form-control", placeholder: "Confirm new password" %>
+						<%= f.submit "Change password", class: "btn btn-default btn-success formButton" %>	
+					<% end %>
+				</div>
+			</div>
+			<div class="col-xs-0 col-sm-2 col-md-4"></div>
+			<div class="col-xs-12 col-sm-4 col-md-4">
+				<%= link_to user_path(current_user.id), :method => :delete, class: 'btn btn-default btn-danger changeButton delete-acct', data: {confirm: "Delete your account?"} do %>
+					<i class="fa fa-minus"> delete account</i>
+				<% end %>
+			</div>
 		</div>
-	</div>
-	<div class="row no-margin show" id="user-profile">
-		<%= render 'users/user_profile' %>
-	</div>
-	<div class="row no-margin hidden" id="user-notifications">
-		<%= render 'users/user_notifications' %>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

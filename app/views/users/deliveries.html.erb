@@ -1,0 +1,25 @@
+<%= render 'layouts/header' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-sm-5 no-padding">
+				<h1 class="section-header">Delivery Settings</h1>
+			</div>
+			<div class="col-sm-2"></div>
+			<div class="col-sm-2">
+				<%= link_to "Deliveries", user_deliveries_path(current_user.id, 'delivery'), class: "drink-preference-view-option #{@delivery_chosen}", id: "styles" %>
+			</div>
+			<div class="col-sm-3 no-padding-left">
+				<%= link_to "Payments", user_deliveries_path(current_user.id, 'payment'), class: "drink-preference-view-option #{@payment_chosen}", id: "fav-drinks" %>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container" id="preference-view-choice">
+			<% if @view == "delivery"%>
+				<%= render 'user_delivery' %>
+			<% else %>
+				<%= render 'user_payment' %>
+			<% end %>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>
