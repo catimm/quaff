@@ -277,6 +277,7 @@ class UsersController < ApplicationController
     
     # prepare for Delivery view  
     if @view == "delivery"
+      
       # set chosen style variable for link CSS
       @delivery_chosen = "chosen"
       @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
@@ -294,7 +295,8 @@ class UsersController < ApplicationController
           end
           @drink_delivery_estimate = "~ " + @drink_per_week_calculation.to_s + " drinks in each delivery"
           # send delivery estimate to JQuery
-          gon.drink_delivery_estimate = @drink_per_week_calculation
+          gon.drinks_per_week = @delivery_preferences.drinks_per_week
+          gon.drinks_in_cooler = @delivery_preferences.drinks_in_cooler
         else
           @drink_delivery_estimate = "Total drinks in each delivery TBD"
           # send delivery estimate to JQuery
@@ -313,18 +315,15 @@ class UsersController < ApplicationController
             end
             @new_drink_delivery_estimate = "~ " + @new_drink_estimate.to_s + " will be new to you"
             # send delivery estimate to JQuery
+            gon.new_value = @new_percentage
             gon.new_drink_estimate = @new_drink_estimate
           else
             @drink_delivery_estimate = "New/repeat drink mix TBD"
-            # send delivery estimate to JQuery
-            gon.new_drink_estimate = 0
           end
         else
           @new_percentage = 50
           @repeat_percentage = 50
           @drink_delivery_estimate = "New/repeat drink mix TBD"
-          # send delivery estimate to JQuery
-          gon.new_drink_estimate = 0
         end
         if !@delivery_preferences.cooler_percentage.nil?
           @cooler_percentage = @delivery_preferences.cooler_percentage
@@ -340,21 +339,17 @@ class UsersController < ApplicationController
             end
             @cooler_delivery_estimate = "~ " + @cooler_drink_estimate.to_s + " for your cooler; " + @cellar_drink_estimate.to_s + " for your cellar"
             # send delivery estimate to JQuery
+            gon.cooler_value = @cooler_percentage
+            gon.cellar_value = @cellar_percentage
             gon.cooler_drink_estimate = @cooler_drink_estimate
             gon.cellar_drink_estimate = @cellar_drink_estimate
           else
             @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
-            # send delivery estimate to JQuery
-            gon.cooler_drink_estimate = 0
-            gon.cellar_drink_estimate = 0
           end
         else
           @cooler_percentage = 50
           @cellar_percentage = 50
           @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
-          # send delivery estimate to JQuery
-          gon.cooler_drink_estimate = 0
-          gon.cellar_drink_estimate = 0
         end
         if !@delivery_preferences.small_format_percentage.nil?
           @small_percentage = @delivery_preferences.small_format_percentage
@@ -370,23 +365,18 @@ class UsersController < ApplicationController
             end
             @small_delivery_estimate = "~ " + @small_format_estimate.to_s + " in small format; " + @large_format_estimate.to_s + " in large"
             # send delivery estimate to JQuery
+            gon.small_value = @small_percentage
+            gon.large_value = @large_percentage
             gon.small_format_estimate = @small_format_estimate
             gon.large_format_estimate = @large_format_estimate
           else
             @small_delivery_estimate = "Small/large format mix TBD"
-            # send delivery estimate to JQuery
-            gon.small_format_estimate = 0
-            gon.large_format_estimate = 0
           end
         else
           @small_percentage = 50
           @large_percentage = 50
           @small_delivery_estimate = "Small/large format mix TBD"
-          # send delivery estimate to JQuery
-          gon.small_format_estimate = 0
-          gon.large_format_estimate = 0
         end
-        #Rails.logger.debug("Delivery Preferences: #{@delivery_preferences.inspect}")
       else
         @delivery_preferences = DeliveryPreference.new
         # set slider values
@@ -397,6 +387,38 @@ class UsersController < ApplicationController
         @small_percentage = 50
         @large_percentage = 50
       end
+      
+      # sets cost estimate
+      # first set average drink costs
+      @small_cooler_cost = 3
+      gon.small_cooler_cost = @small_cooler_cost
+      @large_cooler_cost = 9
+      gon.large_cooler_cost = @large_cooler_cost
+      @small_cellar_cost = 13
+      gon.small_cellar_cost = @small_cellar_cost
+      @large_cellar_cost = 18
+      gon.large_cellar_cost = @large_cellar_cost
+      
+      # now calculate cost estimates
+      if @drink_per_week_calculation && @cooler_drink_estimate && @small_format_estimate
+        # determine drink numbers for each category
+        @number_of_small_cooler = (@drink_per_week_calculation * (@delivery_preferences.cooler_percentage * 0.01) * (@delivery_preferences.small_format_percentage * 0.01))
+        @number_of_large_cooler = (@drink_per_week_calculation * (@delivery_preferences.cooler_percentage * 0.01) * (1 - (@delivery_preferences.small_format_percentage * 0.01)))
+        @number_of_small_cellar = (@drink_per_week_calculation * (1 - (@delivery_preferences.cooler_percentage * 0.01)) * (@delivery_preferences.small_format_percentage * 0.01))
+        @number_of_large_cellar = (@drink_per_week_calculation * (1 - (@delivery_preferences.cooler_percentage * 0.01)) * (1 - (@delivery_preferences.small_format_percentage * 0.01)))
+        # multiply drink numbers by drink costs
+        @cost_estimate_cooler_small = (@small_cooler_cost * @number_of_small_cooler)
+        @cost_estimate_cooler_large = (@large_cooler_cost * @number_of_large_cooler)
+        @cost_estimate_cellar_small = (@small_cellar_cost * @number_of_small_cellar)
+        @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
+        @total_cost_estimate = @cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large
+        @cost_estimate_low = (@total_cost_estimate * 0.9).round
+        @cost_estimate_high = (@total_cost_estimate * 1.1).round
+        @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s 
+      else
+        @cost_estimate = "$TBD"
+      end
+    
     else
       @payment_chosen = "chosen"
     end
@@ -454,6 +476,8 @@ class UsersController < ApplicationController
                                           small_format_percentage: @data_value, new_percentage: 50, cooler_percentage: 50)
         @new_user_delivery_preferences.save!
       end
+    elsif @column == "price_estimate"
+        @user_delivery_preferences.update(price_estimate: @data_value)
     else
       if !@user_delivery_preferences.blank?
         @user_delivery_preferences.update(additional: @data_value)

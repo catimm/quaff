@@ -12,6 +12,7 @@
 #  additional              :text
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  price_estimate          :integer
 #
 
 class DeliveryPreference < ActiveRecord::Base

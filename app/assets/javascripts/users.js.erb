@@ -1,11 +1,19 @@
 $(function () {
 	// set drink delivery estimate variable
-	var drink_delivery_estimate = gon.drink_delivery_estimate
-	var new_drink_estimate = gon.new_drink_estimate
-	var cooler_drink_estimate = gon.cooler_drink_estimate
-    var cellar_drink_estimate = gon.cellar_drink_estimate
-    var small_format_estimate = gon.small_format_estimate
-    var large_format_estimate = gon.large_format_estimate
+	var drink_per_week_calculation;
+	var drinks_per_week = gon.drinks_per_week
+    var drinks_in_cooler = gon.drinks_in_cooler
+    var estimates_for_delivery;
+	var new_value = gon.new_value;
+	var new_drink_estimate = gon.new_drink_estimate;
+	var cooler_value = gon.cooler_value;
+	var cellar_value = gon.cellar_value;
+	var cooler_drink_estimate = gon.cooler_drink_estimate;
+    var cellar_drink_estimate = gon.cellar_drink_estimate;
+    var small_value = gon.small_value;
+	var	large_value = gon.large_value;
+    var small_format_estimate = gon.small_format_estimate;
+    var large_format_estimate = gon.large_format_estimate;
 	
 	// set delay function
 	var delay = (function(){
@@ -16,25 +24,102 @@ $(function () {
 	  };
 	})();
 	
+	// set max drinks to be delivered
+	estimates_for_delivery = function(){
+		if ((drinks_per_week != undefined) && (drinks_in_cooler != undefined)) {
+	    	if ((drinks_per_week * 2.4) > drinks_in_cooler) {
+	    		drink_per_week_calculation = drinks_in_cooler
+	    	} else {
+	    		drink_per_week_calculation = Math.round(drinks_per_week * 2.4)
+	    	}
+	    	// create drink per week estimate value statement
+	    	var drinks_per_week_statement = "~ " + drink_per_week_calculation + " drinks in each delivery"
+	    	
+	    	// insert new drink estimate value statement	
+			if (new_drink_estimate != undefined) {
+				// reset new drink estimate value
+				new_drink_estimate = Math.round((drink_per_week_calculation * new_value)/100);
+				var new_drink_per_week_calculation = "~ " + new_drink_estimate + " will be new to you"
+				$("#new_drink_estimate").text(new_drink_per_week_calculation);
+			}
+			// insert cooler estimate value statement	
+			if (cooler_drink_estimate != undefined) {
+				// reset cooler and cellar estimate values
+				cooler_drink_estimate = Math.round((drink_per_week_calculation * cooler_value)/100);
+				cellar_drink_estimate = (drink_per_week_calculation - cooler_drink_estimate);
+				var cooler_drink_per_week_calculation = "~ " + cooler_drink_estimate + " for your cooler; " + cellar_drink_estimate + " for your cellar";
+				$("#cooler_drink_estimate").text(cooler_drink_per_week_calculation);
+			}
+			// insert small format estimate value statement	
+			if (small_format_estimate != undefined) {
+				// reset small and large format estimate values
+				small_format_estimate = Math.round((drink_per_week_calculation * small_value)/100);
+				large_format_estimate = (drink_per_week_calculation - small_format_estimate);
+				var small_format_delivery_estimate = "~ " + small_format_estimate + " in small format; " + large_format_estimate + " in large";
+				$("#small_format_estimate").text(small_format_delivery_estimate);
+			}
+	    } 
+	    // insert drink per week estimate value statement
+	    $("#drink-delivery-estimate").text(drinks_per_week_statement);
+	    
+	    //update cost estimate
+		delivery_estimate();
+	};
+	
+	// set function to calculate delivery estimate cost
+	var delivery_estimate = (function(){
+		if ((drink_per_week_calculation !== undefined) && (cooler_value !== undefined) && (small_value !== undefined)) {
+			// determine drink numbers for each category
+        	var number_of_small_cooler = (drink_per_week_calculation * (cooler_value * 0.01) * (small_value * 0.01));
+        	var number_of_large_cooler = (drink_per_week_calculation * (cooler_value * 0.01) * (large_value * 0.01));
+        	var number_of_small_cellar = (drink_per_week_calculation * (cellar_value * 0.01) * (small_value * 0.01));
+        	var number_of_large_cellar = (drink_per_week_calculation * (cellar_value * 0.01) * (large_value * 0.01));
+        	
+        	// multiply drink numbers by drink costs
+        	var cost_estimate_cooler_small = (gon.small_cooler_cost * number_of_small_cooler);
+	        var cost_estimate_cooler_large = (gon.large_cooler_cost * number_of_large_cooler);
+	        var cost_estimate_cellar_small = (gon.small_cellar_cost * number_of_small_cellar);
+	        var cost_estimate_cellar_large = (gon.large_cellar_cost * number_of_large_cellar);
+	        var total_cost_estimate = Math.round(cost_estimate_cooler_small + cost_estimate_cooler_large + cost_estimate_cellar_small + cost_estimate_cellar_large);
+	        var cost_estimate_low = Math.round(total_cost_estimate * 0.9);
+	        var cost_estimate_high = Math.round(total_cost_estimate * 1.1);
+	        var cost_estimate = "$" + cost_estimate_low + " - $" + cost_estimate_high;
+	        // send price estimate data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/users/update_delivery/price_estimate-" + total_cost_estimate
+			}); 
+		} else {
+			var cost_estimate = "$TBD"; 
+		}
+		$("#cost_estimate").text(cost_estimate);
+	});
+	
 	// for new vs repeat slider
 	$("#new_percentage").slider({
 		tooltip: 'hide'
 	});
 	$("#new_percentage").on("change", function(slideEvt) {
-		var new_value = slideEvt.value.newValue;
+		new_value = slideEvt.value.newValue;
 		var repeat_value = (100 - new_value);
 		$("#new-preference").text(new_value);
 		$("#new-preference-2").text(new_value);
 		$("#repeat-preference").text(repeat_value);
 		
-		// set estimate value
-		if (drink_delivery_estimate != 0) {
-			var new_drink_estimate = Math.round((drink_delivery_estimate * new_value)/100)
-			var new_drink_delivery_estimate = "~ " + new_drink_estimate + " will be new to you"
-		} 
-		// insert estimate value statement	
-		$("#new_drink_estimate").text(new_drink_delivery_estimate);
+		// set new drink estimate value if it has not yet been set
+		if (new_drink_estimate == undefined) {
+			new_drink_estimate = Math.round((drink_per_week_calculation * new_value)/100);
+		}
 		
+		//update delivery estimates
+		estimates_for_delivery();
+		
+		// temporarily highlight this change
+		$("#new_drink_estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#new_drink_estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+	    
 		// send data to controller
 		delay(function(){
 			$.ajax({
@@ -49,21 +134,27 @@ $(function () {
 		tooltip: 'hide'
 	});
 	$("#cooler_percentage").on("change", function(slideEvt) {
-		var cooler_value = slideEvt.value.newValue;
-		var cellar_value = (100 - cooler_value);
+		cooler_value = slideEvt.value.newValue;
+		cellar_value = (100 - cooler_value);
 		$("#cooler-preference").text(cooler_value);
 		$("#cooler-preference-2").text(cooler_value);
 		$("#cellar-preference").text(cellar_value);
 		
-		// set estimate value
-		if (drink_delivery_estimate != 0) {
-			var cooler_drink_estimate = Math.round((drink_delivery_estimate * cooler_value)/100)
-			var cellar_drink_estimate = (drink_delivery_estimate - cooler_drink_estimate)
-			var cooler_drink_delivery_estimate = "~ " + cooler_drink_estimate + " for your cooler; " + cellar_drink_estimate + " for your cellar"
+		// set cooler and cellar estimate values if they are not yet been set
+		if (cooler_drink_estimate == undefined) {
+			cooler_drink_estimate = Math.round((drink_per_week_calculation * cooler_value)/100);
+			cellar_drink_estimate = (drink_per_week_calculation - cooler_drink_estimate);
 		}
-		// insert estimate value statement	
-		$("#cooler_drink_estimate").text(cooler_drink_delivery_estimate);
 		
+		//update delivery estimates
+		estimates_for_delivery();
+		
+		// temporarily highlight this change
+		$("#cooler_drink_estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#cooler_drink_estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+	    
 		// send data to controller
 		delay(function(){
 			$.ajax({
@@ -78,21 +169,27 @@ $(function () {
 		tooltip: 'hide'
 	});
 	$("#small_percentage").on("change", function(slideEvt) {
-		var small_value = slideEvt.value.newValue;
-		var large_value = (100 - small_value);
+		small_value = slideEvt.value.newValue;
+		large_value = (100 - small_value);
 		$("#small-preference").text(small_value);
 		$("#small-preference-2").text(small_value);
 		$("#large-preference").text(large_value);
 		
-		// set estimate value
-		if (drink_delivery_estimate != 0) {
-			var small_format_estimate = Math.round((drink_delivery_estimate * small_value)/100)
-			var large_format_estimate = (drink_delivery_estimate - small_format_estimate)
-			var small_format_delivery_estimate = "~ " + small_format_estimate + " in small format; " + large_format_estimate + " in large"
+		// set small and large format estimate values if they are not yet been set
+		if (small_format_estimate == undefined) {
+			small_format_estimate = Math.round((drink_per_week_calculation * small_value)/100);
+			large_format_estimate = (drink_per_week_calculation - small_format_estimate);
 		}
-		// insert estimate value statement	
-		$("#small_format_estimate").text(small_format_delivery_estimate);
 		
+		//update delivery estimates
+		estimates_for_delivery();
+		
+		// temporarily highlight this change
+		$("#small_format_estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#small_format_estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+	    
 		// send data to controller
 		delay(function(){
 			$.ajax({
@@ -104,7 +201,33 @@ $(function () {
 	
 	// send drinks/week delivery preference to controller
 	$("#delivery_preference_drinks_per_week").on("change", function() {
-		var drinks_per_week = $(this).val();
+		drinks_per_week = $(this).val();
+		
+		//update delivery estimates
+		estimates_for_delivery();
+		
+		// temporarily highlight this change
+		$("#drink-delivery-estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#drink-delivery-estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+	    
+	    $("#new_drink_estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#new_drink_estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+	    
+	    $("#cooler_drink_estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#cooler_drink_estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+
+		$("#small_format_estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#small_format_estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+	    
+		// send data to controller
 		$.ajax({
 		  type: "POST",
 		  url: "/users/update_delivery/drinks_per_week-" + drinks_per_week
@@ -113,7 +236,18 @@ $(function () {
 	
 	// send max drinks in cellar delivery preference to controller
 	$("#delivery_preference_drinks_in_cooler").on("change", function() {
-		var drinks_in_cooler = $(this).val();
+		drinks_in_cooler = $(this).val();
+		
+		//update delivery estimates
+		estimates_for_delivery();
+		
+		// temporarily highlight this change
+		$("#drink-delivery-estimate").addClass('estimate-div-highlight-change');
+	    setTimeout(function(){
+	      $('#drink-delivery-estimate').removeClass('estimate-div-highlight-change');
+	    }, 1500);
+	    
+		// send data to controller
 		$.ajax({
 		  type: "POST",
 		  url: "/users/update_delivery/drinks_in_cooler-" + drinks_in_cooler

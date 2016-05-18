@@ -12,6 +12,7 @@
 #  additional              :text
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  price_estimate          :integer
 #
 
 require 'test_helper'

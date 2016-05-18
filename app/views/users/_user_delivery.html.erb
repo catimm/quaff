@@ -121,7 +121,7 @@
 	<div class="col-sm-3 no-padding" id="estimate-column">
 		<div id="scroller-anchor"></div>
 		<div class="estimated-delivery-price-holder" id="scroller">
-			<h4 class="estimated-delivery-price-header">Delivery estimations</h4>
+			<h4 class="estimated-delivery-price-header">Per delivery estimates</h4>
 			<ul class="estimation-list">
 				<li><h5 class="estimation-text" id="drink-delivery-estimate"><%= @drink_delivery_estimate %></h5></li>
 				<li><h5 class="estimation-text" id="new_drink_estimate"><%= @new_drink_delivery_estimate %></h5></li>
@@ -129,7 +129,7 @@
 				<li><h5 class="estimation-text" id="small_format_estimate"><%= @small_delivery_estimate %></h5></li>
 			</ul>
 			<h4 class="estimation-text">Approximate cost per delivery:</h4>
-			<h3 class="cost-range-text">$<span id="low-range-cost">X</span> - $<span id="high-range-cost">Z</span></h3>
+			<h3 class="cost-range-text" id="cost_estimate"><%= @cost_estimate %></h3>
 		</div>
 	</div>
 </div>
