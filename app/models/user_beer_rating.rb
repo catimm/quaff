@@ -47,7 +47,8 @@ class UserBeerRating < ActiveRecord::Base
     group('beer_types.id').
     having('COUNT(*) >= ?', 5).
     select('beer_types.id as type_id, avg(user_beer_ratings.user_beer_rating) as type_rating, beers.count as drink_count').
-    order('type_rating desc')
+    order('type_rating desc').
+    limit(5)
   }
   
   # method to find average rating for drinks of a particular drink type with more than one rating and then sort according to rating
