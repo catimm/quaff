@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   get '/users/wishlist/:id' => 'users#wishlist', :as => 'user_wishlist'
   get '/users/supply/:id' => 'users#supply', :as => 'user_supply'
   get '/users/deliveries/:id' => 'users#deliveries', :as => 'user_deliveries'
+  get '/users/payments/:id' => 'users#payments', :as => 'user_payments'
   get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
   get '/users/wishlist_removal/:id' => 'users#wishlist_removal', :as => 'wishlist_removal'
   get '/users/supply_removal/:id' => 'users#supply_removal', :as => 'supply_removal'
