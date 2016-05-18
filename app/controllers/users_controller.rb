@@ -318,16 +318,16 @@ class UsersController < ApplicationController
             gon.new_value = @new_percentage
             gon.new_drink_estimate = @new_drink_estimate
           else
-            @drink_delivery_estimate = "New/repeat drink mix TBD"
+            @new_drink_delivery_estimate = "New/repeat drink mix TBD"
           end
         else
           @new_percentage = 50
           @repeat_percentage = 50
-          @drink_delivery_estimate = "New/repeat drink mix TBD"
+          @new_drink_delivery_estimate = "New/repeat drink mix TBD"
         end
         if !@delivery_preferences.cooler_percentage.nil?
           @cooler_percentage = @delivery_preferences.cooler_percentage
-          @cellar_percentage = 100 - @new_percentage
+          @cellar_percentage = 100 - @cooler_percentage
           if !@delivery_preferences.drinks_per_week.nil?
             @cooler_drink_estimate = ((@drink_per_week_calculation * @cooler_percentage)/100).round
             @cellar_drink_estimate = (@drink_per_week_calculation - @cooler_drink_estimate).round
@@ -353,7 +353,7 @@ class UsersController < ApplicationController
         end
         if !@delivery_preferences.small_format_percentage.nil?
           @small_percentage = @delivery_preferences.small_format_percentage
-          @large_percentage = 100 - @new_percentage
+          @large_percentage = 100 - @small_percentage
           if !@delivery_preferences.drinks_per_week.nil?
             @small_format_estimate = ((@drink_per_week_calculation * @small_percentage)/100).round
             @large_format_estimate = (@drink_per_week_calculation - @small_format_estimate).round
@@ -386,6 +386,10 @@ class UsersController < ApplicationController
         @cellar_percentage = 50
         @small_percentage = 50
         @large_percentage = 50
+        @drink_delivery_estimate = "Total drinks in each delivery TBD"
+        @new_drink_delivery_estimate = "New/repeat drink mix TBD"
+        @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
+        @small_delivery_estimate = "Small/large format mix TBD"
       end
       
       # sets cost estimate
@@ -408,10 +412,11 @@ class UsersController < ApplicationController
         @number_of_large_cellar = (@drink_per_week_calculation * (1 - (@delivery_preferences.cooler_percentage * 0.01)) * (1 - (@delivery_preferences.small_format_percentage * 0.01)))
         # multiply drink numbers by drink costs
         @cost_estimate_cooler_small = (@small_cooler_cost * @number_of_small_cooler)
+        #Rails.logger.debug("small cooler #: #{@number_of_small_cooler.inspect}")
         @cost_estimate_cooler_large = (@large_cooler_cost * @number_of_large_cooler)
         @cost_estimate_cellar_small = (@small_cellar_cost * @number_of_small_cellar)
         @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
-        @total_cost_estimate = @cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large
+        @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
         @cost_estimate_low = (@total_cost_estimate * 0.9).round
         @cost_estimate_high = (@total_cost_estimate * 1.1).round
         @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s 

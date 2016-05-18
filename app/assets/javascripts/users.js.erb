@@ -26,12 +26,16 @@ $(function () {
 	
 	// set max drinks to be delivered
 	estimates_for_delivery = function(){
-		if ((drinks_per_week != undefined) && (drinks_in_cooler != undefined)) {
-	    	if ((drinks_per_week * 2.4) > drinks_in_cooler) {
-	    		drink_per_week_calculation = drinks_in_cooler
-	    	} else {
-	    		drink_per_week_calculation = Math.round(drinks_per_week * 2.4)
-	    	}
+		if (drinks_per_week != undefined) {
+		    // set drinks per week calculation
+		    drink_per_week_calculation = Math.round(drinks_per_week * 2.4);
+		    
+		    // determine if max number in cooler changes drinks per week calculation
+		    if (drinks_in_cooler != undefined) {
+		    	if ((drinks_per_week * 2.4) > drinks_in_cooler) {
+		    		drink_per_week_calculation = drinks_in_cooler
+		    	} 
+		    }
 	    	// create drink per week estimate value statement
 	    	var drinks_per_week_statement = "~ " + drink_per_week_calculation + " drinks in each delivery"
 	    	
@@ -212,21 +216,27 @@ $(function () {
 	      $('#drink-delivery-estimate').removeClass('estimate-div-highlight-change');
 	    }, 1500);
 	    
-	    $("#new_drink_estimate").addClass('estimate-div-highlight-change');
-	    setTimeout(function(){
-	      $('#new_drink_estimate').removeClass('estimate-div-highlight-change');
-	    }, 1500);
-	    
-	    $("#cooler_drink_estimate").addClass('estimate-div-highlight-change');
-	    setTimeout(function(){
-	      $('#cooler_drink_estimate').removeClass('estimate-div-highlight-change');
-	    }, 1500);
+	    if (new_drink_estimate != undefined) {
+			$("#new_drink_estimate").addClass('estimate-div-highlight-change');
+			    setTimeout(function(){
+			      $('#new_drink_estimate').removeClass('estimate-div-highlight-change');
+			}, 1500);
+		}
+			
+		if (cooler_drink_estimate != undefined) {
+			$("#cooler_drink_estimate").addClass('estimate-div-highlight-change');
+		    setTimeout(function(){
+		      $('#cooler_drink_estimate').removeClass('estimate-div-highlight-change');
+		    }, 1500);
+		}
+		
+		if (small_format_estimate != undefined) {
+			$("#small_format_estimate").addClass('estimate-div-highlight-change');
+		    setTimeout(function(){
+		      $('#small_format_estimate').removeClass('estimate-div-highlight-change');
+		    }, 1500);
+		}
 
-		$("#small_format_estimate").addClass('estimate-div-highlight-change');
-	    setTimeout(function(){
-	      $('#small_format_estimate').removeClass('estimate-div-highlight-change');
-	    }, 1500);
-	    
 		// send data to controller
 		$.ajax({
 		  type: "POST",
