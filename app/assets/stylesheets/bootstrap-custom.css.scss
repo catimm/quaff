@@ -943,6 +943,9 @@ p {
   border: 1px solid $less-emphasized-text !important;
   border-radius: 6px;
 }
+.retail-plan-update-options.current {
+  border: 6px solid $user-action !important;
+}
 .retain-plan-option {
   margin: 0 20px 0 -15px !important;
 }
@@ -958,7 +961,7 @@ p {
   text-align: center;
   color: $more-emphasized-text;
   font-weight: 500;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 .retail-plan-subheader {
   text-align: center;
@@ -969,7 +972,7 @@ p {
 .retail-plan-feature-list {
   text-align: left;
   color: $normal-text;
-  height: 140px;
+  height: 125px;
 }
 .retail-plan-option-or {
   color: $normal-text;

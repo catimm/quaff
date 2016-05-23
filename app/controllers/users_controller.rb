@@ -1,11 +1,12 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:stripe_webhooks]
   include DrinkTypeDescriptorCloud
   include DrinkDescriptorCloud
   include CreateNewDrink
   include BestGuess
   include QuerySearch
   require "stripe"
+  require 'json'
   
   def index
 
@@ -422,42 +423,111 @@ class UsersController < ApplicationController
     
   end # end deliveries method
   
-  def payments
+  def plan
+    # find if user has a plan already
+    @user_plan = UserSubscription.find_by_user_id(params[:id])
+    
+    if !@user_plan.blank?
+      if @user_plan.subscription_id == 1
+        # set current style variable for CSS plan outline
+        @relish_current = "current"
+      elsif @user_plan.subscription_id == 2
+        # set current style variable for CSS plan outline
+        @enjoy_current = "current"
+      else 
+        # set current style variable for CSS plan outline
+        @sample_current = "current"
+      end
+    end
     
   end # end payments method
   
-  def choose_initial_plan 
-    if params[:format] == "retain_y" # testing whether the user is choosing a paid plan as the initial plan
+  def choose_plan 
+    # find if user has a plan already
+    @user_plan = UserSubscription.find_by_user_id(params[:id])
+    Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
+    # find subscription level id
+    @subscription_level_id = Subscription.where(subscription_level: params[:format]).first
+      
+    if @user_plan.blank?
+      # first create Stripe acct
       @plan_info = Stripe::Plan.retrieve(params[:format])
       Rails.logger.debug("Plan info: #{@plan_info.inspect}")
       #Create a stripe customer object on signup
       customer = Stripe::Customer.create(
               :description => @plan_info.statement_descriptor,
-              #:source => params[:stripeToken],
+              :source => params[:stripeToken],
               :email => current_user.email,
               :plan => params[:format]
             )
-      # get the appropriate subscription id
-      @subcription_plan = Subscription.where(subscription_level: params[:format]).first
-      # create a new location_subscription row
-      @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 4,
-                                active_until: 1.month.from_now, current_trial: true)
-    else # else customer is choosing the Free plan as the initial plan
+      # create a new user_subscription row
+      @user_subscription = UserSubscription.create(user_id: params[:id], subscription_id: @subscription_level_id.id,
+                                active_until: 1.month.from_now)
+    else
+      # first update Stripe acct
+      customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
       @plan_info = Stripe::Plan.retrieve(params[:format])
-      #Rails.logger.debug("Plan info: #{plan.inspect}")
-      #Create a stripe customer object on signup
-      customer = Stripe::Customer.create(
-              :description => @plan_info.statement_descriptor,
-              #:source => params[:stripeToken],
-              :email => current_user.email,
-              :plan => params[:format]
-            )
-      # create a new location_subscription row
-      @location_subscription = LocationSubscription.create(location_id: params[:id], subscription_id: 1)
+      Rails.logger.debug("Customer: #{customer.inspect}")
+      customer.description = @plan_info.statement_descriptor
+      customer.save
+      subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
+      subscription.plan = params[:format]
+      subscription.save
+      
+      # now update user plan info in the DB
+      @user_plan.update(subscription_id: @subscription_level_id.id)
     end
-    flash[:notice] = "Successfully created a charge"
-    redirect_to retailer_path(params[:id])
+    
+    redirect_to :action => "plan", :id => current_user.id
+    
   end # end choose initial plan method
+  
+  def stripe_webhooks
+    Rails.logger.debug("Webhooks is firing")
+    begin
+      event_json = JSON.parse(request.body.read)
+      event_object = event_json['data']['object']
+      #refer event types here https://stripe.com/docs/api#event_types
+      Rails.logger.debug("Event info: #{event_object['customer'].inspect}")
+      case event_json['type']
+        when 'invoice.payment_succeeded'
+          #Rails.logger.debug("Successful invoice paid event")
+        when 'invoice.payment_failed'
+          Rails.logger.debug("Failed invoice event")
+        when 'charge.succeeded'
+           #Rails.logger.debug("Successful charge event")
+           # get the customer number
+           @stripe_customer_number = event_object['customer']
+           @user_subscription = UserSubscription.find_by_stripe_customer_number(@stripe_customer_number)
+        when 'charge.failed'
+           #Rails.logger.debug("Failed charge event")
+        when 'customer.subscription.deleted'
+           #Rails.logger.debug("Customer deleted event")
+        when 'customer.subscription.updated'
+           #Rails.logger.debug("Subscription updated event")
+        when 'customer.subscription.trial_will_end'
+          #Rails.logger.debug("Subscription trial soon ending event")
+        when 'customer.created'
+          Rails.logger.debug("Customer created event")
+          # get the customer number
+          @stripe_customer_number = event_object['id']
+          @stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
+          # get the user's info
+          @user_email = event_object['email']
+          Rails.logger.debug("User's email: #{@user_email.inspect}")
+          @user_id = User.where(email: @user_email).pluck(:id).first
+          Rails.logger.debug("User's ID: #{@user_id.inspect}")
+          @user_subscription = UserSubscription.find_by_user_id(@user_id)
+          Rails.logger.debug("User's Sub: #{@user_subscription.inspect}")
+          # update the user's info
+          @user_subscription.update(stripe_customer_number: @stripe_customer_number, stripe_subscription_number: @stripe_subscription_number)
+      end
+    rescue Exception => ex
+      render :json => {:status => 422, :error => "Webhook call failed"}
+      return
+    end
+    render :json => {:status => 200}
+  end # end stripe_webhook method
   
   def update_delivery
     # get data to add/update

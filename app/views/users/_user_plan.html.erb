@@ -1,0 +1,171 @@
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-8">
+		<h3 class="recent-ratings-header">Select the best plan for you</h3>
+	</div>
+	<div class="col-xs-12 col-sm-4" id="last-updated-holder">
+		<% if !@deliveries_last_updated.nil? %>
+			<%= render 'preferences_last_updated' %>
+		<% end %>
+	</div>
+</div>
+<div class="row no-margin">
+		<div class="col-sm-4">
+			<div class="row no-margin retail-plan-update-options <%= @sample_current %>">
+				<div class="col-xs-12 no-padding">
+					<div class="row no-margin">
+						<div class="col-sm-12">
+							<h3 class="retail-plan-header">Sample</h3>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-10 no-padding">
+							<ul class="retail-plan-feature-list">
+								<li>Personalized, curated drink deliveries</li>
+								<li>Order only when it suits you</li>
+								<li>$6 per delivery</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding">
+							<h5 class="contract-type-header">No membership contract</h5>
+							<h2 class="retailer-plan-cost">$0<span class="with-contract">/mo</span></h2>
+							<% if !@user_plan.blank? %>
+								<% if @user_plan.subscription_id == 3 %>
+									<h2 class="retailer-plan-cost">Current Plan</h2>
+								<% else %>
+									<%= link_to choose_plan_path(current_user.id, "sample"), id: "sample-plan", class: 'btn btn-primary formButton-start-plan', data: {confirm: "Are you sure you want to change your plan?"} do %>
+										<i class="fa fa-refresh" aria-hidden="true"> Change to the Sample Plan</i>
+									<% end %>
+								<% end %>
+							<% else %>
+								<%= form_tag choose_plan_path(current_user.id, "sample"), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="sample"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		name="Knird" 
+						          		data-description="Sample (no contract)" 
+						          		data-currency="USD" 
+						          		data-label="Start the Sample Plan"
+						          		data-email="<%= current_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							<% end %>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-sm-4">
+			<div class="row no-margin retail-plan-update-options <%= @enjoy_current %> ">
+				<div class="col-xs-12 no-padding">
+					<div class="row no-margin">
+						<div class="col-sm-12">
+							<h3 class="retail-plan-header">Enjoy</h3>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-10 no-padding">
+							<ul class="retail-plan-feature-list">
+								<li>Personalized, curated drink deliveries</li>
+								<li>2 deliveries per month</li>
+								<li>Additional deliveries only $4 each</li>
+								<li>10% member dividend</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding">
+							<h5 class="contract-type-header">3-month membership contract</h5>
+							<h2 class="retailer-plan-cost">$10<span class="with-contract">/mo</span></h2>
+							<% if !@user_plan.blank? %>
+								<% if @user_plan.subscription_id == 2 %>
+									<h2 class="retailer-plan-cost">Current Plan</h2>
+								<% else %>
+									<%= link_to choose_plan_path(current_user.id, "enjoy"), class: 'btn btn-primary formButton-start-plan', data: {confirm: "Are you sure you want to change your plan?"} do %>
+										<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
+									<% end %>
+								<% end %>
+							<% else %>
+								<%= form_tag choose_plan_path(current_user.id, "enjoy"), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="enjoy"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		name="Knird" 
+						          		data-description="Enjoy (3-month contract)" 
+						          		data-currency="USD" 
+						          		data-label="Start the Enjoy Plan"
+						          		data-email="<%= current_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-sm-4">
+			<div class="row no-margin retail-plan-update-options <%= @relish_current %>">
+				<div class="col-xs-12 no-padding">	
+					<div class="row no-margin">
+						<div class="col-sm-12">
+							<h3 class="retail-plan-header">Relish</h3>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-10 no-padding">
+							<ul class="retail-plan-feature-list">
+								<li>Personalized, curated drink deliveries</li>
+								<li>2 deliveries per month</li>
+								<li>Additional deliveries only $3 each</li>
+								<li>10% member dividend</li>
+								<li>Preferred access to limited and rare drinks</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding">
+							<h5 class="contract-type-header">12-month membership contract</h5>
+							<h2 class="retailer-plan-cost">$8.33<span class="with-contract">/mo</span></h2>
+							<% if !@user_plan.blank? %>
+								<% if @user_plan.subscription_id == 1 %>
+									<h2 class="retailer-plan-cost">Current Plan</h2>
+								<% else %>
+									<%= link_to choose_plan_path(current_user.id, "relish"), class: 'btn btn-primary formButton-start-plan', data: {confirm: "Are you sure you want to change your plan?"}  do %>
+										<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
+									<% end %>
+								<% end %>
+							<% else %>
+								<%= form_tag choose_plan_path(current_user.id, "relish"), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="relish"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		name="Knird" 
+						          		data-description="Relish (12-month contract)" 
+						          		data-currency="USD" 
+						          		data-label="Start the Relish Plan"
+						          		data-email="<%= current_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>

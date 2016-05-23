@@ -14,22 +14,7 @@
 #  updated_at                 :datetime         not null
 #
 
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  user_id: 1
-  subscription_id: 1
-  active_until: 2016-05-21 15:23:31
-  stripe_customer_number: MyString
-  stripe_subscription_number: MyString
-  current_trial: 
-  trial_ended: 
-
-two:
-  user_id: 1
-  subscription_id: 1
-  active_until: 2016-05-21 15:23:31
-  stripe_customer_number: MyString
-  stripe_subscription_number: MyString
-  current_trial: 
-  trial_ended: 
+class UserSubscription < ActiveRecord::Base
+  belongs_to :user
+  belongs_to :subscription
+end

@@ -30,7 +30,7 @@
 							
 							<li class="dropdown-header">My settings</li>
 							<li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path(current_user.id) %></li>
-							<li class="dropdown-link"><%= link_to "Payments", user_payments_path(current_user.id) %></li>
+							<li class="dropdown-link"><%= link_to "Plan", user_plan_path(current_user.id) %></li>
 							<li class="dropdown-link"><%= link_to "Profile", user_path(current_user.id) %></li>
 				            
 				            <% if current_user.role_id == 1 || current_user.role_id == 2 %>
