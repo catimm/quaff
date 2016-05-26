@@ -1131,19 +1131,13 @@ $beer-header-lines-to-show-fp: 1;
   margin: 2.5px 0;
   text-align: center; 
 }
-  .next-up-drink-info {
-    margin: 10px 0 0 0 !important;
-    color: $combined-brewery-text;
-  }
-  .display-with-no-extra {
-    height: 110px !important;
-  }
-  .display-with-one-extra {
-    height: 135px !important;
-  }
-  .display-with-two-extra {
-    height: 160px !important;
-  }
+.next-up-drink-info {
+  margin: 10px 0 0 0 !important;
+  color: $combined-brewery-text;
+}
+.display-with-descriptors {
+  height: 135px !important;
+}
 
 // Draft Board Row Page
 .draft-board-row-maker-name {

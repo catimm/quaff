@@ -145,14 +145,8 @@
 .column-board-descriptors {
   color: #0087cb;
 }
-.display-with-no-extra {
-    height: 110px !important;
-}
-.display-with-one-extra {
-   height: 135px !important;
-}
-.display-with-two-extra {
-   height: 160px !important;
+.display-with-descriptors {
+    height: 135px !important;
 }
 
 /* Draft Board Column--variable-internal */

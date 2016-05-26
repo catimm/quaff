@@ -1,12 +1,6 @@
 <% @current_draft_board.each do	|drink| %>
 	<div class="col-sm-6 visible-sm visible-md visible-lg">
-		<% if @display_height == "both" %>
-			<div class="row no-margin display-with-two-extra">
-		<% elsif @display_height == "one" %>
-			<div class="row no-margin display-with-one-extra">
-		<% else %>
-			<div class="row no-margin display-with-no-extra">
-		<% end %>
+		<div class="row no-margin display-with-descriptors">
 			<div class="col-sm-2 no-padding draft-board-column-image-holder-div">
 				<div class="draft-board-column-tap-number text-center"><%= drink.tap_number %></div>
 				<% if !drink.beer.brewery.image.nil? %>
