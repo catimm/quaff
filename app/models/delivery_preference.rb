@@ -13,6 +13,7 @@
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  price_estimate          :integer
+#  next_delivery_date      :datetime
 #
 
 class DeliveryPreference < ActiveRecord::Base

@@ -2276,7 +2276,7 @@ $beer-header-lines-to-show-fp: 1;
   text-decoration: underline;
 }
 // User Delivery Preference Page
-.new_delivery_preference {
+.new_delivery_preference, .edit_delivery_preference {
   margin-bottom: 40px;
   select {
     margin-top: 20px;

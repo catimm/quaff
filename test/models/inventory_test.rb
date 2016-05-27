@@ -10,6 +10,9 @@
 #  updated_at     :datetime         not null
 #  size_format_id :integer
 #  beer_id        :integer
+#  drink_price    :decimal(5, 2)
+#  drink_cost     :decimal(5, 2)
+#  limit_per      :integer
 #
 
 require 'test_helper'

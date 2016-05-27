@@ -18,9 +18,9 @@
 	</div>
 	<div class="row">
 		<div class="container" id="preference-view-choice">
-			<% if @view == "cooler"%>
+			<% if @view == "cooler" %>
 				<%= render 'user_cooler' %>
-			<% elsif %>
+			<% elsif @view == "cellar" %>
 				<%= render 'user_cellar' %>
 			<% else %>
 				<%= render 'user_next' %>

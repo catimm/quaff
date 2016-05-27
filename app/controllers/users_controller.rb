@@ -47,7 +47,7 @@ class UsersController < ApplicationController
     @view = params[:format]
     # get user supply data
     @user_supply = UserSupply.where(user_id: current_user.id)
-    #Rails.logger.debug("User Supply 2: #{@user_supply.inspect}")
+    Rails.logger.debug("View is: #{@view.inspect}")
     
     # get data for view
     if @view == "cooler"
@@ -95,7 +95,8 @@ class UsersController < ApplicationController
       @user_cellar = best_guess(@supply_drink_ids).paginate(:page => params[:page], :per_page => 12)
       @cellar_chosen = "chosen"
     else 
-      @user_next = @user_supply.where(supply_type_id: 3)
+      @user_delivery_preference = DeliveryPreference.where(user_id: current_user.id).first
+      @user_next = UserDelivery.where(user_id: current_user.id, delivery_date: @user_delivery_preference.next_delivery_date)
       
       # create array to hold descriptors cloud
       @final_descriptors_cloud = Array.new

@@ -32,7 +32,10 @@ class Admin::RecommendationsController < ApplicationController
     #Rails.logger.debug("inventory recos: #{@inventory_drink_recommendations.inspect}")
     @non_inventory_drink_recommendations = @drink_recommendations.recommended_not_in_inventory.joins(:beer).order(sort_column + " " + sort_direction)
     #Rails.logger.debug("non-inventory recos: #{@non_inventory_drink_recommendations.inspect}")
-  
+    
+    # set inventory form for new inventory modal
+    @inventory = Inventory.new
+    
     respond_to do |format|
       format.js
       format.html  
@@ -47,6 +50,7 @@ class Admin::RecommendationsController < ApplicationController
     if @drink_formats_available.empty?
       @drink_formats_available = SizeFormat.all
     end
+    # set inventory form for new inventory modal
     @inventory = Inventory.new
   end
   

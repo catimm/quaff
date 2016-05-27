@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160521222331) do
+ActiveRecord::Schema.define(version: 20160527055405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -152,6 +152,7 @@ ActiveRecord::Schema.define(version: 20160521222331) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
     t.integer  "price_estimate"
+    t.datetime "next_delivery_date"
   end
 
   create_table "draft_boards", force: :cascade do |t|
@@ -172,10 +173,13 @@ ActiveRecord::Schema.define(version: 20160521222331) do
     t.integer  "stock"
     t.integer  "demand"
     t.integer  "order_queue"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.integer  "size_format_id"
     t.integer  "beer_id"
+    t.decimal  "drink_price",    precision: 5, scale: 2
+    t.decimal  "drink_cost",     precision: 5, scale: 2
+    t.integer  "limit_per"
   end
 
   create_table "invitation_requests", force: :cascade do |t|
@@ -286,6 +290,15 @@ ActiveRecord::Schema.define(version: 20160521222331) do
     t.text     "comment"
     t.text     "current_descriptors"
     t.integer  "beer_type_id"
+  end
+
+  create_table "user_deliveries", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "inventory_id"
+    t.integer  "quantity"
+    t.datetime "delivery_date"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "user_drink_recommendations", force: :cascade do |t|
