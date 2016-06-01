@@ -7,7 +7,11 @@
 			<%= label :beer_id, 'Drink ID' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
-			<%= f.text_field :beer_id, :class => "form-control", placeholder: "Beer ID" %>
+			<% if !@drink_id.nil? %>
+				<%= f.text_field :beer_id, value: @drink_id, :class => "form-control", placeholder: "Beer ID" %>
+			<% else %>
+				<%= f.text_field :beer_id, :class => "form-control", placeholder: "Beer ID" %>
+			<% end %>
 		</div>
 		
 		<div class="col-sm-1 col-xs-2 no-padding">
@@ -26,10 +30,10 @@
 		</div>
 		
 		<div class="col-sm-1 col-xs-2 no-padding">
-			<%= label :limit_per, 'Limit/person' %>
+			<%= label :limit_per, '# to order' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
-			<%= f.text_field :limit_per, :class => "form-control", placeholder: "Limit/person" %>
+			<%= f.text_field :order_queue, :class => "form-control", placeholder: "# to order" %>
 		</div>
 	</div>
 	<div class="row no-margin">
@@ -53,6 +57,13 @@
 		</div>
 		<div class="col-sm-5 col-xs-10">
 			<%= f.collection_select(:size_format_id, SizeFormat.all, :id, :format_name, {prompt: "Select a format"}, {class: "form-control"}) %>
+		</div>
+		
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :limit_per, 'Limit/person' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :limit_per, :class => "form-control", placeholder: "Limit/person" %>
 		</div>
 	</div>
 	<div class="col-sm-3 col-xs-0"></div>

@@ -22,7 +22,7 @@
 		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		        <td><%= @tally %></td>
 		        <% if inventory.order_queue.nil? %>
-		        	<td><%= link_to admin_order_queue_new_path(drink.beer_id), :class => "btn btn-success edit-beer-info", data: {toggle: "modal", target: "#order_queue_new"} do %> 
+		        	<td><%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
 		        			<i class="fa fa-plus"></i>
 						<% end %>
 		        	</td>
@@ -50,7 +50,7 @@
 			   	<% end %>
 		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		        <td><%= @tally %></td>
-		        <td><%= link_to admin_order_queue_new_path(drink.beer_id), :class => "btn btn-success edit-beer-info", data: {toggle: "modal", target: "#order_queue_new"} do %> 
+		        <td><%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
 		        		<i class="fa fa-plus"></i>
 		        	<% end %>
 		       	</td>

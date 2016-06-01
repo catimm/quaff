@@ -17,6 +17,10 @@ class Admin::InventoriesController < ApplicationController
   def new
     # to create a new Inventory instance
     @inventory = Inventory.new
+    # grab drink id if it is passed in params
+    if params.has_key?(:format)
+      @drink_id = params[:format]
+    end
   end # end new method
   
   def create

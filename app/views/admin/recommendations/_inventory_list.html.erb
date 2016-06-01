@@ -48,7 +48,7 @@
 	        </td>
 	        <% @inventory_status = (inventory.stock.to_i + inventory.order_queue.to_i) - inventory.demand.to_i %>
 	        <td><%= @inventory_status %></td>
-	        <td><%= link_to "#", :class => "btn btn-success edit-beer-info" do %>
+	        <td><%= link_to edit_admin_inventory_path(inventory.id), :class => "btn btn-success edit-beer-info" do %>
 	        		<i class="fa fa-plus"></i>
 	        	<% end %>
 	        </td>
