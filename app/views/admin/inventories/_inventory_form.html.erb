@@ -1,0 +1,63 @@
+<%= form_for [:admin, @inventory] do |f| %>
+	<div class="row no-margin">
+		<h2>Inventory form</h2>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :beer_id, 'Drink ID' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :beer_id, :class => "form-control", placeholder: "Beer ID" %>
+		</div>
+		
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :stock, '# in stock' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :stock, :class => "form-control", placeholder: "# in stock" %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :demand, '# in demand' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :demand, :class => "form-control", placeholder: "# in demand" %>
+		</div>
+		
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :limit_per, 'Limit/person' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :limit_per, :class => "form-control", placeholder: "Limit/person" %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :drink_price, 'Drink Price' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :drink_price, :class => "form-control", placeholder: "Price" %>
+		</div>
+		
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :drink_cost, 'Drink Cost' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :drink_cost, :class => "form-control", placeholder: "Cost" %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :drink_price, 'Drink Format' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.collection_select(:size_format_id, SizeFormat.all, :id, :format_name, {prompt: "Select a format"}, {class: "form-control"}) %>
+		</div>
+	</div>
+	<div class="col-sm-3 col-xs-0"></div>
+	<div class="col-sm-6 col-xs-12 text-center">
+		<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %>
+	</div>		
+	<div class="col-sm-3 col-xs-0"></div>			
+<% end %>

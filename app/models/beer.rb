@@ -119,7 +119,7 @@ class Beer < ActiveRecord::Base
       non_collab_beers(brewery_id).order(:beer_name)
     end
   }
- 
+
   # scope order beers by name for inventory management
   scope :order_by_drink_name, -> {
     joins(:brewery).merge(Brewery.order_by_brewery_name).

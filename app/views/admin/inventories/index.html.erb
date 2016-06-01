@@ -1,0 +1,83 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row header-row stay-in-place">
+		<div class="page-header">
+			<div class="row no-margin">
+				<div class="col-sm-7 visible-sm visible-md visible-lg">
+					<h3><%= @maker_count.length %> makers / <%= @inventory.length %> drinks in inventory</h3>
+				</div>
+				<div class="col-xs-10 col-sm-5 text-right">
+					<%= link_to "Add new inventory", new_admin_inventory_path, :class => "btn btn-success inputButton2" %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 inventory-list-holder">
+		<% @inventory_makers.each do |inventory_maker| %>
+			<% @brewery = Brewery.find_by_id(inventory_maker.brewery_id) %>
+			<div class="row">	
+				<div class="col-sm-1">
+					<div class="inventory-view show text-center" id="plus">
+						<h6><i class="fa fa-plus"></i></h6>
+					</div>
+					<div class="inventory-view hidden text-center" id="minus">
+						<h6><i class="fa fa-minus"></i></h4>
+					</div>				
+				</div>
+				<div class="col-sm-1">
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= @brewery.image %>">
+				</div>
+				<div class="col-sm-4">
+					<h5 class="brewery-name-with-id"><%= @brewery.brewery_name %>&nbsp;</h5>
+				</div>
+				<div class="col-sm-2">
+					<h5><%= inventory_maker.inventory_number %> <%= "drink".pluralize(inventory_maker.inventory_number) %> in stock</h5>
+				</div>
+			</div>
+			<div class="row inventory-details hidden">
+			<% @counter = 0 %>
+			<% @inventory.each_with_index do |inventory, i| %>
+				<% Rails.logger.debug("counter number: #{@counter.inspect}") %>
+				
+				<% if inventory.beer.brewery.id == inventory_maker.brewery_id %>
+					<% @counter += 1 %>
+					<% if @counter.even? %>	
+						<% @odd_background = "odd-background" %>
+					<% else %>
+						<% @odd_background = "even-background" %>
+					<% end %>
+					<div class="row <%= @odd_background %>">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-2">
+							<h5><%= inventory.beer.beer_name %></h5>
+						</div>
+						<div class="col-sm-1 no-padding">
+							<h6><%= inventory.size_format.format_name %></h6>
+						</div>
+						<div class="col-sm-1 no-padding">
+							<h6>Stock: <%= inventory.stock %></h6>
+						</div>
+						<div class="col-sm-1 no-padding">
+							<h6>Demand: <%= inventory.demand %></h6>
+						</div>
+						<div class="col-sm-1 no-padding">
+							<h6>Cost: <%= inventory.drink_cost %></h6>
+						</div>
+						<div class="col-sm-1 no-padding">
+							<h6>Price: <%= inventory.drink_price %></h6>
+						</div>
+						<div class="col-sm-1 no-padding">
+							<h6>Limit: <%= inventory.limit_per %></h6>
+						</div>
+						<div class="col-sm-1 no-padding">
+							<%= link_to "Edit", edit_admin_inventory_path(inventory.id), :class => "btn btn-primary editButton" %>
+						</div>
+					</div>
+				<% end %>
+			<% end %>
+			</div>
+			<hr>
+		<% end %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

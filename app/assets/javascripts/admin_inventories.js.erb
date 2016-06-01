@@ -1,0 +1,22 @@
+$(function() {
+	
+	// add logic to show/hide inventory  
+	$(document).on('click', '.inventory-view', function () {
+		var this_id = $(this).attr('id');
+
+		$(this).removeClass("show");
+		$(this).addClass("hidden");
+		
+		if(this_id == "plus") {		
+			$(this).siblings("#minus").removeClass("hidden");
+			$(this).siblings("#minus").addClass("show");
+			$(this).parent().parent().next().removeClass("hidden");
+			$(this).parent().parent().next().addClass("show");
+		} else {
+			$(this).siblings("#plus").removeClass("hidden");
+			$(this).siblings("#plus").addClass("show");
+			$(this).parent().parent().next().removeClass("show");
+			$(this).parent().parent().next().addClass("hidden");
+		}
+	});
+});

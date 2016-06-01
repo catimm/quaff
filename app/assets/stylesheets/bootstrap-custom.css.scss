@@ -2910,7 +2910,9 @@ div.jqcloud span.w1 { color: $light-blue; }
     margin: 0 auto;
   }
 }
-#new_user_fav_drink, .edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, .edit_location, #new_user, #new_user_beer_rating, #edit_user {
+#new_user_fav_drink, .edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, 
+#edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, .edit_location, #new_user, #new_user_beer_rating, 
+#edit_user, .edit_inventory, .new_inventory {
   input, select, ul {
     margin-bottom: 7.5px;
   }
@@ -2960,6 +2962,23 @@ input[type="checkbox"] {
   margin-top: 15px;
   background: $step-background;
   border-color: #4cae4c !important;
+}
+// Admin inventory page
+.inventory-list-holder {
+  margin-top: 100px;
+}
+.odd-background {
+  background: $soft-gray-background;
+}
+.inventory-view {
+  color: $action-background;
+  border: 2px solid $action-background;
+  border-radius: 12px;
+  height: 24px;
+  width: 24px;
+  h6 {
+    margin-top: 5px;
+  }
 }
 
 // Admin drink recommendation page

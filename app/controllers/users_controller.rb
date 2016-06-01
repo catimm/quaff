@@ -233,6 +233,8 @@ class UsersController < ApplicationController
     @top_rated_drinks = @user_ratings.order(user_beer_rating: :desc).first(5)
     # get top rated breweries
     @user_ratings_by_brewery = @user_ratings.rating_breweries
+    Rails.logger.debug("Brewery ratings: #{@user_ratings_by_brewery.inspect}") 
+    return
     # get top rated drink types
     @user_ratings_by_type = @user_ratings.rating_drink_types.paginate(:page => params[:page], :per_page => 5)
     #Rails.logger.debug("User ratings by type: #{@user_ratings_by_type.inspect}")  

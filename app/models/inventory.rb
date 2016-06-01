@@ -43,4 +43,14 @@ class Inventory < ActiveRecord::Base
   scope :order_queue, -> { 
     where("order_queue >= ?", 1)
   }
+
+  # scope inventory grouped by maker
+  scope :inventory_maker, -> {
+    in_stock.
+    joins(:beer).
+    group('beers.brewery_id').
+    select('beers.brewery_id as brewery_id, inventories.count as inventory_number')
+    
+  }
+
 end

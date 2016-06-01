@@ -41,7 +41,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, :user_beer_ratings, :recommendations
+    resources :users, :user_beer_ratings, :recommendations, :inventories
   end
   
   namespace :admin do

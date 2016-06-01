@@ -58,6 +58,13 @@ class Brewery < ActiveRecord::Base
     where(dont_include: [false, nil]) 
   }
   
+  # scope all breweries in stock
+  scope :makers_in_stock, ->(brewery_id) { 
+    where(id: brewery_id).
+    joins(:beers).
+    merge(Beer.drinks_in_stock)
+  }
+  
   #filterrific(
   #  #default_filter_params: { live_brewery_beers: 0 },
   #  available_filters: [
