@@ -47,10 +47,15 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
-			<% if d.beer_image.blank? %>
+			<% if d.cellarable.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
-				<h5 class="no-overflow"><%= d.beer_image %></h5>
+				<% if d.cellarable == true %>
+					<% @cellar = "Yes" %>
+				<% else %>
+					<% @cellar = "No" %>
+				<% end %>
+				<h5 class="no-overflow"><%= @cellar %></h5>
 			<% end %>
 		</div>
 		<div class="col-sm-1">

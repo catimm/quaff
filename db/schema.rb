@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527055405) do
+ActiveRecord::Schema.define(version: 20160601225749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,6 +122,7 @@ ActiveRecord::Schema.define(version: 20160527055405) do
     t.string   "short_beer_name"
     t.boolean  "dont_include"
     t.integer  "touched_by_location"
+    t.boolean  "cellarable"
   end
 
   create_table "breweries", force: :cascade do |t|
@@ -171,7 +172,7 @@ ActiveRecord::Schema.define(version: 20160527055405) do
 
   create_table "inventories", force: :cascade do |t|
     t.integer  "stock"
-    t.integer  "demand"
+    t.integer  "reserved"
     t.integer  "order_queue"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false

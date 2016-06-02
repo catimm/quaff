@@ -1,16 +1,16 @@
-<div id="filterrific_results">
-
-  <div>
-    <h4>Inventory List</h4>
-  </div>
+<div>
+	<h4>Inventory List</h4>
+</div>
 
   <table class="table table-striped admin-recommendation-table">
     <tr>
       <th><%= sortable "beers.beer_name", "Drink" %></th>
+      <th><%= sortable "beers.beer_type_id", "Drink Type" %></th>
       <th><%= sortable "projected_rating", "Rating" %></th>
+      <th>New</th>
       <th>Format</th>
       <th>Demand</th>
-      <th>In Stock</th>
+      <th>Stock</th>
       <th>Reserved</th>
       <th>Ordering</th>
       <th>Status</th>
@@ -20,8 +20,21 @@
     <% drinks.each do |drink| %>
     	<% drink.beer.inventories.each do |inventory| %>
 	      <tr>
-	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+	        <% if drink.beer.cellarable == true %>
+	        	<% @cellarable = "C" %>
+	        <% else %>
+	        	<% @cellarable = "" %>
+	        <% end %>
+	        <% @drink_rating_check = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id ).first %>
+	  		<% if !@drink_rating_check.nil? %>
+	    		<% @drink_new = "Yes" %> 
+	    	<% else %>
+	    		<% @drink_new = "No" %>
+	    	<% end %>
+	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %><sup class="cellar"> <%= @cellarable %></sup></td>
+	        <td><%= drink.beer.beer_type.beer_type_name %></td>
 	        <td><%= drink.projected_rating %></td>
+	        <td><%= @drink_new %></td>
 	        <td><%= inventory.size_format.format_name %></td>
 	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		    <td><%= @tally %></td>
@@ -33,10 +46,10 @@
 	        	<% end %>
 	        </td>
 	        <td>
-	        	<% if inventory.demand.nil? %>
+	        	<% if inventory.reserved.nil? %>
 	        		0
 	        	<% else %>
-	        		<%= inventory.demand %>
+	        		<%= inventory.reserved %>
 	        	<% end %>
 	        </td>
 	        <td>
@@ -46,7 +59,7 @@
 	        		<%= inventory.order_queue %>
 	        	<% end %>
 	        </td>
-	        <% @inventory_status = (inventory.stock.to_i + inventory.order_queue.to_i) - inventory.demand.to_i %>
+	        <% @inventory_status = (inventory.stock.to_i + inventory.order_queue.to_i) - inventory.reserved.to_i %>
 	        <td><%= @inventory_status %></td>
 	        <td><%= link_to edit_admin_inventory_path(inventory.id), :class => "btn btn-success edit-beer-info" do %>
 	        		<i class="fa fa-plus"></i>
@@ -57,5 +70,4 @@
 	    <% end %>
     <% end %>
   </table>
-</div>
 

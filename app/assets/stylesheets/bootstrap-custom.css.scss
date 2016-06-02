@@ -83,6 +83,7 @@ $facebook-button-color: $facebook-blue-color;
 $twitter-button-color: $twitter-blue-color;
 $warning-red: $light-red;
 $soft-gray-background: $extra-light-blue-gray;
+$cellarable-text: $bright-purple;
 
 @font-face {
     font-family: 'novecento_sans_widenormal';
@@ -134,7 +135,14 @@ $soft-gray-background: $extra-light-blue-gray;
         url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'),
         url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
 }
+@font-face {
+    font-family: 'troikaregular';
+    src: url('troika-webfont.woff2') format('woff2'),
+         url('troika-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 
+}
 html {
   position: relative;
   min-height: 100%;
@@ -244,6 +252,15 @@ label {
 }
 .combined-drink-text {
   color: $combined-drink-text !important;
+}
+.cellar {
+  color: $cellarable-text;
+  text-shadow: 0.5px 0.5px 0.5px $less-emphasized-text;
+  font-weight: 500;
+  font-size: 15px !important;
+  text-transform: uppercase;
+  font-family: 'troikaregular';
+  top: -5px !important;
 }
 .short-beer-type {
   font-style: italic;
@@ -580,7 +597,7 @@ $brewer-description-lines-to-show-fp: 2;
   padding: 0;
 }
 $beer-header-font-size-fp: 14px;
-$beer-header-line-height-fp: 1.2;
+$beer-header-line-height-fp: 1.6;
 $beer-header-lines-to-show-fp: 1;
 .beer-tile-header-full-page {
   @extend .tile-header; 
@@ -816,7 +833,7 @@ $beer-header-lines-to-show: 2;
 .happiness-index {
   display: inline-block;
   font-weight: 500;
-  color: $bright-orange;
+  color: $best-guess-text;
   margin-top: 5px;
   margin-bottom: 0;
 }
@@ -1761,7 +1778,7 @@ $beer-header-lines-to-show-fp: 1;
 .beer-rating-input {
   text-align: left;
   i:hover {
-    color: $bright-orange;
+    color: $best-guess-text;
   }
 }
 .rating-descriptor-field {
@@ -2990,6 +3007,9 @@ input[type="checkbox"] {
 .filter-options {
   height: 32px;
   width: 80%;
+}
+.current-selected-user {
+  color: $best-guess-text;
 }
 .admin-recommendation-table th .current {
   padding-right: 12px;

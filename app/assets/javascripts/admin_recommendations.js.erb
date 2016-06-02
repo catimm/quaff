@@ -1,11 +1,20 @@
 $(function() {
 	
-	// add logic to filter a table based on user chose 
+	// add logic to filter inventory table based on user chose 
 	$(document).on('change', '#user-drink-recommendations', function () {
 		var user_id = $(this).val();
 		$.ajax({
 		  type: "GET",
 		  url: "/admin/recommendations/" + user_id
+		});
+	});
+	
+	// add logic to filter non-inventory table based on user chose 
+	$(document).on('change', '#user-drink-recommendations-non', function () {
+		var user_id = $(this).val();
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/not_in_stock/" + user_id
 		});
 	});
 });

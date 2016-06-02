@@ -32,6 +32,7 @@
 #  short_beer_name      :string
 #  dont_include         :boolean
 #  touched_by_location  :integer
+#  cellarable           :boolean
 #
 
 require 'test_helper'

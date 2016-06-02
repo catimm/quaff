@@ -1,0 +1,29 @@
+<div class="row">
+	<div class="col-sm-4">
+		<h5>Next delivery: <%= @drinks_next_delivery %></h5>
+	</div>
+	<div class="col-sm-8">
+		<table class="table table-striped">
+		    <tr>
+		      <th></th>
+		      <th>Need</th>
+		      <th>Have</th>
+		    </tr>
+		    <tr>
+		      <td>New / Retry</td>
+		      <td><%= @next_delivery_new_need %> / <%= @next_delivery_retry_need %></td>
+		      <td><%= @next_delivery_new_have %> / <%= @next_delivery_retry_have %></td>
+		    </tr>
+		    <tr>
+		      <td>Cooler / Cellar</td>
+		      <td><%= @next_delivery_cooler_need %> / <%= @next_delivery_cellar_need %></td>
+		      <td><%= @next_delivery_cooler_have %> / <%= @next_delivery_cellar_have %></td>
+		    </tr>
+		    <tr>
+		      <td>Large / Small</td>
+		      <td><%= @next_delivery_large_need %> / <%= @next_delivery_small_need %></td>
+		      <td><%= @next_delivery_large_have %> / <%= @next_delivery_small_have %></td>
+		    </tr>
+		</table>
+	</div>
+</div>

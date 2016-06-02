@@ -124,6 +124,7 @@ Rails.application.routes.draw do
   # admin routes
   get 'porting' => 'porting#index'
   get 'reloads' => 'reloads#index'
+  get 'admin/recommendations/not_in_stock/:id' => 'admin/recommendations#not_in_stock', :as => 'admin_not_in_stock'
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'
