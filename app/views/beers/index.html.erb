@@ -63,16 +63,7 @@
 									</div>
 								</div>
 								<div class="row no-margin">	
-									<div class="col-xs-12">
-										<% @location_beers = BeerLocation.all_drinks(beer.id).order("created_at DESC") %>
-										<% if @location_beers.empty? %>
-											<h6 class="tile-subheader">This beer hasn't been on tap in Seattle since before April 2015...</h6>
-										<% else %>
-											<% @most_recent_beer = @location_beers.order("removed_at DESC").first %>
-											<% @most_recent_location = Location.live_location.where(id: @most_recent_beer.location_id)[0] %>
-											<h6 class="tile-subheader last-seen">Last seen @ <%= @most_recent_location.short_name %> (<%= (@most_recent_beer.removed_at).strftime("%B %e, %Y") %>) </h6>
-										<% end %>
-									</div>	
+
 								</div>
 								<% if index != @search_results.size - 1 %>
 							    	<hr>

@@ -18,7 +18,7 @@ class BeersController < ApplicationController
     @user_id = current_user.id
     # grab beer info
     @beer = Beer.where(id: params[:id])[0]
-    #Rails.logger.debug("Beer info #{@beer.inspect}")
+    Rails.logger.debug("Beer info #{@beer.inspect}")
     
     # get user and drink data for admins
    if current_user.role_id == 1
@@ -75,7 +75,7 @@ class BeersController < ApplicationController
     @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
     @beer = best_guess(@beer.id, current_user.id)[0]
-    Rails.logger.debug("beer's best guess: #{@beer.best_guess.inspect}")
+    Rails.logger.debug("beer's best guess: #{@beer.inspect}")
     
     # get user's ratings for this beer if any exist
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse
