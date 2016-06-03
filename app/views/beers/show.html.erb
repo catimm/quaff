@@ -117,11 +117,13 @@
 					<%= render 'wishlist_button', wishlist: @wishlist %>
 				</div>
 			</div>
-			<% if !@user_rating_for_this_beer.blank? %>
+			<% if !@user_rating_for_this_beer.blank? || current_user.role_id == 1 %>
 			<hr class="visible-sm visible-md visible-lg" />
 			<div class="row no-margin">
 				<div class="col-sm-6 col-xs-12">
-					<%= render 'user_history' %>
+					<% if !@user_rating_for_this_beer.blank? %>
+						<%= render 'user_history' %>
+					<% end %>
 				</div>
 				<div class="col-sm-6 col-xs-12">
 					<% if current_user.role_id == 1 %>
