@@ -1,10 +1,6 @@
 class Admin::RecommendationsController < ApplicationController
   before_filter :verify_admin
   helper_method :sort_column, :sort_direction
-  
-  def index
-  
-  end # end of index action
  
   def show
     # get unique customer names for select dropdown

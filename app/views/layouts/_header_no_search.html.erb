@@ -37,7 +37,7 @@
 					            <li class="dropdown-header">Admin links</li>
 					            <li class="dropdown-link"><%= link_to "Retail account", retailer_path(session[:retail_id]) %></li>
 					            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
-								<li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path %></li>
+								<li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path(current_user.id) %></li>
 								<li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path %></li>
 								<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
 							    
