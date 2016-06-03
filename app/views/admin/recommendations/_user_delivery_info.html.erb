@@ -5,24 +5,20 @@
 	<div class="col-sm-8">
 		<table class="table table-striped">
 		    <tr>
-		      <th></th>
 		      <th>Need</th>
 		      <th>Have</th>
 		    </tr>
 		    <tr>
-		      <td>New / Retry</td>
-		      <td><%= @next_delivery_new_need %> / <%= @next_delivery_retry_need %></td>
-		      <td><%= @next_delivery_new_have %> / <%= @next_delivery_retry_have %></td>
+		      <td><%= @next_delivery_new_need %> New / <%= @next_delivery_retry_need %> Retry</td>
+		      <td><span class="<%= @new_have_class %>"><%= @next_delivery_new_have %></span> / <span class="<%= @retry_have_class %>"><%= @next_delivery_retry_have %></span></td>
 		    </tr>
 		    <tr>
-		      <td>Cooler / Cellar</td>
-		      <td><%= @next_delivery_cooler_need %> / <%= @next_delivery_cellar_need %></td>
-		      <td><%= @next_delivery_cooler_have %> / <%= @next_delivery_cellar_have %></td>
+		      <td><%= @next_delivery_cooler_need %> Cooler / <%= @next_delivery_cellar_need %> Cellar</td>
+		      <td><span class="<%= @cooler_have_class %>"><%= @next_delivery_cooler_have %></span> / <span class="<%= @cellar_have_class %>"><%= @next_delivery_cellar_have %></span></td>
 		    </tr>
 		    <tr>
-		      <td>Large / Small</td>
-		      <td><%= @next_delivery_large_need %> / <%= @next_delivery_small_need %></td>
-		      <td><%= @next_delivery_large_have %> / <%= @next_delivery_small_have %></td>
+		      <td><%= @next_delivery_small_need %> Small / <%= @next_delivery_large_need %> Large</td>
+		      <td><span class="<%= @small_have_class %>"><%= @next_delivery_small_have %></span> / <span class="<%= @large_have_class %>"><%= @next_delivery_large_have %></span></td>
 		    </tr>
 		</table>
 	</div>

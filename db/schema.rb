@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160601225749) do
+ActiveRecord::Schema.define(version: 20160603000946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -308,6 +308,7 @@ ActiveRecord::Schema.define(version: 20160601225749) do
     t.float    "projected_rating"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.boolean  "new_drink"
   end
 
   create_table "user_fav_drinks", force: :cascade do |t|
@@ -324,6 +325,17 @@ ActiveRecord::Schema.define(version: 20160601225749) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.boolean  "owner"
+  end
+
+  create_table "user_next_deliveries", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "inventory_id"
+    t.integer  "user_drink_recommendation_id"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "new_drink"
+    t.boolean  "cooler"
+    t.boolean  "small_format"
   end
 
   create_table "user_notification_preferences", force: :cascade do |t|

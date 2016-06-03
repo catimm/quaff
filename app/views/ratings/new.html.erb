@@ -17,12 +17,46 @@
 						<% end %>
 					</div>
 				</div>
-				<div class="col-sm-9 col-xs-8 no-padding-left">
-					<h5 class="tile-header beer-tile-header"><%= @this_drink.brewery.short_brewery_name %> <%= @this_drink.beer_name %></h5>
+				<div class="col-sm-9 col-xs-8 no-padding-left rating-drink-info">
+					<div class="row">
+						<div class="col-xs-12">
+							<% if @this_drink.collab == true %>
+								<h5 class="tile-header beer-tile-header rating-header"><%= Beer.collab_brewery_name(@this_drink.id) %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellar supply"> <%= @cellarable %></sup></h5>
+							<% elsif @this_drink.brewery.short_brewery_name.nil? %>
+								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.brewery_name %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellar supply"> <%= @cellarable %></sup></h5>
+							<% else %>
+								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.short_brewery_name %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellar supply"> <%= @cellarable %></sup></h5>
+							<% end %>
+						</div>
+						<div class="col-xs-12">
+							<% if !@this_drink.beer_type_id.nil? %>
+								<h5 class="tile-subheader beer-info no-overflow"><%= @this_drink.beer_type.beer_type_name %></h5>
+							<% else %>
+								<h5 class="tile-subheader beer-info">Style unknown</h5>
+							<% end %>
+						</div>
+						<div class="col-xs-6 no-padding-right">
+							<% if !@this_drink.beer_abv.nil? %>
+								<h6 class="tile-subheader beer-info"><%= @this_drink.beer_abv %>% ABV</h6>
+							<% else %>
+								<h6 class="tile-subheader beer-info">ABV N/A</h6>
+							<% end %>
+						</div>
+						<% if !@this_drink.beer_ibu.nil? %>
+							<div class="col-xs-6 no-padding-left text-center ibu-div">
+								<h6 class="tile-subheader beer-info"><%= @this_drink.beer_ibu %> IBUs</h6>
+							</div>
+						<% else %>
+							<div class="col-xs-6"></div>
+						<% end %>
+					</div>
 				</div>			
 			</div>
 			<%= form_for @user_drink_rating, :url => {:controller => "ratings", :action => "create"} do |rate| %>
 			<%= rate.hidden_field :user_id, :value => @user.id %>
+			<% if !@ratings_source.nil? %>
+				<%= rate.hidden_field :drank_at, :value => @ratings_source %>
+			<% end %>
 			<%= rate.hidden_field :rated_on, :value => @time %>
 			<%= rate.hidden_field :beer_id, :value => @this_drink.id %>
 			<%= rate.hidden_field :projected_rating, :value => @our_best_guess %>
@@ -31,23 +65,29 @@
 			<div class="row rating-top-row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-10 col-xs-12 rating-holder text-center">
-					<p class="common-description-heading text-left">Rate drink 0 - 10 or leave it unrated ("NR"):</p>
-					<div id="visible-rating">
-						<h1>NR</h1>
+					<div class="rating-step-container text-left">
+						<h5 class="step-number">1<sup>st</sup></h5>
+					</div>
+					<p class="common-description-heading">Rate drink 0 - 10</p>
+					<div class="text-center" id="visible-rating">
+						<h1>0</h1>
 					</div>
 					<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
 	                 data: {'slider-id' => 'rating-slider',
-	                 		'slider-min' => '-0.5',
+	                 		'slider-min' => '0',
 	                        'slider-max' => '10',
 	                        'slider-step' => '0.5',
-	                        'slider-value' => '-0.5',
+	                        'slider-value' => '0',
 	                        'slider-orientation' => 'horizontal' } %> 
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-10 col-xs-12 descriptor-holder text-left">
-					<p class="common-description-heading">Add keyword descriptors to describe drink:</p>
+					<div class="rating-step-container text-left">
+						<h5 class="step-number">2<sup>nd</sup></h5>
+					</div>
+					<p class="common-description-heading">Add keyword descriptors to describe drink--click bubble words or type in your own.</p>
 					<% if !@this_descriptors.blank? %>
 						<ul class="token-input-list-facebook_rating">
 						<% @this_descriptors.each do |descriptor| %>
@@ -66,8 +106,13 @@
 			<div class="row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-10 col-xs-12 comment-holder">
-					<p class="common-description-heading">Add extra thoughts here if you'd like:</p>
-					<%= rate.text_area :comment, :class => "form-control", placeholder: "Additional comments (optional)" %>
+					<div class="rating-step-container text-left">
+						<h5 class="step-number">3<sup>rd</sup></h5>
+					</div>
+					<p class="common-description-heading">Optional: add extra thoughts if you'd like.</p>
+					<div class="rating-notes-container">
+						<%= rate.text_area :comment, :class => "form-control", placeholder: "Additional comments (optional)" %>
+					</div>
 				</div>
 			</div>
 			<div class="row">

@@ -1,4 +1,5 @@
 $(function() {
 	$('#current-user-recommendations-non').html('<%=  escape_javascript(@drink_recommendations[0].user.username) %>');
 	$('#non-inventory-list-holder').html('<%=  escape_javascript(render :partial => 'non_inventory_list', :locals => {:drinks => @non_inventory_drink_recommendations}) %>');
+	$('#in-stock-button-holder').html('<%=  escape_javascript(render :partial => 'in_stock_button') %>');
 });

@@ -143,6 +143,8 @@ GEM
     http-form_data (1.0.1)
     http_parser.rb (0.6.0)
     httpclient (2.7.0.1)
+    humanize_boolean (0.0.2)
+      i18n
     i18n (0.7.0)
     jbuilder (2.2.16)
       activesupport (>= 3.0.0, < 5)
@@ -354,6 +356,7 @@ DEPENDENCIES
   filterrific
   font-awesome-sass (~> 4.3.0)
   gon
+  humanize_boolean
   jbuilder (~> 2.0)
   jqcloud-rails
   jquery-rails

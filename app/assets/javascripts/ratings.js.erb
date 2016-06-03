@@ -3,13 +3,6 @@ $(function() {
 	$("#rater").slider({
 		tooltip: 'hide'
 	});
-	$("#rater").on("slide", function(slideEvt) {
-		if (slideEvt.value == '-0.5') {
-			$("#visible-rating h1").text("NR");
-		} else {
-			$("#visible-rating h1").text(slideEvt.value);
-		}
-	});
 	// to grab list of descriptors for this beer
 	$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
 		theme: 'facebook',
@@ -26,4 +19,9 @@ $(function() {
 		$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput("add", {id: descriptor, name: descriptor});
 		return false;
 	});
+	
+	// get width of token input field
+	var token_field_width = $("#user_beer_rating_beer_attributes_descriptor_list_tokens").width();
+	// set note field to match width of token input field
+	$(".rating-notes-container").width(token_field_width - 28);
 });

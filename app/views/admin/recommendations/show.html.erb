@@ -6,24 +6,24 @@
 				<div class="col-sm-8">
 					<h2>Recommendations--currently in stock</h2>
 				</div>
-				<div class="col-sm-2">
-					<%= link_to "Not in stock options", admin_not_in_stock_path(current_user.id), :class => "btn btn-success inputButton2" %>
+				<div class="col-sm-2" id="not-in-stock-button-holder">
+					<%= render 'not_in_stock_button' %>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-3 text-left">
-			<h4>Currently showing: <span class="current-selected-user" id="current-user-recommendations"><%= @drink_recommendations[0].user.username %></span></h4>
-		</div>
 		<div class="col-md-1 text-right">
 			<h5>Choose user:</h5>
 		</div>
 		<div class="col-md-3">
-			<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: true}, {class: "form-control", id: "user-drink-recommendations"}) %>
+			<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: true}, {class: "form-control user-list-for-recommendation", id: "user-drink-recommendations"}) %>
 		</div>
-		<div class="col-md-5">
-			<%= render(partial: 'user_delivery_info', locals: { drinks: @inventory_drink_recommendations }) %>
+		<div class="col-md-3 text-left">
+			<h4>Currently showing: <span class="current-selected-user" id="current-user-recommendations"><%= @drink_recommendations[0].user.username %></span></h4>
+		</div>
+		<div class="col-md-5" id="user-delivery-info-container">
+			<%= render 'user_delivery_info' %>
 		</div>
 	</div>
 	<div class="row" id="inventory-list-holder">

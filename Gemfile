@@ -98,6 +98,8 @@ gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 # using Strip gem to manage subscription payments
 gem 'stripe'
+# turns boolean t/f to yes/no
+gem 'humanize_boolean'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

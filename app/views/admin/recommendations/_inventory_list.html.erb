@@ -7,8 +7,9 @@
       <th><%= sortable "beers.beer_name", "Drink" %></th>
       <th><%= sortable "beers.beer_type_id", "Drink Type" %></th>
       <th><%= sortable "projected_rating", "Rating" %></th>
-      <th>New</th>
-      <th>Format</th>
+      <th><%= sortable "new_drink", "New" %></th>
+      <th><%= sortable "beers.cellarable", "Cellarable" %></th>
+      <th><%= sortable "inventories.size_format_id", "Format" %></th>
       <th>Demand</th>
       <th>Stock</th>
       <th>Reserved</th>
@@ -25,16 +26,11 @@
 	        <% else %>
 	        	<% @cellarable = "" %>
 	        <% end %>
-	        <% @drink_rating_check = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id ).first %>
-	  		<% if !@drink_rating_check.nil? %>
-	    		<% @drink_new = "Yes" %> 
-	    	<% else %>
-	    		<% @drink_new = "No" %>
-	    	<% end %>
-	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %><sup class="cellar"> <%= @cellarable %></sup></td>
+	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
 	        <td><%= drink.beer.beer_type.beer_type_name %></td>
 	        <td><%= drink.projected_rating %></td>
-	        <td><%= @drink_new %></td>
+	        <td><%= drink.new_drink.humanize %></td>
+	        <td><%= drink.beer.cellarable.humanize %></td>
 	        <td><%= inventory.size_format.format_name %></td>
 	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		    <td><%= @tally %></td>
@@ -64,8 +60,13 @@
 	        <td><%= link_to edit_admin_inventory_path(inventory.id), :class => "btn btn-success edit-beer-info" do %>
 	        		<i class="fa fa-plus"></i>
 	        	<% end %>
-	        </td>
-	        <td><%= check_box_tag 'accept' %></td>
+	        </td> 
+	        <% @check_box_id =  drink.id.to_s + "-" + inventory.id.to_s %>
+	        <% if @next_delivery.map{|a| a.inventory_id}.include? inventory.id %>
+	        	<td><%= check_box_tag "inventory_ids[]", inventory.id, true, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>
+	      	<% else %>
+	      		<td><%= check_box_tag "inventory_ids[]", inventory.id, false, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>
+	      	<% end %>
 	      </tr>
 	    <% end %>
     <% end %>

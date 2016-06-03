@@ -17,4 +17,14 @@ $(function() {
 		  url: "/admin/recommendations/not_in_stock/" + user_id
 		});
 	});
+	
+	// earmark drink as part of next delivery
+	$(document).on('change', '.add_to_delivery', function () {
+		var this_id = $(this).attr('id');
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/next_delivery_drink/" + this_id
+		});
+	});
 });

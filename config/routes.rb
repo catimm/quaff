@@ -120,11 +120,13 @@ Rails.application.routes.draw do
   get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
   get 'users/:user_id/ratings/new(.:format)/:id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
-
+  #get '/users/:user_id/ratings/new(.:format)' => 'ratings#new', :as => 'new_user_rating'
+  
   # admin routes
   get 'porting' => 'porting#index'
   get 'reloads' => 'reloads#index'
   get 'admin/recommendations/not_in_stock/:id' => 'admin/recommendations#not_in_stock', :as => 'admin_not_in_stock'
+  get 'admin/recommendations/next_delivery_drink/:id' => 'admin/recommendations#next_delivery_drink', :as => 'admin_next_delivery_drink'
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'

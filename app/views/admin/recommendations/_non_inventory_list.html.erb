@@ -7,7 +7,8 @@
       <th><%= sortable "beers.beer_name", "Drink" %></th>
       <th><%= sortable "beers.beer_type_id", "Drink Type" %></th>
       <th><%= sortable "projected_rating", "Rating" %></th>
-      <th>New</th>
+      <th><%= sortable "new_drink", "New" %></th>
+      <th><%= sortable "beers.cellarable", "Cellarable" %></th>
       <th>Format</th>
       <th>Demand</th>
       <th>Order?</th>
@@ -18,19 +19,14 @@
         <% else %>
         	<% @cellarable = "" %>
         <% end %>
-    	<% @drink_rating_check = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id ).first %>
-  		<% if !@drink_rating_check.nil? %>
-    		<% @drink_new = "Yes" %> 
-    	<% else %>
-    		<% @drink_new = "No" %>
-    	<% end %>
     	<% if !drink.beer.inventories.empty? %>
 	    	<% drink.beer.inventories.each do |inventory| %>
 		      <tr>
-		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %><sup class="cellar"> <%= @cellarable %></sup> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
+		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
 		        <td><%= drink.beer.beer_type.beer_type_name %></td>
 		        <td><%= drink.projected_rating %></td>
-		        <td><%= @drink_new %></td>
+		        <td><%= drink.new_drink.humanize %></td>
+		        <td><%= drink.beer.cellarable.humanize %></td>
 			    <td><%= inventory.size_format.format_name %></td>
 		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		        <td><%= @tally %></td>
@@ -46,10 +42,11 @@
 		    <% end %>
 		<% else %>
 			<tr>
-		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %><sup class="cellar"> <%= @cellarable %></sup> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
+		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
 		        <td><%= drink.beer.beer_type.beer_type_name %></td>
 		        <td><%= drink.projected_rating %></td>
-		        <td><%= @drink_new %></td>
+		        <td><%= drink.new_drink.humanize %></td>
+		        <td><%= drink.beer.cellarable.humanize %></td>
 			   	<% if !drink.beer.beer_formats.empty? %>
 			   		<td>
 				   		<% drink.beer.beer_formats.each_with_index do |format, index| %>

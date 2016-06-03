@@ -376,6 +376,13 @@ task :assess_drink_recommendations => :environment do
           @individual_drink_info["user_id"] = user.id
           @individual_drink_info["beer_id"] = drink.id
           @individual_drink_info["projected_rating"] = drink.best_guess
+          # find if user has rated/had this drink before
+          @drink_rating_check = UserBeerRating.where(user_id: user.id, beer_id: drink.id).first
+          if !@drink_rating_check.nil?
+            @individual_drink_info["new_drink"] = true
+          else
+            @individual_drink_info["new_drink"] = false
+          end  
           @compiled_assessed_drinks << @individual_drink_info
         end
       end # end of loop adding assessed drinks to array

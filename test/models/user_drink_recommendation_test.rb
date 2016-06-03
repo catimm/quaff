@@ -8,6 +8,7 @@
 #  projected_rating :float
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  new_drink        :boolean
 #
 
 require 'test_helper'

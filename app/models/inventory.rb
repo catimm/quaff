@@ -18,7 +18,9 @@
 class Inventory < ActiveRecord::Base
   belongs_to :beer
   belongs_to :size_format
-
+  
+  has_many :user_next_deliveries
+  
   # scope inventory stock 
   scope :in_stock, -> { 
     where("stock >= ? OR order_queue >= ?", 1, 1)

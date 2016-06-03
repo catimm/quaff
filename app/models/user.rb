@@ -47,6 +47,7 @@ class User < ActiveRecord::Base
   has_many :user_drink_recommendations
   has_many :user_fav_drinks
   has_many :user_supplies
+  has_many :user_next_deliveries
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   

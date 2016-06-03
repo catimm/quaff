@@ -237,8 +237,7 @@ class UsersController < ApplicationController
     return
     # get top rated drink types
     @user_ratings_by_type = @user_ratings.rating_drink_types.paginate(:page => params[:page], :per_page => 5)
-    #Rails.logger.debug("User ratings by type: #{@user_ratings_by_type.inspect}")  
- 
+    
     if !@user_ratings_by_type.blank?
       # create array to hold descriptors cloud
       @final_descriptors_cloud = Array.new

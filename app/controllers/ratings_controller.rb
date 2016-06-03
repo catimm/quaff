@@ -3,6 +3,9 @@ class RatingsController < ApplicationController
   include BestGuess
   
   def new
+    if params.has_key?(:source)
+      @ratings_source = params[:source]
+    end
     @user = current_user
     @time = Time.now
     # get drink info
@@ -27,7 +30,19 @@ class RatingsController < ApplicationController
     new_user_rating = UserBeerRating.new(rating_params)
     new_user_rating.save!
     @user.tag(@beer, :with => params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens], :on => :descriptors)
-
+    
+    # remove from cooler or cellar if drank from either source
+    if params.fetch(:user_beer_rating, {}).fetch(:drank_at, false)
+      @ratings_source = params[:user_beer_rating][:drank_at]
+      if @ratings_source == 'cooler'
+        @rated_drink = UserSupply.where(user_id: current_user.id, beer_id: params[:user_beer_rating][:beer_id], supply_type_id: 1).first
+        @rated_drink.destroy!
+      elsif @ratings_source == 'cellar'
+        @rated_drink = UserSupply.where(user_id: current_user.id, beer_id: params[:user_beer_rating][:beer_id], supply_type_id: 2).first
+        @rated_drink.destroy!
+      end
+    end
+    
     # now redirect back to locations page
     redirect_to brewery_beer_path(@beer.brewery.id, @beer)
   end

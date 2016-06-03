@@ -8,11 +8,14 @@
 #  projected_rating :float
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  new_drink        :boolean
 #
 
 class UserDrinkRecommendation < ActiveRecord::Base
   belongs_to :user
   belongs_to :beer
+  
+  has_many :user_next_deliveries
   
   # scope recommended drinks in stock
   scope :recommended_in_stock, -> {

@@ -262,6 +262,10 @@ label {
   font-family: 'troikaregular';
   top: -5px !important;
 }
+.cellar.supply {
+  float: left;
+  top: 7.5px !important
+}
 .short-beer-type {
   font-style: italic;
   color: $normal-text !important;
@@ -819,6 +823,13 @@ $beer-header-lines-to-show: 2;
   overflow: hidden;
   text-overflow: ellipsis;
   text-decoration: underline;
+  float: left;
+}
+.beer-tile-header.rating-header {
+  text-decoration: none !important;
+}
+.rating-drink-info {
+  margin-top: 20px;
 }
 .tile-subheader {
   font-size: 1vw; 
@@ -1005,11 +1016,27 @@ p {
   position: relative;
   padding-bottom: 20px;
 }
-.rating-holder {
-  margin-top: -15px;
-    p {
-      margin: 10px 0 0 0 !important;
-    }
+.step-number {
+  margin: 5px 0 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  sup {
+    font-weight: 400;
+    font-size: 60%;
+  }
+}
+.rating-step-container {
+  background: $action-background;
+  height: 28px;
+  width: 28px;
+  border-radius: 14px;
+  color: $white;
+  float: left;
+  text-align: center;
+  margin-right: 5px;
+}
+.token-input-list-facebook {
+  margin: 5px 0 10px 28px !important;
 }
 .rating-direction {
   margin-top: 33px;
@@ -1033,6 +1060,8 @@ p {
 .common-description-heading {
     color: $normal-text;
     font-size: 13px; 
+    text-align: left;
+    margin: 7px 0 0 0px;
   }
 #rating-slider .slider-selection {
   background: $soft-border;
@@ -1050,6 +1079,8 @@ p {
 }
 #user_beer_rating_comment {
   height: 40px !important;
+  width: 100% !important;
+  margin: 0 0 10px 28px !important;
 }
 // Draft Board Column page
 .draft-board-container {
@@ -3007,6 +3038,15 @@ input[type="checkbox"] {
 .filter-options {
   height: 32px;
   width: 80%;
+}
+.user-list-for-recommendation {
+  margin-top: 10px;
+}
+.all-set {
+  background: $current-beer-complete-background;
+}
+.not-ready {
+  background: $special-designated-red;
 }
 .current-selected-user {
   color: $best-guess-text;
