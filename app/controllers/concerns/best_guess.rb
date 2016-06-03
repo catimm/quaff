@@ -17,7 +17,7 @@ module BestGuess
     end
     # cycle through each beer to see if there is a style match and apply proper algorithm
     @beers.each do |this_beer|
-      # Rails.logger.debug("beer info: #{this_beer.inspect}")
+      Rails.logger.debug("beer info: #{this_beer.inspect}")
       # find this beer's beer type id
       this_beer_type_id = this_beer.beer_type_id
       # Rails.logger.debug("this beer type ID #{this_beer_type_id.inspect}")
@@ -25,7 +25,7 @@ module BestGuess
       if !this_beer_type_id.blank?
         # if the beer has a type, find out how many other beers of this beer type the user has rated
         user_beer_type_count = UserBeerRating.where(user_id: user_id, beer_type_id: this_beer_type_id).count
-        # Rails.logger.debug("beer type count #{user_beer_type_count.inspect}")
+        Rails.logger.debug("beer type count #{user_beer_type_count.inspect}")
         # if user has rated more than 5 of this beer type, use TypeBasedGuess concern, otherwise, use StyleBasedGuess concern
         if user_beer_type_count >= 5
           type_based_guess(this_beer, user_id)
