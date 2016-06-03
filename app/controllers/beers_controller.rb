@@ -74,8 +74,9 @@ class BeersController < ApplicationController
     # find if user is tracking this beer already
     @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
+    Rails.logger.debug("after admin beer's info: #{@beer.inspect}")
     @beer = best_guess(@beer.id, current_user.id)[0]
-    Rails.logger.debug("beer's best guess: #{@beer.inspect}")
+    Rails.logger.debug("after best guess beer's info: #{@beer.inspect}")
     
     # get user's ratings for this beer if any exist
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse
