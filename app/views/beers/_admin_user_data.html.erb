@@ -1,0 +1,27 @@
+<h5 class="tile-header user-rating-section">User data</h5>
+<div class="row no-margin">
+	<h5><b><%= @users_would_like %> <%= "customer".pluralize(@users_would_like) %></b> would like this drink.</h5>
+	<ul>
+		<li>For <b><%= @users_have_had %> <%= "customer".pluralize(@users_have_had) %></b> it would be a <b>new drink</b>.</li>
+		<li>For <b><%= @users_have_not_had %> <%= "customer".pluralize(@users_have_not_had) %></b> it would be a <b>'retry' drink</b>.</li>
+	</ul>
+</div>
+<div class="row no-margin">
+	<h5>In stock: <%= @inventory_count %></h5>
+	<ul>
+		<li>Reserved: <%= @reserved_drinks %></li>
+		<li>Set to be ordered: <%= @set_to_order_drinks %></li>
+		<li>Currently available: <%= @available_drinks %></li>
+	</ul>
+</div>
+<div class="row no-margin">
+	<% if !@inventory.nil? %>
+		<%= link_to edit_admin_inventory_path(@beer.id), :class => "btn btn-success edit-beer-info" do %>
+			<i class="fa fa-wrench"> edit inventory</i>
+		<% end %>
+	<% else %>
+		<%= link_to new_admin_inventory_path(@beer.id), :class => "btn btn-success edit-beer-info" do %>
+			<i class="fa fa-plus"> add to inventory</i>
+		<% end %>
+	<% end %>
+</div>

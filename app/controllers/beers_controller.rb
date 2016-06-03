@@ -19,10 +19,63 @@ class BeersController < ApplicationController
     # grab beer info
     @beer = Beer.where(id: params[:id])[0]
     #Rails.logger.debug("Beer info #{@beer.inspect}")
+    
+    # get user and drink data for admins
+   if current_user.role_id == 1
+     # get unique customer ids
+     # need to change to this---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
+     @customer_ids = User.where(role_id: 4).pluck(:id)
+     # create variables to hold customer info
+     @users_would_like = 0
+     @users_have_had = 0
+     
+     @customer_ids.each do |customer|
+       @this_user_best_guess = best_guess(@beer.id, customer)[0]
+       if @this_user_best_guess.best_guess >= 7.75
+         @users_would_like += 1
+         @drink_rating_check = UserBeerRating.where(user_id: customer, beer_id: @beer.id).first
+         if !@drink_rating_check.nil?
+          @users_have_had += 1
+         end  # end of check on whether user has had drink
+       end # end of best guess minimum check
+     end # end of loop through customers
+     
+     @users_have_not_had = @users_would_like - @users_have_had
+      
+      # get inventory data for
+      @inventory = Inventory.where(beer_id: @beer.id).first
+      if !@inventory.nil?
+        if !@inventory.stock.nil?
+          @inventory_count = @inventory.stock
+        else
+          @inventory_count = 0
+        end
+        if !@inventory.reserved.nil?
+          @reserved_drinks = @inventory.reserved
+        else
+          @reserved_drinks = 0
+        end
+        if !@inventory.order_queue.nil?
+          @set_to_order_drinks = @inventory.order_queue
+        else
+          @set_to_order_drinks = 0
+        end
+        @available_drinks = @inventory_count.to_i - (@inventory.reserved.to_i + @inventory.order_queue.to_i)
+        if @available_drinks < 0
+          @available_drinks = 0
+        end
+      else
+        @inventory_count = 0
+        @reserved_drinks = 0
+        @available_drinks = 0
+      end
+   end # end of getting user data for admins
+        
     # find if user is tracking this beer already
     @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
-    @beer = best_guess(@beer.id)[0]
+    @beer = best_guess(@beer.id, current_user.id)[0]
+    Rails.logger.debug("beer's best guess: #{@beer.best_guess.inspect}")
     
     # get user's ratings for this beer if any exist
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse
@@ -44,7 +97,7 @@ class BeersController < ApplicationController
       cloud_array << new_hash
     end
     #Rails.logger.debug("Each beer descriptors: #{cloud_array.inspect}")
-
+     
     gon.beer_array = cloud_array
   end
   

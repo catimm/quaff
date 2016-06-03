@@ -13,7 +13,7 @@ class LocationsController < ApplicationController
     @retailer = Location.where(id: params[:id])[0]
     # grab ids of current beers for this location
     @beer_ids = BeerLocation.where(location_id: params[:id]).pluck(:beer_id)
-    @beer_ranking = best_guess(@beer_ids).sort_by(&:ultimate_rating).reverse
+    @beer_ranking = best_guess(@beer_ids, current_user.id).sort_by(&:ultimate_rating).reverse
 
     # send beer ids to javascript file to create jcloud
     final_array = Array.new

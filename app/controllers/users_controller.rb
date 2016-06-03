@@ -70,7 +70,7 @@ class UsersController < ApplicationController
       @user_cooler.each do |drink|
         @supply_drink_ids << drink.beer_id
       end
-      @user_cooler = best_guess(@supply_drink_ids).paginate(:page => params[:page], :per_page => 12)
+      @user_cooler = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
       @cooler_chosen = "chosen"
     elsif @view == "cellar"
       @user_cellar = @user_supply.where(supply_type_id: 2)
@@ -92,7 +92,7 @@ class UsersController < ApplicationController
       @user_cellar.each do |drink|
         @supply_drink_ids << drink.beer_id
       end
-      @user_cellar = best_guess(@supply_drink_ids).paginate(:page => params[:page], :per_page => 12)
+      @user_cellar = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
       @cellar_chosen = "chosen"
     else 
       @user_delivery_preference = DeliveryPreference.where(user_id: current_user.id).first
@@ -115,7 +115,7 @@ class UsersController < ApplicationController
       @user_next.each do |drink|
         @supply_drink_ids << drink.beer_id
       end
-      @user_next = best_guess(@supply_drink_ids).paginate(:page => params[:page], :per_page => 12)
+      @user_next = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
       @next_chosen = "chosen"
     end
     
@@ -134,7 +134,7 @@ class UsersController < ApplicationController
     @final_search_results.each do |drink|
       @search_drink_ids << drink.id
     end
-    @final_search_results = best_guess(@final_search_results).paginate(:page => params[:page], :per_page => 12)
+    @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
     
     # create array to hold descriptors cloud
     @final_descriptors_cloud = Array.new
@@ -186,7 +186,7 @@ class UsersController < ApplicationController
   def wishlist 
     @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)
     #Rails.logger.debug("Wishlist drink ids: #{@wishlist_drink_ids.inspect}")
-    @wishlist = best_guess(@wishlist_drink_ids).sort_by(&:ultimate_rating).reverse.paginate(:page => params[:page], :per_page => 12)
+    @wishlist = best_guess(@wishlist_drink_ids, current_user.id).sort_by(&:ultimate_rating).reverse.paginate(:page => params[:page], :per_page => 12)
     #Rails.logger.debug("Wishlist drinks: #{@wishlist.inspect}")
     
     # create array to hold descriptors cloud

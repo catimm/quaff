@@ -1,0 +1,39 @@
+<h5 class="tile-header user-rating-section">Your thoughts</h5>
+<% @user_rating_for_this_beer.each_with_index do |rating, index| %>
+<div class="row no-margin">
+	<div class="col-xs-12">
+		<% if !rating.drank_at.nil? %>
+			<h6 class="beer-info no-overflow"><%= rating.rated_on.strftime("%b %e, %Y") %> @ <%= rating.drank_at %></h6>
+		<% else %>
+			<h6 class="beer-info no-overflow"><%= rating.rated_on.strftime("%b %e, %Y") %></h6>
+		<% end %>
+		<div class="row">
+			<div class="col-xs-4 past-user-rating">
+				<p>rated:</p>
+				<h1 class="user-rating"><%= rating.user_beer_rating %></h1>
+			</div>
+			<div class="col-xs-8 past-user-descriptors">
+				<p>descriptors:</p>
+				<% if !rating.current_descriptors.nil? %>
+					<% @descriptor_list_initial = rating.current_descriptors.split(',') %>
+					<% @descriptor_list_final = @descriptor_list_initial.to_sentence %>
+					<h5 class="user-rating"><%= @descriptor_list_final %></h5>
+				<% else %>
+					<h6 class="user-rating">no descriptors provided</h6>
+				<% end %>
+			</div>
+		</div>
+		<% if !rating.comment.blank? %>
+		<div class="row">
+			<div class="col-xs-12 past-user-comment">
+				<p>comment:</p>
+				<h5 class="tile-subheader beer-info">"<%= rating.comment %>"</h5>
+			</div>
+		</div>
+		<% end %>
+	</div>
+</div>
+	<% if @number_of_ratings != index +1 %>
+		<hr/>
+	<% end %>
+<% end %>

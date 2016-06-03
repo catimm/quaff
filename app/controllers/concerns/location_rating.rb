@@ -7,7 +7,7 @@ module LocationRating
       # grab ids of current beers for each location
       @beer_ids = BeerLocation.where(location_id: this_location.id).pluck(:beer_id)
       # Rails.logger.debug("Beer ids: #{@beer_ids.inspect}")
-      @beer_ranking = best_guess(@beer_ids).sort_by(&:ultimate_rating).reverse
+      @beer_ranking = best_guess(@beer_ids, current_user.id).sort_by(&:ultimate_rating).reverse
       #Rails.logger.debug("New Beer info: #{@beer_ranking.inspect}")
       @rank_input = @beer_ranking.first(5)
       #Rails.logger.debug("Beer ranks: #{@rank_input.inspect}")

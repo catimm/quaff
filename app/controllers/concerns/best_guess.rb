@@ -3,11 +3,11 @@ module BestGuess
   include StyleBasedGuess
   include TypeBasedGuess
  
-  def best_guess(beer_ids)
+  def best_guess(beer_ids, user_id)
     #initial beers
     @beers = Beer.where(id: beer_ids, dont_include: [false, nil])
     # grab user's style preferences
-    @user_style_preferences = UserStylePreference.where(user_id: current_user.id)
+    @user_style_preferences = UserStylePreference.where(user_id: user_id)
     # separate likes from dislikes
     if !@user_style_preferences.nil?
       @user_style_likes = @user_style_preferences.where(user_preference: "like").pluck(:beer_style_id)
@@ -24,11 +24,11 @@ module BestGuess
       # first find out if this beer has a type associated to it yet
       if !this_beer_type_id.blank?
         # if the beer has a type, find out how many other beers of this beer type the user has rated
-        user_beer_type_count = UserBeerRating.where(user_id: current_user.id, beer_type_id: this_beer_type_id).count
+        user_beer_type_count = UserBeerRating.where(user_id: user_id, beer_type_id: this_beer_type_id).count
         # Rails.logger.debug("beer type count #{user_beer_type_count.inspect}")
         # if user has rated more than 5 of this beer type, use TypeBasedGuess concern, otherwise, use StyleBasedGuess concern
         if user_beer_type_count >= 5
-          type_based_guess(this_beer, current_user)
+          type_based_guess(this_beer, user_id)
         else
           style_based_guess(this_beer)
         end
@@ -37,7 +37,7 @@ module BestGuess
         style_based_guess(this_beer)
       end
       # check if user has rated this beer
-      @user_rating = UserBeerRating.where(user_id: current_user.id, beer_id: this_beer.id)
+      @user_rating = UserBeerRating.where(user_id: user_id, beer_id: this_beer.id)
       # if user has rated this beer, add user ratings to data array
       if !@user_rating.empty?
         if @user_rating.length > 1

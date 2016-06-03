@@ -17,7 +17,7 @@ class RatingsController < ApplicationController
     @this_descriptors = @this_drink.descriptors
     @this_descriptors = @this_descriptors.uniq
     # Rails.logger.debug("descxriptor list: #{@this_descriptors.inspect}")
-    @this_drink_best_guess = best_guess(@drink_id).first
+    @this_drink_best_guess = best_guess(@drink_id, current_user.id).first
     @our_best_guess = @this_drink_best_guess.best_guess
     # Rails.logger.debug("Our best guess: #{@our_best_guess.inspect}")
   end
