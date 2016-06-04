@@ -17,8 +17,8 @@ class BeersController < ApplicationController
   def show
     @user_id = current_user.id
     # grab beer info
-    @beer = Beer.where(id: params[:id])[0]
-    Rails.logger.debug("Beer info #{@beer.inspect}")
+    #@beer = Beer.where(id: params[:id])[0]
+    #Rails.logger.debug("Beer info #{@beer.inspect}")
     
     # get user and drink data for admins
    if current_user.role_id == 1
@@ -30,7 +30,7 @@ class BeersController < ApplicationController
      @users_have_had = 0
      
      @customer_ids.each do |customer|
-       @this_user_best_guess = best_guess(@beer.id, customer)[0]
+       @this_user_best_guess = best_guess(params[:id], customer)[0]
        if @this_user_best_guess.best_guess >= 7.75
          @users_would_like += 1
          @drink_rating_check = UserBeerRating.where(user_id: customer, beer_id: @beer.id).first
@@ -70,7 +70,9 @@ class BeersController < ApplicationController
         @available_drinks = 0
       end
    end # end of getting user data for admins
-        
+    
+    # grab beer info
+    @beer = Beer.where(id: params[:id])[0]    
     # find if user is tracking this beer already
     @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
