@@ -1,0 +1,17 @@
+# == Schema Information
+#
+# Table name: drink_options
+#
+#  id                :integer          not null, primary key
+#  drink_option_name :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  drink_option_name: MyString
+
+two:
+  drink_option_name: MyString

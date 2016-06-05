@@ -21,11 +21,11 @@
 					<div class="row">
 						<div class="col-xs-12">
 							<% if @this_drink.collab == true %>
-								<h5 class="tile-header beer-tile-header rating-header"><%= Beer.collab_brewery_name(@this_drink.id) %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellar supply"> <%= @cellarable %></sup></h5>
+								<h5 class="tile-header beer-tile-header rating-header"><%= Beer.collab_brewery_name(@this_drink.id) %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellarable supply"> <%= @cellarable %></sup></h5>
 							<% elsif @this_drink.brewery.short_brewery_name.nil? %>
-								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.brewery_name %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellar supply"> <%= @cellarable %></sup></h5>
+								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.brewery_name %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellarable supply"> <%= @cellarable %></sup></h5>
 							<% else %>
-								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.short_brewery_name %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellar supply"> <%= @cellarable %></sup></h5>
+								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.short_brewery_name %> <span class="combined-drink-text"><%= @this_drink.beer_name %></span><sup class="cellarable supply"> <%= @cellarable %></sup></h5>
 							<% end %>
 						</div>
 						<div class="col-xs-12">

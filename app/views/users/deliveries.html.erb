@@ -2,13 +2,29 @@
 	<div class="row no-margin first-row">
 		<div class="container first-row-container">
 			<div class="col-sm-5 no-padding">
-				<h1 class="section-header">Delivery Settings</h1>
+				<h1 class="section-header">Drink Deliveries</h1>
+			</div>
+			<div class="col-sm-2"></div>
+			<div class="col-sm-2 text-right">
+				<%= link_to "Next Delivery", user_deliveries_path('next'), class: "drink-preference-view-option #{@next_chosen}", id: "next" %>
+			</div>
+			<div class="col-sm-1">
+				<%= link_to "History", user_deliveries_path('history'), class: "drink-preference-view-option #{@history_chosen}", id: "history" %>
+			</div>
+			<div class="col-sm-1">
+				<%= link_to "Preferences", user_deliveries_path('preferences'), class: "drink-preference-view-option #{@delivery_preferences_chosen}", id: "delivery-preferences" %>
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="container" id="preference-view-choice">
-			<%= render 'user_delivery' %>
+		<div class="container" id="deliveries-view">
+			<% if @delivery_view == "next" %>
+				<%= render 'user_delivery_next' %>
+			<% elsif @delivery_view == "history" %>
+				<%= render 'user_delivery_history' %>
+			<% else %>
+				<%= render 'user_delivery_preferences' %>
+			<% end %>
 		</div>
 	</div>
 <%= render 'layouts/footer' %>

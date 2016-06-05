@@ -1,0 +1,22 @@
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-8">
+		<h3 class="recent-ratings-header">Drinks included in your next delivery</h3>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="col-xs-12">
+		<div class="row no-margin">
+			<% if !@next_delivery.blank? %>
+				<div class="row no-margin recent-rating-holder">
+					<% @next_delivery.each do |drink| %>
+						<%= render(partial: 'next_delivery_card', locals: { drink: drink }) %>
+					<% end%>
+				</div>
+			<% else %>
+				<div class="row no-margin">
+					<h4 class="no-results-empty-message">Your next delivery isn't planned yet. We'll send you an email notification as soon as it is ready to review.</h4>				
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

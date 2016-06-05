@@ -41,26 +41,27 @@
 					          <ul class="dropdown-menu">
 					            
 					            <li class="dropdown-header">My drink stuff</li>
-					            <li class="dropdown-link"><%= link_to "Supply", user_supply_path(current_user.id, "cooler") %></li>
-					            <li class="dropdown-link"><%= link_to "Wishlist", user_wishlist_path(current_user.id) %></li>
 					            <li class="dropdown-link"><%= link_to "Activity", user_activity_path(current_user.id) %></li>
-					            <li class="dropdown-link"><%= link_to "Profile", user_profile_path(current_user.id) %></li>
+					            <li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path('next') %></li>
 					            <li class="dropdown-link"><%= link_to "Preferences", user_preferences_path(current_user.id, 'styles') %></li>
+					            <li class="dropdown-link"><%= link_to "Profile", user_profile_path(current_user.id) %></li>
+					            <li class="dropdown-link"><%= link_to "Supply", user_supply_path(current_user.id, "cooler") %></li>
+					            <li class="dropdown-link"><%= link_to "Wishlist", user_wishlist_path(current_user.id) %></li>     
 								
 								<li class="dropdown-header">My settings</li>
-								<li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path(current_user.id) %></li>
 								<li class="dropdown-link"><%= link_to "Plan", user_plan_path(current_user.id) %></li>
 								<li class="dropdown-link"><%= link_to "Profile", user_path(current_user.id) %></li>
 					            
 					            <% if current_user.role_id == 1 || current_user.role_id == 2 %>
 						            <li class="dropdown-header">Admin links</li>
-						            <li class="dropdown-link"><%= link_to "Retail account", retailer_path(session[:retail_id]) %></li>
 						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
-									<li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path(current_user.id) %></li>
-									<li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path %></li>
+						            <li class="dropdown-link"><%= link_to "Deliveries", admin_deliveries_path %></li>
+						            <li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path %></li>
 									<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
-								    
+						            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path(current_user.id) %></li>
+						            <li class="dropdown-link"><%= link_to "Retail account", retailer_path(session[:retail_id]) %></li>  
 							    <% end %>
+							    
 							    <li role="separator" class="divider"></li>
 							    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
 					          </ul>

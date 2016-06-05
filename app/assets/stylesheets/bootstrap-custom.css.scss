@@ -253,7 +253,7 @@ label {
 .combined-drink-text {
   color: $combined-drink-text !important;
 }
-.cellar {
+.cellarable {
   color: $cellarable-text;
   text-shadow: 0.5px 0.5px 0.5px $less-emphasized-text;
   font-weight: 500;
@@ -2327,11 +2327,17 @@ $beer-header-lines-to-show-fp: 1;
 .new_delivery_preference, .edit_delivery_preference {
   margin-bottom: 40px;
   select {
-    margin-top: 20px;
+    margin-top: 22.5px;
   }
 }
 .delivery-preference-prompt {
   color: $normal-text;
+}
+.drink-preference-choice {
+  float: left;
+  margin: 20px 20px 0 0;
+  color: $normal-text;
+  font-size: 18px;
 }
 #delivery-new-slider.slider.slider-horizontal {
   width: 100% !important;

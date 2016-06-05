@@ -41,7 +41,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, :user_beer_ratings, :recommendations, :inventories
+    resources :users, :user_beer_ratings, :recommendations, :inventories, :deliveries
   end
   
   namespace :admin do
@@ -66,7 +66,7 @@ Rails.application.routes.draw do
   get  '/users/drink_search/:id(/:query)' => 'users#drink_search', :as => 'drink_search'
   post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
   post '/stripe-webhooks' => 'users#stripe_webhooks'
-  post '/users/update_delivery/:id' => 'users#update_delivery'
+  post '/users/deliveries_update_preferences/:id' => 'users#deliveries_update_preferences'
   post '/users/change_supply_drink/:id' => 'users#change_supply_drink', :as => 'change_supply_drink'
   post '/users/add_drink/:id' => 'users#add_drink', :as => 'add_drink'
   post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'

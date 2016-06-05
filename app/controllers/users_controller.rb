@@ -277,153 +277,280 @@ class UsersController < ApplicationController
   end # end profile method
   
   def deliveries   
-    # set chosen style variable for link CSS
-    @delivery_chosen = "chosen"
-    @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
+    # get view chosen
+    @delivery_view = params[:id]
     
-    # update time of last save
-    if !@delivery_preferences.blank?
-      @preference_updated = @delivery_preferences.updated_at
-      # set estimate values
-      if !@delivery_preferences.drinks_per_week.nil?
-        @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
-        if !@delivery_preferences.drinks_in_cooler.nil?
-          if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-            @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
-          end
-        end
-        @drink_delivery_estimate = "~ " + @drink_per_week_calculation.to_s + " drinks in each delivery"
-        # send delivery estimate to JQuery
-        gon.drinks_per_week = @delivery_preferences.drinks_per_week
-        gon.drinks_in_cooler = @delivery_preferences.drinks_in_cooler
-      else
-        @drink_delivery_estimate = "Total drinks in each delivery TBD"
-        # send delivery estimate to JQuery
-        gon.drink_delivery_estimate = 0
+    if @delivery_view == "next" # logic if showing the next view
+      Rails.logger.debug("next view")
+      # set CSS for chosen link
+      @next_chosen = "chosen"
+      
+      # get user's next delivery recommendations
+      @next_delivery = UserNextDelivery.where(user_id: current_user.id)
+      
+      # get drink ids for next delivery
+      @drink_ids = Array.new
+      
+      @next_delivery.each do |delivery_item|
+        drink_id = delivery_item.inventory.beer.id
+        @drink_ids << drink_id
       end
-      # set slider values
-      if !@delivery_preferences.new_percentage.nil?
-        @new_percentage = @delivery_preferences.new_percentage
-        @repeat_percentage = 100 - @new_percentage
+      Rails.logger.debug("drink ids: #{@drink_ids.inspect}")
+      
+      #add best guess to each drink
+      @delivery_drink_best_guess = best_guess(@drink_ids, current_user.id)
+      Rails.logger.debug("delivery best guess: #{@delivery_drink_best_guess.inspect}")
+      
+    elsif @delivery_view == "history" # logic if showing the history view
+      Rails.logger.debug("history view")
+      # set CSS for chosen link
+      @history_chosen = "chosen"
+      
+    else # logic if showing preferences view
+      # set CSS for chosen link
+      @delivery_preferences_chosen = "chosen"
+      
+      # get drink options
+      @drink_options = DrinkOption.all
+      
+      # set chosen style variable for link CSS
+      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+      
+      # update time of last save
+      if !@delivery_preferences.blank?
+        @preference_updated = @delivery_preferences.updated_at
+        # set estimate values
         if !@delivery_preferences.drinks_per_week.nil?
-          @new_drink_estimate = ((@drink_per_week_calculation * @new_percentage)/100).round
+          @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
           if !@delivery_preferences.drinks_in_cooler.nil?
             if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-               @new_drink_estimate = ((@delivery_preferences.drinks_in_cooler * @new_percentage)/100).round
+              @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
             end
           end
-          @new_drink_delivery_estimate = "~ " + @new_drink_estimate.to_s + " will be new to you"
+          @drink_delivery_estimate = "~ " + @drink_per_week_calculation.to_s + " drinks in each delivery"
           # send delivery estimate to JQuery
-          gon.new_value = @new_percentage
-          gon.new_drink_estimate = @new_drink_estimate
+          gon.drinks_per_week = @delivery_preferences.drinks_per_week
+          gon.drinks_in_cooler = @delivery_preferences.drinks_in_cooler
         else
+          @drink_delivery_estimate = "Total drinks in each delivery TBD"
+          # send delivery estimate to JQuery
+          gon.drink_delivery_estimate = 0
+        end
+        # set slider values
+        if !@delivery_preferences.new_percentage.nil?
+          @new_percentage = @delivery_preferences.new_percentage
+          @repeat_percentage = 100 - @new_percentage
+          if !@delivery_preferences.drinks_per_week.nil?
+            @new_drink_estimate = ((@drink_per_week_calculation * @new_percentage)/100).round
+            if !@delivery_preferences.drinks_in_cooler.nil?
+              if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
+                 @new_drink_estimate = ((@delivery_preferences.drinks_in_cooler * @new_percentage)/100).round
+              end
+            end
+            @new_drink_delivery_estimate = "~ " + @new_drink_estimate.to_s + " will be new to you"
+            @new_drink_message_estimate = "~ " + @new_drink_estimate.to_s
+            # send delivery estimate to JQuery
+            gon.new_value = @new_percentage
+            gon.new_drink_estimate = @new_drink_estimate
+          else
+            @new_drink_delivery_estimate = "New/repeat drink mix TBD"
+          end
+        else
+          @new_percentage = 50
+          @new_drink_message_estimate = "50%"
+          @repeat_percentage = 50
           @new_drink_delivery_estimate = "New/repeat drink mix TBD"
         end
-      else
-        @new_percentage = 50
-        @repeat_percentage = 50
-        @new_drink_delivery_estimate = "New/repeat drink mix TBD"
-      end
-      if !@delivery_preferences.cooler_percentage.nil?
-        @cooler_percentage = @delivery_preferences.cooler_percentage
-        @cellar_percentage = 100 - @cooler_percentage
-        if !@delivery_preferences.drinks_per_week.nil?
-          @cooler_drink_estimate = ((@drink_per_week_calculation * @cooler_percentage)/100).round
-          @cellar_drink_estimate = (@drink_per_week_calculation - @cooler_drink_estimate).round
-          if !@delivery_preferences.drinks_in_cooler.nil?
-            if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-               @cooler_drink_estimate = ((@delivery_preferences.drinks_in_cooler * @cooler_percentage)/100).round
-               @cellar_drink_estimate = (@delivery_preferences.drinks_in_cooler - @cooler_drink_estimate).round
+        if !@delivery_preferences.cooler_percentage.nil?
+          @cooler_percentage = @delivery_preferences.cooler_percentage
+          @cellar_percentage = 100 - @cooler_percentage
+          if !@delivery_preferences.drinks_per_week.nil?
+            @cooler_drink_estimate = ((@drink_per_week_calculation * @cooler_percentage)/100).round
+            @cellar_drink_estimate = (@drink_per_week_calculation - @cooler_drink_estimate).round
+            if !@delivery_preferences.drinks_in_cooler.nil?
+              if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
+                 @cooler_drink_estimate = ((@delivery_preferences.drinks_in_cooler * @cooler_percentage)/100).round
+                 @cellar_drink_estimate = (@delivery_preferences.drinks_in_cooler - @cooler_drink_estimate).round
+              end
             end
+            @cooler_delivery_estimate = "~ " + @cooler_drink_estimate.to_s + " for your cooler; " + @cellar_drink_estimate.to_s + " for your cellar"
+            @cooler_delivery_message_estimate = "~ " + @cooler_drink_estimate.to_s
+            # send delivery estimate to JQuery
+            gon.cooler_value = @cooler_percentage
+            gon.cellar_value = @cellar_percentage
+            gon.cooler_drink_estimate = @cooler_drink_estimate
+            gon.cellar_drink_estimate = @cellar_drink_estimate
+          else
+            @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
           end
-          @cooler_delivery_estimate = "~ " + @cooler_drink_estimate.to_s + " for your cooler; " + @cellar_drink_estimate.to_s + " for your cellar"
-          # send delivery estimate to JQuery
-          gon.cooler_value = @cooler_percentage
-          gon.cellar_value = @cellar_percentage
-          gon.cooler_drink_estimate = @cooler_drink_estimate
-          gon.cellar_drink_estimate = @cellar_drink_estimate
         else
+          @cooler_percentage = 50
+          @cooler_delivery_message_estimate = "50%"
+          @cellar_percentage = 50
           @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
         end
-      else
-        @cooler_percentage = 50
-        @cellar_percentage = 50
-        @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
-      end
-      if !@delivery_preferences.small_format_percentage.nil?
-        @small_percentage = @delivery_preferences.small_format_percentage
-        @large_percentage = 100 - @small_percentage
-        if !@delivery_preferences.drinks_per_week.nil?
-          @small_format_estimate = ((@drink_per_week_calculation * @small_percentage)/100).round
-          @large_format_estimate = (@drink_per_week_calculation - @small_format_estimate).round
-          if !@delivery_preferences.drinks_in_cooler.nil?
-            if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-               @small_format_estimate = ((@delivery_preferences.drinks_in_cooler * @small_percentage)/100).round
-               @large_format_estimate = (@delivery_preferences.drinks_in_cooler - @small_format_estimate).round
+        if !@delivery_preferences.small_format_percentage.nil?
+          @small_percentage = @delivery_preferences.small_format_percentage
+          @large_percentage = 100 - @small_percentage
+          if !@delivery_preferences.drinks_per_week.nil?
+            @small_format_estimate = ((@drink_per_week_calculation * @small_percentage)/100).round
+            @large_format_estimate = (@drink_per_week_calculation - @small_format_estimate).round
+            if !@delivery_preferences.drinks_in_cooler.nil?
+              if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
+                 @small_format_estimate = ((@delivery_preferences.drinks_in_cooler * @small_percentage)/100).round
+                 @large_format_estimate = (@delivery_preferences.drinks_in_cooler - @small_format_estimate).round
+              end
             end
+            @small_delivery_estimate = "~ " + @small_format_estimate.to_s + " in small format; " + @large_format_estimate.to_s + " in large"
+            @small_delivery_message_estimate = "~ " + @small_format_estimate.to_s
+            # send delivery estimate to JQuery
+            gon.small_value = @small_percentage
+            gon.large_value = @large_percentage
+            gon.small_format_estimate = @small_format_estimate
+            gon.large_format_estimate = @large_format_estimate
+          else
+            @small_delivery_estimate = "Small/large format mix TBD"
           end
-          @small_delivery_estimate = "~ " + @small_format_estimate.to_s + " in small format; " + @large_format_estimate.to_s + " in large"
-          # send delivery estimate to JQuery
-          gon.small_value = @small_percentage
-          gon.large_value = @large_percentage
-          gon.small_format_estimate = @small_format_estimate
-          gon.large_format_estimate = @large_format_estimate
         else
+          @small_percentage = 50
+          @small_delivery_message_estimate = "50%"
+          @large_percentage = 50
           @small_delivery_estimate = "Small/large format mix TBD"
         end
       else
+        @delivery_preferences = DeliveryPreference.new
+        # set slider values
+        @new_percentage = 50
+        @new_drink_message_estimate = "50%"
+        @repeat_percentage = 50
+        @cooler_percentage = 50
+        @cooler_delivery_message_estimate = "50%"
+        @cellar_percentage = 50
         @small_percentage = 50
+        @small_delivery_message_estimate = "50%"
         @large_percentage = 50
+        @drink_delivery_estimate = "Total drinks in each delivery TBD"
+        @new_drink_delivery_estimate = "New/repeat drink mix TBD"
+        @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
         @small_delivery_estimate = "Small/large format mix TBD"
       end
-    else
-      @delivery_preferences = DeliveryPreference.new
-      # set slider values
-      @new_percentage = 50
-      @repeat_percentage = 50
-      @cooler_percentage = 50
-      @cellar_percentage = 50
-      @small_percentage = 50
-      @large_percentage = 50
-      @drink_delivery_estimate = "Total drinks in each delivery TBD"
-      @new_drink_delivery_estimate = "New/repeat drink mix TBD"
-      @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
-      @small_delivery_estimate = "Small/large format mix TBD"
-    end
-    
-    # sets cost estimate
-    # first set average drink costs
-    @small_cooler_cost = 3
-    gon.small_cooler_cost = @small_cooler_cost
-    @large_cooler_cost = 9
-    gon.large_cooler_cost = @large_cooler_cost
-    @small_cellar_cost = 13
-    gon.small_cellar_cost = @small_cellar_cost
-    @large_cellar_cost = 18
-    gon.large_cellar_cost = @large_cellar_cost
-    
-    # now calculate cost estimates
-    if @drink_per_week_calculation && @cooler_drink_estimate && @small_format_estimate
-      # determine drink numbers for each category
-      @number_of_small_cooler = (@drink_per_week_calculation * (@delivery_preferences.cooler_percentage * 0.01) * (@delivery_preferences.small_format_percentage * 0.01))
-      @number_of_large_cooler = (@drink_per_week_calculation * (@delivery_preferences.cooler_percentage * 0.01) * (1 - (@delivery_preferences.small_format_percentage * 0.01)))
-      @number_of_small_cellar = (@drink_per_week_calculation * (1 - (@delivery_preferences.cooler_percentage * 0.01)) * (@delivery_preferences.small_format_percentage * 0.01))
-      @number_of_large_cellar = (@drink_per_week_calculation * (1 - (@delivery_preferences.cooler_percentage * 0.01)) * (1 - (@delivery_preferences.small_format_percentage * 0.01)))
-      # multiply drink numbers by drink costs
-      @cost_estimate_cooler_small = (@small_cooler_cost * @number_of_small_cooler)
-      #Rails.logger.debug("small cooler #: #{@number_of_small_cooler.inspect}")
-      @cost_estimate_cooler_large = (@large_cooler_cost * @number_of_large_cooler)
-      @cost_estimate_cellar_small = (@small_cellar_cost * @number_of_small_cellar)
-      @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
-      @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
-      @cost_estimate_low = (@total_cost_estimate * 0.9).round
-      @cost_estimate_high = (@total_cost_estimate * 1.1).round
-      @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s 
-    else
-      @cost_estimate = "$TBD"
-    end  
+      
+      # sets cost estimate
+      # first set average drink costs
+      @small_cooler_cost = 3
+      gon.small_cooler_cost = @small_cooler_cost
+      @large_cooler_cost = 9
+      gon.large_cooler_cost = @large_cooler_cost
+      @small_cellar_cost = 13
+      gon.small_cellar_cost = @small_cellar_cost
+      @large_cellar_cost = 18
+      gon.large_cellar_cost = @large_cellar_cost
+      
+      # now calculate cost estimates
+      if @drink_per_week_calculation && @cooler_drink_estimate && @small_format_estimate
+        # determine drink numbers for each category
+        @number_of_small_cooler = (@drink_per_week_calculation * (@delivery_preferences.cooler_percentage * 0.01) * (@delivery_preferences.small_format_percentage * 0.01))
+        @number_of_large_cooler = (@drink_per_week_calculation * (@delivery_preferences.cooler_percentage * 0.01) * (1 - (@delivery_preferences.small_format_percentage * 0.01)))
+        @number_of_small_cellar = (@drink_per_week_calculation * (1 - (@delivery_preferences.cooler_percentage * 0.01)) * (@delivery_preferences.small_format_percentage * 0.01))
+        @number_of_large_cellar = (@drink_per_week_calculation * (1 - (@delivery_preferences.cooler_percentage * 0.01)) * (1 - (@delivery_preferences.small_format_percentage * 0.01)))
+        # multiply drink numbers by drink costs
+        @cost_estimate_cooler_small = (@small_cooler_cost * @number_of_small_cooler)
+        #Rails.logger.debug("small cooler #: #{@number_of_small_cooler.inspect}")
+        @cost_estimate_cooler_large = (@large_cooler_cost * @number_of_large_cooler)
+        @cost_estimate_cellar_small = (@small_cellar_cost * @number_of_small_cellar)
+        @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
+        @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
+        @cost_estimate_low = (@total_cost_estimate * 0.9).round
+        @cost_estimate_high = (@total_cost_estimate * 1.1).round
+        @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s 
+      else
+        @cost_estimate = "$TBD"
+      end  
+    end # end of choosing which view to show
     
   end # end deliveries method
+  
+  def deliveries_update_preferences
+    # get data to add/update
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @column = @data_split[0]
+    @data_value = @data_split[1]
+    
+    # get user delivery preferences
+    @user_delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+      
+    if @column == "drinks_per_week"
+      if !@user_delivery_preferences.blank?
+        @user_delivery_preferences.update(drinks_per_week: @data_value)
+      else
+        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, drinks_per_week: @data_value, 
+                                          new_percentage: 50, cooler_percentage: 50, small_format_percentage: 50)
+        @new_user_delivery_preferences.save!
+      end
+    elsif @column == "drinks_in_cooler"
+      if !@user_delivery_preferences.blank?
+        @user_delivery_preferences.update(drinks_in_cooler: @data_value)
+      else
+        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, drinks_in_cooler: @data_value,
+                                          new_percentage: 50, cooler_percentage: 50, small_format_percentage: 50)
+        @new_user_delivery_preferences.save!
+      end
+    elsif @column == "new_percentage"
+      if !@user_delivery_preferences.blank?
+        @user_delivery_preferences.update(new_percentage: @data_value)
+      else
+        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, new_percentage: @data_value,
+                                          cooler_percentage: 50, small_format_percentage: 50)
+        @new_user_delivery_preferences.save!
+      end
+    elsif @column == "cooler_percentage"
+      if !@user_delivery_preferences.blank?
+        @user_delivery_preferences.update(cooler_percentage: @data_value)
+      else
+        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, cooler_percentage: @data_value,
+                                          new_percentage: 50, small_format_percentage: 50)
+        @new_user_delivery_preferences.save!
+      end
+    elsif @column == "small_format_percentage"
+      if !@user_delivery_preferences.blank?
+        @user_delivery_preferences.update(small_format_percentage: @data_value)
+      else 
+        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, 
+                                          small_format_percentage: @data_value, new_percentage: 50, cooler_percentage: 50)
+        @new_user_delivery_preferences.save!
+      end
+    elsif @column == "price_estimate"
+        @user_delivery_preferences.update(price_estimate: @data_value)
+    elsif @column == "drink_type_preference"
+      if !@user_delivery_preferences.blank?
+        @data_value = @data_value.to_i
+        if @user_delivery_preferences.drink_option_id == @data_value
+          @user_delivery_preferences.update(drink_option_id: nil)
+        else
+          @user_delivery_preferences.update(drink_option_id: @data_value)
+        end
+      else 
+        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, drink_option_id: @data_value,
+                                          small_format_percentage: 50, new_percentage: 50, cooler_percentage: 50)
+        @new_user_delivery_preferences.save!
+      end
+    else
+      if !@user_delivery_preferences.blank?
+        @user_delivery_preferences.update(additional: @data_value)
+      else
+        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, additional: @data_value)
+        @new_user_delivery_preferences.save!
+      end
+    end
+    
+    # update time of last save
+    @preference_updated = Time.now
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+  end # end of deliveries_update_preferences
   
   def plan
     # find if user has a plan already
@@ -530,75 +657,6 @@ class UsersController < ApplicationController
     end
     render :json => {:status => 200}
   end # end stripe_webhook method
-  
-  def update_delivery
-    # get data to add/update
-    @data = params[:id]
-    @data_split = @data.split("-")
-    @column = @data_split[0]
-    @data_value = @data_split[1]
-    
-    # get user delivery preferences
-    @user_delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-      
-    if @column == "drinks_per_week"
-      if !@user_delivery_preferences.blank?
-        @user_delivery_preferences.update(drinks_per_week: @data_value)
-      else
-        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, drinks_per_week: @data_value, 
-                                          new_percentage: 50, cooler_percentage: 50, small_format_percentage: 50)
-        @new_user_delivery_preferences.save!
-      end
-    elsif @column == "drinks_in_cooler"
-      if !@user_delivery_preferences.blank?
-        @user_delivery_preferences.update(drinks_in_cooler: @data_value)
-      else
-        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, drinks_in_cooler: @data_value,
-                                          new_percentage: 50, cooler_percentage: 50, small_format_percentage: 50)
-        @new_user_delivery_preferences.save!
-      end
-    elsif @column == "new_percentage"
-      if !@user_delivery_preferences.blank?
-        @user_delivery_preferences.update(new_percentage: @data_value)
-      else
-        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, new_percentage: @data_value,
-                                          cooler_percentage: 50, small_format_percentage: 50)
-        @new_user_delivery_preferences.save!
-      end
-    elsif @column == "cooler_percentage"
-      if !@user_delivery_preferences.blank?
-        @user_delivery_preferences.update(cooler_percentage: @data_value)
-      else
-        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, cooler_percentage: @data_value,
-                                          new_percentage: 50, small_format_percentage: 50)
-        @new_user_delivery_preferences.save!
-      end
-    elsif @column == "small_format_percentage"
-      if !@user_delivery_preferences.blank?
-        @user_delivery_preferences.update(small_format_percentage: @data_value)
-      else 
-        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, 
-                                          small_format_percentage: @data_value, new_percentage: 50, cooler_percentage: 50)
-        @new_user_delivery_preferences.save!
-      end
-    elsif @column == "price_estimate"
-        @user_delivery_preferences.update(price_estimate: @data_value)
-    else
-      if !@user_delivery_preferences.blank?
-        @user_delivery_preferences.update(additional: @data_value)
-      else
-        @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, additional: @data_value)
-        @new_user_delivery_preferences.save!
-      end
-    end
-    
-    # update time of last save
-    @preference_updated = Time.now
-    
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-  end # end of update_delivery
   
   def activity
     # get user info

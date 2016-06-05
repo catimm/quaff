@@ -14,8 +14,10 @@
 #  updated_at              :datetime         not null
 #  price_estimate          :integer
 #  next_delivery_date      :datetime
+#  drink_option_id         :integer
 #
 
 class DeliveryPreference < ActiveRecord::Base
   belongs_to :user
+  belongs_to :drink_option
 end

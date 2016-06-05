@@ -45,6 +45,7 @@ $(function () {
 				new_drink_estimate = Math.round((drink_per_week_calculation * new_value)/100);
 				var new_drink_per_week_calculation = "~ " + new_drink_estimate + " will be new to you"
 				$("#new_drink_estimate").text(new_drink_per_week_calculation);
+				$("#new-preference-2").text("~ " + new_drink_estimate);
 			}
 			// insert cooler estimate value statement	
 			if (cooler_drink_estimate != undefined) {
@@ -53,6 +54,7 @@ $(function () {
 				cellar_drink_estimate = (drink_per_week_calculation - cooler_drink_estimate);
 				var cooler_drink_per_week_calculation = "~ " + cooler_drink_estimate + " for your cooler; " + cellar_drink_estimate + " for your cellar";
 				$("#cooler_drink_estimate").text(cooler_drink_per_week_calculation);
+				$("#cooler-preference-2").text("~ " + cooler_drink_estimate);
 			}
 			// insert small format estimate value statement	
 			if (small_format_estimate != undefined) {
@@ -61,6 +63,7 @@ $(function () {
 				large_format_estimate = (drink_per_week_calculation - small_format_estimate);
 				var small_format_delivery_estimate = "~ " + small_format_estimate + " in small format; " + large_format_estimate + " in large";
 				$("#small_format_estimate").text(small_format_delivery_estimate);
+				$("#small-preference-2").text("~ " + small_format_estimate);
 			}
 	    } 
 	    // insert drink per week estimate value statement
@@ -91,7 +94,7 @@ $(function () {
 	        // send price estimate data to controller
 			$.ajax({
 			  type: "POST",
-			  url: "/users/update_delivery/price_estimate-" + total_cost_estimate
+			  url: "/users/deliveries_update_preferences/price_estimate-" + total_cost_estimate
 			}); 
 		} else {
 			var cost_estimate = "$TBD"; 
@@ -107,7 +110,7 @@ $(function () {
 		new_value = slideEvt.value.newValue;
 		var repeat_value = (100 - new_value);
 		$("#new-preference").text(new_value);
-		$("#new-preference-2").text(new_value);
+		$("#new-preference-2").text(new_value + "%");
 		$("#repeat-preference").text(repeat_value);
 		
 		// set new drink estimate value if it has not yet been set
@@ -128,7 +131,7 @@ $(function () {
 		delay(function(){
 			$.ajax({
 			  type: "POST",
-			  url: "/users/update_delivery/new_percentage-" + new_value
+			  url: "/users/deliveries_update_preferences/new_percentage-" + new_value
 			});
 	    }, 1000 );
 	});
@@ -141,7 +144,7 @@ $(function () {
 		cooler_value = slideEvt.value.newValue;
 		cellar_value = (100 - cooler_value);
 		$("#cooler-preference").text(cooler_value);
-		$("#cooler-preference-2").text(cooler_value);
+		$("#cooler-preference-2").text(cooler_value + "%");
 		$("#cellar-preference").text(cellar_value);
 		
 		// set cooler and cellar estimate values if they are not yet been set
@@ -163,7 +166,7 @@ $(function () {
 		delay(function(){
 			$.ajax({
 			  type: "POST",
-			  url: "/users/update_delivery/cooler_percentage-" + cooler_value
+			  url: "/users/deliveries_update_preferences/cooler_percentage-" + cooler_value
 			});
 	    }, 1000 );
 	});
@@ -176,7 +179,7 @@ $(function () {
 		small_value = slideEvt.value.newValue;
 		large_value = (100 - small_value);
 		$("#small-preference").text(small_value);
-		$("#small-preference-2").text(small_value);
+		$("#small-preference-2").text(small_value + "%");
 		$("#large-preference").text(large_value);
 		
 		// set small and large format estimate values if they are not yet been set
@@ -198,7 +201,7 @@ $(function () {
 		delay(function(){
 			$.ajax({
 			  type: "POST",
-			  url: "/users/update_delivery/small_format_percentage-" + small_value
+			  url: "/users/deliveries_update_preferences/small_format_percentage-" + small_value
 			});
 	    }, 1000 );
 	});
@@ -240,7 +243,7 @@ $(function () {
 		// send data to controller
 		$.ajax({
 		  type: "POST",
-		  url: "/users/update_delivery/drinks_per_week-" + drinks_per_week
+		  url: "/users/deliveries_update_preferences/drinks_per_week-" + drinks_per_week
 		});
 	});
 	
@@ -260,7 +263,7 @@ $(function () {
 		// send data to controller
 		$.ajax({
 		  type: "POST",
-		  url: "/users/update_delivery/drinks_in_cooler-" + drinks_in_cooler
+		  url: "/users/deliveries_update_preferences/drinks_in_cooler-" + drinks_in_cooler
 		});
 	});
 	
@@ -271,9 +274,20 @@ $(function () {
 			alert(additional);
 			$.ajax({
 			  type: "POST",
-			  url: "/users/update_delivery/additional-" + additional
+			  url: "/users/deliveries_update_preferences/additional-" + additional
 			});
 	    }, 1000 );
+		
+	});
+	
+	// send drink type preference to controller
+	$(document).on("change", ".drink-type-preference", function() {
+		$(this).parent().siblings(".drink-preference-choice").children(".drink-type-preference").removeAttr('checked');
+		var this_value = $(this).val();
+		$.ajax({
+		  type: "POST",
+		  url: "/users/deliveries_update_preferences/drink_type_preference-" + this_value
+		});
 		
 	});
 	
@@ -284,26 +298,28 @@ $(function () {
 	
 	// set function for sticky scroller
 	function moveScroller() {
-	    var move = function() {
-	        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
-	        var ot = $("#scroller-anchor").offset().top;
-	        var s = $("#scroller");
-	        if(st > ot) {
-	            s.css({
-	                position: "fixed",
-	                top: "100px"
-	            });
-	        } else {
-	            if(st <= ot) {
-	                s.css({
-	                    position: "relative",
-	                    top: ""
-	                });
-	            }
-	        }
-	    };
-	    $(window).scroll(move);
-	    move();
+		if(window.location.href.indexOf("users/deliveries/preferences") > -1) {
+		    var move = function() {
+		        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
+		        var ot = $("#scroller-anchor").offset().top;
+		        var s = $("#scroller");
+		        if(st > ot) {
+		            s.css({
+		                position: "fixed",
+		                top: "100px"
+		            });
+		        } else {
+		            if(st <= ot) {
+		                s.css({
+		                    position: "relative",
+		                    top: ""
+		                });
+		            }
+		        }
+		    };
+		    $(window).scroll(move);
+		    move();
+		}
 	}
 	$(document).on("scroll", function() {
 	    moveScroller();
