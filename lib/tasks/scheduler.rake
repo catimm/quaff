@@ -308,6 +308,7 @@ task :assess_drink_recommendations => :environment do
     
     # get list of Brewery IDs for those breweries that have a beer that is complete
     @all_complete_brewery_beers = Beer.complete_beers
+    @all_complete_brewery_beers = @all_complete_brewery_beers.uniq
     # get count of total beers that have no info
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
     
