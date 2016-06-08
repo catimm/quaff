@@ -72,7 +72,7 @@ class UsersController < ApplicationController
       end
       @user_cooler = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
       @cooler_chosen = "chosen"
-    elsif @view == "cellar"
+    else
       @user_cellar = @user_supply.where(supply_type_id: 2)
       
       # create array to hold descriptors cloud
@@ -94,30 +94,7 @@ class UsersController < ApplicationController
       end
       @user_cellar = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
       @cellar_chosen = "chosen"
-    else 
-      @user_delivery_preference = DeliveryPreference.where(user_id: current_user.id).first
-      @user_next = UserDelivery.where(user_id: current_user.id, delivery_date: @user_delivery_preference.next_delivery_date)
-      
-      # create array to hold descriptors cloud
-      @final_descriptors_cloud = Array.new
-      
-      # get top descriptors for drink types the user likes
-      @user_next.each do |drink|
-        @drink_id_array = Array.new
-        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
-        @final_descriptors_cloud << @drink_type_descriptors
-      end
-      # send full array to JQCloud
-      gon.drink_descriptor_array = @final_descriptors_cloud
-      
-      # get best guess for each relevant drink
-      @supply_drink_ids = Array.new
-      @user_next.each do |drink|
-        @supply_drink_ids << drink.beer_id
-      end
-      @user_next = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
-      @next_chosen = "chosen"
-    end
+    end # end choice between cooler and cellar views
     
   end # end of supply method
   
@@ -286,20 +263,20 @@ class UsersController < ApplicationController
       @next_chosen = "chosen"
       
       # get user's next delivery recommendations
-      @next_delivery = UserNextDelivery.where(user_id: current_user.id)
+      @next_delivery = UserDelivery.where(user_id: current_user.id)
       
-      # get drink ids for next delivery
-      @drink_ids = Array.new
+
+      # create array to hold descriptors cloud
+      @final_descriptors_cloud = Array.new
       
-      @next_delivery.each do |delivery_item|
-        drink_id = delivery_item.inventory.beer.id
-        @drink_ids << drink_id
+      # get top descriptors for drink types the user likes
+      @next_delivery.each do |drink|
+        @drink_id_array = Array.new
+        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+        @final_descriptors_cloud << @drink_type_descriptors
       end
-      Rails.logger.debug("drink ids: #{@drink_ids.inspect}")
-      
-      #add best guess to each drink
-      @delivery_drink_best_guess = best_guess(@drink_ids, current_user.id)
-      Rails.logger.debug("delivery best guess: #{@delivery_drink_best_guess.inspect}")
+      # send full array to JQCloud
+      gon.drink_descriptor_array = @final_descriptors_cloud
       
     elsif @delivery_view == "history" # logic if showing the history view
       Rails.logger.debug("history view")
@@ -574,14 +551,14 @@ class UsersController < ApplicationController
   def choose_plan 
     # find if user has a plan already
     @user_plan = UserSubscription.find_by_user_id(params[:id])
-    Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
+    #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
     # find subscription level id
     @subscription_level_id = Subscription.where(subscription_level: params[:format]).first
       
     if @user_plan.blank?
       # first create Stripe acct
       @plan_info = Stripe::Plan.retrieve(params[:format])
-      Rails.logger.debug("Plan info: #{@plan_info.inspect}")
+      #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
       #Create a stripe customer object on signup
       customer = Stripe::Customer.create(
               :description => @plan_info.statement_descriptor,
@@ -596,7 +573,7 @@ class UsersController < ApplicationController
       # first update Stripe acct
       customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
       @plan_info = Stripe::Plan.retrieve(params[:format])
-      Rails.logger.debug("Customer: #{customer.inspect}")
+      #Rails.logger.debug("Customer: #{customer.inspect}")
       customer.description = @plan_info.statement_descriptor
       customer.save
       subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)

@@ -66,6 +66,8 @@ class Beer < ActiveRecord::Base
   has_many :user_drink_recommendations
   has_many :user_fav_drinks
   has_many :user_supplies
+  has_many :user_deliveries
+  has_many :admin_user_deliveries
   
   # to keep search function indexed properly
   after_commit :reindex_brewery

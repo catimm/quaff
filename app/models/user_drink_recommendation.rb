@@ -9,6 +9,7 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  new_drink        :boolean
+#  style_preference :string
 #
 
 class UserDrinkRecommendation < ActiveRecord::Base
@@ -16,7 +17,7 @@ class UserDrinkRecommendation < ActiveRecord::Base
   belongs_to :beer
   
   has_many :user_next_deliveries
-  
+   
   # scope recommended drinks in stock
   scope :recommended_in_stock, -> {
     joins(:beer).merge(Beer.drinks_in_stock)

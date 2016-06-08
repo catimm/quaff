@@ -19,7 +19,8 @@ class Inventory < ActiveRecord::Base
   belongs_to :beer
   belongs_to :size_format
   
-  has_many :user_next_deliveries
+  has_many :user_deliveries
+  has_many :admin_user_deliveries
   
   # scope inventory stock 
   scope :in_stock, -> { 

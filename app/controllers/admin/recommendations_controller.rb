@@ -49,7 +49,7 @@ class Admin::RecommendationsController < ApplicationController
     @next_delivery_large_need = @drinks_next_delivery - @next_delivery_small_need
     
     # get information for which drinks are planned in next delivery
-    @next_delivery_plans = UserNextDelivery.where(user_id: @chosen_user_id)
+    @next_delivery_plans = AdminUserDelivery.where(user_id: @chosen_user_id)
     # count number of drinks that are new to user
     @next_delivery_new_have = @next_delivery_plans.where(new_drink: true).count
     @next_delivery_retry_have = @next_delivery_plans.where(new_drink: false).count
@@ -92,7 +92,7 @@ class Admin::RecommendationsController < ApplicationController
       @large_have_class = "not-ready" 
     end
     # grab drinks already included in next delivery 
-    @next_delivery = UserNextDelivery.where(user_id: @chosen_user_id)
+    @next_delivery = AdminUserDelivery.where(user_id: @chosen_user_id)
     
     respond_to do |format|
       format.js
@@ -136,7 +136,7 @@ class Admin::RecommendationsController < ApplicationController
     @drink_recommendation = UserDrinkRecommendation.find(@user_drink_recommendation_id)
       
     # find if this is a new addition or a removal
-    @next_delivery_info = UserNextDelivery.where(user_id: @drink_recommendation.user_id, inventory_id: @inventory_id).first
+    @next_delivery_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, inventory_id: @inventory_id).first
     
     if !@next_delivery_info.nil? # destroy entry
       @next_delivery_info.destroy!
@@ -155,11 +155,16 @@ class Admin::RecommendationsController < ApplicationController
       else
         @size_format = false
       end
-      # put info into user_next_deliveries table
-      @next_delivery_addition = UserNextDelivery.new(user_id: @drink_recommendation.user_id, inventory_id: @inventory_id, 
-                                                      user_drink_recommendation_id: @user_drink_recommendation_id, 
-                                                      new_drink: @drink_recommendation.new_drink, cooler: @cooler, 
-                                                      small_format: @size_format)
+      # put info into admin_user_deliveries table
+      @next_delivery_addition = AdminUserDelivery.new(user_id: @drink_recommendation.user_id, 
+                                                      inventory_id: @inventory_id, 
+                                                      beer_id: @inventory.beer_id, 
+                                                      new_drink: @drink_recommendation.new_drink, 
+                                                      cooler: @cooler, 
+                                                      small_format: @size_format,
+                                                      projected_rating: @drink_recommendation.projected_rating,
+                                                      style_preference: @drink_recommendation.style_preference,
+                                                      quantity: 1)
       @next_delivery_addition.save!
     end # end of adding/removing
     

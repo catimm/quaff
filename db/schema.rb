@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160604211937) do
+ActiveRecord::Schema.define(version: 20160605233807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "admin_user_deliveries", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "beer_id"
+    t.integer  "inventory_id"
+    t.boolean  "new_drink"
+    t.float    "projected_rating"
+    t.string   "style_preference"
+    t.integer  "quantity"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.boolean  "cooler"
+    t.boolean  "small_format"
+  end
 
   create_table "alt_beer_names", force: :cascade do |t|
     t.string   "name"
@@ -303,10 +317,14 @@ ActiveRecord::Schema.define(version: 20160604211937) do
   create_table "user_deliveries", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "inventory_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.boolean  "new_drink"
+    t.integer  "beer_id"
+    t.float    "projected_rating"
+    t.string   "style_preference"
     t.integer  "quantity"
-    t.datetime "delivery_date"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "delivered"
   end
 
   create_table "user_drink_recommendations", force: :cascade do |t|
@@ -316,6 +334,7 @@ ActiveRecord::Schema.define(version: 20160604211937) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.boolean  "new_drink"
+    t.string   "style_preference"
   end
 
   create_table "user_fav_drinks", force: :cascade do |t|
@@ -332,17 +351,6 @@ ActiveRecord::Schema.define(version: 20160604211937) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.boolean  "owner"
-  end
-
-  create_table "user_next_deliveries", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "inventory_id"
-    t.integer  "user_drink_recommendation_id"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.boolean  "new_drink"
-    t.boolean  "cooler"
-    t.boolean  "small_format"
   end
 
   create_table "user_notification_preferences", force: :cascade do |t|
