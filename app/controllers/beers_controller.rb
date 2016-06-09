@@ -34,7 +34,7 @@ class BeersController < ApplicationController
        @this_user_best_guess = best_guess(params[:id], customer)[0]
        if @this_user_best_guess.best_guess >= 7.75
          @users_would_like += 1
-         @drink_rating_check = UserBeerRating.where(user_id: customer, beer_id: @beer.id).first
+         @drink_rating_check = UserBeerRating.where(user_id: customer, beer_id: params[:id]).first
          if !@drink_rating_check.nil?
           @users_have_had += 1
          end  # end of check on whether user has had drink
