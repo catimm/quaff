@@ -23,8 +23,9 @@ class BeersController < ApplicationController
     # get user and drink data for admins
    if current_user.role_id == 1
      # get unique customer ids
-     # need to change to this---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
-     @customer_ids = User.where(role_id: 4).pluck(:id)
+     # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
+     @role_ids = [1, 2, 3, 4] 
+     @customer_ids = User.where(role_id: @role_ids).pluck(:id)
      # create variables to hold customer info
      @users_would_like = 0
      @users_have_had = 0
@@ -43,7 +44,7 @@ class BeersController < ApplicationController
      @users_have_not_had = @users_would_like - @users_have_had
       
       # get inventory data for
-      @inventory = Inventory.where(beer_id: @beer.id).first
+      @inventory = Inventory.where(beer_id: params[:id]).first
       if !@inventory.nil?
         if !@inventory.stock.nil?
           @inventory_count = @inventory.stock

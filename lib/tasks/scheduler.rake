@@ -313,7 +313,8 @@ task :assess_drink_recommendations => :environment do
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
     
     # get user info
-    @users = User.where(role_id: 4)
+    @role_ids = [1, 2, 3, 4]
+    @users = User.where(role_id: @role_ids)
     
     # determine viable drinks for each user
     @users.each do |user|
