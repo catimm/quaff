@@ -3,6 +3,10 @@ $(function() {
 	$("#rater").slider({
 		tooltip: 'hide'
 	});
+	$("#rater").on("slide", function(slideEvt) {
+		$("#visible-rating h1").text(slideEvt.value);
+	});
+
 	// to grab list of descriptors for this beer
 	$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
 		theme: 'facebook',
