@@ -24,7 +24,12 @@
 		      <tr>
 		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
 		        <td><%= drink.beer.beer_type.beer_type_name %></td>
-		        <td><%= drink.projected_rating %></td>
+		        <% if drink.new_drink == true%>
+		        	<td><%= drink.projected_rating %></td>
+		        <% else %>
+		        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
+		        	<td><%= @avg_rating.round(2) %></td>
+		        <% end %>
 		        <td><%= drink.new_drink.humanize %></td>
 		        <td><%= drink.beer.cellarable.humanize %></td>
 			    <td><%= inventory.size_format.format_name %></td>
