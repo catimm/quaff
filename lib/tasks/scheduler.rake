@@ -372,9 +372,6 @@ task :assess_drink_recommendations => :environment do
       # create empty hash to hold list of drinks that have been assessed
       @compiled_assessed_drinks = Array.new
       
-      #dedup drink array
-      @assessed_drinks = @assessed_drinks.uniq
-      
       # assess each drink to add if rated highly enough
       @assessed_drinks.each do |drink|
         # find if user has rated/had this drink before
@@ -399,6 +396,9 @@ task :assess_drink_recommendations => :environment do
         end
         @compiled_assessed_drinks << @individual_drink_info
       end # end of loop adding assessed drinks to array
+      #dedup drink array
+      @compiled_assessed_drinks = @compiled_assessed_drinks.uniq
+      
       # sort the array of hashes by projected rating and keep top 500
       @compiled_assessed_drinks = @compiled_assessed_drinks.sort_by{ |hash| hash['projected_rating'] }.reverse.first(500)
       #Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
