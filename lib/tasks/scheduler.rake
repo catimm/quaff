@@ -372,22 +372,24 @@ task :assess_drink_recommendations => :environment do
       @compiled_assessed_drinks = Array.new
       
       @assessed_drinks.each do |drink|
+        # find if user has rated/had this drink before
+        @drink_rating_check = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating)
+        # find the drink best_guess for the user
         type_based_guess(drink, user.id)
-        if drink.best_guess >= 7.75
-          @individual_drink_info = Hash.new
+        if !@drink_rating_check.nil? && @drink_rating_check >= 7.75
           @individual_drink_info["user_id"] = user.id
           @individual_drink_info["beer_id"] = drink.id
           @individual_drink_info["projected_rating"] = drink.best_guess
           @individual_drink_info["style_preference"] = drink.likes_style
-          # find if user has rated/had this drink before
-          @drink_rating_check = UserBeerRating.where(user_id: user.id, beer_id: drink.id).first
-          if @drink_rating_check.nil?
-            @individual_drink_info["new_drink"] = true
-          else
-            @individual_drink_info["new_drink"] = false
-          end  
-          @compiled_assessed_drinks << @individual_drink_info
+          @individual_drink_info["new_drink"] = false
+        elsif drink.best_guess >= 7.75
+          @individual_drink_info["user_id"] = user.id
+          @individual_drink_info["beer_id"] = drink.id
+          @individual_drink_info["projected_rating"] = drink.best_guess
+          @individual_drink_info["style_preference"] = drink.likes_style
+          @individual_drink_info["new_drink"] = true  
         end
+        @compiled_assessed_drinks << @individual_drink_info
       end # end of loop adding assessed drinks to array
       
       # sort the array of hashes by projected rating and keep top 500
