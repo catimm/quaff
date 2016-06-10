@@ -373,7 +373,7 @@ task :assess_drink_recommendations => :environment do
       
       @assessed_drinks.each do |drink|
         # find if user has rated/had this drink before
-        @drink_rating_check = UserBeerRating.where(user_id: user.id, beer_id: drink.beer.id).average(:user_beer_rating)
+        @drink_rating_check = UserBeerRating.where(user_id: user.id, beer_id: drink.id).average(:user_beer_rating)
         # find the drink best_guess for the user
         type_based_guess(drink, user.id)
         if !@drink_rating_check.nil? && @drink_rating_check >= 7.75
