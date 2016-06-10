@@ -383,13 +383,13 @@ task :assess_drink_recommendations => :environment do
         if !@drink_rating_check.nil? && @drink_rating_check >= 7.75
           @individual_drink_info["user_id"] = user.id
           @individual_drink_info["beer_id"] = drink.id
-          @individual_drink_info["projected_rating"] = drink.best_guess
+          @individual_drink_info["projected_rating"] = drink.best_guess.round(2)
           @individual_drink_info["style_preference"] = drink.likes_style
           @individual_drink_info["new_drink"] = false
         elsif drink.best_guess >= 7.75
           @individual_drink_info["user_id"] = user.id
           @individual_drink_info["beer_id"] = drink.id
-          @individual_drink_info["projected_rating"] = drink.best_guess
+          @individual_drink_info["projected_rating"] = drink.best_guess.round(2)
           @individual_drink_info["style_preference"] = drink.likes_style
           @individual_drink_info["new_drink"] = true  
         end
