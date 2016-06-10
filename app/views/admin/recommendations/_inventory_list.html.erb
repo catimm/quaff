@@ -28,7 +28,7 @@
 	        <% end %>
 	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
 	        <td><%= drink.beer.beer_type.beer_type_name %></td>
-	        <% if drink.new_drink == true%>
+	        <% if drink.new_drink == true %>
 	        	<td><%= drink.projected_rating %></td>
 	        <% else %>
 	        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
