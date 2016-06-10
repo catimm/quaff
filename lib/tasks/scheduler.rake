@@ -381,7 +381,7 @@ task :assess_drink_recommendations => :environment do
           @individual_drink_info["style_preference"] = drink.likes_style
           # find if user has rated/had this drink before
           @drink_rating_check = UserBeerRating.where(user_id: user.id, beer_id: drink.id).first
-          if !@drink_rating_check.nil?
+          if @drink_rating_check.nil?
             @individual_drink_info["new_drink"] = true
           else
             @individual_drink_info["new_drink"] = false
