@@ -309,8 +309,7 @@ task :assess_drink_recommendations => :environment do
     # get list of Brewery IDs for those breweries that have a beer that is complete
     @all_complete_brewery_beers = Beer.complete_beers
     @all_complete_brewery_beers = @all_complete_brewery_beers.uniq
-    Rails.logger.debug("all complete drinks: #{@all_complete_brewery_beers.count.inspect}")
-    Rails.logger.debug("all complete drinks: #{@all_complete_brewery_beers.inspect}")
+    #Rails.logger.debug("all complete drinks: #{@all_complete_brewery_beers.inspect}")
     # get count of total beers that have no info
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
     
@@ -373,6 +372,10 @@ task :assess_drink_recommendations => :environment do
       # create empty hash to hold list of drinks that have been assessed
       @compiled_assessed_drinks = Array.new
       
+      #dedup drink array
+      @assessed_drinks = @assessed_drinks.uniq
+      
+      # assess each drink to add if rated highly enough
       @assessed_drinks.each do |drink|
         # find if user has rated/had this drink before
         @drink_rating_check = UserBeerRating.where(user_id: user.id, beer_id: drink.id).average(:user_beer_rating)
@@ -398,8 +401,8 @@ task :assess_drink_recommendations => :environment do
       end # end of loop adding assessed drinks to array
       # sort the array of hashes by projected rating and keep top 500
       @compiled_assessed_drinks = @compiled_assessed_drinks.sort_by{ |hash| hash['projected_rating'] }.reverse.first(500)
-      Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
-      return
+      #Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
+      
       # insert array of hashes into user_drink_recommendations table
       UserDrinkRecommendation.create(@compiled_assessed_drinks)
    end # end of loop for each user
