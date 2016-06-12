@@ -1,25 +1,133 @@
-<div class="row">
-	<div class="col-sm-4">
-		<h5>Next delivery: <%= @drinks_next_delivery %></h5>
+<div class="col-sm-12">
+		<div class="row no-margin">
+		    <div class="col-sm-2">
+		    	<h5>Customer drinks<br> <b><%= @drink_preference %></b></h5>
+		    </div>
+		    <div class="col-sm-3">
+		      	<div class="box-left-initial">
+		      		<h5>Need <%= @drinks_next_delivery %> <%= "drink".pluralize(@drinks_next_delivery) %> in next delivery; have <%= @user_next_delivery.length %></h5>
+		    	</div>
+				<div class="box-right-initial">
+			      	<% if @drinks_next_delivery == @user_next_delivery.length %>
+			      		<div class="style-indicator like-style-next-delivery-initial text-center">
+			      			<i class="fa fa-check"></i>
+			      		</div>						
+			      	<% else %>
+			      		<div class="style-indicator dislike-style-next-delivery-initial text-center">
+			      			<i class="fa fa-times"></i>
+			      		</div>	
+			      	<% end %>
+		     	</div>
+		     </div>
+			<div class="col-sm-7">
+				<div class="box-left-notes">
+					<h6>Additional notes:</h6>
+				</div>
+				<div class="box-right-notes">
+					<% if @delivery_preferences.additional.nil? %>
+						<h6 class="no-results-empty-message">Customer provided no addtional notes</h6>
+					<% else %>
+						<h6 class="no-results-empty-message"><%= @delivery_preferences.additional %></h6>
+					<% end %>
+				</div>
+			</div>
+		</div>
+		<div class="row second-row-next-delivery-review">
+		    <div class="col-sm-2">
+		      	<div class="box-left">
+		      		<h6>Need <%= @next_delivery_new_need %> new <%= "drink".pluralize(@next_delivery_new_need) %>; have <%= @next_delivery_new_have %></h6>
+		    	</div>
+		    	<div class="box-right">
+			      	<% if @next_delivery_new_need == @next_delivery_new_have %>
+			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
+			      			<i class="fa fa-check"></i>
+			      		</div>						
+			      	<% else %>
+			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
+			      			<i class="fa fa-times"></i>
+			      		</div>	
+			      	<% end %>
+			    </div>
+		    </div>
+		    <div class="col-sm-2">
+		      	<div class="box-left">
+		      		<h6>Need <%= @next_delivery_retry_need %> retry <%= "drink".pluralize(@next_delivery_new_need) %>; have <%= @next_delivery_retry_have %></h6>
+		    	</div>
+		    	<div class="box-right">
+			      	<% if @next_delivery_retry_need == @next_delivery_retry_have %>
+			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
+			      			<i class="fa fa-check"></i>
+			      		</div>						
+			      	<% else %>
+			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
+			      			<i class="fa fa-times"></i>
+			      		</div>	
+			      	<% end %>
+			      </div>
+		     </div>
+		    <div class="col-sm-2">
+		      	<div class="box-left">
+		      		<h6>Need <%= @next_delivery_cooler_need %> cooler <%= "drink".pluralize(@next_delivery_cooler_need) %>; have <%= @next_delivery_cooler_have %></h6>
+		   	 	</div>
+		    	<div class="box-right">
+			      	<% if @next_delivery_cooler_need == @next_delivery_cooler_have %>
+			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
+			      			<i class="fa fa-check"></i>
+			      		</div>						
+			      	<% else %>
+			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
+			      			<i class="fa fa-times"></i>
+			      		</div>	
+			      	<% end %>
+				</div>
+		    </div>
+		    <div class="col-sm-2">
+		    	<div class="box-left">
+		      		<h6>Need <%= @next_delivery_cellar_need %> cellar <%= "drink".pluralize(@next_delivery_cellar_need) %>; have <%= @next_delivery_cellar_have %></h6>
+		    	</div>
+		    	<div class="box-right">
+			      	<% if @next_delivery_cellar_need == @next_delivery_cellar_have %>
+			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
+			      			<i class="fa fa-check"></i>
+			      		</div>						
+			      	<% else %>
+			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
+			      			<i class="fa fa-times"></i>
+			      		</div>	
+			      	<% end %>
+				</div>
+		    </div>
+		    <div class="col-sm-2">
+		    	<div class="box-left">
+			    	<h6>Need <%= @next_delivery_small_need %> small <%= "drink".pluralize(@next_delivery_small_need) %>; have <%= @next_delivery_small_have %></h6>
+			    </div>
+		    	<div class="box-right">
+			      	<% if @next_delivery_small_need == @next_delivery_small_have %>
+			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
+			      			<i class="fa fa-check"></i>
+			      		</div>						
+			      	<% else %>
+			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
+			      			<i class="fa fa-times"></i>
+			      		</div>	
+			      	<% end %>
+				</div>
+		    </div>
+		    <div class="col-sm-2">
+		    	<div class="box-left">
+			    	<h6>Need <%= @next_delivery_large_need %> large <%= "drink".pluralize(@next_delivery_large_need) %>; have <%= @next_delivery_large_have %></h6>
+			    </div>
+		    	<div class="box-right">
+			      	<% if @next_delivery_large_need == @next_delivery_large_have %>
+			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
+			      			<i class="fa fa-check"></i>
+			      		</div>						
+			      	<% else %>
+			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
+			      			<i class="fa fa-times"></i>
+			      		</div>	
+			      	<% end %>
+				</div>
+		    </div>
+		</div>
 	</div>
-	<div class="col-sm-8">
-		<table class="table table-striped">
-		    <tr>
-		      <th>Need</th>
-		      <th>Have</th>
-		    </tr>
-		    <tr>
-		      <td><%= @next_delivery_new_need %> New / <%= @next_delivery_retry_need %> Retry</td>
-		      <td><span class="<%= @new_have_class %>"><%= @next_delivery_new_have %></span> / <span class="<%= @retry_have_class %>"><%= @next_delivery_retry_have %></span></td>
-		    </tr>
-		    <tr>
-		      <td><%= @next_delivery_cooler_need %> Cooler / <%= @next_delivery_cellar_need %> Cellar</td>
-		      <td><span class="<%= @cooler_have_class %>"><%= @next_delivery_cooler_have %></span> / <span class="<%= @cellar_have_class %>"><%= @next_delivery_cellar_have %></span></td>
-		    </tr>
-		    <tr>
-		      <td><%= @next_delivery_small_need %> Small / <%= @next_delivery_large_need %> Large</td>
-		      <td><span class="<%= @small_have_class %>"><%= @next_delivery_small_have %></span> / <span class="<%= @large_have_class %>"><%= @next_delivery_large_have %></span></td>
-		    </tr>
-		</table>
-	</div>
-</div>

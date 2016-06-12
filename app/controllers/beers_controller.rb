@@ -26,6 +26,7 @@ class BeersController < ApplicationController
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
      @role_ids = [1, 2, 3, 4] 
      @customer_ids = User.where(role_id: @role_ids).pluck(:id)
+     #Rails.logger.debug("Customer ids: #{@customer_ids.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
      @users_have_had = 0
@@ -40,7 +41,7 @@ class BeersController < ApplicationController
          end  # end of check on whether user has had drink
        end # end of best guess minimum check
      end # end of loop through customers
-     
+ 
      @users_have_not_had = @users_would_like - @users_have_had
       
       # get inventory data for
@@ -77,9 +78,9 @@ class BeersController < ApplicationController
     # find if user is tracking this beer already
     @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
-    Rails.logger.debug("after admin beer's info: #{@beer.inspect}")
+    #Rails.logger.debug("after admin beer's info: #{@beer.inspect}")
     @beer = best_guess(@beer.id, current_user.id)[0]
-    Rails.logger.debug("after best guess beer's info: #{@beer.inspect}")
+    #Rails.logger.debug("after best guess beer's info: #{@beer.inspect}")
     
     # get user's ratings for this beer if any exist
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse

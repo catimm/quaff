@@ -1,0 +1,37 @@
+  <div class="row">
+	<%= render 'user_delivery_info' %>
+</div>
+  <table class="table table-striped admin-recommendation-table">
+    <tr>
+      <th>#</th>
+      <th>Drink</th>
+      <th>Drink Type</th>
+      <th>Rating</th>
+      <th>New</th>
+      <th>Cellarable</th>
+      <th>Format</th>
+    </tr>
+    <% @user_next_delivery.each_with_index do |drink, index| %>
+    	<% drink.beer.inventories.each do |inventory| %>
+	      <tr>
+	        <td><%= (index + 1) %></td>
+	        <% if drink.beer.cellarable == true %>
+	        	<% @cellarable = "C" %>
+	        <% else %>
+	        	<% @cellarable = "" %>
+	        <% end %>
+	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+	        <td><%= drink.beer.beer_type.beer_type_name %></td>
+	        <% if drink.new_drink == true %>
+	        	<td><%= drink.projected_rating %></td>
+	        <% else %>
+	        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
+	        	<td><%= @avg_rating.round(2) %></td>
+	        <% end %>
+	        <td><%= drink.new_drink.humanize %></td>
+	        <td><%= drink.beer.cellarable.humanize %></td>
+	        <td><%= inventory.size_format.format_name %></td>
+	      </tr>
+	    <% end %>
+    <% end %>
+  </table>

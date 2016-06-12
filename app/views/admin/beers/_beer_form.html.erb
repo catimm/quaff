@@ -78,7 +78,7 @@
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.label :cellarable, "Is this drink cellarable?" %>
-		<%= f.check_box :cellarable %>
+		<%= f.check_box :cellarable, {}, "true", "false" %>
 	</div>	
 	<div class="col-sm-6 col-xs-12">
 		<%= f.label :dont_include, "Avoid showing any related info in Views?" %>

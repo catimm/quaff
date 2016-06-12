@@ -2717,6 +2717,19 @@ $descriptor-lines-to-show: 2;
   padding: 7px 7px;
   position: absolute;
 }
+.next-delivery-status-indicator-holder {
+  padding: 0 !important;
+}
+.dislike-style-next-delivery {
+  background: $current-beer-attention-needed-background;
+  padding: 6px;
+  margin-top: 10px !important;
+}
+.dislike-style-next-delivery-initial {
+  background: $current-beer-attention-needed-background;
+  padding: 6px;
+  margin-top: 10px !important;
+}
 .like-style {
   background: $step-background;
   top: 0;
@@ -2727,6 +2740,16 @@ $descriptor-lines-to-show: 2;
   background: $step-background;
   padding: 7px 7px;
   position: absolute;
+}
+.like-style-next-delivery {
+  background: $step-background;
+  padding: 7px;
+  margin-top: -5px !important;
+}
+.like-style-next-delivery-initial {
+  background: $step-background;
+  padding: 7px;
+  margin-top: -5px !important;
 }
 .tiny-dislike-style {
   background: $current-beer-attention-needed-background;
@@ -3034,8 +3057,106 @@ input[type="checkbox"] {
     margin-top: 5px;
   }
 }
-
+// Admin recommendation review page
+.second-row-next-delivery-review {
+  margin: 10px 0 !important;
+}
+.box-left-initial {
+  border-top: 1px solid $less-emphasized-text;
+  border-bottom: 1px solid $less-emphasized-text;
+  border-left: 1px solid $less-emphasized-text;
+  height: 52px;
+  float: left;
+  width: 80%;
+  padding-left: 5px;
+}
+.box-right-initial {
+  border-top: 1px solid $less-emphasized-text;
+  border-bottom: 1px solid $less-emphasized-text;
+  border-right: 1px solid $less-emphasized-text;
+  height: 52px;
+  width: 20%;
+  float: left;
+}
+.box-left-notes {
+  border-top: 1px solid $less-emphasized-text;
+  border-bottom: 1px solid $less-emphasized-text;
+  border-left: 1px solid $less-emphasized-text;
+  height: 52px;
+  float: left;
+  width: 20%;
+  padding-left: 5px;
+}
+.box-right-notes {
+  border-top: 1px solid $less-emphasized-text;
+  border-bottom: 1px solid $less-emphasized-text;
+  border-right: 1px solid $less-emphasized-text;
+  height: 52px;
+  width: 80%;
+  float: left;
+}
+.box-left {
+  border-top: 1px solid $less-emphasized-text;
+  border-bottom: 1px solid $less-emphasized-text;
+  border-left: 1px solid $less-emphasized-text;
+  height: 52px;
+  width: 75%;
+  float: left;
+  padding-left: 5px;
+}
+.box-right {
+  border-top: 1px solid $less-emphasized-text;
+  border-bottom: 1px solid $less-emphasized-text;
+  border-right: 1px solid $less-emphasized-text;
+  height: 52px;
+  height: 52px;
+  width: 25%;
+  float: left;
+}
+.style-indicator-next-delivery {
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 3px;
+  vertical-align: middle;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 1000;
+  position: absolute;
+  padding-top: 2px !important;
+  i {
+    color: $white;
+  }
+}
+.next-delivery-status-indicator-holder {
+  padding: 0 !important;
+}
+.dislike-style-next-delivery {
+  background: $current-beer-attention-needed-background;
+  padding: 2px;
+  margin-top: 10px !important;
+}
+.dislike-style-next-delivery-initial {
+  background: $current-beer-attention-needed-background;
+  padding: 6px;
+  margin-top: 10px !important;
+}
+.like-style-next-delivery {
+  background: $step-background;
+  padding: 2px;
+  margin-top: 10px !important;
+}
+.like-style-next-delivery-initial {
+  background: $step-background;
+  padding: 7px;
+  margin-top: 10px !important;
+}
 // Admin drink recommendation page
+.first-row-admin-recommendation-decisions {
+  margin: 10px 0 !important;
+}
 .dropdown-title {
   float: left;
   color: $less-emphasized-text;
@@ -4211,7 +4332,11 @@ body.modal-open,
   left: 0;
   z-index: 1040;
 }
-
+div#admin_user_delivery.modal.in {
+  width: 80%;
+  margin: 0 auto;
+  left: 10%;
+}
 /*!
  * Bootstrap Modal
  *

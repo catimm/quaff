@@ -127,6 +127,8 @@ Rails.application.routes.draw do
   get 'reloads' => 'reloads#index'
   get 'admin/recommendations/not_in_stock/:id' => 'admin/recommendations#not_in_stock', :as => 'admin_not_in_stock'
   get 'admin/recommendations/next_delivery_drink/:id' => 'admin/recommendations#next_delivery_drink', :as => 'admin_next_delivery_drink'
+  get 'admin/recommendations/admin_user_delivery/:id' => 'admin/recommendations#admin_user_delivery', :as =>'admin_user_delivery'
+  get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'
@@ -135,6 +137,7 @@ Rails.application.routes.draw do
   post 'admin/beers/alt_names' => 'admin/beers#create_alt_beer', :as => 'admin_create_beer_names'
   get 'admin/beers/delete_beer/:brewery_id/:id' => 'admin/beers#delete_beer_prep', :as => 'admin_delete_beer_prep'
   get 'admin/needs_work_beers(.:format)' => 'admin/beers#show', :as => 'admin_needs_work_beers'
+  
   # to get clean location modal window 
   get 'admin/beers/clean_location/:beer_id' => 'admin/beers#clean_location_prep', :as => 'admin_clean_location_prep'
   # to get clean location form to display

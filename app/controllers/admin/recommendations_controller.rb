@@ -60,39 +60,19 @@ class Admin::RecommendationsController < ApplicationController
     @next_delivery_small_have = @next_delivery_plans.where(small_format: true).count
     @next_delivery_large_have = @next_delivery_plans.where(small_format: false).count
     
-    # set css for need/have
-    if @next_delivery_new_need == @next_delivery_new_have
-      @new_have_class = "all-set"
+    # get drinks slated for next delivery
+    @user_next_delivery = AdminUserDelivery.where(user_id: @chosen_user_id)
+    
+    # get user's delivery prefrences
+    @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
+    # drink preference
+    if @delivery_preferences.drink_option_id == 1
+      @drink_preference = "Beer Only"
+    elsif @delivery_preferences.drink_option_id == 2
+      @drink_preference = "Cider Only"
     else
-      @new_have_class = "not-ready" 
+      @drink_preference = "Beer & Cider"
     end
-    if @next_delivery_retry_need == @next_delivery_retry_have
-      @retry_have_class = "all-set"
-    else
-      @retry_have_class = "not-ready" 
-    end
-    if @next_delivery_cooler_need == @next_delivery_cooler_have
-      @cooler_have_class = "all-set"
-    else
-      @cooler_have_class = "not-ready" 
-    end
-    if @next_delivery_cellar_need == @next_delivery_cellar_have
-      @cellar_have_class = "all-set"
-    else
-      @cellar_have_class = "not-ready" 
-    end
-    if @next_delivery_small_need == @next_delivery_small_have
-      @small_have_class = "all-set"
-    else
-      @small_have_class = "not-ready" 
-    end
-    if @next_delivery_large_need == @next_delivery_large_have
-      @large_have_class = "all-set"
-    else
-      @large_have_class = "not-ready" 
-    end
-    # grab drinks already included in next delivery 
-    @next_delivery = AdminUserDelivery.where(user_id: @chosen_user_id)
     
     respond_to do |format|
       format.js
@@ -100,9 +80,8 @@ class Admin::RecommendationsController < ApplicationController
     end 
     
   end # end of show action
-  
-  def not_in_stock
 
+  def not_in_stock
     # get unique customer names for select dropdown
     @customer_ids = DeliveryPreference.uniq.pluck(:user_id)
     
@@ -150,7 +129,7 @@ class Admin::RecommendationsController < ApplicationController
       end
       # get inventory info
       @inventory = Inventory.find(@inventory_id)
-      if (1..5).include?(@inventory.size_format_id)
+      if (1..4).include?(@inventory.size_format_id)
         @size_format = true
       else
         @size_format = false
@@ -173,6 +152,80 @@ class Admin::RecommendationsController < ApplicationController
     
   end # end next_delivery_drink method
   
+  def admin_user_delivery
+    # get drinks slated for next delivery
+    @user_next_delivery = AdminUserDelivery.where(user_id: params[:id]).joins(:beer).order('beers.beer_type_id DESC')
+    
+    # get user's delivery prefrences
+    @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
+    # drink preference
+    if @delivery_preferences.drink_option_id == 1
+      @drink_preference = "Beer Only"
+    elsif @delivery_preferences.drink_option_id == 2
+      @drink_preference = "Cider Only"
+    else
+      @drink_preference = "Beer & Cider"
+    end
+    
+    # get user's weekly drink max to be delivered
+    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
+    if !@delivery_preferences.drinks_in_cooler.nil?
+      if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
+        @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
+      end
+    end
+
+    # user's drinks currently in cooler
+    @user_cooler_count = UserSupply.where(user_id: params[:id], supply_type_id: 1).count
+    
+    # set drinks to be delivered in next shipment
+    @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
+    @days_to_next_delivery = (@delivery_preferences.next_delivery_date.to_date - Time.now.to_date).to_i
+    @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
+    @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
+    #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
+    
+    # set other drink guidelines for recommendation choices
+    @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
+    @next_delivery_retry_need = @drinks_next_delivery - @next_delivery_new_need
+    @next_delivery_cooler_need = ((@drinks_next_delivery * @delivery_preferences.cooler_percentage)/100)
+    @next_delivery_cellar_need = @drinks_next_delivery - @next_delivery_cooler_need
+    @next_delivery_small_need = ((@drinks_next_delivery * @delivery_preferences.small_format_percentage)/100)
+    @next_delivery_large_need = @drinks_next_delivery - @next_delivery_small_need
+    
+    # get information for which drinks are planned in next delivery
+    @next_delivery_plans = AdminUserDelivery.where(user_id: params[:id])
+    # count number of drinks that are new to user
+    @next_delivery_new_have = @next_delivery_plans.where(new_drink: true).count
+    @next_delivery_retry_have = @next_delivery_plans.where(new_drink: false).count
+    # count number of drinks for the cooler
+    @next_delivery_cooler_have = @next_delivery_plans.where(cooler: true).count
+    @next_delivery_cellar_have = @next_delivery_plans.where(cooler: false).count
+    # count number of small format drinks
+    @next_delivery_small_have = @next_delivery_plans.where(small_format: true).count
+    @next_delivery_large_have = @next_delivery_plans.where(small_format: false).count
+    
+    render :partial => 'admin/recommendations/user_next_delivery'
+  end #end of admin_user_delivery method
+  
+  def admin_share_delivery_with_customer
+    # get drinks slated for next delivery
+    @user_next_delivery = AdminUserDelivery.where(user_id: params[:id])
+    
+    # put drinks in user_delivery table to share with customer
+    @user_next_delivery.each do |drink|
+      @user_delivery = UserDelivery.new(user_id: params[:id], 
+                                        inventory_id: drink.inventory_id, 
+                                        new_drink: drink.new_drink, 
+                                        beer_id: drink.beer_id, 
+                                        projected_rating: drink.projected_rating, 
+                                        style_preference: drink.style_preference, 
+                                        quantity: drink.quantity)
+      @user_delivery.save!
+    end
+    # send back to admin recommendation view
+    redirect_to admin_recommendation_path(params[:id])
+  end # end of share_delivery_with_customer method
   
   private
     # Never trust parameters from the scary internet, only allow the white list through.

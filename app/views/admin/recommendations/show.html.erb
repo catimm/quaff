@@ -12,22 +12,28 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-1 text-right">
-			<h5>Choose user:</h5>
+	<div class="row first-row-admin-recommendation-decisions">
+		<div class="col-md-2 text-left no-padding">
+			<h4>Showing: <span class="current-selected-user" id="current-user-recommendations"><%= @drink_recommendations[0].user.username %></span></h4>
 		</div>
 		<div class="col-md-3">
-			<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: true}, {class: "form-control user-list-for-recommendation", id: "user-drink-recommendations"}) %>
+			<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "user-drink-recommendations"}) %>
 		</div>
-		<div class="col-md-3 text-left">
-			<h4>Currently showing: <span class="current-selected-user" id="current-user-recommendations"><%= @drink_recommendations[0].user.username %></span></h4>
+		<div class="col-md-5" >
+			
 		</div>
-		<div class="col-md-5" id="user-delivery-info-container">
-			<%= render 'user_delivery_info' %>
+		<div class="col-sm-2" id="admin-user-delivery-button-holder">
+			<%= render 'admin_user_delivery_button' %>
 		</div>
+	</div>
+	<div class="row no-margin" id="user-delivery-info-container">
+		<%= render 'user_delivery_info' %>
 	</div>
 	<div class="row" id="inventory-list-holder">
 		<%= render(partial: 'inventory_list', locals: { drinks: @inventory_drink_recommendations }) %>
+	</div>
+	<div id="admin_user_delivery" class="modal">
+		<%= render 'admin_check_delivery_modal' %>
 	</div>
 </div>
 <%= render 'layouts/footer' %>
