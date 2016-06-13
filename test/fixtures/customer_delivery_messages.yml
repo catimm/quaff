@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: customer_delivery_messages
+#
+#  id          :integer          not null, primary key
+#  user_id     :integer
+#  delivery_id :integer
+#  message     :text
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  delivery_id: 1
+  message: MyString
+
+two:
+  user_id: 1
+  delivery_id: 1
+  message: MyString

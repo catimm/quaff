@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: customer_delivery_changes
+#
+#  id                :integer          not null, primary key
+#  user_id           :integer
+#  delivery_id       :integer
+#  user_delivery_id  :integer
+#  original_quantity :integer
+#  new_quantity      :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  user_delivery_id: 1
+  original_quantity: 1
+  new_quantity: 1
+  delivery_date: 2016-06-12 23:06:23
+
+two:
+  user_id: 1
+  user_delivery_id: 1
+  original_quantity: 1
+  new_quantity: 1
+  delivery_date: 2016-06-12 23:06:23

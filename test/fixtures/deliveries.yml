@@ -1,0 +1,32 @@
+# == Schema Information
+#
+# Table name: deliveries
+#
+#  id            :integer          not null, primary key
+#  user_id       :integer
+#  delivery_date :datetime
+#  subtotal      :decimal(6, 2)
+#  sales_tax     :decimal(6, 2)
+#  total_price   :decimal(6, 2)
+#  status        :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  delivery_date: 2016-06-12 23:15:28
+  subtotal: 9.99
+  sales_tax: 9.99
+  total_price: 9.99
+  status: MyString
+
+two:
+  user_id: 1
+  delivery_date: 2016-06-12 23:15:28
+  subtotal: 9.99
+  sales_tax: 9.99
+  total_price: 9.99
+  status: MyString

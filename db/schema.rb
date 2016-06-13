@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160605233807) do
+ActiveRecord::Schema.define(version: 20160613061528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,6 +154,35 @@ ActiveRecord::Schema.define(version: 20160605233807) do
     t.string   "brewery_state_long"
     t.string   "facebook_url"
     t.string   "twitter_url"
+  end
+
+  create_table "customer_delivery_changes", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "delivery_id"
+    t.integer  "user_delivery_id"
+    t.integer  "original_quantity"
+    t.integer  "new_quantity"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  create_table "customer_delivery_messages", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "delivery_id"
+    t.text     "message"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "deliveries", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "delivery_date"
+    t.decimal  "subtotal",      precision: 6, scale: 2
+    t.decimal  "sales_tax",     precision: 6, scale: 2
+    t.decimal  "total_price",   precision: 6, scale: 2
+    t.string   "status"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
   create_table "delivery_preferences", force: :cascade do |t|
