@@ -1,5 +1,5 @@
 <% @type_info = BeerType.find_by_id(type.type_id) %>
-<% @top_drink_types = UserBeerRating.top_drinks_of_type(type.type_id).paginate(:page => params[:page], :per_page => 3) %>
+<% @top_drink_types = UserBeerRating.top_drinks_of_type(current_user.id, type.type_id).paginate(:page => params[:page], :per_page => 3) %>
 <div class="row no-margin">
 	<div class="col-sm-2">
 		<h4 class="fav-type-with-image"><%= @type_info.beer_type_name %></h4>

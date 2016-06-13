@@ -52,8 +52,8 @@ class UserBeerRating < ActiveRecord::Base
   }
   
   # method to find average rating for drinks of a particular drink type with more than one rating and then sort according to rating
-  scope :top_drinks_of_type, ->(type_id) {
-    where(beer_type_id: type_id).
+  scope :top_drinks_of_type, ->(user_id, type_id) {
+    where(user_id: user_id, beer_type_id: type_id).
     group('beer_id').
     select('beer_id as beer_id, avg(user_beer_ratings.user_beer_rating) as average_drink_rating').
     order('average_drink_rating desc')

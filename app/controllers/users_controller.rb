@@ -225,7 +225,7 @@ class UsersController < ApplicationController
       end
       # send full array to JQCloud
       gon.drink_type_descriptor_array = @final_descriptors_cloud
-      
+
       # get top rated drink types
       @user_ratings_by_type_ids = @user_ratings.rating_drink_types
       @user_ratings_by_type_ids.each do |drink_type|
