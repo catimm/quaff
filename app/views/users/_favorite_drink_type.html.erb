@@ -1,5 +1,5 @@
-<% @type_info = BeerType.find_by_id(type.type_id) %>
-<% @top_drink_types = UserBeerRating.top_drinks_of_type(current_user.id, type.type_id).paginate(:page => params[:page], :per_page => 3) %>
+<% @type_info = BeerType.find_by_id(type.beer_type_id) %>
+<% @top_drink_types = UserBeerRating.top_drinks_of_type(current_user.id, type.beer_type_id).paginate(:page => params[:page], :per_page => 3) %>
 <div class="row no-margin">
 	<div class="col-sm-2">
 		<h4 class="fav-type-with-image"><%= @type_info.beer_type_name %></h4>
@@ -18,7 +18,7 @@
 	</div>	
 	<div class="col-sm-3 padding-5">
 		<p class="fav-drink-section-info descriptor-header">You like these drinks when described as: </p>
-		<div class="cloud-holder" id="drink_type_<%= type.type_id %>"></div>
+		<div class="cloud-holder" id="drink_type_<%= type.beer_type_id %>"></div>
 		<p class="fav-drink-section-info">Get more accurate recommendations:</p>
 		<%= link_to "#", class: "btn btn-default btn-success add-descriptors-button", remote: true, data: {toggle: "modal", target: "#drink_type_descriptors_new_#{@type_info.id}"} do %>
 			<i class="fa fa-plus"> add/emphasize descriptors</i>

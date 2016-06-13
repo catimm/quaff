@@ -230,9 +230,9 @@ class UsersController < ApplicationController
       @user_ratings_by_type_ids = @user_ratings.rating_drink_types
       @user_ratings_by_type_ids.each do |drink_type|
         # get drink type info
-        @drink_type = BeerType.find_by_id(drink_type.type_id)
+        @drink_type = BeerType.find_by_id(drink_type.beer_type_id)
         # get ids of all drinks of this drink type
-        @drink_ids_of_this_drink_type = Beer.where(beer_type_id: drink_type.type_id).pluck(:id)   
+        @drink_ids_of_this_drink_type = Beer.where(beer_type_id: drink_type.beer_type_id).pluck(:id)   
         # get all descriptors associated with this drink type
         @final_descriptor_array = Array.new
         @drink_ids_of_this_drink_type.each do |drink|

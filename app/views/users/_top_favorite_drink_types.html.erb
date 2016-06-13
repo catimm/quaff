@@ -30,4 +30,9 @@
 			<%= link_to @drink_info.beer_name, brewery_beer_path(@drink_info.brewery.id, drink.beer.id), :class => 'fav-drink-type-drink-name' %>
 		</div>
 	</div>
+	<div class="row no-margin bottom-row-top-drink-type">
+		<div class="col-sm-12 padding-10">
+			<h6 class="rated-number">Rated: <%= drink.drinks_rated %> <%= "time".pluralize(drink.drinks_rated) %></h6>
+		</div>
+	</div>
 </div>

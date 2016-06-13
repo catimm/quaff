@@ -35,7 +35,7 @@ class UserBeerRating < ActiveRecord::Base
     joins(:beer).
     group('beers.brewery_id').
     having('COUNT(*) >= ?', 5).
-    select('beers.brewery_id as brewery_id, avg(user_beer_ratings.user_beer_rating) as brewery_rating, sum(user_beer_ratings.user_beer_rating) as drinks_rated').
+    select('beers.brewery_id as brewery_id, avg(user_beer_ratings.user_beer_rating) as brewery_rating, count(user_beer_ratings.user_beer_rating) as drinks_rated').
     order('brewery_rating desc').
     limit(5)
   }
@@ -46,7 +46,7 @@ class UserBeerRating < ActiveRecord::Base
     joins(:beer).
     group('beer_types.id').
     having('COUNT(*) >= ?', 5).
-    select('beer_types.id as type_id, avg(user_beer_ratings.user_beer_rating) as type_rating, beers.count as drink_count').
+    select('beer_types.id as beer_type_id, avg(user_beer_ratings.user_beer_rating) as type_rating, count(user_beer_ratings.user_beer_rating) as drink_count').
     order('type_rating desc').
     limit(5)
   }
@@ -55,7 +55,7 @@ class UserBeerRating < ActiveRecord::Base
   scope :top_drinks_of_type, ->(user_id, type_id) {
     where(user_id: user_id, beer_type_id: type_id).
     group('beer_id').
-    select('beer_id as beer_id, avg(user_beer_ratings.user_beer_rating) as average_drink_rating').
+    select('beer_id as beer_id, avg(user_beer_ratings.user_beer_rating) as average_drink_rating, count(user_beer_ratings.user_beer_rating) as drinks_rated').
     order('average_drink_rating desc')
   }
 end
