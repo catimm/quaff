@@ -57,19 +57,19 @@ module TypeBasedGuess
    #Rails.logger.debug("rating boost #{@good_rating_boost.inspect}")
     # finally, adjust projected rating based on number of descriptor matches
     if @good_rating_boost == 5
-      this_beer.best_guess = (((this_beer.best_guess + 1.5)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess + 1.5)*2).round(2) / 2)
       this_beer.likes_style = "yes"
       this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     elsif @good_rating_boost >= 3
-      this_beer.best_guess = (((this_beer.best_guess + 1.0)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess + 1.0)*2).round(2) / 2)
       this_beer.likes_style = "yes"
       this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     elsif @good_rating_boost >= 1
-      this_beer.best_guess = (((this_beer.best_guess + 0.5)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess + 0.5)*2).round(2) / 2)
       this_beer.likes_style = "yes"
       this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     else 
-      this_beer.best_guess = (((this_beer.best_guess + 0)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess + 0)*2).round(2) / 2)
       this_beer.likes_style = "neither"
       this_beer.this_beer_descriptors = @matching_descriptors_likes.first(3).to_sentence
     end
@@ -121,19 +121,19 @@ module TypeBasedGuess
    #Rails.logger.debug("bad drink rating boost #{@rating_boost.inspect}")
     # finally, adjust projected rating based on number of descriptor matches
     if @bad_rating_discount == 5
-      this_beer.best_guess = (((this_beer.best_guess - 1.5)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess - 1.5)*2).round(2) / 2)
       this_beer.likes_style = "no"
       this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     elsif @bad_rating_discount >= 3
-      this_beer.best_guess = (((this_beer.best_guess - 1.0)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess - 1.0)*2).round(2) / 2)
       this_beer.likes_style = "no"
       this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     elsif @bad_rating_discount >= 1
-      this_beer.best_guess = (((this_beer.best_guess - 0.5)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess - 0.5)*2).round(2) / 2)
       this_beer.likes_style = "no"
       this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     else 
-      this_beer.best_guess = (((this_beer.best_guess - 0)*2).round / 2)
+      this_beer.best_guess = (((this_beer.best_guess - 0)*2).round(2) / 2)
       this_beer.likes_style = "neither"
       this_beer.this_beer_descriptors = @matching_descriptors_dislikes.first(3).to_sentence
     end
