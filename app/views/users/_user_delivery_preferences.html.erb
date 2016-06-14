@@ -8,145 +8,172 @@
 		<% end %>
 	</div>
 	<div class="col-xs-12">
-		<h5>Set the rules for your deliveries and we'll make sure you get drinks you'll love.</h5>
+		<h5>Set the rules for your deliveries and we'll make sure you get drinks you will love.</h5>
 	</div>
 </div>
-<div class="row no-margin">
-	<div class="col-sm-9">
-		<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-8 no-padding">
-					<h3 class="delivery-preference-prompt">What do you drink?</h3>
-				</div>
-				<div class="col-sm-4 no-padding">
-					<% @drink_options.each do |format| %>
-					  <% if @delivery_preferences.drink_option_id == format.id %>
-					  	<% @this_preference = true %>
-					  <% else %>
-					  	<% @this_preference = false %>
-					  <% end %>
-					  <label class="drink-preference-choice">
-					  <%= check_box_tag :drink_option_ids, format.id, @this_preference, :name => 'preferences[drink_option_ids][]', :class => 'drink-type-preference' %><%= format.drink_option_name %></label>
+<% if !@delivery_preferences.first_delivery_date.nil? %>
+	<div class="row no-margin">
+		<div class="col-sm-9">
+			<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
+				<hr>
+				<div class="row no-margin">
+					<% if @current_time_difference > 1 %>
+						<div class="col-sm-4 no-padding">
+							<h3 class="delivery-preference-prompt">Your first delivery:</h3>
+						</div>
+						<div class="col-sm-4 no-padding">
+							 <h5 class="delivery-date-choice"><%= (@delivery_preferences.first_delivery_date).strftime("%A, %b %e, %Y") %></h5>
+						</div>
+						<div class="col-sm-4 no-padding">
+							<%= link_to "Change first delivery date", reset_customer_delivery_date_path(current_user.id), :class => "btn btn-success inputButton2 change-delivery-date-button",
+									data: {toggle: "modal", target: "#customer_first_delivery"} %>
+						</div>
+					<% else %>
+						<div class="col-sm-8 no-padding">
+							<h3 class="delivery-preference-prompt">Your first delivery:</h3>
+						</div>
+						<div class="col-sm-4 no-padding">
+							 <h5 class="delivery-date-choice"><%= (@delivery_preferences.first_delivery_date).strftime("%A, %b %e, %Y") %></h5>
+						</div>
 					<% end %>
 				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-sm-8 no-padding">
+						<h3 class="delivery-preference-prompt">What do you drink?</h3>
+					</div>
+					<div class="col-sm-4 no-padding">
+						<% @drink_options.each do |format| %>
+						  <% if @delivery_preferences.drink_option_id == format.id %>
+						  	<% @this_preference = true %>
+						  <% else %>
+						  	<% @this_preference = false %>
+						  <% end %>
+						  <label class="drink-preference-choice">
+						  <%= check_box_tag :drink_option_ids, format.id, @this_preference, :name => 'preferences[drink_option_ids][]', :class => 'drink-type-preference' %><%= format.drink_option_name %></label>
+						<% end %>
+					</div>
+				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-sm-10 no-padding">
+						<h3 class="delivery-preference-prompt">What is the average number of beers/ciders you drink at home each week?</h3>
+					</div>
+					<div class="col-sm-2">
+						<%= f.select :drinks_per_week, (1..21), {}, {required: 'true', class: 'form-control'}  %>
+					</div>
+				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-sm-10 no-padding">
+						<h3 class="delivery-preference-prompt">What is the max number of beers/ciders you want in your cooler at any given time?</h3>
+					</div>
+					<div class="col-sm-2">
+						<%= f.select :drinks_in_cooler, (1..50), {}, {required: 'true', class: 'form-control'}  %>
+					</div>
+				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-sm-12 no-padding">
+						<h3 class="delivery-preference-prompt">New vs Repeat drinks:</h3>
+					</div>
+					<div class="col-sm-2 no-padding">
+						<h2 class="delivery-preference-percentage repeat text-center"><span id="repeat-preference"><%= @repeat_percentage %></span>% <span class="preference-label">repeat</span></h2>
+					</div>
+					<div class="col-sm-8">
+						<%= f.text_field :new_percentage, id: 'new_percentage', type: 'text',
+		                 data: {'slider-id' => 'delivery-new-slider',
+		                 		'slider-min' => '0',
+		                        'slider-max' => '100',
+		                        'slider-step' => '5',
+		                        'slider-value' => @new_percentage,
+		                        'slider-orientation' => 'horizontal',
+		                        'slider-handle' => 'square' } %>
+					</div>
+					<div class="col-sm-2 no-padding">
+						<h2 class="delivery-preference-percentage new text-center"><span id="new-preference"><%= @new_percentage %></span>% <span class="preference-label">new</span></h2>
+					</div>
+					<div class="col-sm-12">
+						<h4 class="delivery-preference-confirmation-message">Each delivery will have <span id="new-preference-2"><%= @new_drink_message_estimate %></span><span> new drinks</span> you've never had before.</h4>
+					</div>
+				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-sm-12 no-padding">
+						<h3 class="delivery-preference-prompt">Cooler vs Cellar drinks:</h3>
+					</div>
+					<div class="col-sm-2 no-padding">
+						<h2 class="delivery-preference-percentage cellar text-center"><span id="cellar-preference"><%= @cellar_percentage %></span>% <span class="preference-label">cellar</span></h2>
+					</div>
+					<div class="col-sm-8">
+						<%= f.text_field :cooler_percentage, id: 'cooler_percentage', type: 'text',
+		                 data: {'slider-id' => 'delivery-cooler-slider',
+		                 		'slider-min' => '0',
+		                        'slider-max' => '100',
+		                        'slider-step' => '5',
+		                        'slider-value' => @cooler_percentage,
+		                        'slider-orientation' => 'horizontal',
+		                        'slider-handle' => 'square' } %>
+					</div>
+					<div class="col-sm-2 no-padding">
+						<h2 class="delivery-preference-percentage cooler text-center"><span id="cooler-preference"><%= @cooler_percentage %></span>% <span class="preference-label">cooler</span></h2>
+					</div>
+					<div class="col-sm-12">
+						<h4 class="delivery-preference-confirmation-message">Each delivery will have <span id="cooler-preference-2"><%= @cooler_delivery_message_estimate %></span><span> cooler drinks</span>--store in your fridge and drink relatively soon.</h4>
+					</div>
+				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-sm-12 no-padding">
+						<h3 class="delivery-preference-prompt">Small vs Large formats:</h3>
+					</div>
+					<div class="col-sm-2 no-padding">
+						<h2 class="delivery-preference-percentage large-format text-center"><span id="large-preference"><%= @large_percentage %></span>% <span class="preference-label">large</span></h2>
+					</div>
+					<div class="col-sm-8">
+						<%= f.text_field :small_format_percentage, id: 'small_percentage', type: 'text',
+		                 data: {'slider-id' => 'delivery-format-slider',
+		                 		'slider-min' => '0',
+		                        'slider-max' => '100',
+		                        'slider-step' => '5',
+		                        'slider-value' => @small_percentage,
+		                        'slider-orientation' => 'horizontal',
+		                        'slider-handle' => 'square' } %>
+					</div>
+					<div class="col-sm-2 no-padding">
+						<h2 class="delivery-preference-percentage small-format text-center"><span id="small-preference"><%= @small_percentage %></span>% <span class="preference-label">small</span></h2>
+					</div>
+					<div class="col-sm-12">
+						<h4 class="delivery-preference-confirmation-message">Each delivery will have <span id="small-preference-2"><%= @small_delivery_message_estimate %></span><span> small format drinks</span> (16oz or smaller).</h4>
+					</div>
+				</div>
+				<hr>
+				<div class="row no-margin">
+					<div class="col-sm-12 no-padding">
+						<h3 class="delivery-preference-prompt">Additional requests</h3>
+					</div>
+					<div class="col-sm-12 delivery-additional-request">
+						<%= f.text_area :additional, {required: 'true', class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I drink only gluten free drinks"'}  %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+		<div class="col-sm-3 no-padding" id="estimate-column">
+			<div id="scroller-anchor"></div>
+			<div class="estimated-delivery-price-holder" id="scroller">
+				<h4 class="estimated-delivery-price-header">Per delivery estimates</h4>
+				<ul class="estimation-list">
+					<li><h5 class="estimation-text" id="drink-delivery-estimate"><%= @drink_delivery_estimate %></h5></li>
+					<li><h5 class="estimation-text" id="new_drink_estimate"><%= @new_drink_delivery_estimate %></h5></li>
+					<li><h5 class="estimation-text" id="cooler_drink_estimate"><%= @cooler_delivery_estimate %></h5></li>
+					<li><h5 class="estimation-text" id="small_format_estimate"><%= @small_delivery_estimate %></h5></li>
+				</ul>
+				<h4 class="estimation-text">Approximate cost per delivery:</h4>
+				<h3 class="cost-range-text" id="cost_estimate"><%= @cost_estimate %></h3>
 			</div>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-10 no-padding">
-					<h3 class="delivery-preference-prompt">What is the average number of beers/ciders you drink at home each week?</h3>
-				</div>
-				<div class="col-sm-2">
-					<%= f.select :drinks_per_week, (1..21), {}, {required: 'true', class: 'form-control'}  %>
-				</div>
-			</div>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-10 no-padding">
-					<h3 class="delivery-preference-prompt">What is the max number of beers/ciders you want in your cooler at any given time?</h3>
-				</div>
-				<div class="col-sm-2">
-					<%= f.select :drinks_in_cooler, (1..50), {}, {required: 'true', class: 'form-control'}  %>
-				</div>
-			</div>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-12 no-padding">
-					<h3 class="delivery-preference-prompt">New vs Repeat drinks:</h3>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage repeat text-center"><span id="repeat-preference"><%= @repeat_percentage %></span>% <span class="preference-label">repeat</span></h2>
-				</div>
-				<div class="col-sm-8">
-					<%= f.text_field :new_percentage, id: 'new_percentage', type: 'text',
-	                 data: {'slider-id' => 'delivery-new-slider',
-	                 		'slider-min' => '0',
-	                        'slider-max' => '100',
-	                        'slider-step' => '5',
-	                        'slider-value' => @new_percentage,
-	                        'slider-orientation' => 'horizontal',
-	                        'slider-handle' => 'square' } %>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage new text-center"><span id="new-preference"><%= @new_percentage %></span>% <span class="preference-label">new</span></h2>
-				</div>
-				<div class="col-sm-12">
-					<h4 class="delivery-preference-confirmation-message">Each delivery will have <span id="new-preference-2"><%= @new_drink_message_estimate %></span><span> new drinks</span> you've never had before.</h4>
-				</div>
-			</div>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-12 no-padding">
-					<h3 class="delivery-preference-prompt">Cooler vs Cellar drinks:</h3>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage cellar text-center"><span id="cellar-preference"><%= @cellar_percentage %></span>% <span class="preference-label">cellar</span></h2>
-				</div>
-				<div class="col-sm-8">
-					<%= f.text_field :cooler_percentage, id: 'cooler_percentage', type: 'text',
-	                 data: {'slider-id' => 'delivery-cooler-slider',
-	                 		'slider-min' => '0',
-	                        'slider-max' => '100',
-	                        'slider-step' => '5',
-	                        'slider-value' => @cooler_percentage,
-	                        'slider-orientation' => 'horizontal',
-	                        'slider-handle' => 'square' } %>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage cooler text-center"><span id="cooler-preference"><%= @cooler_percentage %></span>% <span class="preference-label">cooler</span></h2>
-				</div>
-				<div class="col-sm-12">
-					<h4 class="delivery-preference-confirmation-message">Each delivery will have <span id="cooler-preference-2"><%= @cooler_delivery_message_estimate %></span><span> cooler drinks</span>--store in your fridge and drink relatively soon.</h4>
-				</div>
-			</div>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-12 no-padding">
-					<h3 class="delivery-preference-prompt">Small vs Large formats:</h3>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage large-format text-center"><span id="large-preference"><%= @large_percentage %></span>% <span class="preference-label">large</span></h2>
-				</div>
-				<div class="col-sm-8">
-					<%= f.text_field :small_format_percentage, id: 'small_percentage', type: 'text',
-	                 data: {'slider-id' => 'delivery-format-slider',
-	                 		'slider-min' => '0',
-	                        'slider-max' => '100',
-	                        'slider-step' => '5',
-	                        'slider-value' => @small_percentage,
-	                        'slider-orientation' => 'horizontal',
-	                        'slider-handle' => 'square' } %>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage small-format text-center"><span id="small-preference"><%= @small_percentage %></span>% <span class="preference-label">small</span></h2>
-				</div>
-				<div class="col-sm-12">
-					<h4 class="delivery-preference-confirmation-message">Each delivery will have <span id="small-preference-2"><%= @small_delivery_message_estimate %></span><span> small format drinks</span> (16oz or smaller).</h4>
-				</div>
-			</div>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-12 no-padding">
-					<h3 class="delivery-preference-prompt">Additional requests</h3>
-				</div>
-				<div class="col-sm-12 delivery-additional-request">
-					<%= f.text_area :additional, {required: 'true', class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I drink only gluten free drinks"'}  %>
-				</div>
-			</div>
-		<% end %>
-	</div>
-	<div class="col-sm-3 no-padding" id="estimate-column">
-		<div id="scroller-anchor"></div>
-		<div class="estimated-delivery-price-holder" id="scroller">
-			<h4 class="estimated-delivery-price-header">Per delivery estimates</h4>
-			<ul class="estimation-list">
-				<li><h5 class="estimation-text" id="drink-delivery-estimate"><%= @drink_delivery_estimate %></h5></li>
-				<li><h5 class="estimation-text" id="new_drink_estimate"><%= @new_drink_delivery_estimate %></h5></li>
-				<li><h5 class="estimation-text" id="cooler_drink_estimate"><%= @cooler_delivery_estimate %></h5></li>
-				<li><h5 class="estimation-text" id="small_format_estimate"><%= @small_delivery_estimate %></h5></li>
-			</ul>
-			<h4 class="estimation-text">Approximate cost per delivery:</h4>
-			<h3 class="cost-range-text" id="cost_estimate"><%= @cost_estimate %></h3>
 		</div>
 	</div>
+<% end %>
+<div id="customer_first_delivery" class="modal">
+	<%= render 'customer_delivery_date_modal' %>
 </div>

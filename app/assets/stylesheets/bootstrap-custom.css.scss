@@ -2111,6 +2111,11 @@ $beer-header-lines-to-show-fp: 1;
   padding-top: 30px;
   font-size: 50px;
 }
+.next-delivery-text {
+  color: $less-emphasized-text;
+  margin-top: 50px;
+  padding-right: 17px;
+}
 .drink-preference-view-option {
   margin-top: 30px !important;
   color: $normal-text;
@@ -2332,11 +2337,19 @@ $beer-header-lines-to-show-fp: 1;
   text-decoration: underline;
 }
 // User Delivery Preference Page
-.new_delivery_preference, .edit_delivery_preference {
+.edit_delivery_preference {
   margin-bottom: 40px;
   select {
     margin-top: 22.5px;
   }
+}
+.delivery-date-choice {
+  color: $normal-text;
+  font-size: 18px;
+  margin: 25px 20px 0 0;
+}
+.change-delivery-date-button {
+  margin-top: 15px;
 }
 .delivery-preference-prompt {
   color: $normal-text;
@@ -3065,6 +3078,92 @@ input[type="checkbox"] {
     margin-top: 5px;
   }
 }
+// User Next Delivery View
+.next-delivery-tile {
+  margin: 15px 0 20px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  height: 485px;
+  position: relative;
+}
+.size-price-row {
+  background: $soft-gray-background;
+}
+.size-and-price {
+  color: $normal-text;
+  font-weight: 500;
+}
+.including-tax-text {
+  color: $less-emphasized-text;
+  font-size: 12px;
+  font-weight: 400;
+}
+.next-delivery-tile-last-row {
+  position: absolute; 
+  bottom: 0; 
+  width: 100%; 
+  height: 50px; 
+  text-align: center;
+}
+.quantity-change-holder-minus {
+    height: 35px;
+    margin-top: 15px;
+    background: $step-background;
+    border-left: 1px solid #4cae4c !important;
+    border-top: 1px solid #4cae4c !important;
+    border-bottom: 1px solid #4cae4c !important;
+    border-bottom-left-radius: 6px;
+    p {
+      margin-top: 9px;
+      color: $white;
+    }
+  }
+.quantity-change-holder-add {
+    height: 35px;
+    margin-top: 15px;
+    background: $step-background;
+    border-right: 1px solid #4cae4c !important;
+    border-top: 1px solid #4cae4c !important;
+    border-bottom: 1px solid #4cae4c !important;
+    border-bottom-right-radius: 6px;
+    p {
+      margin-top: 9px;
+      color: $white;
+    }
+  }
+.quantity-holder-parent {
+  height: 35px;
+  margin-top: 15px;
+  background: $step-background;
+  border-top: 1px solid #4cae4c !important;
+  border-bottom: 1px solid #4cae4c !important;
+}
+.quantity-holder {
+  border: 2px solid #4cae4c !important;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  font-weight: 500;
+  background: $step-background;
+  position: absolute;
+  top: -15px;
+  right: 23px;
+  h4 {
+    margin-bottom: 0;
+    color: $white;
+    font-weight: 500;
+  }
+  p {
+    color: $white;
+    font-size: 80%;
+    font-weight: 300;
+  }
+  
+}
 // Admin recommendation review page
 .second-row-next-delivery-review {
   margin: 10px 0 !important;
@@ -3092,7 +3191,7 @@ input[type="checkbox"] {
   border-left: 1px solid $less-emphasized-text;
   height: 52px;
   float: left;
-  width: 20%;
+  width: 27%;
   padding-left: 5px;
 }
 .box-right-notes {
@@ -3100,7 +3199,7 @@ input[type="checkbox"] {
   border-bottom: 1px solid $less-emphasized-text;
   border-right: 1px solid $less-emphasized-text;
   height: 52px;
-  width: 80%;
+  width: 73%;
   float: left;
 }
 .box-left {
@@ -3178,10 +3277,12 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 .all-set {
-  background: $current-beer-complete-background;
+  color: $current-beer-complete-background;
+  font-weight: 500;
 }
 .not-ready {
-  background: $special-designated-red;
+  color: $special-designated-red;
+  font-weight: 500;
 }
 .current-selected-user {
   color: $best-guess-text;

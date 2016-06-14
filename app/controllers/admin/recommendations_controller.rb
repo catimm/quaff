@@ -4,7 +4,7 @@ class Admin::RecommendationsController < ApplicationController
  
   def show
     # get unique customer names for select dropdown
-    @customer_ids = DeliveryPreference.uniq.pluck(:user_id)
+    @customer_ids = Delivery.uniq.pluck(:user_id)
     
     # set chosen user id
     if params.has_key?(:id)
@@ -19,8 +19,9 @@ class Admin::RecommendationsController < ApplicationController
     @inventory_drink_recommendations = @drink_recommendations.recommended_in_stock.joins(:beer).order(sort_column + " " + sort_direction)
     #Rails.logger.debug("inventory recos: #{@inventory_drink_recommendations.inspect}")
     
-    # get user's delivery prefrences
+    # get user's delivery info
     @delivery_preferences = DeliveryPreference.where(user_id: @chosen_user_id).first
+    @customer_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
     
     # get user's weekly drink max to be delivered
     @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
@@ -35,10 +36,26 @@ class Admin::RecommendationsController < ApplicationController
     
     # set drinks to be delivered in next shipment
     @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
-    @days_to_next_delivery = (@delivery_preferences.next_delivery_date.to_date - Time.now.to_date).to_i
+    @days_to_next_delivery = (@customer_delivery.delivery_date.to_date - Time.now.to_date).to_i
     @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
     @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
     #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
+    
+    # get current deliver cost estimate
+    @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
+    @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
+    @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s
+    
+    # set css for cost estimate
+    if !@customer_delivery.total_price.nil?
+      if @customer_delivery.total_price < @cost_estimate_high
+        @price_estimate_delivery = "all-set"
+      else
+         @price_estimate_delivery = "not-ready"
+      end
+    else
+       @price_estimate_delivery = "not-ready"
+    end
     
     # set other drink guidelines for recommendation choices
     @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
@@ -145,6 +162,20 @@ class Admin::RecommendationsController < ApplicationController
                                                       style_preference: @drink_recommendation.style_preference,
                                                       quantity: 1)
       @next_delivery_addition.save!
+      
+      # set new price in Delivery table
+      @customer_delivery_info = Delivery.where(user_id: @drink_recommendation.user_id).where.not(status: "delivered").first
+      @current_subtotal = @customer_delivery_info.subtotal
+      if !@current_subtotal.nil?
+        @new_subtotal = @current_subtotal + @inventory.drink_price
+      else
+        @new_subtotal = @inventory.drink_price
+      end
+      @new_sales_tax = @new_subtotal * 0.096
+      @new_total_price = @new_subtotal + @new_sales_tax
+      # insert price info into Delivery table
+      @customer_delivery_info.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
+
     end # end of adding/removing
     
     # redirect back to recommendation page                                             
@@ -158,6 +189,8 @@ class Admin::RecommendationsController < ApplicationController
     
     # get user's delivery prefrences
     @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
+    @customer_delivery = Delivery.where(user_id: params[:id]).where.not(status: "delivered").first
+    
     # drink preference
     if @delivery_preferences.drink_option_id == 1
       @drink_preference = "Beer Only"
@@ -180,10 +213,26 @@ class Admin::RecommendationsController < ApplicationController
     
     # set drinks to be delivered in next shipment
     @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
-    @days_to_next_delivery = (@delivery_preferences.next_delivery_date.to_date - Time.now.to_date).to_i
+    @days_to_next_delivery = (@customer_delivery.delivery_date.to_date - Time.now.to_date).to_i
     @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
     @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
     #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
+    
+    # get current deliver cost estimate
+    @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
+    @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
+    @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s
+    
+    # set css for cost estimate
+    if !@customer_delivery.total_price.nil?
+      if @customer_delivery.total_price < @cost_estimate_high
+        @price_estimate_delivery = "all-set"
+      else
+         @price_estimate_delivery = "not-ready"
+      end
+    else
+       @price_estimate_delivery = "not-ready"
+    end
     
     # set other drink guidelines for recommendation choices
     @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)

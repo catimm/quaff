@@ -1,5 +1,6 @@
 $(function () {
 	// set drink delivery estimate variable
+	var new_delivery = gon.new_delivery_preference;
 	var drink_per_week_calculation;
 	var drinks_per_week = gon.drinks_per_week
     var drinks_in_cooler = gon.drinks_in_cooler
@@ -14,6 +15,12 @@ $(function () {
 	var	large_value = gon.large_value;
     var small_format_estimate = gon.small_format_estimate;
     var large_format_estimate = gon.large_format_estimate;
+
+	if (gon.new_delivery_preference == true) {
+		$(window).load(function(){
+	        $('#customer_first_delivery').modal('show');
+	    });
+	}
 	
 	// set delay function
 	var delay = (function(){
@@ -40,7 +47,7 @@ $(function () {
 	    	var drinks_per_week_statement = "~ " + drink_per_week_calculation + " drinks in each delivery"
 	    	
 	    	// insert new drink estimate value statement	
-			if (new_drink_estimate != undefined) {
+			if (new_value != undefined) {
 				// reset new drink estimate value
 				new_drink_estimate = Math.round((drink_per_week_calculation * new_value)/100);
 				var new_drink_per_week_calculation = "~ " + new_drink_estimate + " will be new to you"
@@ -48,7 +55,7 @@ $(function () {
 				$("#new-preference-2").text("~ " + new_drink_estimate);
 			}
 			// insert cooler estimate value statement	
-			if (cooler_drink_estimate != undefined) {
+			if (cooler_value != undefined) {
 				// reset cooler and cellar estimate values
 				cooler_drink_estimate = Math.round((drink_per_week_calculation * cooler_value)/100);
 				cellar_drink_estimate = (drink_per_week_calculation - cooler_drink_estimate);
@@ -57,7 +64,7 @@ $(function () {
 				$("#cooler-preference-2").text("~ " + cooler_drink_estimate);
 			}
 			// insert small format estimate value statement	
-			if (small_format_estimate != undefined) {
+			if (small_value != undefined) {
 				// reset small and large format estimate values
 				small_format_estimate = Math.round((drink_per_week_calculation * small_value)/100);
 				large_format_estimate = (drink_per_week_calculation - small_format_estimate);
@@ -271,13 +278,16 @@ $(function () {
 	$(document).on("keyup", "#delivery_preference_additional", function() {
 		var additional = $(this).val();
 		delay(function(){
-			alert(additional);
 			$.ajax({
 			  type: "POST",
 			  url: "/users/deliveries_update_preferences/additional-" + additional
 			});
 	    }, 1000 );
 		
+	});
+	// ensure only one delivery date option is chosen
+	$(document).on("change", ".first_delivery_date_chosen", function() {
+		$(this).parent().siblings(".drink-preference-choice").children("input").removeAttr('checked');
 	});
 	
 	// send drink type preference to controller

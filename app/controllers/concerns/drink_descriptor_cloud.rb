@@ -26,7 +26,7 @@ module DrinkDescriptorCloud
       descriptor_array << new_hash
     end
     
-    @this_drink_descriptors = [drink_id_array,descriptor_array]
+    @this_drink_descriptors = [drink_id_array,descriptor_array.first(10)]
     #Rails.logger.debug("Weighted descriptor list: #{@this_drink_descriptors.inspect}")
     this_drink.top_descriptor_list = @this_drink_descriptors
   end

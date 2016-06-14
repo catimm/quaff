@@ -253,11 +253,18 @@ class UsersController < ApplicationController
   end # end profile method
   
   def deliveries   
+    @user_delivery_info = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
+    if !@user_delivery_info.blank?
+      @next_delivery_date = @user_delivery_info.delivery_date
+      @next_delivery_review_start_date = @next_delivery_date - 3.days
+      if @user_delivery_info.status == "user review"
+        @next_delivery_review_end_date = @next_delivery_date - 1.day
+      end
+    end
     # get view chosen
     @delivery_view = params[:id]
     
     if @delivery_view == "next" # logic if showing the next view
-      Rails.logger.debug("next view")
       # set CSS for chosen link
       @next_chosen = "chosen"
       
@@ -278,7 +285,6 @@ class UsersController < ApplicationController
       gon.drink_descriptor_array = @final_descriptors_cloud
       
     elsif @delivery_view == "history" # logic if showing the history view
-      Rails.logger.debug("history view")
       # set CSS for chosen link
       @history_chosen = "chosen"
       
@@ -291,7 +297,7 @@ class UsersController < ApplicationController
       
       # set chosen style variable for link CSS
       @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-      
+      #Rails.logger.debug("Delivery preferences: #{@delivery_preferences.inspect}") 
       # update time of last save
       if !@delivery_preferences.blank?
         @preference_updated = @delivery_preferences.updated_at
@@ -304,9 +310,6 @@ class UsersController < ApplicationController
             end
           end
           @drink_delivery_estimate = "~ " + @drink_per_week_calculation.to_s + " drinks in each delivery"
-          # send delivery estimate to JQuery
-          gon.drinks_per_week = @delivery_preferences.drinks_per_week
-          gon.drinks_in_cooler = @delivery_preferences.drinks_in_cooler
         else
           @drink_delivery_estimate = "Total drinks in each delivery TBD"
           # send delivery estimate to JQuery
@@ -325,17 +328,10 @@ class UsersController < ApplicationController
             end
             @new_drink_delivery_estimate = "~ " + @new_drink_estimate.to_s + " will be new to you"
             @new_drink_message_estimate = "~ " + @new_drink_estimate.to_s
-            # send delivery estimate to JQuery
-            gon.new_value = @new_percentage
-            gon.new_drink_estimate = @new_drink_estimate
           else
             @new_drink_delivery_estimate = "New/repeat drink mix TBD"
+            @new_drink_message_estimate = "50%"
           end
-        else
-          @new_percentage = 50
-          @new_drink_message_estimate = "50%"
-          @repeat_percentage = 50
-          @new_drink_delivery_estimate = "New/repeat drink mix TBD"
         end
         if !@delivery_preferences.cooler_percentage.nil?
           @cooler_percentage = @delivery_preferences.cooler_percentage
@@ -351,19 +347,10 @@ class UsersController < ApplicationController
             end
             @cooler_delivery_estimate = "~ " + @cooler_drink_estimate.to_s + " for your cooler; " + @cellar_drink_estimate.to_s + " for your cellar"
             @cooler_delivery_message_estimate = "~ " + @cooler_drink_estimate.to_s
-            # send delivery estimate to JQuery
-            gon.cooler_value = @cooler_percentage
-            gon.cellar_value = @cellar_percentage
-            gon.cooler_drink_estimate = @cooler_drink_estimate
-            gon.cellar_drink_estimate = @cellar_drink_estimate
           else
             @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
+            @cooler_delivery_message_estimate = "50%"
           end
-        else
-          @cooler_percentage = 50
-          @cooler_delivery_message_estimate = "50%"
-          @cellar_percentage = 50
-          @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
         end
         if !@delivery_preferences.small_format_percentage.nil?
           @small_percentage = @delivery_preferences.small_format_percentage
@@ -379,36 +366,58 @@ class UsersController < ApplicationController
             end
             @small_delivery_estimate = "~ " + @small_format_estimate.to_s + " in small format; " + @large_format_estimate.to_s + " in large"
             @small_delivery_message_estimate = "~ " + @small_format_estimate.to_s
-            # send delivery estimate to JQuery
-            gon.small_value = @small_percentage
-            gon.large_value = @large_percentage
-            gon.small_format_estimate = @small_format_estimate
-            gon.large_format_estimate = @large_format_estimate
           else
             @small_delivery_estimate = "Small/large format mix TBD"
+            @small_delivery_message_estimate = "50%"
           end
-        else
-          @small_percentage = 50
-          @small_delivery_message_estimate = "50%"
-          @large_percentage = 50
-          @small_delivery_estimate = "Small/large format mix TBD"
         end
+        # find if customer has recieved first delivery or is within one day of it
+        if !@delivery_preferences.first_delivery_date.nil?
+          @first_delivery = @delivery_preferences.first_delivery_date
+          @today = DateTime.now
+          @current_time_difference = ((@first_delivery - @today) / (60*60*24)).floor
+          @change_first_delivery = true
+          # get dates of next few Thursdays
+          @date_time_now = DateTime.now
+          #Rails.logger.debug("1st: #{@date_thursday.inspect}")
+          @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
+          @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
+          
+          if @time_difference >= 10
+            @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
+          end
+          @next_thursday = Date.today.next_week.advance(:days=>3)
+          @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
+        end
+        # send data to jquery
+          gon.drinks_per_week = @delivery_preferences.drinks_per_week
+          gon.drinks_in_cooler = @delivery_preferences.drinks_in_cooler
+          gon.new_value = @new_percentage
+          gon.new_drink_estimate = @new_drink_estimate
+          gon.cooler_value = @cooler_percentage
+          gon.cellar_value = @cellar_percentage
+          gon.cooler_drink_estimate = @cooler_drink_estimate
+          gon.cellar_drink_estimate = @cellar_drink_estimate
+          gon.small_value = @small_percentage
+          gon.large_value = @large_percentage
+          gon.small_format_estimate = @small_format_estimate
+          gon.large_format_estimate = @large_format_estimate
       else
+        # create new delivery preference instance
         @delivery_preferences = DeliveryPreference.new
-        # set slider values
-        @new_percentage = 50
-        @new_drink_message_estimate = "50%"
-        @repeat_percentage = 50
-        @cooler_percentage = 50
-        @cooler_delivery_message_estimate = "50%"
-        @cellar_percentage = 50
-        @small_percentage = 50
-        @small_delivery_message_estimate = "50%"
-        @large_percentage = 50
-        @drink_delivery_estimate = "Total drinks in each delivery TBD"
-        @new_drink_delivery_estimate = "New/repeat drink mix TBD"
-        @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
-        @small_delivery_estimate = "Small/large format mix TBD"
+        # get dates of next few Thursdays
+        @date_time_now = DateTime.now
+        #Rails.logger.debug("1st: #{@date_time_now.inspect}")
+        @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
+        @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
+        
+        if @time_difference >= 10
+          @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
+        end
+        @next_thursday = Date.today.next_week.advance(:days=>3)
+        @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
+        # send to javascript that this is new
+        gon.new_delivery_preference = true
       end
       
       # sets cost estimate
@@ -446,6 +455,30 @@ class UsersController < ApplicationController
     
   end # end deliveries method
   
+  def customer_delivery_date
+    # get date chosen
+    @data_value = (params[:preferences][:first_delivery_date][0]).to_datetime + 12.hours
+    
+    # get user delivery preferences
+    @user_delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    if !@user_delivery_preferences.blank?
+      @user_delivery_preferences.update(first_delivery_date: @data_value)
+    else
+      # create new customer delivery preferences table entry
+      @new_user_delivery_preferences = DeliveryPreference.new(user_id: current_user.id, first_delivery_date: @data_value,
+                                            small_format_percentage: 50, new_percentage: 50, cooler_percentage: 50)
+      @new_user_delivery_preferences.save!
+      
+      # create new customer delivery table entry
+      @new_delivery = Delivery.new(user_id: current_user.id, delivery_date: @data_value, status: "new")
+      @new_delivery.save!
+    end
+    
+    # redirect back to delivery preferences page
+    redirect_to user_deliveries_path('preferences')
+  end # end customer_delivery_date method
+ 
   def deliveries_update_preferences
     # get data to add/update
     @data = params[:id]

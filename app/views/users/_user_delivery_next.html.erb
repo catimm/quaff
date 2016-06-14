@@ -1,6 +1,6 @@
 <div class="row no-margin">
 	<div class="col-xs-12 col-sm-8">
-		<h3 class="recent-ratings-header">Drinks included in your next delivery</h3>
+		<h3 class="recent-ratings-header">Your next delivery</h3>
 	</div>
 </div>
 <div class="row no-margin">
@@ -14,7 +14,11 @@
 				</div>
 			<% else %>
 				<div class="row no-margin">
-					<h4 class="no-results-empty-message">Your next delivery isn't planned yet. We'll send you an email notification as soon as it is ready to review.</h4>				
+					<% if !@next_delivery_review_start_date.nil? %>
+						<h4 class="no-results-empty-message">Your next delivery will be available to review by 12pm PT on <%= (@next_delivery_review_start_date).strftime("%A, %b %e, %Y") %>. Please check back then.</h4>				
+					<% else %>
+						<h4 class="no-results-empty-message">You must provide your delivery preferences before we can choose drinks for you. Make it happen, captain!</h4>
+					<% end %>
 				</div>
 			<% end %>
 		</div>
