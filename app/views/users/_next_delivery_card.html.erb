@@ -34,13 +34,13 @@
 			<div class="col-xs-12">
 				<% if drink.beer.collab == true %>
 					<% @title_header = (Beer.collab_brewery_name(drink.beer.id) + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.beer_id), :class => 'tile-header beer-tile-header' %><sup class="cellarable supply"> <%= @cellarable %></sup>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %><sup class="cellarable supply"> <%= @cellarable %></sup>
 				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
 					<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header' %><sup class="cellarable supply"> <%= @cellarable %></sup>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %><sup class="cellarable supply"> <%= @cellarable %></sup>
 				<% else %>
 					<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header' %><sup class="cellarable supply"> <%= @cellarable %></sup>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %><sup class="cellarable supply"> <%= @cellarable %></sup>
 				<% end %>
 			</div>
 			<div class="col-xs-12">
@@ -69,12 +69,17 @@
 			<div class="col-xs-12">
 				<% @total_price = (drink.inventory.drink_price * 1.096) %>
 				<h4 class="size-and-price"><%= drink.inventory.size_format.format_name %> - <%= number_to_currency(@total_price, precision: 2) %> <span class="including-tax-text">(inc. tax)</span></h4>
+				<% if drink.inventory.limit_per.nil? || drink.inventory.limit_per == 0 %>
+					<h6 class="limit-per-delivery">No limit per delivery</h6>
+				<% else %>
+				<h6 class="limit-per-delivery">Limit per delivery: <%= drink.inventory.limit_per %></h6>
+				<% end %>		
 			</div>
 		</div>
 		<div class="row no-margin cloud-descriptor-row">
 			<div class="col-xs-12">
 				<p>This drink is described as:</p>
-				<div class="cloud-holder" id="drink_<%= drink.beer.id %>"></div>
+				<div class="cloud-holder-next-delivery" id="drink_<%= drink.beer.id %>"></div>
 			</div>	
 		</div>
 		<div class="row no-margin list-overview">
@@ -95,22 +100,20 @@
 		<div class="row no-margin recent-rating-tile-second-last-row">
 		</div>
 		<div class="row no-margin next-delivery-tile-last-row">
-			<div class="col-sm-4 no-padding">
-				<div class="quantity-change-holder-minus">
+			<div class="col-sm-6 no-padding">
+				<div class="quantity-change-holder-minus" id="user-delivery-minus-<%= drink.id %>">
 					<p><i class="fa fa-minus"></i> qty</p>
 				</div>
 			</div>
-			<div class="col-sm-4 quantity-holder-parent">
-				<div class="quantity-holder">
-					<h4><%= drink.quantity %></h4>
-					<p>qty</p>
-				</div>
-			</div>
-			<div class="col-sm-4 no-padding">
-				<div class="quantity-change-holder-add">
+			<div class="col-sm-6 no-padding">
+				<div class="quantity-change-holder-add" id="user-delivery-add-<%= drink.id %>">
 					<p><i class="fa fa-plus"></i> qty</p>
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="quantity-holder" id="user-delivery-<%= drink.id %>">
+		<h3 id="drink-quantity-<%= drink.id %>"><%= drink.quantity %></h3>
+		<p>qty</p>
 	</div>
 </div>	

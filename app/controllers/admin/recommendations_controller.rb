@@ -21,7 +21,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # get user's delivery info
     @delivery_preferences = DeliveryPreference.where(user_id: @chosen_user_id).first
-    @customer_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
+    @customer_next_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
     
     # get user's weekly drink max to be delivered
     @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
@@ -36,7 +36,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # set drinks to be delivered in next shipment
     @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
-    @days_to_next_delivery = (@customer_delivery.delivery_date.to_date - Time.now.to_date).to_i
+    @days_to_next_delivery = (@customer_next_delivery.delivery_date.to_date - Time.now.to_date).to_i
     @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
     @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
     #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
@@ -47,8 +47,8 @@ class Admin::RecommendationsController < ApplicationController
     @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s
     
     # set css for cost estimate
-    if !@customer_delivery.total_price.nil?
-      if @customer_delivery.total_price < @cost_estimate_high
+    if !@customer_next_delivery.total_price.nil?
+      if @customer_next_delivery.total_price < @cost_estimate_high
         @price_estimate_delivery = "all-set"
       else
          @price_estimate_delivery = "not-ready"
@@ -66,7 +66,8 @@ class Admin::RecommendationsController < ApplicationController
     @next_delivery_large_need = @drinks_next_delivery - @next_delivery_small_need
     
     # get information for which drinks are planned in next delivery
-    @next_delivery_plans = AdminUserDelivery.where(user_id: @chosen_user_id)
+    @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id)
+    
     # count number of drinks that are new to user
     @next_delivery_new_have = @next_delivery_plans.where(new_drink: true).count
     @next_delivery_retry_have = @next_delivery_plans.where(new_drink: false).count
@@ -76,9 +77,6 @@ class Admin::RecommendationsController < ApplicationController
     # count number of small format drinks
     @next_delivery_small_have = @next_delivery_plans.where(small_format: true).count
     @next_delivery_large_have = @next_delivery_plans.where(small_format: false).count
-    
-    # get drinks slated for next delivery
-    @user_next_delivery = AdminUserDelivery.where(user_id: @chosen_user_id)
     
     # get user's delivery prefrences
     @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
@@ -130,10 +128,14 @@ class Admin::RecommendationsController < ApplicationController
     
     # get drink recommendation info
     @drink_recommendation = UserDrinkRecommendation.find(@user_drink_recommendation_id)
-      
+        
+    # get delivery info
+    @customer_next_delivery = Delivery.where(user_id: @drink_recommendation.user_id).where.not(status: "delivered").first
+    
     # find if this is a new addition or a removal
     @next_delivery_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, inventory_id: @inventory_id).first
-    
+
+    # add or remove drink from delivery plans
     if !@next_delivery_info.nil? # destroy entry
       @next_delivery_info.destroy!
     else # add entry
@@ -160,12 +162,12 @@ class Admin::RecommendationsController < ApplicationController
                                                       small_format: @size_format,
                                                       projected_rating: @drink_recommendation.projected_rating,
                                                       style_preference: @drink_recommendation.style_preference,
-                                                      quantity: 1)
+                                                      quantity: 1,
+                                                      delivery_id: @customer_next_delivery.id)
       @next_delivery_addition.save!
       
       # set new price in Delivery table
-      @customer_delivery_info = Delivery.where(user_id: @drink_recommendation.user_id).where.not(status: "delivered").first
-      @current_subtotal = @customer_delivery_info.subtotal
+      @current_subtotal = @customer_next_delivery.subtotal
       if !@current_subtotal.nil?
         @new_subtotal = @current_subtotal + @inventory.drink_price
       else
@@ -173,8 +175,9 @@ class Admin::RecommendationsController < ApplicationController
       end
       @new_sales_tax = @new_subtotal * 0.096
       @new_total_price = @new_subtotal + @new_sales_tax
+      
       # insert price info into Delivery table
-      @customer_delivery_info.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
 
     end # end of adding/removing
     
@@ -185,11 +188,11 @@ class Admin::RecommendationsController < ApplicationController
   
   def admin_user_delivery
     # get drinks slated for next delivery
-    @user_next_delivery = AdminUserDelivery.where(user_id: params[:id]).joins(:beer).order('beers.beer_type_id DESC')
+    @customer_next_delivery = Delivery.where(user_id: params[:id]).where.not(status: "delivered").first
+    @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id).joins(:beer).order('beers.beer_type_id DESC')
     
     # get user's delivery prefrences
     @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
-    @customer_delivery = Delivery.where(user_id: params[:id]).where.not(status: "delivered").first
     
     # drink preference
     if @delivery_preferences.drink_option_id == 1
@@ -213,7 +216,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # set drinks to be delivered in next shipment
     @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
-    @days_to_next_delivery = (@customer_delivery.delivery_date.to_date - Time.now.to_date).to_i
+    @days_to_next_delivery = (@customer_next_delivery.delivery_date.to_date - Time.now.to_date).to_i
     @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
     @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
     #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
@@ -224,8 +227,8 @@ class Admin::RecommendationsController < ApplicationController
     @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s
     
     # set css for cost estimate
-    if !@customer_delivery.total_price.nil?
-      if @customer_delivery.total_price < @cost_estimate_high
+    if !@customer_next_delivery.total_price.nil?
+      if @customer_next_delivery.total_price < @cost_estimate_high
         @price_estimate_delivery = "all-set"
       else
          @price_estimate_delivery = "not-ready"
@@ -259,17 +262,13 @@ class Admin::RecommendationsController < ApplicationController
   
   def admin_share_delivery_with_customer
     # get drinks slated for next delivery
-    @user_next_delivery = AdminUserDelivery.where(user_id: params[:id])
+    @customer_next_delivery = Delivery.where(user_id: params[:id]).where.not(status: "delivered").first
+    @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id)
     
     # put drinks in user_delivery table to share with customer
-    @user_next_delivery.each do |drink|
-      @user_delivery = UserDelivery.new(user_id: params[:id], 
-                                        inventory_id: drink.inventory_id, 
-                                        new_drink: drink.new_drink, 
-                                        beer_id: drink.beer_id, 
-                                        projected_rating: drink.projected_rating, 
-                                        style_preference: drink.style_preference, 
-                                        quantity: drink.quantity)
+    
+    @next_delivery_plans.each do |drink|
+      @user_delivery = UserDelivery.create(drink.attributes)
       @user_delivery.save!
     end
     # send back to admin recommendation view

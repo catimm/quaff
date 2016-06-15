@@ -1,26 +1,84 @@
 <div class="row no-margin">
-	<div class="col-xs-12 col-sm-8">
+	<div class="col-xs-12 col-sm-6">
 		<h3 class="recent-ratings-header">Your next delivery</h3>
 	</div>
-</div>
-<div class="row no-margin">
-	<div class="col-xs-12">
-		<div class="row no-margin">
-			<% if !@next_delivery.blank? %>
-				<div class="row no-margin recent-rating-holder">
-					<% @next_delivery.each do |drink| %>
-						<%= render(partial: 'next_delivery_card', locals: { drink: drink }) %>
-					<% end%>
-				</div>
-			<% else %>
-				<div class="row no-margin">
-					<% if !@next_delivery_review_start_date.nil? %>
-						<h4 class="no-results-empty-message">Your next delivery will be available to review by 12pm PT on <%= (@next_delivery_review_start_date).strftime("%A, %b %e, %Y") %>. Please check back then.</h4>				
-					<% else %>
-						<h4 class="no-results-empty-message">You must provide your delivery preferences before we can choose drinks for you. Make it happen, captain!</h4>
-					<% end %>
-				</div>
-			<% end %>
-		</div>
+	<div class="col-xs-1 col-sm-2"></div>
+	<div class="col-xs-10 col-sm-3 no-padding-right">
+		<%= link_to drink_search_path(current_user.id), class: 'btn btn-default btn-success formButton-send-note' do %>
+			<i class="fa fa-envelope"> make a delivery request</i>
+		<% end %>
 	</div>
 </div>
+<% if !@next_delivery.blank? %>
+	<div class="row no-margin delivery-info-row">
+		<div class="col-sm-1">
+			<div class="delivery-info-box drinks">
+				<p>drinks</p>
+				<h4 class="delivery-preference-prompt"><%= @next_delivery.count %></h4>
+			</div>	
+		</div>
+		<div class="col-sm-1">
+			<div class="delivery-info-box new">
+				<p>new</p>
+				<h4 class="delivery-preference-prompt"><%= @next_delivery_new %></h4>
+			</div>	
+		</div>
+		<div class="col-sm-1">
+			<div class="delivery-info-box repeat">
+				<p>repeat</p>
+				<h4 class="delivery-preference-prompt"><%= @next_delivery_retry %></h4>
+			</div>	
+		</div>
+		<div class="col-sm-1">
+			<div class="delivery-info-box cooler">
+				<p>cooler</p>
+				<h4 class="delivery-preference-prompt"><%= @next_delivery_cooler %></h4>
+			</div>	
+		</div>
+		<div class="col-sm-1">
+			<div class="delivery-info-box cellar">
+				<p>cellar</p>
+				<h4 class="delivery-preference-prompt"><%= @next_delivery_cellar %></h4>
+			</div>	
+		</div>
+		<div class="col-sm-1">
+			<div class="delivery-info-box small">
+				<p>small</p>
+				<h4 class="delivery-preference-prompt"><%= @next_delivery_small %></h4>
+			</div>	
+		</div>
+		<div class="col-sm-1">
+			<div class="delivery-info-box large">
+				<p>large</p>
+				<h4 class="delivery-preference-prompt"><%= @next_delivery_large %></h4>
+			</div>	
+		</div>
+		<div class="col-sm-5">
+			<div class="delivery-info-box subtotal">
+				<p>subtotal</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.subtotal, precision: 2) %></h4>
+			</div>
+			<div class="delivery-info-box sales-tax">
+				<p>tax</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.sales_tax, precision: 2) %></h4>
+			</div>	
+			<div class="delivery-info-box total-price">
+				<p>total</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.total_price, precision: 2) %></h4>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin recent-rating-holder">
+		<% @next_delivery.each do |drink| %>
+			<%= render(partial: 'next_delivery_card', locals: { drink: drink }) %>
+		<% end%>
+	</div>
+<% else %>
+	<div class="row no-margin">
+		<% if !@next_delivery_review_start_date.nil? %>
+			<h4 class="no-results-empty-message">Your next delivery will be available to review by 12pm PT on <%= (@next_delivery_review_start_date).strftime("%A, %b %e, %Y") %>. Please check back then.</h4>				
+		<% else %>
+			<h4 class="no-results-empty-message">You must provide your delivery preferences before we can choose drinks for you. Make it happen, captain!</h4>
+		<% end %>
+	</div>
+<% end %>

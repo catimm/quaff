@@ -44,14 +44,15 @@ $(function () {
 		    	} 
 		    }
 	    	// create drink per week estimate value statement
-	    	var drinks_per_week_statement = "~ " + drink_per_week_calculation + " drinks in each delivery"
+	    	var drinks_per_week_statement = "<span class='drink-color'>~ " + drink_per_week_calculation + " drinks</span> in each delivery"
 	    	
 	    	// insert new drink estimate value statement	
 			if (new_value != undefined) {
 				// reset new drink estimate value
 				new_drink_estimate = Math.round((drink_per_week_calculation * new_value)/100);
-				var new_drink_per_week_calculation = "~ " + new_drink_estimate + " will be new to you"
-				$("#new_drink_estimate").text(new_drink_per_week_calculation);
+				
+				var new_drink_per_week_calculation = "<span class='new-drink-color'>~ " + new_drink_estimate + "</span> will be <span class='new-drink-color'>new</span> to you"
+				$("#new_drink_estimate").html(new_drink_per_week_calculation);
 				$("#new-preference-2").text("~ " + new_drink_estimate);
 			}
 			// insert cooler estimate value statement	
@@ -59,8 +60,8 @@ $(function () {
 				// reset cooler and cellar estimate values
 				cooler_drink_estimate = Math.round((drink_per_week_calculation * cooler_value)/100);
 				cellar_drink_estimate = (drink_per_week_calculation - cooler_drink_estimate);
-				var cooler_drink_per_week_calculation = "~ " + cooler_drink_estimate + " for your cooler; " + cellar_drink_estimate + " for your cellar";
-				$("#cooler_drink_estimate").text(cooler_drink_per_week_calculation);
+				var cooler_drink_per_week_calculation = "<span class=cooler-color>~ " + cooler_drink_estimate + "</span> for your <span class=cooler-color>cooler</span>; <span class=cellar-color>" + cellar_drink_estimate + "</span> for your <span class=cellar-color>cellar</span>";		
+				$("#cooler_drink_estimate").html(cooler_drink_per_week_calculation);
 				$("#cooler-preference-2").text("~ " + cooler_drink_estimate);
 			}
 			// insert small format estimate value statement	
@@ -68,13 +69,13 @@ $(function () {
 				// reset small and large format estimate values
 				small_format_estimate = Math.round((drink_per_week_calculation * small_value)/100);
 				large_format_estimate = (drink_per_week_calculation - small_format_estimate);
-				var small_format_delivery_estimate = "~ " + small_format_estimate + " in small format; " + large_format_estimate + " in large";
-				$("#small_format_estimate").text(small_format_delivery_estimate);
+				var small_format_delivery_estimate = "<span class=small-format-color>~ " + small_format_estimate + "</span> in <span class=small-format-color>small format</span>; <span class=large-format-color>" + large_format_estimate + "</span> in <span class=large-format-color>large</span>";
+				$("#small_format_estimate").html(small_format_delivery_estimate);
 				$("#small-preference-2").text("~ " + small_format_estimate);
 			}
 	    } 
 	    // insert drink per week estimate value statement
-	    $("#drink-delivery-estimate").text(drinks_per_week_statement);
+	    $("#drink-delivery-estimate").html(drinks_per_week_statement);
 	    
 	    //update cost estimate
 		delivery_estimate();
@@ -617,6 +618,42 @@ $(function () {
 	// add hover effect to drink preferences page
 	$(document).on("mouseout", ".drink-preference-view-option", function() {
 		$(this).removeClass("almost-chosen");
+	});
+	
+	// allow customers to add or subtract drinks from delivery
+	$(document).on("click", ".quantity-change-holder-minus", function() {
+		var this_id = $(this).attr('id');
+		var split_id = this_id.split("-");
+		var drink_id = split_id[3];
+		
+		// change quantity shown on screen
+		var original_quantity = $("#drink-quantity-" + drink_id).html();
+		if(original_quantity > 0) {
+			var new_quantity = original_quantity - 1;
+			$("#drink-quantity-" + drink_id).html(new_quantity);
+			
+			// send to controller to change database 
+			$.ajax({
+			  type: "POST",
+			  url: "/users/change_delivery_drink_quantity/minus-" + drink_id
+			});
+		}
+	});
+	$(document).on("click", ".quantity-change-holder-add", function() {
+		var this_id = $(this).attr('id');
+		var split_id = this_id.split("-");
+		var drink_id = split_id[3];
+		
+		// change quantity shown on screen
+		var original_quantity = +($("#drink-quantity-" + drink_id).html());
+		var new_quantity = original_quantity + 1;
+		$("#drink-quantity-" + drink_id).html(new_quantity);
+		
+		// send to controller to change database
+		$.ajax({
+		  type: "POST",
+		  url: "/users/change_delivery_drink_quantity/add-" + drink_id
+		});
 	});
 	
 	// to add already used descriptor to this user's list of descriptors for drink type

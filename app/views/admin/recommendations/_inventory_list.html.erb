@@ -67,7 +67,7 @@
 	        	<% end %>
 	        </td> 
 	        <% @check_box_id =  drink.id.to_s + "-" + inventory.id.to_s %>
-	        <% if @user_next_delivery.map{|a| a.inventory_id}.include? inventory.id %>
+	        <% if @next_delivery_plans.map{|a| a.inventory_id}.include? inventory.id %>
 	        	<td><%= check_box_tag "inventory_ids[]", inventory.id, true, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>
 	      	<% else %>
 	      		<td><%= check_box_tag "inventory_ids[]", inventory.id, false, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>

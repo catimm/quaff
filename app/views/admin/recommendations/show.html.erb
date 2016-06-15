@@ -19,8 +19,9 @@
 		<div class="col-md-3">
 			<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "user-drink-recommendations"}) %>
 		</div>
-		<div class="col-md-5" >
-			
+		<div class="col-md-1"></div>
+		<div class="col-md-4">
+			<h4>Current status: <%= @customer_next_delivery.status %></h4>
 		</div>
 		<div class="col-sm-2" id="admin-user-delivery-button-holder">
 			<%= render 'admin_user_delivery_button' %>

@@ -5,18 +5,18 @@
 		    </div>
 		    <div class="col-sm-2 no-padding">
 		    	<h5>Price range: <%= @cost_estimate %></h5>
-		    	<% if !@customer_delivery.total_price.nil? %>
-		    		<h5>Current price: <span class="<%= @price_estimate_delivery %>"><%= number_to_currency(@customer_delivery.total_price, precision: 2) %></span></h5>
+		    	<% if !@customer_next_delivery.total_price.nil? %>
+		    		<h5>Current price: <span class="<%= @price_estimate_delivery %>"><%= number_to_currency(@customer_next_delivery.total_price, precision: 2) %></span></h5>
 		    	<% else %>
 		    		<h5>Current price: <span class="not-ready">TBD</span></h5>
 		    	<% end %>
 		    </div>
 		    <div class="col-sm-3">
 		      	<div class="box-left-initial">
-		      		<h5>Need <%= @drinks_next_delivery %> <%= "drink".pluralize(@drinks_next_delivery) %> in next delivery; have <%= @user_next_delivery.length %></h5>
+		      		<h5>Need <%= @drinks_next_delivery %> <%= "drink".pluralize(@drinks_next_delivery) %> in next delivery; have <%= @next_delivery_plans.length %></h5>
 		    	</div>
 				<div class="box-right-initial">
-			      	<% if @drinks_next_delivery == @user_next_delivery.length %>
+			      	<% if @drinks_next_delivery == @next_delivery_plans.length %>
 			      		<div class="style-indicator like-style-next-delivery-initial text-center">
 			      			<i class="fa fa-check"></i>
 			      		</div>						

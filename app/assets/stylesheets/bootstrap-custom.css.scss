@@ -41,6 +41,8 @@ $faded-red: #FF8585;
 $facebook-blue-color: #3b5998;
 $twitter-blue-color: #1dcaff;
 $extra-light-blue-gray: #f7fafa;
+$button-green: #5cb85c;
+$bootstrap-info-blue: #5bc0de;
 
 
 // Functional use of colors for project
@@ -83,7 +85,14 @@ $facebook-button-color: $facebook-blue-color;
 $twitter-button-color: $twitter-blue-color;
 $warning-red: $light-red;
 $soft-gray-background: $extra-light-blue-gray;
-$cellarable-text: $bright-purple;
+$drink-color: $bootstrap-info-blue;
+$money-color: $button-green;
+$new-drink-color: $bright-orange;
+$repeat-drink-color: $bright-blue;
+$cooler-color: $light-blue;
+$cellar-color: $bright-purple;
+$small-format-color: $light-orange;
+$large-format-color: $bright-aqua-blue;
 
 @font-face {
     font-family: 'novecento_sans_widenormal';
@@ -254,7 +263,7 @@ label {
   color: $combined-drink-text !important;
 }
 .cellarable {
-  color: $cellarable-text;
+  color: $cellar-color;
   text-shadow: 0.5px 0.5px 0.5px $less-emphasized-text;
   font-weight: 500;
   font-size: 15px !important;
@@ -1850,7 +1859,7 @@ $beer-header-lines-to-show-fp: 1;
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 2000;
+  z-index: 9999;
   ul {
     li {
       a {
@@ -1864,8 +1873,10 @@ $beer-header-lines-to-show-fp: 1;
 }
 .homeNavbar {
   background: $dark-gray !important;
+  z-index: 9999;
 }
 .navbar {
+  z-index: 9999;
   a {
     color: $white !important;
   }
@@ -2390,16 +2401,30 @@ $beer-header-lines-to-show-fp: 1;
     line-height: 0.9 !important;
   }
 }
-.delivery-preference-percentage.new, .delivery-preference-percentage.cooler, .delivery-preference-percentage.small-format {
-  color: $action-background;
+.drink-color {
+  color: $drink-color;
 }
-.delivery-preference-percentage.repeat, .delivery-preference-percentage.cellar, .delivery-preference-percentage.large-format {
-  color: $normal-text;
+.delivery-preference-percentage.new, .new-drink-color {
+  color: $new-drink-color;
+}
+.delivery-preference-percentage.repeat, .repeat-drink-color {
+  color: $repeat-drink-color;
+}
+.delivery-preference-percentage.cooler, .cooler-color {
+  color: $cooler-color;
+}
+.delivery-preference-percentage.cellar, .cellar-color {
+  color: $cellar-color;
+}
+.delivery-preference-percentage.small-format, .small-format-color {
+  color: $small-format-color;
+}
+.delivery-preference-percentage.large-format, .large-format-color {
+  color: $large-format-color;
 }
 .delivery-preference-confirmation-message {
   color: $normal-text;
   span {
-    color: $action-background;
     font-weight: 500;
   }
 }
@@ -2596,18 +2621,19 @@ $descriptor-lines-to-show: 2;
   padding: 10px 0 0 10px !important;
 }
 .wishlist-best-guess {
-  margin: 10px 0;
+  margin: 5px 0 0 0;
   padding-top: 10px;
   p {
     font-size: 12px;
     color: $less-emphasized-text;
     text-align: left;
+    margin-bottom: 7px;
   }
   h1 {
     text-align: center;
     font-size: 42px;
     font-weight: 500;
-    margin: 10px 0;
+    margin: 5px 0;
   }
 }
 .filler-best-guess-text {
@@ -3079,6 +3105,95 @@ input[type="checkbox"] {
   }
 }
 // User Next Delivery View
+.formButton-send-note {
+  width: 100%;
+  margin: 15px 0 10px 0;
+}
+.delivery-info-box {
+  text-align: center;
+  width: 70px;
+  height: 70px;
+  padding: 10px;
+  p {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: $less-emphasized-text;
+  }
+  h4 {
+    font-size: 28px;
+    margin: 2.5px 0 0 0;
+  }
+}
+.delivery-info-box.drinks {
+  border: 1px solid $drink-color;
+  h4 {
+    color: $drink-color;
+  }
+}
+.delivery-info-box.new {
+  border: 1px solid $new-drink-color;
+  h4 {
+    color: $new-drink-color;
+  }
+}
+.delivery-info-box.repeat {
+  border: 1px solid $repeat-drink-color;
+  h4 {
+    color: $repeat-drink-color;
+  }
+}
+.delivery-info-box.cooler {
+  border: 1px solid $cooler-color;
+  h4 {
+    color: $cooler-color;
+  }
+}
+.delivery-info-box.cellar {
+  border: 1px solid $cellar-color;
+  h4 {
+    color: $cellar-color;
+  }
+}
+.delivery-info-box.small {
+  border: 1px solid $small-format-color;
+  h4 {
+    color: $small-format-color;
+  }
+}
+.delivery-info-box.large {
+  border: 1px solid $large-format-color;
+  h4 {
+    color: $large-format-color;
+  }
+}
+.delivery-info-box.subtotal {
+  width: 110px;
+  float: left;
+  margin-right: 16px;
+  border: 1px solid $normal-text;
+  h4 {
+    color: $normal-text;
+  }
+}
+.delivery-info-box.sales-tax {
+  width: 90px;
+  float: left;
+  margin-right: 16px;
+  border: 1px solid $less-emphasized-text;
+  h4 {
+    color: $less-emphasized-text;
+  }
+}
+.delivery-info-box.total-price {
+  width: 110px;
+  float: left;
+  margin-right: 16px;
+  border: 1px solid $money-color;
+  h4 {
+    color: $money-color;
+    weight: 500;
+  }
+}
 .next-delivery-tile {
   margin: 15px 0 20px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -3087,8 +3202,30 @@ input[type="checkbox"] {
   overflow: hidden;
   background: #fff;
   width: 99%;
-  height: 485px;
+  height: 465px;
   position: relative;
+}
+$delivery-beer-header-font-size: 14px;
+$delivery-beer-header-font-size: 1vw;
+$delivery-beer-header-line-height: 1.1;
+$delivery-beer-header-lines-to-show: 2;
+.beer-tile-header-next-delivery {
+  @extend .tile-header; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $delivery-beer-header-font-size*$delivery-beer-header-line-height*$delivery-beer-header-lines-to-show; /* Fallback for non-webkit */
+  margin: 0 auto 5px auto;
+  font-size: $delivery-beer-header-font-size;
+  line-height: $delivery-beer-header-line-height;
+  -webkit-line-clamp: $delivery-beer-header-lines-to-show;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: underline;
+  float: left;
+}
+.cloud-holder-next-delivery {
+  height: 80px;
 }
 .size-price-row {
   background: $soft-gray-background;
@@ -3096,6 +3233,13 @@ input[type="checkbox"] {
 .size-and-price {
   color: $normal-text;
   font-weight: 500;
+  margin-bottom: 2.5px;
+}
+.limit-per-delivery {
+  color: $normal-text;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 5px 0; 
 }
 .including-tax-text {
   color: $less-emphasized-text;
@@ -3112,20 +3256,26 @@ input[type="checkbox"] {
 .quantity-change-holder-minus {
     height: 35px;
     margin-top: 15px;
-    background: $step-background;
-    border-left: 1px solid #4cae4c !important;
-    border-top: 1px solid #4cae4c !important;
-    border-bottom: 1px solid #4cae4c !important;
+    background: #d9534f;
+    border-left: 1px solid #d43f3a !important;
+    border-top: 1px solid #d43f3a !important;
+    border-bottom: 1px solid #d43f3a !important;
     border-bottom-left-radius: 6px;
     p {
       margin-top: 9px;
       color: $white;
     }
   }
+.quantity-change-holder-minus:hover {
+    background: #c9302c;
+    border-left: 1px solid #ac2925 !important;
+    border-top: 1px solid #ac2925 !important;
+    border-bottom: 1px solid #ac2925 !important;
+  }
 .quantity-change-holder-add {
     height: 35px;
     margin-top: 15px;
-    background: $step-background;
+    background: #5cb85c;
     border-right: 1px solid #4cae4c !important;
     border-top: 1px solid #4cae4c !important;
     border-bottom: 1px solid #4cae4c !important;
@@ -3135,25 +3285,26 @@ input[type="checkbox"] {
       color: $white;
     }
   }
-.quantity-holder-parent {
-  height: 35px;
-  margin-top: 15px;
-  background: $step-background;
-  border-top: 1px solid #4cae4c !important;
-  border-bottom: 1px solid #4cae4c !important;
-}
+  .quantity-change-holder-add:hover {
+    background: #449d44;
+    border-right: 1px solid #398439 !important;
+    border-top: 1px solid #398439 !important;
+    border-bottom: 1px solid #398439 !important;
+  }
 .quantity-holder {
-  border: 2px solid #4cae4c !important;
+  position: absolute;
+  bottom: 12.5px;
+  left: 144px;
+  background: $drink-color;
+  border: 2px solid #46b8da !important;
   height: 50px;
   width: 50px;
   border-radius: 25px;
   font-weight: 500;
-  background: $step-background;
-  position: absolute;
-  top: -15px;
-  right: 23px;
-  h4 {
-    margin-bottom: 0;
+  text-align: center;
+  z-index: 9000 !important;
+  h3 {
+    margin: 3px 0 0 0;
     color: $white;
     font-weight: 500;
   }
@@ -3277,7 +3428,7 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 .all-set {
-  color: $current-beer-complete-background;
+  color: $money-color;
   font-weight: 500;
 }
 .not-ready {

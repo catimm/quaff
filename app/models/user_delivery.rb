@@ -12,7 +12,9 @@
 #  projected_rating :float
 #  style_preference :string
 #  quantity         :integer
-#  delivered        :datetime
+#  delivery_id      :integer
+#  cooler           :boolean
+#  small_format     :boolean
 #
 
 class UserDelivery < ActiveRecord::Base

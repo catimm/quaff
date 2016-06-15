@@ -14,4 +14,11 @@
 #
 
 class Delivery < ActiveRecord::Base
+  belongs_to :user
+  
+  has_many :user_deliveries
+  has_many :admin_user_deliveries
+  has_many :customer_delivery_messages
+  has_many :customer_delivery_changes
+  
 end

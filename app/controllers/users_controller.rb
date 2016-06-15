@@ -268,9 +268,20 @@ class UsersController < ApplicationController
       # set CSS for chosen link
       @next_chosen = "chosen"
       
-      # get user's next delivery recommendations
-      @next_delivery = UserDelivery.where(user_id: current_user.id)
+      # get user's delivery info
+      @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
+      @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
       
+      
+      # count number of drinks that are new to user
+      @next_delivery_new = @next_delivery.where(new_drink: true).count
+      @next_delivery_retry = @next_delivery.where(new_drink: false).count
+      # count number of drinks for the cooler
+      @next_delivery_cooler = @next_delivery.where(cooler: true).count
+      @next_delivery_cellar = @next_delivery.where(cooler: false).count
+      # count number of small format drinks
+      @next_delivery_small = @next_delivery.where(small_format: true).count
+      @next_delivery_large = @next_delivery.where(small_format: false).count     
 
       # create array to hold descriptors cloud
       @final_descriptors_cloud = Array.new
@@ -309,7 +320,7 @@ class UsersController < ApplicationController
               @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
             end
           end
-          @drink_delivery_estimate = "~ " + @drink_per_week_calculation.to_s + " drinks in each delivery"
+          @drink_delivery_estimate = ("<span class=drink-color>~ " + @drink_per_week_calculation.to_s + " drinks</span> in each delivery").html_safe
         else
           @drink_delivery_estimate = "Total drinks in each delivery TBD"
           # send delivery estimate to JQuery
@@ -326,7 +337,7 @@ class UsersController < ApplicationController
                  @new_drink_estimate = ((@delivery_preferences.drinks_in_cooler * @new_percentage)/100).round
               end
             end
-            @new_drink_delivery_estimate = "~ " + @new_drink_estimate.to_s + " will be new to you"
+            @new_drink_delivery_estimate = ("<span class=new-drink-color>~ " + @new_drink_estimate.to_s + "</span> will be <span class=new-drink-color>new</span> to you").html_safe
             @new_drink_message_estimate = "~ " + @new_drink_estimate.to_s
           else
             @new_drink_delivery_estimate = "New/repeat drink mix TBD"
@@ -345,7 +356,7 @@ class UsersController < ApplicationController
                  @cellar_drink_estimate = (@delivery_preferences.drinks_in_cooler - @cooler_drink_estimate).round
               end
             end
-            @cooler_delivery_estimate = "~ " + @cooler_drink_estimate.to_s + " for your cooler; " + @cellar_drink_estimate.to_s + " for your cellar"
+            @cooler_delivery_estimate = ("<span class=cooler-color>~ " + @cooler_drink_estimate.to_s + "</span> for your <span class=cooler-color>cooler</span>; <span class=cellar-color>" + @cellar_drink_estimate.to_s + "</span> for your <span class=cellar-color>cellar</span>").html_safe
             @cooler_delivery_message_estimate = "~ " + @cooler_drink_estimate.to_s
           else
             @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
@@ -364,7 +375,7 @@ class UsersController < ApplicationController
                  @large_format_estimate = (@delivery_preferences.drinks_in_cooler - @small_format_estimate).round
               end
             end
-            @small_delivery_estimate = "~ " + @small_format_estimate.to_s + " in small format; " + @large_format_estimate.to_s + " in large"
+            @small_delivery_estimate = ("<span class=small-format-color>~ " + @small_format_estimate.to_s + "</span> in <span class=small-format-color>small format</span>; <span class=large-format-color>" + @large_format_estimate.to_s + "</span> in <span class=large-format-color>large</span>").html_safe
             @small_delivery_message_estimate = "~ " + @small_format_estimate.to_s
           else
             @small_delivery_estimate = "Small/large format mix TBD"
@@ -560,6 +571,10 @@ class UsersController < ApplicationController
       format.js
     end # end of redirect to jquery
   end # end of deliveries_update_preferences
+  
+  def change_delivery_drink_quantity
+    render :nothing => true
+  end # end change_delivery_drink_quantity method
   
   def plan
     # find if user has a plan already

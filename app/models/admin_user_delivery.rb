@@ -14,6 +14,7 @@
 #  updated_at       :datetime         not null
 #  cooler           :boolean
 #  small_format     :boolean
+#  delivery_id      :integer
 #
 
 class AdminUserDelivery < ActiveRecord::Base
