@@ -1,0 +1,57 @@
+
+<div class="col-sm-1">
+	<div class="delivery-info-box drinks">
+		<p>drinks</p>
+		<h4 class="delivery-preference-prompt"><%= @drink_count %></h4>
+	</div>	
+</div>
+<div class="col-sm-1">
+	<div class="delivery-info-box new">
+		<p>new</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_new %></h4>
+	</div>	
+</div>
+<div class="col-sm-1">
+	<div class="delivery-info-box repeat">
+		<p>repeat</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_retry %></h4>
+	</div>	
+</div>
+<div class="col-sm-1">
+	<div class="delivery-info-box cooler">
+		<p>cooler</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_cooler %></h4>
+	</div>	
+</div>
+<div class="col-sm-1">
+	<div class="delivery-info-box cellar">
+		<p>cellar</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_cellar %></h4>
+	</div>	
+</div>
+<div class="col-sm-1">
+	<div class="delivery-info-box small">
+		<p>small</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_small %></h4>
+	</div>	
+</div>
+<div class="col-sm-1">
+	<div class="delivery-info-box large">
+		<p>large</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_large %></h4>
+	</div>	
+</div>
+<div class="col-sm-5">
+	<div class="delivery-info-box subtotal">
+		<p>subtotal</p>
+		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.subtotal, precision: 2) %></h4>
+	</div>
+	<div class="delivery-info-box sales-tax">
+		<p>tax</p>
+		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.sales_tax, precision: 2) %></h4>
+	</div>	
+	<div class="delivery-info-box total-price">
+		<p>total</p>
+		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.total_price, precision: 2) %></h4>
+	</div>
+</div>

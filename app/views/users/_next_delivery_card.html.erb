@@ -68,7 +68,7 @@
 		<div class="row no-margin size-price-row">
 			<div class="col-xs-12">
 				<% @total_price = (drink.inventory.drink_price * 1.096) %>
-				<h4 class="size-and-price"><%= drink.inventory.size_format.format_name %> - <%= number_to_currency(@total_price, precision: 2) %> <span class="including-tax-text">(inc. tax)</span></h4>
+				<h4 class="size-and-price"><%= drink.inventory.size_format.format_name %> - <%= number_to_currency(@total_price, precision: 2) %> each <span class="including-tax-text">(inc. tax)</span></h4>
 				<% if drink.inventory.limit_per.nil? || drink.inventory.limit_per == 0 %>
 					<h6 class="limit-per-delivery">No limit per delivery</h6>
 				<% else %>

@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   get '/users/supply_removal/:id' => 'users#supply_removal', :as => 'supply_removal'
   get '/users/add_supply_drink/:id' => 'users#add_supply_drink', :as => 'add_supply_drink'
   get  '/users/drink_search/:id(/:query)' => 'users#drink_search', :as => 'drink_search'
+  post  '/users/customer_delivery_messages/' => 'users#customer_delivery_messages', :as => 'customer_delivery_messages'
   post '/users/change_delivery_drink_quantity/:id' => 'users#change_delivery_drink_quantity', :as => 'change_delivery_drink_quantity'
   post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
   post '/stripe-webhooks' => 'users#stripe_webhooks'

@@ -257,7 +257,7 @@ class Admin::RecommendationsController < ApplicationController
     @next_delivery_small_have = @next_delivery_plans.where(small_format: true).count
     @next_delivery_large_have = @next_delivery_plans.where(small_format: false).count
     
-    render :partial => 'admin/recommendations/user_next_delivery'
+    render :partial => 'admin/recommendations/admin_user_delivery_next'
   end #end of admin_user_delivery method
   
   def admin_share_delivery_with_customer
