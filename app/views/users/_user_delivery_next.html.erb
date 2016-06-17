@@ -1,52 +1,71 @@
-<div class="row no-margin">
-	<div class="col-xs-12 col-sm-6">
-		<h3 class="recent-ratings-header">Your next delivery</h3>
-	</div>
-	<div class="col-xs-1 col-sm-2"></div>
-	<div class="col-xs-10 col-sm-3 no-padding-right">
-		<%= link_to "#", class: 'btn btn-default btn-success formButton-send-note', 
-				data: {toggle: "modal", target: "#customer_delivery_message"} do %>
-			<i class="fa fa-envelope"> make a delivery request</i>
-		<% end %>
-	</div>
-</div>
-<% if !@next_delivery.blank? %>
-	<div class="row no-margin delivery-info-row" id="delivery_stats_for_customer">
-		<%= render 'delivery_stats_for_customer' %>
-	</div>
-	<div class="row no-margin recent-rating-holder">
-		<% @next_delivery.each do |drink| %>
-			<%= render(partial: 'next_delivery_card', locals: { drink: drink }) %>
-		<% end%>
-	</div>
+<% if !@delivery.blank? %>
+	<% if @delivery.status == "admin prep" %>
+		<div class="row no-margin">
+			<h4 class="no-results-empty-message">Your next delivery will be available to review by 12pm PT on <%= (@next_delivery_review_start_date).strftime("%A, %b %e, %Y") %>. Please check back then.</h4>				
+		</div>
+	<% elsif @delivery.status == "user review" %>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<h3 class="recent-ratings-header">Your next delivery</h3>
+			</div>
+			<div class="col-xs-1 col-sm-2"></div>
+			<div class="col-xs-10 col-sm-4 no-padding-right">
+				<%= link_to "#", class: 'btn btn-default btn-success formButton-send-note', 
+						data: {toggle: "modal", target: "#customer_delivery_message"} do %>
+					<i class="fa fa-envelope"> make a delivery request</i>
+				<% end %>
+			</div>
+		</div>
+		<div class="row no-margin delivery-info-row" id="delivery_stats_for_customer">
+			<%= render 'delivery_stats_for_customer' %>
+		</div>
+		<div class="row no-margin recent-rating-holder">
+			<% @next_delivery.each do |drink| %>
+				<%= render(partial: 'next_delivery_card_review', locals: { drink: drink }) %>
+			<% end %>
+		</div>
+		<div id="customer_delivery_message" class="modal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Send a note about your upcoming delivery</h3>
+			</div>
+			<div class="modal-body">
+				<%= form_for @user_delivery_message, url: customer_delivery_messages_path, html: { method: :post } do |f| %>
+					<%= f.hidden_field :delivery_id, :value => @delivery.id %>
+					<div class="row no-margin">
+						<div class="col-sm-12">
+							<%= f.text_area :message, :class => "form-control", placeholder: "Type your message here" %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-8">
+							<%= f.submit "Send", class: "btn btn-default btn-success formButton" %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	<% else %>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<h3 class="recent-ratings-header">Your next delivery</h3>
+			</div>
+			<div class="col-xs-10 col-sm-6">
+				<h5 class="past-review-text">The time to request changes for this delivery has passed.</h5>
+			</div>
+		</div>
+		<div class="row no-margin delivery-info-row" id="delivery_stats_for_customer">
+			<%= render 'delivery_stats_for_customer' %>
+		</div>
+		<div class="row no-margin recent-rating-holder">
+			<% @next_delivery.each do |drink| %>
+				<%= render(partial: 'next_delivery_card_no_review', locals: { drink: drink }) %>
+			<% end %>
+		</div>
+	<% end %>
 <% else %>
 	<div class="row no-margin">
-		<% if !@next_delivery_review_start_date.nil? %>
-			<h4 class="no-results-empty-message">Your next delivery will be available to review by 12pm PT on <%= (@next_delivery_review_start_date).strftime("%A, %b %e, %Y") %>. Please check back then.</h4>				
-		<% else %>
-			<h4 class="no-results-empty-message">You must provide your delivery preferences before we can choose drinks for you. Make it happen, captain!</h4>
-		<% end %>
+		<h4 class="no-results-empty-message">You must provide your delivery preferences before we can choose drinks for you. Make it happen, captain!</h4>
 	</div>
 <% end %>
-<div id="customer_delivery_message" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Send a note about your upcoming delivery</h3>
-	</div>
-	<div class="modal-body">
-		<%= form_for @user_delivery_message, url: customer_delivery_messages_path, html: { method: :post } do |f| %>
-			<%= f.hidden_field :delivery_id, :value => @delivery.id %>
-			<div class="row no-margin">
-				<div class="col-sm-12">
-					<%= f.text_area :message, :class => "form-control", placeholder: "Type your message here" %>
-				</div>
-			</div>
-			<div class="row no-margin">
-				<div class="col-sm-2"></div>
-				<div class="col-sm-8">
-					<%= f.submit "Send", class: "btn btn-default btn-success formButton" %>
-				</div>
-			</div>
-		<% end %>
-	</div>
-</div>

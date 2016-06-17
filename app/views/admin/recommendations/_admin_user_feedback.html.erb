@@ -1,0 +1,51 @@
+<div class="row no-margin">
+	<h4>Customer message</h4>
+	<% if !@customer_message.nil? %>
+		<h5>"<%= @customer_message.message %>"</h5>
+	<% else %>
+		<h5>The customer hasn't left a message pertaining to this delivery.</h5>
+	<% end %>
+</div>
+<div class="row no-margin">
+	<h4>Customer drink changes</h4>
+	<% if !@customer_drink_changes.nil? %>
+		<table class="table table-striped admin-recommendation-table">
+		    <tr>
+		      <th>Drink</th>
+		      <th>Drink Type</th>
+		      <th>Rating</th>
+		      <th>New</th>
+		      <th>Cellarable</th>
+		      <th>Format</th>
+		      <th>Old Quantity</th>
+		      <th>New Quantity</th>
+			</tr>
+			<% @customer_drink_changes.each do |drink| %>
+		    	<tr>
+			        <% if drink.user_delivery.beer.cellarable == true %>
+			        	<% @cellarable = "C" %>
+			        <% else %>
+			        	<% @cellarable = "" %>
+			        <% end %>
+			        <td><%= drink.user_delivery.beer.brewery.short_brewery_name + " " + drink.user_delivery.beer.beer_name %></td>
+	        		<td><%= drink.user_delivery.beer.beer_type.beer_type_name %></td>
+			        	<% if drink.user_delivery.new_drink == true %>
+			        		<td><%= drink.user_delivery.projected_rating %></td>
+				        <% else %>
+				        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.user_delivery.beer.id).average(:user_beer_rating) %>
+				        	<td><%= @avg_rating.round(2) %></td>
+				        <% end %>
+			        <td><%= drink.user_delivery.new_drink.humanize %></td>
+			        <td><%= drink.user_delivery.beer.cellarable.humanize %></td>
+			        <td><%= drink.user_delivery.inventory.size_format.format_name %></td>
+			        <td><%= drink.original_quantity %></td>
+			        <td><%= drink.new_quantity %></td>
+        		</tr>
+        	<% end %>
+	</table>
+</tr>
+		      
+	<% else %>
+		<h5>The customer hasn't made any drink changes to this delivery.</h5>
+	<% end %>
+</div>

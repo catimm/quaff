@@ -19,13 +19,27 @@
 		<div class="col-md-3">
 			<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "user-drink-recommendations"}) %>
 		</div>
-		<div class="col-md-1"></div>
-		<div class="col-md-4">
+		<div class="col-md-3 no-padding">
 			<h4>Current status: <%= @customer_next_delivery.status %></h4>
 		</div>
-		<div class="col-sm-2" id="admin-user-delivery-button-holder">
-			<%= render 'admin_user_delivery_button' %>
-		</div>
+		<% if @customer_next_delivery.status == "admin prep" %>
+			<div class="col-sm-2 no-padding" id="admin-user-delivery-button-holder">
+				<%= render 'admin_user_delivery_button' %>
+			</div>
+		<% end %>
+		<% if @customer_next_delivery.status == "user review" %>
+			<div class="col-sm-2 no-padding" id="admin-user-delivery-button-holder">
+				<%= render 'admin_user_feedback_button' %>
+			</div>
+		<% end %>
+		<% if @customer_next_delivery.status == "in progress" %>
+			<div class="col-sm-2" id="admin-user-delivery-button-holder">
+				<%= render 'admin_review_delivery_button' %>
+			</div>
+			<div class="col-sm-2" id="admin-user-delivery-button-holder">
+				<%= render 'admin_user_feedback_button' %>
+			</div>
+		<% end %>
 	</div>
 	<div class="row no-margin" id="user-delivery-info-container">
 		<%= render 'user_delivery_info' %>
@@ -35,6 +49,12 @@
 	</div>
 	<div id="admin_user_delivery" class="modal">
 		<%= render 'admin_check_delivery_modal' %>
+	</div>
+	<div id="admin_user_feedback" class="modal">
+		<%= render 'admin_user_feedback_modal' %>
+	</div>
+	<div id="admin_review_delivery" class="modal">
+		<%= render 'admin_review_delivery_modal' %>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

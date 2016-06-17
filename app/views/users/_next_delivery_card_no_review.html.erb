@@ -1,0 +1,106 @@
+<% if drink.beer.cellarable == true %>
+	<% @cellarable = "C" %>
+<% else %>
+	<% @cellarable = "" %>
+<% end %>
+<div class="col-sm-4 col-xs-12 beer-tile-container">
+	<div class="next-delivery-tile">
+		<div class="row no-margin ratings-image-holder-row">
+			<div class="col-sm-5 no-padding wishlist-image-holder-column">
+				<% if !drink.beer.brewery.image.blank? %>
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+				<% else %>
+					<div class="brewery-image-holder-empty-ratings-page text-center">
+						<h2><i class="fa fa-beer"></i></h2>
+					</div>
+				<% end %>
+			</div>
+			<div class="col-sm-7 wishlist-best-guess">
+				<% @user_rating = UserBeerRating.where(user_id: drink.user.id, beer_id: drink.beer.id).pluck(:user_beer_rating)[0] %>
+				<% if !@user_rating.nil? %>
+					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= drink.projected_rating %></span></p>
+					<p>You rated it:</p>
+					<h1 class="user-rating"><%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
+					<% drink.beer_rating = @user_rating %>
+				<% else %>
+					<p class="filler-best-guess-text"></p>
+					<p>Our <span class="best-guess">best guess</span> for you:</p>
+						<h1 class="best-guess"><%= drink.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
+					<% drink.beer_rating = drink.projected_rating %>
+				<% end %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<% if drink.beer.collab == true %>
+					<% @title_header = (Beer.collab_brewery_name(drink.beer.id) + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %><sup class="cellarable supply"> <%= @cellarable %></sup>
+				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
+					<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %><sup class="cellarable supply"> <%= @cellarable %></sup>
+				<% else %>
+					<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %><sup class="cellarable supply"> <%= @cellarable %></sup>
+				<% end %>
+			</div>
+			<div class="col-xs-12">
+				<% if !drink.beer.beer_type_id.nil? %>
+					<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer.beer_type.beer_type_name %></h5>
+				<% else %>
+					<h5 class="tile-subheader beer-info">Style unknown</h5>
+				<% end %>
+			</div>
+			<div class="col-xs-6 no-padding-right">
+				<% if !drink.beer.beer_abv.nil? %>
+					<h6 class="tile-subheader beer-info"><%= drink.beer.beer_abv %>% ABV</h6>
+				<% else %>
+					<h6 class="tile-subheader beer-info">ABV N/A</h6>
+				<% end %>
+			</div>
+			<% if !drink.beer.beer_ibu.nil? %>
+				<div class="col-xs-6 no-padding-left text-center ibu-div">
+					<h6 class="tile-subheader beer-info"><%= drink.beer.beer_ibu %> IBUs</h6>
+				</div>
+			<% else %>
+				<div class="col-xs-6"></div>
+			<% end %>	
+		</div>
+		<div class="row no-margin size-price-row">
+			<div class="col-xs-12">
+				<% @total_price = (drink.inventory.drink_price * 1.096) %>
+				<h4 class="size-and-price"><%= drink.inventory.size_format.format_name %> - <%= number_to_currency(@total_price, precision: 2) %> each <span class="including-tax-text">(inc. tax)</span></h4>	
+				<h6 class="limit-per-delivery"></h6>
+			</div>
+		</div>
+		<div class="row no-margin cloud-descriptor-row">
+			<div class="col-xs-12">
+				<p>This drink is described as:</p>
+				<div class="cloud-holder-next-delivery" id="drink_<%= drink.beer.id %>"></div>
+			</div>	
+		</div>
+		<div class="row no-margin list-overview">
+			<div class="col-xs-12 why-statement">
+				<% drink.beer.likes_style = drink.style_preference %>
+				<p>Why you might like this:</p>
+				<% if drink.beer.recommendation_rationale == "style" %>
+					<% if  drink.beer.is_hybrid == "yes" %>
+						<%= render 'locations/hybrid_rating_rationale', beer: drink.beer %>
+					<% else %>
+						<%= render 'locations/nonhybrid_rating_rationale', beer: drink.beer %>
+					<% end %>
+				<% else %>
+					<%= render 'locations/type_rating_rationale', beer: drink.beer %>
+				<% end %>
+			</div>
+		</div>
+		<div class="row no-margin recent-rating-tile-second-last-row">
+		</div>
+		<div class="row no-margin next-delivery-tile-last-row">
+			<div class="col-sm-12 no-padding">
+				<div class="no-quantity-change">
+					<h4 class="size-and-price delivery-quantity-text">This delivery contains <%= drink.quantity %> of these</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	

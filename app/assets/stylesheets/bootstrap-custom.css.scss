@@ -2127,6 +2127,10 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: 50px;
   padding-right: 17px;
 }
+.next-delivery-subtext {
+  color: $less-emphasized-text;
+  padding-right: 17px;
+}
 .drink-preference-view-option {
   margin-top: 30px !important;
   color: $normal-text;
@@ -3235,6 +3239,9 @@ $delivery-beer-header-lines-to-show: 2;
   font-weight: 500;
   margin-bottom: 2.5px;
 }
+.delivery-quantity-text {
+  padding-top: 7.5px;
+}
 .limit-per-delivery {
   color: $normal-text;
   font-size: 12px;
@@ -3253,6 +3260,12 @@ $delivery-beer-header-lines-to-show: 2;
   height: 50px; 
   text-align: center;
 }
+.no-quantity-change {
+    height: 35px;
+    margin-top: 15px;
+    background: $soft-gray-background;
+
+  }
 .quantity-change-holder-minus {
     height: 35px;
     margin-top: 15px;
@@ -3314,6 +3327,12 @@ $delivery-beer-header-lines-to-show: 2;
     font-weight: 300;
   }
   
+}
+.past-review-text {
+  color: $less-emphasized-text;
+  text-align: right;
+  margin-top: 25px;
+  padding-right: 30px;
 }
 // Admin recommendation review page
 .second-row-next-delivery-review {
@@ -3387,6 +3406,9 @@ $delivery-beer-header-lines-to-show: 2;
   i {
     color: $white;
   }
+}
+.admin-check-button {
+    width: 100%;
 }
 .next-delivery-status-indicator-holder {
   padding: 0 !important;
@@ -4592,7 +4614,7 @@ body.modal-open,
   left: 0;
   z-index: 1040;
 }
-div#admin_user_delivery.modal.in {
+div#admin_user_delivery.modal.in, div#admin_user_feedback.modal.in, div#admin_review_delivery.modal.in {
   width: 80%;
   margin: 0 auto;
   left: 10%;

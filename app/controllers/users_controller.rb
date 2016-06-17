@@ -253,14 +253,6 @@ class UsersController < ApplicationController
   end # end profile method
   
   def deliveries   
-    @user_delivery_info = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
-    if !@user_delivery_info.blank?
-      @next_delivery_date = @user_delivery_info.delivery_date
-      @next_delivery_review_start_date = @next_delivery_date - 3.days
-      if @user_delivery_info.status == "user review"
-        @next_delivery_review_end_date = @next_delivery_date - 1.day
-      end
-    end
     # get view chosen
     @delivery_view = params[:id]
     
@@ -270,55 +262,67 @@ class UsersController < ApplicationController
       
       # get user's delivery info
       @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
-      @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
       
-      # count number of drinks in delivery
-      @drink_count = @next_delivery.sum(:quantity)
-      # count number of drinks that are new to user
-      @next_delivery_new = 0
-      @next_delivery_retry = 0
-      @next_delivery_cooler = 0
-      @next_delivery_cellar = 0
-      @next_delivery_small = 0
-      @next_delivery_large = 0
-      # cycle through next delivery drinks to get delivery counts
-      @next_delivery.each do |drink|
-        @quantity = drink.quantity
-        if drink.new_drink == true
-          @next_delivery_new += (1 * @quantity)
-        else
-          @next_delivery_retry += (1 * @quantity)
-        end
-        if drink.cooler == true
-          @next_delivery_cooler += (1 * @quantity)
-        else
-          @next_delivery_cellar += (1 * @quantity)
-        end
-        if drink.small_format == true
-          @next_delivery_small += (1 * @quantity)
-        else
-          @next_delivery_large += (1 * @quantity)
-        end
-      end     
+      # get delivery date info
+      if !@delivery.blank?
+        @next_delivery_date = @delivery.delivery_date
+        @next_delivery_review_start_date = @next_delivery_date - 3.days
+        @next_delivery_review_end_date = @next_delivery_date - 1.day
+      end
+      
+      # get next delivery drink info for view
+      if @delivery.status == "user review" || @delivery.status == "in progress"
+        # get next delivery drink info
+        @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
 
-      # create array to hold descriptors cloud
-      @final_descriptors_cloud = Array.new
-      
-      # get top descriptors for drink types the user likes
-      @next_delivery.each do |drink|
-        @drink_id_array = Array.new
-        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
-        @final_descriptors_cloud << @drink_type_descriptors
-      end
-      # send full array to JQCloud
-      gon.drink_descriptor_array = @final_descriptors_cloud
-      
-      # allow customer to send message
-      @user_delivery_message = CustomerDeliveryMessage.find(1)#where(user_id: current_user.id, delivery_id: @delivery.id)
-      Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
-      if @user_delivery_message.blank?
-        @user_delivery_message = CustomerDeliveryMessage.new
-      end
+        # count number of drinks in delivery
+        @drink_count = @next_delivery.sum(:quantity)
+        # count number of drinks that are new to user
+        @next_delivery_new = 0
+        @next_delivery_retry = 0
+        @next_delivery_cooler = 0
+        @next_delivery_cellar = 0
+        @next_delivery_small = 0
+        @next_delivery_large = 0
+        # cycle through next delivery drinks to get delivery counts
+        @next_delivery.each do |drink|
+          @quantity = drink.quantity
+          if drink.new_drink == true
+            @next_delivery_new += (1 * @quantity)
+          else
+            @next_delivery_retry += (1 * @quantity)
+          end
+          if drink.cooler == true
+            @next_delivery_cooler += (1 * @quantity)
+          else
+            @next_delivery_cellar += (1 * @quantity)
+          end
+          if drink.small_format == true
+            @next_delivery_small += (1 * @quantity)
+          else
+            @next_delivery_large += (1 * @quantity)
+          end
+        end     
+  
+        # create array to hold descriptors cloud
+        @final_descriptors_cloud = Array.new
+        
+        # get top descriptors for drink types the user likes
+        @next_delivery.each do |drink|
+          @drink_id_array = Array.new
+          @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+          @final_descriptors_cloud << @drink_type_descriptors
+        end
+        # send full array to JQCloud
+        gon.drink_descriptor_array = @final_descriptors_cloud
+        
+        # allow customer to send message
+        @user_delivery_message = CustomerDeliveryMessage.find(1)#where(user_id: current_user.id, delivery_id: @delivery.id)
+        #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
+        if @user_delivery_message.blank?
+          @user_delivery_message = CustomerDeliveryMessage.new
+        end
+      end # end of check whether delivery is currently under "user review"     
       
     elsif @delivery_view == "history" # logic if showing the history view
       # set CSS for chosen link
@@ -507,7 +511,7 @@ class UsersController < ApplicationController
       @new_user_delivery_preferences.save!
       
       # create new customer delivery table entry
-      @new_delivery = Delivery.new(user_id: current_user.id, delivery_date: @data_value, status: "new")
+      @new_delivery = Delivery.new(user_id: current_user.id, delivery_date: @data_value, status: "admin prep")
       @new_delivery.save!
     end
     
@@ -607,10 +611,12 @@ class UsersController < ApplicationController
     # get User Delivery info
     @user_delivery_info = UserDelivery.find_by_id(@user_delivery_id)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
+    @inventory = Inventory.find(@user_delivery_info.inventory_id)
     
-    # adjust drink quantity and price
+    # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
     @drink_price = @user_delivery_info.inventory.drink_price
+    @current_inventory_reserved = @inventory.reserved
     if @add_or_subtract == "add"
       # set new quantity
       @new_quantity = @original_quantity + 1
@@ -620,6 +626,10 @@ class UsersController < ApplicationController
       @new_subtotal = @original_subtotal + @drink_price
       @new_sales_tax = @new_subtotal * 0.096
       @new_total_price = @new_subtotal + @new_sales_tax
+      
+      # update reserved inventory 
+      @new_inventory_reserved = @current_inventory_reserved + 1
+      @inventory.update(reserved: @new_inventory_reserved)
     else
       # set new quantity
       @new_quantity = @original_quantity - 1
@@ -629,12 +639,16 @@ class UsersController < ApplicationController
       @new_subtotal = @original_subtotal - @drink_price
       @new_sales_tax = @new_subtotal * 0.096
       @new_total_price = @new_subtotal + @new_sales_tax
+      
+      # update reserved inventory 
+      @new_inventory_reserved = @current_inventory_reserved - 1
+      @inventory.update(reserved: @new_inventory_reserved)
     end
   
     # update user delivery info
     @user_delivery_info.update(quantity: @new_quantity)
     @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
-    
+      
     # add change to the customer_delivery_changes table
     @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @user_delivery_id).first
     if !@customer_delivery_change.blank?

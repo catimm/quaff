@@ -17,13 +17,16 @@
 						<%= link_to "Preferences", user_deliveries_path('preferences'), class: "drink-preference-view-option #{@delivery_preferences_chosen}", id: "delivery-preferences" %>
 					</div>
 				</div>
-				<% if !@next_delivery_date.nil? %>
-					<div class="row no-margin">
-						<div class="col-sm-2"></div>
-						<div class="col-sm-10 text-right">
-							<h3 class="next-delivery-text">Next delivery: <%= (@next_delivery_date).strftime("%A, %b %e, %Y") %></h3>
+				<% if @delivery_view == "next" %>
+					<% if !@next_delivery_date.nil? %>
+						<div class="row no-margin">
+							<div class="col-sm-2"></div>
+							<div class="col-sm-10 text-right">
+								<h3 class="next-delivery-text">Next delivery: <%= (@next_delivery_date).strftime("%A, %b %e, %Y") %></h3>
+								<h5 class="next-delivery-subtext">Review period: <%= (@next_delivery_review_start_date).strftime("%a, %b %e") %> @12pm - <%= (@next_delivery_review_end_date).strftime("%a, %b %e") %> @12pm</h5>
+							</div>
 						</div>
-					</div>
+					<% end %>
 				<% end %>
 			</div>
 		</div>

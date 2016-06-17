@@ -21,4 +21,5 @@ class Delivery < ActiveRecord::Base
   has_many :customer_delivery_messages
   has_many :customer_delivery_changes
   
+  attr_accessor :delivery_quantity # hold number of drinks to be in the delivery
 end

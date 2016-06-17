@@ -27,7 +27,7 @@
 		        <% if drink.new_drink == true %>
 		        	<td><%= drink.projected_rating %></td>
 		        <% else %>
-		        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
+		        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id).average(:user_beer_rating) %>
 		        	<td><%= @avg_rating.round(2) %></td>
 		        <% end %>
 		        <td><%= drink.new_drink.humanize %></td>
