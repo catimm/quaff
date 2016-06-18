@@ -302,25 +302,28 @@ class UsersController < ApplicationController
               @next_delivery_large += (1 * @quantity)
             end
           end     
+        
+          # create array to hold descriptors cloud
+          @final_descriptors_cloud = Array.new
+          
+          # get top descriptors for drink types the user likes
+          @next_delivery.each do |drink|
+            @drink_id_array = Array.new
+            @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+            @final_descriptors_cloud << @drink_type_descriptors
+          end
+          # send full array to JQCloud
+          gon.drink_descriptor_array = @final_descriptors_cloud
+          
+          # allow customer to send message
+          @user_delivery_message = CustomerDeliveryMessage.find(1)#where(user_id: current_user.id, delivery_id: @delivery.id)
+          #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
+          if @user_delivery_message.blank?
+            @user_delivery_message = CustomerDeliveryMessage.new
+          end
+        
         end # end of check whether @delivery has data
-        # create array to hold descriptors cloud
-        @final_descriptors_cloud = Array.new
         
-        # get top descriptors for drink types the user likes
-        @next_delivery.each do |drink|
-          @drink_id_array = Array.new
-          @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
-          @final_descriptors_cloud << @drink_type_descriptors
-        end
-        # send full array to JQCloud
-        gon.drink_descriptor_array = @final_descriptors_cloud
-        
-        # allow customer to send message
-        @user_delivery_message = CustomerDeliveryMessage.find(1)#where(user_id: current_user.id, delivery_id: @delivery.id)
-        #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
-        if @user_delivery_message.blank?
-          @user_delivery_message = CustomerDeliveryMessage.new
-        end
       end # end of check whether delivery is currently under "user review"     
       
     elsif @delivery_view == "history" # logic if showing the history view
