@@ -11,10 +11,8 @@
       <th><%= sortable "beers.cellarable", "Cellarable" %></th>
       <th><%= sortable "inventories.size_format_id", "Format" %></th>
       <th>Demand</th>
-      <th>Stock</th>
-      <th>Reserved</th>
-      <th>Ordering</th>
-      <th>Status</th>
+      <th>Available</th>
+      <th>Within Month?</th>
       <th>Order?</th>
       <th>Include?</th>
     </tr>
@@ -39,29 +37,14 @@
 	        <td><%= inventory.size_format.format_name %></td>
 	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		    <td><%= @tally %></td>
-	        <td>
-	        	<% if inventory.stock.nil? %>
-	        		0
-	        	<% else %>
-	        		<%= inventory.stock %>
-	        	<% end %>
-	        </td>
-	        <td>
-	        	<% if inventory.reserved.nil? %>
-	        		0
-	        	<% else %>
-	        		<%= inventory.reserved %>
-	        	<% end %>
-	        </td>
-	        <td>
-	        	<% if inventory.order_queue.nil? %>
-	        		0
-	        	<% else %>
-	        		<%= inventory.order_queue %>
-	        	<% end %>
-	        </td>
 	        <% @inventory_status = (inventory.stock.to_i + inventory.order_queue.to_i) - inventory.reserved.to_i %>
 	        <td><%= @inventory_status %></td>
+	        <% @within_last_month = UserDelivery.where(user_id: @chosen_user_id, beer_id: drink.beer_id).joins(:delivery).where('delivery.status = ? AND delivery.delivery_date < ?', "delivered", 1.month.ago) %>
+		     <% if !@within_last_month.nil? %>
+		         <td>Yes</td>
+		      <% else %>
+		        <td>No</td>
+		      <% end %>
 	        <td><%= link_to edit_admin_inventory_path(inventory.id), :class => "btn btn-success edit-beer-info" do %>
 	        		<i class="fa fa-plus"></i>
 	        	<% end %>

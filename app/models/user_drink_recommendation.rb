@@ -17,6 +17,8 @@ class UserDrinkRecommendation < ActiveRecord::Base
   belongs_to :beer
   
   has_many :user_next_deliveries
+  
+  attr_accessor :within_month # to hold whether customer had drink delivered within last month
    
   # scope recommended drinks in stock
   scope :recommended_in_stock, -> {

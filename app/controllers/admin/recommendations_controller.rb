@@ -15,6 +15,7 @@ class Admin::RecommendationsController < ApplicationController
 
     # get recommended drinks by user
     @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
+    
     # set drink lists
     @inventory_drink_recommendations = @drink_recommendations.recommended_in_stock.joins(:beer).order(sort_column + " " + sort_direction)
     #Rails.logger.debug("inventory recos: #{@inventory_drink_recommendations.inspect}")
@@ -117,7 +118,7 @@ class Admin::RecommendationsController < ApplicationController
 
   def not_in_stock
     # get unique customer names for select dropdown
-    @customer_ids = DeliveryPreference.uniq.pluck(:user_id)
+    @customer_ids = Delivery.uniq.pluck(:user_id)
     
     # set chosen user id
     if params.has_key?(:id)

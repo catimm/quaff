@@ -268,42 +268,41 @@ class UsersController < ApplicationController
         @next_delivery_date = @delivery.delivery_date
         @next_delivery_review_start_date = @next_delivery_date - 3.days
         @next_delivery_review_end_date = @next_delivery_date - 1.day
-      end
       
-      # get next delivery drink info for view
-      if @delivery.status == "user review" || @delivery.status == "in progress"
-        # get next delivery drink info
-        @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
-
-        # count number of drinks in delivery
-        @drink_count = @next_delivery.sum(:quantity)
-        # count number of drinks that are new to user
-        @next_delivery_new = 0
-        @next_delivery_retry = 0
-        @next_delivery_cooler = 0
-        @next_delivery_cellar = 0
-        @next_delivery_small = 0
-        @next_delivery_large = 0
-        # cycle through next delivery drinks to get delivery counts
-        @next_delivery.each do |drink|
-          @quantity = drink.quantity
-          if drink.new_drink == true
-            @next_delivery_new += (1 * @quantity)
-          else
-            @next_delivery_retry += (1 * @quantity)
-          end
-          if drink.cooler == true
-            @next_delivery_cooler += (1 * @quantity)
-          else
-            @next_delivery_cellar += (1 * @quantity)
-          end
-          if drink.small_format == true
-            @next_delivery_small += (1 * @quantity)
-          else
-            @next_delivery_large += (1 * @quantity)
-          end
-        end     
+        # get next delivery drink info for view
+        if @delivery.status == "user review" || @delivery.status == "in progress"
+          # get next delivery drink info
+          @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
   
+          # count number of drinks in delivery
+          @drink_count = @next_delivery.sum(:quantity)
+          # count number of drinks that are new to user
+          @next_delivery_new = 0
+          @next_delivery_retry = 0
+          @next_delivery_cooler = 0
+          @next_delivery_cellar = 0
+          @next_delivery_small = 0
+          @next_delivery_large = 0
+          # cycle through next delivery drinks to get delivery counts
+          @next_delivery.each do |drink|
+            @quantity = drink.quantity
+            if drink.new_drink == true
+              @next_delivery_new += (1 * @quantity)
+            else
+              @next_delivery_retry += (1 * @quantity)
+            end
+            if drink.cooler == true
+              @next_delivery_cooler += (1 * @quantity)
+            else
+              @next_delivery_cellar += (1 * @quantity)
+            end
+            if drink.small_format == true
+              @next_delivery_small += (1 * @quantity)
+            else
+              @next_delivery_large += (1 * @quantity)
+            end
+          end     
+        end # end of check whether @delivery has data
         # create array to hold descriptors cloud
         @final_descriptors_cloud = Array.new
         
