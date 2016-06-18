@@ -36,10 +36,22 @@ class RatingsController < ApplicationController
       @ratings_source = params[:user_beer_rating][:drank_at]
       if @ratings_source == 'cooler'
         @rated_drink = UserSupply.where(user_id: current_user.id, beer_id: params[:user_beer_rating][:beer_id], supply_type_id: 1).first
-        @rated_drink.destroy!
+        if @rated_drink.quantity == 1
+          @rated_drink.destroy!
+        else
+          @original_quantity = @rated_drink.quantity
+          @new_quantity = @original_quantity - 1
+          @rated_drink.update(quantity: @new_quantity)
+        end
       elsif @ratings_source == 'cellar'
         @rated_drink = UserSupply.where(user_id: current_user.id, beer_id: params[:user_beer_rating][:beer_id], supply_type_id: 2).first
-        @rated_drink.destroy!
+        if @rated_drink.quantity == 1
+          @rated_drink.destroy!
+        else
+          @original_quantity = @rated_drink.quantity
+          @new_quantity = @original_quantity - 1
+          @rated_drink.update(quantity: @new_quantity)
+        end
       end
     end
     

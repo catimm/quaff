@@ -45,7 +45,7 @@
 					            <li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path('next') %></li>
 					            <li class="dropdown-link"><%= link_to "Preferences", user_preferences_path(current_user.id, 'styles') %></li>
 					            <li class="dropdown-link"><%= link_to "Profile", user_profile_path(current_user.id) %></li>
-					            <li class="dropdown-link"><%= link_to "Supply", user_supply_path(current_user.id, "cooler") %></li>
+					            <li class="dropdown-link"><%= link_to "Supply", user_supply_path('cooler') %></li>
 					            <li class="dropdown-link"><%= link_to "Wishlist", user_wishlist_path(current_user.id) %></li>     
 								
 								<li class="dropdown-header">My settings</li>

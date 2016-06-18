@@ -44,10 +44,10 @@ class UsersController < ApplicationController
   
   def supply
     # get correct view
-    @view = params[:format]
+    @view = params[:id]
     # get user supply data
     @user_supply = UserSupply.where(user_id: current_user.id)
-    Rails.logger.debug("View is: #{@view.inspect}")
+    #Rails.logger.debug("View is: #{@view.inspect}")
     
     # get data for view
     if @view == "cooler"
@@ -151,7 +151,7 @@ class UsersController < ApplicationController
       @user_supply = UserSupply.where(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id).first
       @user_supply.destroy!
     else
-      @user_supply = UserSupply.new(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id)
+      @user_supply = UserSupply.new(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id, quantity: 1)
       @user_supply.save!
     end
     
@@ -327,6 +327,9 @@ class UsersController < ApplicationController
     elsif @delivery_view == "history" # logic if showing the history view
       # set CSS for chosen link
       @history_chosen = "chosen"
+      
+      # get past delivery info
+      @past_deliveries = Delivery.where(user_id: current_user.id, status: "delivered").order('delivery_date DESC')
       
     else # logic if showing preferences view
       # set CSS for chosen link
@@ -712,6 +715,45 @@ class UsersController < ApplicationController
     
     redirect_to user_deliveries_path('next')
   end #send_delivery_message method
+  
+  def change_supply_drink_quantity
+    # get data to add/update
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @add_or_subtract = @data_split[0]
+    @user_supply_id = @data_split[1]
+    
+    # get User Supply info
+    @user_supply_info = UserSupply.find(@user_supply_id)
+    
+    # adjust drink quantity
+    @original_quantity = @user_supply_info.quantity
+
+    if @add_or_subtract == "add"
+      # set new quantity
+      @new_quantity = @original_quantity + 1
+    else
+      # set new quantity
+      @new_quantity = @original_quantity - 1
+    end
+
+    if @new_quantity == 0
+      # update user quantity info
+      @user_supply_info.destroy
+    else
+      # update user quantity info
+      @user_supply_info.update(quantity: @new_quantity)
+    end
+    
+    # set view
+    if @user_supply_info.supply_type_id == 1
+      @view = 'cooler'
+    else
+      @view = 'cellar'
+    end
+
+    render js: "window.location = '#{user_supply_path(@view)}'"
+  end # end change_supply_drink_quantity method
   
   def plan
     # find if user has a plan already

@@ -13,18 +13,14 @@
 	<div class="col-xs-12">
 		<div class="row no-margin">
 			<% if !@user_cooler.blank? %>
-				<div class="row no-margin recent-rating-holder">
-					<% @user_cooler.each do |drink| %>
-						<%= render(partial: 'supply_card', locals: { drink: drink }) %>
-					<% end%>
-				</div>
+				<% @user_cooler.each do |drink| %>
+					<%= render(partial: 'supply_card', locals: { drink: drink }) %>
+				<% end %>
 				<div class="col-sm-12" id="fav-drink-types-container">
 					<%= will_paginate @user_cooler, renderer: BootstrapPagination::Rails %>
 				</div>
 			<% else %>
-				<div class="row no-margin">
-					<h4 class="no-results-empty-message">You don't currently have any drinks in your cooler. Add one now!</h4>				
-				</div>
+				<h4 class="no-results-empty-message">You don't currently have any drinks in your cooler. Add one now!</h4>				
 			<% end %>
 		</div>
 	</div>

@@ -9,10 +9,7 @@
 		<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
 		<p>rate</p>
 	<% end %>
-	<%= link_to supply_removal_path(drink.id, @view), :class => 'remove-drink-from-wishlist', :data => {:confirm => 'You want to remove this from your supply'} do %>
-		<i class="fa fa-times"></i>
-	<% end %>
-	<div class="overview-tile-2">
+	<div class="drink-supply-tile">
 		<div class="row no-margin ratings-image-holder-row">
 			<div class="col-sm-5 no-padding wishlist-image-holder-column">
 				<% if !drink.brewery.image.blank? %>
@@ -96,7 +93,25 @@
 					<%= render 'locations/type_rating_rationale', beer: drink %>
 				<% end %>
 			</div>
-			<div class="col-xs-12 overview-tile-footer"></div>
 		</div>
+		<div class="row no-margin recent-rating-tile-second-last-row">
+		</div>
+		<% @drink_supply = @user_supply.where(user_id: current_user.id, beer_id: drink.id).first %>
+		<div class="row no-margin next-delivery-tile-last-row">
+			<div class="col-sm-6 no-padding">
+				<div class="supply-quantity-change-minus" id="user-delivery-minus-<%= @drink_supply.id %>">
+					<p><i class="fa fa-minus"></i> qty</p>
+				</div>
+			</div>
+			<div class="col-sm-6 no-padding">
+				<div class="supply-quantity-change-add" id="user-delivery-add-<%= @drink_supply.id %>">
+					<p><i class="fa fa-plus"></i> qty</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="quantity-holder" id="user-supply-<%= @drink_supply.id %>">
+		<h3 id="drink-quantity-<%= @drink_supply.id %>"><%= @drink_supply.quantity %></h3>
+		<p>qty</p>
 	</div>
 </div>	

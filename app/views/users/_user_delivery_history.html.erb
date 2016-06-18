@@ -1,0 +1,20 @@
+<% if @past_deliveries.blank? %>
+	<div class="row no-margin">
+		<h4 class="no-results-empty-message">You have not yet had any deliveries. Let's get crackin'!</h4>				
+	</div>
+<% else %>
+	<div class="row">
+		<div class="col-xs-12 col-sm-6">
+			<h3 class="recent-ratings-header">Your past deliveries</h3>
+		</div>
+	</div>
+	<% @past_deliveries.each do |delivery| %>
+		<div class="row no-margin">
+			<h4>Delivered: <%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></h4>
+		</div>	
+		<div class="row no-margin delivery-drinks-row">
+			<%= render 'past_delivery', delivery: delivery %>
+		</div>
+		<hr>
+	<% end %>
+<% end %>

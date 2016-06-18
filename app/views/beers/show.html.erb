@@ -104,7 +104,9 @@
 				</div>
 				<div class="col-sm-4 col-xs-12" id=<%= @beer.id %>>
 					<%= link_to new_user_rating_path(@user_id, @beer.id), class: 'btn btn-default btn-success formButton' do %>
-						<i class="fa fa-tasks"> rate drink</i>
+						<i class="fa fa-thumbs-up"></i>
+						<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
+						rate drink
 					<% end %>
 					<% if !@user_rating_for_this_beer.blank? %>
 						<h4 class="beer-location-status">You last drank this on:</h4>
