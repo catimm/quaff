@@ -11,7 +11,7 @@
       <th><%= sortable "beers.cellarable", "Cellarable" %></th>
       <th>Format</th>
       <th>Demand</th>
-      <th>Within Month?</th>
+      <th>Delivered Recently?</th>
       <th>Order?</th>
     </tr>
     <% drinks.each do |drink| %>
@@ -36,12 +36,12 @@
 			    <td><%= inventory.size_format.format_name %></td>
 		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		        <td><%= @tally %></td>
-		        <% @within_last_month = UserDelivery.where(user_id: @chosen_user_id, beer_id: drink.beer_id).joins(:delivery).where('delivery.status = ? AND delivery.delivery_date < ?', "delivered", 1.month.ago) %>
-			     <% if !@within_last_month.nil? %>
-			         <td>Yes</td>
-			      <% else %>
-			        <td>No</td>
-			      <% end %>
+		        <% @delivered_recently = UserDelivery.delivered_recently(@chosen_user_id, drink.beer_id) %>
+			    <% if !@delivered_recently.blank? %>
+			    	<td>Yes</td>
+			    <% else %>
+			    	<td>No</td>
+			    <% end %>
 		        <% if inventory.order_queue.nil? %>
 		        	<td><%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
 		        			<i class="fa fa-plus"></i>

@@ -20,17 +20,34 @@ class UserDrinkRecommendation < ActiveRecord::Base
   
   attr_accessor :within_month # to hold whether customer had drink delivered within last month
    
-  # scope recommended drinks in stock
+  # scope recommended all drinks in stock
   scope :recommended_in_stock, -> {
     joins(:beer).merge(Beer.drinks_in_stock)
   }
   
-  # scope recommended drinks not in stock
-  scope :recommended_not_in_inventory, -> {
-    joins(:beer).merge(Beer.drinks_not_in_inventory)
-    
+  # scope recommended packaged drinks in stock
+  scope :recommended_packaged_in_stock, -> {
+    joins(:beer).merge(Beer.packaged_drinks_in_stock)
+  }
+  # scope recommended draft drinks in stock
+  scope :recommended_draft_in_stock, -> {
+    joins(:beer).merge(Beer.draft_drinks_in_stock)
   }
   
+  # scope recommended all drinks not in stock
+  scope :recommended_not_in_inventory, -> {
+    joins(:beer).merge(Beer.drinks_not_in_inventory)  
+  }
+  
+  # scope recommended packaged drinks not in stock
+  scope :recommended_packaged_not_in_inventory, -> {
+    joins(:beer).merge(Beer.packaged_drinks_not_in_inventory)  
+  }
+  
+  # scope recommended draft drinks not in stock
+  scope :recommended_draft_not_in_inventory, -> {
+    joins(:beer).merge(Beer.draft_drinks_not_in_inventory)  
+  }
   # get tally of a particular drink
   scope :tally, ->(drink) {
     # create empty array to hold top descriptors list for beer being rated

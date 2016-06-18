@@ -22,16 +22,38 @@ class Inventory < ActiveRecord::Base
   has_many :user_deliveries
   has_many :admin_user_deliveries
   
-  # scope inventory stock 
+  # scope all inventory stock 
   scope :in_stock, -> { 
     where("stock >= ? OR order_queue >= ?", 1, 1)
   }
   
-  # scope drinks not tracked in inventory
+  # scope inventory stock 
+  scope :packaged_in_stock, -> { 
+    where("stock >= ? OR order_queue >= ?", 1, 1).
+    where("size_format_id <= ?", 5)
+  }
+  
+  # scope inventory stock 
+  scope :draft_in_stock, -> { 
+    where("stock >= ? OR order_queue >= ?", 1, 1).
+    where("size_format_id >= ?", 6)
+  }
+  
+  # scope all drinks not in inventory
   scope :not_in_inventory,   -> { 
     where arel_table[:beer_id].eq(nil) 
   }
   
+   # scope all packaged drinks not in inventory
+  scope :packaged_not_in_inventory,   -> { 
+    where("size_format_id <= ?", 5). 
+    where arel_table[:beer_id].eq(nil)
+  }
+   # scope all draft drinks not in inventory
+  scope :draft_not_in_inventory,   -> { 
+    where("size_format_id >= ?", 6)
+    where arel_table[:beer_id].eq(nil)  
+  }
    # scope inventory not in stock 
   scope :empty_stock, -> { 
     where(stock: [false, nil])
@@ -52,8 +74,7 @@ class Inventory < ActiveRecord::Base
     in_stock.
     joins(:beer).
     group('beers.brewery_id').
-    select('beers.brewery_id as brewery_id, inventories.count as inventory_number')
-    
+    select('beers.brewery_id as brewery_id, inventories.count as inventory_number') 
   }
-
+  
 end

@@ -21,5 +21,6 @@ class AdminUserDelivery < ActiveRecord::Base
   belongs_to :user
   belongs_to :inventory
   belongs_to :beer
+  belongs_to :delivery
   
 end
