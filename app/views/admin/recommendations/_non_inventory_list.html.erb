@@ -11,7 +11,8 @@
       <th><%= sortable "beers.cellarable", "Cellarable" %></th>
       <th>Format</th>
       <th>Demand</th>
-      <th>Delivered Recently?</th>
+      <th>Delivered?</th>
+      <th>Drank?</th>
       <th>Order?</th>
     </tr>
     <% drinks.each do |drink| %>
@@ -38,6 +39,12 @@
 		        <td><%= @tally %></td>
 		        <% @delivered_recently = UserDelivery.delivered_recently(@chosen_user_id, drink.beer_id) %>
 			    <% if !@delivered_recently.blank? %>
+			    	<td>Yes</td>
+			    <% else %>
+			    	<td>No</td>
+			    <% end %>
+			    <% @drank_recently = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer_id).where('created_at > ?', 1.month.ago) %>
+			    <% if !@drank_recently.blank? %>
 			    	<td>Yes</td>
 			    <% else %>
 			    	<td>No</td>
