@@ -21,76 +21,51 @@
         <% else %>
         	<% @cellarable = "" %>
         <% end %>
-    	<% if !drink.beer.inventories.empty? %>
-	    	<% drink.beer.inventories.each do |inventory| %>
-		      <tr>
-		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
-		        <td><%= drink.beer.beer_type.beer_type_name %></td>
-		        <% if drink.new_drink == true %>
-		        	<td><%= drink.projected_rating %></td>
-		        <% else %>
-		        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id).average(:user_beer_rating) %>
-		        	<td><%= @avg_rating.round(2) %></td>
-		        <% end %>
-		        <td><%= drink.new_drink.humanize %></td>
-		        <td><%= drink.beer.cellarable.humanize %></td>
-			    <td><%= inventory.size_format.format_name %></td>
-		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
-		        <td><%= @tally %></td>
-		        <% @delivered_recently = UserDelivery.delivered_recently(@chosen_user_id, drink.beer_id) %>
-			    <% if !@delivered_recently.blank? %>
-			    	<td>Yes</td>
-			    <% else %>
-			    	<td>No</td>
-			    <% end %>
-			    <% @drank_recently = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer_id).where('created_at > ?', 1.month.ago) %>
-			    <% if !@drank_recently.blank? %>
-			    	<td>Yes</td>
-			    <% else %>
-			    	<td>No</td>
-			    <% end %>
-		        <% if inventory.order_queue.nil? %>
-		        	<td><%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
-		        			<i class="fa fa-plus"></i>
-						<% end %>
-		        	</td>
-		        <% else %>
-		        	<td><%= inventory.order_queue %></td>
-		        <% end %>
-		      </tr>
-		    <% end %>
-		<% else %>
-			<tr>
-		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
-		        <td><%= drink.beer.beer_type.beer_type_name %></td>
-		        <% if drink.new_drink == true %>
-		        	<td><%= drink.projected_rating %></td>
-		        <% else %>
-		        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
-		        	<td><%= @avg_rating.round(2) %></td>
-		        <% end %>
-		        <td><%= drink.new_drink.humanize %></td>
-		        <td><%= drink.beer.cellarable.humanize %></td>
-			   	<% if !drink.beer.beer_formats.empty? %>
-			   		<td>
-				   		<% drink.beer.beer_formats.each_with_index do |format, index| %>
-					   		<% if index == drink.beer.beer_formats.size - 1 %>
+		<tr>
+	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
+	        <td><%= drink.beer.beer_type.beer_type_name %></td>
+	        <% if drink.new_drink == true %>
+	        	<td><%= drink.projected_rating %></td>
+	        <% else %>
+	        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
+	        	<td><%= @avg_rating.round(2) %></td>
+	        <% end %>
+	        <td><%= drink.new_drink.humanize %></td>
+	        <td><%= drink.beer.cellarable.humanize %></td>
+		   	<% if !drink.beer.beer_formats.empty? %>
+		   		<% @drink_formats = drink.beer.beer_formats.where('size_format_id <= ?', 5) %>
+		   		<% Rails.logger.debug("drink formats #{@drink_formats.inspect}") %>
+		   		<td>
+			   		<% @drink_formats.each_with_index do |format, index| %>
+
+					   		<% if index == @drink_formats.size - 1 %>
 					   			<%= format.size_format.format_name %>
 					   		<% else %>
 				 				<%= format.size_format.format_name %>,</br>
 				  			<% end %>
-				   		<% end %>
-			   		</td>
-			   	<% else %>
-			   		<td>TBD</td>
-			   	<% end %>
-		        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
-		        <td><%= @tally %></td>
-		        <td><%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
-		        		<i class="fa fa-plus"></i>
-		        	<% end %>
-		       	</td>
-		      </tr>
-		<% end %>
+			   		<% end %>
+		   		</td>
+		   	<% else %>
+		   		<td>TBD</td>
+		   	<% end %>
+	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
+	        <td><%= @tally %></td>
+	        <% @delivered_recently = UserDelivery.delivered_recently(@chosen_user_id, drink.beer_id) %>
+		    <% if !@delivered_recently.blank? %>
+		    	<td>Yes</td>
+		    <% else %>
+		    	<td>No</td>
+		    <% end %>
+		    <% @drank_recently = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer_id).where('created_at > ?', 1.month.ago) %>
+		    <% if !@drank_recently.blank? %>
+		    	<td>Yes</td>
+		    <% else %>
+		    	<td>No</td>
+		    <% end %>
+	        <td><%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
+	        		<i class="fa fa-plus"></i>
+	        	<% end %>
+	       	</td>
+	      </tr>
     <% end %>
   </table>

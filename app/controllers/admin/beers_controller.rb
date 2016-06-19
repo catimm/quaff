@@ -114,6 +114,7 @@ class Admin::BeersController < ApplicationController
       
       # save size formats if included
       if !params[:beer][:size_format_ids].nil?
+        @current_drink_formats = BeerFormat.where(beer_id: @beer.id).destroy_all
         params[:beer][:size_format_ids].each do |format|
           @new_drink_format = BeerFormat.new(beer_id: @beer.id, size_format_id: format)
           @new_drink_format.save!

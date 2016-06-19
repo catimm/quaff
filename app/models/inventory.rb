@@ -49,6 +49,11 @@ class Inventory < ActiveRecord::Base
     where("size_format_id <= ?", 5). 
     where arel_table[:beer_id].eq(nil)
   }
+   # scope all packaged inventory
+  scope :packaged_inventory,   -> { 
+    where("size_format_id <= ?", 5)
+  }
+  
    # scope all draft drinks not in inventory
   scope :draft_not_in_inventory,   -> { 
     where("size_format_id >= ?", 6)

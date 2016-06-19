@@ -129,6 +129,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # get recommended drinks by user
     @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
+    #Rails.logger.debug("drink recos: #{@drink_recommendations.inspect}")
     # get recommended drink not in inventory
     @non_inventory_drink_recommendations = @drink_recommendations.recommended_packaged_not_in_inventory.joins(:beer).order(sort_column + " " + sort_direction)
     #Rails.logger.debug("non-inventory recos: #{@non_inventory_drink_recommendations.inspect}")

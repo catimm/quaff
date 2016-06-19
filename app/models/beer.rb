@@ -182,7 +182,7 @@ class Beer < ActiveRecord::Base
   
   # scope packaged drinks not in stock
   scope :packaged_drinks_not_in_inventory, -> { 
-    joins(:inventories).merge(Inventory.packaged_not_in_inventory)
+    joins(:inventories).merge(Inventory.not_in_inventory)
   }
   
   # scope draft drinks not in stock
