@@ -34,7 +34,6 @@
 	        <td><%= drink.beer.cellarable.humanize %></td>
 		   	<% if !drink.beer.beer_formats.empty? %>
 		   		<% @drink_formats = drink.beer.beer_formats.where('size_format_id <= ?', 5) %>
-		   		<% Rails.logger.debug("drink formats #{@drink_formats.inspect}") %>
 		   		<td>
 			   		<% @drink_formats.each_with_index do |format, index| %>
 

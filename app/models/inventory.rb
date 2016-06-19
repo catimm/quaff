@@ -30,13 +30,13 @@ class Inventory < ActiveRecord::Base
   # scope inventory stock 
   scope :packaged_in_stock, -> { 
     where("stock >= ? OR order_queue >= ?", 1, 1).
-    where("size_format_id <= ?", 5)
+    where("inventories.size_format_id <= ?", 5)
   }
   
   # scope inventory stock 
   scope :draft_in_stock, -> { 
     where("stock >= ? OR order_queue >= ?", 1, 1).
-    where("size_format_id >= ?", 6)
+    where("inventories.size_format_id >= ?", 6)
   }
   
   # scope all drinks not in inventory
@@ -44,20 +44,14 @@ class Inventory < ActiveRecord::Base
     where arel_table[:beer_id].eq(nil) 
   }
   
-   # scope all packaged drinks not in inventory
-  scope :packaged_not_in_inventory,   -> { 
-    where("size_format_id <= ?", 5). 
-    where arel_table[:beer_id].eq(nil)
-  }
-   # scope all packaged inventory
+  # scope all packaged inventory
   scope :packaged_inventory,   -> { 
-    where("size_format_id <= ?", 5)
+    where("inventories.size_format_id <= ?", 5)
   }
   
    # scope all draft drinks not in inventory
-  scope :draft_not_in_inventory,   -> { 
-    where("size_format_id >= ?", 6)
-    where arel_table[:beer_id].eq(nil)  
+  scope :draft_inventory,   -> { 
+    where("inventories.size_format_id >= ?", 6)
   }
    # scope inventory not in stock 
   scope :empty_stock, -> { 

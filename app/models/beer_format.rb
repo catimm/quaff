@@ -24,5 +24,15 @@ class BeerFormat < ActiveRecord::Base
   scope :drink_formats_empty_stock, -> { 
     joins(:inventories).merge(Inventory.empty_stock)
   }
+  
+  # scope all packaged drinks
+  scope :packaged_drinks,   -> { 
+    where("beer_formats.size_format_id <= ?", 5)
+  }
+  
+   # scope all draft drinks
+  scope :draft_drinks,   -> { 
+    where("beer_formats.size_format_id >= ?", 6)
+  }
 
 end

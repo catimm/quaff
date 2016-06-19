@@ -182,12 +182,14 @@ class Beer < ActiveRecord::Base
   
   # scope packaged drinks not in stock
   scope :packaged_drinks_not_in_inventory, -> { 
+    joins(:beer_formats).merge(BeerFormat.packaged_drinks).
     joins(:inventories).merge(Inventory.not_in_inventory)
   }
   
   # scope draft drinks not in stock
   scope :draft_drinks_not_in_inventory, -> { 
-    joins(:inventories).merge(Inventory.draft_not_in_inventory)
+    joins(:beer_formats).merge(BeerFormat.draft_drinks).
+    joins(:inventories).merge(Inventory.not_in_inventory)
   }
   # scope drinks rated from same brewery
   scope :rating_group_brewery, ->(user_id) {

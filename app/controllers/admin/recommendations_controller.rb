@@ -17,7 +17,7 @@ class Admin::RecommendationsController < ApplicationController
     @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
     
     # set drink lists
-    @inventory_drink_recommendations = @drink_recommendations.recommended_in_stock.joins(:beer).order(sort_column + " " + sort_direction)
+    @inventory_drink_recommendations = @drink_recommendations.recommended_in_stock.uniq.joins(:beer).order(sort_column + " " + sort_direction)
     #Rails.logger.debug("inventory recos: #{@inventory_drink_recommendations.inspect}")
     
     # get user's delivery info
@@ -129,10 +129,8 @@ class Admin::RecommendationsController < ApplicationController
     
     # get recommended drinks by user
     @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
-    #Rails.logger.debug("drink recos: #{@drink_recommendations.inspect}")
     # get recommended drink not in inventory
-    @non_inventory_drink_recommendations = @drink_recommendations.recommended_packaged_not_in_inventory.joins(:beer).order(sort_column + " " + sort_direction)
-    #Rails.logger.debug("non-inventory recos: #{@non_inventory_drink_recommendations.inspect}")
+    @non_inventory_drink_recommendations = @drink_recommendations.recommended_packaged_not_in_inventory.uniq.joins(:beer).order(sort_column + " " + sort_direction)
     
     respond_to do |format|
       format.js
