@@ -1,29 +1,33 @@
 class UserMailer < ActionMailer::Base
-
-  def mandrill_client
-    @mandrill_client ||= Mandrill::API.new ENV['MANDRILL_APIKEY']
-  end
- 
+  require 'sparkpost'
+  require 'open-uri'
+  @host = open('https://api.sparkpost.com')
+  
   def select_invite_email(invited, inviter)
-    url = "http://www.drinkknird.com/users/invitation/accept?invitation_token="
-    template_name = "select-invite-email"
-    template_content = []
-    message = {
-      to: [{email: invited.email}],
-      inline_css: true,
-      merge_vars: [
-        {rcpt: invited.email,
-         vars: [
-           {name: "invited", content: invited.first_name},
-           {name: "inviter", content: inviter.first_name},
-           {name: "inviter_email", content: inviter.email},
-           {name: "url", content: url},
-           {name: "token", content: invited.raw_invitation_token}
-         ]}
-      ]
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    url = "https://www.drinkknird.com/users/invitation/accept?invitation_token="
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: invited.email },
+        }
+      ],
+      content: {
+        template_id: 'select-invite-email'
+      },
+      substitution_data: {
+        invited: invited.first_name,
+        inviter: inviter.first_name,
+        inviter_email: inviter.email,
+        token: invited.raw_invitation_token
+      }
     }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of retailer_drink_help email
   
   def add_team_email(invited, inviter, location)
     template_name = "add-team-email"
