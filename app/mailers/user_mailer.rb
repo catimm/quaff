@@ -5,7 +5,6 @@ class UserMailer < ActionMailer::Base
   
   def select_invite_email(invited, inviter)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-    url = "https://www.drinkknird.com/users/invitation/accept?invitation_token="
      
     payload  = {
       recipients: [
@@ -27,51 +26,39 @@ class UserMailer < ActionMailer::Base
     response = sp.transmission.send_payload(payload)
     p response
     
-  end # end of retailer_drink_help email
-  
-  def add_team_email(invited, inviter, location)
-    template_name = "add-team-email"
-    template_content = []
-    message = {
-      to: [{email: invited.email}],
-      inline_css: true,
-      merge_vars: [
-        {rcpt: invited.email,
-         vars: [
-           {name: "invited", content: invited.first_name},
-           {name: "inviter", content: inviter.first_name},
-           {name: "inviter_email", content: inviter.email},
-           {name: "location", content: location.name}
-         ]}
-      ]
+  end # end of select_invite_email email
+
+  def customer_delivery_review(customer, delivery_info, delivery_drinks)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    @review_date = (delivery_info.delivery_date - 1.day)
+    @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-delivery-review'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        delivery_date: (delivery_info.delivery_date).strftime("%A, %b #{delivery_info.delivery_date.day.ordinalize}"),
+        review_date: @review_date,
+        drink: delivery_drinks,
+        total_quantity: delivery_drinks.count,
+        total_subtotal: "%.2f" % (delivery_info.subtotal),
+        total_tax: delivery_info.sales_tax,
+        total_price: delivery_info.total_price
+      }
     }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end
-  
-  def new_team_email(invited, inviter, location)
-    url = "http://www.drinkknird.com/users/invitation/accept?invitation_token="
-    template_name = "new-team-email"
-    template_content = []
-    message = {
-      to: [{email: invited.email}],
-      inline_css: true,
-      merge_vars: [
-        {rcpt: invited.email,
-         vars: [
-           {name: "invited", content: invited.first_name},
-           {name: "inviter", content: inviter.first_name},
-           {name: "inviter_email", content: inviter.email},
-           {name: "url", content: url},
-           {name: "token", content: invited.raw_invitation_token},
-           {name: "location", content: location.name}
-         ]}
-      ]
-    }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end
-  
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of select_invite_email email
+    
   def welcome_email(user)
-    Rails.logger.debug("User info is: #{user.inspect}")
     url = "http://www.drinkknird.com/users/"
     template_name = "welcome-email"
     template_content = []

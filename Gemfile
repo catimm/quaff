@@ -44,7 +44,7 @@ gem 'thin'
 # screen scraping functionality
 gem 'nokogiri'
 # devise gem to manage user credentials and invites
-gem 'devise'
+gem 'devise', '~> 4.1.1'
 gem 'devise_invitable'
 # add omniauth capabilities
 gem 'omniauth'

@@ -1,6 +1,7 @@
 class Admin::RecommendationsController < ApplicationController
   before_filter :verify_admin
   helper_method :sort_column, :sort_direction
+  require 'json'
  
   def show
     # get unique customer names for select dropdown
@@ -156,7 +157,11 @@ class Admin::RecommendationsController < ApplicationController
     # get inventory info
     @inventory = Inventory.find(@inventory_id)
     # get number of reserved drinks
-    @current_inventory_reserved = @inventory.reserved
+    if !@inventory.reserved.nil?
+      @current_inventory_reserved = @inventory.reserved
+    else
+      @current_inventory_reserved = 0
+    end
     
     # add or remove drink from delivery plans
     if !@next_delivery_info.nil? # destroy entry
@@ -311,16 +316,43 @@ class Admin::RecommendationsController < ApplicationController
   def admin_share_delivery_with_customer
     # get drinks slated for next delivery
     @customer_next_delivery = Delivery.where(user_id: params[:id], status: "admin prep").first
-    @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id)
+    @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id).order('projected_rating DESC')
+    
+    # create array of drinks for email
+    @email_drink_array = Array.new
     
     # put drinks in user_delivery table to share with customer
     @next_delivery_plans.each do |drink|
       @user_delivery = UserDelivery.create(drink.attributes)
       @user_delivery.save!
+      
+      # create array of for individual drink info
+      @subtotal = (drink.quantity * drink.inventory.drink_price)
+      @tax = (@subtotal * 0.096).round(2)
+       @total = (@subtotal + @tax)
+      # add drink data to array for customer review email
+       @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                                  :drink => drink.beer.beer_name,
+                                  :drink_type => drink.beer.beer_type.beer_type_short_name,
+                                  :projected_rating => drink.projected_rating,
+                                  :format => drink.inventory.size_format.format_name,
+                                  :quantity => drink.quantity,
+                                  :price => "%.2f" % (drink.inventory.drink_price),
+                                  :subtotal => "%.2f" % @subtotal,
+                                  :tax => @tax,
+                                  :total => @total}).as_json
+      # push this array into overall email array
+      @email_drink_array << @drink_data
     end
-    
+    Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
     # change status in delivery table
     @customer_next_delivery.update(status: "user review")
+    
+    # creat customer variable for email to customer
+    @customer = User.find(params[:id])
+   
+    # send email to customer for review
+    UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array).deliver_now
     
     # send back to admin recommendation view
     redirect_to admin_recommendation_path(params[:id])

@@ -5,6 +5,7 @@
 <% @price_total = 0 %>
 <table class="table table-striped">
 		    <tr>
+		      <th>Maker</th>
 		      <th>Drink</th>
 		      <th>Drink type</th>
 		      <th>Format</th>
@@ -18,6 +19,7 @@
 		    </tr>
 			<% @delivery_drinks.each do |drink| %>
 				<tr>
+			        <td><%= drink.beer.brewery.short_brewery_name %></td>
 			        <td><%= drink.beer.beer_name %></td>
 			        <td><%= drink.beer.beer_type.beer_type_name %></td>
 			        <td><%= drink.inventory.size_format.format_name %></td>
