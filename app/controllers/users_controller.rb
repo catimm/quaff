@@ -316,7 +316,7 @@ class UsersController < ApplicationController
           gon.drink_descriptor_array = @final_descriptors_cloud
           
           # allow customer to send message
-          @user_delivery_message = CustomerDeliveryMessage.find(1)#where(user_id: current_user.id, delivery_id: @delivery.id)
+          @user_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: @delivery.id).first
           #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
           if @user_delivery_message.blank?
             @user_delivery_message = CustomerDeliveryMessage.new
@@ -817,7 +817,7 @@ class UsersController < ApplicationController
   end # end choose initial plan method
   
   def stripe_webhooks
-    Rails.logger.debug("Webhooks is firing")
+    #Rails.logger.debug("Webhooks is firing")
     begin
       event_json = JSON.parse(request.body.read)
       event_object = event_json['data']['object']
@@ -825,14 +825,23 @@ class UsersController < ApplicationController
       Rails.logger.debug("Event info: #{event_object['customer'].inspect}")
       case event_json['type']
         when 'invoice.payment_succeeded'
-          #Rails.logger.debug("Successful invoice paid event")
+          Rails.logger.debug("Successful invoice paid event")
         when 'invoice.payment_failed'
-          Rails.logger.debug("Failed invoice event")
+          #Rails.logger.debug("Failed invoice event")
         when 'charge.succeeded'
-           #Rails.logger.debug("Successful charge event")
+          @charge_description = event_object['description']
+          @charge_amount = ((event_object['amount']).to_f / 100).round(2)
+          Rails.logger.debug("charge amount #{@charge_amount.inspect}")
            # get the customer number
            @stripe_customer_number = event_object['customer']
-           @user_subscription = UserSubscription.find_by_stripe_customer_number(@stripe_customer_number)
+           @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number).first
+           # get customer info
+           @user = User.find(@user_subscription.user_id)
+           # get delivery info
+           @delivery = Delivery.where(user_id: @user.id, total_price: @charge_amount, status: "delivered").first
+           if @charge_description.include? "Knird delivery."
+             UserMailer.delivery_confirmation_email(@user, @delivery).deliver_now
+           end
         when 'charge.failed'
            #Rails.logger.debug("Failed charge event")
         when 'customer.subscription.deleted'
@@ -842,17 +851,15 @@ class UsersController < ApplicationController
         when 'customer.subscription.trial_will_end'
           #Rails.logger.debug("Subscription trial soon ending event")
         when 'customer.created'
-          Rails.logger.debug("Customer created event")
+          #Rails.logger.debug("Customer created event")
           # get the customer number
           @stripe_customer_number = event_object['id']
           @stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
           # get the user's info
           @user_email = event_object['email']
-          Rails.logger.debug("User's email: #{@user_email.inspect}")
           @user_id = User.where(email: @user_email).pluck(:id).first
-          Rails.logger.debug("User's ID: #{@user_id.inspect}")
           @user_subscription = UserSubscription.find_by_user_id(@user_id)
-          Rails.logger.debug("User's Sub: #{@user_subscription.inspect}")
+          #Rails.logger.debug("User's Sub: #{@user_subscription.inspect}")
           # update the user's info
           @user_subscription.update(stripe_customer_number: @stripe_customer_number, stripe_subscription_number: @stripe_subscription_number)
       end

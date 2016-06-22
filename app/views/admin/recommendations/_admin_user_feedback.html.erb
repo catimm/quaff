@@ -8,7 +8,7 @@
 </div>
 <div class="row no-margin">
 	<h4>Customer drink changes</h4>
-	<% if !@customer_drink_changes.nil? %>
+	<% if !@customer_drink_changes.blank? %>
 		<table class="table table-striped admin-recommendation-table">
 		    <tr>
 		      <th>Drink</th>
@@ -42,9 +42,7 @@
 			        <td><%= drink.new_quantity %></td>
         		</tr>
         	<% end %>
-	</table>
-</tr>
-		      
+		</table>	      
 	<% else %>
 		<h5>The customer hasn't made any drink changes to this delivery.</h5>
 	<% end %>

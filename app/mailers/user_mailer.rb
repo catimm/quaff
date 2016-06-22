@@ -57,6 +57,35 @@ class UserMailer < ActionMailer::Base
     p response
     
   end # end of select_invite_email email
+  
+  def delivery_confirmation_email(customer, delivery_info)
+    Rails.logger.debug("customer info: #{customer.inspect}")
+    Rails.logger.debug("delivery info: #{delivery_info.inspect}")
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'delivery-confirmation-email'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        delivery_date: (delivery_info.delivery_date).strftime("%A, %b #{delivery_info.delivery_date.day.ordinalize}"),
+        total_quantity: delivery_drinks.count,
+        total_subtotal: "%.2f" % (delivery_info.subtotal),
+        total_tax: delivery_info.sales_tax,
+        total_price: delivery_info.total_price
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    Rails.logger.debug("payload info: #{payload.inspect}")
+  end # end of select_invite_email email
     
   def welcome_email(user)
     url = "http://www.drinkknird.com/users/"

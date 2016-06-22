@@ -35,14 +35,16 @@ class Admin::DeliveriesController < ApplicationController
   def admin_confirm_delivery
     # get delivery info
     @delivery = Delivery.find(params[:id])
-    
+    @delivery_date = (@delivery.delivery_date).strftime("%B %e, %Y")
     # charge customer
     @customer_subscription = UserSubscription.where(user_id: @delivery.user_id).first
     @total_price = (@delivery.total_price * 100).floor # put total charge in cents
+    @charge_description = 'A ' + @delivery_date + ' Knird delivery.'
     Stripe::Charge.create(
       :amount => @total_price, # in cents
       :currency => "usd",
-        :customer => @customer_subscription.stripe_customer_number
+      :customer => @customer_subscription.stripe_customer_number,
+      :description => @charge_description
     )
     
     # move drinks to customer's cooler and cellar
@@ -51,8 +53,9 @@ class Admin::DeliveriesController < ApplicationController
     # get drinks currently in user supply
     @user_drink_supply = UserSupply.where(user_id: @delivery.user_id)
     
-    # put drinks in proper location
+    # put drinks in proper location and update inventory count
     @delivery_drinks.each do |drink|
+      # change location of user drink and/or quantity
       if @user_drink_supply.map{|a| a.beer_id}.include? drink.beer_id
         @drink_in_supply_info = @user_drink_supply.where(beer_id: drink.beer_id).first
         @original_quantity = @drink_in_supply_info.quantity
@@ -65,6 +68,14 @@ class Admin::DeliveriesController < ApplicationController
           @new_cellar_drink = UserSupply.create(user_id: drink.user_id, beer_id: drink.beer_id, supply_type_id: 2, quantity: drink.quantity)
         end
       end
+      
+      # update inventory
+      @inventory = Inventory.find(drink.inventory_id)
+      @original_stock = @inventory.stock
+      @new_stock = @original_stock - 1
+      @original_reserved = @inventory.reserved
+      @new_reserved = @original_reserved - 1
+      @inventory.update(stock: @new_stock, reserved: @new_reserved)
     end # end of loop through each delivery drink
     
     # clear admin_user_deliveries table

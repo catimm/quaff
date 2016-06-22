@@ -344,7 +344,7 @@ class Admin::RecommendationsController < ApplicationController
       # push this array into overall email array
       @email_drink_array << @drink_data
     end
-    Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
+    #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
     # change status in delivery table
     @customer_next_delivery.update(status: "user review")
     
