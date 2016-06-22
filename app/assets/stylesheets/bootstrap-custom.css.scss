@@ -2677,7 +2677,7 @@ $descriptor-lines-to-show: 2;
 }
 .wishlist-image-holder-column {
   height: 125px;
-  padding: 10px 0 0 10px !important;
+  padding: 20px 0 0 10px !important;
 }
 .wishlist-best-guess {
   margin: 5px 0 0 0;
@@ -3261,7 +3261,7 @@ input[type="checkbox"] {
   overflow: hidden;
   background: #fff;
   width: 99%;
-  height: 465px;
+  height: 485px;
   position: relative;
 }
 $delivery-beer-header-font-size: 14px;
@@ -3273,7 +3273,7 @@ $delivery-beer-header-lines-to-show: 2;
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
   height: $delivery-beer-header-font-size*$delivery-beer-header-line-height*$delivery-beer-header-lines-to-show; /* Fallback for non-webkit */
-  margin: 0 auto 5px auto;
+  margin: 20px auto 5px auto;
   font-size: $delivery-beer-header-font-size;
   line-height: $delivery-beer-header-line-height;
   -webkit-line-clamp: $delivery-beer-header-lines-to-show;
