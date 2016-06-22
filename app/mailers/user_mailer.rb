@@ -28,7 +28,7 @@ class UserMailer < ActionMailer::Base
     
   end # end of select_invite_email email
 
-  def customer_delivery_review(customer, delivery_info, delivery_drinks)
+  def customer_delivery_review(customer, delivery_info, delivery_drinks, total_quantity)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     @review_date = (delivery_info.delivery_date - 1.day)
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
@@ -46,7 +46,7 @@ class UserMailer < ActionMailer::Base
         delivery_date: (delivery_info.delivery_date).strftime("%A, %b #{delivery_info.delivery_date.day.ordinalize}"),
         review_date: @review_date,
         drink: delivery_drinks,
-        total_quantity: delivery_drinks.count,
+        total_quantity: total_quantity,
         total_subtotal: "%.2f" % (delivery_info.subtotal),
         total_tax: delivery_info.sales_tax,
         total_price: delivery_info.total_price
@@ -58,7 +58,7 @@ class UserMailer < ActionMailer::Base
     
   end # end of select_invite_email email
   
-  def delivery_confirmation_email(customer, delivery_info)
+  def delivery_confirmation_email(customer, delivery_info, drink_quantity)
     Rails.logger.debug("customer info: #{customer.inspect}")
     Rails.logger.debug("delivery info: #{delivery_info.inspect}")
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
@@ -75,16 +75,16 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer.first_name,
         delivery_date: (delivery_info.delivery_date).strftime("%A, %b #{delivery_info.delivery_date.day.ordinalize}"),
-        total_quantity: delivery_drinks.count,
+        total_quantity: drink_quantity,
         total_subtotal: "%.2f" % (delivery_info.subtotal),
         total_tax: delivery_info.sales_tax,
         total_price: delivery_info.total_price
       }
     }
-    
+    Rails.logger.debug("payload info: #{payload.inspect}")
     response = sp.transmission.send_payload(payload)
     p response
-    Rails.logger.debug("payload info: #{payload.inspect}")
+    Rails.logger.debug("payload response: #{response.inspect}")
   end # end of select_invite_email email
     
   def welcome_email(user)

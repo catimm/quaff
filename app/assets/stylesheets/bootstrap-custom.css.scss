@@ -3445,6 +3445,12 @@ $delivery-beer-header-lines-to-show: 2;
   width: 25%;
   float: left;
 }
+.admin-recommendation-table > tbody > tr > th {
+  padding: 8px 4px !important;
+}
+.current-drink-quantity {
+  width: 25px !important;
+}
 .style-indicator-next-delivery {
   width: 20px;
   height: 20px;

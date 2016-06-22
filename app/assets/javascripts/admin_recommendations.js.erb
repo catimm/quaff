@@ -1,6 +1,6 @@
 $(function() {
 	
-	// add logic to filter inventory table based on user chose 
+	// add logic to filter inventory table based on admin choice 
 	$(document).on('change', '#user-drink-recommendations', function () {
 		var user_id = $(this).val();
 		$.ajax({
@@ -9,7 +9,7 @@ $(function() {
 		});
 	});
 	
-	// add logic to filter non-inventory table based on user chose 
+	// add logic to filter non-inventory table based on admin choice
 	$(document).on('change', '#user-drink-recommendations-non', function () {
 		var user_id = $(this).val();
 		$.ajax({
@@ -26,5 +26,28 @@ $(function() {
 		  type: "GET",
 		  url: "/admin/recommendations/next_delivery_drink/" + this_id
 		});
+	});
+	
+	// enable admin to reduce drink quantity in next delivery
+	$(document).on('click', '.subtract-drink-quantity', function () {
+		var this_id = $(this).attr('id');
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/change_delivery_drink_quantity/" + this_id
+		});
+		// stop jumping to top
+		return false;
+	});
+	// enable admin to add drink quantity in next delivery
+	$(document).on('click', '.add-drink-quantity', function () {
+		var this_id = $(this).attr('id');
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/change_delivery_drink_quantity/" + this_id
+		});
+		// stop jumping to top
+		return false;
 	});
 });

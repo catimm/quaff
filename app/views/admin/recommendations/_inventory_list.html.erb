@@ -14,8 +14,9 @@
       <th>Available</th>
       <th>Delivered?</th>
       <th>Drank?</th>
-      <th>Order?</th>
-      <th>Include?</th>
+      <th>Order</th>
+      <th>Include</th>
+      <th colspan="3" class="text-center">Quantity</th>
     </tr>
     <% drinks.each do |drink| %>
     	<% drink.beer.inventories.each do |inventory| %>
@@ -58,9 +59,22 @@
 	        </td> 
 	        <% @check_box_id =  drink.id.to_s + "-" + inventory.id.to_s %>
 	        <% if @next_delivery_plans.map{|a| a.inventory_id}.include? inventory.id %>
-	        	<td><%= check_box_tag "inventory_ids[]", inventory.id, true, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>
+	        	<% @this_drink_quantity = @next_delivery_plans.where(beer_id: drink.beer_id).pluck(:quantity).first %>
+	        	<td class="text-center"><%= check_box_tag "inventory_ids[]", inventory.id, true, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>
+	      		<td class="text-center current-drink-quantity"><%= @this_drink_quantity %></td>
+	      		<td>
+	      			<%= link_to "#", :id => "subtract-#{drink.id}", :class => "btn btn-danger subtract-drink-quantity" do %>
+		        		<i class="fa fa-minus"></i>
+		        	<% end %>
+	      		</td>
+	      		<td>
+	      			<%= link_to "#", :id => "add-#{drink.id}", :class => "btn btn-success add-drink-quantity" do %>
+		        		<i class="fa fa-plus"></i>
+		        	<% end %>
+	      		</td>
 	      	<% else %>
-	      		<td><%= check_box_tag "inventory_ids[]", inventory.id, false, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>
+	      		<td class="text-center"><%= check_box_tag "inventory_ids[]", inventory.id, false, :id => "#{@check_box_id}", :class => "add_to_delivery" %></td>
+	      		<td colspan="3" class="text-center">N/A</td>
 	      	<% end %>
 	      </tr>
 	    <% end %>

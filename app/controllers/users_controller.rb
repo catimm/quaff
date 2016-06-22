@@ -831,7 +831,7 @@ class UsersController < ApplicationController
         when 'charge.succeeded'
           @charge_description = event_object['description']
           @charge_amount = ((event_object['amount']).to_f / 100).round(2)
-          Rails.logger.debug("charge amount #{@charge_amount.inspect}")
+          #Rails.logger.debug("charge amount #{@charge_amount.inspect}")
            # get the customer number
            @stripe_customer_number = event_object['customer']
            @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number).first
@@ -839,8 +839,10 @@ class UsersController < ApplicationController
            @user = User.find(@user_subscription.user_id)
            # get delivery info
            @delivery = Delivery.where(user_id: @user.id, total_price: @charge_amount, status: "delivered").first
+           @user_delivery = UserDelivery.where(user_id: @user.id, delivery_id: @delivery.id)
+           @drink_quantity = @user_delivery.sum(:quantity)
            if @charge_description.include? "Knird delivery."
-             UserMailer.delivery_confirmation_email(@user, @delivery).deliver_now
+             UserMailer.delivery_confirmation_email(@user, @delivery, @drink_quantity).deliver_now
            end
         when 'charge.failed'
            #Rails.logger.debug("Failed charge event")

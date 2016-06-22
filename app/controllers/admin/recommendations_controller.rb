@@ -169,6 +169,16 @@ class Admin::RecommendationsController < ApplicationController
       @new_inventory_reserved = @current_inventory_reserved - 1
       @inventory.update(reserved: @new_inventory_reserved)
       
+      # set new price in Delivery table
+      @current_subtotal = @customer_next_delivery.subtotal
+      @new_subtotal = @current_subtotal - @inventory.drink_price
+      
+      @new_sales_tax = @new_subtotal * 0.096
+      @new_total_price = @new_subtotal + @new_sales_tax
+      
+      # insert price info into Delivery table
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
+      
       # remove drink from admin_user_deliveries table
       @next_delivery_info.destroy!
     else # add entry
@@ -221,6 +231,82 @@ class Admin::RecommendationsController < ApplicationController
     redirect_to admin_recommendation_path(@drink_recommendation.user_id)
     
   end # end next_delivery_drink method
+  
+  def change_delivery_drink_quantity
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @quantity_subtract_or_add = @data_split[0]
+    @user_drink_recommendation_id = @data_split[1]
+    
+    # get drink recommendation info
+    @drink_recommendation = UserDrinkRecommendation.find(@user_drink_recommendation_id)
+    
+    # get delivery info
+    @customer_next_delivery = Delivery.where(user_id: @drink_recommendation.user_id).where.not(status: "delivered").first
+    
+    # get drink info
+    @next_delivery_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, 
+                                                  beer_id: @drink_recommendation.beer_id, 
+                                                  delivery_id: @customer_next_delivery.id).first
+    @current_drink_quantity = @next_delivery_info.quantity
+    
+    # get inventory info
+    @inventory = Inventory.find(@next_delivery_info.inventory_id)
+    # get number of reserved drinks
+    @current_inventory_reserved = @inventory.reserved
+    
+    # add or remove quantity from delivery plans
+    if @quantity_subtract_or_add == "subtract" # reduce quantity or remove drink if quantity currently equals 1
+      
+      # adjust admin next delivery quantity
+      if @current_drink_quantity.quantity == 1
+        # remove drink from admin_user_deliveries table
+        @next_delivery_info.destroy!
+      else
+        # reduce quantity for delivery
+        @new_drink_quantity = @current_drink_quantity - 1
+        @next_delivery_info.update(quantity: @new_drink_quantity)
+      end
+      
+      # set new price in Delivery table
+      @current_subtotal = @customer_next_delivery.subtotal
+      @new_subtotal = @current_subtotal - @inventory.drink_price
+
+      @new_sales_tax = @new_subtotal * 0.096
+      @new_total_price = @new_subtotal + @new_sales_tax
+      
+      # insert new price info into Delivery table
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
+      
+      # update reserve drink in inventory table
+      @new_inventory_reserved = @current_inventory_reserved - 1
+      @inventory.update(reserved: @new_inventory_reserved)
+      
+    else 
+      # add quantity for delivery
+      @new_drink_quantity = @current_drink_quantity + 1
+      @next_delivery_info.update(quantity: @new_drink_quantity)
+        
+      # set new price in Delivery table
+      @current_subtotal = @customer_next_delivery.subtotal
+      @new_subtotal = @current_subtotal + @inventory.drink_price
+
+      @new_sales_tax = @new_subtotal * 0.096
+      @new_total_price = @new_subtotal + @new_sales_tax
+      
+      # insert new price info into Delivery table
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
+      
+      # update reserve drink in inventory table
+      @new_inventory_reserved = @current_inventory_reserved + 1
+      @inventory.update(reserved: @new_inventory_reserved)
+      
+    end # end of adding/removing
+    
+    # redirect back to recommendation page                                             
+    redirect_to admin_recommendation_path(@next_delivery_info.user_id)
+    
+  end # end of change_delivery_drink_quantity method
   
   def admin_user_delivery
     # get drinks slated for next delivery
@@ -318,6 +404,9 @@ class Admin::RecommendationsController < ApplicationController
     @customer_next_delivery = Delivery.where(user_id: params[:id], status: "admin prep").first
     @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id).order('projected_rating DESC')
     
+    # get total quantity of next delivery
+    @total_quantity = @next_delivery_plans.sum(:quantity)
+    
     # create array of drinks for email
     @email_drink_array = Array.new
     
@@ -352,7 +441,7 @@ class Admin::RecommendationsController < ApplicationController
     @customer = User.find(params[:id])
    
     # send email to customer for review
-    UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array).deliver_now
+    UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array, @total_quantity).deliver_now
     
     # send back to admin recommendation view
     redirect_to admin_recommendation_path(params[:id])
