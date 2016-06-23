@@ -3,7 +3,8 @@ class Admin::BreweriesController < ApplicationController
   
   def index
     # grab all Breweries
-    @breweries = Brewery.all.order(:brewery_name)
+    #@breweries = Brewery.all.order(:brewery_name)
+    @breweries, @alphaParams = Brewery.all.alpha_paginate(params[:letter], {:default_field => "0-9", :bootstrap3 => true, :include_all => false}){|brewery| brewery.brewery_name}
      # to show number of breweries currently at top of page
     @brewery_count = Brewery.live_breweries
     # total number of Breweries in DB

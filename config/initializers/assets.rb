@@ -14,3 +14,6 @@ ActionController::Base.asset_host = Proc.new { |source, request|
     "#{request.protocol}#{request.host_with_port}"
   end
 }
+
+# for alphabetical pagination
+Rails.application.config.assets.precompile += %w( alphabetical_paginate.js )

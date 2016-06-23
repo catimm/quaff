@@ -11,12 +11,6 @@
 						<%= link_to @all_number_usable_incomplete_beers.to_s + " partial", "#", :class => "usable-beer-text" %> /
 						<%= link_to @all_number_need_attention_beers.to_s + " need attention", "#", :class => "attention-needed-beer-text" %> )
 					</h4>
-					<h4 class="live-beer-count"> 
-						<%= link_to @number_live_beers.to_s + " beers live", admin_needs_work_beers_path("live"), :class => "live-beer-count" %> (
-						<%= link_to @number_complete_beers.to_s + " done", admin_needs_work_beers_path("green"), :class => "complete-beer-text" %> /
-						<%= link_to @number_usable_incomplete_beers.to_s + " partial", admin_needs_work_beers_path("yellow"), :class => "usable-beer-text" %> /
-						<%= link_to @number_need_attention_beers.to_s + " need attention", admin_needs_work_beers_path("red"), :class => "attention-needed-beer-text" %> )
-					</h4>
 				</div>
 				<div class="col-xs-12 visible-xs">
 					<h4><%= @brewery_count.length %> breweries (<%= @beer_count.length %> beers)</h4>
@@ -30,6 +24,9 @@
 				<div class="col-xs-10 col-sm-5 text-right">
 					<%= link_to "Add new brewery", new_admin_brewery_path, :class => "btn btn-success inputButton2", data: {toggle: "modal", target: "#new_brewery"} %>
 				</div>
+			</div>
+			<div class="row no-margin filter-holding-row">
+				<%= alphabetical_paginate @alphaParams %>
 			</div>
 			<div class="row no-margin visible-sm visible-md visible-lg">
 				<div class="col-sm-3">
@@ -53,7 +50,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-xs-12 brewery-list-holder">
+	<div class="col-xs-12 brewery-list-holder" id="pagination_table">
 			<%= render 'admin/breweries/breweries_list', breweries: @breweries %>
 	</div>
 	<div id="new_brewery" class="modal">
@@ -76,5 +73,7 @@
 		</div>
 		<div class="modal-body"></div>
 	</div>
+
 </div>
+
 <%= render 'layouts/footer' %>

@@ -57,6 +57,8 @@ gem "omnicontacts"
 # to paginate the results on the page
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
+# to paginate results alphabettically
+gem 'alphabetical_paginate'
 # for filtering functionality and views
 gem 'chosen-rails'
 gem 'filterrific'

@@ -3001,6 +3001,9 @@ div.jqcloud span.w2 { color: $bright-purple; }
 div.jqcloud span.w1 { color: $light-blue; }
 
 // Admin Brewery Page
+.filter-holding-row {
+  text-align: center
+}
 .stay-in-place {
   .row {
     margin: 15px 0;
@@ -3033,7 +3036,10 @@ div.jqcloud span.w1 { color: $light-blue; }
   color: $normal-text;
 }
 .brewery-list-holder {
-  margin-top: 155px;
+  margin-top: 175px;
+}
+ul.pagination.pagination-centered.alpha {
+  margin: 5px auto !important;
 }
 #brewery_all_val {
   height: 30px;
