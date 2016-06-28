@@ -348,7 +348,7 @@ class UsersController < ApplicationController
         @preference_updated = @delivery_preferences.updated_at
         # set estimate values
         if !@delivery_preferences.drinks_per_week.nil?
-          @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
+          @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
           if !@delivery_preferences.drinks_in_cooler.nil?
             if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
               @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
@@ -366,35 +366,7 @@ class UsersController < ApplicationController
           @repeat_percentage = 100 - @new_percentage
           if !@delivery_preferences.drinks_per_week.nil?
             @new_drink_estimate = ((@drink_per_week_calculation * @new_percentage)/100).round
-            if !@delivery_preferences.drinks_in_cooler.nil?
-              if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-                 @new_drink_estimate = ((@delivery_preferences.drinks_in_cooler * @new_percentage)/100).round
-              end
-            end
-            @new_drink_delivery_estimate = ("<span class=new-drink-color>~ " + @new_drink_estimate.to_s + "</span> will be <span class=new-drink-color>new</span> to you").html_safe
-            @new_drink_message_estimate = "~ " + @new_drink_estimate.to_s
-          else
-            @new_drink_delivery_estimate = "New/repeat drink mix TBD"
-            @new_drink_message_estimate = "50%"
-          end
-        end
-        if !@delivery_preferences.cooler_percentage.nil?
-          @cooler_percentage = @delivery_preferences.cooler_percentage
-          @cellar_percentage = 100 - @cooler_percentage
-          if !@delivery_preferences.drinks_per_week.nil?
-            @cooler_drink_estimate = ((@drink_per_week_calculation * @cooler_percentage)/100).round
-            @cellar_drink_estimate = (@drink_per_week_calculation - @cooler_drink_estimate).round
-            if !@delivery_preferences.drinks_in_cooler.nil?
-              if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-                 @cooler_drink_estimate = ((@delivery_preferences.drinks_in_cooler * @cooler_percentage)/100).round
-                 @cellar_drink_estimate = (@delivery_preferences.drinks_in_cooler - @cooler_drink_estimate).round
-              end
-            end
-            @cooler_delivery_estimate = ("<span class=cooler-color>~ " + @cooler_drink_estimate.to_s + "</span> for your <span class=cooler-color>cooler</span>; <span class=cellar-color>" + @cellar_drink_estimate.to_s + "</span> for your <span class=cellar-color>cellar</span>").html_safe
-            @cooler_delivery_message_estimate = "~ " + @cooler_drink_estimate.to_s
-          else
-            @cooler_delivery_estimate = "Cooler/cellar drink mix TBD"
-            @cooler_delivery_message_estimate = "50%"
+            @repeat_drink_estimate = @drink_per_week_calculation - @new_drink_estimate
           end
         end
         if !@delivery_preferences.small_format_percentage.nil?

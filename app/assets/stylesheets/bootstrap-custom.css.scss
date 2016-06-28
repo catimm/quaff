@@ -9,6 +9,7 @@
 $white: #fff;
 $extra-light-gray: #e7e7e7;
 $light-gray: #f0f0f0;
+$medium-light-gray: #d9d9d9;
 $medium-gray: #909090;
 $dark-gray: #747474;
 $extra-dark-gray: #545454;
@@ -19,6 +20,7 @@ $bright-blue: #0087cb;
 $light-blue: #17B1FB;
 $faded-blue: #91D8FA;
 $super-light-blue: #71CDF9;
+$super-light-faded-blue: #b6e6fc;
 $bright-orange: #ffa200;
 $light-orange: #FFC764;
 $faded-orange: #FCC769;
@@ -41,12 +43,15 @@ $faded-red: #FF8585;
 $facebook-blue-color: #3b5998;
 $twitter-blue-color: #1dcaff;
 $extra-light-blue-gray: #f7fafa;
+$extra-light-soft-gray: #fafafa;
 $button-green: #5cb85c;
 $bootstrap-info-blue: #5bc0de;
 
 
 // Functional use of colors for project
 $gray-body-background: $light-gray;
+$signup-image-background-start: $medium-light-gray;
+$signup-image-background-chosen: $super-light-faded-blue;
 $soft-border: $extra-light-gray;
 $header-text: $black;
 $normal-text: $dark-gray;
@@ -84,7 +89,7 @@ $special-designated-yellow: $faded-yellow;
 $facebook-button-color: $facebook-blue-color;
 $twitter-button-color: $twitter-blue-color;
 $warning-red: $light-red;
-$soft-gray-background: $extra-light-blue-gray;
+$soft-gray-background: $extra-light-soft-gray;
 $drink-color: $bootstrap-info-blue;
 $money-color: $button-green;
 $new-drink-color: $bright-orange;
@@ -1986,11 +1991,15 @@ $beer-header-lines-to-show-fp: 1;
   a {
     line-height: 24px !important;
     text-align: center !important;
-    color: $mobile-navbar-text !important;
+    color: $normal-text !important;
     font-size: 14px !important;
     margin-left: 0 !important;
     padding: 3px 6px !important;
     z-index: 9999 !important;
+    text-decoration: underline !important;
+  }
+  a:hover {
+    color: $user-action;
   }
 }
 //
@@ -2078,6 +2087,54 @@ $beer-header-lines-to-show-fp: 1;
     color: $best-guess-text;
   }
 }
+// User Signup Process
+.first-row-signup {
+  margin-top: 10px !important;
+  //border-bottom: 1px solid $soft-border;
+  min-height: 35px;
+}
+.first-row-container-signup {
+  height: 35px;
+  margin-top: 10px;
+}
+.signup-image-holder {
+  background: $signup-image-background-start;
+  height: 380px !important;
+}
+.signup-image-holder:hover {
+  background: $gray-body-background;
+}
+.signup-image-holder.chosen {
+  background: $signup-image-background-chosen;
+}
+.signup-image-holder.middle-option {
+  border-left: 2px solid $normal-text;
+  border-right: 2px solid $normal-text;
+}
+.signup-question {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+.signup-image-first-level-text {
+  color: $white;
+  margin-top: -10px;
+  text-align: center;
+  text-shadow: rgba(0, 0, 0, 0.8) 1px 1px 8px;
+}
+.signup-image-first-level-text-with-second-level {
+  color: $white;
+  margin-top: -25px;
+  text-align: center;
+  text-shadow: rgba(0, 0, 0, 0.8) 1px 1px 8px;
+}
+.signup-image-second-level-text {
+  color: $white;
+  font-size: 16px;
+  margin-top: -5px;
+  text-align: center;
+  text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 4px;
+}
 // User Profile Page
 .first-row {
   background: $soft-gray-background;
@@ -2095,7 +2152,7 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 50px;
 }
 .next-delivery-text {
-  color: $less-emphasized-text;
+  color: $rating-text;
   margin-top: 50px;
   padding-right: 17px;
 }

@@ -23,10 +23,17 @@
 							<div class="col-sm-2"></div>
 							<div class="col-sm-10 text-right">
 								<h3 class="next-delivery-text">Next delivery: <%= (@next_delivery_date).strftime("%A, %b %e, %Y") %></h3>
-								<h5 class="next-delivery-subtext">Review period: <%= (@next_delivery_review_start_date).strftime("%a, %b %e") %> @12pm - <%= (@next_delivery_review_end_date).strftime("%a, %b %e") %> @12pm</h5>
+								<h5 class="next-delivery-subtext">Review period ends @1pm on <%= (@next_delivery_review_end_date).strftime("%a, %b %e") %></h5>
 							</div>
 						</div>
 					<% end %>
+				<% end %>
+				<% if @delivery_view == "preferences" %>
+					<div class="row no-margin">
+						<div class="col-sm-12 text-right no-padding-right">
+							<h4 class="next-delivery-text">Deliveries are every other Thursday--2 each month. </h4>
+						</div>
+					</div>
 				<% end %>
 			</div>
 		</div>

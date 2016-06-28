@@ -76,16 +76,16 @@ ready = function() {
 					},
 					footer: function() {
 						if(window.location.href.indexOf("draft_boards") > -1) {
-				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink" class="btn btn-default btn-success formButton-search-footer">',
+				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/draft_boards/new_drink">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
 				    		return ['<div class="search-footer-message">Not here? <a href="#" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else if((window.location.href.indexOf("preferences") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
-				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/users/new_drink" class="btn btn-default btn-success formButton-search-footer">',
+				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/users/new_drink">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else {
-					      	return ['<div class="empty-message">Not here? <a href="'+ BASE_URL +'searches/add_drink" class="btn btn-default btn-success">',
+					      	return ['<div class="empty-message">Not here? <a href="'+ BASE_URL +'searches/add_drink">',
 					        'Suggest we add it!','</a></div>'].join('\n');
 					    }
 					}

@@ -80,6 +80,10 @@ Rails.application.routes.draw do
   post '/users/set_search_box_id/:id' => 'users#set_search_box_id', :as => 'set_search_box_id'
   post '/users/remove_fav_drink/:id' => 'users#remove_fav_drink', :as => 'remove_fav_drink'
   
+  # user signup process
+  get '/signup/drink_preferences' => 'signup#drink_preferences', :as => 'signup_drink_preferences'
+  get '/signup/craft_journey' => 'signup#craft_journey', :as => 'signup_craft_journey'
+  
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"

@@ -1,0 +1,9 @@
+$(function() {
+	
+	// add logic to change background color of image chosen 
+	$(document).on('click', '.signup-image-holder', function () {
+		$(this).addClass('chosen');
+		$(this).parent().siblings('.signup-image-holder-parent').children('.signup-image-holder').removeClass('chosen');
+	});
+
+});

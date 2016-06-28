@@ -2,7 +2,7 @@
 	<div class="col-xs-12 col-sm-8">
 		<h3 class="recent-ratings-header">Delivery preferences</h3>
 	</div>
-	<div class="col-xs-12 col-sm-4" id="last-updated-holder">
+	<div class="col-xs-12 col-sm-4 no-padding-right text-right" id="last-updated-holder">
 		<% if !@preference_updated.nil? %>
 			<%= render 'preferences_last_updated' %>
 		<% end %>
@@ -66,16 +66,25 @@
 				<hr>
 				<div class="row no-margin">
 					<div class="col-sm-10 no-padding">
-						<h3 class="delivery-preference-prompt">What is the max number of beers/ciders you want in your cooler at any given time?</h3>
+						<h3 class="delivery-preference-prompt">What is the max number of large format drinks (22oz) you would drink each week?</h3>
 					</div>
 					<div class="col-sm-2">
-						<%= f.select :drinks_in_cooler, (1..50), {}, {required: 'true', class: 'form-control'}  %>
+						<%= f.select :drinks_per_week, (0..@drink_per_week_calculation), {}, {required: 'true', class: 'form-control'}  %>
 					</div>
 				</div>
 				<hr>
+				<%#<div class="row no-margin">%>
+				<%#	<div class="col-sm-10 no-padding">%>
+				<%#		<h3 class="delivery-preference-prompt">What is the max number of beers/ciders you want in your cooler at any given time?</h3>%>
+				<%#	</div>%>
+				<%#	<div class="col-sm-2">%>
+				<%#		<%= f.select :drinks_in_cooler, (1..50), {}, {required: 'true', class: 'form-control'}  %>
+				<%#	</div>%>
+				<%#</div>%>
+				<%#<hr>%>
 				<div class="row no-margin">
 					<div class="col-sm-12 no-padding">
-						<h3 class="delivery-preference-prompt">New vs Repeat drinks:</h3>
+						<h3 class="delivery-preference-prompt">What is the percentage of new vs repeat drinks you'd like in each delivery?</h3>
 					</div>
 					<div class="col-sm-2 no-padding">
 						<h2 class="delivery-preference-percentage repeat text-center"><span id="repeat-preference"><%= @repeat_percentage %></span>% <span class="preference-label">repeat</span></h2>
@@ -93,59 +102,14 @@
 					<div class="col-sm-2 no-padding">
 						<h2 class="delivery-preference-percentage new text-center"><span id="new-preference"><%= @new_percentage %></span>% <span class="preference-label">new</span></h2>
 					</div>
-					<div class="col-sm-12">
-						<h4 class="delivery-preference-confirmation-message">Each delivery will have <span class="new-drink-color" id="new-preference-2"><%= @new_drink_message_estimate %></span><span class="new-drink-color"> new drinks</span> you've never had before.</h4>
-					</div>
-				</div>
-				<hr>
-				<div class="row no-margin">
-					<div class="col-sm-12 no-padding">
-						<h3 class="delivery-preference-prompt">Cooler vs Cellar drinks:</h3>
-					</div>
-					<div class="col-sm-2 no-padding">
-						<h2 class="delivery-preference-percentage cellar text-center"><span id="cellar-preference"><%= @cellar_percentage %></span>% <span class="preference-label">cellar</span></h2>
-					</div>
-					<div class="col-sm-8">
-						<%= f.text_field :cooler_percentage, id: 'cooler_percentage', type: 'text',
-		                 data: {'slider-id' => 'delivery-cooler-slider',
-		                 		'slider-min' => '0',
-		                        'slider-max' => '100',
-		                        'slider-step' => '5',
-		                        'slider-value' => @cooler_percentage,
-		                        'slider-orientation' => 'horizontal',
-		                        'slider-handle' => 'square' } %>
-					</div>
-					<div class="col-sm-2 no-padding">
-						<h2 class="delivery-preference-percentage cooler text-center"><span id="cooler-preference"><%= @cooler_percentage %></span>% <span class="preference-label">cooler</span></h2>
-					</div>
-					<div class="col-sm-12">
-						<h4 class="delivery-preference-confirmation-message">Each delivery will have <span class="cooler-color" id="cooler-preference-2"><%= @cooler_delivery_message_estimate %></span><span class="cooler-color"> cooler drinks</span>--store in your fridge and drink relatively soon.</h4>
-					</div>
-				</div>
-				<hr>
-				<div class="row no-margin">
-					<div class="col-sm-12 no-padding">
-						<h3 class="delivery-preference-prompt">Small vs Large formats:</h3>
-					</div>
-					<div class="col-sm-2 no-padding">
-						<h2 class="delivery-preference-percentage large-format text-center"><span id="large-preference"><%= @large_percentage %></span>% <span class="preference-label">large</span></h2>
-					</div>
-					<div class="col-sm-8">
-						<%= f.text_field :small_format_percentage, id: 'small_percentage', type: 'text',
-		                 data: {'slider-id' => 'delivery-format-slider',
-		                 		'slider-min' => '0',
-		                        'slider-max' => '100',
-		                        'slider-step' => '5',
-		                        'slider-value' => @small_percentage,
-		                        'slider-orientation' => 'horizontal',
-		                        'slider-handle' => 'square' } %>
-					</div>
-					<div class="col-sm-2 no-padding">
-						<h2 class="delivery-preference-percentage small-format text-center"><span id="small-preference"><%= @small_percentage %></span>% <span class="preference-label">small</span></h2>
-					</div>
-					<div class="col-sm-12">
-						<h4 class="delivery-preference-confirmation-message">Each delivery will have <span class="small-format-color" id="small-preference-2"><%= @small_delivery_message_estimate %></span><span class="small-format-color"> small format drinks</span> (16oz or smaller).</h4>
-					</div>
+					<%#<div class="col-sm-12"> %>
+					<%#	<h4 class="delivery-preference-confirmation-message">Each delivery will have %>
+					<%#		<span class="new-drink-color" id="new-preference-2"><%= @new_drink_message_estimate %></span>
+					<%#		<span class="new-drink-color"> new drinks</span> you've never had before and  %>
+					<%#		<span class="repeat-drink-color" id="repeat-preference-2"><%= @repeat_drink_message_estimate %>
+					<%#		</span><span class="repeat-drink-color"> repeat drinks</span>. %>
+					<%#	</h4> %>
+					<%#</div> %>
 				</div>
 				<hr>
 				<div class="row no-margin">
@@ -161,12 +125,29 @@
 		<div class="col-sm-3 no-padding" id="estimate-column">
 			<div id="scroller-anchor"></div>
 			<div class="estimated-delivery-price-holder" id="scroller">
-				<h4 class="estimated-delivery-price-header">Per delivery estimates</h4>
+				<h4 class="estimated-delivery-price-header">Per delivery estimates:</h4>
 				<ul class="estimation-list">
 					<li><h5 class="estimation-text" id="drink-delivery-estimate"><%= @drink_delivery_estimate %></h5></li>
-					<li><h5 class="estimation-text" id="new_drink_estimate"><%= @new_drink_delivery_estimate %></h5></li>
-					<li><h5 class="estimation-text" id="cooler_drink_estimate"><%= @cooler_delivery_estimate %></h5></li>
-					<li><h5 class="estimation-text" id="small_format_estimate"><%= @small_delivery_estimate %></h5></li>
+					<li>
+						<h5 class="estimation-text">
+							<% if !@delivery_preferences.new_percentage.nil? %>
+								<span class="small-format-drink-color">~ <span id="small_format_estimate"><%= @small_delivery_estimate %></span> small format</span> / 
+								<span class="large-format-drink-color">~ <span id="large_format_estimate"><%= @large_delivery_estimate %></span> large format</span>
+							<% else %>
+								New/repeat drink mix TBD
+							<% end %>
+						</h5>
+					</li>
+					<li>
+						<h5 class="estimation-text">
+							<% if !@delivery_preferences.new_percentage.nil? %>
+								<span class="new-drink-color">~ <span id="new_drink_estimate"><%= @new_drink_estimate %></span> new</span> / 
+								<span class="repeat-drink-color">~ <span id="repeat_drink_estimate"><%= @repeat_drink_estimate %></span> repeat</span>
+							<% else %>
+								New/repeat drink mix TBD
+							<% end %>
+						</h5>
+					</li>
 				</ul>
 				<h4 class="estimation-text">Approximate cost per delivery:</h4>
 				<h3 class="cost-range-text" id="cost_estimate"><%= @cost_estimate %></h3>
