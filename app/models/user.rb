@@ -26,6 +26,7 @@
 #  invited_by_type        :string
 #  invitations_count      :integer          default("0")
 #  first_name             :string
+#  craft_stage_id         :integer
 #
 
 class User < ActiveRecord::Base
@@ -49,6 +50,7 @@ class User < ActiveRecord::Base
   has_many :user_supplies
   has_many :user_deliveries
   has_many :admin_user_deliveries
+  has_many :craft_stages
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   

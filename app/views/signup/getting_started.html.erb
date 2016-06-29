@@ -1,0 +1,29 @@
+<%= render 'layouts/header_signup' %> 
+	<div class="row no-margin first-row-signup">
+		<div class="container first-row-container-signup">
+			<%= render 'signup_guide' %>
+		</div>
+	</div>
+	<% if @view == "category" %>
+    	<%= render 'drink_category' %>
+    <% elsif @view == "journey" %>
+    	<%= render 'craft_journey' %>  
+    <% elsif @view == "styles" %>
+    	<% if @step == "1" %>
+    		<%= render 'drink_styles_like' %>
+    	<% else %>
+    		<%= render 'drink_styles_dislike' %>
+    	<% end %>
+    <% elsif @view == "preferences" %>
+    	<% if @step == "1" %>
+    		<%= render 'drinks_per_week' %>
+    	<% elsif @step == "2" %>
+    		<%= render 'large_format_per_week' %>
+    	<% else %>
+    		<%= render 'new_vs_repeat' %>
+    	<% end %>
+    <% else %>
+      
+    <% end %>
+	
+<%= render 'layouts/footer' %>

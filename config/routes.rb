@@ -81,9 +81,8 @@ Rails.application.routes.draw do
   post '/users/remove_fav_drink/:id' => 'users#remove_fav_drink', :as => 'remove_fav_drink'
   
   # user signup process
-  get '/signup/drink_preferences' => 'signup#drink_preferences', :as => 'signup_drink_preferences'
-  get '/signup/craft_journey' => 'signup#craft_journey', :as => 'signup_craft_journey'
-  
+  get '/signup/getting_started/:id' => 'signup#getting_started', :as => 'getting_started'
+  post '/signup/process_input/:id' => 'signup#process_input'
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"

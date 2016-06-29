@@ -1,0 +1,24 @@
+<div class="container">
+	<div class="row signup-guide-row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2 no-padding signup-guide-column-holder">
+			<%= link_to "preferred category", getting_started_path("category"), class: "guide-header #{@category_chosen}" %>
+			<div class="fa fa-chevron-right"></div>
+		</div>
+		<div class="col-sm-2 no-padding signup-guide-column-holder">
+			<%= link_to "craft journey", getting_started_path("journey"), class: "guide-header #{@journey_chosen}" %>
+			<div class="fa fa-chevron-right"></div>
+		</div>
+		<div class="col-sm-2 no-padding signup-guide-column-holder">
+			<%= link_to "drink styles", getting_started_path("styles-1"), class: "guide-header #{@styles_chosen}" %>
+			<div class="fa fa-chevron-right"></div>
+		</div>
+		<div class="col-sm-2 no-padding signup-guide-column-holder">
+			<%= link_to "delivery preferences", getting_started_path("preferences-1"), class: "guide-header #{@preferences_chosen}" %>
+			<div class="fa fa-chevron-right"></div>
+		</div>
+		<div class="col-sm-2 no-padding signup-guide-column-holder">
+			<%= link_to "account", getting_started_path("account"), class: "guide-header #{@account_chosen}" %>
+		</div>
+	</div>
+</div>

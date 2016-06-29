@@ -1,0 +1,28 @@
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-12 text-center">
+			<p class="step-number-guide">1 of 2</p>
+		</div>
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Choose up to 5 drink styles you really like.</h2>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<% @styles.each do |style| %>
+			<div class="col-xs-12 col-sm-2">
+				<div class="signup-style-tile">
+					<div class="row no-margin text-center">
+						<div class="img-responsive style-image-holder" alt="Responsive image" style="background-image: url(<%= style.style_image_url %>)"></div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12">
+							<h5 class="signup-style-tile-header"><%= style.style_name %></h5>
+						</div>	
+					</div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>

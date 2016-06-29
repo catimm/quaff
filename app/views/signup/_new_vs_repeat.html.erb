@@ -1,0 +1,38 @@
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-12 text-center">
+			<p class="step-number-guide">3 of 3</p>
+		</div>
+		<div class="col-xs-0 col-sm-3 text-center"></div>
+		<div class="col-xs-12 col-sm-6 text-center">
+			<h2 class="signup-question">What percentage of new vs repeat drinks would you like in each delivery?</h2>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-0 col-sm-3"></div>
+		<div class="col-sm-1 no-padding">
+			<h2 class="delivery-preference-percentage repeat text-center"><span id="repeat-preference"><%= @repeat_percentage %></span>% <span class="preference-label">repeat</span></h2>
+		</div>
+		<div class="col-sm-4">
+			<input id="signup_delivery_preference_new_percentage"
+			    type="text"
+			    name="signup_delivery_preference[new_percentage]"
+			    data-provide="slider"
+			    data-slider-id="signup-delivery-new-slider"
+			    data-slider-min="0"
+			    data-slider-max="100"
+			    data-slider-step="5"
+			    data-slider-value="50"
+			    data-slider-tooltip="hide"
+			    data-slider-handle="square"
+			    data-slider-orientation="hortizontal"
+			>
+
+		</div>
+		<div class="col-sm-1 no-padding">
+			<h2 class="delivery-preference-percentage new text-center"><span id="new-preference"><%= @new_percentage %></span>% <span class="preference-label">new</span></h2>
+		</div>
+	</div>
+</div>

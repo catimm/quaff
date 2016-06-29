@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160617190204) do
+ActiveRecord::Schema.define(version: 20160629045741) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,9 +82,13 @@ ActiveRecord::Schema.define(version: 20160617190204) do
 
   create_table "beer_styles", force: :cascade do |t|
     t.string   "style_name"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.string   "style_image_url"
+    t.boolean  "signup_beer"
+    t.boolean  "signup_cider"
+    t.boolean  "signup_beer_cider"
+    t.boolean  "standard_list"
   end
 
   create_table "beer_type_relationships", force: :cascade do |t|
@@ -155,6 +159,12 @@ ActiveRecord::Schema.define(version: 20160617190204) do
     t.string   "brewery_state_long"
     t.string   "facebook_url"
     t.string   "twitter_url"
+  end
+
+  create_table "craft_stages", force: :cascade do |t|
+    t.string   "stage_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "customer_delivery_changes", force: :cascade do |t|
@@ -450,6 +460,7 @@ ActiveRecord::Schema.define(version: 20160617190204) do
     t.string   "invited_by_type"
     t.integer  "invitations_count",                  default: 0
     t.string   "first_name"
+    t.integer  "craft_stage_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

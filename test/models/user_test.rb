@@ -26,6 +26,7 @@
 #  invited_by_type        :string
 #  invitations_count      :integer          default("0")
 #  first_name             :string
+#  craft_stage_id         :integer
 #
 
 require 'test_helper'

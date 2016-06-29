@@ -1,9 +1,76 @@
 $(function() {
-	
-	// add logic to change background color of image chosen 
-	$(document).on('click', '.signup-image-holder', function () {
-		$(this).addClass('chosen');
-		$(this).parent().siblings('.signup-image-holder-parent').children('.signup-image-holder').removeClass('chosen');
+	// for rating slider
+	$("#signup_delivery_preference_new_percentage").slider({
+		tooltip: 'hide'
 	});
-
+	// add logic to change background color of image chosen and send data to controller
+	$(document).on('click', '.signup-category-image-holder', function () {
+		$(this).siblings('.signup-category-image-holder-chosen-cover').removeClass('hidden');
+		$(this).siblings('.signup-category-image-holder-chosen-cover').addClass('show');
+		$(this).parent().siblings('.signup-category-image-holder-parent').children('.signup-category-image-holder-chosen-cover').removeClass('show');
+		$(this).parent().siblings('.signup-category-image-holder-parent').children('.signup-category-image-holder-chosen-cover').addClass('hidden');
+		
+		var choice = $(this).attr('id');
+		
+		if (choice == "beer") {
+			var new_value = 1
+		} else if (choice == "cider") {
+			var new_value = 2
+		} else {
+			var new_value = 3
+		}
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/signup/process_input/category-irrelevant-" + new_value
+		});
+		
+	});
+	
+	$(document).on('click', '.signup-journey-image-holder', function () {
+		$(this).siblings('.signup-journey-image-holder-chosen-cover').removeClass('hidden');
+		$(this).siblings('.signup-journey-image-holder-chosen-cover').addClass('show');
+		$(this).parent().siblings('.signup-journey-image-holder-parent').children('.signup-journey-image-holder-chosen-cover').removeClass('show');
+		$(this).parent().siblings('.signup-journey-image-holder-parent').children('.signup-journey-image-holder-chosen-cover').addClass('hidden');
+		
+		var choice = $(this).attr('id');
+		
+		if (choice == "casual") {
+			var new_value = 1
+		} else if (choice == "geek") {
+			var new_value = 2
+		} else {
+			var new_value = 3
+		}
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/signup/process_input/journey-irrelevant-" + new_value
+		});
+		
+	});
+	
+	// add logic to change background color of number boxes and send data to controller
+	$(document).on('click', '.number-box-holder', function () {
+		$(this).addClass('chosen');
+		$(this).parent().siblings('.number-box-holder-parent').children('.number-box-holder').removeClass('chosen');
+	});
+	
+	// send new percentage info to controller
+	$("#signup_delivery_preference_new_percentage").on("change", function(slideEvt) {
+		new_value = slideEvt.value.newValue;
+		var repeat_value = (100 - new_value);
+		$("#new-preference").text(new_value);
+		$("#repeat-preference").text(repeat_value);	
+	    
+		// send data to controller
+		delay(function(){
+			$.ajax({
+			  type: "POST",
+			  url: "/users/deliveries_update_preferences/new_percentage-" + new_value
+			});
+	    }, 1000 );
+	});
 });

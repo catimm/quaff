@@ -1,0 +1,28 @@
+<div class="row">
+	<div class="container" id="user-drink-preference-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">What do you drink?</h2>
+		</div>
+		<div class="col-xs-12 col-sm-4 no-padding signup-category-image-holder-parent">
+			<div class="signup-category-image-holder left" id="beer">
+				<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/Beer.png">
+				<h3 class="signup-category-image-first-level-text">Beer</h3>
+			</div>
+			<div class="signup-category-image-holder-chosen-cover left <%= @beer_chosen %>"></div>
+		</div>
+		<div class="col-xs-12 col-sm-4 no-padding signup-category-image-holder-parent">
+			<div class="signup-category-image-holder middle-option" id="cider">
+				<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/ciders.png">
+				<h3 class="signup-category-image-first-level-text">Cider</h3>
+			</div>
+			<div class="signup-category-image-holder-chosen-cover <%= @cider_chosen %>"></div>
+		</div>
+		<div class="col-xs-12 col-sm-4 no-padding signup-category-image-holder-parent">
+			<div class="signup-category-image-holder right" id="both">
+				<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/beer-and-cider.png">
+				<h3 class="signup-category-image-first-level-text">Beer & Cider</h3>
+			</div>
+			<div class="signup-category-image-holder-chosen-cover right <%= @beer_and_cider_chosen %>"></div>
+		</div>
+	</div>
+</div>
