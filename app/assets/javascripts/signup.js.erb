@@ -1,14 +1,28 @@
 $(function() {
+	// set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	// find width of tile so overlay matches
+	var like_tile_width = $('.signup-style-tile.like-style-tile').width();
+	$('.signup-style-tile.like-style-tile.chosen').width(like_tile_width);
+	var dislike_tile_width = $('.signup-style-tile.dislike-style-tile').width();
+	$('.signup-style-tile.dislike-style-tile.chosen').width(dislike_tile_width);
+				
 	// for rating slider
 	$("#signup_delivery_preference_new_percentage").slider({
 		tooltip: 'hide'
 	});
+	
 	// add logic to change background color of image chosen and send data to controller
 	$(document).on('click', '.signup-category-image-holder', function () {
-		$(this).siblings('.signup-category-image-holder-chosen-cover').removeClass('hidden');
-		$(this).siblings('.signup-category-image-holder-chosen-cover').addClass('show');
-		$(this).parent().siblings('.signup-category-image-holder-parent').children('.signup-category-image-holder-chosen-cover').removeClass('show');
-		$(this).parent().siblings('.signup-category-image-holder-parent').children('.signup-category-image-holder-chosen-cover').addClass('hidden');
+		$(this).siblings('.signup-category-image-holder-chosen-cover').removeClass('hidden').addClass('show');
+		$(this).parent().siblings('.signup-category-image-holder-parent').children('.signup-category-image-holder-chosen-cover').removeClass('show').addClass('hidden');
 		
 		var choice = $(this).attr('id');
 		
@@ -29,10 +43,8 @@ $(function() {
 	});
 	
 	$(document).on('click', '.signup-journey-image-holder', function () {
-		$(this).siblings('.signup-journey-image-holder-chosen-cover').removeClass('hidden');
-		$(this).siblings('.signup-journey-image-holder-chosen-cover').addClass('show');
-		$(this).parent().siblings('.signup-journey-image-holder-parent').children('.signup-journey-image-holder-chosen-cover').removeClass('show');
-		$(this).parent().siblings('.signup-journey-image-holder-parent').children('.signup-journey-image-holder-chosen-cover').addClass('hidden');
+		$(this).siblings('.signup-journey-image-holder-chosen-cover').removeClass('hidden').addClass('show');
+		$(this).parent().siblings('.signup-journey-image-holder-parent').children('.signup-journey-image-holder-chosen-cover').removeClass('show').addClass('hidden');
 		
 		var choice = $(this).attr('id');
 		
@@ -53,9 +65,33 @@ $(function() {
 	});
 	
 	// add logic to change background color of number boxes and send data to controller
-	$(document).on('click', '.number-box-holder', function () {
+	$(document).on('click', '.number-box-holder.weekly-drinks', function () {
 		$(this).addClass('chosen');
 		$(this).parent().siblings('.number-box-holder-parent').children('.number-box-holder').removeClass('chosen');
+		
+		var drinks_per_week = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/signup/process_input/preferences-1-" + drinks_per_week
+		});
+		
+	});
+	
+	// add logic to change background color of number boxes and send data to controller
+	$(document).on('click', '.number-box-holder.large-format', function () {
+		$(this).addClass('chosen');
+		$(this).parent().siblings('.number-box-holder-parent').children('.number-box-holder').removeClass('chosen');
+		
+		var large_format = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/signup/process_input/preferences-2-" + large_format
+		});
+		
 	});
 	
 	// send new percentage info to controller
@@ -69,8 +105,106 @@ $(function() {
 		delay(function(){
 			$.ajax({
 			  type: "POST",
-			  url: "/users/deliveries_update_preferences/new_percentage-" + new_value
+			  url: "/signup/process_input/preferences-3-" + new_value
 			});
 	    }, 1000 );
+	});
+	
+	// keep track of how many styles have been chosen
+	var styles_liked = gon.number_of_liked_styles;
+	var styles_disliked = gon.number_of_disliked_styles;
+	
+	// add logic to change background color of style chosen and send data to controller
+	$(document).on('click', '.signup-style-tile.like-style-tile', function () {
+		if($(this).siblings('.signup-style-tile.like-style-tile.chosen').hasClass('hidden')) {
+			if(styles_liked <= 5) {
+				styles_liked = styles_liked + 1;
+			}
+			if(styles_liked == 1) {
+				$("#liked_styles_next_step_button").removeAttr('disabled');
+				$("#liked_styles_next_step_button").addClass('btn-success');
+			}
+			if(styles_liked <= 5) {
+				// display number of liked styles
+				$("#number_of_liked_styles").html(styles_liked);
+				// find width of tile so overlay matches
+				var original_tile_width = $(this).width();
+				$(this).siblings('.signup-style-tile.like-style-tile.chosen').width(original_tile_width);
+				$(this).siblings('.signup-style-tile.like-style-tile.chosen').removeClass('hidden').addClass('show');
+				
+				var style_id = $(this).attr('id');
+				
+				// send data to controller
+				$.ajax({
+				  type: "POST",
+				  url: "/signup/process_style_input/like-add-" + style_id
+				});
+			} else {
+				styles_liked = styles_liked - 1;
+				alert("You can only choose 5!");
+			}
+		} else {
+			styles_liked = styles_liked - 1;
+			// display number of liked styles
+			$("#number_of_liked_styles").html(styles_liked);
+			
+			$(this).removeClass('show').addClass('hidden');
+			
+			var style_id = $(this).attr('id');
+			
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/process_style_input/like-remove-" + style_id
+			});
+			
+			// remove button functionality if fewer than one like
+			if(styles_liked < 1) {
+				$("#liked_styles_next_step_button").attr('disabled', 'disabled');
+				$("#liked_styles_next_step_button").removeClass('btn-success');
+			}
+		}
+	});
+	
+	$(document).on('click', '.signup-style-tile.dislike-style-tile', function () {
+		if($(this).siblings('.signup-style-tile.dislike-style-tile.chosen').hasClass('hidden')) {
+			if(styles_disliked <= 5) {
+				styles_disliked = styles_disliked + 1;
+			}
+			if(styles_disliked <= 5) {
+				// display number of liked styles
+				$("#number_of_disliked_styles").html(styles_disliked);
+				// find width of tile so overlay matches
+				var original_tile_width = $(this).width();
+				$(this).siblings('.signup-style-tile.dislike-style-tile.chosen').width(original_tile_width);
+				$(this).siblings('.signup-style-tile.dislike-style-tile.chosen').removeClass('hidden').addClass('show');
+				
+				var style_id = $(this).attr('id');
+				
+				// send data to controller
+				$.ajax({
+				  type: "POST",
+				  url: "/signup/process_style_input/dislike-add-" + style_id
+				});
+			} else {
+				styles_disliked = styles_disliked - 1;
+				alert("You can only choose 5!");
+			}
+		} else {
+			styles_disliked = styles_disliked - 1;
+			// display number of disliked styles
+			$("#number_of_disliked_styles").html(styles_disliked);
+			
+			$(this).removeClass('show').addClass('hidden');
+			
+			var style_id = $(this).attr('id');
+			
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/process_style_input/dislike-remove-" + style_id
+			});
+
+		}
 	});
 });

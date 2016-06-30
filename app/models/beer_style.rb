@@ -11,6 +11,7 @@
 #  signup_cider      :boolean
 #  signup_beer_cider :boolean
 #  standard_list     :boolean
+#  style_order       :integer
 #
 
 class BeerStyle < ActiveRecord::Base

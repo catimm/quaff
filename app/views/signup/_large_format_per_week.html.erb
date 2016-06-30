@@ -5,7 +5,8 @@
 		</div>
 		<div class="col-xs-0 col-sm-3 text-center"></div>
 		<div class="col-xs-12 col-sm-6 text-center">
-			<h2 class="signup-question">What is the max number of large format (22oz) <%= @drink_preference_text %> would you drink each week?</h2>
+			<h2 class="signup-question">What is the max number of large format (22oz) <%= @drink_preference %> would you drink each week?</h2>
+			<h5 class="signup-question-detail">For a delivery cost estimate or to update this answer, check your delivery preference page after signup.</h5>
 		</div>
 	</div>
 </div>
@@ -13,9 +14,9 @@
 	<div class="container" id="user-drinks-per-week-signup">
 		<div class="col-xs-0 col-sm-3"></div>
 		<div class="col-xs-12 col-sm-6 number-box-holder-grandparent">
-			<% (0..7).each do |i| %>
+			<% (0..@drinks_per_week).each do |i| %>
 			  <div class="col-xs-2 no-padding number-box-holder-parent">
-			  	<div class="number-box-holder" id="#{<%= i %>}">
+			  	<div class="number-box-holder large-format" id="<%= i %>">
 			 		<p><%= i %></p>
 			 	</div>
 			  </div>    

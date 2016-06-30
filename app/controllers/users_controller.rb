@@ -862,7 +862,7 @@ class UsersController < ApplicationController
       # set chosen style variable for link CSS
       @styles_chosen = "chosen"
       # get list of styles
-      @styles = BeerStyle.all
+      @styles = BeerStyle.where(standard_list: true).order('style_order ASC')
       # get user style preferences
       @user_styles = UserStylePreference.where(user_id: current_user.id)
       #Rails.logger.debug("User style preferences: #{@user_styles.inspect}")

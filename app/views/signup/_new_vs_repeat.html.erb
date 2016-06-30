@@ -6,6 +6,7 @@
 		<div class="col-xs-0 col-sm-3 text-center"></div>
 		<div class="col-xs-12 col-sm-6 text-center">
 			<h2 class="signup-question">What percentage of new vs repeat drinks would you like in each delivery?</h2>
+			<h5 class="signup-question-detail">You can update this answer on your delivery preference page after signup.</h5>
 		</div>
 	</div>
 </div>
@@ -24,7 +25,7 @@
 			    data-slider-min="0"
 			    data-slider-max="100"
 			    data-slider-step="5"
-			    data-slider-value="50"
+			    data-slider-value= <%= @new_percentage %>
 			    data-slider-tooltip="hide"
 			    data-slider-handle="square"
 			    data-slider-orientation="hortizontal"

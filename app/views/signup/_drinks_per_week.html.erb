@@ -4,7 +4,8 @@
 			<p class="step-number-guide">1 of 3</p>
 		</div>
 		<div class="col-xs-12 text-center">
-			<h2 class="signup-question">How many <%= @drink_preference_text %> do you drink at home each week?</h2>
+			<h2 class="signup-question">How many <%= @drink_preference %> do you drink at home each week?</h2>
+			<h5 class="signup-question-detail">For a delivery cost estimate or to update this answer, check your delivery preference page after signup.</h5>
 		</div>
 	</div>
 </div>
@@ -14,9 +15,15 @@
 		<div class="col-xs-12 col-sm-6 number-box-holder-grandparent">
 			<% (1..18).each do |i| %>
 			  <div class="col-xs-2 no-padding number-box-holder-parent">
-			  	<div class="number-box-holder" id="#{<%= i %>}">
-			 		<p><%= i %></p>
-			 	</div>
+				  <% if @drinks_per_week == i %>
+				  	<div class="number-box-holder weekly-drinks chosen" id="<%= i %>">
+				 		<p><%= i %></p>
+				 	</div>
+				  <% else %>
+				  	<div class="number-box-holder weekly-drinks" id="<%= i %>">
+				 		<p><%= i %></p>
+				 	</div>
+				 <% end %>
 			  </div>    
 			<% end %>
 		</div>

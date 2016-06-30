@@ -950,7 +950,7 @@ p {
   font-style: italic;
 }
 .retailer-plan-cost {
-  color: $user-action;
+  color: $user-rating-text;
   margin-top: 10px !important;
 }
 .contract-type-header {
@@ -2118,30 +2118,42 @@ $beer-header-lines-to-show-fp: 1;
 .step-number-guide {
   color: $less-emphasized-text;
   margin: 15px 0 -5px 0;
+  font-size: 12px;
 }
 .signup-question {
   font-size: 22px;
   font-weight: 500;
+  margin-bottom: 10px;
+}
+.signup-question-detail {
+  color: $normal-text;
+  font-style: italic;
   margin-bottom: 25px;
 }
 .signup-category-image-holder, .signup-journey-image-holder {
-  background: $signup-category-image-background-start;
+  background: $white;
   height: 380px !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
-.signup-category-image-holder.left, .signup-journey-image-holder.left {
+.signup-plan-holder {
+  background: $white;
+  height: 320px !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+}
+.signup-category-image-holder.left, .signup-journey-image-holder.left, .signup-plan-holder.left {
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
-.signup-category-image-holder.right, .signup-journey-image-holder.right {
+.signup-category-image-holder.right, .signup-journey-image-holder.right, .signup-plan-holder.right {
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
 }
-.signup-category-image-holder:hover, .signup-journey-image-holder:hover {
-  background: $gray-body-background;
+.signup-category-image-holder:hover, .signup-journey-image-holder:hover, .signup-plan-holder:hover {
+  background: $signup-category-image-background-start;
 }
-.signup-category-image-holder.chosen, .signup-journey-image-holder.chosen {
+.signup-category-image-holder.chosen, .signup-journey-image-holder.chosen, .signup-plan-holder.chosen {
   background: $signup-category-image-background-chosen;
 }
 .signup-category-image-holder-chosen-cover, .signup-journey-image-holder-chosen-cover {
@@ -2153,16 +2165,28 @@ $beer-header-lines-to-show-fp: 1;
     left: 0;
     z-index: 100;
   }
-.signup-category-image-holder-chosen-cover.left, .signup-journey-image-holder-chosen-cover.left {
+ .signup-plan-holder-chosen-cover {
+    background: rgba(0,135,203, 0.4);
+    height: 320px !important;
+    width: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  }
+.signup-category-image-holder-chosen-cover.left, .signup-journey-image-holder-chosen-cover.left, .signup-plan-holder-chosen-cover.left {
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
   }
-.signup-category-image-holder-chosen-cover.right, .signup-journey-image-holder-chosen-cover.right {
+.signup-category-image-holder-chosen-cover.right, .signup-journey-image-holder-chosen-cover.right, .signup-plan-holder-chosen-cover.right {
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   }
 .signup-category-image-holder.middle-option, .signup-journey-image-holder.middle-option {
   border-left: 2px solid $normal-text;
+  border-right: 2px solid $normal-text;
+}
+.signup-plan-holder.left {
   border-right: 2px solid $normal-text;
 }
 .signup-category-image-first-level-text {
@@ -2217,26 +2241,54 @@ $beer-header-lines-to-show-fp: 1;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     border-radius: 6px;
-    background: $signup-category-image-background-start;
+    background: $white;
     height: 120px;
     position: relative;
+    
 }
 .signup-style-tile:hover {
-    background: $gray-body-background;
+    background: $signup-category-image-background-start;
 }
 .signup-style-tile.chosen {
   border-radius: 6px;
   background: rgba(0,135,203, 0.4);
-  height: 280px;
+  height: 120px;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 15px;
   z-index: 100;
+  .like-style-middle, .dislike-style-middle {
+      position: absolute;
+      top: 40%;
+      left: 42%;
+    }
 }
 .signup-style-tile-header {
   font-weight: 500;
   text-align: center;
   margin-top: -10px;
+}
+.signup-styles-tally-box {
+  border: 1px solid $normal-text;
+  height: 120px;
+}
+.signup-styles-tally-text {
+  color: $normal-text;
+  font-size: 21px;
+  font-weight: 500;
+  margin-left: 10%;
+  width: 75%;
+}
+.signup-styles-next-step {
+  width: 80%;
+}
+.user-plan-cost {
+  color: $user-action;
+  margin-top: 10px !important;
+}
+.user-plan-chosen-text {
+  color: $user-rating-text;
+  margin-top: 10px !important;
 }
 // User Profile Page
 .first-row {

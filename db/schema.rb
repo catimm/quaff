@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160629045741) do
+ActiveRecord::Schema.define(version: 20160630043646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 20160629045741) do
     t.boolean  "signup_cider"
     t.boolean  "signup_beer_cider"
     t.boolean  "standard_list"
+    t.integer  "style_order"
   end
 
   create_table "beer_type_relationships", force: :cascade do |t|
@@ -199,16 +200,14 @@ ActiveRecord::Schema.define(version: 20160629045741) do
   create_table "delivery_preferences", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "drinks_per_week"
-    t.integer  "drinks_in_cooler"
     t.integer  "new_percentage"
-    t.integer  "cooler_percentage"
-    t.integer  "small_format_percentage"
     t.text     "additional"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.integer  "price_estimate"
     t.datetime "first_delivery_date"
     t.integer  "drink_option_id"
+    t.integer  "max_large_format"
   end
 
   create_table "draft_boards", force: :cascade do |t|

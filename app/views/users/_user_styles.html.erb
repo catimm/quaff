@@ -56,7 +56,8 @@
 							<div class="overview-tile-4 hidden"></div>
 						<% end %>
 							<div class="row no-margin text-center">
-								<div class="img-responsive style-image-holder" alt="Responsive image" style="background-image: url(<%= style.style_image_url %>)">		
+								<div class="style-image-holder">		
+									<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
 								</div>
 							</div>
 							<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>

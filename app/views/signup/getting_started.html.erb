@@ -23,7 +23,13 @@
     		<%= render 'new_vs_repeat' %>
     	<% end %>
     <% else %>
-      
+    	<% if @step == "1" %>
+    		<%= render 'delivery_plan' %>
+    	<% elsif @step == "2" %>
+    		<%= render 'start_date' %>
+    	<% else %>
+    		<%= render 'user_info' %>
+    	<% end %>
     <% end %>
 	
 <%= render 'layouts/footer' %>
