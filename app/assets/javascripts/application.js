@@ -29,3 +29,6 @@
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
 //= require_tree .
+jQuery( function($) {
+    $('i').tooltip();
+});

@@ -13,19 +13,7 @@
 	<div class="container" id="user-drinks-per-week-signup">
 		<div class="col-xs-0 col-sm-3"></div>
 		<div class="col-xs-12 col-sm-6 number-box-holder-grandparent">
-			<% (1..18).each do |i| %>
-			  <div class="col-xs-2 no-padding number-box-holder-parent">
-				  <% if @drinks_per_week == i %>
-				  	<div class="number-box-holder weekly-drinks chosen" id="<%= i %>">
-				 		<p><%= i %></p>
-				 	</div>
-				  <% else %>
-				  	<div class="number-box-holder weekly-drinks" id="<%= i %>">
-				 		<p><%= i %></p>
-				 	</div>
-				 <% end %>
-			  </div>    
-			<% end %>
+			<%= render 'drinks_per_week_choice'%>
 		</div>
 	</div>
 </div>

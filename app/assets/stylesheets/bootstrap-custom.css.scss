@@ -138,6 +138,18 @@ $large-format-color: $bright-aqua-blue;
 
 }
 
+@font-face {
+    font-family: 'uppereastsideregular';
+    src: url('UpperEastSide-webfont.eot');
+    src: url('UpperEastSide-webfont.eot?#iefix') format('embedded-opentype'),
+         url('UpperEastSide-webfont.woff') format('woff'),
+         url('UpperEastSide-webfont.ttf') format('truetype'),
+         url('UpperEastSide-webfont.svg#uppereastsideregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 @font-face{
     font-family:'FontAwesome';
     font-weight:normal;
@@ -327,7 +339,6 @@ label {
   width: 100%;
   font-size: 18px;
   margin-top: 70%;
-  background: $action-background;
 }
 ::-webkit-input-placeholder, :-moz-placeholder, ::-moz-placeholder, :-ms-input-placeholder {
   color: $gray-body-background;
@@ -1841,11 +1852,20 @@ $beer-header-lines-to-show-fp: 1;
       a {
         padding: 6px 12px !important;
       }
-      a:hover {
-        color: $user-action !important;
-      }
     }
   }
+}
+.formButton-home-login-button {
+  width: 100%;
+  margin-top: 15px;
+  background: transparent;
+  border-color: #4cae4c !important;
+}
+.formButton-home-login-button:hover {
+  width: 100%;
+  margin-top: 15px;
+  background: $user-action !important;
+  border-color: #4cae4c !important;
 }
 .homeNavbar {
   background: $dark-gray !important;
@@ -2121,7 +2141,7 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 12px;
 }
 .signup-question {
-  font-size: 22px;
+  font-size: 22px !important;
   font-weight: 500;
   margin-bottom: 10px;
 }
@@ -2130,9 +2150,22 @@ $beer-header-lines-to-show-fp: 1;
   font-style: italic;
   margin-bottom: 25px;
 }
-.signup-category-image-holder, .signup-journey-image-holder {
-  background: $white;
+.signup-start-date-text {
+  color: $normal-text;
+  span {
+    color: $black;
+  }
+}
+.signup-start-date-row-holder, .signup-drink-category-row-holder {
   height: 380px !important;
+  font-size: 48px;
+  .container {
+    height: inherit;
+  }
+}
+.signup-category-image-holder, .signup-journey-image-holder, .signup-plan-start-holder {
+  background: $white;
+  height: 100% !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
@@ -2142,23 +2175,23 @@ $beer-header-lines-to-show-fp: 1;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
-.signup-category-image-holder.left, .signup-journey-image-holder.left, .signup-plan-holder.left {
+.signup-category-image-holder.left, .signup-journey-image-holder.left, .signup-plan-holder.left, .signup-plan-start-holder.left {
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
-.signup-category-image-holder.right, .signup-journey-image-holder.right, .signup-plan-holder.right {
+.signup-category-image-holder.right, .signup-journey-image-holder.right, .signup-plan-holder.right, .signup-plan-start-holder.right {
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
 }
-.signup-category-image-holder:hover, .signup-journey-image-holder:hover, .signup-plan-holder:hover {
+.signup-category-image-holder:hover, .signup-journey-image-holder:hover, .signup-plan-holder:hover, .signup-plan-start-holder:hover {
   background: $signup-category-image-background-start;
 }
-.signup-category-image-holder.chosen, .signup-journey-image-holder.chosen, .signup-plan-holder.chosen {
+.signup-category-image-holder.chosen, .signup-journey-image-holder.chosen, .signup-plan-holder.chosen, .signup-plan-start-holder.chosen {
   background: $signup-category-image-background-chosen;
 }
-.signup-category-image-holder-chosen-cover, .signup-journey-image-holder-chosen-cover {
+.signup-category-image-holder-chosen-cover, .signup-journey-image-holder-chosen-cover, .signup-plan-start-holder-chosen-cover {
     background: rgba(0,135,203, 0.4);
-    height: 380px !important;
+    height: 100% !important;
     width: 100% !important;
     position: absolute;
     top: 0;
@@ -2174,18 +2207,14 @@ $beer-header-lines-to-show-fp: 1;
     left: 0;
     z-index: 100;
   }
-.signup-category-image-holder-chosen-cover.left, .signup-journey-image-holder-chosen-cover.left, .signup-plan-holder-chosen-cover.left {
+.signup-category-image-holder-chosen-cover.left, .signup-journey-image-holder-chosen-cover.left, .signup-plan-holder-chosen-cover.left, .signup-plan-start-holder-chosen-cover.left {
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
   }
-.signup-category-image-holder-chosen-cover.right, .signup-journey-image-holder-chosen-cover.right, .signup-plan-holder-chosen-cover.right {
+.signup-category-image-holder-chosen-cover.right, .signup-journey-image-holder-chosen-cover.right, .signup-plan-holder-chosen-cover.right, .signup-plan-start-holder-chosen-cover.right {
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   }
-.signup-category-image-holder.middle-option, .signup-journey-image-holder.middle-option {
-  border-left: 2px solid $normal-text;
-  border-right: 2px solid $normal-text;
-}
 .signup-plan-holder.left {
   border-right: 2px solid $normal-text;
 }
@@ -2207,6 +2236,17 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: -5px;
   text-align: center;
   text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 4px;
+}
+.signup-start-month, .signup-start-day {
+  font-family: 'uppereastsideregular';
+  font-size: 1em;
+  margin-top: 0.625em;
+}
+.signup-start-date {
+  font-family: 'uppereastsideregular';
+  font-size: 2.7em;
+  font-weight: 600;
+  margin-top: 0.23em;
 }
 .number-box-holder-grandparent {
   padding-left: 20px;
@@ -2289,6 +2329,12 @@ $beer-header-lines-to-show-fp: 1;
 .user-plan-chosen-text {
   color: $user-rating-text;
   margin-top: 10px !important;
+}
+.user-info-form {
+  margin-top: -10px;
+}
+.terms-and-conditions-text {
+  color: $normal-text;
 }
 // User Profile Page
 .first-row {
@@ -2625,22 +2671,48 @@ $beer-header-lines-to-show-fp: 1;
     margin-top: 22.5px;
   }
 }
+.preferences-delivery-info-row {
+  margin: 20px 0 0 0 !important;
+}
+.preference-estimate-signs {
+  font-size: 18px;
+  float: left;
+  line-height: 0.65;
+  margin: 3px -10px 0 15px;
+}
 .delivery-date-choice {
   color: $normal-text;
   font-size: 18px;
   margin: 25px 20px 0 0;
 }
+
 .change-delivery-date-button {
   margin-top: 15px;
 }
 .delivery-preference-prompt {
   color: $normal-text;
+  margin-top: 0;
+  font-size: 22px;
+}
+.delivery-detail {
+  color: $action-background;
+  font-style: italic;
 }
 .drink-preference-choice {
   float: left;
   margin: 20px 20px 0 0;
   color: $normal-text;
   font-size: 18px;
+}
+.preferences-start-date-row-holder {
+  font-size: 16px;
+}
+.preferences-next-delivery-date {
+  border-radius: 6px;
+  background: $white;
+  height: inherit;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
 #delivery-new-slider.slider.slider-horizontal {
   width: 100% !important;
@@ -2717,16 +2789,19 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 #scroller-anchor {
-  margin-top: -30px !important;
+  margin-top: -25px !important;
 }
 .estimated-delivery-price-holder {
-  margin: -30px 0 10px 0;
+  margin: -25px 0 10px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
   padding-left: 10px;
+}
+.preference-estimate-holder {
+  margin-bottom: 10px;
 }
 .estimated-delivery-price-header {
   color: $normal-text;
@@ -3388,9 +3463,10 @@ input[type="checkbox"] {
 }
 .delivery-info-box {
   text-align: center;
-  width: 70px;
+  min-width: 70px;
   height: 70px;
   padding: 10px;
+  border-radius: 6px;
   p {
     font-size: 12px;
     margin-bottom: 5px;
@@ -3444,7 +3520,6 @@ input[type="checkbox"] {
   }
 }
 .delivery-info-box.subtotal {
-  width: 110px;
   float: left;
   margin-right: 16px;
   border: 1px solid $normal-text;
@@ -3453,7 +3528,6 @@ input[type="checkbox"] {
   }
 }
 .delivery-info-box.sales-tax {
-  width: 90px;
   float: left;
   margin-right: 16px;
   border: 1px solid $less-emphasized-text;
@@ -3462,15 +3536,21 @@ input[type="checkbox"] {
   }
 }
 .delivery-info-box.total-price {
-  width: 110px;
   float: left;
   margin-right: 16px;
   border: 1px solid $money-color;
   h4 {
     color: $money-color;
-    weight: 500;
   }
 }
+.show-more-price-info {
+  color: $user-action;
+}
+.fa.fa-plus-square-o.fa-lg + .tooltip > .tooltip-inner {
+  background: $white;
+  color: $normal-text;
+  border: 1px solid $normal-text;
+ }
 .next-delivery-tile {
   margin: 15px 0 20px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);

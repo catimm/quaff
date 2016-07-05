@@ -5,30 +5,13 @@
 		</div>
 		<div class="col-xs-12 text-center">
 			<h2 class="signup-question">Choose the best date for your first delivery.</h2>
+			<h4 class="signup-start-date-text">Deliveries will be <span>every other Thursday</span>, starting with the date you choose below.</h4>
 			<h5 class="signup-question-detail">You can update this answer on your delivery preferences page after signup.</h5>
 		</div>
 	</div>
 </div>
-<div class="row">
+<div class="row signup-start-date-row-holder">
 	<div class="container">
-		<div class="col-xs-0 col-sm-2"></div>
-		<div class="col-xs-12 col-sm-4 no-padding signup-category-image-holder-parent">
-			<div class="row no-margin signup-plan-start-holder left">
-
-			</div>
-			<div class="signup-plan-start-holder-chosen-cover left <%= @enjoy_chosen %>"></div>
-		</div>
-		<div class="col-xs-12 col-sm-4 no-padding signup-category-image-holder-parent">
-			<div class="row no-margin signup-plan-start-holder middle-option">
-
-			</div>
-			<div class="signup-plan-start-holder-chosen-cover left <%= @enjoy_chosen %>"></div>
-		</div>
-		<div class="col-xs-12 col-sm-4 no-padding signup-category-image-holder-parent">
-			<div class="row no-margin signup-plan-start-holder right">
-
-			</div>
-			<div class="signup-plan-start-holder-chosen-cover right <%= @relish_chosen %>"></div>
-		</div>
+		<%= render 'start_date_choice' %>
 	</div>
 </div>

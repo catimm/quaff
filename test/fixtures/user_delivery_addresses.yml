@@ -1,0 +1,35 @@
+# == Schema Information
+#
+# Table name: user_delivery_addresses
+#
+#  id                   :integer          not null, primary key
+#  user_id              :integer
+#  address_one          :string
+#  address_two          :string
+#  city                 :string
+#  state                :string
+#  zip                  :string
+#  special_instructions :text
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  address_one: MyString
+  address_two: MyString
+  city: MyString
+  state: MyString
+  zip: 
+  special_instructions: MyText
+
+two:
+  user_id: 1
+  address_one: MyString
+  address_two: MyString
+  city: MyString
+  state: MyString
+  zip: 
+  special_instructions: MyText

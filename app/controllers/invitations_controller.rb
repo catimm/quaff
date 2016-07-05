@@ -33,7 +33,7 @@ class InvitationsController < Devise::InvitationsController
                                           preference_one: true, threshold_one: 9.5, notification_two: "highly recommended availability notice",
                                           preference_two: true, threshold_two: 9.5)
       @default_notification_preference.save!
-      Rails.logger.debug("Resource info: #{resource.inspect}")
+      #Rails.logger.debug("Resource info: #{resource.inspect}")
       if Devise.allow_insecure_sign_in_after_accept
         flash_message = resource.active_for_authentication? ? :updated : :updated_not_active
         set_flash_message :notice, flash_message if is_flashing_format?
@@ -58,6 +58,11 @@ class InvitationsController < Devise::InvitationsController
   end
   
   private
+  
+  def after_accept_path_for(resource)
+    getting_started_path("category")
+  end
+  
   def verify_admin
     redirect_to root_url unless current_user.role_id == 1
   end

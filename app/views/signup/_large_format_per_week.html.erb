@@ -14,13 +14,7 @@
 	<div class="container" id="user-drinks-per-week-signup">
 		<div class="col-xs-0 col-sm-3"></div>
 		<div class="col-xs-12 col-sm-6 number-box-holder-grandparent">
-			<% (0..@drinks_per_week).each do |i| %>
-			  <div class="col-xs-2 no-padding number-box-holder-parent">
-			  	<div class="number-box-holder large-format" id="<%= i %>">
-			 		<p><%= i %></p>
-			 	</div>
-			  </div>    
-			<% end %>
+			<%= render 'large_format_per_week_choice' %>
 		</div>
 	</div>
 </div>

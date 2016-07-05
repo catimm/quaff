@@ -1,4 +1,5 @@
 class SignupController < ApplicationController
+  include DeliveryEstimator
   require "stripe"
   
   def getting_started
@@ -12,6 +13,9 @@ class SignupController < ApplicationController
       @view = params[:id]
       @step = 1
     end
+    
+    # set current page for jquery data routing
+    @current_page = "signup"
     
     # get User info 
     @user = User.find(current_user.id)
@@ -37,6 +41,10 @@ class SignupController < ApplicationController
           @cider_chosen = "hidden"
           @beer_and_cider_chosen = "show"
         end
+      else
+        @beer_chosen = "hidden"
+        @cider_chosen = "hidden"
+        @beer_and_cider_chosen = "hidden"
       end
       
     elsif @view == "journey"
@@ -186,39 +194,106 @@ class SignupController < ApplicationController
         @repeat_percentage = 50
       end
       
+      # get number of drinks per week
       if !@delivery_preferences.drinks_per_week.nil?
         @drinks_per_week = @delivery_preferences.drinks_per_week
       else 
         @drinks_per_week = 0
       end
       
+      # get number of large format drinks per week
+      if !@delivery_preferences.max_large_format.nil?
+        @large_format_drinks_per_week = @delivery_preferences.max_large_format
+      end
+      
     else
       # set css rule for signup guide header
       @account_chosen = "current"
       
-      # find if user has a plan already
-      @user_plan = UserSubscription.find_by_user_id(current_user.id)
-    
-      if !@user_plan.blank?
-        if @user_plan.subscription_id == 1
-          # set current style variable for CSS plan outline
-          @relish_chosen = "show"
-          @enjoy_chosen = "hidden"
-        elsif @user_plan.subscription_id == 2
-          # set current style variable for CSS plan outline
-          @relish_chosen = "hidden"
-          @enjoy_chosen = "show"
-        else 
+      if @step == "1"
+        # find if user has a plan already
+        @user_plan = UserSubscription.find_by_user_id(current_user.id)
+      
+        if !@user_plan.blank?
+          if @user_plan.subscription_id == 1
+            # set current style variable for CSS plan outline
+            @relish_chosen = "show"
+            @enjoy_chosen = "hidden"
+          elsif @user_plan.subscription_id == 2
+            # set current style variable for CSS plan outline
+            @relish_chosen = "hidden"
+            @enjoy_chosen = "show"
+          else 
+            # set current style variable for CSS plan outline
+            @relish_chosen = "hidden"
+            @enjoy_chosen = "hidden"
+          end
+        else
           # set current style variable for CSS plan outline
           @relish_chosen = "hidden"
           @enjoy_chosen = "hidden"
         end
-      else
-        # set current style variable for CSS plan outline
-        @relish_chosen = "hidden"
-        @enjoy_chosen = "hidden"
       end
       
+      if @step == "2"
+        # find if customer has recieved first delivery or is within one day of it
+        if !@delivery_preferences.first_delivery_date.nil?
+          @first_delivery = @delivery_preferences.first_delivery_date
+          @today = DateTime.now
+          @current_time_difference = ((@first_delivery - @today) / (60*60*24)).floor
+          @change_first_delivery = true
+          # get dates of next few Thursdays
+          @date_time_now = DateTime.now
+          #Rails.logger.debug("1st: #{@date_thursday.inspect}")
+          @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
+          @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
+          
+          if @time_difference >= 10
+            @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
+          end
+          @next_thursday = Date.today.next_week.advance(:days=>3)
+          @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
+          
+          # determine which date is already chosen
+          if @first_delivery.to_date == @next_thursday
+            # set current style variable for CSS plan outline
+            @start_1_chosen = "hidden"
+            @start_2_chosen = "show"
+            @start_3_chosen = "hidden"
+          elsif @first_delivery.to_date == @second_thursday
+            # set current style variable for CSS plan outline
+            @start_1_chosen = "hidden"
+            @start_2_chosen = "hidden"
+            @start_3_chosen = "show"
+          else 
+            # set current style variable for CSS plan outline
+            @start_1_chosen = "show"
+            @start_2_chosen = "hidden"
+            @start_3_chosen = "hidden"
+          end
+        else
+          # get dates of next few Thursdays
+          @date_time_now = DateTime.now
+          #Rails.logger.debug("1st: #{@date_time_now.inspect}")
+          @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
+          @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
+          
+          if @time_difference >= 10
+            @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
+          end
+          @next_thursday = Date.today.next_week.advance(:days=>3)
+          @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
+          
+          # set cover to hidden
+          @start_1_chosen = "hidden"
+          @start_2_chosen = "hidden"
+          @start_3_chosen = "hidden"
+        end
+      end
+      
+      if @step == "3"
+        @user = User.find(current_user.id)
+      end
     end
   end # end of signup method
   
@@ -262,57 +337,26 @@ class SignupController < ApplicationController
         @next_step = "preferences-2"
       elsif @step == "2"
         @delivery_preferences.update(max_large_format: @input)
+        delivery_estimator(current_user.id)
         @next_step = "preferences-3"
       else
         @delivery_preferences.update(new_percentage: @input)
         @next_step = "account-1"
       end
     else
-      if @step == "1"
-        # find if user has a plan already
-        @user_plan = UserSubscription.find_by_user_id(current_user.id)
-        #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
-        # find subscription level id
-        @subscription_level_id = Subscription.where(subscription_level: @input).first
-          
-        if @user_plan.blank?
-          # first create Stripe acct
-          @plan_info = Stripe::Plan.retrieve(@input)
-          #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
-          #Create a stripe customer object on signup
-          customer = Stripe::Customer.create(
-                  :description => @plan_info.statement_descriptor,
-                  :source => params[:stripeToken],
-                  :email => current_user.email,
-                  :plan => @input
-                )
-          # create a new user_subscription row
-          @user_subscription = UserSubscription.create(user_id: current_user.id, subscription_id: @subscription_level_id.id,
-                                    active_until: 1.month.from_now)
-        else
-          # first update Stripe acct
-          customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
-          @plan_info = Stripe::Plan.retrieve(@input)
-          #Rails.logger.debug("Customer: #{customer.inspect}")
-          customer.description = @plan_info.statement_descriptor
-          customer.save
-          subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
-          subscription.plan = @input
-          subscription.save
-          
-          # now update user plan info in the DB
-          @user_plan.update(subscription_id: @subscription_level_id.id)
-        end
-        @next_step = "account-2"
-      elsif @step == "2"
-        
-
-        @next_step = "account-3"
+      if @input == "this"
+        @start_date = Date.today.next_week.advance(:days=>3) - 7.days
+      elsif @input == "next"
+        @start_date = Date.today.next_week.advance(:days=>3)
       else
-        
-
-        @next_step = ""
+        @start_date = Date.today.next_week.advance(:days=>3) + 7.days
       end
+      
+      # update the start date
+      @delivery_preferences.update(first_delivery_date: @start_date)
+      
+      # set next step
+      @next_step = "account-3"
       
     end
     
@@ -423,4 +467,17 @@ class SignupController < ApplicationController
       redirect_to getting_started_path(@next_step)
   end # end process_user_plan_choice
   
+  def account_info_process
+    params[:user][:user_delivery_addresses_attributes]["0"][:city] = "Seattle" #params[:zip].to_region(:city => true)
+    params[:user][:user_delivery_addresses_attributes]["0"][:state] = "WI" #params[:zip].to_region(:state => true)
+    @user = User.find(current_user.id)
+    @user.update(user_params)
+    redirect_to user_deliveries_path('preferences')
+  end # end account_info_process method
+  
+  private
+  def user_params
+    params.require(:user).permit(:first_name, :last_name, :username, user_delivery_addresses_attributes: [:address_one, 
+                                  :address_two, :city, :state, :zip, :special_instructions ])  
+  end
 end # end of controller

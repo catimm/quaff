@@ -24,7 +24,10 @@ $(function() {
 		$(this).siblings('.signup-category-image-holder-chosen-cover').removeClass('hidden').addClass('show');
 		$(this).parent().siblings('.signup-category-image-holder-parent').children('.signup-category-image-holder-chosen-cover').removeClass('show').addClass('hidden');
 		
-		var choice = $(this).attr('id');
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var choice = id_split[0];
+		var current_page = id_split[1];
 		
 		if (choice == "beer") {
 			var new_value = 1
@@ -34,10 +37,16 @@ $(function() {
 			var new_value = 3
 		}
 		
+		if(current_page == "signup") {
+			var controller_url = "/signup/process_input/category-irrelevant-" + new_value
+		} else {
+			var controller_url = "/users/deliveries_update_preferences/drink_type_preference-" + new_value
+		}
+		
 		// send data to controller
 		$.ajax({
 		  type: "POST",
-		  url: "/signup/process_input/category-irrelevant-" + new_value
+		  url: controller_url
 		});
 		
 	});
@@ -46,7 +55,10 @@ $(function() {
 		$(this).siblings('.signup-journey-image-holder-chosen-cover').removeClass('hidden').addClass('show');
 		$(this).parent().siblings('.signup-journey-image-holder-parent').children('.signup-journey-image-holder-chosen-cover').removeClass('show').addClass('hidden');
 		
-		var choice = $(this).attr('id');
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var choice = id_split[0];
+		var current_page = id_split[1];
 		
 		if (choice == "casual") {
 			var new_value = 1
@@ -56,10 +68,16 @@ $(function() {
 			var new_value = 3
 		}
 		
+		if(current_page == "signup") {
+			var controller_url = "/signup/process_input/journey-irrelevant-" + new_value
+		} else {
+			var controller_url = "/users/deliveries_update_preferences/drink_type_preference-" + new_value
+		}
+		
 		// send data to controller
 		$.ajax({
 		  type: "POST",
-		  url: "/signup/process_input/journey-irrelevant-" + new_value
+		  url: controller_url
 		});
 		
 	});
@@ -69,12 +87,44 @@ $(function() {
 		$(this).addClass('chosen');
 		$(this).parent().siblings('.number-box-holder-parent').children('.number-box-holder').removeClass('chosen');
 		
-		var drinks_per_week = $(this).attr('id');
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var drinks_per_week = id_split[0];
+		var current_page = id_split[1];
+		
+		if(current_page == "signup") {
+			var controller_url = "/signup/process_input/preferences-1-" + drinks_per_week
+		} else {
+			var controller_url = "/users/deliveries_update_preferences/drinks_per_week-" + drinks_per_week
+		}
+		 
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: controller_url
+		});
+		
+	});
+	
+	$(document).on('click', '.signup-plan-start-holder', function () {
+		$(this).siblings('.signup-plan-start-holder-chosen-cover').removeClass('hidden').addClass('show');
+		$(this).parent().siblings('.signup-plan-start-holder-parent').children('.signup-plan-start-holder-chosen-cover').removeClass('show').addClass('hidden');
+		
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var start_choice = id_split[0];
+		var current_page = id_split[1];
+		
+		if(current_page == "signup") {
+			var controller_url = "/signup/process_input/account-2-" + start_choice
+		} else {
+			var controller_url = "/users/deliveries_update_preferences/start_date-" + start_choice
+		}
 		
 		// send data to controller
 		$.ajax({
 		  type: "POST",
-		  url: "/signup/process_input/preferences-1-" + drinks_per_week
+		  url: controller_url
 		});
 		
 	});
@@ -84,12 +134,21 @@ $(function() {
 		$(this).addClass('chosen');
 		$(this).parent().siblings('.number-box-holder-parent').children('.number-box-holder').removeClass('chosen');
 		
-		var large_format = $(this).attr('id');
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var large_format = id_split[0];
+		var current_page = id_split[1];
+		
+		if(current_page == "signup") {
+			var controller_url = "/signup/process_input/preferences-2-" + large_format
+		} else {
+			var controller_url = "/users/deliveries_update_preferences/large_format-" + large_format
+		}
 		
 		// send data to controller
 		$.ajax({
 		  type: "POST",
-		  url: "/signup/process_input/preferences-2-" + large_format
+		  url: controller_url
 		});
 		
 	});

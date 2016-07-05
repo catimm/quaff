@@ -89,7 +89,7 @@
 								<% if @user_plan.subscription_id == 2 %>
 									<h2 class="retailer-plan-cost">Current Plan</h2>
 								<% else %>
-									<%= link_to choose_plan_path(current_user.id, "enjoy"), class: 'btn btn-primary formButton-start-plan', data: {confirm: "Are you sure you want to change your plan?"} do %>
+									<%= link_to choose_plan_path(current_user.id, "enjoy"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"} do %>
 										<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
 									<% end %>
 								<% end %>
@@ -143,7 +143,7 @@
 								<% if @user_plan.subscription_id == 1 %>
 									<h2 class="retailer-plan-cost">Current Plan</h2>
 								<% else %>
-									<%= link_to choose_plan_path(current_user.id, "relish"), class: 'btn btn-primary formButton-start-plan', data: {confirm: "Are you sure you want to change your plan?"}  do %>
+									<%= link_to choose_plan_path(current_user.id, "relish"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
 										<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
 									<% end %>
 								<% end %>

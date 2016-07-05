@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160630043646) do
+ActiveRecord::Schema.define(version: 20160630184237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -368,6 +368,18 @@ ActiveRecord::Schema.define(version: 20160630043646) do
     t.boolean  "small_format"
   end
 
+  create_table "user_delivery_addresses", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "address_one"
+    t.string   "address_two"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.text     "special_instructions"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
   create_table "user_drink_recommendations", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
@@ -460,6 +472,7 @@ ActiveRecord::Schema.define(version: 20160630043646) do
     t.integer  "invitations_count",                  default: 0
     t.string   "first_name"
     t.integer  "craft_stage_id"
+    t.string   "last_name"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

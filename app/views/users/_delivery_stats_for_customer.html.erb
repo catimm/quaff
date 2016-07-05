@@ -1,4 +1,3 @@
-
 <div class="col-sm-1">
 	<div class="delivery-info-box drinks">
 		<p>drinks</p>
@@ -18,18 +17,6 @@
 	</div>	
 </div>
 <div class="col-sm-1">
-	<div class="delivery-info-box cooler">
-		<p>cooler</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_cooler %></h4>
-	</div>	
-</div>
-<div class="col-sm-1">
-	<div class="delivery-info-box cellar">
-		<p>cellar</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_cellar %></h4>
-	</div>	
-</div>
-<div class="col-sm-1">
 	<div class="delivery-info-box small">
 		<p>small</p>
 		<h4 class="delivery-preference-prompt"><%= @next_delivery_small %></h4>
@@ -41,17 +28,23 @@
 		<h4 class="delivery-preference-prompt"><%= @next_delivery_large %></h4>
 	</div>	
 </div>
-<div class="col-sm-5">
-	<div class="delivery-info-box subtotal">
-		<p>subtotal</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.subtotal, precision: 2) %></h4>
-	</div>
-	<div class="delivery-info-box sales-tax">
-		<p>tax</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.sales_tax, precision: 2) %></h4>
-	</div>	
+<div class="col-sm-7">
 	<div class="delivery-info-box total-price">
 		<p>total</p>
 		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.total_price, precision: 2) %></h4>
+	</div>
+	<div class="show-more-price-info show">
+		<i class="fa fa-plus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to see the subtotal and sales tax."></i>
+	</div>
+	<div class="delivery-info-box subtotal hidden">
+		<p>subtotal</p>
+		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.subtotal, precision: 2) %></h4>
+	</div>
+	<div class="delivery-info-box sales-tax hidden">
+		<p>tax</p>
+		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.sales_tax, precision: 2) %></h4>
+	</div>
+	<div class="show-less-price-info hidden">
+		<i class="fa fa-minus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to hide the subtotal and sales tax."></i>
 	</div>
 </div>

@@ -84,7 +84,8 @@ Rails.application.routes.draw do
   get '/signup/getting_started/:id' => 'signup#getting_started', :as => 'getting_started'
   post '/signup/process_input/:id' => 'signup#process_input', :as => 'process_input'
   post '/signup/process_style_input/:id' => 'signup#process_style_input'
-  post '/signup/process_user_plan_choice/:id' => 'signup#process_user_plan_choice', :as => 'process_user_plan_choice'
+  post '/signup/process_user_plan_choice/:id' => 'signup#process_user_plan_choice', :as => 'process_user_plan_choice'  
+  patch '/signup/account_info_process' => 'signup#account_info_process', :as => 'account_info_process'
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"

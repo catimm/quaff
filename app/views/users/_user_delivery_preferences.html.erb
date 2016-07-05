@@ -1,160 +1,115 @@
 <div class="row no-margin">
 	<div class="col-xs-12 col-sm-8">
 		<h3 class="recent-ratings-header">Delivery preferences</h3>
+		<h5>Set the rules for your deliveries and we'll make sure you get drinks you will love.</h5>
 	</div>
 	<div class="col-xs-12 col-sm-4 no-padding-right text-right" id="last-updated-holder">
 		<% if !@preference_updated.nil? %>
 			<%= render 'preferences_last_updated' %>
 		<% end %>
 	</div>
-	<div class="col-xs-12">
-		<h5>Set the rules for your deliveries and we'll make sure you get drinks you will love.</h5>
-	</div>
 </div>
-<% if !@delivery_preferences.first_delivery_date.nil? %>
-	<div class="row no-margin">
-		<div class="col-sm-9">
-			<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
-				<hr>
-				<div class="row no-margin">
-					<% if @current_time_difference > 1 %>
-						<div class="col-sm-4 no-padding">
-							<h3 class="delivery-preference-prompt">Your first delivery:</h3>
-						</div>
-						<div class="col-sm-4 no-padding">
-							 <h5 class="delivery-date-choice"><%= (@delivery_preferences.first_delivery_date).strftime("%A, %b %e, %Y") %></h5>
-						</div>
-						<div class="col-sm-4 no-padding">
-							<%= link_to "Change first delivery date", reset_customer_delivery_date_path(current_user.id), :class => "btn btn-success inputButton2 change-delivery-date-button",
-									data: {toggle: "modal", target: "#customer_first_delivery"} %>
-						</div>
-					<% else %>
-						<div class="col-sm-8 no-padding">
-							<h3 class="delivery-preference-prompt">Your first delivery:</h3>
-						</div>
-						<div class="col-sm-4 no-padding">
-							 <h5 class="delivery-date-choice"><%= (@delivery_preferences.first_delivery_date).strftime("%A, %b %e, %Y") %></h5>
-						</div>
-					<% end %>
-				</div>
-				<hr>
-				<div class="row no-margin">
-					<div class="col-sm-8 no-padding">
-						<h3 class="delivery-preference-prompt">What do you drink?</h3>
-					</div>
+<div class="row no-margin">
+	<div class="col-sm-9">
+		<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
+			<hr>
+			<div class="row no-margin">
+				<% if @current_time_difference > 1 %>
 					<div class="col-sm-4 no-padding">
-						<% @drink_options.each do |format| %>
-						  <% if @delivery_preferences.drink_option_id == format.id %>
-						  	<% @this_preference = true %>
-						  <% else %>
-						  	<% @this_preference = false %>
-						  <% end %>
-						  <label class="drink-preference-choice">
-						  <%= check_box_tag :drink_option_ids, format.id, @this_preference, :name => 'preferences[drink_option_ids][]', :class => 'drink-type-preference' %><%= format.drink_option_name %></label>
-						<% end %>
+						<h3 class="delivery-preference-prompt">Your first delivery:</h3>
+						<p class="delivery-detail">Deliveries are every other Thursday.</p>
 					</div>
-				</div>
-				<hr>
-				<div class="row no-margin">
-					<div class="col-sm-10 no-padding">
-						<h3 class="delivery-preference-prompt">What is the average number of beers/ciders you drink at home each week?</h3>
+					<div class="col-sm-8 no-padding">
+						 <div class="row no-margin preferences-start-date-row-holder">
+						 	<%= render 'signup/start_date_choice' %>
+						 </div>
 					</div>
-					<div class="col-sm-2">
-						<%= f.select :drinks_per_week, (1..21), {}, {required: 'true', class: 'form-control'}  %>
+				<% else %>
+					<div class="col-sm-9 no-padding">
+						<h3 class="delivery-preference-prompt">Your next delivery:</h3>
 					</div>
-				</div>
-				<hr>
-				<div class="row no-margin">
-					<div class="col-sm-10 no-padding">
-						<h3 class="delivery-preference-prompt">What is the max number of large format drinks (22oz) you would drink each week?</h3>
+					<div class="col-sm-3 no-padding preferences-start-date-row-holder">
+						<div class="row no-margin preferences-next-delivery-date text-center">
+							<div class="col-xs-12 start-month-holder">
+								<h1 class="signup-start-month"><%= (@delivery.delivery_date).strftime("%^B") %></h1>
+							</div>
+							<div class="col-xs-12 start-date-holder">
+								<h1 class="signup-start-date"><%= (@delivery.delivery_date).strftime("%e") %></h1>
+							</div>
+							<div class="col-xs-12 start-day-holder">
+								<h1 class="signup-start-day"><%= (@delivery.delivery_date).strftime("%^A") %></h1>
+							</div>
+						</div>
 					</div>
-					<div class="col-sm-2">
-						<%= f.select :drinks_per_week, (0..@drink_per_week_calculation), {}, {required: 'true', class: 'form-control'}  %>
-					</div>
-				</div>
-				<hr>
-				<%#<div class="row no-margin">%>
-				<%#	<div class="col-sm-10 no-padding">%>
-				<%#		<h3 class="delivery-preference-prompt">What is the max number of beers/ciders you want in your cooler at any given time?</h3>%>
-				<%#	</div>%>
-				<%#	<div class="col-sm-2">%>
-				<%#		<%= f.select :drinks_in_cooler, (1..50), {}, {required: 'true', class: 'form-control'}  %>
-				<%#	</div>%>
-				<%#</div>%>
-				<%#<hr>%>
-				<div class="row no-margin">
-					<div class="col-sm-12 no-padding">
-						<h3 class="delivery-preference-prompt">What is the percentage of new vs repeat drinks you'd like in each delivery?</h3>
-					</div>
-					<div class="col-sm-2 no-padding">
-						<h2 class="delivery-preference-percentage repeat text-center"><span id="repeat-preference"><%= @repeat_percentage %></span>% <span class="preference-label">repeat</span></h2>
-					</div>
-					<div class="col-sm-8">
-						<%= f.text_field :new_percentage, id: 'new_percentage', type: 'text',
-		                 data: {'slider-id' => 'delivery-new-slider',
-		                 		'slider-min' => '0',
-		                        'slider-max' => '100',
-		                        'slider-step' => '5',
-		                        'slider-value' => @new_percentage,
-		                        'slider-orientation' => 'horizontal',
-		                        'slider-handle' => 'square' } %>
-					</div>
-					<div class="col-sm-2 no-padding">
-						<h2 class="delivery-preference-percentage new text-center"><span id="new-preference"><%= @new_percentage %></span>% <span class="preference-label">new</span></h2>
-					</div>
-					<%#<div class="col-sm-12"> %>
-					<%#	<h4 class="delivery-preference-confirmation-message">Each delivery will have %>
-					<%#		<span class="new-drink-color" id="new-preference-2"><%= @new_drink_message_estimate %></span>
-					<%#		<span class="new-drink-color"> new drinks</span> you've never had before and  %>
-					<%#		<span class="repeat-drink-color" id="repeat-preference-2"><%= @repeat_drink_message_estimate %>
-					<%#		</span><span class="repeat-drink-color"> repeat drinks</span>. %>
-					<%#	</h4> %>
-					<%#</div> %>
-				</div>
-				<hr>
-				<div class="row no-margin">
-					<div class="col-sm-12 no-padding">
-						<h3 class="delivery-preference-prompt">Additional requests</h3>
-					</div>
-					<div class="col-sm-12 delivery-additional-request">
-						<%= f.text_area :additional, {required: 'true', class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I drink only gluten free drinks"'}  %>
-					</div>
-				</div>
-			<% end %>
-		</div>
-		<div class="col-sm-3 no-padding" id="estimate-column">
-			<div id="scroller-anchor"></div>
-			<div class="estimated-delivery-price-holder" id="scroller">
-				<h4 class="estimated-delivery-price-header">Per delivery estimates:</h4>
-				<ul class="estimation-list">
-					<li><h5 class="estimation-text" id="drink-delivery-estimate"><%= @drink_delivery_estimate %></h5></li>
-					<li>
-						<h5 class="estimation-text">
-							<% if !@delivery_preferences.new_percentage.nil? %>
-								<span class="small-format-drink-color">~ <span id="small_format_estimate"><%= @small_delivery_estimate %></span> small format</span> / 
-								<span class="large-format-drink-color">~ <span id="large_format_estimate"><%= @large_delivery_estimate %></span> large format</span>
-							<% else %>
-								New/repeat drink mix TBD
-							<% end %>
-						</h5>
-					</li>
-					<li>
-						<h5 class="estimation-text">
-							<% if !@delivery_preferences.new_percentage.nil? %>
-								<span class="new-drink-color">~ <span id="new_drink_estimate"><%= @new_drink_estimate %></span> new</span> / 
-								<span class="repeat-drink-color">~ <span id="repeat_drink_estimate"><%= @repeat_drink_estimate %></span> repeat</span>
-							<% else %>
-								New/repeat drink mix TBD
-							<% end %>
-						</h5>
-					</li>
-				</ul>
-				<h4 class="estimation-text">Approximate cost per delivery:</h4>
-				<h3 class="cost-range-text" id="cost_estimate"><%= @cost_estimate %></h3>
+				<% end %>
 			</div>
+			<hr>
+			<div class="row no-margin">
+				<div class="col-sm-4 no-padding">
+					<h3 class="delivery-preference-prompt">What do you drink?</h3>
+				</div>
+				<div class="col-sm-8 no-padding">
+					<div class="row no-margin preferences-drink-category-row-holder">
+						<%= render 'signup/drink_category_choice' %>
+					</div>
+					
+				</div>
+			</div>
+			<hr>
+			<div class="row no-margin">
+				<div class="col-sm-6 no-padding">
+					<h3 class="delivery-preference-prompt">What is the average number of beers/ciders you drink at home each week?</h3>
+				</div>
+				<div class="col-sm-6 no-padding-right">
+					<%= render 'signup/drinks_per_week_choice'%>
+				</div>
+			</div>
+			<hr>
+			<div class="row no-margin">
+				<div class="col-sm-6 no-padding">
+					<h3 class="delivery-preference-prompt">What is the max number of large format drinks (22oz) you would drink each week?</h3>
+				</div>
+				<div class="col-sm-6 no-padding-right" id="large_format_drinks_per_week_options">
+					<%= render 'signup/large_format_per_week_choice'%>
+				</div>
+			</div>
+			<hr>
+			<div class="row no-margin">
+				<div class="col-sm-4 no-padding">
+					<h3 class="delivery-preference-prompt">What is the percentage of new vs repeat drinks you'd like in each delivery?</h3>
+				</div>
+				<div class="col-sm-2 no-padding">
+					<h2 class="delivery-preference-percentage repeat text-center"><span id="repeat-preference"><%= @repeat_percentage %></span>% <span class="preference-label">repeat</span></h2>
+				</div>
+				<div class="col-sm-4">
+					<%= f.text_field :new_percentage, id: 'new_percentage', type: 'text',
+	                 data: {'slider-id' => 'delivery-new-slider',
+	                 		'slider-min' => '0',
+	                        'slider-max' => '100',
+	                        'slider-step' => '5',
+	                        'slider-value' => @new_percentage,
+	                        'slider-orientation' => 'horizontal',
+	                        'slider-handle' => 'square' } %>
+				</div>
+				<div class="col-sm-2 no-padding">
+					<h2 class="delivery-preference-percentage new text-center"><span id="new-preference"><%= @new_percentage %></span>% <span class="preference-label">new</span></h2>
+				</div>
+			</div>
+			<hr>
+			<div class="row no-margin">
+				<div class="col-sm-4 no-padding">
+					<h3 class="delivery-preference-prompt">Additional requests</h3>
+				</div>
+				<div class="col-sm-8 delivery-additional-request">
+					<%= f.text_area :additional, {required: 'true', class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I drink only gluten free drinks"'}  %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-sm-3 no-padding" id="estimate-column">
+		<div id="scroller-anchor"></div>
+		<div class="row no-margin estimated-delivery-price-holder" id="scroller">
+			<%= render 'delivery_estimates_for_customer' %>
 		</div>
 	</div>
-<% end %>
-<div id="customer_first_delivery" class="modal">
-	<%= render 'customer_delivery_date_modal' %>
 </div>

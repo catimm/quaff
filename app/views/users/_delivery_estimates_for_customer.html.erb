@@ -1,0 +1,44 @@
+<h4 class="estimated-delivery-price-header">Per delivery estimates:</h4>
+<div class="col-sm-2"></div>
+<div class="col-sm-8 preference-estimate-holder">
+	<div class="delivery-info-box drinks">
+		<p>total drinks</p>
+		<h4 class="delivery-preference-prompt">~<%= @drink_per_week_calculation %></h4>
+	</div>	
+</div>
+<div class="col-sm-6 preference-estimate-holder">
+	<div class="delivery-info-box new">
+		<p>new</p>
+		<h4 class="delivery-preference-prompt">~<%= @new_drink_estimate %></h4>
+	</div>	
+</div>
+<div class="col-sm-6 preference-estimate-holder">
+	<div class="delivery-info-box repeat">
+		<p>repeat</p>
+		<h4 class="delivery-preference-prompt">~<%= @repeat_drink_estimate %></h4>
+	</div>	
+</div>
+<div class="col-sm-6 preference-estimate-holder">
+	<div class="delivery-info-box small">
+		<p>small</p>
+		<h4 class="delivery-preference-prompt"><span class="preference-estimate-signs">><br>=</span>
+			<%= @small_delivery_estimate %>
+		</h4>
+	</div>	
+</div>
+<div class="col-sm-6 preference-estimate-holder">
+	<div class="delivery-info-box large">
+		<p>large</p>
+		<h4 class="delivery-preference-prompt"><span class="preference-estimate-signs"><<br>=</span>
+			<%= @large_delivery_estimate %>
+		</h4>
+	</div>	
+</div>
+<div class="col-sm-2"></div>
+<div class="col-sm-8 preference-estimate-holder no-padding-right">
+	<div class="delivery-info-box total-price">
+		<p>total price</p>
+		<h4 class="delivery-preference-prompt"><%= number_to_currency(@cost_estimate_low, precision: 0) %> - <%= number_to_currency(@cost_estimate_high, precision: 0) %></h4>
+	</div>
+</div>
+
