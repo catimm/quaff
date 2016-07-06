@@ -13,7 +13,7 @@
 			<h4>Delivered: <%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></h4>
 		</div>	
 		<div class="row no-margin delivery-drinks-row">
-			<%= render 'past_delivery', delivery: delivery %>
+			<%= render 'user_delivery_past_delivery', delivery: delivery %>
 		</div>
 		<hr>
 	<% end %>

@@ -29,16 +29,16 @@
 			        	<% @new_or_repeat = "Repeat" %>
 			        <% end %>
 			        <td><%= @new_or_repeat %></td>
-			       <% if drink.cooler == true %>
-			        	<% @cooler_or_cellar = "Cooler" %>
-			        <% else %>
+			       <% if drink.cellar == true %>
 			        	<% @cooler_or_cellar = "Cellar" %>
+			        <% else %>
+			        	<% @cooler_or_cellar = "Cooler" %>
 			        <% end %>
 			        <td><%= @cooler_or_cellar %></td>   
 			        <td><%= drink.quantity %></td>
 			        <% @quantity_total += drink.quantity %>
-			        <td><%= number_to_currency(drink.inventory.drink_price, precision: 2) %></td>
-			        <% @subtotal = (drink.quantity * drink.inventory.drink_price) %>
+			        <td><%= number_to_currency(drink.drink_price, precision: 2) %></td>
+			        <% @subtotal = (drink.quantity * drink.drink_price) %>
 			        <% @subtotal_total += @subtotal %>
 			        <td><%= number_to_currency(@subtotal, precision: 2) %></td>
 			        <% @tax = (@subtotal * 0.096) %>

@@ -26,17 +26,7 @@ class Admin::RecommendationsController < ApplicationController
     @customer_next_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
     
     # get user's weekly drink max to be delivered
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-
-    # user's drinks currently in cooler
-    @user_cooler_count = UserSupply.where(user_id: @chosen_user_id, supply_type_id: 1).count
-    
-    # set drinks to be delivered in next shipment
-    @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
-    @days_to_next_delivery = (@customer_next_delivery.delivery_date.to_date - Time.now.to_date).to_i
-    @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
-    @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
-    #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
+    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
     
     # get current deliver cost estimate
     @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
@@ -55,8 +45,8 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # set other drink guidelines for recommendation choices
-    @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
-    @next_delivery_retry_need = @drinks_next_delivery - @next_delivery_new_need
+    @next_delivery_new_need = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100)
+    @next_delivery_retry_need = @drink_per_delivery_calculation - @next_delivery_new_need
     @next_delivery_max_cellar = @delivery_preferences.max_cellar
     @next_delivery_max_large = @delivery_preferences.max_large_format
     
@@ -337,17 +327,7 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # get user's weekly drink max to be delivered
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-
-    # user's drinks currently in cooler
-    @user_cooler_count = UserSupply.where(user_id: params[:id], supply_type_id: 1).count
-    
-    # set drinks to be delivered in next shipment
-    @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
-    @days_to_next_delivery = (@customer_next_delivery.delivery_date.to_date - Time.now.to_date).to_i
-    @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
-    @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
-    #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
+    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
     
     # get current deliver cost estimate
     @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
@@ -366,8 +346,8 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # set other drink guidelines for recommendation choices
-    @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
-    @next_delivery_retry_need = @drinks_next_delivery - @next_delivery_new_need
+    @next_delivery_new_need = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100)
+    @next_delivery_retry_need = @drink_per_delivery_calculation - @next_delivery_new_need
     @next_delivery_max_cellar = @delivery_preferences.max_cellar
     @next_delivery_max_large = @delivery_preferences.max_large_format
     
@@ -488,17 +468,7 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # get user's weekly drink max to be delivered
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-
-    # user's drinks currently in cooler
-    @user_cooler_count = UserSupply.where(user_id: params[:id], supply_type_id: 1).count
-    
-    # set drinks to be delivered in next shipment
-    @avg_daily_consumption = (@delivery_preferences.drinks_per_week / 7)
-    @days_to_next_delivery = (@customer_next_delivery.delivery_date.to_date - Time.now.to_date).to_i
-    @drinks_for_daily_consumption = @avg_daily_consumption * @days_to_next_delivery
-    @drinks_next_delivery = ((@drink_per_week_calculation - @user_cooler_count) + @drinks_for_daily_consumption)
-    #Rails.logger.debug("next delivery: #{@drinks_next_delivery.inspect}")
+    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
     
     # get current deliver cost estimate
     @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
@@ -517,8 +487,8 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # set other drink guidelines for recommendation choices
-    @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
-    @next_delivery_retry_need = @drinks_next_delivery - @next_delivery_new_need
+    @next_delivery_new_need = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100)
+    @next_delivery_retry_need = @drink_per_delivery_calculation - @next_delivery_new_need
     @next_delivery_max_cellar = @delivery_preferences.max_cellar
     @next_delivery_max_large = @delivery_preferences.max_large_format
 

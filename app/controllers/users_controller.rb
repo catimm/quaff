@@ -438,18 +438,18 @@ class UsersController < ApplicationController
 
     @preference_updated = @delivery_preferences.updated_at
     # set estimate values
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-    @drink_delivery_estimate = @drink_per_week_calculation
+    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
+    @drink_delivery_estimate = @drink_per_delivery_calculation
 
     # set slider values for new vs repeat
     @new_percentage = @delivery_preferences.new_percentage
     @repeat_percentage = 100 - @new_percentage
     # set new/repeat drink estimates
-    @new_drink_estimate = ((@drink_per_week_calculation * @new_percentage)/100).round
-    @repeat_drink_estimate = @drink_per_week_calculation - @new_drink_estimate
+    @new_drink_estimate = ((@drink_per_delivery_calculation * @new_percentage)/100).round
+    @repeat_drink_estimate = @drink_per_delivery_calculation - @new_drink_estimate
     # set small/large format drink estimates
     @large_delivery_estimate = @delivery_preferences.max_large_format
-    @small_delivery_estimate = @drink_per_week_calculation - @large_delivery_estimate
+    @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
     
     # find if customer has recieved first delivery or is within one day of it
     @first_delivery = @delivery_preferences.first_delivery_date
@@ -568,14 +568,14 @@ class UsersController < ApplicationController
     # get data for delivery estimates
     @drinks_per_week = @delivery_preferences.drinks_per_week
     @large_format_drinks_per_week = @delivery_preferences.max_large_format
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-    @drink_delivery_estimate = @drink_per_week_calculation
+    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
+    @drink_delivery_estimate = @drink_per_delivery_calculation
     # get new/repeat estimate
-    @new_drink_estimate = ((@drink_per_week_calculation * @delivery_preferences.new_percentage)/100).round
-    @repeat_drink_estimate = @drink_per_week_calculation - @new_drink_estimate
+    @new_drink_estimate = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100).round
+    @repeat_drink_estimate = @drink_per_delivery_calculation - @new_drink_estimate
     # get small/large format estimates
     @large_delivery_estimate = @delivery_preferences.max_large_format
-    @small_delivery_estimate = @drink_per_week_calculation - @large_delivery_estimate
+    @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
     # get estimated cost estimates
     @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
     @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
@@ -895,24 +895,25 @@ class UsersController < ApplicationController
       if !@user_fav_drinks.blank?
         @style_last_updated = @user_fav_drinks.sort_by(&:updated_at).reverse.first
         @preference_updated = @style_last_updated.updated_at
-      end
       
-      # make sure there are 5 records in the fav drinks variable
-      @drink_count = @user_fav_drinks.size
-      if @drink_count < 5
-        @drink_rank_array = Array.new
-        @total_array = [1, 2, 3, 4, 5]
-        @user_fav_drinks.each do |drink|
-          @drink_rank_array << drink.drink_rank
+        # make sure there are 5 records in the fav drinks variable
+        @drink_count = @user_fav_drinks.size
+          if @drink_count < 5
+            @drink_rank_array = Array.new
+            @total_array = [1, 2, 3, 4, 5]
+            @user_fav_drinks.each do |drink|
+              @drink_rank_array << drink.drink_rank
+            end
+            @final_array = @total_array - @drink_rank_array
+            @final_array.each do |rank|
+              @empty_drink = UserFavDrink.new(drink_rank: rank)
+              @user_fav_drinks << @empty_drink
+            end
+          end
+          @final_drink_order = @user_fav_drinks.sort_by(&:drink_rank)
+          #Rails.logger.debug("Final user drinks: #{@testing_this.inspect}")
         end
-        @final_array = @total_array - @drink_rank_array
-        @final_array.each do |rank|
-          @empty_drink = UserFavDrink.new(drink_rank: rank)
-          @user_fav_drinks << @empty_drink
-        end
-      end
-      @final_drink_order = @user_fav_drinks.sort_by(&:drink_rank)
-      #Rails.logger.debug("Final user drinks: #{@testing_this.inspect}")
+      
     end # end of preparing either styles or drinks view
     
     # instantiate new drink in case user adds a new drink

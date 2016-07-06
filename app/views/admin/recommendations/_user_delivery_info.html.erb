@@ -31,10 +31,10 @@
 		<div class="row second-row-next-delivery-review">
 		    <div class="col-sm-3">
 		      	<div class="box-left-initial">
-		      		<h5>Need <%= @drinks_next_delivery %> <%= "drink".pluralize(@drinks_next_delivery) %> in next delivery; have <%= @drink_count %></h5>
+		      		<h5>Need <%= @drink_per_delivery_calculation %> <%= "drink".pluralize(@drink_per_delivery_calculation) %> in next delivery; have <%= @drink_count %></h5>
 		    	</div>
 				<div class="box-right-initial">
-			      	<% if @drinks_next_delivery == @drink_count %>
+			      	<% if @drink_per_delivery_calculation == @drink_count %>
 			      		<div class="style-indicator like-style-next-delivery-initial text-center">
 			      			<i class="fa fa-check"></i>
 			      		</div>						
