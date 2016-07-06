@@ -41,17 +41,15 @@
 					          <ul class="dropdown-menu">
 					            
 					            <li class="dropdown-header">My activity</li>
-					            <%# <li class="dropdown-link"><%= link_to "Activity", user_activity_path(current_user.id) %></li>
 					            <li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path('next') %></li>
-					            <li class="dropdown-link"><%= link_to "Drink Profile", user_profile_path(current_user.id) %></li>
+					            <li class="dropdown-link"><%= link_to "Drink Profile", user_profile_path('recent_ratings') %></li>
 					            <li class="dropdown-link"><%= link_to "Supply", user_supply_path('cooler') %></li>
 								
 								<li class="dropdown-header">My settings</li>
-								<li class="dropdown-link"><%= link_to "Account", user_account_settings_path("info") %></li>
-								<li class="dropdown-link"><%= link_to "Delivery Preferences", user_preferences_path(current_user.id, 'styles') %></li>
-								<li class="dropdown-link"><%= link_to "Drink Preferences", user_preferences_path(current_user.id, 'styles') %></li>
+								<li class="dropdown-link"><%= link_to "Account", user_account_settings_path("plan") %></li>
+								<li class="dropdown-link"><%= link_to "Delivery", user_delivery_settings_path(current_user.id) %></li>
+								<li class="dropdown-link"><%= link_to "Drink", user_drink_settings_path(current_user.id, 'styles') %></li>
 								
-					            
 					            <% if current_user.role_id == 1 || current_user.role_id == 2 %>
 						            <li class="dropdown-header">Admin links</li>
 						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>

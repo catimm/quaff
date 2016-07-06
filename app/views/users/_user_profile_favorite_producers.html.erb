@@ -1,0 +1,21 @@
+<div class="row no-margin">
+	<div class="col-sm-12" id="fav-drink-types">
+		<h3 class="recent-ratings-header">My favorite producers</h3>
+		<h5 class="page-subheader">Check out which drink makers you like the most...you just might be surprised!</h5>
+	</div>
+</div>
+<% if !@user_ratings_by_brewery.blank? %>
+	<div class="row no-margin">
+		<% @user_ratings_by_brewery.each do |brewery| %>
+			<div class="col-sm-2 fav-drink-col">
+				<%= render(partial: 'user_profile_favorite_producer_tile', locals: { brewery: brewery }) %>
+			</div>
+		<% end%>
+		<div class="col-sm-12" id="fav-drink-types-container">
+			<%= will_paginate @user_ratings_by_brewery, renderer: BootstrapPagination::Rails %>
+		</div>
+	</div>
+<% end %>
+<div id="unique_producer_rated_drinks" class="modal">
+	
+</div>

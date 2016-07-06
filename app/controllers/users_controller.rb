@@ -266,54 +266,73 @@ class UsersController < ApplicationController
   end # end supply removal
   
   def profile
+    # get current view
+    @view = params[:id]
     # get user info
     @user = User.find(current_user.id)
+    
     # get user ratings history
     @user_ratings = UserBeerRating.where(user_id: @user.id)
-    @recent_user_ratings = @user_ratings.order(created_at: :desc).first(21)
-    # get top rated drinks
-    @top_rated_drinks = @user_ratings.order(user_beer_rating: :desc).first(5)
-    # get top rated breweries
-    @user_ratings_by_brewery = @user_ratings.rating_breweries
-    #Rails.logger.debug("Brewery ratings: #{@user_ratings_by_brewery.inspect}") 
-    # get top rated drink types
-    @user_ratings_by_type = @user_ratings.rating_drink_types.paginate(:page => params[:page], :per_page => 5)
     
-    if !@user_ratings_by_type.blank?
-      # create array to hold descriptors cloud
-      @final_descriptors_cloud = Array.new
+    if @view == "recent_ratings"
+      # set css class for chosen view
+      @ratings_chosen = "chosen"
       
-      # get top descriptors for drink types the user likes
-      @user_ratings_by_type.each do |rating_drink_type|
-        @drink_type_descriptors = drink_type_descriptor_cloud(rating_drink_type)
-        @final_descriptors_cloud << @drink_type_descriptors
-      end
-      # send full array to JQCloud
-      gon.drink_type_descriptor_array = @final_descriptors_cloud
-
+      # get recent user ratings history
+      @recent_user_ratings = @user_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
+    
+    elsif @view == "drink_types"
+      # set css class for chosen view
+      @drink_types_chosen = "chosen"
+       
       # get top rated drink types
-      @user_ratings_by_type_ids = @user_ratings.rating_drink_types
-      @user_ratings_by_type_ids.each do |drink_type|
-        # get drink type info
-        @drink_type = BeerType.find_by_id(drink_type.beer_type_id)
-        # get ids of all drinks of this drink type
-        @drink_ids_of_this_drink_type = Beer.where(beer_type_id: drink_type.beer_type_id).pluck(:id)   
-        # get all descriptors associated with this drink type
-        @final_descriptor_array = Array.new
-        @drink_ids_of_this_drink_type.each do |drink|
-          @drink_descriptors = Beer.find(drink).descriptors
-          @drink_descriptors.each do |descriptor|
-            @final_descriptor_array << descriptor["name"]
-          end
+      @user_ratings_by_type = @user_ratings.rating_drink_types.paginate(:page => params[:page], :per_page => 5)
+      
+      if !@user_ratings_by_type.blank?
+        # create array to hold descriptors cloud
+        @final_descriptors_cloud = Array.new
+        
+        # get top descriptors for drink types the user likes
+        @user_ratings_by_type.each do |rating_drink_type|
+          @drink_type_descriptors = drink_type_descriptor_cloud(rating_drink_type)
+          @final_descriptors_cloud << @drink_type_descriptors
         end
-        @drink_type.all_type_descriptors = @final_descriptor_array.uniq
-        #Rails.logger.debug("All descriptors by type: #{@drink_type.all_type_descriptors.inspect}") 
+        # send full array to JQCloud
+        gon.drink_type_descriptor_array = @final_descriptors_cloud
+  
+        # get top rated drink types
+        @user_ratings_by_type_ids = @user_ratings.rating_drink_types
+        @user_ratings_by_type_ids.each do |drink_type|
+          # get drink type info
+          @drink_type = BeerType.find_by_id(drink_type.beer_type_id)
+          # get ids of all drinks of this drink type
+          @drink_ids_of_this_drink_type = Beer.where(beer_type_id: drink_type.beer_type_id).pluck(:id)   
+          # get all descriptors associated with this drink type
+          @final_descriptor_array = Array.new
+          @drink_ids_of_this_drink_type.each do |drink|
+            @drink_descriptors = Beer.find(drink).descriptors
+            @drink_descriptors.each do |descriptor|
+              @final_descriptor_array << descriptor["name"]
+            end
+          end
+          @drink_type.all_type_descriptors = @final_descriptor_array.uniq
+          #Rails.logger.debug("All descriptors by type: #{@drink_type.all_type_descriptors.inspect}") 
+        end
+        
       end
       
-    end
+      # set up new descriptor form
+      @new_descriptors = BeerType.new
+    else
+      # set css class for chosen view
+      @producers_chosen = "chosen"
+
+      # get top rated breweries
+      @user_ratings_by_brewery = @user_ratings.rating_breweries.paginate(:page => params[:page], :per_page => 18)
+      
+      #Rails.logger.debug("Brewery ratings: #{@user_ratings_by_brewery.inspect}")
     
-    # set up new descriptor form
-    @new_descriptors = BeerType.new
+    end # end of choice between views
     
   end # end profile method
   
@@ -391,111 +410,112 @@ class UsersController < ApplicationController
         
       end # end of check whether delivery is currently under "user review"     
       
-    elsif @delivery_view == "history" # logic if showing the history view
+    else # logic if showing the history view
       # set CSS for chosen link
       @history_chosen = "chosen"
       
       # get past delivery info
       @past_deliveries = Delivery.where(user_id: current_user.id, status: "delivered").order('delivery_date DESC')
       
-    else # logic if showing preferences view
-      # set CSS for chosen link
-      @delivery_preferences_chosen = "chosen"
-      @current_page = "preferences"
-      
-      # get drink options
-      @drink_options = DrinkOption.all
-      
-      # get delivery preferences info
-      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-      # get user's delivery info
-      @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
-      
-      #Rails.logger.debug("Delivery preferences: #{@delivery_preferences.inspect}") 
-      # update time of last save
-
-      @preference_updated = @delivery_preferences.updated_at
-      # set estimate values
-      @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-      @drink_delivery_estimate = @drink_per_week_calculation
-
-      # set slider values for new vs repeat
-      @new_percentage = @delivery_preferences.new_percentage
-      @repeat_percentage = 100 - @new_percentage
-      # set new/repeat drink estimates
-      @new_drink_estimate = ((@drink_per_week_calculation * @new_percentage)/100).round
-      @repeat_drink_estimate = @drink_per_week_calculation - @new_drink_estimate
-      # set small/large format drink estimates
-      @large_delivery_estimate = @delivery_preferences.max_large_format
-      @small_delivery_estimate = @drink_per_week_calculation - @large_delivery_estimate
-      
-      # find if customer has recieved first delivery or is within one day of it
-      @first_delivery = @delivery_preferences.first_delivery_date
-      @today = DateTime.now
-      @current_time_difference = ((@first_delivery - @today) / (60*60*24)).floor
-
-      # get dates of next few Thursdays
-      @date_time_now = DateTime.now
-      #Rails.logger.debug("1st: #{@date_thursday.inspect}")
-      @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
-      @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
-      
-      if @time_difference >= 10
-        @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
-      end
-      @next_thursday = Date.today.next_week.advance(:days=>3)
-      @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
-      # set the chosen date
-      if @first_delivery.to_date == @next_thursday
-        # set current style variable for CSS plan outline
-        @start_1_chosen = "hidden"
-        @start_2_chosen = "show"
-        @start_3_chosen = "hidden"
-      elsif @first_delivery.to_date == @second_thursday
-        # set current style variable for CSS plan outline
-        @start_1_chosen = "hidden"
-        @start_2_chosen = "hidden"
-        @start_3_chosen = "show"
-      else 
-        # set current style variable for CSS plan outline
-        @start_1_chosen = "show"
-        @start_2_chosen = "hidden"
-        @start_3_chosen = "hidden"
-      end
-      
-      # set drink category choice
-      if @delivery_preferences.drink_option_id == 1
-        @beer_chosen = "show"
-        @cider_chosen = "hidden"
-        @beer_and_cider_chosen = "hidden"
-      elsif @delivery_preferences.drink_option_id == 2
-        @beer_chosen = "hidden"
-        @cider_chosen = "show"
-        @beer_and_cider_chosen = "hidden"
-      elsif @delivery_preferences.drink_option_id == 3
-        @beer_chosen = "hidden"
-        @cider_chosen = "hidden"
-        @beer_and_cider_chosen = "show"
-      else
-        @beer_chosen = "hidden"
-        @cider_chosen = "hidden"
-        @beer_and_cider_chosen = "hidden"
-      end
-      
-      # get number of drinks per week
-      @drinks_per_week = @delivery_preferences.drinks_per_week
-      
-      # get number of large format drinks per week
-      @large_format_drinks_per_week = @delivery_preferences.max_large_format
-      
-      # get estimated cost estimates
-      @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
-      @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
- 
     end # end of choosing which view to show
     
   end # end deliveries method
  
+  def delivery_settings
+    # set current page for jquery routing--preferences vs singup settings
+    @current_page = "preferences"
+    
+    # get drink options
+    @drink_options = DrinkOption.all
+    
+    # get delivery preferences info
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    # get user's delivery info
+    @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
+    
+    #Rails.logger.debug("Delivery preferences: #{@delivery_preferences.inspect}") 
+    # update time of last save
+
+    @preference_updated = @delivery_preferences.updated_at
+    # set estimate values
+    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
+    @drink_delivery_estimate = @drink_per_week_calculation
+
+    # set slider values for new vs repeat
+    @new_percentage = @delivery_preferences.new_percentage
+    @repeat_percentage = 100 - @new_percentage
+    # set new/repeat drink estimates
+    @new_drink_estimate = ((@drink_per_week_calculation * @new_percentage)/100).round
+    @repeat_drink_estimate = @drink_per_week_calculation - @new_drink_estimate
+    # set small/large format drink estimates
+    @large_delivery_estimate = @delivery_preferences.max_large_format
+    @small_delivery_estimate = @drink_per_week_calculation - @large_delivery_estimate
+    
+    # find if customer has recieved first delivery or is within one day of it
+    @first_delivery = @delivery_preferences.first_delivery_date
+    @today = DateTime.now
+    @current_time_difference = ((@first_delivery - @today) / (60*60*24)).floor
+
+    # get dates of next few Thursdays
+    @date_time_now = DateTime.now
+    #Rails.logger.debug("1st: #{@date_thursday.inspect}")
+    @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
+    @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
+    
+    if @time_difference >= 10
+      @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
+    end
+    @next_thursday = Date.today.next_week.advance(:days=>3)
+    @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
+    # set the chosen date
+    if @first_delivery.to_date == @next_thursday
+      # set current style variable for CSS plan outline
+      @start_1_chosen = "hidden"
+      @start_2_chosen = "show"
+      @start_3_chosen = "hidden"
+    elsif @first_delivery.to_date == @second_thursday
+      # set current style variable for CSS plan outline
+      @start_1_chosen = "hidden"
+      @start_2_chosen = "hidden"
+      @start_3_chosen = "show"
+    else 
+      # set current style variable for CSS plan outline
+      @start_1_chosen = "show"
+      @start_2_chosen = "hidden"
+      @start_3_chosen = "hidden"
+    end
+    
+    # set drink category choice
+    if @delivery_preferences.drink_option_id == 1
+      @beer_chosen = "show"
+      @cider_chosen = "hidden"
+      @beer_and_cider_chosen = "hidden"
+    elsif @delivery_preferences.drink_option_id == 2
+      @beer_chosen = "hidden"
+      @cider_chosen = "show"
+      @beer_and_cider_chosen = "hidden"
+    elsif @delivery_preferences.drink_option_id == 3
+      @beer_chosen = "hidden"
+      @cider_chosen = "hidden"
+      @beer_and_cider_chosen = "show"
+    else
+      @beer_chosen = "hidden"
+      @cider_chosen = "hidden"
+      @beer_and_cider_chosen = "hidden"
+    end
+    
+    # get number of drinks per week
+    @drinks_per_week = @delivery_preferences.drinks_per_week
+    
+    # get number of large format drinks per week
+    @large_format_drinks_per_week = @delivery_preferences.max_large_format
+    
+    # get estimated cost estimates
+    @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
+    @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
+    
+  end # end of delivery_settings method
+  
   def deliveries_update_preferences
     # get data to add/update
     @data = params[:id]
@@ -831,16 +851,7 @@ class UsersController < ApplicationController
     render :json => {:status => 200}
   end # end stripe_webhook method
   
-  def activity
-    # get user info
-    @user = User.find(current_user.id)
-    # get user ratings history
-    @user_ratings = UserBeerRating.where(user_id: @user.id)
-    @recent_user_ratings = @user_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
-    
-  end # end activity method
-  
-  def preferences
+  def drink_settings
     # get proper view
     @view = params[:format]
     #Rails.logger.debug("current view: #{@view.inspect}")

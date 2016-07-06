@@ -1,0 +1,20 @@
+<div class="row no-margin">
+	<div class="col-sm-12" id="fav-drink-types">
+		<h3 class="recent-ratings-header">My favorite drink types</h3>
+		<h5 class="page-subheader">Peruse your favorite drink types or add specific keyword descriptors to help us improve drink recommendations for you.</h5>
+	</div>
+</div>
+<% if !@user_ratings_by_type.blank? %>
+	<% @user_ratings_by_type.each do |type| %>	
+		<%= render(partial: 'user_profile_favorite_drink_type_row', locals: { type: type }) %>
+	<% end%>
+	<div class="col-sm-12" id="fav-drink-types-container">
+		<%= will_paginate @user_ratings_by_type, renderer: BootstrapPagination::Rails %>
+	</div>
+<% else %>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h4 class="no-results-empty-message">You haven't provided enough input on drinks you like yet. Time for a drink! And don't forget to rate it....</h4>
+		</div>
+	</div>
+<% end %>

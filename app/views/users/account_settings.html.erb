@@ -8,11 +8,11 @@
 		<div class="col-sm-7">
 			<div class="row no-margin">
 				<div class="col-sm-3"></div>
-				<div class="col-sm-2 text-right">
-					<%= link_to "My info", user_account_settings_path('info'), class: "drink-preference-view-option #{@info_chosen}", id: "next" %>
-				</div>
 				<div class="col-sm-2">
 					<%= link_to "My plan", user_account_settings_path('plan'), class: "drink-preference-view-option #{@plan_chosen}", id: "history" %>
+				</div>
+				<div class="col-sm-2 text-right">
+					<%= link_to "My info", user_account_settings_path('info'), class: "drink-preference-view-option #{@info_chosen}", id: "next" %>
 				</div>
 				<div class="col-sm-3">
 					<%= link_to "My journey", user_account_settings_path('journey'), class: "drink-preference-view-option #{@journey_chosen}", id: "delivery-preferences" %>

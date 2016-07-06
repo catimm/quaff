@@ -2,7 +2,7 @@
 	<div class="row no-margin first-row">
 		<div class="container first-row-container">
 			<div class="col-sm-4 no-padding">
-				<h1 class="section-header">Drink Supply</h1>
+				<h1 class="section-header">Supply</h1>
 			</div>
 			<div class="col-sm-8">
 				<div class="row no-margin">
@@ -23,11 +23,11 @@
 	<div class="row">
 		<div class="container" id="preference-view-choice">
 			<% if @view == "cooler" %>
-				<%= render 'user_cooler' %>
+				<%= render 'user_supply_cooler' %>
 			<% elsif @view == "cellar" %>
-				<%= render 'user_cellar' %>
+				<%= render 'user_supply_cellar' %>
 			<% else %>
-				<%= render 'user_wishlist' %>
+				<%= render 'user_supply_wishlist' %>
 			<% end %>
 		</div>
 	</div>

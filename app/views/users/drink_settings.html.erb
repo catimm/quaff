@@ -1,24 +1,28 @@
 <%= render 'layouts/header' %> 
 	<div class="row no-margin first-row">
 		<div class="container first-row-container">
-			<div class="col-sm-5 no-padding">
-				<h1 class="section-header">Drink Preferences</h1>
+			<div class="col-sm-4 no-padding">
+				<h1 class="section-header">Drink Settings</h1>
 			</div>
-			<div class="col-sm-2"></div>
-			<div class="col-sm-1">
-				<%= link_to "Styles", user_preferences_path(current_user.id, 'styles'), class: "drink-preference-view-option #{@styles_chosen}", id: "styles" %>
-			</div>
-			<div class="col-sm-3">
-				<%= link_to "Favorite drinks", user_preferences_path(current_user.id, 'drinks'), class: "drink-preference-view-option #{@drinks_chosen}", id: "fav-drinks" %>
+			<div class="col-sm-8 no-padding">
+				<div class="row no-margin">
+					<div class="col-sm-3"></div>
+					<div class="col-sm-4">
+						<%= link_to "My preferred styles", user_drink_settings_path(current_user.id, 'styles'), class: "drink-preference-view-option #{@styles_chosen}", id: "styles" %>
+					</div>
+					<div class="col-sm-4">
+						<%= link_to "My favorite drinks", user_drink_settings_path(current_user.id, 'drinks'), class: "drink-preference-view-option #{@drinks_chosen}", id: "fav-drinks" %>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="container" id="preference-view-choice">
 			<% if @view == "styles"%>
-				<%= render 'user_styles' %>
+				<%= render 'user_drink_styles' %>
 			<% else %>
-				<%= render 'user_favorite_drinks' %>
+				<%= render 'user_drink_favorite_drinks' %>
 			<% end %>
 		</div>
 	</div>

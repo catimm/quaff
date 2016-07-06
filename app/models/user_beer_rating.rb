@@ -29,15 +29,17 @@ class UserBeerRating < ActiveRecord::Base
   def rating_by_brewery
     self.beer.brewery_id
   end
-  
+   
   # scope drinks rated from same brewery
   scope :rating_breweries, -> {
     joins(:beer).
     group('beers.brewery_id').
     having('COUNT(*) >= ?', 5).
-    select('beers.brewery_id as brewery_id, avg(user_beer_ratings.user_beer_rating) as brewery_rating, count(user_beer_ratings.user_beer_rating) as drinks_rated').
-    order('brewery_rating desc').
-    limit(5)
+    select('beers.brewery_id as brewery_id, 
+            avg((user_beer_ratings.user_beer_rating).round) as brewery_rating, 
+            count(user_beer_ratings.user_beer_rating) as total_drinks_rated,
+            count(DISTINCT beers.id) as unique_drinks_rated').
+    order('brewery_rating desc, total_drinks_rated desc')
   }
   
   # scope drinks rated by drink type--to find most liked drink types

@@ -31,4 +31,6 @@
 //= require_tree .
 jQuery( function($) {
     $('i').tooltip();
+    $('div').tooltip();
+    $('a').tooltip();
 });
