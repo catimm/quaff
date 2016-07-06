@@ -895,25 +895,24 @@ class UsersController < ApplicationController
       if !@user_fav_drinks.blank?
         @style_last_updated = @user_fav_drinks.sort_by(&:updated_at).reverse.first
         @preference_updated = @style_last_updated.updated_at
+      end
       
-        # make sure there are 5 records in the fav drinks variable
-        @drink_count = @user_fav_drinks.size
-          if @drink_count < 5
-            @drink_rank_array = Array.new
-            @total_array = [1, 2, 3, 4, 5]
-            @user_fav_drinks.each do |drink|
-              @drink_rank_array << drink.drink_rank
-            end
-            @final_array = @total_array - @drink_rank_array
-            @final_array.each do |rank|
-              @empty_drink = UserFavDrink.new(drink_rank: rank)
-              @user_fav_drinks << @empty_drink
-            end
-          end
-          @final_drink_order = @user_fav_drinks.sort_by(&:drink_rank)
-          #Rails.logger.debug("Final user drinks: #{@testing_this.inspect}")
+      # make sure there are 5 records in the fav drinks variable
+      @drink_count = @user_fav_drinks.size
+      if @drink_count < 5
+        @drink_rank_array = Array.new
+        @total_array = [1, 2, 3, 4, 5]
+        @user_fav_drinks.each do |drink|
+          @drink_rank_array << drink.drink_rank
         end
-      
+        @final_array = @total_array - @drink_rank_array
+        @final_array.each do |rank|
+          @empty_drink = UserFavDrink.new(drink_rank: rank)
+          @user_fav_drinks << @empty_drink
+        end
+      end
+      @final_drink_order = @user_fav_drinks.sort_by(&:drink_rank)
+      #Rails.logger.debug("Final user drinks: #{@testing_this.inspect}")
     end # end of preparing either styles or drinks view
     
     # instantiate new drink in case user adds a new drink

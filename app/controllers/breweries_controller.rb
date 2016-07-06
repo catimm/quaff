@@ -39,9 +39,9 @@ class BreweriesController < ApplicationController
         temp_drink[:abv] = result.beer_abv
         temp_drink[:form] = session[:form]
       end
-      if request_url.include? "preferences"
+      if request_url.include? "drink_settings"
         temp_drink[:source] = "retailer"
-        temp_drink[:use] = "preferences"
+        temp_drink[:use] = "drink_settings"
         if !result.beer_type_id.nil?
           temp_drink[:type] = result.beer_type.beer_type_name
         end

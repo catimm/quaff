@@ -55,7 +55,7 @@ ready = function() {
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
 				    		return ['<div class="search-footer-message">Not here? <a href="#" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
-				    	} else if((window.location.href.indexOf("preferences") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
+				    	} else if((window.location.href.indexOf("drink_settings") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
 				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/users/new_drink" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else {
@@ -68,7 +68,7 @@ ready = function() {
 				    		return '<p>' + data.beer +'</p>';
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
 				    		return '<p>' + data.beer +'</p>';
-				    	} else if((window.location.href.indexOf("preferences") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
+				    	} else if((window.location.href.indexOf("drink_settings") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
 				    		return '<p>' + data.beer +'</p>';   	
 						} else {
 							return '<p><a href="'+ BASE_URL +'breweries/'+ data.brewery_id +'/beers/'+ data.beer_id +'">' + data.beer + '</a></p>';
@@ -81,7 +81,7 @@ ready = function() {
 				    	} else if(window.location.href.indexOf("draft_inventory") > -1) {
 				    		return ['<div class="search-footer-message">Not here? <a href="#" class="btn btn-default btn-success formButton-search-footer">',
 					        'Add it.','</a></div>'].join('\n');
-				    	} else if((window.location.href.indexOf("preferences") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
+				    	} else if((window.location.href.indexOf("drink_settings") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
 				    		return ['<div class="search-footer-message">Not here? <a data-toggle="modal" data-target="#add_drink" href="/users/new_drink">',
 					        'Add it.','</a></div>'].join('\n');
 				    	} else {
@@ -99,7 +99,7 @@ ready = function() {
 					        type : "get",
 					        data : { chosen_drink: JSON.stringify(datum) }
 					    });
-					} else if (datum.use == "preferences") {
+					} else if (datum.use == "drink_settings") {
 						$.ajax({
 					        url : "/users/add_fav_drink", //"+ datum.beer_id +"/
 					        type : "post",
