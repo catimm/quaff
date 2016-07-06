@@ -13,8 +13,10 @@
 #  style_preference :string
 #  quantity         :integer
 #  delivery_id      :integer
-#  cooler           :boolean
-#  small_format     :boolean
+#  cellar           :boolean
+#  large_format     :boolean
+#  drink_cost       :decimal(5, 2)
+#  drink_price      :decimal(5, 2)
 #
 
 class UserDelivery < ActiveRecord::Base

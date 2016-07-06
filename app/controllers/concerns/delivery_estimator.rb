@@ -28,6 +28,9 @@ module DeliveryEstimator
       @cellar_percentage = 0.1
     end
     
+    # determine max number of cellar drinks per delivery
+    @max_cellar = (@drink_per_delivery_calculation * @cellar_percentage).ceil
+    
     # determine drink numbers for each category
     @number_of_large_cellar = (@drink_per_delivery_calculation * @cellar_percentage * @large_percentage)
     @number_of_small_cellar = (@drink_per_delivery_calculation * @cellar_percentage * (1 - @large_percentage))
@@ -42,7 +45,7 @@ module DeliveryEstimator
     @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
   
     # update delivery prefrence drink total estimation
-    @delivery_preferences.update(price_estimate: @total_cost_estimate)
+    @delivery_preferences.update(price_estimate: @total_cost_estimate, max_cellar: @max_cellar)
     
   end # end delivery_estimator method
 

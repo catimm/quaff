@@ -263,13 +263,66 @@ $(function () {
 		$(this).css("text-decoration", "none");
 	});
 	
-	// show and hide password change form
+	var timer;
+	
+	// update user info
+	$(document).on("keyup", ".user-info-field", function() {
+		
+		var this_id = $(this).attr('id');
+		var toRemove = 'user_';
+		var column = this_id.replace(toRemove,'');
+		
+		value = $(this).val();
+		
+		//clear any interval on key up
+		clearInterval(timer);
+		
+		timer = setTimeout(function() { //then give it a second to see if the user is finished
+	    	$.ajax({
+			  type: "POST",
+			  url: "/users/update_profile/" + column + "-" + value
+			});
+	    }, 500);
+		
+	});
+	
+	// update user address info
+	$(document).on("keyup", ".user-address-field", function() {
+		
+		var this_id = $(this).attr('id');
+		var toRemove = 'user_user_delivery_addresses_attributes_0_';
+		var column = this_id.replace(toRemove,'');
+
+		value = $(this).val();
+		
+		//clear any interval on key up
+		clearInterval(timer);
+		
+		timer = setTimeout(function() { //then give it a second to see if the user is finished
+	    	$.ajax({
+			  type: "POST",
+			  url: "/users/update_delivery_address/" + column + "-" + value
+			});
+	    }, 500);
+		
+	});
+	
+	// show password change form
 	$("#change-password-button").on("click", function() {
-		if ($(".password-change-form").hasClass("hidden")) {
-			$(".password-change-form").removeClass("hidden").addClass("show");
-		} else {
-			$(".password-change-form").removeClass("show").addClass("hidden");
-		}
+		$(this).removeClass("show").addClass("hidden");
+		$(".password-change-form").removeClass("hidden").addClass("show");
+		$(this).siblings('.change-password-nevermind').removeClass("hidden").addClass("show");
+		// prevent page from jumping to the top after click event
+		return false;
+	});
+	
+	// hide password change form
+	$(".change-password-nevermind").on("click", function() {
+		$(this).removeClass("show").addClass("hidden");
+		$(".password-change-form").removeClass("show").addClass("hidden");
+		$(this).siblings('#change-password-button').removeClass("hidden").addClass("show");
+		// prevent page from jumping to the top after click event
+		return false;
 	});
 	
 	// show user profile block when this link is clicked, if it isn't already showing
@@ -502,20 +555,34 @@ $(function () {
 		}
 	});
 	$(document).on("click", ".quantity-change-holder-add", function() {
+		
 		var this_id = $(this).attr('id');
 		var split_id = this_id.split("-");
 		var drink_id = split_id[3];
 		
+		var parent_id = $(this).parent().attr('id');
+		var toRemove = 'limit-per-';
+		var limit_per = parent_id.replace(toRemove,'');
+		
+		if(limit_per == 0) {
+			limit_per = 100
+		}
+		
 		// change quantity shown on screen
 		var original_quantity = +($("#drink-quantity-" + drink_id).html());
 		var new_quantity = original_quantity + 1;
-		$("#drink-quantity-" + drink_id).html(new_quantity);
+		if(new_quantity <= limit_per) {
+			$("#drink-quantity-" + drink_id).html(new_quantity);
 		
-		// send to controller to change database
-		$.ajax({
-		  type: "POST",
-		  url: "/users/change_delivery_drink_quantity/add-" + drink_id
-		});
+			// send to controller to change database
+			$.ajax({
+			  type: "POST",
+			  url: "/users/change_delivery_drink_quantity/add-" + drink_id
+			});
+		} else {
+			alert("Sorry, the limit on this drink is " + limit_per +".")
+		}
+		
 	});
 	
 	// allow customers to add or subtract drinks from supply

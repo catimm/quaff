@@ -5,7 +5,9 @@
 		<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
 		<p>rate</p>
 	<% end %>
-	<%= link_to wishlist_removal_path(drink.id), :class => 'remove-drink-from-wishlist', :data => {:confirm => 'You want to remove this from your wishlist?'} do %>
+	<%= link_to wishlist_removal_path(drink.id), 
+			:class => 'btn btn-danger remove-drink-from-wishlist',
+			:data => {:confirm => 'You want to remove this from your wishlist?'} do %>
 		<i class="fa fa-times"></i>
 	<% end %>
 	<div class="overview-tile-2">

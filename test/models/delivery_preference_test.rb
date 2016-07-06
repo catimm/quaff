@@ -13,6 +13,7 @@
 #  first_delivery_date :datetime
 #  drink_option_id     :integer
 #  max_large_format    :integer
+#  max_cellar          :integer
 #
 
 require 'test_helper'

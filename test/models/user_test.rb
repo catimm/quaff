@@ -28,6 +28,7 @@
 #  first_name             :string
 #  craft_stage_id         :integer
 #  last_name              :string
+#  getting_started_step   :integer
 #
 
 require 'test_helper'

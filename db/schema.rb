@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160630184237) do
+ActiveRecord::Schema.define(version: 20160706055330) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 20160630184237) do
     t.integer  "quantity"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
-    t.boolean  "cooler"
-    t.boolean  "small_format"
+    t.boolean  "cellar"
+    t.boolean  "large_format"
     t.integer  "delivery_id"
   end
 
@@ -208,6 +208,7 @@ ActiveRecord::Schema.define(version: 20160630184237) do
     t.datetime "first_delivery_date"
     t.integer  "drink_option_id"
     t.integer  "max_large_format"
+    t.integer  "max_cellar"
   end
 
   create_table "draft_boards", force: :cascade do |t|
@@ -356,16 +357,18 @@ ActiveRecord::Schema.define(version: 20160630184237) do
   create_table "user_deliveries", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "inventory_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.boolean  "new_drink"
     t.integer  "beer_id"
     t.float    "projected_rating"
     t.string   "style_preference"
     t.integer  "quantity"
     t.integer  "delivery_id"
-    t.boolean  "cooler"
-    t.boolean  "small_format"
+    t.boolean  "cellar"
+    t.boolean  "large_format"
+    t.decimal  "drink_cost",       precision: 5, scale: 2
+    t.decimal  "drink_price",      precision: 5, scale: 2
   end
 
   create_table "user_delivery_addresses", force: :cascade do |t|
@@ -473,6 +476,7 @@ ActiveRecord::Schema.define(version: 20160630184237) do
     t.string   "first_name"
     t.integer  "craft_stage_id"
     t.string   "last_name"
+    t.integer  "getting_started_step"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

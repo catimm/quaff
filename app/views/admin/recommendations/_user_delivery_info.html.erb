@@ -3,6 +3,9 @@
 		    <div class="col-sm-2">
 		    	<h5>Customer drinks<br> <b><%= @drink_preference %></b></h5>
 		    </div>
+		    <div class="col-sm-2">
+		    	<h5>Self identified<br> <b><%= @self_identified %></b></h5>
+		    </div>
 		    <div class="col-sm-2 no-padding">
 		    	<h5>Price range: <%= @cost_estimate %></h5>
 		    	<% if !@customer_next_delivery.total_price.nil? %>
@@ -11,6 +14,21 @@
 		    		<h5>Current price: <span class="not-ready">TBD</span></h5>
 		    	<% end %>
 		    </div>
+		    
+			<div class="col-sm-5">
+				<div class="box-left-notes">
+					<h6>Additional notes:</h6>
+				</div>
+				<div class="box-right-notes">
+					<% if @delivery_preferences.additional.nil? %>
+						<h6 class="no-results-empty-message">Customer provided no addtional notes</h6>
+					<% else %>
+						<h6 class="no-results-empty-message"><%= @delivery_preferences.additional %></h6>
+					<% end %>
+				</div>
+			</div>
+		</div>
+		<div class="row second-row-next-delivery-review">
 		    <div class="col-sm-3">
 		      	<div class="box-left-initial">
 		      		<h5>Need <%= @drinks_next_delivery %> <%= "drink".pluralize(@drinks_next_delivery) %> in next delivery; have <%= @drink_count %></h5>
@@ -27,20 +45,6 @@
 			      	<% end %>
 		     	</div>
 		     </div>
-			<div class="col-sm-5">
-				<div class="box-left-notes">
-					<h6>Additional notes:</h6>
-				</div>
-				<div class="box-right-notes">
-					<% if @delivery_preferences.additional.nil? %>
-						<h6 class="no-results-empty-message">Customer provided no addtional notes</h6>
-					<% else %>
-						<h6 class="no-results-empty-message"><%= @delivery_preferences.additional %></h6>
-					<% end %>
-				</div>
-			</div>
-		</div>
-		<div class="row second-row-next-delivery-review">
 		    <div class="col-sm-2">
 		      	<div class="box-left">
 		      		<h6>Need <%= @next_delivery_new_need %> new <%= "drink".pluralize(@next_delivery_new_need) %>; have <%= @next_delivery_new %></h6>
@@ -74,27 +78,11 @@
 			      </div>
 		     </div>
 		    <div class="col-sm-2">
-		      	<div class="box-left">
-		      		<h6>Need <%= @next_delivery_cooler_need %> cooler <%= "drink".pluralize(@next_delivery_cooler_need) %>; have <%= @next_delivery_cooler %></h6>
-		   	 	</div>
-		    	<div class="box-right">
-			      	<% if @next_delivery_cooler_need == @next_delivery_cooler %>
-			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
-			      			<i class="fa fa-check"></i>
-			      		</div>						
-			      	<% else %>
-			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
-			      			<i class="fa fa-times"></i>
-			      		</div>	
-			      	<% end %>
-				</div>
-		    </div>
-		    <div class="col-sm-2">
 		    	<div class="box-left">
-		      		<h6>Need <%= @next_delivery_cellar_need %> cellar <%= "drink".pluralize(@next_delivery_cellar_need) %>; have <%= @next_delivery_cellar %></h6>
+		      		<h6>Max <%= @next_delivery_max_cellar %> cellar <%= "drink".pluralize(@next_delivery_cellar_need) %>; have <%= @next_delivery_cellar %></h6>
 		    	</div>
 		    	<div class="box-right">
-			      	<% if @next_delivery_cellar_need == @next_delivery_cellar %>
+			      	<% if @next_delivery_max_cellar >= @next_delivery_cellar %>
 			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
 			      			<i class="fa fa-check"></i>
 			      		</div>						
@@ -107,26 +95,10 @@
 		    </div>
 		    <div class="col-sm-2">
 		    	<div class="box-left">
-			    	<h6>Need <%= @next_delivery_small_need %> small <%= "drink".pluralize(@next_delivery_small_need) %>; have <%= @next_delivery_small %></h6>
+			    	<h6>Max <%= @next_delivery_max_large %> large <%= "drink".pluralize(@next_delivery_large_need) %>; have <%= @next_delivery_large %></h6>
 			    </div>
 		    	<div class="box-right">
-			      	<% if @next_delivery_small_need == @next_delivery_small %>
-			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
-			      			<i class="fa fa-check"></i>
-			      		</div>						
-			      	<% else %>
-			      		<div class="style-indicator-next-delivery dislike-style-next-delivery text-center">
-			      			<i class="fa fa-times"></i>
-			      		</div>	
-			      	<% end %>
-				</div>
-		    </div>
-		    <div class="col-sm-2">
-		    	<div class="box-left">
-			    	<h6>Need <%= @next_delivery_large_need %> large <%= "drink".pluralize(@next_delivery_large_need) %>; have <%= @next_delivery_large %></h6>
-			    </div>
-		    	<div class="box-right">
-			      	<% if @next_delivery_large_need == @next_delivery_large %>
+			      	<% if @next_delivery_max_large >= @next_delivery_large %>
 			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
 			      			<i class="fa fa-check"></i>
 			      		</div>						

@@ -43,12 +43,10 @@ class UserMailer < ActionMailer::Base
       },
       substitution_data: {
         customer_name: customer.first_name,
-        delivery_date: (delivery_info.delivery_date).strftime("%A, %b #{delivery_info.delivery_date.day.ordinalize}"),
+        delivery_date: (delivery_info.delivery_date).strftime("%A, %B #{delivery_info.delivery_date.day.ordinalize}"),
         review_date: @review_date,
         drink: delivery_drinks,
         total_quantity: total_quantity,
-        total_subtotal: "%.2f" % (delivery_info.subtotal),
-        total_tax: delivery_info.sales_tax,
         total_price: delivery_info.total_price
       }
     }

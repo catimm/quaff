@@ -12,8 +12,8 @@
 #  quantity         :integer
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
-#  cooler           :boolean
-#  small_format     :boolean
+#  cellar           :boolean
+#  large_format     :boolean
 #  delivery_id      :integer
 #
 

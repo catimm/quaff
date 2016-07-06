@@ -9,15 +9,79 @@ class UsersController < ApplicationController
   require "stripe"
   require 'json'
   
-  def index
-
-  end
-  
-  def show
-    @user = User.find_by_id(current_user.id)
+  def account_settings
+    # set view
+    @view = params[:id]
+    
+    # get user info
+    @user = User.find(current_user.id)
     #Rails.logger.debug("User info: #{@user.inspect}")
-    @user_notifications = UserNotificationPreference.where(user_id: @user.id).first
-    #Rails.logger.debug("User notifications: #{@user_notifications.inspect}")
+    
+    # get data based on view
+    if @view == "info"
+      # set link as chosen
+      @info_chosen = "chosen"
+      
+      # get user delivery info
+      @delivery_address = UserDeliveryAddress.where(user_id: @user.id).first
+      
+      # get last updated info
+      @user_updated = @user.updated_at
+      @preference_updated = latest_date = [@user.updated_at, @delivery_address.updated_at].max
+      
+    elsif @view == "plan"
+      # set link as chosen
+      @plan_chosen = "chosen"
+      
+      # get customer plan details
+      @customer_plan = UserSubscription.where(user_id: @user.id).first
+      
+      if @customer_plan.subscription_id == 1
+        # set current style variable for CSS plan outline
+        @relish_chosen = "show"
+        @enjoy_chosen = "hidden"
+      else
+        # set current style variable for CSS plan outline
+        @relish_chosen = "hidden"
+        @enjoy_chosen = "show"
+      end
+      
+    else
+      # set link as chosen
+      @journey_chosen = "chosen"
+      
+      # get user delivery preferences info
+      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+      
+      # set drink category choice
+      if @delivery_preferences.drink_option_id == 1
+        @drink_preference = "beer"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_preference = "cider"
+      else
+        @drink_preference = "beer/cider"
+      end
+      
+      # set user craft stage if it exists
+      if @user.craft_stage_id == 1
+        @casual_chosen = "show"
+        @geek_chosen = "hidden"
+        @conn_chosen = "hidden"
+      elsif @user.craft_stage_id == 2
+        @casual_chosen = "hidden"
+        @geek_chosen = "show"
+        @conn_chosen = "hidden"
+      elsif @user.craft_stage_id == 3
+        @casual_chosen = "hidden"
+        @geek_chosen = "hidden"
+        @conn_chosen = "show"
+      else
+        @casual_chosen = "hidden"
+        @geek_chosen = "hidden"
+        @conn_chosen = "hidden"
+      end
+      
+    end
   end
   
   def update
@@ -73,7 +137,7 @@ class UsersController < ApplicationController
       end
       @user_cooler = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
       @cooler_chosen = "chosen"
-    else
+    elsif @view == "cellar"
       @user_cellar = @user_supply.where(supply_type_id: 2)
       
       # create array to hold descriptors cloud
@@ -95,7 +159,28 @@ class UsersController < ApplicationController
       end
       @user_cellar = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
       @cellar_chosen = "chosen"
-    end # end choice between cooler and cellar views
+    else
+      @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)
+      #Rails.logger.debug("Wishlist drink ids: #{@wishlist_drink_ids.inspect}")
+      @wishlist = best_guess(@wishlist_drink_ids, current_user.id).sort_by(&:ultimate_rating).reverse.paginate(:page => params[:page], :per_page => 12)
+      #Rails.logger.debug("Wishlist drinks: #{@wishlist.inspect}")
+      
+      # create array to hold descriptors cloud
+      @final_descriptors_cloud = Array.new
+      
+      # get top descriptors for drink types the user likes
+      @wishlist.each do |drink|
+        @drink_id_array = Array.new
+        @drink_type_descriptors = drink_descriptor_cloud(drink)
+        @final_descriptors_cloud << @drink_type_descriptors
+        #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
+      end
+      # send full array to JQCloud
+      gon.drink_descriptor_array = @final_descriptors_cloud
+      #Rails.logger.debug("Gon Drink descriptors: #{gon.drink_descriptor_array.inspect}")
+      
+      @wishlist_chosen = "chosen"
+    end # end choice between cooler, cellar and wishlist views
     
   end # end of supply method
   
@@ -160,28 +245,7 @@ class UsersController < ApplicationController
     render nothing: true
     
   end # end of change_supply_drink method
-  
-  def wishlist 
-    @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)
-    #Rails.logger.debug("Wishlist drink ids: #{@wishlist_drink_ids.inspect}")
-    @wishlist = best_guess(@wishlist_drink_ids, current_user.id).sort_by(&:ultimate_rating).reverse.paginate(:page => params[:page], :per_page => 12)
-    #Rails.logger.debug("Wishlist drinks: #{@wishlist.inspect}")
     
-    # create array to hold descriptors cloud
-    @final_descriptors_cloud = Array.new
-    
-    # get top descriptors for drink types the user likes
-    @wishlist.each do |drink|
-      @drink_id_array = Array.new
-      @drink_type_descriptors = drink_descriptor_cloud(drink)
-      @final_descriptors_cloud << @drink_type_descriptors
-      #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
-    end
-    # send full array to JQCloud
-    gon.drink_descriptor_array = @final_descriptors_cloud
-    #Rails.logger.debug("Gon Drink descriptors: #{gon.drink_descriptor_array.inspect}")
-  end # end of wishlist
-  
   def wishlist_removal
     @drink_to_remove = Wishlist.where(user_id: current_user.id, beer_id: params[:id]).where("removed_at IS NULL").first
     @drink_to_remove.update(removed_at: Time.now)
@@ -439,6 +503,9 @@ class UsersController < ApplicationController
     @column = @data_split[0]
     @data_value = @data_split[1]
     
+    # get user info
+    @user = User.find(current_user.id)
+    
     # get user delivery preferences
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
       
@@ -466,6 +533,9 @@ class UsersController < ApplicationController
       else
         @delivery_preferences.update(drink_option_id: @data_value)
       end
+    elsif @column == "craft_journey"
+      @user.update(craft_stage_id: @data_value)
+      delivery_estimator(current_user.id)
     else
       @delivery_preferences.update(additional: @data_value)
     end
@@ -903,6 +973,36 @@ class UsersController < ApplicationController
     redirect_to user_profile_path(current_user.id)
   end # end create_drink_descriptors method
   
+  def update_profile
+    # get data to add/update
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @column = @data_split[0]
+    @data = @data_split[1]
+    
+    # get user info
+    @user = User.find(current_user.id)
+    
+    # update user info
+    if @column == "first_name"
+      @user.update(first_name: @data)
+    elsif @column == "last_name"
+      @user.update(last_name: @data)
+    elsif @column == "username"
+      @user.update(username: @data)
+    else
+      @user.update(email: @data)
+    end
+    
+    # get time of last update
+    @preference_updated = @user.updated_at
+    
+    respond_to do |format|
+      format.js { render 'last_updated.js.erb' }
+    end # end of redirect to jquery
+    
+  end
+  
   def update_password
     @user = User.find(current_user.id)
     if @user.update_with_password(user_params)
@@ -911,17 +1011,46 @@ class UsersController < ApplicationController
       # set saved message
       flash[:success] = "New password saved!"            
       # redirect back to user account page
-      redirect_to user_path(current_user.id)
+      redirect_to user_account_settings_path('info')
     else
       # set saved message
       flash[:failure] = "Sorry, invalid password."
       # redirect back to user account page
-      redirect_to user_path(current_user.id)
+      redirect_to user_account_settings_path('info')
     end
   end
   
-  def notification_preferences
+  def update_delivery_address
+    # get data to add/update
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @column = @data_split[0]
+    @data = @data_split[1]
     
+    # get user info
+    @user_delivery_address = UserDeliveryAddress.where(user_id: current_user.id).first
+    
+    # update user info
+    if @column == "address_one"
+      @user_delivery_address.update(address_one: @data)
+    elsif @column == "address_two"
+      @user_delivery_address.update(address_two: @data)
+    elsif @column == "city"
+      @user_delivery_address.update(city: @data)
+    elsif @column == "state"
+      @user_delivery_address.update(state: @data)
+    elsif @column == "zip"
+      @user_delivery_address.update(zip: @data)
+    else
+      @user_delivery_address.update(special_instructions: @data)
+    end
+    
+    # get time of last update
+    @preference_updated = @user_delivery_address.updated_at
+    
+    respond_to do |format|
+      format.js { render 'last_updated.js.erb' }
+    end # end of redirect to jquery
   end
   
   def style_preferences

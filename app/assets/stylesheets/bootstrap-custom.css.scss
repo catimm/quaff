@@ -1026,6 +1026,7 @@ p {
   text-align: left;
   color: $normal-text;
   height: 125px;
+  padding-left: 5px !important;
 }
 .retail-plan-option-or {
   color: $normal-text;
@@ -2076,7 +2077,7 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: 15px;
   margin-bottom: 10px;
 }
-.changeButton.change-password {
+.changeButton.change-password, .changeButton.change-password-nevermind {
   background: $less-emphasized-text;
   border: 1px $normal-text solid;
   width: 40%;
@@ -2947,7 +2948,7 @@ $descriptor-lines-to-show: 2;
 // Wishlist css style
 .remove-drink-from-wishlist {
   position: absolute;
-  right: 18px;
+  left: 14px;
   top: 22px;
   background: $current-beer-attention-needed-background;
   color: $white;
@@ -3457,6 +3458,10 @@ input[type="checkbox"] {
   }
 }
 // User Next Delivery View
+.no-results-empty-message {
+  margin-top: 30px;
+  line-height: 1.5;
+}
 .formButton-send-note {
   width: 100%;
   margin: 15px 0 10px 0;
@@ -3684,7 +3689,7 @@ $delivery-beer-header-lines-to-show: 2;
 .past-review-text {
   color: $less-emphasized-text;
   text-align: right;
-  margin-top: 25px;
+  margin-top: 30px;
   padding-right: 30px;
 }
 // Admin recommendation review page

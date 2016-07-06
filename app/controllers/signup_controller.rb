@@ -1,4 +1,5 @@
 class SignupController < ApplicationController
+  before_filter :verify_not_complete
   include DeliveryEstimator
   require "stripe"
   
@@ -47,6 +48,9 @@ class SignupController < ApplicationController
         @beer_and_cider_chosen = "hidden"
       end
       
+      # update where user is in the signup process
+      @user.update(getting_started_step: 1)
+    
     elsif @view == "journey"
       # set css rule for signup guide header
       @journey_chosen = "current"
@@ -212,14 +216,14 @@ class SignupController < ApplicationController
       
       if @step == "1"
         # find if user has a plan already
-        @user_plan = UserSubscription.find_by_user_id(current_user.id)
+        @customer_plan = UserSubscription.find_by_user_id(current_user.id)
       
-        if !@user_plan.blank?
-          if @user_plan.subscription_id == 1
+        if !@customer_plan.blank?
+          if @customer_plan.subscription_id == 1
             # set current style variable for CSS plan outline
             @relish_chosen = "show"
             @enjoy_chosen = "hidden"
-          elsif @user_plan.subscription_id == 2
+          elsif @customer_plan.subscription_id == 2
             # set current style variable for CSS plan outline
             @relish_chosen = "hidden"
             @enjoy_chosen = "show"
@@ -421,6 +425,9 @@ class SignupController < ApplicationController
   end # end of process_sytle_input method
   
   def process_user_plan_choice
+    # find which page search request is coming from
+    request_url = request.env["HTTP_REFERER"] 
+    
     # get data
     @data = params[:id]
     @data_split = @data.split("-")
@@ -428,54 +435,73 @@ class SignupController < ApplicationController
     @step = @data_split[1]
     @input = @data_split[2]
     
-      # find if user has a plan already
-      @user_plan = UserSubscription.find_by_user_id(current_user.id)
-      #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
-      # find subscription level id
-      @subscription_level_id = Subscription.where(subscription_level: @input).first
-        
-      if @user_plan.blank?
-        # first create Stripe acct
-        @plan_info = Stripe::Plan.retrieve(@input)
-        #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
-        #Create a stripe customer object on signup
-        customer = Stripe::Customer.create(
-                :description => @plan_info.statement_descriptor,
-                :source => params[:stripeToken],
-                :email => current_user.email,
-                :plan => @input
-              )
-        # create a new user_subscription row
-        @user_subscription = UserSubscription.create(user_id: current_user.id, subscription_id: @subscription_level_id.id,
-                                  active_until: 1.month.from_now)
-      else
-        # first update Stripe acct
-        customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
-        @plan_info = Stripe::Plan.retrieve(@input)
-        #Rails.logger.debug("Customer: #{customer.inspect}")
-        customer.description = @plan_info.statement_descriptor
-        customer.save
-        subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
-        subscription.plan = @input
-        subscription.save
-        
-        # now update user plan info in the DB
-        @user_plan.update(subscription_id: @subscription_level_id.id)
-      end
-      @next_step = "account-2"
+    # find if user has a plan already
+    @user_plan = UserSubscription.find_by_user_id(current_user.id)
+    #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
+    # find subscription level id
+    @subscription_level_id = Subscription.where(subscription_level: @input).first
       
-      redirect_to getting_started_path(@next_step)
+    if @user_plan.blank?
+      # first create Stripe acct
+      @plan_info = Stripe::Plan.retrieve(@input)
+      #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
+      #Create a stripe customer object on signup
+      customer = Stripe::Customer.create(
+              :description => @plan_info.statement_descriptor,
+              :source => params[:stripeToken],
+              :email => current_user.email,
+              :plan => @input
+            )
+      # create a new user_subscription row
+      @user_subscription = UserSubscription.create(user_id: current_user.id, subscription_id: @subscription_level_id.id,
+                                active_until: 1.month.from_now)
+    else
+      # first update Stripe acct
+      customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
+      @plan_info = Stripe::Plan.retrieve(@input)
+      #Rails.logger.debug("Customer: #{customer.inspect}")
+      customer.description = @plan_info.statement_descriptor
+      customer.save
+      subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
+      subscription.plan = @input
+      subscription.save
+      
+      # now update user plan info in the DB
+      @user_plan.update(subscription_id: @subscription_level_id.id)
+    end
+    
+    # determine where to send user next
+    if request_url.include? "signup"
+      # update where user is in the signup process
+      @user.update(getting_started_step: 10)
+      # set next step
+      @next_url = getting_started_path("account-2")
+    else
+      @next_url = user_account_settings_path('plan')
+    end
+    
+    redirect_to @next_url
+    
   end # end process_user_plan_choice
   
   def account_info_process
-    params[:user][:user_delivery_addresses_attributes]["0"][:city] = "Seattle" #params[:zip].to_region(:city => true)
-    params[:user][:user_delivery_addresses_attributes]["0"][:state] = "WI" #params[:zip].to_region(:state => true)
+    @zip = params[:user][:user_delivery_addresses_attributes]["0"][:zip]
+    params[:user][:user_delivery_addresses_attributes]["0"][:city] = @zip.to_region(:city => true)
+    params[:user][:user_delivery_addresses_attributes]["0"][:state] = @zip.to_region(:state => true)
     @user = User.find(current_user.id)
     @user.update(user_params)
+    
+    # update where user is in the signup process
+    @user.update(getting_started_step: 10)
+    
     redirect_to user_deliveries_path('preferences')
   end # end account_info_process method
   
   private
+  def verify_not_complete
+    redirect_to user_supply_path('cooler') unless current_user.getting_started_step < 10 || current_user.role_id == 1
+  end
+  
   def user_params
     params.require(:user).permit(:first_name, :last_name, :username, user_delivery_addresses_attributes: [:address_one, 
                                   :address_two, :city, :state, :zip, :special_instructions ])  

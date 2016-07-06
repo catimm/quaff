@@ -102,6 +102,8 @@ gem 'wkhtmltopdf-binary'
 gem 'stripe'
 # turns boolean t/f to yes/no
 gem 'humanize_boolean'
+# gem to turn zip code into city/state info
+gem 'area'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

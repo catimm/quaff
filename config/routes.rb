@@ -4,12 +4,6 @@ Rails.application.routes.draw do
   resources :users do
     resources :drinks, :ratings, :rewards, :trackings   
   end
-
-  resource :user, only: [:edit] do
-    collection do
-      patch 'update_password'
-    end
-  end
   
   # for Knird admins to add/edit breweries and drinks
   namespace :admin do
@@ -52,6 +46,7 @@ Rails.application.routes.draw do
   
   root :to => 'home#index'
   # route to user profile page
+  get '/users/account_settings/:id' => 'users#account_settings', :as => 'user_account_settings'
   get '/users/profile/:id' => 'users#profile', :as => 'user_profile'
   get '/users/activity/:id' => 'users#activity', :as => 'user_activity'
   get '/users/preferences/:id' => 'users#preferences', :as => 'user_preferences'
@@ -64,6 +59,9 @@ Rails.application.routes.draw do
   get '/users/supply_removal/:id' => 'users#supply_removal', :as => 'supply_removal'
   get '/users/add_supply_drink/:id' => 'users#add_supply_drink', :as => 'add_supply_drink'
   get  '/users/drink_search/:id(/:query)' => 'users#drink_search', :as => 'drink_search'
+  post '/users/update_profile/:id' => 'users#update_profile'
+  post '/users/update_delivery_address/:id' => 'users#update_delivery_address'
+  patch '/users/update_password/:id' => 'users#update_password'
   post  '/users/customer_delivery_messages/' => 'users#customer_delivery_messages', :as => 'customer_delivery_messages'
   post '/users/change_delivery_drink_quantity/:id' => 'users#change_delivery_drink_quantity', :as => 'change_delivery_drink_quantity'
   post '/users/change_supply_drink_quantity/:id' => 'users#change_supply_drink_quantity', :as => 'change_supply_drink_quantity'

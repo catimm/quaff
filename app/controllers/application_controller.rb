@@ -57,7 +57,12 @@ class ApplicationController < ActionController::Base
     elsif  current_user.role_id == 5
       @first_view = retailer_path(session[:retail_id])
     else
-      @first_view = user_supply_path('cooler')
+      if @user.getting_started_step < 10
+        @first_view = getting_started_path('category')
+      else
+        @first_view = user_supply_path('cooler')
+      end
+      
     end
     return @first_view
   end

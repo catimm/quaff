@@ -26,12 +26,7 @@ class Admin::RecommendationsController < ApplicationController
     @customer_next_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
     
     # get user's weekly drink max to be delivered
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
-    if !@delivery_preferences.drinks_in_cooler.nil?
-      if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-        @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
-      end
-    end
+    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
 
     # user's drinks currently in cooler
     @user_cooler_count = UserSupply.where(user_id: @chosen_user_id, supply_type_id: 1).count
@@ -62,10 +57,8 @@ class Admin::RecommendationsController < ApplicationController
     # set other drink guidelines for recommendation choices
     @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
     @next_delivery_retry_need = @drinks_next_delivery - @next_delivery_new_need
-    @next_delivery_cooler_need = ((@drinks_next_delivery * @delivery_preferences.cooler_percentage)/100)
-    @next_delivery_cellar_need = @drinks_next_delivery - @next_delivery_cooler_need
-    @next_delivery_small_need = ((@drinks_next_delivery * @delivery_preferences.small_format_percentage)/100)
-    @next_delivery_large_need = @drinks_next_delivery - @next_delivery_small_need
+    @next_delivery_max_cellar = @delivery_preferences.max_cellar
+    @next_delivery_max_large = @delivery_preferences.max_large_format
     
     # get information for which drinks are planned in next delivery
     @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id)
@@ -87,15 +80,15 @@ class Admin::RecommendationsController < ApplicationController
       else
         @next_delivery_retry += (1 * @quantity)
       end
-      if drink.cooler == true
-        @next_delivery_cooler += (1 * @quantity)
-      else
+      if drink.cellar == true
         @next_delivery_cellar += (1 * @quantity)
-      end
-      if drink.small_format == true
-        @next_delivery_small += (1 * @quantity)
       else
+        @next_delivery_cooler += (1 * @quantity)
+      end
+      if drink.large_format == true
         @next_delivery_large += (1 * @quantity)
+      else
+        @next_delivery_small += (1 * @quantity)
       end
     end   
     
@@ -108,6 +101,15 @@ class Admin::RecommendationsController < ApplicationController
       @drink_preference = "Cider Only"
     else
       @drink_preference = "Beer & Cider"
+    end
+    
+    # self identified
+    if current_user.craft_stage_id == 1
+      @self_identified = "Casual"
+    elsif current_user.craft_stage_id == 2
+      @self_identified = "Geek"
+    else
+      @self_identified = "Connoisseur"
     end
     
     respond_to do |format|
@@ -325,13 +327,17 @@ class Admin::RecommendationsController < ApplicationController
       @drink_preference = "Beer & Cider"
     end
     
-    # get user's weekly drink max to be delivered
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
-    if !@delivery_preferences.drinks_in_cooler.nil?
-      if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-        @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
-      end
+    # self identified
+    if current_user.craft_stage_id == 1
+      @self_identified = "Casual"
+    elsif current_user.craft_stage_id == 2
+      @self_identified = "Geek"
+    else
+      @self_identified = "Connoisseur"
     end
+    
+    # get user's weekly drink max to be delivered
+    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
 
     # user's drinks currently in cooler
     @user_cooler_count = UserSupply.where(user_id: params[:id], supply_type_id: 1).count
@@ -362,10 +368,8 @@ class Admin::RecommendationsController < ApplicationController
     # set other drink guidelines for recommendation choices
     @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
     @next_delivery_retry_need = @drinks_next_delivery - @next_delivery_new_need
-    @next_delivery_cooler_need = ((@drinks_next_delivery * @delivery_preferences.cooler_percentage)/100)
-    @next_delivery_cellar_need = @drinks_next_delivery - @next_delivery_cooler_need
-    @next_delivery_small_need = ((@drinks_next_delivery * @delivery_preferences.small_format_percentage)/100)
-    @next_delivery_large_need = @drinks_next_delivery - @next_delivery_small_need
+    @next_delivery_max_cellar = @delivery_preferences.max_cellar
+    @next_delivery_max_large = @delivery_preferences.max_large_format
     
     # count number of drinks in delivery
     @drink_count = @next_delivery_plans.sum(:quantity)
@@ -384,15 +388,15 @@ class Admin::RecommendationsController < ApplicationController
       else
         @next_delivery_retry += (1 * @quantity)
       end
-      if drink.cooler == true
-        @next_delivery_cooler += (1 * @quantity)
-      else
+      if drink.cellar == true
         @next_delivery_cellar += (1 * @quantity)
-      end
-      if drink.small_format == true
-        @next_delivery_small += (1 * @quantity)
       else
+        @next_delivery_cooler += (1 * @quantity)
+      end
+      if drink.large_format == true
         @next_delivery_large += (1 * @quantity)
+      else
+        @next_delivery_small += (1 * @quantity)
       end
     end  
     
@@ -415,21 +419,20 @@ class Admin::RecommendationsController < ApplicationController
       @user_delivery = UserDelivery.create(drink.attributes)
       @user_delivery.save!
       
+      # attach current drink cost and price to this drink
+      @user_delivery.update(drink_cost: drink.inventory.drink_cost, drink_price: drink.inventory.drink_price)
+      
       # create array of for individual drink info
       @subtotal = (drink.quantity * drink.inventory.drink_price)
       @tax = (@subtotal * 0.096).round(2)
-       @total = (@subtotal + @tax)
+      @total = (@subtotal + @tax)
+      
       # add drink data to array for customer review email
-       @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
+      @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
                                   :drink => drink.beer.beer_name,
                                   :drink_type => drink.beer.beer_type.beer_type_short_name,
                                   :projected_rating => drink.projected_rating,
-                                  :format => drink.inventory.size_format.format_name,
-                                  :quantity => drink.quantity,
-                                  :price => "%.2f" % (drink.inventory.drink_price),
-                                  :subtotal => "%.2f" % @subtotal,
-                                  :tax => @tax,
-                                  :total => @total}).as_json
+                                  :format => drink.inventory.size_format.format_name}).as_json
       # push this array into overall email array
       @email_drink_array << @drink_data
     end
@@ -475,14 +478,17 @@ class Admin::RecommendationsController < ApplicationController
     else
       @drink_preference = "Beer & Cider"
     end
+     # self identified
+    if current_user.craft_stage_id == 1
+      @self_identified = "Casual"
+    elsif current_user.craft_stage_id == 2
+      @self_identified = "Geek"
+    else
+      @self_identified = "Connoisseur"
+    end
     
     # get user's weekly drink max to be delivered
-    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.4).round
-    if !@delivery_preferences.drinks_in_cooler.nil?
-      if @delivery_preferences.drinks_in_cooler < @drink_per_week_calculation
-        @drink_per_week_calculation = @delivery_preferences.drinks_in_cooler
-      end
-    end
+    @drink_per_week_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
 
     # user's drinks currently in cooler
     @user_cooler_count = UserSupply.where(user_id: params[:id], supply_type_id: 1).count
@@ -513,10 +519,8 @@ class Admin::RecommendationsController < ApplicationController
     # set other drink guidelines for recommendation choices
     @next_delivery_new_need = ((@drinks_next_delivery * @delivery_preferences.new_percentage)/100)
     @next_delivery_retry_need = @drinks_next_delivery - @next_delivery_new_need
-    @next_delivery_cooler_need = ((@drinks_next_delivery * @delivery_preferences.cooler_percentage)/100)
-    @next_delivery_cellar_need = @drinks_next_delivery - @next_delivery_cooler_need
-    @next_delivery_small_need = ((@drinks_next_delivery * @delivery_preferences.small_format_percentage)/100)
-    @next_delivery_large_need = @drinks_next_delivery - @next_delivery_small_need
+    @next_delivery_max_cellar = @delivery_preferences.max_cellar
+    @next_delivery_max_large = @delivery_preferences.max_large_format
 
     # count number of drinks in delivery
     @drink_count = @next_delivery_plans.sum(:quantity)
@@ -535,15 +539,15 @@ class Admin::RecommendationsController < ApplicationController
       else
         @next_delivery_retry += (1 * @quantity)
       end
-      if drink.cooler == true
-        @next_delivery_cooler += (1 * @quantity)
-      else
+      if drink.cellar == true
         @next_delivery_cellar += (1 * @quantity)
-      end
-      if drink.small_format == true
-        @next_delivery_small += (1 * @quantity)
       else
+        @next_delivery_cooler += (1 * @quantity)
+      end
+      if drink.large_format == true
         @next_delivery_large += (1 * @quantity)
+      else
+        @next_delivery_small += (1 * @quantity)
       end
     end  
     

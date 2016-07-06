@@ -1,0 +1,35 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-sm-5 no-padding">
+			<h1 class="section-header">Account Settings</h1>
+			<h4 class="drinks-rated no-margin"><%= current_user.username %> joined <%= (current_user.created_at).strftime("%b %e, %Y") %></h4>
+		</div>
+		<div class="col-sm-7">
+			<div class="row no-margin">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-2 text-right">
+					<%= link_to "My info", user_account_settings_path('info'), class: "drink-preference-view-option #{@info_chosen}", id: "next" %>
+				</div>
+				<div class="col-sm-2">
+					<%= link_to "My plan", user_account_settings_path('plan'), class: "drink-preference-view-option #{@plan_chosen}", id: "history" %>
+				</div>
+				<div class="col-sm-3">
+					<%= link_to "My journey", user_account_settings_path('journey'), class: "drink-preference-view-option #{@journey_chosen}", id: "delivery-preferences" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container" id="preference-view-choice">
+		<% if @view == "info" %>
+			<%= render 'user_account_info' %>
+		<% elsif @view == "plan" %>
+			<%= render 'user_account_plan' %>
+		<% else %>
+			<%= render 'user_account_journey' %>
+		<% end %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

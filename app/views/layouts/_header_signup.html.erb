@@ -4,5 +4,8 @@
             <%= link_to "Knird", root_path, id: "logo", class:"navbar-brand brand visible-sm visible-md visible-lg brand-font" %>
             <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
         </div>
+        <ul class="nav navbar-nav navbar-right">            
+		     <li class="navLinks"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>	          	
+        </ul>
     </div><!-- /.container -->
 </nav>
