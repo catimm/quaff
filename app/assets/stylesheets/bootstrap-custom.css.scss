@@ -2554,6 +2554,13 @@ $beer-header-lines-to-show-fp: 1;
   color: $less-emphasized-text;
   margin-right: 5px;
 }
+.bottom-details-section {
+  position: absolute;
+  top: 112px;
+  left: 15px;
+  width: 100%;
+  background: $white;
+}
 .fav-brewery-details-row {
   margin: 5px 0 2.5px 0;
 }

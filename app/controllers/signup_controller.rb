@@ -494,7 +494,7 @@ class SignupController < ApplicationController
     # update where user is in the signup process
     @user.update(getting_started_step: 10)
     
-    redirect_to user_deliveries_path('preferences')
+    redirect_to user_delivery_settings_path(current_user.id)
   end # end account_info_process method
   
   private

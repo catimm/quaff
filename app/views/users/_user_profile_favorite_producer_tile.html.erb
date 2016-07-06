@@ -12,22 +12,24 @@
 				</div>
 			<% end %>
 	</div>
-	<div class="row fav-brewery-details-row">
-		<div class="col-sm-12 padding-10">
-			<p class="category-title">unique drinks rated: </p>
-			<h5 class="drinks-rated no-margin"> <%= (brewery.unique_drinks_rated).floor %></h5>
+	<div class="row bottom-details-section">
+		<div class="row fav-brewery-details-row">
+			<div class="col-sm-12 padding-10">
+				<p class="category-title">unique drinks rated: </p>
+				<h5 class="drinks-rated no-margin"> <%= (brewery.unique_drinks_rated).floor %></h5>
+			</div>
 		</div>
-	</div>
-	<div class="row fav-brewery-details-row">
-		<div class="col-sm-12 padding-10">
-			<p class="category-title">total drinks rated: </p>
-			<h5 class="drinks-rated no-margin"> <%= (brewery.total_drinks_rated).floor %></h5>
+		<div class="row fav-brewery-details-row">
+			<div class="col-sm-12 padding-10">
+				<p class="category-title">total drinks rated: </p>
+				<h5 class="drinks-rated no-margin"> <%= (brewery.total_drinks_rated).floor %></h5>
+			</div>
 		</div>
-	</div>
-	<div class="row fav-brewery-details-row">
-		<div class="col-sm-12 padding-10">
-			<p class="category-title">avg. rating: </p>
-			<h5 class="brewery-avg-rating no-margin"> <%= (brewery.brewery_rating).round(1) %><span>/10</span></h5>
+		<div class="row fav-brewery-details-row">
+			<div class="col-sm-12 padding-10">
+				<p class="category-title">avg. rating: </p>
+				<h5 class="brewery-avg-rating no-margin"> <%= (brewery.brewery_rating).round(1) %><span>/10</span></h5>
+			</div>
 		</div>
 	</div>
 </div>
