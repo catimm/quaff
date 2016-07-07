@@ -1,4 +1,29 @@
 $(function () {
+	// show welcom modal immediately following signup process
+	if (gon.user_post_signup == 10) {
+		$(window).load(function(){
+	        $('#delivery_settings_welcome').modal('show');
+	    });
+	    $.ajax({
+		  type: "POST",
+		  url: "/users/deliveries_update_preferences/post_signup-11"
+		});
+	}
+
+	// hide spinner
+	  $(".spinner").hide();
+	
+	
+	  // show spinner on AJAX start
+	  $(document).ajaxStart(function(){
+	    $(".spinner").show();
+	  });
+	
+	  // hide spinner on AJAX stop
+	  $(document).ajaxStop(function(){
+	    $(".spinner").delay(3000).hide();
+	  });
+	  
 	// set drink delivery estimate variable
 
 	var drink_per_week_calculation;

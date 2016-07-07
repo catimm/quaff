@@ -499,7 +499,7 @@ class SignupController < ApplicationController
   
   private
   def verify_not_complete
-    redirect_to user_supply_path('cooler') unless current_user.getting_started_step < 10 || current_user.role_id == 1
+    redirect_to user_supply_path('cooler') unless current_user.getting_started_step.nil? || current_user.getting_started_step < 10 || current_user.role_id == 1
   end
   
   def user_params

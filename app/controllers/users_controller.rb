@@ -422,6 +422,9 @@ class UsersController < ApplicationController
   end # end deliveries method
  
   def delivery_settings
+    # send user status to jquery to show modal for first time visit after signup
+    gon.user_post_signup = current_user.getting_started_step
+    
     # set current page for jquery routing--preferences vs singup settings
     @current_page = "preferences"
     
@@ -556,6 +559,8 @@ class UsersController < ApplicationController
     elsif @column == "craft_journey"
       @user.update(craft_stage_id: @data_value)
       delivery_estimator(current_user.id)
+    elsif @column == "post_signup"
+      @user.update(getting_started_step: @data_value)
     else
       @delivery_preferences.update(additional: @data_value)
     end
