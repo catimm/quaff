@@ -774,10 +774,10 @@ class UsersController < ApplicationController
     if @user_plan.blank?
       # first create Stripe acct
       @plan_info = Stripe::Plan.retrieve(params[:format])
-      #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
+      Rails.logger.debug("Plan info: #{@plan_info.inspect}")
       #Create a stripe customer object on signup
       customer = Stripe::Customer.create(
-              :description => @plan_info.statement_descriptor,
+              :description => 'testing this', #@plan_info.statement_descriptor,
               :source => params[:stripeToken],
               :email => current_user.email,
               :plan => params[:format]

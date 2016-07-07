@@ -29,6 +29,7 @@
 #  craft_stage_id         :integer
 #  last_name              :string
 #  getting_started_step   :integer
+#  beta_tester            :boolean
 #
 
 class User < ActiveRecord::Base

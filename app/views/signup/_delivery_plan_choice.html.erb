@@ -26,24 +26,47 @@
 						<% if @customer_plan.subscription_id == 2 %>
 							<h2 class="user-plan-chosen-text">Current Plan</h2>
 						<% else %>
-							<%= link_to process_user_plan_choice_path("account-1-enjoy"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"} do %>
-								<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
+							<% if @user.beta_tester == true %>
+								<%= link_to process_user_plan_choice_path("account-1-enjoy_beta"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"} do %>
+									<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
+								<% end %>
+							<% else %>
+								<%= link_to process_user_plan_choice_path("account-1-enjoy"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"} do %>
+									<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
+								<% end %>
 							<% end %>
 						<% end %>
 					<% else %>
-						<%= form_tag process_user_plan_choice_path("account-1-enjoy"), class:"plan-button" do %>
-							<input name="plan_id" type="hidden" value="enjoy"></input>
-				          	<script 
-				          		class="stripe-button" 
-				          		name="Knird" 
-				          		data-description="Enjoy (3-month contract)" 
-				          		data-currency="USD" 
-				          		data-label="Start the Enjoy Plan"
-				          		data-email="<%= current_user.email %>" 
-				          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
-				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-				          		src="https://checkout.stripe.com/checkout.js">
-				          	</script>
+						<% if @user.beta_tester == true %>
+							<%= form_tag process_user_plan_choice_path("account-1-enjoy_beta"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="enjoy"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="Enjoy Plan ($10/mo)" 
+					          		data-currency="USD" 
+					          		data-label="Start the Enjoy Plan"
+					          		data-email="<%= current_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						<% else %>
+							<%= form_tag process_user_plan_choice_path("account-1-enjoy"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="enjoy"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="Enjoy Plan ($10/mo)" 
+					          		data-currency="USD" 
+					          		data-label="Start the Enjoy Plan"
+					          		data-email="<%= current_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
 						<% end %>
 					<% end %>
 				</div>
@@ -80,24 +103,47 @@
 						<% if @customer_plan.subscription_id == 1 %>
 							<h2 class="user-plan-chosen-text">Current Plan</h2>
 						<% else %>
-							<%= link_to process_user_plan_choice_path("account-1-relish"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
-								<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
+							<% if @user.beta_tester == true %>
+								<%= link_to process_user_plan_choice_path("account-1-relish"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
+									<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
+								<% end %>
+							<% else %>
+								<%= link_to process_user_plan_choice_path("account-1-relish_beta"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
+									<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
+								<% end %>
 							<% end %>
 						<% end %>
 					<% else %>
-						<%= form_tag process_user_plan_choice_path("account-1-relish"), class:"plan-button" do %>
-							<input name="plan_id" type="hidden" value="relish"></input>
-				          	<script 
-				          		class="stripe-button" 
-				          		name="Knird" 
-				          		data-description="Relish (12-month contract)" 
-				          		data-currency="USD" 
-				          		data-label="Start the Relish Plan"
-				          		data-email="<%= current_user.email %>" 
-				          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
-				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-				          		src="https://checkout.stripe.com/checkout.js">
-				          	</script>
+						<% if @user.beta_tester == true %>
+							<%= form_tag process_user_plan_choice_path("account-1-relish"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="relish"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="Relish Plan ($8.33/mo)" 
+					          		data-currency="USD" 
+					          		data-label="Start the Relish Plan"
+					          		data-email="<%= current_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						<% else %>
+							<%= form_tag process_user_plan_choice_path("account-1-relish_beta"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="relish"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="Relish Plan ($8.33/mo)" 
+					          		data-currency="USD" 
+					          		data-label="Start the Relish Plan"
+					          		data-email="<%= current_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
 						<% end %>
 					<% end %>
 				</div>

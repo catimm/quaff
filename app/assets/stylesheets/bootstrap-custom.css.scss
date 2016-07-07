@@ -2142,7 +2142,6 @@ $beer-header-lines-to-show-fp: 1;
 }
 .first-row-signup {
   margin-top: 10px !important;
-  //border-bottom: 1px solid $soft-border;
   min-height: 35px;
 }
 .first-row-container-signup {
@@ -2349,6 +2348,12 @@ $beer-header-lines-to-show-fp: 1;
 }
 .terms-and-conditions-text {
   color: $normal-text;
+}
+.initial-message-after-signup {
+  h4 {
+    margin: 20px 0 30px 0;
+    color: $normal-text;
+  }
 }
 // User Profile Page
 .first-row {

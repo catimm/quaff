@@ -449,6 +449,7 @@ class SignupController < ApplicationController
     # find if user has a plan already
     @user_plan = UserSubscription.find_by_user_id(current_user.id)
     #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
+    
     # find subscription level id
     @subscription_level_id = Subscription.where(subscription_level: @input).first
       
