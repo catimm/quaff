@@ -435,6 +435,9 @@ class SignupController < ApplicationController
     @step = @data_split[1]
     @input = @data_split[2]
     
+    #get user info
+    @user = User.find(current_user.id)
+    
     # find if user has a plan already
     @user_plan = UserSubscription.find_by_user_id(current_user.id)
     #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
