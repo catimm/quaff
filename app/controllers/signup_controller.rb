@@ -315,6 +315,9 @@ class SignupController < ApplicationController
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
     
+    # get Delivery info if it exists
+    @customer_next_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
+    
     if @view == "category"
       # save the drink category data
       if !@delivery_preferences.blank?
@@ -358,7 +361,12 @@ class SignupController < ApplicationController
       
       # update the start date
       @delivery_preferences.update(first_delivery_date: @start_date)
-      
+      # update or create delivery data
+      if !@customer_next_delivery.nil?
+        @customer_next_delivery.update(delivery_date: @start_date)
+      else
+        @customer_next_delivery = Delivery.create(user_id: current_user.id, delivery_date: @start_date, status: "admin prep")
+      end
       # set next step
       @next_step = "account-3"
       

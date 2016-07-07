@@ -531,7 +531,10 @@ class UsersController < ApplicationController
     
     # get user delivery preferences
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-      
+    
+    # get Delivery info if it exists
+    @customer_next_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
+    
     if @column == "drinks_per_week"
       @delivery_preferences.update(drinks_per_week: @data_value)
       delivery_estimator(current_user.id)
@@ -544,6 +547,7 @@ class UsersController < ApplicationController
         @start_date = Date.today.next_week.advance(:days=>3) + 7.days
       end
       @delivery_preferences.update(first_delivery_date: @start_date)
+      @customer_next_delivery.update(delivery_date: @start_date)
     elsif @column == "new_percentage"
       @delivery_preferences.update(new_percentage: @data_value)
     elsif @column == "large_format"

@@ -531,12 +531,15 @@ label {
 .spinner {
   position: absolute;
   width: 100%;
-  background: $white;
-  left: 0;
-  top: 0;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
   z-index: 9999;
-  color: $action-background;
+  color: $white;
   line-height: 1.5;
+}
+.spinner-text {
+  margin-top: 10%;
+  text-shadow: rgba(0, 0, 0, 0.8) 1px 1px 4px;
 }
 .search-result-tile {
   margin: 15px 0;

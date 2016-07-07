@@ -153,8 +153,14 @@ $(function() {
 		
 	});
 	
+	var ajax_request;
+	
 	// send new percentage info to controller
 	$("#signup_delivery_preference_new_percentage").on("change", function(slideEvt) {
+		if(typeof ajax_request != 'undefined') {
+			ajax_request.abort();
+		}
+		
 		new_value = slideEvt.value.newValue;
 		var repeat_value = (100 - new_value);
 		$("#new-preference").text(new_value);
@@ -162,11 +168,11 @@ $(function() {
 	    
 		// send data to controller
 		delay(function(){
-			$.ajax({
-			  type: "POST",
-			  url: "/signup/process_input/preferences-3-" + new_value
-			});
-	    }, 1000 );
+			ajax_request = $.ajax({
+							  type: "POST",
+							  url: "/signup/process_input/preferences-3-" + new_value
+							});
+	    }, 2000 );
 	});
 	
 	// keep track of how many styles have been chosen
