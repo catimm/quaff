@@ -475,8 +475,6 @@ class SignupController < ApplicationController
     
     # determine where to send user next
     if request_url.include? "signup"
-      # update where user is in the signup process
-      @user.update(getting_started_step: 10)
       # set next step
       @next_url = getting_started_path("account-2")
     else
@@ -496,7 +494,7 @@ class SignupController < ApplicationController
     
     # update where user is in the signup process
     @user.update(getting_started_step: 10)
-    
+
     redirect_to user_delivery_settings_path(current_user.id)
   end # end account_info_process method
   
