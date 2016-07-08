@@ -1,0 +1,8 @@
+$(function() {
+	$("#drinks-per-week-meaning-row").html("<%= escape_javascript(render 'drinks_per_week_meaning' ) %>");
+	// temporarily highlight this change
+	$("#delivery-drinks-total-message").addClass('drinks-per-delivery-highlight-change');
+    setTimeout(function(){
+      $("#delivery-drinks-total-message").removeClass('drinks-per-delivery-highlight-change');
+    }, 1500);
+});

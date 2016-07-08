@@ -1,0 +1,27 @@
+<div class="container" id="drinks-per-week-meaning">
+	<div class="col-xs-0 col-sm-3"></div>
+	<div class="col-xs-12 col-sm-6 drinks-per-week-meaning-parent">
+		<div class="row no-margin drinks-per-week-meaning-first-row">
+			<div class="col-xs-12">
+				<h4 class="drinks-per-week-meaning-text">Based on the <%= @drinks_per_week %> <%= @drink_preference %> you drink at home each week, 
+					<span class="" id="delivery-drinks-total-message">
+						we will deliver <%= @drink_per_delivery_calculation %> drinks to you every other week.
+					</span>  
+				</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="drinks-per-week-meaning-text">If that works for you, move on to the next step. If not, adjust the number of 
+					<%= @drink_preference %> you drink per week.
+				</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-4"></div>
+			<div class="col-xs-4">
+				<%= link_to "Next step", getting_started_path("preferences-2"), class: "btn btn-default btn-success signup-drinks-per-week-next-step", id: "liked_styles_next_step_button" %>
+			</div>
+		</div>
+	</div>
+</div>

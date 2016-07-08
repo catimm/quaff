@@ -100,7 +100,10 @@ $(function() {
 		var current_page = id_split[1];
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_input/preferences-1-" + drinks_per_week
+			var controller_url = "/signup/process_drinks_per_week/" + drinks_per_week
+			if($("#drinks-per-week-meaning-row").hasClass("hidden")) {
+				$("#drinks-per-week-meaning-row").removeClass("hidden").addClass("show");
+			}
 		} else {
 			var controller_url = "/users/deliveries_update_preferences/drinks_per_week-" + drinks_per_week
 		}

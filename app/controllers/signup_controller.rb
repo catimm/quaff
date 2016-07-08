@@ -217,8 +217,10 @@ class SignupController < ApplicationController
       # get number of drinks per week
       if !@delivery_preferences.drinks_per_week.nil?
         @drinks_per_week = @delivery_preferences.drinks_per_week
-      else 
-        @drinks_per_week = 0
+        @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
+        @drinks_per_week_meaning_show_status = "show"
+      else
+        @drinks_per_week_meaning_show_status = "hidden"
       end
       
       # get number of large format drinks per week
@@ -365,19 +367,7 @@ class SignupController < ApplicationController
       @next_step = "styles-1"
       
     elsif @view == "preferences"
-      
-      # set next view
-      if @step == "1"
-        @delivery_preferences.update(drinks_per_week: @input)
-        
-        # update step completed if need be
-        if @user.getting_started_step == 4
-          @user.update(getting_started_step: 5)
-        end
-      
-        # set next step
-        @next_step = "preferences-2"
-      else
+ 
         # update both format preferences and cost estimator 
         @delivery_preferences.update(max_large_format: @input)
         delivery_estimator(current_user.id)
@@ -389,7 +379,7 @@ class SignupController < ApplicationController
       
         # set next step
         @next_step = "account-1"
-      end
+
     else
       if @input == "this"
         @start_date = Date.today.next_week.advance(:days=>3) - 7.days
@@ -494,6 +484,36 @@ class SignupController < ApplicationController
     
   end # end of process_sytle_input method
   
+  def process_drinks_per_week
+      # get Delivery Preference info if it exists
+      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+      @delivery_preferences.update(drinks_per_week: params[:id])
+      
+      # set variables to show in partial
+      # set drink category choice
+      if @delivery_preferences.drink_option_id == 1
+        @drink_preference = "beers"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_preference = "ciders"
+      else
+        @drink_preference = "beers/ciders"
+      end
+      @drinks_per_week = @delivery_preferences.drinks_per_week
+      @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
+      @drinks_per_week_meaning_show_status = "show"
+        
+      # update step completed if need be
+      if current_user.getting_started_step == 4
+        current_user.update(getting_started_step: 5)
+      end
+
+      respond_to do |format|
+        format.js
+      end # end of redirect to jquery
+    
+  end # end process_drinks_per_week method
+  
   def process_user_plan_choice
     # find which page search request is coming from
     request_url = request.env["HTTP_REFERER"] 
@@ -572,7 +592,18 @@ class SignupController < ApplicationController
     if @user.getting_started_step == 8
       @user.update(getting_started_step: 9)
     end
-
+    
+    # get info to send customer a welcome email
+    @user_subscription = UserSubscription.where(user_id: current_user.id).first
+    @user_billing_date = ((@user_subscription.created_at).strftime("%-d").to_i).ordinalize
+    @user_subscription_name = @user_subscription.subscription.subscription_name
+    @user_subscription_cost = (@user_subscription.subscription.subscription_cost).to_f
+    @user_subscription_length = @user_subscription.subscription.subscription_months_length
+    
+    # send welcome email to customer
+    UserMailer.welcome_email(@user, @user_subscription_name, @user_subscription_cost, @user_billing_date, @user_subscription_length).deliver_now
+    
+    
     redirect_to user_delivery_settings_path(current_user.id)
   end # end account_info_process method
   

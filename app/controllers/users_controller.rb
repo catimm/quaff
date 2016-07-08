@@ -509,9 +509,18 @@ class UsersController < ApplicationController
     # get number of large format drinks per week
     @large_format_drinks_per_week = @delivery_preferences.max_large_format
     
-    # get estimated cost estimates
-    @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
-    @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
+    # get estimated cost estimates -- rounded to nearest multiple of 5
+    @cost_estimate_low = ((@delivery_preferences.price_estimate * 0.9) / 5).round * 5
+    @cost_estimate_high = ((@delivery_preferences.price_estimate * 1.1) / 5).round * 5
+
+    # get monthly estimates
+    @user_subscription = UserSubscription.where(user_id: current_user.id).first
+    @user_subscription_name = @user_subscription.subscription.subscription_name
+    @user_subscription_cost = @user_subscription.subscription.subscription_cost
+    @monthly_delivery_estimate_low = @cost_estimate_low * 2
+    @monthly_delivery_estimate_high = @cost_estimate_high * 2
+    @monthly_total_price_estimate_low = @monthly_delivery_estimate_low + @user_subscription_cost
+    @monthly_total_price_estimate_high = @monthly_delivery_estimate_high + @user_subscription_cost
     
   end # end of delivery_settings method
   
@@ -544,8 +553,6 @@ class UsersController < ApplicationController
       end
       @delivery_preferences.update(first_delivery_date: @start_date)
       @customer_next_delivery.update(delivery_date: @start_date)
-    elsif @column == "new_percentage"
-      @delivery_preferences.update(new_percentage: @data_value)
     elsif @column == "large_format"
       @delivery_preferences.update(max_large_format: @data_value)
       delivery_estimator(current_user.id)
@@ -575,15 +582,22 @@ class UsersController < ApplicationController
     @large_format_drinks_per_week = @delivery_preferences.max_large_format
     @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
     @drink_delivery_estimate = @drink_per_delivery_calculation
-    # get new/repeat estimate
-    @new_drink_estimate = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100).round
-    @repeat_drink_estimate = @drink_per_delivery_calculation - @new_drink_estimate
     # get small/large format estimates
     @large_delivery_estimate = @delivery_preferences.max_large_format
     @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
-    # get estimated cost estimates
-    @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
-    @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
+    
+    # get estimated cost estimates -- rounded to nearest multiple of 5
+    @cost_estimate_low = ((@delivery_preferences.price_estimate * 0.9) / 5).round * 5
+    @cost_estimate_high = ((@delivery_preferences.price_estimate * 1.1) / 5).round * 5
+    
+    # get monthly estimates
+    @user_subscription = UserSubscription.where(user_id: current_user.id).first
+    @user_subscription_name = @user_subscription.subscription.subscription_name
+    @user_subscription_cost = @user_subscription.subscription.subscription_cost
+    @monthly_delivery_estimate_low = @cost_estimate_low * 2
+    @monthly_delivery_estimate_high = @cost_estimate_high * 2
+    @monthly_total_price_estimate_low = @monthly_delivery_estimate_low + @user_subscription_cost
+    @monthly_total_price_estimate_high = @monthly_delivery_estimate_high + @user_subscription_cost
         
     respond_to do |format|
       format.js

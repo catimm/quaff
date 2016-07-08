@@ -2297,6 +2297,25 @@ $beer-header-lines-to-show-fp: 1;
 .number-box-holder:hover {
   background: rgba(0,135,203, 0.4);
 }
+.drinks-per-week-meaning-parent {
+  border: 1px solid $normal-text;
+  padding: 10px;
+  margin-top: 15px;
+}
+.drinks-per-week-meaning-text {
+  color: $normal-text;
+  span {
+    color: $header-text;
+    font-size: 22px;
+  }
+}
+.drinks-per-delivery-highlight-change {
+  color: $action-background !important;
+}
+.signup-drinks-per-week-next-step {
+  width: 100%;
+  margin: 10px 0 !important;
+}
 #signup-delivery-new-slider.slider.slider-horizontal {
   width: 100% !important;
   margin-top: 30px !important;
@@ -2756,27 +2775,6 @@ $beer-header-lines-to-show-fp: 1;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
-#delivery-new-slider.slider.slider-horizontal {
-  width: 100% !important;
-  margin-top: 30px !important;
-}
-#delivery-new-slider .slider-selection {
-  background: $action-background;
-}
-#delivery-cooler-slider.slider.slider-horizontal {
-  width: 100% !important;
-  margin-top: 30px !important;
-}
-#delivery-cooler-slider .slider-selection {
-  background: $action-background;
-}
-#delivery-format-slider.slider.slider-horizontal {
-  width: 100% !important;
-  margin-top: 30px !important;
-}
-#delivery-format-slider .slider-selection {
-  background: $action-background;
-}
 .delivery-preference-percentage {
   font-weight: 500;
   margin-bottom: 20px;
@@ -2813,9 +2811,6 @@ $beer-header-lines-to-show-fp: 1;
     font-weight: 500;
   }
 }
-#delivery-new-slider .slider-handle {
-  background: $action-background;
-}
 .delivery-additional-request {
   ::-webkit-input-placeholder {
     font-size: 14px !important;
@@ -2842,12 +2837,14 @@ $beer-header-lines-to-show-fp: 1;
   background: #fff;
   padding-left: 10px;
 }
+
 .preference-estimate-holder {
   margin-bottom: 10px;
 }
 .estimated-delivery-price-header {
   color: $normal-text;
   margin: 10px 0;
+  text-align: center;
 }
 .estimation-list {
   color: $normal-text;
@@ -3510,17 +3507,23 @@ input[type="checkbox"] {
 .delivery-info-box {
   text-align: center;
   min-width: 70px;
-  height: 70px;
-  padding: 10px;
+  height: 62px;
+  padding: 8px;
   border-radius: 6px;
   p {
     font-size: 12px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     color: $less-emphasized-text;
   }
   h4 {
-    font-size: 28px;
-    margin: 2.5px 0 0 0;
+    font-size: 24px;
+    margin: 2px 0 0 0;
+  }
+}
+.delivery-info-box.monthly-estimate {
+  border: 1px solid $less-emphasized-text;
+  h4 {
+    color: $less-emphasized-text;
   }
 }
 .delivery-info-box.drinks {

@@ -2,10 +2,13 @@
 #
 # Table name: subscriptions
 #
-#  id                 :integer          not null, primary key
-#  subscription_level :string
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  id                         :integer          not null, primary key
+#  subscription_level         :string
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#  subscription_cost          :decimal(5, 2)
+#  subscription_name          :string
+#  subscription_months_length :integer
 #
 
 require 'test_helper'
