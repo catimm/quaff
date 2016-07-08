@@ -45,8 +45,6 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # set other drink guidelines for recommendation choices
-    @next_delivery_new_need = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100)
-    @next_delivery_retry_need = @drink_per_delivery_calculation - @next_delivery_new_need
     @next_delivery_max_cellar = @delivery_preferences.max_cellar
     @next_delivery_max_large = @delivery_preferences.max_large_format
     
@@ -82,6 +80,10 @@ class Admin::RecommendationsController < ApplicationController
       end
     end   
     
+    # set new and repeat drink percentages
+    @next_delivery_new_percentage = ((@next_delivery_new.to_f / @drink_per_delivery_calculation) * 100).round
+    @next_delivery_repeat_percentage = ((@next_delivery_retry.to_f / @drink_per_delivery_calculation) * 100).round
+        
     # get user's delivery prefrences
     @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
     # drink preference
@@ -346,8 +348,6 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # set other drink guidelines for recommendation choices
-    @next_delivery_new_need = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100)
-    @next_delivery_retry_need = @drink_per_delivery_calculation - @next_delivery_new_need
     @next_delivery_max_cellar = @delivery_preferences.max_cellar
     @next_delivery_max_large = @delivery_preferences.max_large_format
     
@@ -379,6 +379,10 @@ class Admin::RecommendationsController < ApplicationController
         @next_delivery_small += (1 * @quantity)
       end
     end  
+    
+    # set new and repeat drink percentages
+    @next_delivery_new_percentage = ((@next_delivery_new.to_f / @drink_per_delivery_calculation) * 100).round
+    @next_delivery_repeat_percentage = ((@next_delivery_retry.to_f / @drink_per_delivery_calculation) * 100).round
     
     render :partial => 'admin/recommendations/admin_user_delivery_next'
   end #end of admin_user_delivery method
@@ -487,8 +491,6 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # set other drink guidelines for recommendation choices
-    @next_delivery_new_need = ((@drink_per_delivery_calculation * @delivery_preferences.new_percentage)/100)
-    @next_delivery_retry_need = @drink_per_delivery_calculation - @next_delivery_new_need
     @next_delivery_max_cellar = @delivery_preferences.max_cellar
     @next_delivery_max_large = @delivery_preferences.max_large_format
 
@@ -520,6 +522,10 @@ class Admin::RecommendationsController < ApplicationController
         @next_delivery_small += (1 * @quantity)
       end
     end  
+    
+    # set new and repeat drink percentages
+    @next_delivery_new_percentage = ((@next_delivery_new.to_f / @drink_per_delivery_calculation) * 100).round
+    @next_delivery_repeat_percentage = ((@next_delivery_retry.to_f / @drink_per_delivery_calculation) * 100).round
     
     render :partial => 'admin/recommendations/admin_review_delivery'
   end #end of admin_review_delivery method

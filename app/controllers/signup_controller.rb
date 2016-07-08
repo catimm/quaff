@@ -21,6 +21,34 @@ class SignupController < ApplicationController
     # get User info 
     @user = User.find(current_user.id)
     
+    # send current signup step to jquery
+    if @user.getting_started_step == 0
+      gon.user_signup_step = @user.getting_started_step
+    end
+    
+    # set current signup step for CSS purposes
+    if @user.getting_started_step >= 7
+      @category_chosen = 'complete'
+      @journey_chosen = 'complete'
+      @styles_chosen = 'complete'
+      @preferences_chosen = 'complete'
+      @account_chosen = 'complete'
+    elsif @user.getting_started_step >= 5
+      @category_chosen = 'complete'
+      @journey_chosen = 'complete'
+      @styles_chosen = 'complete'
+      @preferences_chosen = 'complete'
+    elsif @user.getting_started_step >= 3
+      @category_chosen = 'complete'
+      @journey_chosen = 'complete'
+      @styles_chosen = 'complete'
+    elsif @user.getting_started_step >= 2
+      @category_chosen = 'complete'
+      @journey_chosen = 'complete'
+    else
+      @category_chosen = 'complete'
+    end
+    
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
     
@@ -47,9 +75,6 @@ class SignupController < ApplicationController
         @cider_chosen = "hidden"
         @beer_and_cider_chosen = "hidden"
       end
-      
-      # update where user is in the signup process
-      @user.update(getting_started_step: 1)
     
     elsif @view == "journey"
       # set css rule for signup guide header
@@ -189,15 +214,6 @@ class SignupController < ApplicationController
         @drink_preference = "beers/ciders"
       end
       
-      # check if this data is already available
-      if !@delivery_preferences.new_percentage.nil?
-        @new_percentage = @delivery_preferences.new_percentage
-        @repeat_percentage = 100 - @new_percentage
-      else 
-        @new_percentage = 50
-        @repeat_percentage = 50
-      end
-      
       # get number of drinks per week
       if !@delivery_preferences.drinks_per_week.nil?
         @drinks_per_week = @delivery_preferences.drinks_per_week
@@ -326,12 +342,24 @@ class SignupController < ApplicationController
         @new_delivery_preference = DeliveryPreference.create(user_id: current_user.id, drink_option_id: @input)
       end
       
+      # update step completed if need be
+      if @user.getting_started_step == 0
+        @user.update(getting_started_step: 1)
+      end
+      
       # set next view
       @next_step = "journey"
       
     elsif @view == "journey"
-      # save the user craft stage data
-      @user.update(craft_stage_id: @input)
+      
+      # update step completed if need be
+      if @user.getting_started_step == 1
+        # update both
+        @user.update(getting_started_step: 2, craft_stage_id: @input)
+      else
+        # just save the user craft stage data
+        @user.update(craft_stage_id: @input)
+      end
       
       # set next view
       @next_step = "styles-1"
@@ -341,13 +369,25 @@ class SignupController < ApplicationController
       # set next view
       if @step == "1"
         @delivery_preferences.update(drinks_per_week: @input)
+        
+        # update step completed if need be
+        if @user.getting_started_step == 4
+          @user.update(getting_started_step: 5)
+        end
+      
+        # set next step
         @next_step = "preferences-2"
-      elsif @step == "2"
+      else
+        # update both format preferences and cost estimator 
         @delivery_preferences.update(max_large_format: @input)
         delivery_estimator(current_user.id)
-        @next_step = "preferences-3"
-      else
-        @delivery_preferences.update(new_percentage: @input)
+        
+        # update step completed if need be
+        if @user.getting_started_step == 5
+          @user.update(getting_started_step: 6)
+        end
+      
+        # set next step
         @next_step = "account-1"
       end
     else
@@ -367,6 +407,12 @@ class SignupController < ApplicationController
       else
         @customer_next_delivery = Delivery.create(user_id: current_user.id, delivery_date: @start_date, status: "admin prep")
       end
+      
+      # update step completed if need be
+      if @user.getting_started_step == 7
+        @user.update(getting_started_step: 8)
+      end
+        
       # set next step
       @next_step = "account-3"
       
@@ -383,6 +429,9 @@ class SignupController < ApplicationController
     @preference = @data_split[0]
     @action = @data_split[1]
     @style_info = @data_split[2]
+    
+    # get user info
+    @user = User.find(current_user.id)
     
     @style_id = Array.new
     # set style number 
@@ -427,7 +476,20 @@ class SignupController < ApplicationController
         @user_style_preference.destroy
       end
     end # end of style each do loop
+    
+     # update step completed if need be
+     if @preference == "like"
+      if @user.getting_started_step == 2
+        @user.update(getting_started_step: 3)
+      end
+     end
      
+     if @preference == "dislike"
+      if @user.getting_started_step == 3
+        @user.update(getting_started_step: 4)
+      end
+     end
+       
     render :nothing => true
     
   end # end of process_sytle_input method
@@ -484,6 +546,11 @@ class SignupController < ApplicationController
     
     # determine where to send user next
     if request_url.include? "signup"
+      # update step completed if need be
+      if @user.getting_started_step == 6
+        @user.update(getting_started_step: 7)
+      end
+      
       # set next step
       @next_url = getting_started_path("account-2")
     else
@@ -501,8 +568,10 @@ class SignupController < ApplicationController
     @user = User.find(current_user.id)
     @user.update(user_params)
     
-    # update where user is in the signup process
-    @user.update(getting_started_step: 10)
+    # update step completed if need be
+    if @user.getting_started_step == 8
+      @user.update(getting_started_step: 9)
+    end
 
     redirect_to user_delivery_settings_path(current_user.id)
   end # end account_info_process method

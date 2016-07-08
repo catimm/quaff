@@ -1,8 +1,6 @@
 <%= render 'layouts/header_signup' %> 
 	<div class="row no-margin first-row-signup">
-		<div class="container first-row-container-signup">
-			<%= render 'signup_guide' %>
-		</div>
+		<%= render 'signup_guide' %>
 	</div>
 	<% if @view == "category" %>
     	<%= render 'drink_category' %>
@@ -17,10 +15,8 @@
     <% elsif @view == "preferences" %>
     	<% if @step == "1" %>
     		<%= render 'drinks_per_week' %>
-    	<% elsif @step == "2" %>
-    		<%= render 'large_format_per_week' %>
     	<% else %>
-    		<%= render 'new_vs_repeat' %>
+    		<%= render 'large_format_per_week' %>
     	<% end %>
     <% else %>
     	<% if @step == "1" %>
@@ -31,5 +27,15 @@
     		<%= render 'user_info' %>
     	<% end %>
     <% end %>
-	
+<div id="getting_started_welcome" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Welcome to Knird's signup process</h3>
+	</div>
+	<div class="modal-body initial-message-after-signup">
+		<h5>We have only a handful of questions to ask to get your account setup.</h5>
+		<h5>When we're done here, you'll be all set to receive your first delivery of personalized and curated drinks.</h5>
+		<h5>This won't take long, but feel free to email questions@drinkknird.com at any time.</h5>
+	</div> 
+</div>
 <%= render 'layouts/footer' %>

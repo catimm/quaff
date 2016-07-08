@@ -7,6 +7,7 @@
 				<div class="col-xs-12">
 						<h2>Invite others</h2>
 					    <%= form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => {:method => :post} do |f| %>
+  							<%= f.hidden_field :getting_started_step, :value => 0 %>
   							<%- flash.each do |name, msg| -%>
 							    <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
 							  <%- end -%>

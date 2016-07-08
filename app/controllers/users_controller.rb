@@ -433,6 +433,8 @@ class UsersController < ApplicationController
     
     # get delivery preferences info
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    # first email review date
+    @email_review_date = @delivery_preferences.first_delivery_date - 3.days
     # get user's delivery info
     @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
     
@@ -444,12 +446,6 @@ class UsersController < ApplicationController
     @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
     @drink_delivery_estimate = @drink_per_delivery_calculation
 
-    # set slider values for new vs repeat
-    @new_percentage = @delivery_preferences.new_percentage
-    @repeat_percentage = 100 - @new_percentage
-    # set new/repeat drink estimates
-    @new_drink_estimate = ((@drink_per_delivery_calculation * @new_percentage)/100).round
-    @repeat_drink_estimate = @drink_per_delivery_calculation - @new_drink_estimate
     # set small/large format drink estimates
     @large_delivery_estimate = @delivery_preferences.max_large_format
     @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate

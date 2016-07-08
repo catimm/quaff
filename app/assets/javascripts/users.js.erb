@@ -1,12 +1,12 @@
 $(function () {
 	// show welcom modal immediately following signup process
-	if (gon.user_post_signup == 10) {
+	if (gon.user_post_signup == 9) {
 		$(window).load(function(){
 	        $('#delivery_settings_welcome').modal('show');
 	    });
 	    $.ajax({
 		  type: "POST",
-		  url: "/users/deliveries_update_preferences/post_signup-11"
+		  url: "/users/deliveries_update_preferences/post_signup-10"
 		});
 	}
 

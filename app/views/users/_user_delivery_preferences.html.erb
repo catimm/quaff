@@ -76,28 +76,6 @@
 			<hr>
 			<div class="row no-margin">
 				<div class="col-sm-4 no-padding">
-					<h3 class="delivery-preference-prompt">What is the percentage of new vs repeat drinks you'd like in each delivery?</h3>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage repeat text-center"><span id="repeat-preference"><%= @repeat_percentage %></span>% <span class="preference-label">repeat</span></h2>
-				</div>
-				<div class="col-sm-4">
-					<%= f.text_field :new_percentage, id: 'new_percentage', type: 'text',
-	                 data: {'slider-id' => 'delivery-new-slider',
-	                 		'slider-min' => '0',
-	                        'slider-max' => '100',
-	                        'slider-step' => '5',
-	                        'slider-value' => @new_percentage,
-	                        'slider-orientation' => 'horizontal',
-	                        'slider-handle' => 'square' } %>
-				</div>
-				<div class="col-sm-2 no-padding">
-					<h2 class="delivery-preference-percentage new text-center"><span id="new-preference"><%= @new_percentage %></span>% <span class="preference-label">new</span></h2>
-				</div>
-			</div>
-			<hr>
-			<div class="row no-margin">
-				<div class="col-sm-4 no-padding">
 					<h3 class="delivery-preference-prompt">Additional requests</h3>
 				</div>
 				<div class="col-sm-8 delivery-additional-request">
@@ -109,7 +87,7 @@
 	<div class="col-sm-3 no-padding" id="estimate-column">
 		<div id="scroller-anchor"></div>
 		<div class="row no-margin estimated-delivery-price-holder" id="scroller">
-			<%= render 'delivery_estimates_for_customer' %>
+			<%= render 'user_delivery_estimates_for_customer' %>
 		</div>
 	</div>
 </div>

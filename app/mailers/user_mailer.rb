@@ -57,8 +57,7 @@ class UserMailer < ActionMailer::Base
   end # end of select_invite_email email
   
   def delivery_confirmation_email(customer, delivery_info, drink_quantity)
-    Rails.logger.debug("customer info: #{customer.inspect}")
-    Rails.logger.debug("delivery info: #{delivery_info.inspect}")
+    #Rails.logger.debug("customer info: #{customer.inspect}")
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
      
     payload  = {
@@ -79,30 +78,36 @@ class UserMailer < ActionMailer::Base
         total_price: delivery_info.total_price
       }
     }
-    Rails.logger.debug("payload info: #{payload.inspect}")
+    
     response = sp.transmission.send_payload(payload)
     p response
-    Rails.logger.debug("payload response: #{response.inspect}")
   end # end of select_invite_email email
-    
-  def welcome_email(user)
-    url = "http://www.drinkknird.com/users/"
-    template_name = "welcome-email"
-    template_content = []
-    message = {
-      to: [{email: user.email}],
-      inline_css: true,
-      merge_vars: [
-        {rcpt: user.email,
-         vars: [
-           {name: "user", content: user.first_name},
-           {name: "link", content: url},
-           {name: "id", content: user.id}
-         ]}
-      ]
+  
+  def welcome_email(customer, subscription_fee, billing_date, membership_length)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'welcome-email'
+      },
+      substitution_data: {
+        customer_first_name: customer.first_name,
+        customer_id: customer.id,
+        subscription_fee: subscription_fee,
+        billing_date: billing_date,
+        membership_length: membership_length
+      }
     }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end
+
+    response = sp.transmission.send_payload(payload)
+    p response
+
+  end # end of select_invite_email email  
 
   def expiring_trial_email(owner, location)
     Rails.logger.debug("Owner info: #{owner.first_name.inspect}")

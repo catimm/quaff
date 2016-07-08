@@ -5,7 +5,6 @@
 #  id                  :integer          not null, primary key
 #  user_id             :integer
 #  drinks_per_week     :integer
-#  new_percentage      :integer
 #  additional          :text
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null

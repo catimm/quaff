@@ -8,6 +8,13 @@ $(function() {
 	  };
 	})();
 	
+	// show welcome modal before starting signup process
+	if (gon.user_signup_step == 0) {
+		$(window).load(function(){
+	        $('#getting_started_welcome').modal('show');
+	    });
+	}
+	
 	// find width of tile so overlay matches
 	var like_tile_width = $('.signup-style-tile.like-style-tile').width();
 	$('.signup-style-tile.like-style-tile.chosen').width(like_tile_width);

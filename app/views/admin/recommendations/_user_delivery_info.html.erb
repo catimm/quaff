@@ -47,10 +47,10 @@
 		     </div>
 		    <div class="col-sm-2">
 		      	<div class="box-left">
-		      		<h6>Need <%= @next_delivery_new_need %> new <%= "drink".pluralize(@next_delivery_new_need) %>; have <%= @next_delivery_new %></h6>
+		      		<h6>Have <%= @next_delivery_new %> new drinks (<%= @next_delivery_new_percentage %>%)</h6>
 		    	</div>
 		    	<div class="box-right">
-			      	<% if @next_delivery_new_need == @next_delivery_new %>
+			      	<% if @next_delivery_new_percentage >= 50 %>
 			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
 			      			<i class="fa fa-check"></i>
 			      		</div>						
@@ -63,10 +63,10 @@
 		    </div>
 		    <div class="col-sm-2">
 		      	<div class="box-left">
-		      		<h6>Need <%= @next_delivery_retry_need %> retry <%= "drink".pluralize(@next_delivery_new_need) %>; have <%= @next_delivery_retry %></h6>
+		      		<h6>Have <%= @next_delivery_retry %> repeat drinks (<%= @next_delivery_repeat_percentage %>%)</h6>
 		    	</div>
 		    	<div class="box-right">
-			      	<% if @next_delivery_retry_need == @next_delivery_retry %>
+			      	<% if @next_delivery_repeat_percentage <= 50 %>
 			      		<div class="style-indicator-next-delivery like-style-next-delivery text-center">
 			      			<i class="fa fa-check"></i>
 			      		</div>						

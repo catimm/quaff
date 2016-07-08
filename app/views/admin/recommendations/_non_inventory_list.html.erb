@@ -23,7 +23,7 @@
         <% end %>
 		<tr>
 	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %> <h6 class="light-gray-text brewery-name-with-id">[id: <%= drink.beer.id %> ]</h6></td>
-	        <td><%= drink.beer.beer_type.beer_type_name %></td>
+	        <td><%= drink.beer.beer_type.beer_type_short_name %></td>
 	        <% if drink.new_drink == true %>
 	        	<td><%= drink.projected_rating %></td>
 	        <% else %>
@@ -49,15 +49,15 @@
 		   	<% end %>
 	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 	        <td><%= @tally %></td>
-	        <% @delivered_recently = UserDelivery.delivered_recently(@chosen_user_id, drink.beer_id) %>
+	        <% @delivered_recently = UserDelivery.delivered_recently(@chosen_user_id, drink.beer_id).last %>
 		    <% if !@delivered_recently.blank? %>
-		    	<td>Yes</td>
+		    	<td><%= (@delivered_recently.delivery.delivery_date).strftime("%-m/%-d/%y") %></td>
 		    <% else %>
 		    	<td>No</td>
 		    <% end %>
-		    <% @drank_recently = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer_id).where('created_at > ?', 1.month.ago) %>
+		    <% @drank_recently = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer_id).where('created_at > ?', 1.month.ago).last %>
 		    <% if !@drank_recently.blank? %>
-		    	<td>Yes</td>
+		    	<td><%= (@drank_recently.created_at).strftime("%-m/%-d/%y") %></td>
 		    <% else %>
 		    	<td>No</td>
 		    <% end %>

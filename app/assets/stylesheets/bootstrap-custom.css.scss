@@ -2126,27 +2126,39 @@ $beer-header-lines-to-show-fp: 1;
   margin: 10px 0;
 }
 .signup-guide-column-holder {
+  background: $gray-body-background;
   text-align: center;
   div {
     color: $signup-category-image-background-start;
     float: right;
     font-weight: 200;
-    margin-top: 4px;
+    margin-top: 11px;
   }
+}
+.signup-guide-column-holder.last-column {
+  min-height: 30px;
+}
+.signup-guide-column-holder.current, .signup-guide-column-holder.complete {
+  background: $white;
 }
 .guide-header {
   color: $less-emphasized-text;
+  margin: 7px 0 3px 0;
 }
 .guide-header.current {
+  color: $action-background;
+  font-size: 16px;
+}
+.guide-header.complete {
   color: $header-text;
 }
 .first-row-signup {
-  margin-top: 10px !important;
+  margin-top: 14.5px !important;
   min-height: 35px;
 }
 .first-row-container-signup {
   height: 35px;
-  margin-top: 10px;
+  margin: 10px;
 }
 .step-number-guide {
   color: $less-emphasized-text;
@@ -2350,9 +2362,11 @@ $beer-header-lines-to-show-fp: 1;
   color: $normal-text;
 }
 .initial-message-after-signup {
-  h4 {
+  h5 {
     margin: 20px 0 30px 0;
     color: $normal-text;
+    font-size: 16px;
+    line-height: 1.2;
   }
 }
 // User Profile Page
@@ -3568,8 +3582,6 @@ input[type="checkbox"] {
   }
 }
 .delivery-info-box.total-price {
-  float: left;
-  margin-right: 16px;
   border: 1px solid $money-color;
   h4 {
     color: $money-color;
