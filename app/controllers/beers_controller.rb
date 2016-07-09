@@ -25,23 +25,37 @@ class BeersController < ApplicationController
      # get unique customer ids
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
      @role_ids = [1, 2, 3, 4] 
-     @customer_ids = User.where(role_id: @role_ids).pluck(:id)
+     @customers = User.where(role_id: @role_ids)
      #Rails.logger.debug("Customer ids: #{@customer_ids.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
      @users_have_had = 0
+     @list_of_customers_who_like = Array.new
+     @list_of_customers_who_had = Array.new
+     @list_of_customers_who_not_had = Array.new
      
-     @customer_ids.each do |customer|
-       @this_user_best_guess = best_guess(params[:id], customer)[0]
+     @customers.each do |customer|
+       @this_user_best_guess = best_guess(params[:id], customer.id)[0]
        if @this_user_best_guess.best_guess >= 7.75
          @users_would_like += 1
-         @drink_rating_check = UserBeerRating.where(user_id: customer, beer_id: params[:id]).first
+         @this_customer_likes = customer.first_name + " [" + customer.username + "]"
+         @list_of_customers_who_like << @this_customer_likes
+         @drink_rating_check = UserBeerRating.where(user_id: customer.id, beer_id: params[:id]).first
          if !@drink_rating_check.nil?
           @users_have_had += 1
+          @this_customer_had = customer.first_name + " [" + customer.username + "]"
+          @list_of_customers_who_had << @this_customer_had
+         else
+          @this_customer_not_had = customer.first_name + " [" + customer.username + "]"
+          @list_of_customers_who_not_had << @this_customer_not_had
          end  # end of check on whether user has had drink
        end # end of best guess minimum check
      end # end of loop through customers
- 
+      
+      Rails.logger.debug("Customers who like: #{@list_of_customers_who_like.inspect}")
+      Rails.logger.debug("Customes who had: #{@list_of_customers_who_had.inspect}")
+      Rails.logger.debug("Customers not had: #{@list_of_customers_who_not_had.inspect}")
+      
      @users_have_not_had = @users_would_like - @users_have_had
       
       # get inventory data for

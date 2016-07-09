@@ -764,6 +764,12 @@ $beer-header-lines-to-show-fp: 1;
     vertical-align: top;
   }
 }
+.lists-of-customers {
+  color: $header-text;
+  span {
+    color: $normal-text;
+  }
+}
 // Retailer overview page
 .page-title {
   padding: 20px 0;

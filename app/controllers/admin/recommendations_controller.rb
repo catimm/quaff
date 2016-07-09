@@ -177,25 +177,23 @@ class Admin::RecommendationsController < ApplicationController
       @next_delivery_info.destroy!
     else # add entry
       # get cellarable info
-      @cellarable_info = @drink_recommendation.beer.cellarable
-      if @cellarable_info == true
-        @cooler = false
-      else
-        @cooler = true
+      @cellar = @drink_recommendation.beer.cellarable
+      if @cellar.nil?
+        @cellar = false
       end
       # get size format info
-      if (1..4).include?(@inventory.size_format_id)
-        @size_format = true
+      if @inventory.size_format_id == 5
+        @large_format = true
       else
-        @size_format = false
+        @large_format = false
       end
       # put info into admin_user_deliveries table
       @next_delivery_addition = AdminUserDelivery.new(user_id: @drink_recommendation.user_id, 
                                                       inventory_id: @inventory_id, 
                                                       beer_id: @inventory.beer_id, 
                                                       new_drink: @drink_recommendation.new_drink, 
-                                                      cooler: @cooler, 
-                                                      small_format: @size_format,
+                                                      cellar: @cellar, 
+                                                      large_format: @large_format,
                                                       projected_rating: @drink_recommendation.projected_rating,
                                                       style_preference: @drink_recommendation.style_preference,
                                                       quantity: 1,
