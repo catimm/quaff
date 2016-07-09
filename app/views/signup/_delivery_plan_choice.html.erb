@@ -104,18 +104,18 @@
 							<h2 class="user-plan-chosen-text">Current Plan</h2>
 						<% else %>
 							<% if @user.beta_tester == true %>
-								<%= link_to process_user_plan_choice_path("account-1-relish"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
+								<%= link_to process_user_plan_choice_path("account-1-relish_beta"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
 									<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
 								<% end %>
 							<% else %>
-								<%= link_to process_user_plan_choice_path("account-1-relish_beta"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
+								<%= link_to process_user_plan_choice_path("account-1-relish"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
 									<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
 								<% end %>
 							<% end %>
 						<% end %>
 					<% else %>
 						<% if @user.beta_tester == true %>
-							<%= form_tag process_user_plan_choice_path("account-1-relish"), class:"plan-button" do %>
+							<%= form_tag process_user_plan_choice_path("account-1-relish_beta"), class:"plan-button" do %>
 								<input name="plan_id" type="hidden" value="relish"></input>
 					          	<script 
 					          		class="stripe-button" 
@@ -130,7 +130,7 @@
 					          	</script>
 							<% end %>
 						<% else %>
-							<%= form_tag process_user_plan_choice_path("account-1-relish_beta"), class:"plan-button" do %>
+							<%= form_tag process_user_plan_choice_path("account-1-relish"), class:"plan-button" do %>
 								<input name="plan_id" type="hidden" value="relish"></input>
 					          	<script 
 					          		class="stripe-button" 
