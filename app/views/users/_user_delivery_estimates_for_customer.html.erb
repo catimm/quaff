@@ -24,27 +24,7 @@
 </div>
 <div class="col-sm-12 preference-estimate-holder">
 	<div class="delivery-info-box total-price">
-		<p>delivery price</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@cost_estimate_low, precision: 0) %> - <%= number_to_currency(@cost_estimate_high, precision: 0) %></h4>
-	</div>
-</div>
-<h4 class="estimated-delivery-price-header">Monthly cost estimates</h4>
-
-<div class="col-sm-12 preference-estimate-holder">
-	<div class="delivery-info-box monthly-estimate">
-		<p><%= @user_subscription_name %> monthly membership fee</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@user_subscription_cost, precision: 2) %></h4>
-	</div>	
-</div>
-<div class="col-sm-12 preference-estimate-holder">
-	<div class="delivery-info-box monthly-estimate">
-		<p>2x delivery price</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@monthly_delivery_estimate_low, precision: 0) %> - <%= number_to_currency(@monthly_delivery_estimate_high, precision: 0) %></h4>
-	</div>
-</div>
-<div class="col-sm-12 preference-estimate-holder">
-	<div class="delivery-info-box total-price">
-		<p>total monthly price</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@monthly_total_price_estimate_low, precision: 0) %> - <%= number_to_currency(@monthly_total_price_estimate_high, precision: 0) %></h4>
+		<p>total price <sup  data-toggle="tooltip" title="You always have final say on your delivery, but if we can deliver the love for less, we will!">?</sup></p>
+		<h4 class="delivery-preference-prompt">~<%= number_to_currency(@delivery_cost_estimate, precision: 0) %></h4>
 	</div>
 </div>

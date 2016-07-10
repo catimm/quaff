@@ -15,7 +15,7 @@ module DeliveryEstimator
     
     # first set average drink costs
     @small_cooler_cost = 3
-    @large_cooler_cost = 9
+    @large_cooler_cost = 6
     @small_cellar_cost = 13
     @large_cellar_cost = 18
     
@@ -32,16 +32,24 @@ module DeliveryEstimator
     @max_cellar = (@drink_per_delivery_calculation * @cellar_percentage).ceil
     
     # determine drink numbers for each category
-    @number_of_large_cellar = (@drink_per_delivery_calculation * @cellar_percentage * @large_percentage)
+    @number_of_large_cellar = (@drink_per_delivery_calculation * @cellar_percentage * @large_percentage) #0
+    Rails.logger.debug("# large cellar: #{@number_of_large_cellar.inspect}") 
     @number_of_small_cellar = (@drink_per_delivery_calculation * @cellar_percentage * (1 - @large_percentage))
+    Rails.logger.debug("# small cellar: #{@number_of_small_cellar.inspect}") 
     @number_of_large_cooler = (@drink_per_delivery_calculation * (1 - @cellar_percentage) * @large_percentage)
+    Rails.logger.debug("# large cooler: #{@number_of_large_cooler.inspect}") 
     @number_of_small_cooler = (@drink_per_delivery_calculation * (1 - @cellar_percentage) * (1 - @large_percentage))
+    Rails.logger.debug("# small cooler: #{@number_of_small_cooler.inspect}") 
     
     # multiply drink numbers by drink costs
     @cost_estimate_cooler_small = (@small_cooler_cost * @number_of_small_cooler)
+    Rails.logger.debug("$ small cooler: #{@cost_estimate_cooler_small.inspect}") 
     @cost_estimate_cooler_large = (@large_cooler_cost * @number_of_large_cooler)
+    Rails.logger.debug("$ large cooler: #{@cost_estimate_cooler_large.inspect}") 
     @cost_estimate_cellar_small = (@small_cellar_cost * @number_of_small_cellar)
+    Rails.logger.debug("$ small cellar: #{@cost_estimate_cellar_small.inspect}") 
     @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
+    Rails.logger.debug("$ large cellar: #{@cost_estimate_cellar_large.inspect}") 
     @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
   
     # update delivery prefrence drink total estimation

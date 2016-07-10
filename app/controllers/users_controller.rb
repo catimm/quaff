@@ -510,17 +510,12 @@ class UsersController < ApplicationController
     @large_format_drinks_per_week = @delivery_preferences.max_large_format
     
     # get estimated cost estimates -- rounded to nearest multiple of 5
-    @cost_estimate_low = ((@delivery_preferences.price_estimate * 0.9) / 5).round * 5
-    @cost_estimate_high = ((@delivery_preferences.price_estimate * 1.1) / 5).round * 5
+    @delivery_cost_estimate = ((@delivery_preferences.price_estimate.to_f) / 5).round * 5
 
     # get monthly estimates
     @user_subscription = UserSubscription.where(user_id: current_user.id).first
     @user_subscription_name = @user_subscription.subscription.subscription_name
     @user_subscription_cost = @user_subscription.subscription.subscription_cost
-    @monthly_delivery_estimate_low = @cost_estimate_low * 2
-    @monthly_delivery_estimate_high = @cost_estimate_high * 2
-    @monthly_total_price_estimate_low = @monthly_delivery_estimate_low + @user_subscription_cost
-    @monthly_total_price_estimate_high = @monthly_delivery_estimate_high + @user_subscription_cost
     
   end # end of delivery_settings method
   
@@ -587,17 +582,12 @@ class UsersController < ApplicationController
     @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
     
     # get estimated cost estimates -- rounded to nearest multiple of 5
-    @cost_estimate_low = ((@delivery_preferences.price_estimate * 0.9) / 5).round * 5
-    @cost_estimate_high = ((@delivery_preferences.price_estimate * 1.1) / 5).round * 5
+    @delivery_cost_estimate = ((@delivery_preferences.price_estimate.to_f) / 5).round * 5
     
     # get monthly estimates
     @user_subscription = UserSubscription.where(user_id: current_user.id).first
     @user_subscription_name = @user_subscription.subscription.subscription_name
     @user_subscription_cost = @user_subscription.subscription.subscription_cost
-    @monthly_delivery_estimate_low = @cost_estimate_low * 2
-    @monthly_delivery_estimate_high = @cost_estimate_high * 2
-    @monthly_total_price_estimate_low = @monthly_delivery_estimate_low + @user_subscription_cost
-    @monthly_total_price_estimate_high = @monthly_delivery_estimate_high + @user_subscription_cost
         
     respond_to do |format|
       format.js

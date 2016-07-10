@@ -33,4 +33,5 @@ jQuery( function($) {
     $('i').tooltip();
     $('div').tooltip();
     $('a').tooltip();
+    $('sup').tooltip();
 });

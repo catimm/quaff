@@ -220,6 +220,9 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
   padding: 5px 7.5px !important;
   margin-top: 10px;
 }
+.tooltip {
+    position: fixed;
+}
 .hidden {
   display: none;
 }
@@ -3520,6 +3523,11 @@ input[type="checkbox"] {
     font-size: 12px;
     margin-bottom: 4px;
     color: $less-emphasized-text;
+    sup {
+      top: -0.3em;
+      font-size: 90%;
+      color: $header-text;
+    }
   }
   h4 {
     font-size: 24px;
