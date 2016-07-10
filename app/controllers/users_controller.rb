@@ -361,8 +361,6 @@ class UsersController < ApplicationController
           # count number of drinks in delivery
           @drink_count = @next_delivery.sum(:quantity)
           # count number of drinks that are new to user
-          @next_delivery_new = 0
-          @next_delivery_retry = 0
           @next_delivery_cooler = 0
           @next_delivery_cellar = 0
           @next_delivery_small = 0
@@ -370,20 +368,15 @@ class UsersController < ApplicationController
           # cycle through next delivery drinks to get delivery counts
           @next_delivery.each do |drink|
             @quantity = drink.quantity
-            if drink.new_drink == true
-              @next_delivery_new += (1 * @quantity)
-            else
-              @next_delivery_retry += (1 * @quantity)
-            end
-            if drink.cooler == true
-              @next_delivery_cooler += (1 * @quantity)
-            else
+            if drink.cellar == true
               @next_delivery_cellar += (1 * @quantity)
-            end
-            if drink.small_format == true
-              @next_delivery_small += (1 * @quantity)
             else
-              @next_delivery_large += (1 * @quantity)
+              @next_delivery_cooler += (1 * @quantity)
+            end
+            if drink.large_format == true
+              @next_delivery_large += (1 * @quantity) 
+            else
+              @next_delivery_small += (1 * @quantity)
             end
           end     
         
@@ -510,7 +503,7 @@ class UsersController < ApplicationController
     @large_format_drinks_per_week = @delivery_preferences.max_large_format
     
     # get estimated cost estimates -- rounded to nearest multiple of 5
-    @delivery_cost_estimate = ((@delivery_preferences.price_estimate.to_f) / 5).round * 5
+    @delivery_cost_estimate = ((@delivery_preferences.price_estimate) / 5).round * 5
 
     # get monthly estimates
     @user_subscription = UserSubscription.where(user_id: current_user.id).first
@@ -582,7 +575,8 @@ class UsersController < ApplicationController
     @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
     
     # get estimated cost estimates -- rounded to nearest multiple of 5
-    @delivery_cost_estimate = ((@delivery_preferences.price_estimate.to_f) / 5).round * 5
+    @@delivery_cost_estimate = ((@delivery_preferences.price_estimate) / 5).round * 5
+    @cost_estimate_high = ((@delivery_preferences.price_estimate * 1.1) / 5).round * 5
     
     # get monthly estimates
     @user_subscription = UserSubscription.where(user_id: current_user.id).first
@@ -661,8 +655,6 @@ class UsersController < ApplicationController
     # count number of drinks in delivery
     @drink_count = @next_delivery.sum(:quantity)
     # count number of drinks that are new to user
-    @next_delivery_new = 0
-    @next_delivery_retry = 0
     @next_delivery_cooler = 0
     @next_delivery_cellar = 0
     @next_delivery_small = 0
@@ -670,20 +662,15 @@ class UsersController < ApplicationController
     # cycle through next delivery drinks to get delivery counts
     @next_delivery.each do |drink|
       @quantity = drink.quantity
-      if drink.new_drink == true
-        @next_delivery_new += (1 * @quantity)
-      else
-        @next_delivery_retry += (1 * @quantity)
-      end
-      if drink.cooler == true
-        @next_delivery_cooler += (1 * @quantity)
-      else
+      if drink.cellar == true
         @next_delivery_cellar += (1 * @quantity)
-      end
-      if drink.small_format == true
-        @next_delivery_small += (1 * @quantity)
       else
+        @next_delivery_cooler += (1 * @quantity)
+      end
+      if drink.large_format == true
         @next_delivery_large += (1 * @quantity)
+      else
+        @next_delivery_small += (1 * @quantity)
       end
     end
     

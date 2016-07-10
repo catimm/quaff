@@ -108,8 +108,7 @@ class Admin::BeersController < ApplicationController
             brewer_description: params[:beer][:brewer_description], beer_type_id: params[:beer][:beer_type_id],
             rating_one_na: params[:beer][:rating_one_na], rating_two_na: params[:beer][:rating_two_na], 
             rating_three_na: params[:beer][:rating_three_na], touched_by_user: params[:beer][:touched_by_user],
-            user_addition: params[:beer][:user_addition], dont_include: params[:beer][:dont_include],
-            cellarable: params[:beer][:cellarable])
+            user_addition: params[:beer][:user_addition], dont_include: params[:beer][:dont_include])
       @beer.save!
       
       # save size formats if included
@@ -230,7 +229,7 @@ class Admin::BeersController < ApplicationController
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
       :number_ratings_two, :beer_rating_three, :number_ratings_three,:beer_abv, :beer_ibu, :brewery_id, :beer_image, 
       :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id,
-      :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user, :user_addition, :dont_include, :cellarable)
+      :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user, :user_addition, :dont_include)
     end
     
     def beer_name_params

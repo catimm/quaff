@@ -10,6 +10,8 @@
 #  beer_type_short_name   :string
 #  alt_one_beer_type_name :string
 #  alt_two_beer_type_name :string
+#  cellarable             :boolean
+#  cellarable_info        :text
 #
 
 require 'test_helper'

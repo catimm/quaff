@@ -47,10 +47,10 @@
 			<% end %>
 		</div>
 		<div class="col-sm-1">
-			<% if d.cellarable.blank? %>
+			<% if d.beer_type.cellarable.blank? %>
 				<h5 class="need-text">[need]</h5>
 			<% else %>
-				<% if d.cellarable == true %>
+				<% if d.beer_type.cellarable == true %>
 					<% @cellar = "Yes" %>
 				<% else %>
 					<% @cellar = "No" %>

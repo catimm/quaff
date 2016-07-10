@@ -76,10 +76,7 @@
 		  <%= check_box_tag :size_format_ids, format.id, @beer.size_formats.include?(format), :name => 'beer[size_format_ids][]' %><%= format.format_name %></label>
 		<% end %>
 	</div>
-	<div class="col-sm-6 col-xs-12">
-		<%= f.label :cellarable, "Is this drink cellarable?" %>
-		<%= f.check_box :cellarable, {}, "true", "false" %>
-	</div>	
+	<div class="col-sm-3 col-xs-0"></div>	
 	<div class="col-sm-6 col-xs-12">
 		<%= f.label :dont_include, "Avoid showing any related info in Views?" %>
 		<%= f.check_box :dont_include %>

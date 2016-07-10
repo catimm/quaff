@@ -52,10 +52,6 @@ class BeersController < ApplicationController
        end # end of best guess minimum check
      end # end of loop through customers
       
-      Rails.logger.debug("Customers who like: #{@list_of_customers_who_like.inspect}")
-      Rails.logger.debug("Customes who had: #{@list_of_customers_who_had.inspect}")
-      Rails.logger.debug("Customers not had: #{@list_of_customers_who_not_had.inspect}")
-      
      @users_have_not_had = @users_would_like - @users_have_had
       
       # get inventory data for

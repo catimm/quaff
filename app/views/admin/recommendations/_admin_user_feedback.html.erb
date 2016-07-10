@@ -22,7 +22,7 @@
 			</tr>
 			<% @customer_drink_changes.each do |drink| %>
 		    	<tr>
-			        <% if drink.user_delivery.beer.cellarable == true %>
+			        <% if drink.user_delivery.beer.beer_type.cellarable == true %>
 			        	<% @cellarable = "C" %>
 			        <% else %>
 			        	<% @cellarable = "" %>
@@ -36,7 +36,7 @@
 				        	<td><%= @avg_rating.round(2) %></td>
 				        <% end %>
 			        <td><%= drink.user_delivery.new_drink.humanize %></td>
-			        <td><%= drink.user_delivery.beer.cellarable.humanize %></td>
+			        <td><%= drink.user_delivery.beer.beer_type.cellarable.humanize %></td>
 			        <td><%= drink.user_delivery.inventory.size_format.format_name %></td>
 			        <td><%= drink.original_quantity %></td>
 			        <td><%= drink.new_quantity %></td>

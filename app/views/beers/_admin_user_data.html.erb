@@ -26,7 +26,7 @@
 			<ul>
 				<li>
 					<p class='lists-of-customers'>
-						<% @list_of_customers_who_had.each_with_index do |customer, i| %>
+						<% @list_of_customers_who_not_had.each_with_index do |customer, i| %>
 							<% if i == @list_of_customers_who_had.size - 1 %>
 								<span><%= i + 1 %>) </span> <%= customer %>
 							<% else %>
@@ -44,7 +44,7 @@
 			<ul>
 				<li>
 					<p class='lists-of-customers'>
-						<% @list_of_customers_who_not_had.each_with_index do |customer, i| %>
+						<% @list_of_customers_who_had.each_with_index do |customer, i| %>
 							<% if i == @list_of_customers_who_not_had.size - 1 %>
 								<span><%= i + 1 %>) </span> <%= customer %>
 							<% else %>

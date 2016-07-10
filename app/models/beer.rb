@@ -32,7 +32,6 @@
 #  short_beer_name      :string
 #  dont_include         :boolean
 #  touched_by_location  :integer
-#  cellarable           :boolean
 #
 
 class Beer < ActiveRecord::Base

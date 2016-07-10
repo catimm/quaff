@@ -23,16 +23,21 @@
 					</div>
 					<div class="row no-margin">
 						<div class="col-xs-12">
-							<% if @beer.cellarable == true %>
+							<% if @beer.beer_type.cellarable == true %>
 					        	<% @cellarable = "C" %>
+					        	<% @cellarable_info = drink.beer.beer_type.cellarable_info %>
 					        <% else %>
 					        	<% @cellarable = "" %>
 					        <% end %>
 							<% if @beer.collab == true %>
 								<% @collab_brewery_name = Beer.collab_brewery_name(@beer.id) %>
-								<h5 class="tile-header beer-tile-header-full-page"><%= @collab_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %><sup class="cellarable"> <%= @cellarable %></sup></h5>
+								<h5 class="tile-header beer-tile-header-full-page"><%= @collab_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %>
+									<sup class="cellarable" data-toggle="tooltip" title="<%= @cellarable_info %>"> <%= @cellarable %></sup>
+								</h5>
 							<% else %>
-								<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %><sup class="cellarable"> <%= @cellarable %></sup></h5>
+								<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %>
+									<sup class="cellarable" data-toggle="tooltip" title="<%= @cellarable_info %>"> <%= @cellarable %></sup>
+								</h5>
 							<% end %>
 						</div>
 						<div class="col-xs-12">

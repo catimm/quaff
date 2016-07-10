@@ -289,11 +289,11 @@ label {
   font-size: 15px !important;
   text-transform: uppercase;
   font-family: 'troikaregular';
-  top: -5px !important;
+  top: 7.5px !important;
 }
 .cellar.supply {
   float: left;
-  top: 7.5px !important
+  top: 7.5px !important;
 }
 .short-beer-type {
   font-style: italic;
@@ -3604,12 +3604,22 @@ input[type="checkbox"] {
     color: $money-color;
   }
 }
+.delivery-info-box.total-price-stats {
+  width: 25%;
+  border: 1px solid $money-color;
+  float: left;
+  margin-right: 5px;
+  h4 {
+    color: $money-color;
+  }
+  
+}
 .show-more-price-info {
   color: $user-action;
 }
-.fa.fa-plus-square-o.fa-lg + .tooltip > .tooltip-inner {
-  background: $white;
-  color: $normal-text;
+.tooltip > .tooltip-inner {
+  background: $normal-text;
+  color: $white;
   border: 1px solid $normal-text;
  }
 .next-delivery-tile {
@@ -3620,7 +3630,18 @@ input[type="checkbox"] {
   overflow: hidden;
   background: #fff;
   width: 99%;
-  height: 485px;
+  height: 478px;
+  position: relative;
+}
+.next-delivery-tile-no-review {
+  margin: 15px 0 20px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  height: 443px;
   position: relative;
 }
 $delivery-beer-header-font-size: 14px;
@@ -3647,6 +3668,15 @@ $delivery-beer-header-lines-to-show: 2;
 }
 .size-price-row {
   background: $soft-gray-background;
+  position: absolute;
+  bottom: 35px;
+  width: 100%;
+}
+.size-price-row-no-review {
+  background: $soft-gray-background;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
 }
 .size-and-price {
   color: $normal-text;
@@ -3667,11 +3697,15 @@ $delivery-beer-header-lines-to-show: 2;
   font-size: 12px;
   font-weight: 400;
 }
-.next-delivery-tile-last-row {
-  position: absolute; 
-  bottom: 0; 
+.next-delivery-tile-third-last-row { 
   width: 100%; 
-  height: 50px; 
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 26%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  padding-top: 12px; 
+}
+.next-delivery-tile-last-row { 
+  position: absolute;
+  bottom: 0;
+  width: 100%; 
   text-align: center;
 }
 .no-quantity-change {
@@ -3682,7 +3716,6 @@ $delivery-beer-header-lines-to-show: 2;
   }
 .quantity-change-holder-minus {
     height: 35px;
-    margin-top: 15px;
     background: #d9534f;
     border-left: 1px solid #d43f3a !important;
     border-top: 1px solid #d43f3a !important;
@@ -3701,7 +3734,6 @@ $delivery-beer-header-lines-to-show: 2;
   }
 .quantity-change-holder-add {
     height: 35px;
-    margin-top: 15px;
     background: #5cb85c;
     border-right: 1px solid #4cae4c !important;
     border-top: 1px solid #4cae4c !important;
@@ -3775,7 +3807,7 @@ $delivery-beer-header-lines-to-show: 2;
   border-left: 1px solid $less-emphasized-text;
   height: 52px;
   float: left;
-  width: 27%;
+  width: 20%;
   padding-left: 5px;
 }
 .box-right-notes {
@@ -3783,8 +3815,11 @@ $delivery-beer-header-lines-to-show: 2;
   border-bottom: 1px solid $less-emphasized-text;
   border-right: 1px solid $less-emphasized-text;
   height: 52px;
-  width: 73%;
+  width: 80%;
   float: left;
+  h6 {
+    margin: 0 !important;
+  }
 }
 .box-left {
   border-top: 1px solid $less-emphasized-text;

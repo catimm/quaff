@@ -8,7 +8,7 @@
       <th><%= sortable "beers.beer_type_id", "Drink Type" %></th>
       <th><%= sortable "projected_rating", "Rating" %></th>
       <th><%= sortable "new_drink", "New" %></th>
-      <th><%= sortable "beers.cellarable", "Cellarable" %></th>
+      <th><%= sortable "beers.beer_type.cellarable", "Cellarable" %></th>
       <th><%= sortable "inventories.size_format_id", "Format" %></th>
       <th>Demand</th>
       <th>Available</th>
@@ -21,7 +21,7 @@
     <% drinks.each do |drink| %>
     	<% drink.beer.inventories.each do |inventory| %>
 	      <tr>
-	        <% if drink.beer.cellarable == true %>
+	        <% if drink.beer.beer_type.cellarable == true %>
 	        	<% @cellarable = "C" %>
 	        <% else %>
 	        	<% @cellarable = "" %>
@@ -35,7 +35,7 @@
 	        	<td><%= @avg_rating.round(2) %></td>
 	        <% end %>
 	        <td><%= drink.new_drink.humanize %></td>
-	        <td><%= drink.beer.cellarable.humanize %></td>
+	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 	        <td><%= inventory.size_format.format_name %></td>
 	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>
 		    <td class="text-center"><%= @tally %></td>

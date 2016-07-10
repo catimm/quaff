@@ -23,7 +23,7 @@
     	<% drink.beer.inventories.each do |inventory| %>
 	      <tr>
 	        <td><%= (index + 1) %></td>
-	        <% if drink.beer.cellarable == true %>
+	        <% if drink.beer.beer_type.cellarable == true %>
 	        	<% @cellarable = "C" %>
 	        <% else %>
 	        	<% @cellarable = "" %>

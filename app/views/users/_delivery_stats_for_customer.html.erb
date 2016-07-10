@@ -5,18 +5,6 @@
 	</div>	
 </div>
 <div class="col-sm-1">
-	<div class="delivery-info-box new">
-		<p>new</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_new %></h4>
-	</div>	
-</div>
-<div class="col-sm-1">
-	<div class="delivery-info-box repeat">
-		<p>repeat</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_retry %></h4>
-	</div>	
-</div>
-<div class="col-sm-1">
 	<div class="delivery-info-box small">
 		<p>small</p>
 		<h4 class="delivery-preference-prompt"><%= @next_delivery_small %></h4>
@@ -28,8 +16,20 @@
 		<h4 class="delivery-preference-prompt"><%= @next_delivery_large %></h4>
 	</div>	
 </div>
+<div class="col-sm-1">
+	<div class="delivery-info-box new">
+		<p>cooler</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_cooler %></h4>
+	</div>	
+</div>
+<div class="col-sm-1">
+	<div class="delivery-info-box repeat">
+		<p>cellar</p>
+		<h4 class="delivery-preference-prompt"><%= @next_delivery_cellar %></h4>
+	</div>	
+</div>
 <div class="col-sm-7">
-	<div class="delivery-info-box total-price">
+	<div class="delivery-info-box total-price-stats">
 		<p>total</p>
 		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.total_price, precision: 2) %></h4>
 	</div>

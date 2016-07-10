@@ -177,7 +177,7 @@ class Admin::RecommendationsController < ApplicationController
       @next_delivery_info.destroy!
     else # add entry
       # get cellarable info
-      @cellar = @drink_recommendation.beer.cellarable
+      @cellar = @drink_recommendation.beer.beer_type.cellarable
       if @cellar.nil?
         @cellar = false
       end
@@ -536,7 +536,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # method to sort column
     def sort_column
-      acceptable_cols = ["beers.beer_name", "projected_rating", "new_drink", "beers.beer_type_id", "beers.cellarable", 
+      acceptable_cols = ["beers.beer_name", "projected_rating", "new_drink", "beers.beer_type_id", "beers.beer_type.cellarable", 
                           "inventories.size_format_id"]
       acceptable_cols.include?(params[:sort]) ? params[:sort] : "projected_rating"
     end

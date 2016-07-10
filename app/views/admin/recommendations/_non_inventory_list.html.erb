@@ -8,7 +8,7 @@
       <th><%= sortable "beers.beer_type_id", "Drink Type" %></th>
       <th><%= sortable "projected_rating", "Rating" %></th>
       <th><%= sortable "new_drink", "New" %></th>
-      <th><%= sortable "beers.cellarable", "Cellarable" %></th>
+      <th><%= sortable "beers.beer_type.cellarable", "Cellarable" %></th>
       <th>Format</th>
       <th>Demand</th>
       <th>Delivered?</th>
@@ -16,7 +16,7 @@
       <th>Order?</th>
     </tr>
     <% drinks.each do |drink| %>
-    	<% if drink.beer.cellarable == true %>
+    	<% if drink.beer.beer_type.cellarable == true %>
         	<% @cellarable = "C" %>
         <% else %>
         	<% @cellarable = "" %>
@@ -27,11 +27,11 @@
 	        <% if drink.new_drink == true %>
 	        	<td><%= drink.projected_rating %></td>
 	        <% else %>
-	        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
+	        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id).average(:user_beer_rating) %>
 	        	<td><%= @avg_rating.round(2) %></td>
 	        <% end %>
 	        <td><%= drink.new_drink.humanize %></td>
-	        <td><%= drink.beer.cellarable.humanize %></td>
+	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 		   	<% if !drink.beer.beer_formats.empty? %>
 		   		<% @drink_formats = drink.beer.beer_formats.where('size_format_id <= ?', 5) %>
 		   		<td>
