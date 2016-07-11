@@ -348,6 +348,7 @@ task :assess_drink_recommendations => :environment do
       
       # now get all drink types associated with remaining drink styles
       @additional_drink_types = @drink_types.where(beer_style_id: @user_style_likes).pluck(:id)
+      Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
       # get drink types from special relationship drinks
       @drink_type_relationships = BeerTypeRelationship.all
       @relational_drink_types_one = @drink_type_relationships.where(relationship_one: @user_style_likes).pluck(:beer_type_id) 
@@ -391,7 +392,7 @@ task :assess_drink_recommendations => :environment do
           @individual_drink_info["projected_rating"] = drink.best_guess
           @individual_drink_info["style_preference"] = drink.likes_style
           @individual_drink_info["new_drink"] = false
-        elsif drink.best_guess >= 7
+        elsif drink.best_guess >= 7.5
           @individual_drink_info = Hash.new
           @individual_drink_info["user_id"] = user.id
           @individual_drink_info["beer_id"] = drink.id
