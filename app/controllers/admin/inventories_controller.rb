@@ -6,7 +6,7 @@ class Admin::InventoriesController < ApplicationController
     @inventory = Inventory.all.to_a
     @inventory_makers = Inventory.inventory_maker
 
-    Rails.logger.debug("inventory maker info: #{@inventory_makers.inspect}")
+    #Rails.logger.debug("inventory maker info: #{@inventory_makers.inspect}")
     
     # to show number of breweries currently at top of page
     @maker_count = @inventory_makers.count('id')

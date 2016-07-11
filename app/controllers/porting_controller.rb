@@ -35,7 +35,7 @@ class PortingController < ApplicationController
       @this_venue_name = array['venue_name']
       @this_beer_rating = array['rating_score']
       @user_new_beer_rating = ((@this_beer_rating.to_f) * 2)
-      Rails.logger.debug("new beer rating: #{@user_new_beer_rating.inspect}")
+      #Rails.logger.debug("new beer rating: #{@user_new_beer_rating.inspect}")
       @this_created_at = array['created_at']
       @this_brewery_city = array['brewery_city']
       @this_brewery_state = array['brewery_state']
@@ -55,11 +55,11 @@ class PortingController < ApplicationController
       
       # create variable to check if brewery name represents a collaboration project
       @collab_beer = @this_brewery_name.match('\/')
-      Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
+      #Rails.logger.debug("If collab beer: #{@collab_beer.inspect}")
       # check if this brewery already exists in the db(s)
       # if beer is collaboration, only check for direct brewery name matches
       if @collab_beer
-        Rails.logger.debug("This is firing, so it thinks this is a collab beer")
+        #Rails.logger.debug("This is firing, so it thinks this is a collab beer")
         # create array to hold collaborators
         @brewery_collaborators = Array.new
         # split collaborators into individual names to be tested against database
@@ -67,7 +67,7 @@ class PortingController < ApplicationController
         # run each collaborator against database check
         @each_collaborator.each_with_index do |collaborator, index|
           @collaborator_brewery = Brewery.where("brewery_name like ? OR short_brewery_name like ?", "%#{collaborator}%", "%#{collaborator}%")
-          Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+          #Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
           if @collaborator_brewery.blank? # not found in Brewery Table
             # check to see if alternative brewery name table
             @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
@@ -99,10 +99,10 @@ class PortingController < ApplicationController
             end
           else # found in Brewery Table
             if index == 0 # if first collaborator, make this the default brewery name for the matching process below
-              Rails.logger.debug("This is firing on first iteration through")
+              #Rails.logger.debug("This is firing on first iteration through")
               @related_brewery = @collaborator_brewery
-              Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
-              Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
+              #Rails.logger.debug("Collab Brewery: #{@collaborator_brewery.inspect}")
+              #Rails.logger.debug("Related Brewery: #{@related_brewery.inspect}")
             end
             # make certain this brewery is flagged as having collaboration beers
             if @collaborator_brewery[0].collab != true
@@ -124,10 +124,10 @@ class PortingController < ApplicationController
       end
       
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables--should be no collab beers going through top logic
-      Rails.logger.debug("Final Collab Brewery Array: #{@brewery_collaborators.inspect}")
-      Rails.logger.debug("Final Related Brewery: #{@related_brewery.inspect}")
+      #Rails.logger.debug("Final Collab Brewery Array: #{@brewery_collaborators.inspect}")
+      #Rails.logger.debug("Final Related Brewery: #{@related_brewery.inspect}")
       if @related_brewery.empty?
-        Rails.logger.debug("This is firing, so it thinks this brewery IS NOT in the DB")
+        #Rails.logger.debug("This is firing, so it thinks this brewery IS NOT in the DB")
         # first add new brewery to breweries table & add correct collab status
         new_brewery = Brewery.new(:brewery_name => @this_brewery_name, :brewery_city => @this_brewery_city, 
                                     :brewery_state_short => @this_brewery_state, :collab => false)
@@ -164,7 +164,7 @@ class PortingController < ApplicationController
         end
       else  # logic if brewery is already in the DB--all collabs should go through this logic
         # since this brewery exists in the breweries table, find all its related beers from the beers table
-        Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
+        #Rails.logger.debug("This is firing, so it thinks this brewery IS in the DB")
         if @collab_beer # for collab scenario              
           @this_brewery_collab_beers_ids = BeerBreweryCollab.where(brewery_id: @related_brewery[0].id).pluck(:beer_id)
           if !@this_brewery_collab_beers_ids.blank?
@@ -179,7 +179,7 @@ class PortingController < ApplicationController
         # check if this current beer already exists in beers table
         @recognized_beer = nil
         @this_brewery_beers.each do |beer|
-          Rails.logger.debug("Beer matching loop, beer is: #{beer.beer_name.inspect}")
+          #Rails.logger.debug("Beer matching loop, beer is: #{beer.beer_name.inspect}")
           # check if beer name matches in either direction
           if beer.beer_name.include? @this_beer_name
              the_first_name_match = true
@@ -193,14 +193,14 @@ class PortingController < ApplicationController
           end
           if the_first_name_match || the_second_name_match || the_third_name_match
             @recognized_beer = beer
-            Rails.logger.debug("Recognized beer info: #{@recognized_beer.inspect}")
+            #Rails.logger.debug("Recognized beer info: #{@recognized_beer.inspect}")
           end
           # break this loop as soon as there is a match on this current beer's name
           break if !@recognized_beer.nil?
         end 
         # in this case, we know this beer exists in the beers table
         if !@recognized_beer.nil?
-          Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
+          #Rails.logger.debug("This is firing, so it thinks this beer IS in the beers table")
           if @collab_beer # for collab scenario--make sure collab table is populated properly
             @brewery_collaborators.each do |collaborator|
               @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
@@ -220,7 +220,7 @@ class PortingController < ApplicationController
             @total_drinks_added += 1
           end
         else
-          Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
+          #Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
           # if beer doesn't exist in DB, first add new beer to beers table       
           if !@this_beer_type_id.nil?
             new_beer = Beer.new(:beer_name => @this_beer_name, :brewery_id => @related_brewery[0].id, :beer_type_id => @this_beer_type_id)

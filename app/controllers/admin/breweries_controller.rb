@@ -70,7 +70,7 @@ class Admin::BreweriesController < ApplicationController
   def edit
     @breweries = Brewery.all.order(:brewery_name)
     @brewery = Brewery.find(params[:id]) 
-    Rails.logger.debug("this brewery info: #{@brewery.inspect}")
+    #Rails.logger.debug("this brewery info: #{@brewery.inspect}")
     render :partial => 'admin/breweries/edit'
   end
   

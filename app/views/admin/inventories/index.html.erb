@@ -37,7 +37,6 @@
 			<div class="row inventory-details hidden">
 			<% @counter = 0 %>
 			<% @inventory.each_with_index do |inventory, i| %>
-				<% Rails.logger.debug("counter number: #{@counter.inspect}") %>
 				
 				<% if inventory.beer.brewery.id == inventory_maker.brewery_id %>
 					<% @counter += 1 %>

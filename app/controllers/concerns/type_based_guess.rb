@@ -1,14 +1,14 @@
 module TypeBasedGuess
   extend ActiveSupport::Concern
   include DrinkDescriptors
-  
+
   def type_based_guess(this_beer, user_id)
     # to note that this drink recommendation is based on type input
     this_beer.recommendation_rationale = "type"
     # set baseline projected rating for this beer
     this_beer.best_guess = this_beer.beer_rating
     #Rails.logger.debug("Beer info: #{this_beer.inspect}")
-    # find this beer's beer type id
+    #find this drink's beer type id
     this_beer_type_id = this_beer.beer_type_id
     # find all drinks of same type rated by user
     @same_type_rated_by_user = UserBeerRating.where(user_id: user_id, beer_type_id: this_beer_type_id)

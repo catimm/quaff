@@ -2,8 +2,8 @@ module CreateNewDrink
   extend ActiveSupport::Concern
   
   def create_new_drink(brewery_name, drink_name)
-    Rails.logger.debug("new brewery info: #{brewery_name.inspect}")
-    Rails.logger.debug("new drink info: #{drink_name.inspect}")
+    #Rails.logger.debug("new brewery info: #{brewery_name.inspect}")
+    #Rails.logger.debug("new drink info: #{drink_name.inspect}")
     # set admin emails to receive updates
     @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
     # get data from params

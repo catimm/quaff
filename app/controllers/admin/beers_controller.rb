@@ -208,7 +208,7 @@ class Admin::BeersController < ApplicationController
   end
   
   def descriptors
-    Rails.logger.debug("Descriptors is called too")
+    #Rails.logger.debug("Descriptors is called too")
     descriptors = Beer.descriptor_counts.by_tag_name(params[:q]).map{|t| {id: t.name, name: t.name }}
   
     respond_to do |format|

@@ -111,8 +111,8 @@ class UserMailer < ActionMailer::Base
   end # end of select_invite_email email  
 
   def expiring_trial_email(owner, location)
-    Rails.logger.debug("Owner info: #{owner.first_name.inspect}")
-    Rails.logger.debug("Location info: #{location.name.inspect}")
+    #Rails.logger.debug("Owner info: #{owner.first_name.inspect}")
+    #Rails.logger.debug("Location info: #{location.name.inspect}")
     template_name = "expiring-trial-email"
     template_content = []
     message = {

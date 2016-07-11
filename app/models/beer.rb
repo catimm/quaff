@@ -111,13 +111,13 @@ class Beer < ActiveRecord::Base
   # scope all beers connected with a brewery (whether a collab beer or not)
   scope :all_brewery_beers, ->(brewery_id) {
     collab_test = BeerBreweryCollab.where(brewery_id: brewery_id).pluck(:beer_id)
-    Rails.logger.debug("brewrey test: #{collab_test.inspect}")
+    #Rails.logger.debug("brewrey test: #{collab_test.inspect}")
     if !collab_test.empty?
-      Rails.logger.debug("first option fired")
+      #Rails.logger.debug("first option fired")
       combined_array = non_collab_beers(brewery_id) << collab_beers(collab_test)[0]
       combined_array.sort_by{|e| e[:beer_name]}
     else
-      Rails.logger.debug("second option fired")
+      #Rails.logger.debug("second option fired")
       non_collab_beers(brewery_id).order(:beer_name)
     end
   }

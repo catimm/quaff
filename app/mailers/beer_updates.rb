@@ -27,8 +27,8 @@ class BeerUpdates < ActionMailer::Base
   end # end of retailer_drink_help email
   
   def info_requested_email(admin_email, name, email)
-    Rails.logger.debug("Name: #{name.inspect}")
-    Rails.logger.debug("Email: #{email.inspect}")
+    #Rails.logger.debug("Name: #{name.inspect}")
+    #Rails.logger.debug("Email: #{email.inspect}")
     # determine if this is prod environment
     @prod = User.where(email: "carl@drinkknird.com")[0]
     # mandrill template info

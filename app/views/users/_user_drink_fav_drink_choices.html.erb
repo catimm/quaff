@@ -1,7 +1,6 @@
 <% @final_drink_order.each do |drink| %>
 	<div class="row no-margin">
 		<div class="col-xs-11 col-sm-6 fav-drink-form-holder">
-			<% Rails.logger.debug("Drink info: #{drink.inspect}") %>
 			<% @id = drink.drink_rank %>
 				<% if !drink.id.nil? %>
 					<%= form_tag autocomplete_breweries_path, method: :get, role: 'search' do %>

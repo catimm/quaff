@@ -201,8 +201,8 @@ class DraftBoardsController < ApplicationController
         @new_draft_info_id = session[:draft_info_id]
         @unique_number = session[:draft_info_number]
         #Rails.logger.debug("Chosen drink info #: #{@chosen_drink.inspect}")
-        Rails.logger.debug("New Element ID #: #{@new_draft_info_id.inspect}")
-        Rails.logger.debug("Unique Number #: #{@unique_number.inspect}")
+        #Rails.logger.debug("New Element ID #: #{@new_draft_info_id.inspect}")
+        #Rails.logger.debug("Unique Number #: #{@unique_number.inspect}")
         respond_to do |format|
           format.js
         end # end of redirect to jquery
@@ -218,10 +218,10 @@ class DraftBoardsController < ApplicationController
         @input_id_number_array = @input_id.split('-')
         @input_id_number = @input_id_number_array[1]
         #Rails.logger.debug("Input ID: #{@input_id.inspect}")
-        Rails.logger.debug("Input ID #: #{@input_id_number.inspect}")
+        #Rails.logger.debug("Input ID #: #{@input_id_number.inspect}")
         session[:draft_info_id] = "new-draft-info-"+@input_id_number
         session[:draft_info_number] = @input_id_number
-        Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
+        #Rails.logger.debug("New Element ID #: #{session[:draft_info_id].inspect}")
         #Rails.logger.debug("Session Info #: #{session.inspect}")
       end
     end

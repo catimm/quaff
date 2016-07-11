@@ -761,7 +761,7 @@ class UsersController < ApplicationController
     if @user_plan.blank?
       # first create Stripe acct
       @plan_info = Stripe::Plan.retrieve(params[:format])
-      Rails.logger.debug("Plan info: #{@plan_info.inspect}")
+      #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
       #Create a stripe customer object on signup
       customer = Stripe::Customer.create(
               :description => 'testing this', #@plan_info.statement_descriptor,
@@ -797,10 +797,10 @@ class UsersController < ApplicationController
       event_json = JSON.parse(request.body.read)
       event_object = event_json['data']['object']
       #refer event types here https://stripe.com/docs/api#event_types
-      Rails.logger.debug("Event info: #{event_object['customer'].inspect}")
+      #Rails.logger.debug("Event info: #{event_object['customer'].inspect}")
       case event_json['type']
         when 'invoice.payment_succeeded'
-          Rails.logger.debug("Successful invoice paid event")
+          #Rails.logger.debug("Successful invoice paid event")
         when 'invoice.payment_failed'
           #Rails.logger.debug("Failed invoice event")
         when 'charge.succeeded'
@@ -919,8 +919,8 @@ class UsersController < ApplicationController
   def add_fav_drink
     # get drink info
     @chosen_drink = JSON.parse(params[:chosen_drink])
-    Rails.logger.debug("Chosen drink info: #{@chosen_drink.inspect}")
-    Rails.logger.debug("Chosen drink beer id: #{@chosen_drink["beer_id"].inspect}")
+    #Rails.logger.debug("Chosen drink info: #{@chosen_drink.inspect}")
+    #Rails.logger.debug("Chosen drink beer id: #{@chosen_drink["beer_id"].inspect}")
     # find if drink rank already exists
     @old_drink = UserFavDrink.where(user_id: current_user.id, drink_rank: @chosen_drink["form"]).first
     # if an old drink ranking exists, destroy it first
@@ -957,7 +957,7 @@ class UsersController < ApplicationController
   
   def add_drink
     @new_drink = create_new_drink(params[:beer][:associated_brewery], params[:beer][:beer_name])
-    Rails.logger.debug("new drink info: #{@new_drink.inspect}")
+    #Rails.logger.debug("new drink info: #{@new_drink.inspect}")
     # add new drink info to the DB
     @new_fav_drink = UserFavDrink.new(user_id: current_user.id, beer_id: @new_drink.id, drink_rank: session[:search_form_id])
     @new_fav_drink.save!

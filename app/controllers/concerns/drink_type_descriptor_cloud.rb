@@ -53,7 +53,7 @@ module DrinkTypeDescriptorCloud
     #Rails.logger.debug("User drink type descriptor list 2: #{@user_drink_type_descriptors.inspect}")
     
     @this_drink_type_descriptors = [drink_type_array,descriptor_array.first(10)]
-    Rails.logger.debug("Weighted descriptor list: #{@this_drink_type_descriptors.inspect}")
+    #Rails.logger.debug("Weighted descriptor list: #{@this_drink_type_descriptors.inspect}")
     rating_drink_type.top_type_descriptor_list = @this_drink_type_descriptors
 
   end # end of method

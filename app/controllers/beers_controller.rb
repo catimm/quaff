@@ -176,10 +176,10 @@ class BeersController < ApplicationController
     # collect existing beer descriptors
     def find_descriptor_tags
       @params_info = params[:id]
-      Rails.logger.debug("For Find Descriptor Tags method: #{@params_info.inspect}")
-      Rails.logger.debug("Find Descriptor Tags is called")
+      #Rails.logger.debug("For Find Descriptor Tags method: #{@params_info.inspect}")
+      #Rails.logger.debug("Find Descriptor Tags is called")
       @beer_descriptors = params[:id].present? ? Beer.find(params[:id]).descriptors.map{|t| {id: t.name, name: t.name }} : []
-      Rails.logger.debug("Beer Descriptors: #{@beer_descriptors.inspect}")
+      #Rails.logger.debug("Beer Descriptors: #{@beer_descriptors.inspect}")
      end
     
 end

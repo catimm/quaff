@@ -5,11 +5,11 @@ class AuthenticationsController < ApplicationController
   
     def facebook
     omni = request.env["omniauth.auth"]
-    Rails.logger.debug("Omniauth info: #{omni.inspect}")
+    #Rails.logger.debug("Omniauth info: #{omni.inspect}")
     token = omni['credentials']['token']
-    Rails.logger.debug("Omniauth token #{token.inspect}")
+    #Rails.logger.debug("Omniauth token #{token.inspect}")
     token_secret = omni['credentials']['secret']
-    Rails.logger.debug("Omniauth secret token #{token_secret.inspect}")
+    #Rails.logger.debug("Omniauth secret token #{token_secret.inspect}")
     @registered = User.find_by_id(current_user.id)
     #Rails.logger.debug("User info #{@registered.inspect}")
     @retailer = Location.find_by_id(session[:retail_id])
@@ -17,7 +17,7 @@ class AuthenticationsController < ApplicationController
     
     # using the Koala gem
     @user_graph = Koala::Facebook::API.new(token) 
-    Rails.logger.debug("User Graph info: #{@user_graph.inspect}")
+    #Rails.logger.debug("User Graph info: #{@user_graph.inspect}")
     # get page info
     @page_info = @user_graph.get_object(@retailer.facebook_url)
     #Rails.logger.debug("Page info: #{@page_info.inspect}")
@@ -51,21 +51,21 @@ class AuthenticationsController < ApplicationController
   
   def twitter
     @authentication = Authentication.where(user_id: current_user.id, provider: "twitter", location_id: session[:retail_id])
-    Rails.logger.debug("Authentication info: #{@authentication.inspect}")
+    #Rails.logger.debug("Authentication info: #{@authentication.inspect}")
     @registered = User.find_by_id(current_user.id)
-    Rails.logger.debug("User info #{@registered.inspect}")
+    #Rails.logger.debug("User info #{@registered.inspect}")
     @retailer = Location.find_by_id(session[:retail_id])
-    Rails.logger.debug("Retailer info #{@retailer.inspect}") 
+    #Rails.logger.debug("Retailer info #{@retailer.inspect}") 
     
     if !@authentication.blank?
       @authentication[0].destroy
     else
       omni = request.env["omniauth.auth"]
-      Rails.logger.debug("Omniauth info: #{omni.inspect}")
+      #Rails.logger.debug("Omniauth info: #{omni.inspect}")
       token = omni['credentials']['token']
-      Rails.logger.debug("Omniauth token #{token.inspect}")
+      #Rails.logger.debug("Omniauth token #{token.inspect}")
       token_secret = omni['credentials']['secret']
-      Rails.logger.debug("Omniauth secret token #{token_secret.inspect}")
+      #Rails.logger.debug("Omniauth secret token #{token_secret.inspect}")
       @authenticate = Authentication.new(user_id: @registered.id, provider: omni['provider'], uid: omni['uid'], token: token, token_secret: token_secret, location_id: @retailer.id, auto_tweet: true)
       @authenticate.save!
     end

@@ -9,9 +9,9 @@ class SearchesController < ApplicationController
     @evaluated_drinks = Array.new
     
     @search.each do |first_drink|
-      Rails.logger.debug("Evaluated Drinks: #{@evaluated_drinks.inspect}")
-      Rails.logger.debug("First Drink ID: #{first_drink.id.inspect}")
-      Rails.logger.debug("First Drink Name #{first_drink.beer_name.inspect}")
+      #Rails.logger.debug("Evaluated Drinks: #{@evaluated_drinks.inspect}")
+      #Rails.logger.debug("First Drink ID: #{first_drink.id.inspect}")
+      #Rails.logger.debug("First Drink Name #{first_drink.beer_name.inspect}")
       break if @evaluated_drinks.include? first_drink.id
       @total_results = @search.count - 1
       first_drink_value = 0
@@ -27,20 +27,20 @@ class SearchesController < ApplicationController
       if !first_drink.beer_rating_one.nil?
         first_drink_value += 1
       end
-      Rails.logger.debug("first drink value: #{first_drink_value.inspect}")
+      #Rails.logger.debug("first drink value: #{first_drink_value.inspect}")
        @drinks_compared = 0
        @search.each do |second_drink|
-        Rails.logger.debug("Reaching 2nd drink")
+        #Rails.logger.debug("Reaching 2nd drink")
         if first_drink.id != second_drink.id 
-        Rails.logger.debug("Compared Drink ID: #{second_drink.id.inspect}")
-        Rails.logger.debug("Compared Drink Name #{second_drink.beer_name.inspect}")
+        #Rails.logger.debug("Compared Drink ID: #{second_drink.id.inspect}")
+        #Rails.logger.debug("Compared Drink Name #{second_drink.beer_name.inspect}")
         @drinks_compared += 1
           if first_drink.beer_name.strip == second_drink.beer_name.strip
-            Rails.logger.debug("Have the same name")
+            #Rails.logger.debug("Have the same name")
             second_brewery_name = second_drink.brewery.brewery_name.split
             if first_drink.brewery.brewery_name.start_with?(second_brewery_name[0])
               @drinks_compared -= 1
-              Rails.logger.debug("Is same brewery")
+              #Rails.logger.debug("Is same brewery")
               second_drink_value = 0
               if !second_drink.beer_abv.nil?
                 second_drink_value += 1
@@ -54,7 +54,7 @@ class SearchesController < ApplicationController
               if !second_drink.beer_rating_one.nil?
                 second_drink_value += 1
               end
-              Rails.logger.debug("second drink value: #{second_drink_value.inspect}")
+              #Rails.logger.debug("second drink value: #{second_drink_value.inspect}")
               if first_drink_value >= second_drink_value
                 @final_search_results << first_drink
                 @evaluated_drinks << second_drink.id
