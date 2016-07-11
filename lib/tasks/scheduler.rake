@@ -310,7 +310,7 @@ task :assess_drink_recommendations => :environment do
     @all_complete_brewery_beers = Beer.complete_beers
     @all_complete_brewery_beers = @all_complete_brewery_beers.uniq
     @all_complete_brewery_beers_ids = @all_complete_brewery_beers.pluck(:id)
-    Rails.logger.debug("ids of all complete drinks: #{@all_complete_brewery_beers_ids.inspect}")
+    #Rails.logger.debug("ids of all complete drinks: #{@all_complete_brewery_beers_ids.inspect}")
     # get count of total beers that have no info
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
     
@@ -320,7 +320,9 @@ task :assess_drink_recommendations => :environment do
     
     # determine viable drinks for each user
     @users.each do |user|
-      Rails.logger.debug("this user: #{user.id.inspect}")
+      if user.id == 14
+        Rails.logger.debug("this user: #{user.id.inspect}")
+      end
       # get all drink styles the user claims to like
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
       
@@ -357,8 +359,9 @@ task :assess_drink_recommendations => :environment do
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
-      Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
-      
+      if user.id == 14
+        Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
+      end
       # now filter the complete drinks available against the drink types the user likes
       # first create an array to hold each viable drink
       @assessed_drinks = Array.new
