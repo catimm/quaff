@@ -370,7 +370,7 @@ task :assess_drink_recommendations => :environment do
       @relational_drink_types_three = @drink_type_relationships.where(relationship_three: @user_style_likes).pluck(:beer_type_id) 
       
       # create an aggregated list of all beer types the user should like
-      @final_user_type_likes = @relational_drink_types_one + @relational_drink_types_two + @relational_drink_types_three
+      @final_user_type_likes = @user_type_likes + @additional_drink_types + @relational_drink_types_one + @relational_drink_types_two + @relational_drink_types_three
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
@@ -383,9 +383,9 @@ task :assess_drink_recommendations => :environment do
       
       # cycle through each completed drink to determine whether to keep it
       @all_complete_brewery_beers.each do |available_drink|
-        if @final_user_type_likes.include? available_drink.beer_type_id
+        #if @final_user_type_likes.include? available_drink.beer_type_id
           @assessed_drinks << available_drink
-        end
+        #end
       end
       # get count of total drinks to be assessed
       @available_assessed_drinks = @assessed_drinks.length
