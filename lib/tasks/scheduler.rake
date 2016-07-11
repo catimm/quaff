@@ -325,7 +325,9 @@ task :assess_drink_recommendations => :environment do
       end
       # get all drink styles the user claims to like
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
-      
+       if user.id == 14
+        Rails.logger.debug("user style likes: #{@user_style_likes.inspect}")
+      end
       # get all drink types the user has rated favorably
       @user_preferred_drink_types = user_likes_drink_types(user.id)
       
@@ -348,7 +350,9 @@ task :assess_drink_recommendations => :environment do
       
       # now get all drink types associated with remaining drink styles
       @additional_drink_types = @drink_types.where(beer_style_id: @user_style_likes).pluck(:id)
-      Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
+      if user.id == 14
+       Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
+      end
       # get drink types from special relationship drinks
       @drink_type_relationships = BeerTypeRelationship.all
       @relational_drink_types_one = @drink_type_relationships.where(relationship_one: @user_style_likes).pluck(:beer_type_id) 
