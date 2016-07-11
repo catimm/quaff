@@ -309,7 +309,7 @@ task :assess_drink_recommendations => :environment do
     # get list of Brewery IDs for those breweries that have a beer that is complete
     @all_complete_brewery_beers = Beer.complete_beers
     @all_complete_brewery_beers = @all_complete_brewery_beers.uniq
-    @all_complete_brewery_beers_ids = @all_complete_brewery_beers.pluck(:id)
+    #@all_complete_brewery_beers_ids = @all_complete_brewery_beers.pluck(:id)
     #Rails.logger.debug("ids of all complete drinks: #{@all_complete_brewery_beers_ids.inspect}")
     # get count of total beers that have no info
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
@@ -355,7 +355,7 @@ task :assess_drink_recommendations => :environment do
       @additional_drink_types = Array.new
       @user_style_likes.each do |style_id|
         # get related types
-        @type_id = BeerType.where(beer_style_id: style_id).pluck(:id)
+        @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
         # insert into array
         @additional_drink_types << @type_id
       end
