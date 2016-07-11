@@ -352,7 +352,7 @@ task :assess_drink_recommendations => :environment do
       end
       
       # now get all drink types associated with remaining drink styles
-      @additional_drink_types = 1
+      @additional_drink_types = [1, 2]
 
       
       if user.id == 14
@@ -421,6 +421,7 @@ task :assess_drink_recommendations => :environment do
       # insert array of hashes into user_drink_recommendations table
       UserDrinkRecommendation.create(@compiled_assessed_drinks)
    end # end of loop for each user
+   
 end # end of assessing drink recommendations task
 
 desc "Find Recent DB Additions"
