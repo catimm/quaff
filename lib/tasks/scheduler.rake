@@ -352,8 +352,13 @@ task :assess_drink_recommendations => :environment do
       end
       
       # now get all drink types associated with remaining drink styles
-      @additional_drink_types = [1, 2]
-
+      @additional_drink_types = Array.new
+      @user_style_likes.each do |style_id|
+        # get related types
+        @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
+        # insert into array
+        @additional_drink_types << @type_id
+      end
       
       if user.id == 14
        Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
@@ -365,7 +370,7 @@ task :assess_drink_recommendations => :environment do
       @relational_drink_types_three = @drink_type_relationships.where(relationship_three: @user_style_likes).pluck(:beer_type_id) 
       
       # create an aggregated list of all beer types the user should like
-      @final_user_type_likes = @user_type_likes + @additional_drink_types + @relational_drink_types_one + @relational_drink_types_two + @relational_drink_types_three
+      @final_user_type_likes = [57, 58]
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
@@ -421,7 +426,6 @@ task :assess_drink_recommendations => :environment do
       # insert array of hashes into user_drink_recommendations table
       UserDrinkRecommendation.create(@compiled_assessed_drinks)
    end # end of loop for each user
-   
 end # end of assessing drink recommendations task
 
 desc "Find Recent DB Additions"
