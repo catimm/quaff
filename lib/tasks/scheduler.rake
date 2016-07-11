@@ -350,7 +350,14 @@ task :assess_drink_recommendations => :environment do
           end
         end
       end
+      
+      # now get all drink types associated with remaining drink styles
+      @additional_drink_types = 1
 
+      
+      if user.id == 14
+       Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
+      end
       # get drink types from special relationship drinks
       @drink_type_relationships = BeerTypeRelationship.all
       @relational_drink_types_one = @drink_type_relationships.where(relationship_one: @user_style_likes).pluck(:beer_type_id) 
