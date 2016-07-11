@@ -319,6 +319,7 @@ task :assess_drink_recommendations => :environment do
     
     # determine viable drinks for each user
     @users.each do |user|
+      Rails.logger.debug("this user: #{user.id.inspect}")
       # get all drink styles the user claims to like
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
       
@@ -355,7 +356,7 @@ task :assess_drink_recommendations => :environment do
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
-      #Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
+      Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
       
       # now filter the complete drinks available against the drink types the user likes
       # first create an array to hold each viable drink
