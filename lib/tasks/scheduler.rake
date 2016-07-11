@@ -333,6 +333,9 @@ task :assess_drink_recommendations => :environment do
       
       # create array to hold the drink types the user likes
       @user_type_likes = @user_preferred_drink_types.keys
+      if user.id == 14
+       Rails.logger.debug("User Type Likes: #{@user_type_likes.inspect}")
+      end
       
       # find remaining styles claimed to be liked but without significant ratings
       @drink_types = BeerType.all
@@ -349,7 +352,14 @@ task :assess_drink_recommendations => :environment do
       end
       
       # now get all drink types associated with remaining drink styles
-      @additional_drink_types = @drink_types.where(beer_style_id: @user_style_likes).pluck(:id)
+      @additional_drink_types = Array.new
+      @user_style_likes.each do |style_id|
+        # get related types
+        @type_id = BeerType.where(beer_style_id: style_id).pluck(:id)
+        # insert into array
+        @additional_drink_types << @type_id
+      end
+      
       if user.id == 14
        Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
       end
