@@ -309,7 +309,8 @@ task :assess_drink_recommendations => :environment do
     # get list of Brewery IDs for those breweries that have a beer that is complete
     @all_complete_brewery_beers = Beer.complete_beers
     @all_complete_brewery_beers = @all_complete_brewery_beers.uniq
-    Rails.logger.debug("all complete drinks: #{@all_complete_brewery_beers.inspect}")
+    @all_complete_brewery_beers_ids = @all_complete_brewery_beers.pluck(:id)
+    Rails.logger.debug("ids of all complete drinks: #{@all_complete_brewery_beers_ids.inspect}")
     # get count of total beers that have no info
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
     
