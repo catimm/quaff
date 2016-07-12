@@ -354,6 +354,9 @@ task :assess_drink_recommendations => :environment do
       # now get all drink types associated with remaining drink styles
       @additional_drink_types = Array.new
       @user_style_likes.each do |style_id|
+        if user.id == 14
+         Rails.logger.debug("This style id: #{style_id.inspect}")
+        end
         # get related types
         @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
         # insert into array
@@ -427,6 +430,20 @@ task :assess_drink_recommendations => :environment do
       UserDrinkRecommendation.create(@compiled_assessed_drinks)
    end # end of loop for each user
 end # end of assessing drink recommendations task
+
+desc "update user beer rating table"
+task :update_user_beer_ratings => :environment do
+  @drink_ratings_without_drink_id = UserBeerRating.where("beer_type_id IS ?", nil)
+    
+    @drink_ratings_without_drink_id.each do |rating|
+      # get drink type id
+      @drink_id = Beer.find(rating.beer_id)
+      if !@drink_id.nil?
+        UserBeerRating.update(rating.id, beer_type_id: @drink_id.beer_type_id)
+      end
+    end # end of loop through each rating
+  
+end # end of update_user_beer_ratings task
 
 desc "Find Recent DB Additions"
 task :find_recent_additions => :environment do
