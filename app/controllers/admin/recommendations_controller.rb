@@ -414,7 +414,8 @@ class Admin::RecommendationsController < ApplicationController
                                   :drink => drink.beer.beer_name,
                                   :drink_type => drink.beer.beer_type.beer_type_short_name,
                                   :projected_rating => drink.projected_rating,
-                                  :format => drink.inventory.size_format.format_name}).as_json
+                                  :format => drink.inventory.size_format.format_name,
+                                  :quantity => drink.quantity}).as_json
       # push this array into overall email array
       @email_drink_array << @drink_data
     end
