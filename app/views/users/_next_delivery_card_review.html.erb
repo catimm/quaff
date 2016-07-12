@@ -98,8 +98,10 @@
 				<h4 class="size-and-price"><%= drink.inventory.size_format.format_name %> - <%= number_to_currency(@total_price, precision: 2) %> each <span class="including-tax-text">(inc. tax)</span></h4>
 				<% if drink.inventory.limit_per.nil? || drink.inventory.limit_per == 0 %>
 					<h6 class="limit-per-delivery">No limit per delivery</h6>
+					<% @limit_per_delivery = 0 %>
 				<% else %>
 					<h6 class="limit-per-delivery">Limit per delivery: <%= drink.inventory.limit_per %></h6>
+					<% @limit_per_delivery = drink.inventory.limit_per %>
 				<% end %>		
 			</div>
 		</div>
