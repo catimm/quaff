@@ -4,6 +4,6 @@ $(function() {
 	$('#inventory-list-holder').html('<%=  escape_javascript(render :partial => 'inventory_list', :locals => {:drinks => @inventory_drink_recommendations}) %>');
 	$('#user-delivery-info-container').html('<%=  escape_javascript(render :partial => 'user_delivery_info') %>');
 	$('#not-in-stock-button-holder').html('<%=  escape_javascript(render :partial => 'not_in_stock_button') %>');
-	$('#admin-user-delivery-button-holder').html('<%=  escape_javascript(render :partial => 'admin_user_delivery_button') %>');
+	$('#admin-user-delivery-button-holder').html('<%=  escape_javascript(render :partial => 'admin_user_appropriate_button') %>');
 	$('#admin_user_delivery').html('<%=  escape_javascript(render :partial => 'admin_check_delivery_modal') %>');
 });

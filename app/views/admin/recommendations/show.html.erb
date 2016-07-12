@@ -22,24 +22,9 @@
 		<div class="col-md-3 no-padding">
 			<h4>Current status: <%= @customer_next_delivery.status %></h4>
 		</div>
-		<% if @customer_next_delivery.status == "admin prep" %>
-			<div class="col-sm-2 no-padding" id="admin-user-delivery-button-holder">
-				<%= render 'admin_user_delivery_button' %>
-			</div>
-		<% end %>
-		<% if @customer_next_delivery.status == "user review" %>
-			<div class="col-sm-2 no-padding" id="admin-user-delivery-button-holder">
-				<%= render 'admin_user_feedback_button' %>
-			</div>
-		<% end %>
-		<% if @customer_next_delivery.status == "in progress" %>
-			<div class="col-sm-2" id="admin-user-delivery-button-holder">
-				<%= render 'admin_review_delivery_button' %>
-			</div>
-			<div class="col-sm-2" id="admin-user-delivery-button-holder">
-				<%= render 'admin_user_feedback_button' %>
-			</div>
-		<% end %>
+		<div class="col-sm-2 no-padding" id="admin-user-delivery-button-holder">
+			<%= render 'admin_user_appropriate_button' %>
+		</div>
 	</div>
 	<div class="row no-margin" id="user-delivery-info-container">
 		<%= render 'user_delivery_info' %>
