@@ -320,6 +320,9 @@ task :assess_drink_recommendations => :environment do
     
     # determine viable drinks for each user
     @users.each do |user|
+      # get drink type info 
+      @drink_types = BeerType.all
+      
       if user.id == 14
         Rails.logger.debug("this user: #{user.id.inspect}")
       end
@@ -356,7 +359,6 @@ task :assess_drink_recommendations => :environment do
       end
       
       # find remaining styles claimed to be liked but without significant ratings
-      @drink_types = BeerType.all
       @user_type_likes.each do |type_id|
         if type_id != nil
           # get info for this drink type
