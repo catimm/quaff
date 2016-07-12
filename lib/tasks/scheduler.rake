@@ -330,7 +330,7 @@ task :assess_drink_recommendations => :environment do
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
        if user.id == 14
         Rails.logger.debug("user style likes: #{@user_style_likes.inspect}")
-        @user_style_likes << 15
+        #@user_style_likes << 15
       end
       
        # now get all drink types associated with remaining drink styles
@@ -341,8 +341,10 @@ task :assess_drink_recommendations => :environment do
         end
         # get related types
         @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
-        # insert into array
-        @additional_drink_types << @type_id
+        @type_id.each do |type_id|
+          # insert into array
+          @additional_drink_types << type_id
+        end
       end
       
       if user.id == 14
