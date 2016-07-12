@@ -327,7 +327,25 @@ task :assess_drink_recommendations => :environment do
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
        if user.id == 14
         Rails.logger.debug("user style likes: #{@user_style_likes.inspect}")
+        @user_style_likes << 15
       end
+      
+       # now get all drink types associated with remaining drink styles
+      @additional_drink_types = Array.new
+      @user_style_likes.each do |style_id|
+        if user.id == 14
+         Rails.logger.debug("This style id: #{style_id.inspect}")
+        end
+        # get related types
+        @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
+        # insert into array
+        @additional_drink_types << @type_id
+      end
+      
+      if user.id == 14
+       Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
+      end
+      
       # get all drink types the user has rated favorably
       @user_preferred_drink_types = user_likes_drink_types(user.id)
       
@@ -351,21 +369,6 @@ task :assess_drink_recommendations => :environment do
         end
       end
       
-      # now get all drink types associated with remaining drink styles
-      @additional_drink_types = Array.new
-      @user_style_likes.each do |style_id|
-        if user.id == 14
-         Rails.logger.debug("This style id: #{style_id.inspect}")
-        end
-        # get related types
-        @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
-        # insert into array
-        @additional_drink_types << @type_id
-      end
-      
-      if user.id == 14
-       Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
-      end
       # get drink types from special relationship drinks
       @drink_type_relationships = BeerTypeRelationship.all
       @relational_drink_types_one = @drink_type_relationships.where(relationship_one: @user_style_likes).pluck(:beer_type_id) 
@@ -437,7 +440,7 @@ task :update_user_beer_ratings => :environment do
     
     @drink_ratings_without_drink_id.each do |rating|
       # get drink type id
-      @drink_id = Beer.find(rating.beer_id)
+      @drink_id = Beer.where(id: rating.beer_id).first
       if !@drink_id.nil?
         UserBeerRating.update(rating.id, beer_type_id: @drink_id.beer_type_id)
       end
