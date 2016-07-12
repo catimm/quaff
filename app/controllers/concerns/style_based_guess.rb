@@ -79,7 +79,7 @@ module StyleBasedGuess
         # if not a hybrid, check if user likes this beer style
         elsif @user_style_likes.include? this_beer_style_id
           # this "formula" is used if the user generally likes this beer style--multiply default rating by 1.05
-          this_beer.best_guess = (this_beer.beer_rating * 1.05)
+          this_beer.best_guess = (this_beer.beer_rating * 1.025)
           # and note whether this is hybrid
           this_beer.is_hybrid = "no"
           # and note the user likes this sytle

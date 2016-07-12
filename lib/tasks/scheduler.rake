@@ -324,23 +324,14 @@ task :assess_drink_recommendations => :environment do
     @users.each do |user|
       # get drink type info 
       @drink_types = BeerType.all
-      
-      if user.id == 14
-        Rails.logger.debug("this user: #{user.id.inspect}")
-      end
+
+      #Rails.logger.debug("this user: #{user.id.inspect}")
       # get all drink styles the user claims to like
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
-       if user.id == 14
-        Rails.logger.debug("user style likes: #{@user_style_likes.inspect}")
-        #@user_style_likes << 15
-      end
       
        # now get all drink types associated with remaining drink styles
       @additional_drink_types = Array.new
       @user_style_likes.each do |style_id|
-        if user.id == 14
-         Rails.logger.debug("This style id: #{style_id.inspect}")
-        end
         # get related types
         @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
         @type_id.each do |type_id|
@@ -349,18 +340,11 @@ task :assess_drink_recommendations => :environment do
         end
       end
       
-      if user.id == 14
-       Rails.logger.debug("Additional drink types: #{@additional_drink_types.inspect}")
-      end
-      
       # get all drink types the user has rated favorably
       @user_preferred_drink_types = user_likes_drink_types(user.id)
       
       # create array to hold the drink types the user likes
       @user_type_likes = @user_preferred_drink_types.keys
-      if user.id == 14
-       Rails.logger.debug("User Type Likes: #{@user_type_likes.inspect}")
-      end
       
       # find remaining styles claimed to be liked but without significant ratings
       @user_type_likes.each do |type_id|
@@ -386,9 +370,6 @@ task :assess_drink_recommendations => :environment do
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
-      if user.id == 14
-        Rails.logger.debug("user preferred drink types array final: #{@final_user_type_likes.inspect}")
-      end
       # now filter the complete drinks available against the drink types the user likes
       # first create an array to hold each viable drink
       @assessed_drinks = Array.new
