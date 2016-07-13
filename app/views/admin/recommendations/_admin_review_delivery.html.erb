@@ -37,7 +37,7 @@
 	        	<td><%= @avg_rating.round(2) %></td>
 	        <% end %>
 	        <td><%= drink.new_drink.humanize %></td>
-	        <td><%= drink.beer.cellarable.humanize %></td>
+	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 	        <td><%= inventory.size_format.format_name %></td>
 	        <td><%= drink.quantity %></td>
 	      </tr>
