@@ -62,10 +62,10 @@ class Admin::DeliveriesController < ApplicationController
         @new_quantity = @original_quantity + drink.quantity
         @user_drink_supply.update(@drink_in_supply_info.id, quantity: @new_quantity)
       else
-        if drink.cooler == true
-          @new_cooler_drink = UserSupply.create(user_id: drink.user_id, beer_id: drink.beer_id, supply_type_id: 1, quantity: drink.quantity)
-        else
+        if drink.cellar == true
           @new_cellar_drink = UserSupply.create(user_id: drink.user_id, beer_id: drink.beer_id, supply_type_id: 2, quantity: drink.quantity)
+        else
+          @new_cooler_drink = UserSupply.create(user_id: drink.user_id, beer_id: drink.beer_id, supply_type_id: 1, quantity: drink.quantity)
         end
       end
       
