@@ -598,7 +598,8 @@ class UsersController < ApplicationController
     # get User Delivery info
     @user_delivery_info = UserDelivery.find_by_id(@user_delivery_id)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
-    @inventory = Inventory.find(@user_delivery_info.inventory_id)
+    @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
+    @admin_user_delivery_info = AdminUserDelivery.where(delivery_id: @delivery.id, inventory_id: @inventory.id).first
     
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
@@ -617,6 +618,12 @@ class UsersController < ApplicationController
       # update reserved inventory 
       @new_inventory_reserved = @current_inventory_reserved + 1
       @inventory.update(reserved: @new_inventory_reserved)
+      
+      # update admin user delivery info
+      @admin_user_delivery_info.update(quantity: @new_quantity)
+      # update user delivery info
+      @user_delivery_info.update(quantity: @new_quantity)
+      
     else
       # set new quantity
       @new_quantity = @original_quantity - 1
@@ -630,10 +637,13 @@ class UsersController < ApplicationController
       # update reserved inventory 
       @new_inventory_reserved = @current_inventory_reserved - 1
       @inventory.update(reserved: @new_inventory_reserved)
+      
+      # update user delivery info
+      @admin_user_delivery_info.update(quantity: @new_quantity)
+      @user_delivery_info.update(quantity: @new_quantity)
     end
-  
-    # update user delivery info
-    @user_delivery_info.update(quantity: @new_quantity)
+    
+    # update delivery info
     @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
       
     # add change to the customer_delivery_changes table
@@ -672,12 +682,60 @@ class UsersController < ApplicationController
       else
         @next_delivery_small += (1 * @quantity)
       end
-    end
-    
+    end       
+        
     respond_to do |format|
       format.js
     end # end of redirect to jquery
   end # end change_delivery_drink_quantity method
+  
+  def remove_delivery_drink_quantity
+    # get data to add/update
+    @data = params[:id]
+    
+    # get User Delivery info
+    @user_delivery_info = UserDelivery.find_by_id(@data)
+    @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
+    @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
+    @admin_user_delivery_info = AdminUserDelivery.where(delivery_id: @delivery.id, inventory_id: @inventory.id).first
+    
+    # adjust drink quantity, price and inventory
+    @original_quantity = @user_delivery_info.quantity
+    @drink_price = @user_delivery_info.inventory.drink_price
+    @current_inventory_reserved = @inventory.reserved
+
+    #set new price totals
+    @original_subtotal = @delivery.subtotal
+    @new_subtotal = @original_subtotal - @drink_price
+    @new_sales_tax = @new_subtotal * 0.096
+    @new_total_price = @new_subtotal + @new_sales_tax
+    
+    # update reserved inventory 
+    @new_inventory_reserved = @current_inventory_reserved - 1
+    @inventory.update(reserved: @new_inventory_reserved)
+    
+    # remove delivery drink
+    @admin_user_delivery_info.destroy!
+    @user_delivery_info.destroy!
+    
+    # update delivery info
+    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
+      
+    # add change to the customer_delivery_changes table
+    @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @user_delivery_id).first
+    if !@customer_delivery_change.blank?
+      @customer_delivery_change.update(new_quantity: @new_quantity)
+    else
+      @new_customer_delivery_change = CustomerDeliveryChange.new(user_id: current_user.id, 
+                                                                  delivery_id: @user_delivery_info.delivery_id,
+                                                                  user_delivery_id: @user_delivery_id,
+                                                                  original_quantity: @original_quantity,
+                                                                  new_quantity: @new_quantity)
+      @new_customer_delivery_change.save!
+    end
+    
+    render js: "window.location = '#{user_deliveries_path('next')}'"
+  end # end of remove_delivery_drink_quantity method
   
   def customer_delivery_messages
     @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: params[:customer_delivery_message][:delivery_id]).first

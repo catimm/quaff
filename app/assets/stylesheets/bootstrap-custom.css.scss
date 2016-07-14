@@ -1840,7 +1840,7 @@ $beer-header-lines-to-show-fp: 1;
     margin-top: 10px;
   }
 }
-.add-drink-button, .remove-drink-button {
+.add-drink-button, .remove-drink-button, .wait-button {
   width: 120px; 
   font-size: 16px;
   font-weight: 500;
@@ -2479,7 +2479,7 @@ $beer-header-lines-to-show-fp: 1;
 .rate-beer:hover {
     text-decoration: none !important;
   }
-.remove-drink-button {
+.remove-drink-button, .wait-button {
   width: 100%;
   margin: 10px 0;
 } 

@@ -440,7 +440,7 @@ $(function () {
 		
 		// change quantity shown on screen
 		var original_quantity = $("#drink-quantity-" + drink_id).html();
-		if(original_quantity > 0) {
+		if(original_quantity > 1) {
 			var new_quantity = original_quantity - 1;
 			$("#drink-quantity-" + drink_id).html(new_quantity);
 			
@@ -449,7 +449,26 @@ $(function () {
 			  type: "POST",
 			  url: "/users/change_delivery_drink_quantity/subtract-" + drink_id
 			});
+		} else {
+		
+			// attach new id
+			$('#remove_drink_confirmation_delivery_review').children('.modal-body').children('.remove-button-holder').children('a').attr('id', drink_id);
+
+			// show modal
+		    $('#remove_drink_confirmation_delivery_review').modal('show');
 		}
+	});
+	$(document).on("click", ".subtract-drink-confirmation-delivery-review", function() {
+		var drink_id = $(this).attr('id');
+		
+		// remove modal
+	    $('#remove_drink_confirmation_delivery_review').modal('hide');
+			
+		// send to controller to change database 
+		$.ajax({
+		  type: "POST",
+		  url: "/users/remove_delivery_drink_quantity/" + drink_id
+		});
 	});
 	$(document).on("click", ".quantity-change-holder-add", function() {
 		
