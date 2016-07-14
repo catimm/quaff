@@ -61,6 +61,11 @@ $(function () {
 		
 	});
 	
+	// set width of quantity holder--in supply and delivery review views--equal to portion of tile width
+	drink_tile_width = $(".drink-supply-tile").width();
+	quantity_holder_width = (drink_tile_width * .15);
+	$(".quantity-holder").width(quantity_holder_width).height(quantity_holder_width);
+	
 	// get width of estimate column
 	estimate_column_width = $("#estimate-column").width();
 	// make estimate tile holder same width as column
@@ -471,6 +476,35 @@ $(function () {
 		$.ajax({
 		  type: "POST",
 		  url: "/users/remove_delivery_drink_quantity/" + drink_id
+		});
+		// make page not jump to top
+		return false;
+	});
+	
+	// allow customers to remove drinks from wishlist
+	$(document).on("click", ".remove-drink-from-wishlist", function() {
+		var drink_id = $(this).attr('id');
+		
+		// attach new id
+		$('#remove_drink_from_wishlist_confirmation').children('.modal-body').children('.remove-button-holder').children('a').attr('id', drink_id);
+
+		// show modal
+	    $('#remove_drink_from_wishlist_confirmation').modal('show');
+
+	}); 
+	$(document).on("click", ".subtract-drink-from-wishlist-confirmation", function() {
+		var drink_id = $(this).attr('id');
+		
+		// remove drink tile
+		$('#wishlist-drink-' + drink_id).remove();
+		
+		// remove modal
+	    $('#remove_drink_from_wishlist_confirmation').modal('hide');
+		
+		// send to controller to change database 
+		$.ajax({
+		  type: "POST",
+		  url: "/users/wishlist_removal/" + drink_id
 		});
 		// make page not jump to top
 		return false;

@@ -4,20 +4,18 @@
 	</div>
 </div>
 <% @wishlist.each do |drink| %>
-	<div class="col-sm-4 col-xs-12 beer-tile-container">
+	<div class="col-sm-4 col-xs-12 beer-tile-container" id="wishlist-drink-<%= drink.id %>">
 	<%= link_to new_user_rating_path(current_user.id, drink.id), :class => 'rate-beer text-center' do %>
 		<i class="fa fa-thumbs-up"></i>
 		<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
 		<p>rate</p>
 	<% end %>
-	<%= link_to wishlist_removal_path(drink.id), 
-			:class => 'btn btn-danger remove-drink-from-wishlist',
-			:data => {:confirm => 'You want to remove this from your wishlist?'} do %>
+	<%= link_to "#", :class => 'btn btn-danger remove-drink-from-wishlist', :id => "#{drink.id}" do %>
 		<i class="fa fa-times"></i>
 	<% end %>
 	<div class="overview-tile-2">
 		<div class="row no-margin ratings-image-holder-row">
-			<div class="col-sm-5 no-padding wishlist-image-holder-column">
+			<div class="col-xs-4 col-sm-5 no-padding wishlist-image-holder-column">
 				<% if !drink.brewery.image.blank? %>
 					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.brewery.image %>">
 				<% else %>
@@ -26,7 +24,7 @@
 					</div>
 				<% end %>
 			</div>
-			<div class="col-sm-7 wishlist-best-guess">
+			<div class="col-xs-8 col-sm-7 wishlist-best-guess">
 				<% if drink.user_rating %>
 					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= ((((drink.best_guess) * 2).round)/2.0) %></span></p>
 					<p>You rated it:</p>
@@ -82,11 +80,11 @@
 		</div>
 		<div class="row no-margin cloud-descriptor-row">
 			<div class="col-xs-12">
-				<p>This drink is described as:</p>
+				<p>Described as:</p>
 				<div class="cloud-holder" id="drink_<%= drink.id %>"></div>
 			</div>	
 		</div>
-		<div class="row no-margin list-overview">
+		<div class="row no-margin list-overview hidden-xs">
 			<div class="col-xs-12 why-statement">
 				<p>Why you might like this:</p>
 				<% if drink.recommendation_rationale == "style" %>

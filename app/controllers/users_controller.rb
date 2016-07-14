@@ -250,7 +250,7 @@ class UsersController < ApplicationController
     @drink_to_remove = Wishlist.where(user_id: current_user.id, beer_id: params[:id]).where("removed_at IS NULL").first
     @drink_to_remove.update(removed_at: Time.now)
     
-    redirect_to :action => 'wishlist'
+    render :nothing => true
 
   end # end wishlist removal
   

@@ -4,7 +4,7 @@
 <% else %>
 	<% @cellarable = "" %>
 <% end %>
-<div class="col-sm-4 col-xs-12 beer-tile-container">
+<div class="col-xs-12 col-sm-4 beer-tile-container">
 	<%= link_to new_user_rating_path(current_user.id, drink.id, :source => @view), :class => 'rate-beer text-center' do %>
 		<i class="fa fa-thumbs-up"></i>
 		<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
@@ -12,7 +12,7 @@
 	<% end %>
 	<div class="drink-supply-tile">
 		<div class="row no-margin ratings-image-holder-row">
-			<div class="col-sm-5 no-padding wishlist-image-holder-column">
+			<div class="col-xs-4 col-sm-5 no-padding wishlist-image-holder-column">
 				<% if !drink.brewery.image.blank? %>
 					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.brewery.image %>">
 				<% else %>
@@ -21,7 +21,7 @@
 					</div>
 				<% end %>
 			</div>
-			<div class="col-sm-7 wishlist-best-guess">
+			<div class="col-xs-8 col-sm-7 wishlist-best-guess">
 				<% if drink.user_rating %>
 					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= ((((drink.best_guess) * 2).round)/2.0) %></span></p>
 					<p>You rated it:</p>
@@ -40,7 +40,7 @@
 				<% end %>
 			</div>
 		</div>
-		<div class="row no-margin">
+		<div class="row no-margin drink-name-and-info-row">
 			<div class="col-xs-12">
 				<% if drink.collab == true %>
 					<% @title_header = (Beer.collab_brewery_name(drink.id) + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
@@ -84,7 +84,7 @@
 				<div class="cloud-holder" id="drink_<%= drink.id %>"></div>
 			</div>	
 		</div>
-		<div class="row no-margin list-overview">
+		<div class="row no-margin list-overview hidden-xs">
 			<div class="col-xs-12 why-statement">
 				<p>Why you might like this:</p>
 				<% if drink.recommendation_rationale == "style" %>
@@ -102,12 +102,12 @@
 		</div>
 		<% @drink_supply = @user_supply.where(user_id: current_user.id, beer_id: drink.id).first %>
 		<div class="row no-margin next-delivery-tile-last-row">
-			<div class="col-sm-6 no-padding">
+			<div class="col-xs-6 no-padding">
 				<div class="supply-quantity-change-minus" id="user-delivery-minus-<%= @drink_supply.id %>">
 					<p><i class="fa fa-minus"></i> qty</p>
 				</div>
 			</div>
-			<div class="col-sm-6 no-padding">
+			<div class="col-xs-6 no-padding">
 				<div class="supply-quantity-change-add" id="user-delivery-add-<%= @drink_supply.id %>">
 					<p><i class="fa fa-plus"></i> qty</p>
 				</div>
