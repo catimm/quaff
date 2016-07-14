@@ -36,15 +36,15 @@
 				<% if drink.beer.collab == true %>
 					<% @title_header = (Beer.collab_brewery_name(drink.beer.id) + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
 					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>><%= @cellarable %></sup>
+						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"><%= @cellarable %></sup>
 				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
 					<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
 					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>><%= @cellarable %></sup>
+						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"><%= @cellarable %></sup>
 				<% else %>
 					<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
 					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>><%= @cellarable %></sup>
+						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"><%= @cellarable %></sup>
 				<% end %>
 			</div>
 			<div class="col-xs-12">
