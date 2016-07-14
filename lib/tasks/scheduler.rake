@@ -424,7 +424,7 @@ end # end of assessing drink recommendations task
 desc "end user reviews and send email if Wed"
 task :end_user_review_period => :environment do
   # only run this code if today is Wednesday
-    if Date.today.strftime("%A") == "Wednesday"
+    if Date.today.strftime("%A") == "Thursday"
       # get all users currently reviewing the next delivery
       @deliveries_in_review = Delivery.where(status: "user review") 
       
