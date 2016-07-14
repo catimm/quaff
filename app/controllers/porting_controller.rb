@@ -38,7 +38,7 @@ class PortingController < ApplicationController
       @user_new_beer_rating = ((@this_beer_rating.to_f) * 2)
       #Rails.logger.debug("new beer rating: #{@user_new_beer_rating.inspect}")
       @this_created_at_string = array['created_at']
-      @this_created_at = DateTime.parse(@this_created_at_string)
+      @this_created_at = DateTime.strptime(@this_created_at_string, "%m/%d/%Y %H:%M")
       @this_brewery_city = array['brewery_city']
       @this_brewery_state = array['brewery_state']
       
