@@ -437,7 +437,7 @@ task :end_user_review_period => :environment do
         @email_changed_drink_array = Array.new
     
         # if change requests exist
-        if !@change_requests.nil?
+        if !@change_requests.blank?
           
           # grab change info and send email acknowledging change requests
           @change_requests.each do |change|
