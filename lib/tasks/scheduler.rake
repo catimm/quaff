@@ -421,6 +421,53 @@ task :assess_drink_recommendations => :environment do
    end # end of loop for each user
 end # end of assessing drink recommendations task
 
+desc "end user reviews and send email if Wed"
+task :end_user_review_period => :environment do
+  # only run this code if today is Wednesday
+    if Date.today.strftime("%A") == "Wednesday"
+      # get all users currently reviewing the next delivery
+      @deliveries_in_review = Delivery.where(status: "user review") 
+      
+      # cycle through each delivery still in review
+      @deliveries_in_review.each do |delivery|
+        # find if this user has made any change requests
+        @change_requests = CustomerDeliveryChange.where(delivery_id: delivery.id)
+        
+        # create array of drinks for email
+        @email_changed_drink_array = Array.new
+    
+        # if change requests exist
+        if !@change_requests.nil?
+          
+          # grab change info and send email acknowledging change requests
+          @change_requests.each do |change|
+            # add drink data to array for customer review email
+            @changed_drink_data = ({:maker => change.user_delivery.beer.brewery.short_brewery_name,
+                                        :drink => change.user_delivery.beer.beer_name,
+                                        :drink_type => change.user_delivery.beer.beer_type.beer_type_short_name,
+                                        :original_quantity => change.original_quantity,
+                                        :new_quantity => change.new_quantity}).as_json
+            # push this array into overall email array
+            @email_changed_drink_array << @changed_drink_data
+          end # end of loop through change reqeusts
+          
+          # send email to customer
+          UserMailer.customer_delivery_review_with_changes(delivery.user.first_name, delivery.user.email, delivery.delivery_date, @email_changed_drink_array).deliver_now
+        else
+          # send an email noting no change requests
+          UserMailer.customer_delivery_review_no_changes(delivery.user.first_name, delivery.user.email).deliver_now
+          
+        end # end of check to see if change requests exist
+        
+        # now change the delivery status for the user
+        @deliveries_in_review.update(delivery.id, status: "in progress")
+      end # end of looping through each delivery in review
+    
+    end # end of day of week test
+  
+end # end of end_user_review_period task
+
+
 desc "update user beer rating table"
 task :update_user_beer_ratings => :environment do
   @drink_ratings_without_drink_id = UserBeerRating.where("beer_type_id IS ?", nil)

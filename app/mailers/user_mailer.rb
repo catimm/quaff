@@ -54,7 +54,53 @@ class UserMailer < ActionMailer::Base
     response = sp.transmission.send_payload(payload)
     p response
     
-  end # end of select_invite_email email
+  end # end of customer_delivery_review email
+  
+  def customer_delivery_review_with_changes(customer_name, customer_email, delivery_date, changed_drinks)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer_email },
+        }
+      ],
+      content: {
+        template_id: 'customer-delivery-review-with-changes'
+      },
+      substitution_data: {
+        customer_name: customer_name,
+        delivery_date: (delivery_date).strftime("%A, %B #{delivery_date.day.ordinalize}"),
+        drink: changed_drinks
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of customer_delivery_review_with_changes email
+  
+  def customer_delivery_review_no_changes(customer_name, customer_email)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer_email },
+        }
+      ],
+      content: {
+        template_id: 'customer-delivery-review-no-changes'
+      },
+      substitution_data: {
+        customer_name: customer_name
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of customer_delivery_review_no_changes email
   
   def delivery_confirmation_email(customer, delivery_info, drink_quantity)
     #Rails.logger.debug("customer info: #{customer.inspect}")
@@ -82,6 +128,7 @@ class UserMailer < ActionMailer::Base
     response = sp.transmission.send_payload(payload)
     p response
   end # end of select_invite_email email
+  
   
   def welcome_email(customer, membership_name, subscription_fee, billing_date, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
