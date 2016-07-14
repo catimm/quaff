@@ -1,5 +1,6 @@
 class PortingController < ApplicationController
   before_filter :verify_super_admin
+  require 'date'
   
   def index
     # set user id of user these drinks should be associated with
@@ -36,7 +37,8 @@ class PortingController < ApplicationController
       @this_beer_rating = array['rating_score']
       @user_new_beer_rating = ((@this_beer_rating.to_f) * 2)
       #Rails.logger.debug("new beer rating: #{@user_new_beer_rating.inspect}")
-      @this_created_at = array['created_at']
+      @this_created_at_string = array['created_at']
+      @this_created_at = DateTime.parse(@this_created_at_string)
       @this_brewery_city = array['brewery_city']
       @this_brewery_state = array['brewery_state']
       
