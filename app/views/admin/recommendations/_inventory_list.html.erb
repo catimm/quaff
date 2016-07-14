@@ -47,9 +47,9 @@
 		    <% else %>
 		    	<td>No</td>
 		    <% end %>
-		    <% @drank_recently = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer_id).where('created_at > ?', 1.month.ago).last %>
+		    <% @drank_recently = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer_id).where('rated_on > ?', 1.month.ago).last %>
 		    <% if !@drank_recently.blank? %>
-		    	<td><%= (@drank_recently.created_at).strftime("%-m/%-d/%y") %></td>
+		    	<td><%= (@drank_recently.rated_on).strftime("%-m/%-d/%y") %></td>
 		    <% else %>
 		    	<td>No</td>
 		    <% end %>
