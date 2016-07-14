@@ -251,7 +251,7 @@ class Admin::RecommendationsController < ApplicationController
     if @quantity_subtract_or_add == "subtract" # reduce quantity or remove drink if quantity currently equals 1
       
       # adjust admin next delivery quantity
-      if @current_drink_quantity.quantity == 1
+      if @current_drink_quantity == 1
         # remove drink from admin_user_deliveries table
         @next_delivery_info.destroy!
       else

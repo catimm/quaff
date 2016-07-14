@@ -734,7 +734,8 @@ class UsersController < ApplicationController
       @new_customer_delivery_change.save!
     end
     
-    render js: "window.location = '#{user_deliveries_path('next')}'"
+    render :nothing => true
+    #js: "window.location = '#{user_deliveries_path('next')}'"
   end # end of remove_delivery_drink_quantity method
   
   def customer_delivery_messages

@@ -461,14 +461,19 @@ $(function () {
 	$(document).on("click", ".subtract-drink-confirmation-delivery-review", function() {
 		var drink_id = $(this).attr('id');
 		
+		// remove drink tile
+		$('#drink-tile-' + drink_id).remove();
+		
 		// remove modal
 	    $('#remove_drink_confirmation_delivery_review').modal('hide');
-			
+		
 		// send to controller to change database 
 		$.ajax({
 		  type: "POST",
 		  url: "/users/remove_delivery_drink_quantity/" + drink_id
 		});
+		// make page not jump to top
+		return false;
 	});
 	$(document).on("click", ".quantity-change-holder-add", function() {
 		
