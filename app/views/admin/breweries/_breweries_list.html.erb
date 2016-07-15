@@ -17,52 +17,75 @@
 				</div>
 			<% end %>
 		</div>
-		<div class="col-xs-6 col-sm-2">
-			<% if d.short_brewery_name.blank? %>
-				<h5 class="need-text">Need Short Name!</h5>
-			<% else %>
-				<h5 class="brewery-name-with-id"><%= d.short_brewery_name %></h5>
-			<% end %>
-		</div>
-		<div class="col-xs-4 col-sm-2">
-			<% if d.brewery_city.blank? %>
-				<h5 class="need-text">Need City</h5>
-			<% else %>
-				<h5 class="no-overflow"><%= d.brewery_city %></h5>
-			<% end %>
-		</div>
-		<div class="col-xs-2 col-sm-1">
-			<% if d.brewery_state_short.blank? %>
-				<h5 class="need-text">Need State</h5>
-			<% else %>
-				<h5><%= d.brewery_state_short %></h5>
-			<% end %>
-		</div>
-		<div class="col-xs-6 col-sm-2">
-			<% @beers_in_db = Beer.where(brewery_id: d.id).count %>
-			<% if d.brewery_beers.blank? %>
-				<p class="need-text">[need]/<%= @beers_in_db %></p>
-			<% else %>
-				<p><%= d.brewery_beers %>/<%= @beers_in_db %></p>
-			<% end %>
-		</div>
-		<div class="col-xs-6 col-sm-1">
-			<% @alt_names = AltBreweryName.where(brewery_id: d.id) %>
-			<% if @alt_names.blank? %>
-				<%= link_to "Add names", admin_alt_brewery_names_path(d.id), class: "btn btn-default editButton",
-				data: {toggle: "modal", target: "#edit_alt_names"} %>
-			<% else %>
-				<%= link_to "Edit names", admin_alt_brewery_names_path(d.id), class: "btn btn-default editButton",
+		<% if d.dont_include != true %>
+			<div class="col-xs-6 col-sm-2">
+				<% if d.short_brewery_name.blank? %>
+					<h5 class="need-text">Need Short Name!</h5>
+				<% else %>
+					<h5 class="brewery-name-with-id"><%= d.short_brewery_name %></h5>
+				<% end %>
+			</div>
+			<div class="col-xs-4 col-sm-2">
+				<% if d.brewery_city.blank? %>
+					<h5 class="need-text">Need City</h5>
+				<% else %>
+					<h5 class="no-overflow"><%= d.brewery_city %></h5>
+				<% end %>
+			</div>
+			<div class="col-xs-2 col-sm-1">
+				<% if d.brewery_state_short.blank? %>
+					<h5 class="need-text">Need State</h5>
+				<% else %>
+					<h5><%= d.brewery_state_short %></h5>
+				<% end %>
+			</div>
+			<div class="col-xs-6 col-sm-2">
+				<% @beers_in_db = Beer.where(brewery_id: d.id).count %>
+				<% if d.brewery_beers.blank? %>
+					<p class="need-text">[need]/<%= @beers_in_db %></p>
+				<% else %>
+					<p><%= d.brewery_beers %>/<%= @beers_in_db %></p>
+				<% end %>
+			</div>
+			<div class="col-xs-6 col-sm-1">
+				<% @alt_names = AltBreweryName.where(brewery_id: d.id) %>
+				<% if @alt_names.blank? %>
+					<%= link_to "Add names", admin_alt_brewery_names_path(d.id), class: "btn btn-default editButton",
 					data: {toggle: "modal", target: "#edit_alt_names"} %>
-			<% end %>
-		</div>
-		<div class="col-xs-6 col-sm-1">
-			<%= link_to "Edit brewery", edit_admin_brewery_path(d.id), class: "btn btn-primary editButton", 
-			data: {toggle: "modal", target: "#edit_brewery"} %>
-		</div>
-		<div class="col-xs-6 col-sm-1">
-			<%= link_to "Edit beers", admin_brewery_beers_path(d.id), :class => "btn btn-success editButton" %>
-		</div>
+				<% else %>
+					<%= link_to "Edit names", admin_alt_brewery_names_path(d.id), class: "btn btn-default editButton",
+						data: {toggle: "modal", target: "#edit_alt_names"} %>
+				<% end %>
+			</div>
+			<div class="col-xs-6 col-sm-1">
+				<%= link_to "Edit brewery", edit_admin_brewery_path(d.id), class: "btn btn-primary editButton", 
+				data: {toggle: "modal", target: "#edit_brewery"} %>
+			</div>
+			<div class="col-xs-6 col-sm-1">
+				<%= link_to "Edit beers", admin_brewery_beers_path(d.id), :class => "btn btn-success editButton" %>
+			</div>
+		<% else %>
+			<div class="col-xs-6 col-sm-7">
+				<h5 class="need-text">Not showing this in views</h5>
+			</div>
+			<div class="col-xs-6 col-sm-1">
+				<% @alt_names = AltBreweryName.where(brewery_id: d.id) %>
+				<% if @alt_names.blank? %>
+					<%= link_to "Add names", admin_alt_brewery_names_path(d.id), class: "btn btn-default editButton",
+					data: {toggle: "modal", target: "#edit_alt_names"} %>
+				<% else %>
+					<%= link_to "Edit names", admin_alt_brewery_names_path(d.id), class: "btn btn-default editButton",
+						data: {toggle: "modal", target: "#edit_alt_names"} %>
+				<% end %>
+			</div>
+			<div class="col-xs-6 col-sm-1">
+				<%= link_to "Edit brewery", edit_admin_brewery_path(d.id), class: "btn btn-primary editButton", 
+				data: {toggle: "modal", target: "#edit_brewery"} %>
+			</div>
+			<div class="col-xs-6 col-sm-1">
+				<%= link_to "Edit beers", admin_brewery_beers_path(d.id), :class => "btn btn-success editButton" %>
+			</div>
+		<% end %>
 	</div>
 	<hr/>
 <% end %>
