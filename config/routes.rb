@@ -12,7 +12,7 @@ Rails.application.routes.draw do
         get :descriptors, as: :descriptors
       end
     end 
- end
+  end
  
  # for retailers to add draft board iframe widget
  namespace :draft do

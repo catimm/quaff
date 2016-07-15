@@ -109,6 +109,12 @@ class Admin::BreweriesController < ApplicationController
     redirect_to admin_breweries_path
   end
   
+  def show
+    # to keep search function indexed properly
+    Brewery.reindex
+    
+    redirect_to admin_breweries_path
+  end
   
   
   private
