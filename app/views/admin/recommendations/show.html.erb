@@ -13,16 +13,16 @@
 		</div>
 	</div>
 	<div class="row first-row-admin-recommendation-decisions">
-		<div class="col-md-2 text-left no-padding">
+		<div class="col-sm-2 text-left no-padding">
 			<h4>Showing: <span class="current-selected-user" id="current-user-recommendations"><%= @drink_recommendations[0].user.username %></span></h4>
 		</div>
-		<div class="col-md-3">
+		<div class="col-sm-3">
 			<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "user-drink-recommendations"}) %>
 		</div>
-		<div class="col-md-3 no-padding">
-			<h4>Current status: <%= @customer_next_delivery.status %></h4>
+		<div class="col-sm-3 no-padding">
+			<h4>Status: <%= @customer_next_delivery.status %></h4>
 		</div>
-		<div class="col-sm-2 no-padding" id="admin-user-delivery-button-holder">
+		<div class="col-sm-4 no-padding" id="admin-user-delivery-button-holder">
 			<%= render 'admin_user_appropriate_button' %>
 		</div>
 	</div>
@@ -40,6 +40,9 @@
 	</div>
 	<div id="admin_review_delivery" class="modal">
 		<%= render 'admin_review_delivery_modal' %>
+	</div>
+	<div id="admin_delivery_note" class="modal">
+		<%= render 'admin_delivery_note_modal' %>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

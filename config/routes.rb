@@ -141,6 +141,7 @@ Rails.application.routes.draw do
   get 'admin/recommendations/admin_user_feedback/:id' => 'admin/recommendations#admin_user_feedback', :as =>'admin_user_feedback'
   get 'admin/recommendations/admin_review_delivery/:id' => 'admin/recommendations#admin_review_delivery', :as =>'admin_review_delivery'
   get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
+  post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
   get 'admin/deliveries/admin_confirm_delivery/:id' => 'admin/deliveries#admin_confirm_delivery', :as =>'admin_confirm_delivery'
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'

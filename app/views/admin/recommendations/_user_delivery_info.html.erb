@@ -1,10 +1,7 @@
 <div class="col-sm-12">
 		<div class="row no-margin">
 		    <div class="col-sm-2">
-		    	<h5>Customer drinks<br> <b><%= @drink_preference %></b></h5>
-		    </div>
-		    <div class="col-sm-2">
-		    	<h5>Self identified<br> <b><%= @self_identified %></b></h5>
+		    	<h5>Customer is a <br> <b><%= @drink_preference %> <%= @self_identified %></b></h5>
 		    </div>
 		    <div class="col-sm-2 no-padding">
 		    	<h5>Price range: <%= @cost_estimate %></h5>
@@ -14,16 +11,27 @@
 		    		<h5>Current price: <span class="not-ready">TBD</span></h5>
 		    	<% end %>
 		    </div>
-		    
-			<div class="col-sm-5">
+			<div class="col-sm-4">
 				<div class="box-left-notes">
-					<h6>Additional notes:</h6>
+					<h6>Customer notes:</h6>
 				</div>
 				<div class="box-right-notes">
 					<% if @delivery_preferences.additional.nil? %>
 						<h6 class="no-results-empty-message">Customer provided no addtional notes</h6>
 					<% else %>
 						<h6 class="no-results-empty-message"><%= @delivery_preferences.additional %></h6>
+					<% end %>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="box-left-notes">
+					<h6>Admin notes:</h6>
+				</div>
+				<div class="box-right-notes">
+					<% if @customer_next_delivery.admin_note.nil? %>
+						<h6 class="no-results-empty-message">Admin has note added a note</h6>
+					<% else %>
+						<h6 class="no-results-empty-message"><%= @customer_next_delivery.admin_note %></h6>
 					<% end %>
 				</div>
 			</div>

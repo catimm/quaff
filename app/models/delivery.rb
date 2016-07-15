@@ -11,6 +11,7 @@
 #  status        :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  admin_note    :text
 #
 
 class Delivery < ActiveRecord::Base

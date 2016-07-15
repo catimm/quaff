@@ -13,7 +13,10 @@ class Admin::RecommendationsController < ApplicationController
     else 
       @chosen_user_id = @customer_ids.first
     end
-
+    
+    # get chosen user info
+    @chosen_user = User.find_by_id(@chosen_user_id)
+    
     # get recommended drinks by user
     @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
     
@@ -96,14 +99,14 @@ class Admin::RecommendationsController < ApplicationController
     end
     
     # self identified
-    if current_user.craft_stage_id == 1
+    if @chosen_user.craft_stage_id == 1
       @self_identified = "Casual"
-    elsif current_user.craft_stage_id == 2
+    elsif @chosen_user.craft_stage_id == 2
       @self_identified = "Geek"
     else
       @self_identified = "Connoisseur"
     end
-    
+          
     respond_to do |format|
       format.js
       format.html  
@@ -300,6 +303,18 @@ class Admin::RecommendationsController < ApplicationController
     
   end # end of change_delivery_drink_quantity method
   
+  def admin_delivery_note
+    @customer_next_delivery_id = params[:delivery][:delivery_id]
+    @admin_note = params[:delivery][:admin_note]
+    
+    @delivery = Delivery.find_by_id(@customer_next_delivery_id)
+    @delivery.update(admin_note: @admin_note)
+    
+    # redirect back to recommendation page                                             
+    redirect_to admin_recommendation_path(@delivery.user_id)
+    
+  end # end of admin_delivery_note method
+    
   def admin_user_delivery
     # get drinks slated for next delivery
     @customer_next_delivery = Delivery.where(user_id: params[:id]).where.not(status: "delivered").first

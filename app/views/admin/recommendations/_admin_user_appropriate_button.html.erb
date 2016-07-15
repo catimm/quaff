@@ -1,10 +1,7 @@
 <% if @customer_next_delivery.status == "admin prep" %>
+	<%= render 'admin_delivery_note_button' %>
 	<%= render 'admin_user_delivery_button' %>
-<% end %>
-<% if @customer_next_delivery.status == "user review" %>
+<% else %>
 	<%= render 'admin_user_feedback_button' %>
-<% end %>
-<% if @customer_next_delivery.status == "in progress" %>
-	<%= render 'admin_review_delivery_button' %>
-	<%= render 'admin_user_feedback_button' %>
+	<%= render 'admin_review_delivery_button' %>	
 <% end %>
