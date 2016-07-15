@@ -36,7 +36,7 @@ class UsersController < ApplicationController
       # get customer plan details
       @customer_plan = UserSubscription.where(user_id: @user.id).first
       
-      if @customer_plan.subscription_id == 1
+      if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4
         # set current style variable for CSS plan outline
         @relish_chosen = "show"
         @enjoy_chosen = "hidden"

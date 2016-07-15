@@ -237,11 +237,11 @@ class SignupController < ApplicationController
         @customer_plan = UserSubscription.find_by_user_id(current_user.id)
       
         if !@customer_plan.blank?
-          if @customer_plan.subscription_id == 1
+          if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4
             # set current style variable for CSS plan outline
             @relish_chosen = "show"
             @enjoy_chosen = "hidden"
-          elsif @customer_plan.subscription_id == 2
+          elsif @customer_plan.subscription_id == 2 || @customer_plan.subscription_id == 5
             # set current style variable for CSS plan outline
             @relish_chosen = "hidden"
             @enjoy_chosen = "show"
