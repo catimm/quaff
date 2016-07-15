@@ -1,12 +1,11 @@
 module QuerySearch
   extend ActiveSupport::Concern
-  
   def query_search(search_term)
       @search = Brewery.search search_term,
       misspellings: {edit_distance: 2},
       limit: 30,
       operator: 'or',
-      fields: [{ 'beer_name^10' => :word_middle }, 'brewery_name']
+      fields: [{ 'beer_name^10' => :word_middle }, 'brewery_name', 'short_brewery_name^10']
      
     #Rails.logger.debug("Search results: #{@search.inspect}")
     
@@ -31,6 +30,7 @@ module QuerySearch
       # check search term agains breweries and beers to grab relevant matches
       # If search term contains white spaces, run first block of code
         if search_term.match(/\s+/)
+          Rails.logger.debug("Search results: #{result.inspect}")
           # find name of this brewery
           this_brewery = result.brewery_name.downcase
           #Rails.logger.debug("Recognized as having whitespaces")

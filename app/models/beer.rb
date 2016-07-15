@@ -143,17 +143,19 @@ class Beer < ActiveRecord::Base
     collab_brewery_names = ""
     collab_breweries.each do |collab, index|
       brewery = Brewery.where(id: collab.brewery_id)[0]
-      if !brewery.short_brewery_name.nil?
-        if collab == collab_breweries.last
-          collab_brewery_names = collab_brewery_names + brewery.short_brewery_name
+      if !brewery.nil?
+        if !brewery.short_brewery_name.nil?
+          if collab == collab_breweries.last
+            collab_brewery_names = collab_brewery_names + brewery.short_brewery_name
+          else
+            collab_brewery_names = collab_brewery_names + brewery.short_brewery_name + "/"
+          end
         else
-          collab_brewery_names = collab_brewery_names + brewery.short_brewery_name + "/"
-        end
-      else
-        if collab == collab_breweries.last
-          collab_brewery_names = collab_brewery_names + brewery.brewery_name
-        else
-          collab_brewery_names = collab_brewery_names + brewery.brewery_name + "/"
+          if collab == collab_breweries.last
+            collab_brewery_names = collab_brewery_names + brewery.brewery_name
+          else
+            collab_brewery_names = collab_brewery_names + brewery.brewery_name + "/"
+          end
         end
       end
     end

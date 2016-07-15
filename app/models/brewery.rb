@@ -39,6 +39,7 @@ class Brewery < ActiveRecord::Base
   def search_data
     {
       brewery_name: brewery_name,
+      short_brewery_name: short_brewery_name,
       beer_name: beers.map(&:beer_name).join('')
     }
   end
