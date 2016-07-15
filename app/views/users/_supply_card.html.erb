@@ -1,8 +1,10 @@
-<% if drink.beer_type.cellarable == true %>
-	<% @cellarable = "C" %>
-	<% @cellarable_info = drink.beer.beer_type.cellarable_info %>
-<% else %>
-	<% @cellarable = "" %>
+<% if !drink.beer_type.nil? %>
+	<% if drink.beer_type.cellarable == true %>
+		<% @cellarable = "C" %>
+		<% @cellarable_info = drink.beer.beer_type.cellarable_info %>
+	<% else %>
+		<% @cellarable = "" %>
+	<% end %>
 <% end %>
 <div class="col-xs-12 col-sm-4 beer-tile-container">
 	<%= link_to new_user_rating_path(current_user.id, drink.id, :source => @view), :class => 'rate-beer text-center' do %>
