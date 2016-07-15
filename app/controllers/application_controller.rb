@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
       if @user.getting_started_step < 10
         @first_view = getting_started_path('category')
       else
-        @first_view = user_supply_path('cooler')
+        @first_view = user_supply_path(current_user.id, 'cooler')
       end
       
     end

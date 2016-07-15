@@ -24,7 +24,7 @@
 					            <li class="dropdown-header">Activity</li>
 					            <li class="dropdown-link"><%= link_to "My deliveries", user_deliveries_path('next') %></li>
 					            <li class="dropdown-link"><%= link_to "My ratings", user_profile_path('recent_ratings') %></li>
-					            <li class="dropdown-link"><%= link_to "My supply", user_supply_path('cooler') %></li>
+					            <li class="dropdown-link"><%= link_to "My supply", user_supply_path(current_user.id, 'cooler') %></li>
 								
 								<li class="dropdown-header">Settings</li>
 								<li class="dropdown-link"><%= link_to "My account", user_account_settings_path("plan") %></li>

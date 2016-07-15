@@ -109,9 +109,9 @@ class UsersController < ApplicationController
   
   def supply
     # get correct view
-    @view = params[:id]
+    @view = params[:format]
     # get user supply data
-    @user_supply = UserSupply.where(user_id: current_user.id)
+    @user_supply = UserSupply.where(user_id: params[:id])
     #Rails.logger.debug("View is: #{@view.inspect}")
     
     # get data for view
@@ -788,7 +788,7 @@ class UsersController < ApplicationController
       @view = 'cellar'
     end
 
-    render js: "window.location = '#{user_supply_path(@view)}'"
+    render js: "window.location = '#{user_supply_path(current_user.id, @view)}'"
   end # end change_supply_drink_quantity method
   
   def plan

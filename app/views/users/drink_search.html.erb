@@ -9,13 +9,13 @@
 				<div class="row no-margin">
 					<div class="col-sm-3 no-padding"></div>
 					<div class="col-sm-3">
-						<%= link_to "My Cooler", user_supply_path('cooler'), class: "drink-preference-view-option #{@cooler_chosen}", id: "cooler" %>
+						<%= link_to "My Cooler", user_supply_path(current_user.id, 'cooler'), class: "drink-preference-view-option #{@cooler_chosen}", id: "cooler" %>
 					</div>
 					<div class="col-sm-3">
-						<%= link_to "My Cellar", user_supply_path('cellar'), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
+						<%= link_to "My Cellar", user_supply_path(current_user.id, 'cellar'), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
 					</div>
 					<div class="col-sm-3">
-						<%= link_to "My Wishlist", user_supply_path('wishlist'), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
+						<%= link_to "My Wishlist", user_supply_path(current_user.id, 'wishlist'), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
 					</div>
 				</div>
 				<div class="row add-supply-search-col">
