@@ -534,6 +534,13 @@ class SignupController < ApplicationController
     
     # find subscription level id
     @subscription_level_id = Subscription.where(subscription_level: @input).first
+    
+    # set active until date
+    if @input == "enjoy" || @input == "enjoy_beta"
+      @active_until = 3.months_from_now
+    else
+      @active_until = 12.months_from_now
+    end
       
     if @user_plan.blank?
       # first create Stripe acct
@@ -546,9 +553,10 @@ class SignupController < ApplicationController
               :email => current_user.email,
               :plan => @input
             )
+ 
       # create a new user_subscription row
       @user_subscription = UserSubscription.create(user_id: current_user.id, subscription_id: @subscription_level_id.id,
-                                active_until: 1.month.from_now)
+                                active_until: @active_until)
     else
       # first update Stripe acct
       customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
@@ -561,7 +569,7 @@ class SignupController < ApplicationController
       subscription.save
       
       # now update user plan info in the DB
-      @user_plan.update(subscription_id: @subscription_level_id.id)
+      @user_plan.update(subscription_id: @subscription_level_id.id, active_until: @active_until)
     end
     
     # determine where to send user next
@@ -574,7 +582,7 @@ class SignupController < ApplicationController
       # set next step
       @next_url = getting_started_path("account-2")
     else
-      @next_url = user_account_settings_path('plan')
+      @next_url = user_account_settings_path(current_user.id, 'plan')
     end
     
     redirect_to @next_url
@@ -595,13 +603,13 @@ class SignupController < ApplicationController
     
     # get info to send customer a welcome email
     @user_subscription = UserSubscription.where(user_id: current_user.id).first
-    @user_billing_date = ((@user_subscription.created_at).strftime("%-d").to_i).ordinalize
+    @user_renewal_date = (@user_subscription.active_until).strftime("%B %e, %Y")
     @user_subscription_name = @user_subscription.subscription.subscription_name
     @user_subscription_cost = (@user_subscription.subscription.subscription_cost).to_f
     @user_subscription_length = @user_subscription.subscription.subscription_months_length
     
     # send welcome email to customer
-    UserMailer.welcome_email(@user, @user_subscription_name, @user_subscription_cost, @user_billing_date, @user_subscription_length).deliver_now
+    UserMailer.welcome_email(@user, @user_subscription_name, @user_subscription_cost, @user_renewal_date, @user_subscription_length).deliver_now
     
     
     redirect_to user_delivery_settings_path(current_user.id)

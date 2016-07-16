@@ -11,10 +11,10 @@ class UsersController < ApplicationController
   
   def account_settings
     # set view
-    @view = params[:id]
+    @view = params[:format]
     
     # get user info
-    @user = User.find(current_user.id)
+    @user = User.find(params[:id])
     #Rails.logger.debug("User info: #{@user.inspect}")
     
     # get data based on view
@@ -1077,12 +1077,12 @@ class UsersController < ApplicationController
       # set saved message
       flash[:success] = "New password saved!"            
       # redirect back to user account page
-      redirect_to user_account_settings_path('info')
+      redirect_to user_account_settings_path(current_user.id, 'info')
     else
       # set saved message
       flash[:failure] = "Sorry, invalid password."
       # redirect back to user account page
-      redirect_to user_account_settings_path('info')
+      redirect_to user_account_settings_path(current_user.id, 'info')
     end
   end
   

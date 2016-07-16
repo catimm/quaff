@@ -46,7 +46,7 @@
 					            <li class="dropdown-link"><%= link_to "My supply", user_supply_path(current_user.id, 'cooler') %></li>
 								
 								<li class="dropdown-header">Settings</li>
-								<li class="dropdown-link"><%= link_to "My account", user_account_settings_path("plan") %></li>
+								<li class="dropdown-link"><%= link_to "My account", user_account_settings_path(current_user.id, "plan") %></li>
 								<li class="dropdown-link"><%= link_to "My preferences", user_delivery_settings_path(current_user.id) %></li>
 								<li class="dropdown-link"><%= link_to "My styles & top drinks", user_drink_settings_path(current_user.id, 'styles') %></li>
 								

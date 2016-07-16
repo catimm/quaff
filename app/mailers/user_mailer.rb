@@ -131,7 +131,7 @@ class UserMailer < ActionMailer::Base
   end # end of select_invite_email email
   
   
-  def welcome_email(customer, membership_name, subscription_fee, billing_date, membership_length)
+  def welcome_email(customer, membership_name, subscription_fee, renewal_date, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
      
     payload  = {
@@ -148,7 +148,7 @@ class UserMailer < ActionMailer::Base
         customer_id: customer.id,
         membership_name: membership_name,
         subscription_fee: subscription_fee,
-        billing_date: billing_date,
+        renewal_date: renewal_date,
         membership_length: membership_length
       }
     }
