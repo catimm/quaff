@@ -811,40 +811,32 @@ class UsersController < ApplicationController
   end # end payments method
   
   def choose_plan 
-    # find if user has a plan already
+    # find user's current plan
     @user_plan = UserSubscription.find_by_user_id(params[:id])
     #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
     # find subscription level id
     @subscription_level_id = Subscription.where(subscription_level: params[:format]).first
-      
-    if @user_plan.blank?
-      # first create Stripe acct
-      @plan_info = Stripe::Plan.retrieve(params[:format])
-      #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
-      #Create a stripe customer object on signup
-      customer = Stripe::Customer.create(
-              :description => 'testing this', #@plan_info.statement_descriptor,
-              :source => params[:stripeToken],
-              :email => current_user.email,
-              :plan => params[:format]
-            )
-      # create a new user_subscription row
-      @user_subscription = UserSubscription.create(user_id: params[:id], subscription_id: @subscription_level_id.id,
-                                active_until: 1.month.from_now)
+    
+    # set active until date
+    if params[:format] == "enjoy" || params[:format] == "enjoy_beta"
+      @active_until = 3.months_from_now
     else
-      # first update Stripe acct
-      customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
-      @plan_info = Stripe::Plan.retrieve(params[:format])
-      #Rails.logger.debug("Customer: #{customer.inspect}")
-      customer.description = @plan_info.statement_descriptor
-      customer.save
-      subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
-      subscription.plan = params[:format]
-      subscription.save
-      
-      # now update user plan info in the DB
-      @user_plan.update(subscription_id: @subscription_level_id.id)
+      @active_until = 12.months_from_now
     end
+    
+    # update Stripe acct
+    customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
+    @plan_info = Stripe::Plan.retrieve(params[:format])
+    #Rails.logger.debug("Customer: #{customer.inspect}")
+    customer.description = @plan_info.statement_descriptor
+    customer.save
+    subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
+    subscription.plan = params[:format]
+    subscription.save
+    
+    # now update user plan info in the DB
+    @user_plan.update(subscription_id: @subscription_level_id.id, active_until: @active_until)
+
     
     redirect_to :action => "plan", :id => current_user.id
     
