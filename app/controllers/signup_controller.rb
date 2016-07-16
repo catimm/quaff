@@ -537,9 +537,9 @@ class SignupController < ApplicationController
     
     # set active until date
     if @input == "enjoy" || @input == "enjoy_beta"
-      @active_until = 3.months_from_now
+      @active_until = 3.months.from_now
     else
-      @active_until = 12.months_from_now
+      @active_until = 12.months.from_now
     end
       
     if @user_plan.blank?
