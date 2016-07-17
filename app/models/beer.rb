@@ -325,8 +325,8 @@ class Beer < ActiveRecord::Base
       end
       # calculate total number of ratings 
       number_of_ratings = (first_ratings + second_ratings + third_ratings)
-      # if a significant number (>1000) have rated this beer, don't discount the rating
-      if number_of_ratings >= 1000
+      # if a significant number (>500) have rated this beer, don't discount the rating
+      if number_of_ratings >= 500
         if  beer_rating_one && beer_rating_two && beer_rating_three
           (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_of_ratings))*1)*2).round(2)
         elsif beer_rating_one && beer_rating_two
@@ -343,7 +343,7 @@ class Beer < ActiveRecord::Base
           ((((beer_rating_three * number_ratings_three) / (number_ratings_three))*1)*2).round(2)
         end
       else
-        # if a non-significant number (<1000) have rated this beer, discount the rating by 10%
+        # if a non-significant number (<500) have rated this beer, discount the rating by 10%
         if  beer_rating_one && beer_rating_two && beer_rating_three
           (((((beer_rating_one * number_ratings_one) + (beer_rating_two * number_ratings_two) + (beer_rating_three * number_ratings_three)) / (number_of_ratings))*0.9)*2).round(2)
         elsif beer_rating_one && beer_rating_two
