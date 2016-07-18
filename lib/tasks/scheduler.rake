@@ -310,9 +310,9 @@ task :assess_drink_recommendations => :environment do
     @all_complete_brewery_beers = Beer.complete_beers
     @all_complete_brewery_beers = @all_complete_brewery_beers.uniq
     @all_complete_brewery_beers_count = @all_complete_brewery_beers.count
-    Rails.logger.debug("complete drink count: #{@all_complete_brewery_beers_count.inspect}")
+    #Rails.logger.debug("complete drink count: #{@all_complete_brewery_beers_count.inspect}")
     @all_complete_brewery_beers_ids = @all_complete_brewery_beers.pluck(:id)
-    Rails.logger.debug("ids of all complete drinks: #{@all_complete_brewery_beers_ids.inspect}")
+    #Rails.logger.debug("ids of all complete drinks: #{@all_complete_brewery_beers_ids.inspect}")
     # get count of total beers that have no info
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
     
@@ -392,21 +392,24 @@ task :assess_drink_recommendations => :environment do
         # find the drink best_guess for the user
         type_based_guess(drink, user.id)
         
-        if !@drink_rating_check.nil? && @drink_rating_check >= 7.5
-          @individual_drink_info = Hash.new
-          @individual_drink_info["user_id"] = user.id
-          @individual_drink_info["beer_id"] = drink.id
-          @individual_drink_info["projected_rating"] = @drink_rating_check
-          @individual_drink_info["style_preference"] = drink.likes_style
-          @individual_drink_info["new_drink"] = false
-        elsif drink.best_guess >= 7.5
-          @individual_drink_info = Hash.new
-          @individual_drink_info["user_id"] = user.id
-          @individual_drink_info["beer_id"] = drink.id
-          @individual_drink_info["projected_rating"] = drink.best_guess
-          @individual_drink_info["style_preference"] = drink.likes_style
-          @individual_drink_info["new_drink"] = true  
-        end
+        if @drink_rating_check > 7
+          if !@drink_rating_check.nil? && 
+            @individual_drink_info = Hash.new
+            @individual_drink_info["user_id"] = user.id
+            @individual_drink_info["beer_id"] = drink.id
+            @individual_drink_info["projected_rating"] = @drink_rating_check
+            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["new_drink"] = false
+          elsif drink.best_guess >= 7.5
+            @individual_drink_info = Hash.new
+            @individual_drink_info["user_id"] = user.id
+            @individual_drink_info["beer_id"] = drink.id
+            @individual_drink_info["projected_rating"] = drink.best_guess
+            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["new_drink"] = true  
+          end
+        end # end of drink rating check
+        
         @compiled_assessed_drinks << @individual_drink_info
       end # end of loop adding assessed drinks to array
       #dedup drink array
