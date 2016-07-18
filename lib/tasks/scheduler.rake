@@ -392,25 +392,21 @@ task :assess_drink_recommendations => :environment do
         # find the drink best_guess for the user
         type_based_guess(drink, user.id)
         
-        # if customer has rated this drink before
-        if !@drink_rating_check.nil? && @drink_rating_check > 7
-          @individual_drink_info = Hash.new
-          @individual_drink_info["user_id"] = user.id
-          @individual_drink_info["beer_id"] = drink.id
-          @individual_drink_info["projected_rating"] = @drink_rating_check
-          @individual_drink_info["style_preference"] = drink.likes_style
-          @individual_drink_info["new_drink"] = false
-        
-        # if customer has not rated the drink before and our best guess is high enough
-        if drink.best_guess >= 7.5
-          @individual_drink_info = Hash.new
-          @individual_drink_info["user_id"] = user.id
-          @individual_drink_info["beer_id"] = drink.id
-          @individual_drink_info["projected_rating"] = drink.best_guess
-          @individual_drink_info["style_preference"] = drink.likes_style
-          @individual_drink_info["new_drink"] = true  
-        end
-        
+          if !@drink_rating_check.nil? && @drink_rating_check >= 7.5
+            @individual_drink_info = Hash.new
+            @individual_drink_info["user_id"] = user.id
+            @individual_drink_info["beer_id"] = drink.id
+            @individual_drink_info["projected_rating"] = @drink_rating_check
+            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["new_drink"] = false
+          elsif @drink_rating_check.blank? && drink.best_guess >= 7.5
+            @individual_drink_info = Hash.new
+            @individual_drink_info["user_id"] = user.id
+            @individual_drink_info["beer_id"] = drink.id
+            @individual_drink_info["projected_rating"] = drink.best_guess
+            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["new_drink"] = true  
+          end
         @compiled_assessed_drinks << @individual_drink_info
       end # end of loop adding assessed drinks to array
       #dedup drink array
