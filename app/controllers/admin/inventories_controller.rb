@@ -50,7 +50,7 @@ class Admin::InventoriesController < ApplicationController
   def update
     @inventory = Inventory.find(params[:id])
     @update_inventory = @inventory.update(inventory_params)
-    redirect_to admin_inventories_path
+    redirect_to admin_inventories_path("stock")
   end # end update method
   
   private
