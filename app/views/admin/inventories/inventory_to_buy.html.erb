@@ -1,0 +1,43 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<% if !@inventory_purchase.nil? %>
+		<div class="row header-row stay-in-place">
+			<div class="page-header">
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<h3><%= @inventory_purchase_total %> <%= "drink".pluralize(@inventory_purchase_total) %> to buy</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<table class="table table-striped admin-recommendation-table">
+			    <tr>
+			      <th>Maker</th>
+			      <th>Drink</th>
+			      <th>Drink Type</th>
+			      <th>Reserved #</th>
+			    </tr>
+			    <% @inventory_purchase.each do |purchase| %>
+				    <tr>
+				    	<td><%= purchase.beer.brewery.brewery_short_name %></td>
+				    	<td><%= purchase.beer.beer_name %></td>
+				    	<td><%= purchase.beer.beer_type.beer_type_name %></td>
+				    	<td><%= purchase.reserved %></td>
+				    </tr>
+				<% end %>
+			</table>
+		</div>
+	<% else %>
+		<div class="row header-row stay-in-place">
+			<div class="page-header">
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<h3>No drinks are currently in the order queue</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	<% end %>
+</div>
+<%= render 'layouts/footer' %>

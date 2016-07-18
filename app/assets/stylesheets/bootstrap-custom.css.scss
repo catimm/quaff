@@ -3500,7 +3500,10 @@ input[type="checkbox"] {
 }
 // Admin inventory page
 .inventory-list-holder {
-  margin-top: 100px;
+  margin-top: 10px;
+}
+.order-inventory {
+  margin-top: 25px;
 }
 .odd-background {
   background: $soft-gray-background;

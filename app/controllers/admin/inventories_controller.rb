@@ -2,16 +2,30 @@ class Admin::InventoriesController < ApplicationController
   before_filter :verify_admin
   
   def index
-    # grab all Breweries
-    @inventory = Inventory.all.to_a
-    @inventory_makers = Inventory.inventory_maker
-
-    #Rails.logger.debug("inventory maker info: #{@inventory_makers.inspect}")
+    @view = params[:format]
     
-    # to show number of breweries currently at top of page
-    @maker_count = @inventory_makers.count('id')
-    #@inventory_count = @inventory.inventories.count('id')
-
+    if @view == "stock"
+      # set view for CSS
+      @stock_chosen = "chosen"
+      
+      # grab all Breweries
+      @inventory = Inventory.all.to_a
+      @inventory_makers = Inventory.inventory_maker
+  
+      #Rails.logger.debug("inventory maker info: #{@inventory_makers.inspect}")
+      
+      # to show number of breweries currently at top of page
+      @maker_count = @inventory_makers.count('id')
+      #@inventory_count = @inventory.inventories.count('id')
+    
+    else
+      # set view for CSS
+      @order_chosen = "chosen"
+      
+      # get inventory to order info
+      @inventory_to_order = Inventory.where('order_queue >= ?', 1)
+      @inventory_to_order_total = @inventory_to_order.count
+    end
   end # end index method
   
   def new

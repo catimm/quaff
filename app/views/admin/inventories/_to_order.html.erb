@@ -1,0 +1,39 @@
+<% if !@inventory_to_order.nil? %>
+	<div class="row header-row">
+		<div class="page-header">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h3><%= @inventory_to_order_total %> <%= "drink".pluralize(@inventory_purchase_total) %> to buy</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<table class="table table-striped admin-recommendation-table">
+		    <tr>
+		      <th>Maker</th>
+		      <th>Drink</th>
+		      <th>Drink Type</th>
+		      <th>Reserved #</th>
+		    </tr>
+		    <% @inventory_to_order.each do |order| %>
+			    <tr>
+			    	<td><%= order.beer.brewery.short_brewery_name %></td>
+			    	<td><%= order.beer.beer_name %></td>
+			    	<td><%= order.beer.beer_type.beer_type_name %></td>
+			    	<td><%= order.reserved %></td>
+			    </tr>
+			<% end %>
+		</table>
+	</div>
+<% else %>
+	<div class="row header-row stay-in-place">
+		<div class="page-header">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h3>No drinks are currently in the order queue</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>
