@@ -1,6 +1,3 @@
-  <div>
-    <h4>Non-inventory List</h4>
-  </div>
 
   <table class="table table-striped admin-recommendation-table">
     <tr>
@@ -61,8 +58,16 @@
 		    <% else %>
 		    	<td>No</td>
 		    <% end %>
-	        <td><%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
-	        		<i class="fa fa-plus"></i>
+	        <td>
+	        	<% if @view == "not_in_stock" %>
+	        		<% @inventory_id = Inventory.where(beer_id: drink.beer_id).first %>
+	        		<%= link_to edit_admin_inventory_path(@inventory_id), :class => "btn btn-success edit-beer-info" do %> 
+		        		<i class="fa fa-plus"></i>
+		        	<% end %>
+	        	<% else %>
+		        	<%= link_to new_admin_inventory_path(drink.beer_id), :class => "btn btn-success edit-beer-info" do %> 
+		        		<i class="fa fa-plus"></i>
+		        	<% end %>
 	        	<% end %>
 	       	</td>
 	      </tr>

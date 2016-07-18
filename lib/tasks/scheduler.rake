@@ -388,18 +388,22 @@ task :assess_drink_recommendations => :environment do
       # assess each drink to add if rated highly enough
       @assessed_drinks.each do |drink|
         # find if user has rated/had this drink before
-        @drink_rating_check = UserBeerRating.where(user_id: user.id, beer_id: drink.id).average(:user_beer_rating)
+        @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: drink.id)
+        @drink_ratings_last = @drink_ratings.last
+        @drink_rating_average = @drink_ratings.average(:user_beer_rating)
         # find the drink best_guess for the user
         type_based_guess(drink, user.id)
         
-          if !@drink_rating_check.nil? && @drink_rating_check >= 7.5
+        # make sure it's  been a while since customer has had drink or at least that they REALLY like it
+        if @drink_ratings_last.rated_on > 1.month.ago || @drink_rating_average >= 9
+          if !@drink_rating_average.nil? && @drink_rating_average >= 7.5
             @individual_drink_info = Hash.new
             @individual_drink_info["user_id"] = user.id
             @individual_drink_info["beer_id"] = drink.id
-            @individual_drink_info["projected_rating"] = @drink_rating_check
+            @individual_drink_info["projected_rating"] = @drink_rating_average
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
-          elsif @drink_rating_check.nil? && drink.best_guess >= 7.5
+          elsif @drink_rating_average.nil? && drink.best_guess >= 7.5
             @individual_drink_info = Hash.new
             @individual_drink_info["user_id"] = user.id
             @individual_drink_info["beer_id"] = drink.id
@@ -407,6 +411,7 @@ task :assess_drink_recommendations => :environment do
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = true  
           end
+        end
         @compiled_assessed_drinks << @individual_drink_info
       end # end of loop adding assessed drinks to array
       #dedup drink array

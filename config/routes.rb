@@ -134,8 +134,8 @@ Rails.application.routes.draw do
   # admin routes
   get 'porting' => 'porting#index'
   get 'reloads' => 'reloads#index'
-  get 'admin/recommendations/not_in_stock/:id' => 'admin/recommendations#not_in_stock', :as => 'admin_not_in_stock'
   get 'admin/recommendations/next_delivery_drink/:id' => 'admin/recommendations#next_delivery_drink', :as => 'admin_next_delivery_drink'
+  get 'admin/recommendations/change_user_view/:id' => 'admin/recommendations#change_user_view'
   get 'admin/recommendations/change_delivery_drink_quantity/:id' => 'admin/recommendations#change_delivery_drink_quantity', :as => 'admin_change_delivery_drink_quantity'
   get 'admin/recommendations/admin_user_delivery/:id' => 'admin/recommendations#admin_user_delivery', :as =>'admin_user_delivery'
   get 'admin/recommendations/admin_user_feedback/:id' => 'admin/recommendations#admin_user_feedback', :as =>'admin_user_feedback'

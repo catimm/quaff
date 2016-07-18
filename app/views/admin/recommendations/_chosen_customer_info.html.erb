@@ -1,0 +1,15 @@
+<div class="col-sm-1"></div>
+<div class="col-sm-2 text-left no-padding">
+	<h4>Showing: <span class="current-selected-user" id="current-user-recommendations"><%= @drink_recommendations[0].user.username %></span></h4>
+</div>
+<div class="col-sm-3">
+	<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "#{@view}"}) %>
+</div>
+<div class="col-sm-2 no-padding">
+	<h5>Status: <%= @customer_next_delivery.status %></h5>
+</div>
+<% if @view == "in_stock" %>
+	<div class="col-sm-4 no-padding" id="admin-user-delivery-button-holder">
+		<%= render 'admin_user_appropriate_button' %>
+	</div>
+<% end %>

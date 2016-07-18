@@ -1,20 +1,13 @@
 $(function() {
 	
-	// add logic to filter inventory table based on admin choice 
-	$(document).on('change', '#user-drink-recommendations', function () {
+	// add logic to filter in stock table based on admin choice 
+	$(document).on('change', '.user-list-for-recommendation', function () {
 		var user_id = $(this).val();
+		var this_view = $(this).attr('id');
+		
 		$.ajax({
 		  type: "GET",
-		  url: "/admin/recommendations/" + user_id
-		});
-	});
-	
-	// add logic to filter non-inventory table based on admin choice
-	$(document).on('change', '#user-drink-recommendations-non', function () {
-		var user_id = $(this).val();
-		$.ajax({
-		  type: "GET",
-		  url: "/admin/recommendations/not_in_stock/" + user_id
+		  url: "/admin/recommendations/change_user_view/" + user_id + "-" + this_view
 		});
 	});
 	

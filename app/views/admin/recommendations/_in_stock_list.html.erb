@@ -1,14 +1,11 @@
-<div>
-	<h4>Inventory List</h4>
-</div>
-
   <table class="table table-striped admin-recommendation-table">
     <tr>
       <th><%= sortable "beers.beer_name", "Drink" %></th>
       <th><%= sortable "beers.beer_type_id", "Drink Type" %></th>
-      <th><%= sortable "projected_rating", "Rating" %></th>
       <th><%= sortable "new_drink", "New" %></th>
-      <th><%= sortable "beers.beer_type.cellarable", "Cellarable" %></th>
+      <th>#</th>
+      <th><%= sortable "projected_rating", "Rating" %></th>
+      <th><%= sortable "beers.beer_type.cellarable", "Cellar" %></th>
       <th><%= sortable "inventories.size_format_id", "Format" %></th>
       <th>Demand</th>
       <th>Available</th>
@@ -28,13 +25,17 @@
 	        <% end %>
 	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
 	        <td><%= drink.beer.beer_type.beer_type_short_name %></td>
+	        <td><%= drink.new_drink.humanize %></td>
 	        <% if drink.new_drink == true %>
+	        	<td>0</td>
 	        	<td><%= drink.projected_rating %></td>
 	        <% else %>
-	        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id).average(:user_beer_rating) %>
+	        	<% @user_ratings = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id) %>
+	        	<% @number_of_ratings = @user_ratings.count %>
+	        	<% @avg_rating = @user_ratings.average(:user_beer_rating) %>
+	        	<td><%= @number_of_ratings %></td>
 	        	<td><%= @avg_rating.round(2) %></td>
 	        <% end %>
-	        <td><%= drink.new_drink.humanize %></td>
 	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 	        <td><%= inventory.size_format.format_name %></td>
 	        <% @tally = UserDrinkRecommendation.where(beer_id: drink.beer_id).count %>

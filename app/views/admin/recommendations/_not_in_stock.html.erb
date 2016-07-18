@@ -1,0 +1,12 @@
+<div class="row header-row">
+	<div class="page-header">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2>Recommendations--currently not in stock</h2>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" id="non-inventory-list-holder">
+	<%= render(partial: 'not_in_stock_or_inventory_list', locals: { drinks: @drink_recommendations_not_in_stock }) %>
+</div>

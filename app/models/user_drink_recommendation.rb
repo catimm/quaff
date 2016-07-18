@@ -45,6 +45,11 @@ class UserDrinkRecommendation < ActiveRecord::Base
   }
   
   # scope recommended packaged drinks not in stock
+  scope :recommended_packaged_not_in_stock, -> {
+    joins(:beer).merge(Beer.packaged_drinks_not_in_stock) 
+  }
+  
+  # scope recommended packaged drinks not in stock
   scope :recommended_packaged_not_in_inventory, -> {
     joins(:beer).merge(Beer.packaged_drinks_not_in_inventory) 
   }

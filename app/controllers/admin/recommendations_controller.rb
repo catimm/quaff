@@ -4,138 +4,137 @@ class Admin::RecommendationsController < ApplicationController
   require 'json'
  
   def show
+    # get url/id info
+    @id_info = params[:id]
+    @split_info = @id_info.split('-')
+    @chosen_user_id = @split_info[0]
+    Rails.logger.debug("Chosen ID: #{@chosen_user_id.inspect}")
+    @view = @split_info[1]
+    Rails.logger.debug("Chosen View: #{@view.inspect}")
+    
     # get unique customer names for select dropdown
     @customer_ids = Delivery.uniq.pluck(:user_id)
-    
-    # set chosen user id
-    if params.has_key?(:id)
-      @chosen_user_id = params[:id]
-    else 
-      @chosen_user_id = @customer_ids.first
-    end
     
     # get chosen user info
     @chosen_user = User.find_by_id(@chosen_user_id)
     
-    # get recommended drinks by user
-    @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
-    
-    # set drink lists
-    @inventory_drink_recommendations = @drink_recommendations.recommended_in_stock.uniq.joins(:beer).order(sort_column + " " + sort_direction)
-    #Rails.logger.debug("inventory recos: #{@inventory_drink_recommendations.inspect}")
-    
     # get user's delivery info
     @delivery_preferences = DeliveryPreference.where(user_id: @chosen_user_id).first
     @customer_next_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
+      
+    # get recommended drinks by user
+    @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
     
-    # get user's weekly drink max to be delivered
-    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-    
-    # get current deliver cost estimate
-    @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
-    @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
-    @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s
-    
-    # set css for cost estimate
-    if !@customer_next_delivery.total_price.nil?
-      if @customer_next_delivery.total_price < @cost_estimate_high
-        @price_estimate_delivery = "all-set"
+    if @view == "in_stock"
+      # set view in CSS
+      @stock_chosen = "chosen"
+      
+      # set drink lists
+      @drink_recommendations_in_stock = @drink_recommendations.recommended_in_stock.uniq.joins(:beer).order(sort_column + " " + sort_direction)
+      Rails.logger.debug("Recos in stock: #{@drink_recommendations_in_stock.inspect}")
+      
+      # get user's weekly drink max to be delivered
+      @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
+      
+      # get current deliver cost estimate
+      @cost_estimate_low = (@delivery_preferences.price_estimate * 0.9).round
+      @cost_estimate_high = (@delivery_preferences.price_estimate * 1.1).round
+      @cost_estimate = "$" + @cost_estimate_low.to_s + " - $" + @cost_estimate_high.to_s
+      
+      # set css for cost estimate
+      if !@customer_next_delivery.total_price.nil?
+        if @customer_next_delivery.total_price < @cost_estimate_high
+          @price_estimate_delivery = "all-set"
+        else
+           @price_estimate_delivery = "not-ready"
+        end
       else
          @price_estimate_delivery = "not-ready"
       end
-    else
-       @price_estimate_delivery = "not-ready"
-    end
-    
-    # set other drink guidelines for recommendation choices
-    @next_delivery_max_cellar = @delivery_preferences.max_cellar
-    @next_delivery_max_large = @delivery_preferences.max_large_format
-    
-    # get information for which drinks are planned in next delivery
-    @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id)
-    
-    # count number of drinks in delivery
-    @drink_count = @next_delivery_plans.sum(:quantity)
-    # count number of drinks that are new to user
-    @next_delivery_new = 0
-    @next_delivery_retry = 0
-    @next_delivery_cooler = 0
-    @next_delivery_cellar = 0
-    @next_delivery_small = 0
-    @next_delivery_large = 0
-    # cycle through next delivery drinks to get delivery counts
-    @next_delivery_plans.each do |drink|
-      @quantity = drink.quantity
-      if drink.new_drink == true
-        @next_delivery_new += (1 * @quantity)
-      else
-        @next_delivery_retry += (1 * @quantity)
-      end
-      if drink.cellar == true
-        @next_delivery_cellar += (1 * @quantity)
-      else
-        @next_delivery_cooler += (1 * @quantity)
-      end
-      if drink.large_format == true
-        @next_delivery_large += (1 * @quantity)
-      else
-        @next_delivery_small += (1 * @quantity)
-      end
-    end   
-    
-    # set new and repeat drink percentages
-    @next_delivery_new_percentage = ((@next_delivery_new.to_f / @drink_per_delivery_calculation) * 100).round
-    @next_delivery_repeat_percentage = ((@next_delivery_retry.to_f / @drink_per_delivery_calculation) * 100).round
-        
-    # get user's delivery prefrences
-    @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
-    # drink preference
-    if @delivery_preferences.drink_option_id == 1
-      @drink_preference = "Beer Only"
-    elsif @delivery_preferences.drink_option_id == 2
-      @drink_preference = "Cider Only"
-    else
-      @drink_preference = "Beer & Cider"
-    end
-    
-    # self identified
-    if @chosen_user.craft_stage_id == 1
-      @self_identified = "Casual"
-    elsif @chosen_user.craft_stage_id == 2
-      @self_identified = "Geek"
-    else
-      @self_identified = "Connoisseur"
-    end
+      
+      # set other drink guidelines for recommendation choices
+      @next_delivery_max_cellar = @delivery_preferences.max_cellar
+      @next_delivery_max_large = @delivery_preferences.max_large_format
+      
+      # get information for which drinks are planned in next delivery
+      @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id)
+      
+      # count number of drinks in delivery
+      @drink_count = @next_delivery_plans.sum(:quantity)
+      # count number of drinks that are new to user
+      @next_delivery_new = 0
+      @next_delivery_retry = 0
+      @next_delivery_cooler = 0
+      @next_delivery_cellar = 0
+      @next_delivery_small = 0
+      @next_delivery_large = 0
+      # cycle through next delivery drinks to get delivery counts
+      @next_delivery_plans.each do |drink|
+        @quantity = drink.quantity
+        if drink.new_drink == true
+          @next_delivery_new += (1 * @quantity)
+        else
+          @next_delivery_retry += (1 * @quantity)
+        end
+        if drink.cellar == true
+          @next_delivery_cellar += (1 * @quantity)
+        else
+          @next_delivery_cooler += (1 * @quantity)
+        end
+        if drink.large_format == true
+          @next_delivery_large += (1 * @quantity)
+        else
+          @next_delivery_small += (1 * @quantity)
+        end
+      end   
+      
+      # set new and repeat drink percentages
+      @next_delivery_new_percentage = ((@next_delivery_new.to_f / @drink_per_delivery_calculation) * 100).round
+      @next_delivery_repeat_percentage = ((@next_delivery_retry.to_f / @drink_per_delivery_calculation) * 100).round
           
-    respond_to do |format|
-      format.js
-      format.html  
-    end 
+      # get user's delivery prefrences
+      @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
+      # drink preference
+      if @delivery_preferences.drink_option_id == 1
+        @drink_preference = "Beer Only"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_preference = "Cider Only"
+      else
+        @drink_preference = "Beer & Cider"
+      end
+      
+      # self identified
+      if @chosen_user.craft_stage_id == 1
+        @self_identified = "Casual"
+      elsif @chosen_user.craft_stage_id == 2
+        @self_identified = "Geek"
+      else
+        @self_identified = "Connoisseur"
+      end
+    elsif @view == "not_in_stock"  
+      # set view in CSS
+      @not_in_stock_chosen = "chosen"
+      
+      # get recommended drink not in stock
+      @drink_recommendations_not_in_stock = @drink_recommendations.recommended_packaged_not_in_stock.uniq.joins(:beer).order(sort_column + " " + sort_direction)
+      Rails.logger.debug("Recos not in stock: #{@drink_recommendations_not_in_stock.inspect}")
+    else
+      # set view in CSS
+      @not_in_inventory_chosen = "chosen"
+      
+      # get recommended drink not in inventory
+      @drink_recommendations_not_in_inventory = @drink_recommendations.recommended_packaged_not_in_inventory.uniq.joins(:beer).order(sort_column + " " + sort_direction)
+      Rails.logger.debug("Recos not in inventory #{@drink_recommendations_not_in_inventory.inspect}")
+    end  
+
     
   end # end of show action
+  
+  def change_user_view
+    # redirect back to recommendation page                                             
+    render js: "window.location = '#{admin_recommendation_path(params[:id])}'"
 
-  def not_in_stock
-    # get unique customer names for select dropdown
-    @customer_ids = Delivery.uniq.pluck(:user_id)
-    
-    # set chosen user id
-    if params.has_key?(:id)
-      @chosen_user_id = params[:id]
-    else 
-      @chosen_user_id = @customer_ids.first
-    end
-    
-    # get recommended drinks by user
-    @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_user_id)
-    # get recommended drink not in inventory
-    @non_inventory_drink_recommendations = @drink_recommendations.recommended_packaged_not_in_inventory.uniq.joins(:beer).order(sort_column + " " + sort_direction)
-    
-    respond_to do |format|
-      format.js
-      format.html  
-    end
-    
-  end # end not_in_stock method
+  end # end of change_user_view
   
   def next_delivery_drink
     @data = params[:id]
@@ -223,7 +222,7 @@ class Admin::RecommendationsController < ApplicationController
     end # end of adding/removing
     
     # redirect back to recommendation page                                             
-    redirect_to admin_recommendation_path(@drink_recommendation.user_id)
+    render js: "window.location = '#{admin_recommendation_path(@drink_recommendation.user_id.to_s + "-in_stock")}'"
     
   end # end next_delivery_drink method
   
@@ -299,7 +298,7 @@ class Admin::RecommendationsController < ApplicationController
     end # end of adding/removing
     
     # redirect back to recommendation page                                             
-    redirect_to admin_recommendation_path(@next_delivery_info.user_id)
+    render js: "window.location = '#{admin_recommendation_path(@next_delivery_info.user_id.to_s + "-in_stock")}'"
     
   end # end of change_delivery_drink_quantity method
   
@@ -310,8 +309,8 @@ class Admin::RecommendationsController < ApplicationController
     @delivery = Delivery.find_by_id(@customer_next_delivery_id)
     @delivery.update(admin_note: @admin_note)
     
-    # redirect back to recommendation page                                             
-    redirect_to admin_recommendation_path(@delivery.user_id)
+    # redirect back to recommendation page                  
+    redirect_to admin_recommendation_path(@delivery.user_id.to_s + "-in_stock")   
     
   end # end of admin_delivery_note method
     
@@ -445,7 +444,8 @@ class Admin::RecommendationsController < ApplicationController
     UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array, @total_quantity).deliver_now
     
     # send back to admin recommendation view
-    redirect_to admin_recommendation_path(params[:id])
+    redirect_to admin_recommendation_path(params[:id].to_s + "-in_stock")
+    
   end # end of share_delivery_with_customer method
   
   def admin_user_feedback
@@ -459,7 +459,7 @@ class Admin::RecommendationsController < ApplicationController
   
   def admin_review_delivery
     # get drinks slated for next delivery
-    @customer_next_delivery = Delivery.where(user_id: params[:id], status: "in progress").first
+    @customer_next_delivery = Delivery.where(user_id: params[:id]).where('status == ? OR status == ?', "user review", "in progress").first
     @next_delivery_plans = UserDelivery.where(delivery_id: @customer_next_delivery.id).joins(:beer).order('beers.beer_type_id DESC')
     
     # get customer delivery message

@@ -187,6 +187,12 @@ class Beer < ActiveRecord::Base
     joins(:inventories).merge(Inventory.not_in_inventory)
   }
   
+  # scope packaged drinks not in stock
+  scope :packaged_drinks_not_in_stock, -> { 
+    joins(:beer_formats).merge(BeerFormat.packaged_drinks).
+    joins(:inventories).merge(Inventory.packaged_not_in_stock)
+  }
+  
   # scope draft drinks not in stock
   scope :draft_drinks_not_in_inventory, -> { 
     joins(:beer_formats).merge(BeerFormat.draft_drinks).
