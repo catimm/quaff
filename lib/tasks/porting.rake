@@ -267,5 +267,5 @@ task :get_untappd_data => :environment do
     @no_beer_type_id_count = @no_beer_type_id.count
     
     # send email with porting details
-    BeerUpdates.porting_details_email(@rating_user.username, @total_drinks, @total_drinks_added, @total_new_breweries, @total_new_drinks, @new_drink_info, @new_drink_info_count, @no_beer_type_id, @no_beer_type_id_count).deliver
+    AdminMailer.porting_details_email(@rating_user.username, @total_drinks, @total_drinks_added, @total_new_breweries, @total_new_drinks, @new_drink_info, @new_drink_info_count, @no_beer_type_id, @no_beer_type_id_count).deliver
 end

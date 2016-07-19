@@ -8,9 +8,9 @@ class Admin::RecommendationsController < ApplicationController
     @id_info = params[:id]
     @split_info = @id_info.split('-')
     @chosen_user_id = @split_info[0]
-    Rails.logger.debug("Chosen ID: #{@chosen_user_id.inspect}")
+    #Rails.logger.debug("Chosen ID: #{@chosen_user_id.inspect}")
     @view = @split_info[1]
-    Rails.logger.debug("Chosen View: #{@view.inspect}")
+    #Rails.logger.debug("Chosen View: #{@view.inspect}")
     
     # get unique customer names for select dropdown
     @customer_ids = Delivery.uniq.pluck(:user_id)
@@ -31,7 +31,7 @@ class Admin::RecommendationsController < ApplicationController
       
       # set drink lists
       @drink_recommendations_in_stock = @drink_recommendations.recommended_in_stock.uniq.joins(:beer).order(sort_column + " " + sort_direction)
-      Rails.logger.debug("Recos in stock: #{@drink_recommendations_in_stock.inspect}")
+      #Rails.logger.debug("Recos in stock: #{@drink_recommendations_in_stock.inspect}")
       
       # get user's weekly drink max to be delivered
       @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round

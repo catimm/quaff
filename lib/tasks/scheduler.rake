@@ -293,7 +293,7 @@ task :check_user_additions => :environment do
       # send email
       if !@user_added_beer_list.empty?
         @admin_emails.each do |admin_email|
-          BeerUpdates.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver
+          AdminMailer.user_added_beers_email(admin_email, "Users", @user_added_beer_list).deliver
         end
       end   
 end # of user addition task
@@ -540,7 +540,60 @@ task :find_recent_additions => :environment do
     # send admin emails with new drink additions
     if !@new_breweries_for_email.nil? || !@new_drinks_for_email.nil?
       @admin_emails.each do |admin_email|
-        BeerUpdates.new_db_additions(admin_email, @new_breweries_for_email, @new_drinks_for_email).deliver_now
+        AdminMailer.new_db_additions(admin_email, @new_breweries_for_email, @new_drinks_for_email).deliver_now
       end
     end
 end # end of assessing drink recommendations task
+
+desc "admin user message check"
+task :admin_user_message_check => :environment do
+    # set run now to false
+    @run_now = false
+    
+    # check if now is between Mon @1pm and Wed @1pm
+    if Date.today.strftime("%A") == "Monday" || Date.today.strftime("%A") == "Tuesday" || Date.today.strftime("%A") == "Wednesday"
+      
+      if Date.today.strftime("%A") == "Monday" && Date.today.strftime("%H") > 18      
+        @run_now = true
+      end
+      if Date.today.strftime("%A") == "Tuesday"
+        @run_now = true
+      end
+      if Date.today.strftime("%A") == "Wednesday" && Date.today.strftime("%H") < 18
+        @run_now = true
+      end
+    end
+    
+    # run code if it is between Mon @1pm and Wed @1pm
+    if @run_now
+      # get all user messsages not yet sent to the admin
+      @customer_messages_needing_review = CustomerDeliveryMessage.where(admin_notified: [false, nil]) 
+      
+      if !@customer_messages_needing_review.blank?
+        # create an array to hold the messages
+        @new_messages = Array.new
+        
+        # add each message to an array for email delivery
+        @customer_messages_needing_review.each do |message|
+          # add drink data to array for customer review email
+          @message = ({:first_name => message.user.first_name,
+                        :username => message.user.username,
+                        :delivery_date => message.delivery.delivery_date.strftime("%b %-d"),
+                        :message => message.message,
+                        :sent_at => message.updated_at.strftime("%a, %b %-d @%H:%M")}).as_json
+          # push this array into overall email array
+          @new_messages << @message
+          # update this message to show it's been shared with admin
+          CustomerDeliveryMessage.update(message.id, admin_notified: true) 
+        end
+        @new_message_status = true
+      else
+        @new_messages = "Actually, there are no new customer messages!"
+        @new_message_status = false
+      end
+
+      # send email to admin for review
+      AdminMailer.admin_message_review(@new_messages, @new_message_status).deliver_now
+    end # end of day check
+  
+end # end of update_user_beer_ratings task

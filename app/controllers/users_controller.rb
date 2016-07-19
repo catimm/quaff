@@ -743,11 +743,12 @@ class UsersController < ApplicationController
   def customer_delivery_messages
     @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: params[:customer_delivery_message][:delivery_id]).first
     if !@customer_delivery_message.blank?
-      @customer_delivery_message.update(message: params[:customer_delivery_message][:message])
+      @customer_delivery_message.update(message: params[:customer_delivery_message][:message], admin_notified: false)
     else
       @new_customer_delivery_message = CustomerDeliveryMessage.create(user_id: current_user.id, 
                                                                   delivery_id: params[:customer_delivery_message][:delivery_id],
-                                                                  message: params[:customer_delivery_message][:message])
+                                                                  message: params[:customer_delivery_message][:message],
+                                                                  admin_notified: false)
       @new_customer_delivery_message.save!
     end
     

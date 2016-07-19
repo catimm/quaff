@@ -367,11 +367,11 @@ class DraftBoardsController < ApplicationController
     # send email to admins to update new drink info
     if @related_brewery.empty?
       @admin_emails.each do |admin_email|
-        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, new_brewery.id, @this_drink_name, new_beer.id, "draft board").deliver
+        AdminMailer.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, new_brewery.id, @this_drink_name, new_beer.id, "draft board").deliver
       end
     else
       @admin_emails.each do |admin_email|
-        BeerUpdates.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, @related_brewery[0].id, @this_drink_name, new_beer.id, "draft board").deliver
+        AdminMailer.new_retailer_drink_email(admin_email, @retailer.name, @this_brewery_name, @related_brewery[0].id, @this_drink_name, new_beer.id, "draft board").deliver
       end
     end
     # redirect back to updated draft edit page

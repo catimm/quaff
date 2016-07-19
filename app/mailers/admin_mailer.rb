@@ -1,4 +1,4 @@
-class BeerUpdates < ActionMailer::Base
+class AdminMailer < ActionMailer::Base
   require 'sparkpost'
   require 'open-uri'
   @host = open('https://api.sparkpost.com')
@@ -135,4 +135,27 @@ class BeerUpdates < ActionMailer::Base
     p response
     
   end # end of retailer_drink_help email
+  
+  def admin_message_review(messages, message_status)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: "carl@drinkknird.com" },
+        }
+      ],
+      content: {
+        template_id: 'admin-message-review'
+      },
+      substitution_data: {
+        message: messages,
+        status: message_status
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of admin_message_review email
 end

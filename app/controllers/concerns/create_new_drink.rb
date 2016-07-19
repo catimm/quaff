@@ -32,11 +32,11 @@ module CreateNewDrink
     # send email to admins to update new drink info
     if @related_brewery.empty?
       @admin_emails.each do |admin_email|
-        #BeerUpdates.user_added_beers_email(admin_email, @this_brewery_name, new_brewery.id, @this_drink_name, new_beer.id).deliver
+        #AdminMailer.user_added_beers_email(admin_email, @this_brewery_name, new_brewery.id, @this_drink_name, new_beer.id).deliver
       end
     else
       @admin_emails.each do |admin_email|
-        #BeerUpdates.new_retailer_drink_email(admin_email, @this_brewery_name, @related_brewery[0].id, @this_drink_name, new_beer.id).deliver
+        #AdminMailer.new_retailer_drink_email(admin_email, @this_brewery_name, @related_brewery[0].id, @this_drink_name, new_beer.id).deliver
       end
     end
     new_beer

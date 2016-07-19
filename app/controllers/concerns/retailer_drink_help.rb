@@ -37,7 +37,7 @@ module RetailerDrinkHelp
     # send admin emails with new beer updates
       if !@new_drink_info.nil?
         @admin_emails.each do |admin_email|
-          BeerUpdates.retailer_drink_help(admin_email, @this_location_name, @new_drink_info).deliver
+          AdminMailer.retailer_drink_help(admin_email, @this_location_name, @new_drink_info).deliver
         end
       end
     
