@@ -10,6 +10,7 @@
 #  new_quantity      :integer
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  beer_id           :integer
 #
 
 require 'test_helper'

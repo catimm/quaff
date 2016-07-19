@@ -654,6 +654,7 @@ class UsersController < ApplicationController
       @new_customer_delivery_change = CustomerDeliveryChange.new(user_id: current_user.id, 
                                                                   delivery_id: @user_delivery_info.delivery_id,
                                                                   user_delivery_id: @user_delivery_id,
+                                                                  beer_id: @user_delivery_info.beer_id,
                                                                   original_quantity: @original_quantity,
                                                                   new_quantity: @new_quantity)
       @new_customer_delivery_change.save!
@@ -729,6 +730,7 @@ class UsersController < ApplicationController
       @new_customer_delivery_change = CustomerDeliveryChange.new(user_id: current_user.id, 
                                                                   delivery_id: @user_delivery_info.delivery_id,
                                                                   user_delivery_id: @user_delivery_id,
+                                                                  beer_id: @user_delivery_info.beer_id,
                                                                   original_quantity: @original_quantity,
                                                                   new_quantity: @new_quantity)
       @new_customer_delivery_change.save!

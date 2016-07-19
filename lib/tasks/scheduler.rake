@@ -467,10 +467,10 @@ task :end_user_review_period => :environment do
           end # end of loop through change reqeusts
           
           # send email to customer
-          UserMailer.customer_delivery_review_with_changes(delivery.user.first_name, delivery.user.email, delivery.delivery_date, @email_changed_drink_array).deliver_now
+          UserMailer.customer_delivery_confirmation_with_changes(delivery.user.first_name, delivery.user.email, delivery.delivery_date, @email_changed_drink_array).deliver_now
         else
           # send an email noting no change requests
-          UserMailer.customer_delivery_review_no_changes(delivery.user.first_name, delivery.user.email).deliver_now
+          UserMailer.customer_delivery_confirmation_no_changes(delivery.user.first_name, delivery.user.email).deliver_now
           
         end # end of check to see if change requests exist
         

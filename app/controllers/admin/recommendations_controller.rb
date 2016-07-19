@@ -148,8 +148,8 @@ class Admin::RecommendationsController < ApplicationController
     # get delivery info
     @customer_next_delivery = Delivery.where(user_id: @drink_recommendation.user_id).where.not(status: "delivered").first
     
-    # find if this is a new addition or a removal
-    @next_delivery_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, inventory_id: @inventory_id).first
+    # find if this is a new addition or a removal from the admin user delivery table
+    @next_delivery_admin_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, inventory_id: @inventory_id).first
     # get inventory info
     @inventory = Inventory.find(@inventory_id)
     # get number of reserved drinks
@@ -158,9 +158,9 @@ class Admin::RecommendationsController < ApplicationController
     else
       @current_inventory_reserved = 0
     end
-    
+      
     # add or remove drink from delivery plans
-    if !@next_delivery_info.nil? # destroy entry
+    if !@next_delivery_admin_info.nil? # destroy entry
       # update reserve drink in inventory table
       @new_inventory_reserved = @current_inventory_reserved - 1
       @inventory.update(reserved: @new_inventory_reserved)
@@ -173,10 +173,11 @@ class Admin::RecommendationsController < ApplicationController
       @new_total_price = @new_subtotal + @new_sales_tax
       
       # insert price info into Delivery table
-      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
       
       # remove drink from admin_user_deliveries table
-      @next_delivery_info.destroy!
+      @next_delivery_admin_info.destroy!
+      
     else # add entry
       # get cellarable info
       @cellar = @drink_recommendation.beer.beer_type.cellarable
@@ -190,7 +191,7 @@ class Admin::RecommendationsController < ApplicationController
         @large_format = false
       end
       # put info into admin_user_deliveries table
-      @next_delivery_addition = AdminUserDelivery.new(user_id: @drink_recommendation.user_id, 
+      @next_delivery_addition = AdminUserDelivery.create(user_id: @drink_recommendation.user_id, 
                                                       inventory_id: @inventory_id, 
                                                       beer_id: @inventory.beer_id, 
                                                       new_drink: @drink_recommendation.new_drink, 
@@ -200,7 +201,7 @@ class Admin::RecommendationsController < ApplicationController
                                                       style_preference: @drink_recommendation.style_preference,
                                                       quantity: 1,
                                                       delivery_id: @customer_next_delivery.id)
-      @next_delivery_addition.save!
+
       
       # set new price in Delivery table
       @current_subtotal = @customer_next_delivery.subtotal
@@ -213,13 +214,67 @@ class Admin::RecommendationsController < ApplicationController
       @new_total_price = @new_subtotal + @new_sales_tax
       
       # insert price info into Delivery table
-      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
       
       # update reserve drink in inventory table
       @new_inventory_reserved = @current_inventory_reserved + 1
       @inventory.update(reserved: @new_inventory_reserved)
       
     end # end of adding/removing
+    
+    if @customer_next_delivery.status == "user review" # if user is currently reviewing order also get info from user delivery table
+      # find if this is a new addition or a removal from the user delivery table
+      @next_delivery_user_info = UserDelivery.where(user_id: @drink_recommendation.user_id, inventory_id: @inventory_id).first
+      
+      # add or remove drink from delivery plans
+      if !@next_delivery_user_info.nil? # destroy entry
+        
+        # find if there is already related info in the customer_delivery_changes table
+        @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @next_delivery_user_info.id).first
+        
+        # make changes in the customer_delivery_changes table
+        if !@customer_delivery_change.nil?
+          if @customer_delivery_change.new_quantity != 0
+            @customer_delivery_change.update(original_quantity: @next_delivery_user_info.quantity, new_quantity: 0)
+          end
+        else
+          @new_customer_delivery_change = CustomerDeliveryChange.create(user_id: @drink_recommendation.user_id,
+                                                                          delivery_id: @customer_next_delivery.id,
+                                                                          user_delivery_id: @next_delivery_user_info.id,
+                                                                          beer_id: @next_delivery_user_info.beer_id,
+                                                                          original_quantity: @next_delivery_user_info.quantity,
+                                                                          new_quantity: 0)
+        end
+        
+        # remove drink from admin_user_deliveries table
+        @next_delivery_user_info.destroy!
+        
+        
+        
+      else # add entry
+        # put info into user_deliveries table
+        @next_user_delivery_addition = UserDelivery.create(user_id: @drink_recommendation.user_id, 
+                                                        inventory_id: @inventory_id, 
+                                                        beer_id: @inventory.beer_id, 
+                                                        new_drink: @drink_recommendation.new_drink, 
+                                                        cellar: @cellar, 
+                                                        large_format: @large_format,
+                                                        projected_rating: @drink_recommendation.projected_rating,
+                                                        style_preference: @drink_recommendation.style_preference,
+                                                        quantity: 1,
+                                                        delivery_id: @customer_next_delivery.id,
+                                                        drink_cost: @inventory.drink_cost,
+                                                        drink_price: @inventory.drink_price)
+        
+        # now make addition to the customer_delivery_changes table   
+        @new_customer_delivery_change = CustomerDeliveryChange.create(user_id: @drink_recommendation.user_id,
+                                                                          delivery_id: @customer_next_delivery.id,
+                                                                          user_delivery_id: @next_user_delivery_addition.id,
+                                                                          beer_id: @next_user_delivery_addition.beer_id,
+                                                                          original_quantity: 0,
+                                                                          new_quantity: 1)
+      end # end of add/remove determination
+    end # end of delivery status check
     
     # redirect back to recommendation page                                             
     render js: "window.location = '#{admin_recommendation_path(@drink_recommendation.user_id.to_s + "-in_stock")}'"
@@ -237,29 +292,30 @@ class Admin::RecommendationsController < ApplicationController
     
     # get delivery info
     @customer_next_delivery = Delivery.where(user_id: @drink_recommendation.user_id).where.not(status: "delivered").first
+    #Rails.logger.debug("Delivery info: #{@customer_next_delivery.inspect}")
     
-    # get drink info
-    @next_delivery_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, 
+    # get admin drink info
+    @next_delivery_admin_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, 
                                                   beer_id: @drink_recommendation.beer_id, 
                                                   delivery_id: @customer_next_delivery.id).first
-    @current_drink_quantity = @next_delivery_info.quantity
+    @current_drink_admin_quantity = @next_delivery_admin_info.quantity
     
     # get inventory info
-    @inventory = Inventory.find(@next_delivery_info.inventory_id)
+    @inventory = Inventory.find(@next_delivery_admin_info.inventory_id)
     # get number of reserved drinks
     @current_inventory_reserved = @inventory.reserved
     
     # add or remove quantity from delivery plans
     if @quantity_subtract_or_add == "subtract" # reduce quantity or remove drink if quantity currently equals 1
-      
+        
       # adjust admin next delivery quantity
-      if @current_drink_quantity == 1
+      if @current_drink_admin_quantity == 1
         # remove drink from admin_user_deliveries table
-        @next_delivery_info.destroy!
+        @next_delivery_admin_info.destroy!
       else
         # reduce quantity for delivery
-        @new_drink_quantity = @current_drink_quantity - 1
-        @next_delivery_info.update(quantity: @new_drink_quantity)
+        @new_drink_quantity = @current_drink_admin_quantity - 1
+        @next_delivery_admin_info.update(quantity: @new_drink_quantity)
       end
       
       # set new price in Delivery table
@@ -270,7 +326,7 @@ class Admin::RecommendationsController < ApplicationController
       @new_total_price = @new_subtotal + @new_sales_tax
       
       # insert new price info into Delivery table
-      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
       
       # update reserve drink in inventory table
       @new_inventory_reserved = @current_inventory_reserved - 1
@@ -278,8 +334,8 @@ class Admin::RecommendationsController < ApplicationController
       
     else 
       # add quantity for delivery
-      @new_drink_quantity = @current_drink_quantity + 1
-      @next_delivery_info.update(quantity: @new_drink_quantity)
+      @new_drink_quantity = @current_drink_admin_quantity + 1
+      @next_delivery_admin_info.update(quantity: @new_drink_quantity)
         
       # set new price in Delivery table
       @current_subtotal = @customer_next_delivery.subtotal
@@ -289,7 +345,7 @@ class Admin::RecommendationsController < ApplicationController
       @new_total_price = @new_subtotal + @new_sales_tax
       
       # insert new price info into Delivery table
-      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, status: "admin prep")
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
       
       # update reserve drink in inventory table
       @new_inventory_reserved = @current_inventory_reserved + 1
@@ -297,18 +353,84 @@ class Admin::RecommendationsController < ApplicationController
       
     end # end of adding/removing
     
+    if @customer_next_delivery.status == "user review" # if user is currently reviewing order also get info from user delivery table
+      # find if this is a new addition or a removal from the user delivery table
+      @next_delivery_user_info = UserDelivery.where(user_id: @drink_recommendation.user_id, 
+                                                  beer_id: @drink_recommendation.beer_id, 
+                                                  delivery_id: @customer_next_delivery.id).first
+      @current_drink_user_quantity = @next_delivery_user_info.quantity
+      
+      # find if there is already related info in the customer_delivery_changes table
+      @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @next_delivery_user_info.id).first
+      #Rails.logger.debug("Delivery change info: #{@customer_delivery_change.inspect}")
+      
+      # add or remove quantity from delivery plans
+      if @quantity_subtract_or_add == "subtract" # reduce quantity or remove drink if quantity currently equals 1
+        
+        # make changes in the customer_delivery_changes table
+        if !@customer_delivery_change.nil?
+          if @customer_delivery_change.new_quantity != 0
+            @new_drink_quantity = @next_delivery_user_info.quantity - 1
+            @customer_delivery_change.update(original_quantity: @next_delivery_user_info.quantity, new_quantity: @new_drink_quantity)
+          end
+        else
+          @new_drink_quantity = @next_delivery_user_info.quantity - 1
+          @new_customer_delivery_change = CustomerDeliveryChange.create(user_id: @drink_recommendation.user_id,
+                                                                        delivery_id: @customer_next_delivery.id,
+                                                                        user_delivery_id: @next_delivery_user_info.id,
+                                                                        beer_id: @next_delivery_user_info.beer_id,
+                                                                        original_quantity: @next_delivery_user_info.quantity,
+                                                                        new_quantity: @new_drink_quantity)
+        end
+      
+        # adjust admin next delivery quantity
+        if @current_drink_user_quantity == 1
+          # remove drink from admin_user_deliveries table
+          @next_delivery_user_info.destroy!
+        else
+          # reduce quantity for delivery
+          @new_drink_quantity = @current_drink_user_quantity - 1
+          @next_delivery_user_info.update(quantity: @new_drink_quantity)
+        end
+        
+      else 
+        # add quantity for delivery
+        @new_drink_quantity = @current_drink_user_quantity + 1
+        @next_delivery_user_info.update(quantity: @new_drink_quantity)
+        
+        # make changes in the customer_delivery_changes table
+        if !@customer_delivery_change.nil?
+          @customer_delivery_change.update(original_quantity: @customer_delivery_change.original_quantity, new_quantity: @new_drink_quantity)
+        else
+          @new_customer_delivery_change = CustomerDeliveryChange.create(user_id: @drink_recommendation.user_id,
+                                                                        delivery_id: @customer_next_delivery.id,
+                                                                        user_delivery_id: @next_delivery_user_info.id,
+                                                                        beer_id: @next_delivery_user_info.beer_id,
+                                                                        original_quantity: @next_delivery_user_info.quantity,
+                                                                        new_quantity: @new_drink_quantity)
+        end
+      end # end of adding/removing
+    end
+    
     # redirect back to recommendation page                                             
-    render js: "window.location = '#{admin_recommendation_path(@next_delivery_info.user_id.to_s + "-in_stock")}'"
+    render js: "window.location = '#{admin_recommendation_path(@next_delivery_admin_info.user_id.to_s + "-in_stock")}'"
     
   end # end of change_delivery_drink_quantity method
   
   def admin_delivery_note
     @customer_next_delivery_id = params[:delivery][:delivery_id]
-    @admin_note = params[:delivery][:admin_note]
     
+    
+    # get customer next delivery info
     @delivery = Delivery.find_by_id(@customer_next_delivery_id)
-    @delivery.update(admin_note: @admin_note)
-    
+    if @delivery.status == "admin prep"
+      @admin_note = params[:delivery][:admin_delivery_review_note]
+      @delivery.update(admin_delivery_review_note: @admin_note)
+    elsif @delivery.status == "user review"
+      @admin_note = params[:delivery][:admin_delivery_confirmation_note]
+      @delivery.update(admin_delivery_confirmation_note: @admin_note)
+    end
+ 
     # redirect back to recommendation page                  
     redirect_to admin_recommendation_path(@delivery.user_id.to_s + "-in_stock")   
     
@@ -458,8 +580,8 @@ class Admin::RecommendationsController < ApplicationController
   end # end admin_user_feedback method
   
   def admin_review_delivery
-    # get drinks slated for next delivery
-    @customer_next_delivery = Delivery.where(user_id: params[:id]).where('status == ? OR status == ?', "user review", "in progress").first
+    # get drinks slated for next delivery 
+    @customer_next_delivery = Delivery.where(user_id: params[:id]).where(status: ["user review", "in progress"]).first
     @next_delivery_plans = UserDelivery.where(delivery_id: @customer_next_delivery.id).joins(:beer).order('beers.beer_type_id DESC')
     
     # get customer delivery message

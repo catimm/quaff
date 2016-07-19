@@ -7,7 +7,11 @@
 		<%= f.hidden_field :delivery_id, :value => @customer_next_delivery.id %>
 		<div class="row no-margin">
 			<div class="col-sm-12">
-				<%= f.text_area :admin_note, :class => "form-control", placeholder: "Add explanation for anomolies" %>
+				<% if @customer_next_delivery.status == "admin prep" %>
+					<%= f.text_area :admin_delivery_review_note, :class => "form-control", placeholder: "Add explanation for anomolies" %>
+				<% else %>
+					<%= f.text_area :admin_delivery_confirmation_note, :class => "form-control", placeholder: "Add explanation for anomolies" %>
+				<% end %>
 			</div>
 		</div>
 		<div class="row no-margin">

@@ -44,7 +44,7 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer.first_name,
         delivery_date: (delivery_info.delivery_date).strftime("%A, %B #{delivery_info.delivery_date.day.ordinalize}"),
-        admin_note: delivery_info.admin_note,
+        admin_note: delivery_info.admin_delivery_review_note,
         review_date: @review_date,
         drink: delivery_drinks,
         total_quantity: total_quantity,
@@ -57,7 +57,7 @@ class UserMailer < ActionMailer::Base
     
   end # end of customer_delivery_review email
   
-  def customer_delivery_review_with_changes(customer_name, customer_email, delivery_date, changed_drinks)
+  def customer_delivery_confirmation_with_changes(customer_name, customer_email, delivery_date, changed_drinks)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
     payload  = {
@@ -72,6 +72,7 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer_name,
         delivery_date: (delivery_date).strftime("%A, %B #{delivery_date.day.ordinalize}"),
+        admin_note: delivery_info.admin_delivery_confirmation_note,
         drink: changed_drinks
       }
     }
@@ -79,9 +80,9 @@ class UserMailer < ActionMailer::Base
     response = sp.transmission.send_payload(payload)
     p response
     
-  end # end of customer_delivery_review_with_changes email
+  end # end of customer_delivery_confirmation_with_changes email
   
-  def customer_delivery_review_no_changes(customer_name, customer_email)
+  def customer_delivery_confirmation_no_changes(customer_name, customer_email)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
     payload  = {
@@ -101,7 +102,7 @@ class UserMailer < ActionMailer::Base
     response = sp.transmission.send_payload(payload)
     p response
     
-  end # end of customer_delivery_review_no_changes email
+  end # end of customer_delivery_confirmation_no_changes email
   
   def delivery_confirmation_email(customer, delivery_info, drink_quantity)
     #Rails.logger.debug("customer info: #{customer.inspect}")

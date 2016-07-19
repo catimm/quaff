@@ -10,10 +10,12 @@
 #  new_quantity      :integer
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  beer_id           :integer
 #
 
 class CustomerDeliveryChange < ActiveRecord::Base
   belongs_to :user
   belongs_to :delivery
   belongs_to :user_delivery
+  belongs_to :beer
 end

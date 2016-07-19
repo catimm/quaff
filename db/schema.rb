@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160715052223) do
+ActiveRecord::Schema.define(version: 20160719063309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 20160715052223) do
     t.integer  "new_quantity"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.integer  "beer_id"
   end
 
   create_table "customer_delivery_messages", force: :cascade do |t|
@@ -190,13 +191,14 @@ ActiveRecord::Schema.define(version: 20160715052223) do
   create_table "deliveries", force: :cascade do |t|
     t.integer  "user_id"
     t.datetime "delivery_date"
-    t.decimal  "subtotal",      precision: 6, scale: 2
-    t.decimal  "sales_tax",     precision: 6, scale: 2
-    t.decimal  "total_price",   precision: 6, scale: 2
+    t.decimal  "subtotal",                         precision: 6, scale: 2
+    t.decimal  "sales_tax",                        precision: 6, scale: 2
+    t.decimal  "total_price",                      precision: 6, scale: 2
     t.string   "status"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.text     "admin_note"
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
+    t.text     "admin_delivery_review_note"
+    t.text     "admin_delivery_confirmation_note"
   end
 
   create_table "delivery_preferences", force: :cascade do |t|

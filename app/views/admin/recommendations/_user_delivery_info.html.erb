@@ -25,13 +25,21 @@
 			</div>
 			<div class="col-sm-4">
 				<div class="box-left-notes">
-					<h6>Admin notes:</h6>
+					<h6>Admin note:</h6>
 				</div>
 				<div class="box-right-notes">
-					<% if @customer_next_delivery.admin_note.nil? %>
-						<h6 class="no-results-empty-message">Admin has note added a note</h6>
+					<% if @customer_next_delivery.status == "admin prep" %>
+						<% if @customer_next_delivery.admin_delivery_review_note.nil? %>
+							<h6 class="no-results-empty-message">Admin has not added a delivery note</h6>
+						<% else %>
+							<h6 class="no-results-empty-message"><%= @customer_next_delivery.admin_delivery_review_note %></h6>
+						<% end %>
 					<% else %>
-						<h6 class="no-results-empty-message"><%= @customer_next_delivery.admin_note %></h6>
+						<% if @customer_next_delivery.admin_delivery_confirmation_note.nil? %>
+							<h6 class="no-results-empty-message">Admin has not added a confirmation note</h6>
+						<% else %>
+							<h6 class="no-results-empty-message"><%= @customer_next_delivery.admin_delivery_confirmation_note %></h6>
+						<% end %>
 					<% end %>
 				</div>
 			</div>

@@ -16,28 +16,27 @@
 		      <th>Rating</th>
 		      <th>New</th>
 		      <th>Cellarable</th>
-		      <th>Format</th>
 		      <th>Old Quantity</th>
 		      <th>New Quantity</th>
 			</tr>
 			<% @customer_drink_changes.each do |drink| %>
 		    	<tr>
-			        <% if drink.user_delivery.beer.beer_type.cellarable == true %>
+			        <% if drink.beer.beer_type.cellarable == true %>
 			        	<% @cellarable = "C" %>
 			        <% else %>
 			        	<% @cellarable = "" %>
 			        <% end %>
-			        <td><%= drink.user_delivery.beer.brewery.short_brewery_name + " " + drink.user_delivery.beer.beer_name %></td>
-	        		<td><%= drink.user_delivery.beer.beer_type.beer_type_name %></td>
-			        	<% if drink.user_delivery.new_drink == true %>
-			        		<td><%= drink.user_delivery.projected_rating %></td>
+			        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+	        		<td><%= drink.beer.beer_type.beer_type_name %></td>
+			        <% @drink_recommendation = UserDrinkRecommendation.where(user_id: @chosen_user_id, beer_id: drink.beer.id).first %>
+			        	<% if @drink_recommendation.new_drink == true %>
+			        		<td><%= @drink_recommendation.projected_rating %></td>
 				        <% else %>
-				        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.user_delivery.beer.id).average(:user_beer_rating) %>
+				        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id).average(:user_beer_rating) %>
 				        	<td><%= @avg_rating.round(2) %></td>
 				        <% end %>
-			        <td><%= drink.user_delivery.new_drink.humanize %></td>
-			        <td><%= drink.user_delivery.beer.beer_type.cellarable.humanize %></td>
-			        <td><%= drink.user_delivery.inventory.size_format.format_name %></td>
+			        <td><%= @drink_recommendation.new_drink.humanize %></td>
+			        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 			        <td><%= drink.original_quantity %></td>
 			        <td><%= drink.new_quantity %></td>
         		</tr>
