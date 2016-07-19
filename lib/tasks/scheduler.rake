@@ -394,16 +394,25 @@ task :assess_drink_recommendations => :environment do
         # find the drink best_guess for the user
         type_based_guess(drink, user.id)
         
-        # make sure it's  been a while since customer has had drink or at least that they REALLY like it
-        if @drink_ratings_last.rated_on > 1.month.ago || @drink_rating_average >= 9
-          if !@drink_rating_average.nil? && @drink_rating_average >= 7.5
+        # make sure this drink should be included as a recommendation
+        if !@drink_rating_average.nil? # first check if it is a new drink
+          if @drink_ratings_last.rated_on > 1.month.ago && @drink_rating_average >= 9 # if not new, make sure if it's been recently that the customer has had it that they REALLY like it
             @individual_drink_info = Hash.new
             @individual_drink_info["user_id"] = user.id
             @individual_drink_info["beer_id"] = drink.id
             @individual_drink_info["projected_rating"] = @drink_rating_average
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
-          elsif @drink_rating_average.nil? && drink.best_guess >= 7.5
+          elsif  @drink_ratings_last.rated_on < 1.month.ago && @drink_rating_average >= 7.5 # or make sure if it's been a while that they still like it
+            @individual_drink_info = Hash.new
+            @individual_drink_info["user_id"] = user.id
+            @individual_drink_info["beer_id"] = drink.id
+            @individual_drink_info["projected_rating"] = @drink_rating_average
+            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["new_drink"] = false
+          end
+        else
+          if drink.best_guess >= 7.5 # if customer has had it, make sure it is still a high recommendation
             @individual_drink_info = Hash.new
             @individual_drink_info["user_id"] = user.id
             @individual_drink_info["beer_id"] = drink.id
@@ -412,6 +421,7 @@ task :assess_drink_recommendations => :environment do
             @individual_drink_info["new_drink"] = true  
           end
         end
+        
         @compiled_assessed_drinks << @individual_drink_info
       end # end of loop adding assessed drinks to array
       #dedup drink array
