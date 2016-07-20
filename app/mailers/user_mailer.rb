@@ -160,6 +160,29 @@ class UserMailer < ActionMailer::Base
     
   end # end of customer_delivery_confirmation_no_changes email
   
+  def top_of_mind_reminder(customer)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'top-of-mind-reminder'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        customer_id: customer.id
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of top_of_mind_reminder email
+  
   def delivery_confirmation_email(customer, delivery_info, drink_quantity)
     #Rails.logger.debug("customer info: #{customer.inspect}")
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

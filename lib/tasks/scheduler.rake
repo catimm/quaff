@@ -498,6 +498,36 @@ task :find_recent_additions => :environment do
     end
 end # end of assessing drink recommendations task
 
+desc "remind customers of Knird ratings during bi-week"
+task :top_of_mind_reminder => :environment do
+  # only run this code if today is Thursday
+    if Date.today.strftime("%A") == "Thursday"
+      # get all users who received a delivery last week
+      @last_week_deliveries = Delivery.where(delivery_date: 1.week.ago) 
+      
+      # make array to hold users who have not made changes
+      @user_with_few_ratings = Array.new
+        
+      # cycle through each delivery still in review
+      @last_week_deliveries.each do |delivery|
+        # find if user has ratings in the last week
+        @customer_ratings = UserBeerRating.where(user_id: delivery.user_id).where('created_at >= ?', 1.week.ago)
+        @customer_ratings_count = @customer_ratings.count
+        
+        # send user an email if there are fewere than 3 ratings in the last week
+        if @customer_ratings_count < 3
+          # get user info
+          @customer = User.find_by_id(delivery.user_id)
+          # send email user
+          UserMailer.top_of_mind_reminder(@customer).deliver_now
+        end
+        
+      end # end of looping through each delivery in review
+       
+    end # end of day of week test
+  
+end # end of end_user_review_period_reminder task
+
 desc "end user review remindes and send email if Wed"
 task :end_user_review_period_reminder => :environment do
   # only run this code if today is Wednesday
