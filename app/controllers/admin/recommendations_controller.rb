@@ -213,8 +213,8 @@ class Admin::RecommendationsController < ApplicationController
       @new_sales_tax = @new_subtotal * 0.096
       @new_total_price = @new_subtotal + @new_sales_tax
       
-      # insert price info into Delivery table
-      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
+      # insert price info into Delivery table and update that a confirmation email should be sent 
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
       
       # update reserve drink in inventory table
       @new_inventory_reserved = @current_inventory_reserved + 1
@@ -235,7 +235,7 @@ class Admin::RecommendationsController < ApplicationController
         # make changes in the customer_delivery_changes table
         if !@customer_delivery_change.nil?
           if @customer_delivery_change.new_quantity != 0
-            @customer_delivery_change.update(original_quantity: @next_delivery_user_info.quantity, new_quantity: 0)
+            @customer_delivery_change.update(original_quantity: @next_delivery_user_info.quantity, new_quantity: 0, change_noted: false)
           end
         else
           @new_customer_delivery_change = CustomerDeliveryChange.create(user_id: @drink_recommendation.user_id,
@@ -243,7 +243,8 @@ class Admin::RecommendationsController < ApplicationController
                                                                           user_delivery_id: @next_delivery_user_info.id,
                                                                           beer_id: @next_delivery_user_info.beer_id,
                                                                           original_quantity: @next_delivery_user_info.quantity,
-                                                                          new_quantity: 0)
+                                                                          new_quantity: 0,
+                                                                          change_noted: false)
         end
         
         # remove drink from admin_user_deliveries table
@@ -272,7 +273,8 @@ class Admin::RecommendationsController < ApplicationController
                                                                           user_delivery_id: @next_user_delivery_addition.id,
                                                                           beer_id: @next_user_delivery_addition.beer_id,
                                                                           original_quantity: 0,
-                                                                          new_quantity: 1)
+                                                                          new_quantity: 1,
+                                                                          change_noted: false)
       end # end of add/remove determination
     end # end of delivery status check
     
@@ -325,8 +327,8 @@ class Admin::RecommendationsController < ApplicationController
       @new_sales_tax = @new_subtotal * 0.096
       @new_total_price = @new_subtotal + @new_sales_tax
       
-      # insert new price info into Delivery table
-      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
+      # insert new price info into Delivery table and note that a confirmation email should be sent
+      @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
       
       # update reserve drink in inventory table
       @new_inventory_reserved = @current_inventory_reserved - 1
@@ -371,7 +373,7 @@ class Admin::RecommendationsController < ApplicationController
         if !@customer_delivery_change.nil?
           if @customer_delivery_change.new_quantity != 0
             @new_drink_quantity = @next_delivery_user_info.quantity - 1
-            @customer_delivery_change.update(original_quantity: @next_delivery_user_info.quantity, new_quantity: @new_drink_quantity)
+            @customer_delivery_change.update(original_quantity: @next_delivery_user_info.quantity, new_quantity: @new_drink_quantity, change_noted: false)
           end
         else
           @new_drink_quantity = @next_delivery_user_info.quantity - 1
@@ -380,7 +382,8 @@ class Admin::RecommendationsController < ApplicationController
                                                                         user_delivery_id: @next_delivery_user_info.id,
                                                                         beer_id: @next_delivery_user_info.beer_id,
                                                                         original_quantity: @next_delivery_user_info.quantity,
-                                                                        new_quantity: @new_drink_quantity)
+                                                                        new_quantity: @new_drink_quantity,
+                                                                        change_noted: false)
         end
       
         # adjust admin next delivery quantity
@@ -407,7 +410,8 @@ class Admin::RecommendationsController < ApplicationController
                                                                         user_delivery_id: @next_delivery_user_info.id,
                                                                         beer_id: @next_delivery_user_info.beer_id,
                                                                         original_quantity: @next_delivery_user_info.quantity,
-                                                                        new_quantity: @new_drink_quantity)
+                                                                        new_quantity: @new_drink_quantity,
+                                                                        change_noted: false)
         end
       end # end of adding/removing
     end

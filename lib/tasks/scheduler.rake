@@ -445,37 +445,42 @@ task :end_user_review_period => :environment do
       
       # cycle through each delivery still in review
       @deliveries_in_review.each do |delivery|
+        # get current list of drinks for delivery
+        @drink_list = UserDelivery.where(delivery_id: delivery.id)
+        
+        # get user info
+        @customer = User.find_by_id(delivery.user_id)
+          
+        # create array of drinks for email
+        @email_drink_array = Array.new
+        # grab change info and send email acknowledging change requests
+        @drink_list.each do |drink|
+          # add drink data to array for customer review email
+          @drink_list_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                                      :drink => drink.beer.beer_name,
+                                      :drink_type => drink.beer.beer_type.beer_type_short_name,
+                                      :quantity => drink.quantity}).as_json
+          # push this array into overall email array
+          @email_drink_array << @drink_list_data
+        end # end of loop through change reqeusts
+          
         # find if this user has made any change requests
         @change_requests = CustomerDeliveryChange.where(delivery_id: delivery.id)
         
-        # create array of drinks for email
-        @email_changed_drink_array = Array.new
-    
         # if change requests exist
         if !@change_requests.blank?
           
-          # grab change info and send email acknowledging change requests
-          @change_requests.each do |change|
-            # add drink data to array for customer review email
-            @changed_drink_data = ({:maker => change.user_delivery.beer.brewery.short_brewery_name,
-                                        :drink => change.user_delivery.beer.beer_name,
-                                        :drink_type => change.user_delivery.beer.beer_type.beer_type_short_name,
-                                        :original_quantity => change.original_quantity,
-                                        :new_quantity => change.new_quantity}).as_json
-            # push this array into overall email array
-            @email_changed_drink_array << @changed_drink_data
-          end # end of loop through change reqeusts
-          
           # send email to customer
-          UserMailer.customer_delivery_confirmation_with_changes(delivery.user.first_name, delivery.user.email, delivery.delivery_date, @email_changed_drink_array).deliver_now
+          UserMailer.customer_delivery_confirmation_with_changes(@customer, delivery, @email_drink_array).deliver_now
         else
           # send an email noting no change requests
-          UserMailer.customer_delivery_confirmation_no_changes(delivery.user.first_name, delivery.user.email).deliver_now
+          UserMailer.customer_delivery_confirmation_no_changes(@customer, delivery, @email_drink_array).deliver_now
           
         end # end of check to see if change requests exist
         
         # now change the delivery status for the user
-        @deliveries_in_review.update(delivery.id, status: "in progress")
+        Delivery.update(delivery.id, status: "in progress")
+        
       end # end of looping through each delivery in review
     
     end # end of day of week test
@@ -596,4 +601,70 @@ task :admin_user_message_check => :environment do
       AdminMailer.admin_message_review(@new_messages, @new_message_status).deliver_now
     end # end of day check
   
-end # end of update_user_beer_ratings task
+end # end of admin_user_message_check task
+
+desc "user change confirmation"
+task :user_change_confirmation => :environment do
+    # set run now to false
+    @run_now = false
+    
+    # check if now is between Mon @1pm and Wed @1pm
+    if Date.today.strftime("%A") == "Monday" || Date.today.strftime("%A") == "Tuesday" || Date.today.strftime("%A") == "Wednesday"
+      
+      if Date.today.strftime("%A") == "Monday" && Date.today.strftime("%H") > 18      
+        @run_now = true
+      end
+      if Date.today.strftime("%A") == "Tuesday"
+        @run_now = true
+      end
+      if Date.today.strftime("%A") == "Wednesday" && Date.today.strftime("%H") < 18
+        @run_now = true
+      end
+    end
+    
+    # run code if it is between Mon @1pm and Wed @1pm
+    if @run_now
+      # get all users currently reviewing the next delivery
+      @deliveries_in_review = Delivery.where(status: "user review", delivery_change_confirmation: [false, nil])
+      
+      @deliveries_in_review.each do |delivery|
+        # get all user changes made
+        @delivery_changes = CustomerDeliveryChange.where(user_id: delivery.user_id, change_noted: [false, nil])
+      
+        # create array of drinks for email
+        @changes_noted_array = Array.new
+    
+        # if change requests exist
+        if !@delivery_changes.blank?
+          # get customer info
+          @customer = User.find_by_id(delivery.user_id)
+          
+          # grab change info and send email acknowledging change requests
+          @delivery_changes.each do |change|
+            # add drink data to array for customer review email
+            @changed_drink_data = ({:maker => change.beer.brewery.short_brewery_name,
+                                        :drink => change.beer.beer_name,
+                                        :drink_type => change.beer.beer_type.beer_type_short_name,
+                                        :original_quantity => change.original_quantity,
+                                        :new_quantity => change.new_quantity}).as_json
+            # push this array into overall email array
+            @changes_noted_array << @changed_drink_data
+            
+            # update change to indicate it has been noted
+            CustomerDeliveryChange.update(change.id, change_noted: true)
+            
+          end # end of loop through change reqeusts
+          
+          # send email to customer
+          UserMailer.customer_change_confirmation(@customer, delivery, @changes_noted_array).deliver_now
+        
+        end # end of check to make sure changes exist
+        
+        # update delivery to show a change confirmation email was sent
+        Delivery.update(delivery.id, delivery_change_confirmation: true)
+        
+      end # end of loop through each customer delivery info
+
+    end # end of day check
+  
+end # end of user_change_confirmation task

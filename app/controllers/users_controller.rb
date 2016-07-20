@@ -643,20 +643,21 @@ class UsersController < ApplicationController
       @user_delivery_info.update(quantity: @new_quantity)
     end
     
-    # update delivery info
-    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
+    # update delivery info and note a confirmation email should be sent
+    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
       
     # add change to the customer_delivery_changes table
     @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @user_delivery_id).first
     if !@customer_delivery_change.blank?
-      @customer_delivery_change.update(new_quantity: @new_quantity)
+      @customer_delivery_change.update(new_quantity: @new_quantity, change_noted: false)
     else
       @new_customer_delivery_change = CustomerDeliveryChange.new(user_id: current_user.id, 
                                                                   delivery_id: @user_delivery_info.delivery_id,
                                                                   user_delivery_id: @user_delivery_id,
                                                                   beer_id: @user_delivery_info.beer_id,
                                                                   original_quantity: @original_quantity,
-                                                                  new_quantity: @new_quantity)
+                                                                  new_quantity: @new_quantity,
+                                                                  change_noted: false)
       @new_customer_delivery_change.save!
     end
     
@@ -719,20 +720,21 @@ class UsersController < ApplicationController
     @admin_user_delivery_info.destroy!
     @user_delivery_info.destroy!
     
-    # update delivery info
-    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
+    # update delivery info and note that a confirmation email should be sent
+    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
       
     # add change to the customer_delivery_changes table
     @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @user_delivery_id).first
     if !@customer_delivery_change.blank?
-      @customer_delivery_change.update(new_quantity: @new_quantity)
+      @customer_delivery_change.update(new_quantity: @new_quantity, change_noted: false)
     else
       @new_customer_delivery_change = CustomerDeliveryChange.new(user_id: current_user.id, 
                                                                   delivery_id: @user_delivery_info.delivery_id,
                                                                   user_delivery_id: @user_delivery_id,
                                                                   beer_id: @user_delivery_info.beer_id,
                                                                   original_quantity: @original_quantity,
-                                                                  new_quantity: @new_quantity)
+                                                                  new_quantity: @new_quantity,
+                                                                  change_noted: false)
       @new_customer_delivery_change.save!
     end
     

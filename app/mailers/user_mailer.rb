@@ -56,24 +56,56 @@ class UserMailer < ActionMailer::Base
     p response
     
   end # end of customer_delivery_review email
-  
-  def customer_delivery_confirmation_with_changes(customer_name, customer_email, delivery_date, changed_drinks)
-    sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
+  def customer_change_confirmation(customer, delivery, change_info)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    @review_date = (delivery.delivery_date - 1.day)
+    @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
+    @customer_message = CustomerDeliveryMessage.where(delivery_id: delivery.id).first
     payload  = {
       recipients: [
         {
-          address: { email: customer_email },
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-change-confirmation'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        delivery_date: (delivery.delivery_date).strftime("%A, %B %-d"),
+        review_date: @review_date,
+        customer_message: @customer_message.message,
+        admin_note: delivery.admin_delivery_confirmation_note,
+        change: change_info
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of customer_changes_confirmation email 
+  
+  def customer_delivery_confirmation_with_changes(customer, delivery, drinks)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    # get the customer's message
+    @customer_message = CustomerDeliveryMessage.where(delivery_id: delivery.id).first
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
         }
       ],
       content: {
         template_id: 'customer-delivery-review-with-changes'
       },
       substitution_data: {
-        customer_name: customer_name,
-        delivery_date: (delivery_date).strftime("%A, %B #{delivery_date.day.ordinalize}"),
-        admin_note: delivery_info.admin_delivery_confirmation_note,
-        drink: changed_drinks
+        customer_name: customer.first_name,
+        delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery_date.day.ordinalize}"),
+        customer_message: @customer_message.message,
+        admin_note: delivery.admin_delivery_confirmation_note,
+        drink: drinks
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")
@@ -82,20 +114,22 @@ class UserMailer < ActionMailer::Base
     
   end # end of customer_delivery_confirmation_with_changes email
   
-  def customer_delivery_confirmation_no_changes(customer_name, customer_email)
+  def customer_delivery_confirmation_no_changes(customer, delivery, drinks)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
     payload  = {
       recipients: [
         {
-          address: { email: customer_email },
+          address: { email: customer.email },
         }
       ],
       content: {
         template_id: 'customer-delivery-review-no-changes'
       },
       substitution_data: {
-        customer_name: customer_name
+        customer_name: customer.first_name,
+        delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery_date.day.ordinalize}"),
+        drink: drinks
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")

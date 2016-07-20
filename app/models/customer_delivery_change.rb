@@ -11,6 +11,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  beer_id           :integer
+#  change_noted      :boolean
 #
 
 class CustomerDeliveryChange < ActiveRecord::Base

@@ -13,6 +13,7 @@
 #  updated_at                       :datetime         not null
 #  admin_delivery_review_note       :text
 #  admin_delivery_confirmation_note :text
+#  delivery_change_confirmation     :boolean
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
