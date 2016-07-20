@@ -503,7 +503,7 @@ task :top_of_mind_reminder => :environment do
   # only run this code if today is Thursday
     if Date.today.strftime("%A") == "Thursday"
       # get all users who received a delivery last week
-      @last_week_deliveries = Delivery.where(delivery_date: 1.week.ago) 
+      @last_week_deliveries = Delivery.where(delivery_date: 8.days.ago..6.days.ago) 
       
       # make array to hold users who have not made changes
       @user_with_few_ratings = Array.new
@@ -680,18 +680,22 @@ task :user_change_confirmation => :environment do
       @time = Time.now
       
       if Date.today.strftime("%A") == "Monday" && @time.hour > 18      
+        Rails.logger.debug("It's Mon")
         @run_now = true
       end
       if Date.today.strftime("%A") == "Tuesday"
+        Rails.logger.debug("It's Mon")
         @run_now = true
       end
       if Date.today.strftime("%A") == "Wednesday" && @time.hour < 18
+        Rails.logger.debug("It's Mon")
         @run_now = true
       end
     end
     
     # run code if it is between Mon @1pm and Wed @1pm
     if @run_now
+      Rails.logger.debug("It's Running")
       # get all users currently reviewing the next delivery
       @deliveries_in_review = Delivery.where(status: "user review", delivery_change_confirmation: [false, nil])
       

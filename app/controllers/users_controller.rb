@@ -512,80 +512,75 @@ class UsersController < ApplicationController
     
   end # end of delivery_settings method
   
-  def deliveries_update_preferences
+  def deliveries_update_estimates
     # get data to add/update
     @data = params[:id]
     @data_split = @data.split("-")
     @column = @data_split[0]
-    @data_value = @data_split[1]
+    @data_value_one = @data_split[1]
+    @data_value_two = @data_split[2]
+    
+    # get user delivery preferences
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    # get delivery info
+    @customer_next_delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
     
     # get user info
     @user = User.find(current_user.id)
     
-    # get user delivery preferences
-    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    
-    # get Delivery info if it exists
-    @customer_next_delivery = Delivery.where(user_id: @chosen_user_id).where.not(status: "delivered").first
-    
-    if @column == "drinks_per_week"
-      @delivery_preferences.update(drinks_per_week: @data_value)
-      delivery_estimator(current_user.id)
-    elsif @column == "start_date"
-      if @data_value == "this"
-        @start_date = Date.today.next_week.advance(:days=>3) - 7.days
-      elsif @data_value == "next"
-        @start_date = Date.today.next_week.advance(:days=>3)
-      else
-        @start_date = Date.today.next_week.advance(:days=>3) + 7.days
-      end
-      @delivery_preferences.update(first_delivery_date: @start_date)
-      @customer_next_delivery.update(delivery_date: @start_date)
-    elsif @column == "large_format"
-      @delivery_preferences.update(max_large_format: @data_value)
-      delivery_estimator(current_user.id)
-    elsif @column == "drink_type_preference"
-      @data_value = @data_value.to_i
-      if @delivery_preferences.drink_option_id == @data_value
-        @delivery_preferences.update(drink_option_id: nil)
-      else
-        @delivery_preferences.update(drink_option_id: @data_value)
-      end
-    elsif @column == "craft_journey"
-      @user.update(craft_stage_id: @data_value)
-      delivery_estimator(current_user.id)
-    elsif @column == "post_signup"
-      @user.update(getting_started_step: @data_value)
-    else
-      @delivery_preferences.update(additional: @data_value)
+    # update customer info if needed
+    if @column == "craft_journey"
+      @user.update(craft_stage_id: @data_value_one)
+      # get new delivery estimate
+      delivery_estimator(current_user.id, @delivery_preferences.drinks_per_week, @delivery_preferences.max_large_format, "update")
+    end
+    if @column == "post_signup"
+      @user.update(getting_started_step: @data_value_one)
     end
     
-    # update time of last save
-    @preference_updated = Time.now
-    
-    # get user delivery preferences
-    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    # get data for delivery estimates
-    @drinks_per_week = @delivery_preferences.drinks_per_week
-    @large_format_drinks_per_week = @delivery_preferences.max_large_format
-    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-    @drink_delivery_estimate = @drink_per_delivery_calculation
-    # get small/large format estimates
-    @large_delivery_estimate = @delivery_preferences.max_large_format
-    @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
-    
-    # get estimated cost estimates -- rounded to nearest multiple of 5
-    @@delivery_cost_estimate = ((@delivery_preferences.price_estimate) / 5).round * 5
-    @cost_estimate_high = ((@delivery_preferences.price_estimate * 1.1) / 5).round * 5
-    
-    # get monthly estimates
-    @user_subscription = UserSubscription.where(user_id: current_user.id).first
-    @user_subscription_name = @user_subscription.subscription.subscription_name
-    @user_subscription_cost = @user_subscription.subscription.subscription_cost
-        
+    # get drink info for estimates
+    if @column == "drinks_per_week" || @column == "large_format"
+      @drinks_per_week = @data_value_one.to_i
+      @large_format_drinks_per_week = @data_value_two.to_i
+      delivery_estimator(current_user.id, @drinks_per_week, @large_format_drinks_per_week, "temp")
+      
+      # get data for delivery estimates
+      @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
+      @drink_delivery_estimate = @drink_per_delivery_calculation
+      # get small/large format estimates
+      @large_delivery_estimate = @large_format_drinks_per_week
+      @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
+      
+      # get estimated cost estimates -- rounded to nearest multiple of 5
+      @delivery_cost_estimate = ((@delivery_preferences.temp_cost_estimate) / 5).round * 5
+    end
+
     respond_to do |format|
       format.js
     end # end of redirect to jquery
+    
+  end # end of deliveries_update_estimates
+  
+  def deliveries_update_preferences
+    # get user delivery preferences
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    @drinks_per_week = (params[:delivery_preference][:drinks_per_week]).to_i
+    @large_format = (params[:delivery_preference][:max_large_format]).to_i
+    
+    # update customer delivery preferences
+    @delivery_preferences.update(first_delivery_date: params[:delivery_preference][:first_delivery_date], 
+                                 drink_option_id: params[:delivery_preference][:drink_option_id], 
+                                 drinks_per_week: @drinks_per_week, 
+                                 max_large_format: @large_format,
+                                 additional: params[:delivery_preference][:additional])
+    
+    # update cost estimator
+    delivery_estimator(current_user.id, @drinks_per_week, @large_format, "update")
+
+    render js: "window.location = '#{user_delivery_settings_path(current_user.id)}'"
+
   end # end of deliveries_update_preferences
   
   def change_delivery_drink_quantity
@@ -712,17 +707,12 @@ class UsersController < ApplicationController
     @new_sales_tax = @new_subtotal * 0.096
     @new_total_price = @new_subtotal + @new_sales_tax
     
+    # update delivery info and note that a confirmation email should be sent
+    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
+    
     # update reserved inventory 
     @new_inventory_reserved = @current_inventory_reserved - 1
     @inventory.update(reserved: @new_inventory_reserved)
-    
-    # remove delivery drink
-    @admin_user_delivery_info.destroy!
-    @user_delivery_info.destroy!
-    
-    # update delivery info and note that a confirmation email should be sent
-    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
-      
     # add change to the customer_delivery_changes table
     @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @user_delivery_id).first
     if !@customer_delivery_change.blank?
@@ -738,6 +728,10 @@ class UsersController < ApplicationController
       @new_customer_delivery_change.save!
     end
     
+    # remove delivery drink
+    @admin_user_delivery_info.destroy!
+    @user_delivery_info.destroy!
+
     render :nothing => true
     #js: "window.location = '#{user_deliveries_path('next')}'"
   end # end of remove_delivery_drink_quantity method

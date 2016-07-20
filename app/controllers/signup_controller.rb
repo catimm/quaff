@@ -370,7 +370,7 @@ class SignupController < ApplicationController
  
         # update both format preferences and cost estimator 
         @delivery_preferences.update(max_large_format: @input)
-        delivery_estimator(current_user.id)
+        delivery_estimator(current_user.id, @delivery_preferences.drinks_per_week, @input, "update")
         
         # update step completed if need be
         if @user.getting_started_step == 5

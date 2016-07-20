@@ -1,12 +1,12 @@
 $(function () {
-	// show welcom modal immediately following signup process
+	// show welcome modal immediately following signup process
 	if (gon.user_post_signup == 9) {
 		$(window).load(function(){
 	        $('#delivery_settings_welcome').modal('show');
 	    });
 	    $.ajax({
 		  type: "POST",
-		  url: "/users/deliveries_update_preferences/post_signup-10"
+		  url: "/users/deliveries_update_estimates/post_signup-10"
 		});
 	}
 
@@ -36,29 +36,13 @@ $(function () {
 	
 	// send additional delivery preferences to controller
 	$(document).on("keyup", "#delivery_preference_additional", function() {
-		var additional = $(this).val();
-		delay(function(){
-			$.ajax({
-			  type: "POST",
-			  url: "/users/deliveries_update_preferences/additional-" + additional
-			});
-	    }, 1000 );
-		
+		$('#update_delivery_preferences_button').removeAttr('disabled');
+		$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 	});
+	
 	// ensure only one delivery date option is chosen
 	$(document).on("change", ".first_delivery_date_chosen", function() {
 		$(this).parent().siblings(".drink-preference-choice").children("input").removeAttr('checked');
-	});
-	
-	// send drink type preference to controller
-	$(document).on("change", ".drink-type-preference", function() {
-		$(this).parent().siblings(".drink-preference-choice").children(".drink-type-preference").removeAttr('checked');
-		var this_value = $(this).val();
-		$.ajax({
-		  type: "POST",
-		  url: "/users/deliveries_update_preferences/drink_type_preference-" + this_value
-		});
-		
 	});
 	
 	// set width of quantity holder--in supply and delivery review views--equal to portion of tile width
@@ -70,6 +54,7 @@ $(function () {
 	estimate_column_width = $("#estimate-column").width();
 	// make estimate tile holder same width as column
 	$("#scroller").width(estimate_column_width);
+	$("#scroller2").width(estimate_column_width);
 	
 	// set function for sticky scroller
 	function moveScroller() {
@@ -77,15 +62,33 @@ $(function () {
 		    var move = function() {
 		        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
 		        var ot = $("#scroller-anchor").offset().top;
-		        var s = $("#scroller");
+		        var s1 = $("#last-updated-holder");
+		        var s2 = $("#scroller");
+		        var s3 = $("#scroller2");
 		        if(st > ot) {
-		            s.css({
+		            s1.css({
 		                position: "fixed",
-		                top: "72.5px"
+		                top: "50px"
+		            });
+		            s2.css({
+		                position: "fixed",
+		                top: "105px"
+		            });
+		            s3.css({
+		                position: "fixed",
+		                top: "150px"
 		            });
 		        } else {
 		            if(st <= ot) {
-		                s.css({
+		                s1.css({
+		                    position: "relative",
+		                    top: ""
+		                });
+		                s2.css({
+		                    position: "relative",
+		                    top: ""
+		                });
+		                s3.css({
 		                    position: "relative",
 		                    top: ""
 		                });

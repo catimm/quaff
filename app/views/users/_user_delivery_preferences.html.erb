@@ -1,17 +1,16 @@
 <div class="row no-margin">
-	<div class="col-xs-12 col-sm-8">
-		<h3 class="recent-ratings-header">My delivery preferences</h3>
-		<h5>Change the rules below to adjust the per delivery estimations on the right.</h5>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding-right text-right" id="last-updated-holder">
-		<% if !@preference_updated.nil? %>
-			<%= render 'preferences_last_updated' %>
-		<% end %>
-	</div>
-</div>
-<div class="row no-margin">
 	<div class="col-sm-9">
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding-left">
+				<h3 class="recent-ratings-header">My delivery preferences</h3>
+				<h5>Change the rules below to adjust the per delivery estimations on the right.</h5>
+			</div>
+		</div>
 		<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
+			<%= f.hidden_field :first_delivery_date %>
+			<%= f.hidden_field :drink_option_id %>
+			<%= f.hidden_field :drinks_per_week %>
+			<%= f.hidden_field :max_large_format %>
 			<hr>
 			<div class="row no-margin">
 				<% if @current_time_difference > 1 %>
@@ -83,12 +82,20 @@
 					<%= f.text_area :additional, {required: 'true', class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I drink only gluten free drinks"'}  %>
 				</div>
 			</div>
-		<% end %>
 	</div>
 	<div class="col-sm-3 no-padding" id="estimate-column">
 		<div id="scroller-anchor"></div>
-		<div class="row no-margin estimated-delivery-price-holder" id="scroller">
+		<div class="row no-margin" id="last-updated-holder">
+			<% if !@preference_updated.nil? %>
+				<%= render 'preferences_last_updated' %>
+			<% end %>
+		</div>
+		<div class="row no-margin" id="scroller">
+			<%= f.submit "Save changes", disabled: true, class: "btn btn-default update_delivery_preferences", id: "update_delivery_preferences_button" %>
+		</div>
+		<div class="row no-margin estimated-delivery-price-holder" id="scroller2">
 			<%= render 'user_delivery_estimates_for_customer' %>
 		</div>
 	</div>
+	<% end %>
 </div>

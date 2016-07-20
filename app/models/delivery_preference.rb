@@ -18,4 +18,6 @@
 class DeliveryPreference < ActiveRecord::Base
   belongs_to :user
   belongs_to :drink_option
+  
+  attr_accessor :temp_cost_estimate # to hold temp cost estimate
 end

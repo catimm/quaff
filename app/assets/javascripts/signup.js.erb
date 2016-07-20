@@ -20,11 +20,6 @@ $(function() {
 	$('.signup-style-tile.like-style-tile.chosen').width(like_tile_width);
 	var dislike_tile_width = $('.signup-style-tile.dislike-style-tile').width();
 	$('.signup-style-tile.dislike-style-tile.chosen').width(dislike_tile_width);
-				
-	// for rating slider
-	$("#signup_delivery_preference_new_percentage").slider({
-		tooltip: 'hide'
-	});
 	
 	// add logic to change background color of image chosen and send data to controller
 	$(document).on('click', '.signup-category-image-holder', function () {
@@ -45,16 +40,16 @@ $(function() {
 		}
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_input/category-irrelevant-" + new_value
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/process_input/category-irrelevant-" + new_value
+			});
 		} else {
-			var controller_url = "/users/deliveries_update_preferences/drink_type_preference-" + new_value
+			$('#delivery_preference_drink_option_id').val(new_value);
+			$('#update_delivery_preferences_button').removeAttr('disabled');
+			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 		}
-		
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: controller_url
-		});
 		
 	});
 	
@@ -78,7 +73,7 @@ $(function() {
 		if(current_page == "signup") {
 			var controller_url = "/signup/process_input/journey-irrelevant-" + new_value
 		} else {
-			var controller_url = "/users/deliveries_update_preferences/craft_journey-" + new_value
+			var controller_url = "/users/deliveries_update_estimates/craft_journey-" + new_value
 		}
 		
 		// send data to controller
@@ -98,6 +93,15 @@ $(function() {
 		var id_split = id_info.split('-');
 		var drinks_per_week = id_split[0];
 		var current_page = id_split[1];
+
+		var large_format_original = $(".number-box-holder.large-format.chosen").attr('id');
+		var split_original = large_format_original.split('-');
+		var large_format = split_original[0];
+		
+		if(large_format > drinks_per_week){
+			large_format = drinks_per_week;
+			$("#delivery_preference_max_large_format").val(large_format);
+		}
 		
 		if(current_page == "signup") {
 			var controller_url = "/signup/process_drinks_per_week/" + drinks_per_week
@@ -105,7 +109,10 @@ $(function() {
 				$("#drinks-per-week-meaning-row").removeClass("hidden").addClass("show");
 			}
 		} else {
-			var controller_url = "/users/deliveries_update_preferences/drinks_per_week-" + drinks_per_week
+			$("#delivery_preference_drinks_per_week").val(drinks_per_week);
+			$('#update_delivery_preferences_button').removeAttr('disabled');
+			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
+			var controller_url = "/users/deliveries_update_estimates/drinks_per_week-" + drinks_per_week + "-" + large_format
 		}
 		 
 		// send data to controller
@@ -126,16 +133,16 @@ $(function() {
 		var current_page = id_split[1];
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_input/account-2-" + start_choice
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/process_input/account-2-" + start_choice
+			});
 		} else {
-			var controller_url = "/users/deliveries_update_preferences/start_date-" + start_choice
+			$('#delivery_preference_first_delivery_date').val(new_value);
+			$('#update_delivery_preferences_button').removeAttr('disabled');
+			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 		}
-		
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: controller_url
-		});
 		
 	});
 	
@@ -149,10 +156,17 @@ $(function() {
 		var large_format = id_split[0];
 		var current_page = id_split[1];
 		
+		var drinks_per_week_original = $(".number-box-holder.weekly-drinks.chosen").attr('id');
+		var split_original = drinks_per_week_original.split('-');
+		var drinks_per_week = split_original[0];
+		
 		if(current_page == "signup") {
 			var controller_url = "/signup/process_input/preferences-2-" + large_format
 		} else {
-			var controller_url = "/users/deliveries_update_preferences/large_format-" + large_format
+			$("#delivery_preference_max_large_format").val(large_format);
+			$('#update_delivery_preferences_button').removeAttr('disabled');
+			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
+			var controller_url = "/users/deliveries_update_estimates/large_format-" + drinks_per_week + "-" + large_format
 		}
 		
 		// send data to controller
@@ -161,28 +175,6 @@ $(function() {
 		  url: controller_url
 		});
 		
-	});
-	
-	var ajax_request;
-	
-	// send new percentage info to controller
-	$("#signup_delivery_preference_new_percentage").on("change", function(slideEvt) {
-		if(typeof ajax_request != 'undefined') {
-			ajax_request.abort();
-		}
-		
-		new_value = slideEvt.value.newValue;
-		var repeat_value = (100 - new_value);
-		$("#new-preference").text(new_value);
-		$("#repeat-preference").text(repeat_value);	
-	    
-		// send data to controller
-		delay(function(){
-			ajax_request = $.ajax({
-							  type: "POST",
-							  url: "/signup/process_input/preferences-3-" + new_value
-							});
-	    }, 2000 );
 	});
 	
 	// keep track of how many styles have been chosen

@@ -2845,8 +2845,12 @@ $beer-header-lines-to-show-fp: 1;
     font-size: 14px !important;
   }
 }
+.update_delivery_preferences {
+  width: 100%;
+  margin-bottom: 10px;
+}
 #scroller-anchor {
-  margin-top: -25px !important;
+  margin-top: -15px !important;
 }
 .estimated-delivery-price-holder {
   margin: -25px 0 10px 0;
@@ -2855,7 +2859,6 @@ $beer-header-lines-to-show-fp: 1;
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
-  padding-left: 10px;
 }
 
 .preference-estimate-holder {

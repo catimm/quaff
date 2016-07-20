@@ -124,7 +124,7 @@ class UserMailer < ActionMailer::Base
       },
       substitution_data: {
         customer_name: customer.first_name,
-        delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery_date.day.ordinalize}"),
+        delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery.delivery_date.day.ordinalize}"),
         customer_message: @customer_message.message,
         admin_note: delivery.admin_delivery_confirmation_note,
         drink: drinks
@@ -150,7 +150,7 @@ class UserMailer < ActionMailer::Base
       },
       substitution_data: {
         customer_name: customer.first_name,
-        delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery_date.day.ordinalize}"),
+        delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery.delivery_date.day.ordinalize}"),
         drink: drinks
       }
     }

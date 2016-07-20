@@ -1,17 +1,21 @@
 module DeliveryEstimator
   extend ActiveSupport::Concern
   
-  def delivery_estimator(customer_id)
+  def delivery_estimator(customer_id, drinks_per_week, large_format, status)
     # get customer info
     @customer_info = User.find(customer_id)
     @customer_sophistication = @customer_info.craft_stage_id
     
     # get customer delivery preferences
     @delivery_preferences = DeliveryPreference.where(user_id: customer_id).first
-    @drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
+    
+    #determine drinks per delivery
+    @drink_per_delivery_calculation = (drinks_per_week * 2.2).round
+    #Rails.logger.debug("Drinks per delivery: #{@drink_per_delivery_calculation.inspect}") 
     
     # determine large format percentage
-    @large_percentage = (@delivery_preferences.max_large_format) / (@delivery_preferences.drinks_per_week).round(3)
+    @large_percentage = ((large_format.to_f) / (drinks_per_week.to_f)).round(3)
+    #Rails.logger.debug("Large %: #{@large_percentage.inspect}")
     
     # first set average drink costs
     @small_cooler_cost = 3
@@ -57,9 +61,14 @@ module DeliveryEstimator
     #Rails.logger.debug("$ large cellar: #{@cost_estimate_cellar_large.inspect}") 
     
     @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
+    #Rails.logger.debug("Total $: #{@total_cost_estimate.inspect}") 
   
     # update delivery prefrence drink total estimation
-    @delivery_preferences.update(price_estimate: @total_cost_estimate, max_cellar: @max_cellar)
+    if status == "update"
+      @delivery_preferences.update(price_estimate: @total_cost_estimate, max_cellar: @max_cellar)
+    else
+      @delivery_preferences.temp_cost_estimate = @total_cost_estimate
+    end
     
   end # end delivery_estimator method
 
