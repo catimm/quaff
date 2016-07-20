@@ -62,6 +62,9 @@ class UserMailer < ActionMailer::Base
     @review_date = (delivery.delivery_date - 1.day)
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
     @customer_message = CustomerDeliveryMessage.where(delivery_id: delivery.id).first
+    if !@customer_message.blank?
+      @message = @customer_message.message
+    end
     payload  = {
       recipients: [
         {
@@ -75,7 +78,7 @@ class UserMailer < ActionMailer::Base
         customer_name: customer.first_name,
         delivery_date: (delivery.delivery_date).strftime("%A, %B %-d"),
         review_date: @review_date,
-        customer_message: @customer_message.message,
+        customer_message: @message,
         admin_note: delivery.admin_delivery_confirmation_note,
         change: change_info
       }
