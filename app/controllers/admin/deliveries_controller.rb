@@ -91,7 +91,8 @@ class Admin::DeliveriesController < ApplicationController
     # insert new line in delivery table
     @next_delivery = Delivery.create(user_id: @delivery.user_id, 
                                       delivery_date: @next_delivery_date,
-                                      status: "admin prep")
+                                      status: "admin prep",
+                                      change_noted: false)
                                       
     # redirect back to delivery page
     redirect_to admin_deliveries_path

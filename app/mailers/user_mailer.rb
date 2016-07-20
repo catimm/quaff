@@ -86,6 +86,28 @@ class UserMailer < ActionMailer::Base
     
   end # end of customer_changes_confirmation email 
   
+  def end_user_review_period_reminder(customer)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'end-user-review-period-reminder'
+      },
+      substitution_data: {
+        customer_name: customer.first_name
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of end_user_review_period_reminder email
+  
   def customer_delivery_confirmation_with_changes(customer, delivery, drinks)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     # get the customer's message

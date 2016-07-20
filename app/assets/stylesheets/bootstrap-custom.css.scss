@@ -3522,8 +3522,6 @@ input[type="checkbox"] {
 .no-results-empty-message {
   margin-top: 30px;
   line-height: 1.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .formButton-send-note {
   width: 100%;
@@ -3831,6 +3829,7 @@ $delivery-beer-header-lines-to-show: 2;
   height: 52px;
   width: 80%;
   float: left;
+  overflow: auto;
   h6 {
     margin: 0 !important;
   }

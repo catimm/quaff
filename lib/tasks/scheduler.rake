@@ -505,24 +505,30 @@ task :end_user_review_period_reminder => :environment do
       # get all users currently reviewing the next delivery
       @deliveries_in_review = Delivery.where(status: "user review") 
       
+      # make array to hold users who have not made changes
+      @user_with_no_changes = Array.new
+        
       # cycle through each delivery still in review
       @deliveries_in_review.each do |delivery|
         # find if user has made changes
         @customer_changes = CustomerDeliveryChange.where(delivery_id: delivery.id)
-        
-        # make array to hold users who have not made changes
-        @user_with_no_changes = Array.new
-        
+
         if @customer_changes.blank?
           # add user to array
           @user_with_no_changes << delivery.user_id
         end
         
-        # send email to each user who hasn't made changes
-        UserMailer.end_user_review_period_reminder(@customer).deliver_now
-        
       end # end of looping through each delivery in review
-    
+      
+      # loop through each user with no changes to send review reminder email
+      @user_with_no_changes.each do |user_id|
+        # get user info
+        @customer = User.find_by_id(user_id)
+        
+        # send email user
+        UserMailer.end_user_review_period_reminder(@customer).deliver_now
+      end
+       
     end # end of day of week test
   
 end # end of end_user_review_period_reminder task
@@ -689,12 +695,12 @@ task :user_change_confirmation => :environment do
           
           # send email to customer
           UserMailer.customer_change_confirmation(@customer, delivery, @changes_noted_array).deliver_now
-        
+          
+          # update delivery to show a change confirmation email was sent
+          Delivery.update(delivery.id, delivery_change_confirmation: true)
+          
         end # end of check to make sure changes exist
-        
-        # update delivery to show a change confirmation email was sent
-        Delivery.update(delivery.id, delivery_change_confirmation: true)
-        
+
       end # end of loop through each customer delivery info
 
     end # end of day check
