@@ -675,7 +675,7 @@ task :user_change_confirmation => :environment do
     @run_now = false
     
     # check if now is between Mon @1pm and Wed @1pm
-    if Date.today.strftime("%A") == "Monday" || Date.today.strftime("%A") == "Tuesday" || Date.today.strftime("%A") == "Wednesday"
+    if Date.today.strftime("%A") == "Thursday" || Date.today.strftime("%A") == "Tuesday" || Date.today.strftime("%A") == "Wednesday"
       # get current time
       @time = Time.now
       
