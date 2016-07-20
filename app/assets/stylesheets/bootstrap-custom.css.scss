@@ -989,6 +989,14 @@ p {
 .contract-type-header {
   color: $normal-text; 
   font-weight: 500;
+  sup {
+    border: 1px solid $normal-text;
+    border-radius: 4px;
+    width: 12px;
+    height: 12px;
+    padding: 1px 3px;
+    margin-left: 2.5px;
+  }
 }
 .plan-button {
   margin-bottom: 10px !important;
@@ -2131,6 +2139,9 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 // User Signup Process
+.getting-started-header {
+  color: $action-background;
+}
 .signup-guide-row {
   margin: 10px 0;
 }
@@ -3541,6 +3552,12 @@ input[type="checkbox"] {
       top: -0.3em;
       font-size: 90%;
       color: $header-text;
+      border: 1px solid $normal-text;
+      border-radius: 4px;
+      width: 12px;
+      height: 12px;
+      padding: 1px 3px;
+      margin-left: 2.5px;
     }
   }
   h4 {
