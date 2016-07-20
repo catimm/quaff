@@ -680,22 +680,22 @@ task :user_change_confirmation => :environment do
       @time = Time.now
       
       if Date.today.strftime("%A") == "Monday" && @time.hour > 18      
-        Rails.logger.debug("It's Mon")
+        #Rails.logger.debug("It's Mon")
         @run_now = true
       end
       if Date.today.strftime("%A") == "Tuesday"
-        Rails.logger.debug("It's Tue")
+        #Rails.logger.debug("It's Tue")
         @run_now = true
       end
-      if Date.today.strftime("%A") == "Wednesday" && @time.hour < 24
-        Rails.logger.debug("It's Wed")
+      if Date.today.strftime("%A") == "Wednesday" && @time.hour < 19
+        #Rails.logger.debug("It's Wed")
         @run_now = true
       end
     end
     
     # run code if it is between Mon @1pm and Wed @1pm
     if @run_now
-      Rails.logger.debug("It's Running")
+      #Rails.logger.debug("It's Running")
       # get all users currently reviewing the next delivery
       @deliveries_in_review = Delivery.where(status: "user review", delivery_change_confirmation: [false, nil])
       
