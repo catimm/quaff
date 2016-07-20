@@ -683,8 +683,8 @@ task :user_change_confirmation => :environment do
         Rails.logger.debug("It's Mon")
         @run_now = true
       end
-      if Date.today.strftime("%A") == "Tuesday"
-        Rails.logger.debug("It's Mon")
+      if Date.today.strftime("%A") == "Tuesday" || Date.today.strftime("%A") == "Thursday"
+        Rails.logger.debug("It's Thurs")
         @run_now = true
       end
       if Date.today.strftime("%A") == "Wednesday" && @time.hour < 18
