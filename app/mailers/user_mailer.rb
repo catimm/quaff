@@ -115,7 +115,10 @@ class UserMailer < ActionMailer::Base
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     # get the customer's message
     @customer_message = CustomerDeliveryMessage.where(delivery_id: delivery.id).first
-     
+     if !@customer_message.blank?
+      @message = @customer_message.message
+    end
+    
     payload  = {
       recipients: [
         {
@@ -128,7 +131,7 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer.first_name,
         delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery.delivery_date.day.ordinalize}"),
-        customer_message: @customer_message.message,
+        customer_message: @message,
         admin_note: delivery.admin_delivery_confirmation_note,
         drink: drinks
       }
