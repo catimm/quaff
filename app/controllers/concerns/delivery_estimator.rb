@@ -57,10 +57,10 @@ module DeliveryEstimator
     else
       @large_cellar_cost = 18
     end
-    #Rails.logger.debug("Small cooler cost: #{@small_cooler_cost.inspect}")
-    #Rails.logger.debug("Small cellar cost: #{@large_cooler_cost.inspect}")
-    #Rails.logger.debug("Large cooler cost: #{@small_cellar_cost.inspect}")
-    #Rails.logger.debug("Large cellar cost: #{@large_cellar_cost.inspect}")
+    Rails.logger.debug("Small cooler cost: #{@small_cooler_cost.inspect}")
+    Rails.logger.debug("Small cellar cost: #{@large_cooler_cost.inspect}")
+    Rails.logger.debug("Large cooler cost: #{@small_cellar_cost.inspect}")
+    Rails.logger.debug("Large cellar cost: #{@large_cellar_cost.inspect}")
     
     # determine number of cellar drinks per delivery
     if @customer_sophistication == 1
