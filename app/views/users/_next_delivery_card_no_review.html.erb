@@ -1,9 +1,3 @@
-<% if drink.beer.beer_type.cellarable == true %>
-	<% @cellarable = "C" %>
-	<% @cellarable_info = drink.beer.beer_type.cellarable_info %>
-<% else %>
-	<% @cellarable = "" %>
-<% end %>
 <div class="col-sm-4 col-xs-12 beer-tile-container">
 	<div class="next-delivery-tile-no-review">
 		<div class="row no-margin ratings-image-holder-row">
@@ -36,20 +30,20 @@
 				<% if drink.beer.collab == true %>
 					<% @title_header = (Beer.collab_brewery_name(drink.beer.id) + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
 					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"><%= @cellarable %></sup>
 				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
 					<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
 					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"><%= @cellarable %></sup>
 				<% else %>
 					<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
 					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"><%= @cellarable %></sup>
 				<% end %>
 			</div>
 			<div class="col-xs-12">
 				<% if !drink.beer.beer_type_id.nil? %>
-					<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer.beer_type.beer_type_name %></h5>
+					<h5 class="tile-subheader beer-info no-overflow beer-type-info"><%= drink.beer.beer_type.beer_type_name %></h5>
+					<% if drink.beer.beer_type.cellarable == true %>
+						<p class="cellarable" data-toggle="tooltip" title="<%= drink.beer.beer_type.cellarable_info %>">cellarable</p>
+					<% end %>
 				<% else %>
 					<h5 class="tile-subheader beer-info">Style unknown</h5>
 				<% end %>

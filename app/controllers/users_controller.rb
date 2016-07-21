@@ -133,9 +133,11 @@ class UsersController < ApplicationController
       # get best guess for each relevant drink
       @supply_drink_ids = Array.new
       @user_cooler.each do |drink|
+        #best_guess(drink.beer_id, current_user.id)
         @supply_drink_ids << drink.beer_id
       end
       @user_cooler = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
+      #Rails.logger.debug("User cooler: #{@user_cooler.inspect}")
       @cooler_chosen = "chosen"
     elsif @view == "cellar"
       @user_cellar = @user_supply.where(supply_type_id: 2)

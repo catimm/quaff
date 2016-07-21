@@ -9,6 +9,7 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  quantity       :integer
+#  cellar_note    :text
 #
 
 class UserSupply < ActiveRecord::Base

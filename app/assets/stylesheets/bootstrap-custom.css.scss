@@ -282,18 +282,19 @@ label {
 .combined-drink-text {
   color: $combined-drink-text !important;
 }
+.beer-type-info {
+  float: left;
+}
 .cellarable {
   color: $cellar-color;
-  text-shadow: 0.5px 0.5px 0.5px $less-emphasized-text;
-  font-weight: 500;
-  font-size: 15px !important;
-  text-transform: uppercase;
-  font-family: 'troikaregular';
-  top: 7.5px !important;
-}
-.cellar.supply {
+  border: 1px solid $cellar-color;
+  border-radius: 4px;
+  display: block;
   float: left;
-  top: 7.5px !important;
+  padding: 2px 2.5px 2.5px 2.5px;
+  font-size: 9px;
+  margin: -6px 0 0 5px;
+  
 }
 .short-beer-type {
   font-style: italic;

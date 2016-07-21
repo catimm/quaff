@@ -1,11 +1,3 @@
-<% if !drink.beer_type.nil? %>
-	<% if drink.beer_type.cellarable == true %>
-		<% @cellarable = "C" %>
-		<% @cellarable_info = drink.beer_type.cellarable_info %>
-	<% else %>
-		<% @cellarable = "" %>
-	<% end %>
-<% end %>
 <div class="col-xs-12 col-sm-4 beer-tile-container">
 	<%= link_to new_user_rating_path(current_user.id, drink.id, :source => @view), :class => 'rate-beer text-center' do %>
 		<i class="fa fa-thumbs-up"></i>
@@ -47,42 +39,7 @@
 			</div>
 		</div>
 		<div class="row no-margin drink-name-and-info-row">
-			<div class="col-xs-12">
-				<% if drink.collab == true %>
-					<% @title_header = (Beer.collab_brewery_name(drink.id) + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
-						<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"> <%= @cellarable %></sup>
-				<% elsif drink.brewery.short_brewery_name.nil? %>
-					<% @title_header = (drink.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
-					<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"> <%= @cellarable %></sup>
-				<% else %>
-					<% @title_header = (drink.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
-					<sup class="cellarable supply" data-toggle="tooltip" title="<%= @cellarable_info %>"> <%= @cellarable %></sup>
-				<% end %>
-			</div>
-			<div class="col-xs-12">
-				<% if !drink.beer_type_id.nil? %>
-					<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer_type.beer_type_name %></h5>
-				<% else %>
-					<h5 class="tile-subheader beer-info">Style unknown</h5>
-				<% end %>
-			</div>
-			<div class="col-xs-6 no-padding-right">
-				<% if !drink.beer_abv.nil? %>
-					<h6 class="tile-subheader beer-info"><%= drink.beer_abv %>% ABV</h6>
-				<% else %>
-					<h6 class="tile-subheader beer-info">ABV N/A</h6>
-				<% end %>
-			</div>
-			<% if !drink.beer_ibu.nil? %>
-				<div class="col-xs-6 no-padding-left text-center ibu-div">
-					<h6 class="tile-subheader beer-info"><%= drink.beer_ibu %> IBUs</h6>
-				</div>
-			<% else %>
-				<div class="col-xs-6"></div>
-			<% end %>	
+			<%= render 'layouts/drink_name_and_info', drink: drink%>	
 		</div>
 		<div class="row no-margin cloud-descriptor-row">
 			<div class="col-xs-12">

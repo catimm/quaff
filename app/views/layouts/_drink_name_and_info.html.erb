@@ -1,0 +1,36 @@
+<div class="col-xs-12">
+	<% if drink.collab == true %>
+		<% @title_header = (Beer.collab_brewery_name(drink.id) + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
+		<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+	<% elsif drink.brewery.short_brewery_name.nil? %>
+		<% @title_header = (drink.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
+		<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+	<% else %>
+		<% @title_header = (drink.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer_name+"</span>").html_safe %>
+		<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+	<% end %>
+</div>
+<div class="col-xs-12">
+	<% if !drink.beer_type_id.nil? %>
+		<h5 class="tile-subheader beer-info no-overflow beer-type-info"><%= drink.beer_type.beer_type_name %></h5>
+		<% if drink.beer_type.cellarable == true %>
+			<p class="cellarable" data-toggle="tooltip" title="<%= drink.beer_type.cellarable_info %>">cellarable</p>
+		<% end %>
+	<% else %>
+		<h5 class="tile-subheader beer-info">Style unknown</h5>
+	<% end %>
+</div>
+<div class="col-xs-6 no-padding-right">
+	<% if !drink.beer_abv.nil? %>
+		<h6 class="tile-subheader beer-info"><%= drink.beer_abv %>% ABV</h6>
+	<% else %>
+		<h6 class="tile-subheader beer-info">ABV N/A</h6>
+	<% end %>
+</div>
+<% if !drink.beer_ibu.nil? %>
+	<div class="col-xs-6 no-padding-left text-center ibu-div">
+		<h6 class="tile-subheader beer-info"><%= drink.beer_ibu %> IBUs</h6>
+	</div>
+<% else %>
+	<div class="col-xs-6"></div>
+<% end %>

@@ -56,7 +56,7 @@ class BeersController < ApplicationController
       
       # get inventory data for
       @inventory = Inventory.where(beer_id: params[:id]).first
-      if !@inventory.nil?
+      if !@inventory.blank?
         if !@inventory.stock.nil?
           @inventory_count = @inventory.stock
         else
@@ -77,6 +77,7 @@ class BeersController < ApplicationController
           @available_drinks = 0
         end
       else
+        @inventory = Inventory.new
         @inventory_count = 0
         @reserved_drinks = 0
         @available_drinks = 0
