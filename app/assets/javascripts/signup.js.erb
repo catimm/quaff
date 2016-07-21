@@ -1,4 +1,18 @@
 $(function() {
+	// set default for unsaved form monitoring
+	var unsaved = false;
+	
+	// change unsaved back to true if save button is clicked
+	$(document).on('click', '#update_delivery_preferences_button', function () {
+	    unsaved = false;
+	});
+	// bind event to page navigation
+	$(window).bind('beforeunload', function() {
+	    if(unsaved){
+	        return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
+	    }
+	});
+
 	// set delay function
 	var delay = (function(){
 	  var timer = 0;
@@ -49,6 +63,8 @@ $(function() {
 			$('#delivery_preference_drink_option_id').val(new_value);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
+			// indicate there is unsave data changed on the page
+			unsaved = true;
 		}
 		
 	});
@@ -113,6 +129,8 @@ $(function() {
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 			var controller_url = "/users/deliveries_update_estimates/drinks_per_week-" + drinks_per_week + "-" + large_format
+			// indicate there is unsave data changed on the page
+			unsaved = true;
 		}
 		 
 		// send data to controller
@@ -142,6 +160,8 @@ $(function() {
 			$('#delivery_preference_first_delivery_date').val(new_value);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
+			// indicate there is unsave data changed on the page
+			unsaved = true;
 		}
 		
 	});
@@ -167,6 +187,8 @@ $(function() {
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 			var controller_url = "/users/deliveries_update_estimates/large_format-" + drinks_per_week + "-" + large_format
+			// indicate there is unsave data changed on the page
+			unsaved = true;
 		}
 		
 		// send data to controller
@@ -175,6 +197,14 @@ $(function() {
 		  url: controller_url
 		});
 		
+	});
+	
+	// send additional delivery preferences to controller
+	$(document).on("keyup", "#delivery_preference_additional", function() {
+		$('#update_delivery_preferences_button').removeAttr('disabled');
+		$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
+		// indicate there is unsave data changed on the page
+		unsaved = true;
 	});
 	
 	// keep track of how many styles have been chosen

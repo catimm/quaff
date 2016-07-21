@@ -34,12 +34,6 @@ $(function () {
 	  };
 	})();
 	
-	// send additional delivery preferences to controller
-	$(document).on("keyup", "#delivery_preference_additional", function() {
-		$('#update_delivery_preferences_button').removeAttr('disabled');
-		$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
-	});
-	
 	// ensure only one delivery date option is chosen
 	$(document).on("change", ".first_delivery_date_chosen", function() {
 		$(this).parent().siblings(".drink-preference-choice").children("input").removeAttr('checked');

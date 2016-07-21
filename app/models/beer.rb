@@ -108,6 +108,16 @@ class Beer < ActiveRecord::Base
     end
   end
   
+  # scope cellar drinks
+  scope :cellar_drinks, -> {
+    joins(:beer_type).merge(BeerType.cellarable) 
+  }
+  
+  # scope non-cellar (cooler) drinks
+  scope :cooler_drinks, -> {
+    joins(:beer_type).merge(BeerType.non_cellarable) 
+  }
+  
   # scope all beers connected with a brewery (whether a collab beer or not)
   scope :all_brewery_beers, ->(brewery_id) {
     collab_test = BeerBreweryCollab.where(brewery_id: brewery_id).pluck(:beer_id)

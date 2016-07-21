@@ -17,11 +17,50 @@ module DeliveryEstimator
     @large_percentage = ((large_format.to_f) / (drinks_per_week.to_f)).round(3)
     #Rails.logger.debug("Large %: #{@large_percentage.inspect}")
     
+    # get all drinks in inventory
+    @inventory = Inventory.all
+    @inventory_small_cooler = @inventory.small_cooler_drinks
+    @inventory_small_cellar = @inventory.small_cellar_drinks
+    @inventory_large_cooler = @inventory.large_cooler_drinks
+    @inventory_large_cellar = @inventory.large_cellar_drinks
+    
     # first set average drink costs
-    @small_cooler_cost = 3
-    @large_cooler_cost = 6
-    @small_cellar_cost = 13
-    @large_cellar_cost = 18
+    if !@inventory_small_cooler.nil?
+      @small_cooler_cost = (@inventory_small_cooler.average(:drink_price)).to_f
+      if @small_cooler_cost == 0
+        @small_cooler_cost = 3
+      end
+    else
+      @small_cooler_cost = 3
+    end
+    if !@inventory_small_cellar.nil?
+      @large_cooler_cost = (@inventory_small_cellar.average(:drink_price)).to_f
+      if @large_cooler_cost == 0
+        @large_cooler_cost = 6
+      end
+    else
+      @large_cooler_cost = 6
+    end
+    if !@inventory_large_cooler.nil?
+      @small_cellar_cost = (@inventory_large_cooler.average(:drink_price)).to_f
+      if @small_cellar_cost == 0
+        @small_cellar_cost = 13
+      end
+    else
+      @small_cellar_cost = 13
+    end
+    if !@inventory_large_cellar.nil?
+      @large_cellar_cost = (@inventory_large_cellar.average(:drink_price)).to_f
+      if @large_cellar_cost == 0
+        @large_cellar_cost = 18
+      end
+    else
+      @large_cellar_cost = 18
+    end
+    #Rails.logger.debug("Small cooler cost: #{@small_cooler_cost.inspect}")
+    #Rails.logger.debug("Small cellar cost: #{@large_cooler_cost.inspect}")
+    #Rails.logger.debug("Large cooler cost: #{@small_cellar_cost.inspect}")
+    #Rails.logger.debug("Large cellar cost: #{@large_cellar_cost.inspect}")
     
     # determine number of cellar drinks per delivery
     if @customer_sophistication == 1

@@ -62,4 +62,14 @@ class BeerType < ActiveRecord::Base
     @this_drink_top_descriptors = @this_drink_top_descriptors - @user_drink_type_descriptors
   end
   
+  # scope cellar drinks
+  scope :cellarable, -> {
+    where(cellarable: true) 
+  }
+  
+  # scope non-cellar (cooler) drinks
+  scope :non_cellarable, -> {
+    where(cellarable: [false, nil]) 
+  }
+  
 end

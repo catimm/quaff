@@ -22,6 +22,30 @@ class Inventory < ActiveRecord::Base
   has_many :user_deliveries
   has_many :admin_user_deliveries
   
+  #scope small cooler drinks
+  scope :small_cooler_drinks, -> { 
+    where("inventories.size_format_id <= ?", 4).
+    joins(:beer).merge(Beer.cooler_drinks)
+  }
+  
+  # scope small cellar drinks
+  scope :small_cellar_drinks, -> { 
+    where("inventories.size_format_id <= ?", 4).
+    joins(:beer).merge(Beer.cellar_drinks)
+  }
+  
+  # scope large cooler drinks
+  scope :large_cooler_drinks, -> { 
+    where(size_format_id: 5).
+    joins(:beer).merge(Beer.cooler_drinks)
+  }
+  
+  # scope large cellar drinks
+  scope :large_cellar_drinks, -> { 
+    where(size_format_id: 5).
+    joins(:beer).merge(Beer.cellar_drinks)
+  }
+  
   # scope all inventory stock 
   scope :in_stock, -> { 
     where("stock >= ?", 1)
