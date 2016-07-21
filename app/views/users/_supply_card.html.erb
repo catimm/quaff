@@ -1,7 +1,7 @@
 <% if !drink.beer_type.nil? %>
 	<% if drink.beer_type.cellarable == true %>
 		<% @cellarable = "C" %>
-		<% @cellarable_info = drink.beer.beer_type.cellarable_info %>
+		<% @cellarable_info = drink.beer_type.cellarable_info %>
 	<% else %>
 		<% @cellarable = "" %>
 	<% end %>
