@@ -389,7 +389,7 @@ task :assess_drink_recommendations => :environment do
       
       # assess each drink to add if rated highly enough
       @assessed_drinks.each do |drink|
-        Rails.logger.debug("This drink: #{drink.id.inspect}")
+        #Rails.logger.debug("This drink: #{drink.id.inspect}")
         # find if user has rated/had this drink before
         @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: drink.id)
         @drink_ratings_last = @drink_ratings.last
@@ -410,6 +410,9 @@ task :assess_drink_recommendations => :environment do
             end
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
+            
+            # insert this data into hash
+            @compiled_assessed_drinks << @individual_drink_info
           elsif  @drink_ratings_last.rated_on < 1.month.ago && @drink_rating_average >= 7.5 # or make sure if it's been a while that they still like it
             @individual_drink_info = Hash.new
             @individual_drink_info["user_id"] = user.id
@@ -421,6 +424,9 @@ task :assess_drink_recommendations => :environment do
             end
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
+            
+            # insert this data into hash
+            @compiled_assessed_drinks << @individual_drink_info
           end
         else
           if drink.best_guess >= 7.5 # if customer has had it, make sure it is still a high recommendation
@@ -430,18 +436,20 @@ task :assess_drink_recommendations => :environment do
             @individual_drink_info["projected_rating"] = drink.best_guess
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = true  
+            
+            # insert this data into hash
+            @compiled_assessed_drinks << @individual_drink_info
           end
         end
-        
-        @compiled_assessed_drinks << @individual_drink_info
+
       end # end of loop adding assessed drinks to array
       #dedup drink array
       @compiled_assessed_drinks = @compiled_assessed_drinks.uniq
-      Rails.logger.debug("Compiled assessed drinks: #{@compiled_assessed_drinks.inspect}")
+      #Rails.logger.debug("Compiled assessed drinks: #{@compiled_assessed_drinks.inspect}")
       
       # sort the array of hashes by projected rating and keep top 500
       @compiled_assessed_drinks = @compiled_assessed_drinks.sort_by{ |hash| hash['projected_rating'] }.reverse.first(500)
-      Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
+      #Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
       
       # insert array of hashes into user_drink_recommendations table
       UserDrinkRecommendation.create(@compiled_assessed_drinks)

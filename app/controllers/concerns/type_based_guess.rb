@@ -7,7 +7,7 @@ module TypeBasedGuess
     this_beer.recommendation_rationale = "type"
     # set baseline projected rating for this beer
     this_beer.best_guess = this_beer.beer_rating
-    Rails.logger.debug("Beer best guess: #{this_beer.best_guess.inspect}")
+    #Rails.logger.debug("Beer best guess: #{this_beer.best_guess.inspect}")
     #find this drink's beer type id
     this_beer_type_id = this_beer.beer_type_id
     # find all drinks of same type rated by user
