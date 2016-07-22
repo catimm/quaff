@@ -745,12 +745,24 @@ desc "update user supply projected ratings"
 task :update_supply_projected_ratings => :environment do
   include BestGuess
   
-  @user_supplies = UserSupply.all
-  
-  @user_supplies.each do |drink|
-    @best_guess = best_guess(drink.beer_id, drink.user_id)
-    @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
-    UserSupply.update(drink.id, projected_rating: @projected_rating)
-  end
+  # get new ratings submitted in the last hour
+  @recent_ratings = UserBeerRating.where('updated_at > ?', 1.hour.ago).pluck(:user_id)
+  # get unique users
+  @users_with_new_ratings = @recent_ratings.uniq
+    
+   # loop through each user to update the projected ratings of their current supply
+   @users_with_new_ratings.each do |this_user_id|
+      @user_supplies = UserSupply.where(user_id: this_user_id)\
+ 
+      @user_supplies.each do |drink|
+        @best_guess = best_guess(drink.beer_id, drink.user_id)
+        @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
+        if @projected_rating > 10
+          @projected_rating = 10
+        end
+        UserSupply.update(drink.id, projected_rating: @projected_rating)
+      end # end of loop through each drink in current supply for each user
+      
+    end # end of loop through each user to update projected ratings
   
 end # end of update_supply_projected_ratings task
