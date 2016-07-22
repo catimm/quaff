@@ -367,6 +367,7 @@ task :assess_drink_recommendations => :environment do
       
       # create an aggregated list of all beer types the user should like
       @final_user_type_likes = @user_type_likes + @additional_drink_types + @relational_drink_types_one + @relational_drink_types_two + @relational_drink_types_three
+      Rails.logger.debug("types liked: #{@final_user_type_likes.inspect}")
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
@@ -382,6 +383,7 @@ task :assess_drink_recommendations => :environment do
       end
       # get count of total drinks to be assessed
       @available_assessed_drinks = @assessed_drinks.length
+      Rails.logger.debug("# of available drinks: #{@available_assessed_drinks.inspect}")
       # create empty hash to hold list of drinks that have been assessed
       @compiled_assessed_drinks = Array.new
       
@@ -434,6 +436,7 @@ task :assess_drink_recommendations => :environment do
       end # end of loop adding assessed drinks to array
       #dedup drink array
       @compiled_assessed_drinks = @compiled_assessed_drinks.uniq
+      Rails.logger.debug("Compiled assessed drinks: #{@compiled_assessed_drinks.inspect}")
       
       # sort the array of hashes by projected rating and keep top 500
       @compiled_assessed_drinks = @compiled_assessed_drinks.sort_by{ |hash| hash['projected_rating'] }.reverse.first(500)
