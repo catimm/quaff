@@ -325,7 +325,7 @@ task :assess_drink_recommendations => :environment do
       # get drink type info 
       @drink_types = BeerType.all
 
-      #Rails.logger.debug("this user: #{user.id.inspect}")
+      Rails.logger.debug("this user: #{user.id.inspect}")
       # get all drink styles the user claims to like
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
       
@@ -437,7 +437,7 @@ task :assess_drink_recommendations => :environment do
       
       # sort the array of hashes by projected rating and keep top 500
       @compiled_assessed_drinks = @compiled_assessed_drinks.sort_by{ |hash| hash['projected_rating'] }.reverse.first(500)
-      #Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
+      Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
       
       # insert array of hashes into user_drink_recommendations table
       UserDrinkRecommendation.create(@compiled_assessed_drinks)
