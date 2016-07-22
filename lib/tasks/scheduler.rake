@@ -740,3 +740,16 @@ task :user_change_confirmation => :environment do
     end # end of day check
   
 end # end of user_change_confirmation task
+
+desc "update user supply projected ratings"
+task :update_supply_projected_ratings => :environment do
+  include BestGuess
+  
+  @user_supplies = UserSupply.all
+  
+  @user_supplies.each do |drink|
+    @projected_rating = best_guess(drink.beer_id, drink.user_id)
+    UserSupply.update(drink.id, projected_rating: @projected_rating[0].best_guess)
+  end
+  
+end # end of update_supply_projected_ratings task

@@ -103,7 +103,7 @@ class Inventory < ActiveRecord::Base
     in_stock.
     joins(:beer).
     group('beers.brewery_id').
-    select('beers.brewery_id as brewery_id, inventories.count as inventory_number') 
+    select('beers.brewery_id as brewery_id, inventories.count as inventory_number')
   }
   
 end

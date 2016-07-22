@@ -11,6 +11,7 @@ class Admin::InventoriesController < ApplicationController
       # grab all Breweries
       @inventory = Inventory.all
       @inventory_makers = Inventory.inventory_maker
+      Rails.logger.debug("inventory makers: #{@inventory_makers.inspect}")
       @inventory_in_stock = @inventory.where('stock >= ?', 1)
       @different_inventory_in_stock = @inventory_in_stock.count
       @total_inventory_in_stock = @inventory_in_stock.sum(:stock)
@@ -48,7 +49,7 @@ class Admin::InventoriesController < ApplicationController
   def edit
     # to get current inventory for editing
     @inventory = Inventory.find_by_id(params[:id])
-    Rails.logger.debug("inventory info: #{@inventory.inspect}")
+    #Rails.logger.debug("inventory info: #{@inventory.inspect}")
   end # end edit method
   
   def update

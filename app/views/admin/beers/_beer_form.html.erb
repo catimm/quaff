@@ -76,12 +76,13 @@
 		  <%= check_box_tag :size_format_ids, format.id, @beer.size_formats.include?(format), :name => 'beer[size_format_ids][]' %><%= format.format_name %></label>
 		<% end %>
 	</div>
-	<div class="col-sm-3 col-xs-0"></div>	
+	<div class="col-xs-12">
+		<%= f.text_field :cellar_note, :class => "form-control", placeholder: "Add note about cellaring this drink" %>
+	</div>	
 	<div class="col-sm-6 col-xs-12">
 		<%= f.label :dont_include, "Avoid showing any related info in Views?" %>
 		<%= f.check_box :dont_include %>
 	</div>		
-	<div class="col-sm-3 col-xs-0"></div>
 	<div class="col-sm-6 col-xs-12 text-center">
 		<%= f.submit "Update", class: "btn btn-default btn-success formButton" %>
 	</div>		

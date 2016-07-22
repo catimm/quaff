@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721202251) do
+ActiveRecord::Schema.define(version: 20160722053526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(version: 20160721202251) do
     t.string   "short_beer_name"
     t.boolean  "dont_include"
     t.integer  "touched_by_location"
+    t.text     "cellar_note"
   end
 
   create_table "breweries", force: :cascade do |t|
@@ -454,10 +455,11 @@ ActiveRecord::Schema.define(version: 20160721202251) do
     t.integer  "user_id"
     t.integer  "beer_id"
     t.integer  "supply_type_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.integer  "quantity"
     t.text     "cellar_note"
+    t.float    "projected_rating"
   end
 
   create_table "users", force: :cascade do |t|
