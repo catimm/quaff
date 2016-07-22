@@ -750,7 +750,7 @@ task :update_supply_projected_ratings => :environment do
   @user_supplies.each do |drink|
     @best_guess = best_guess(drink.beer_id, drink.user_id)
     @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
-    UserSupply.update(drink.id, projected_rating: @projected_rating.best_guess)
+    UserSupply.update(drink.id, projected_rating: @projected_rating)
   end
   
 end # end of update_supply_projected_ratings task
