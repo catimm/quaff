@@ -400,14 +400,22 @@ task :assess_drink_recommendations => :environment do
             @individual_drink_info = Hash.new
             @individual_drink_info["user_id"] = user.id
             @individual_drink_info["beer_id"] = drink.id
-            @individual_drink_info["projected_rating"] = @drink_rating_average
+            if !@drink_rating_average.nil?
+              @individual_drink_info["projected_rating"] = @drink_rating_average
+            else
+              @individual_drink_info["projected_rating"] = drink.best_guess
+            end
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
           elsif  @drink_ratings_last.rated_on < 1.month.ago && @drink_rating_average >= 7.5 # or make sure if it's been a while that they still like it
             @individual_drink_info = Hash.new
             @individual_drink_info["user_id"] = user.id
             @individual_drink_info["beer_id"] = drink.id
-            @individual_drink_info["projected_rating"] = @drink_rating_average
+            if !@drink_rating_average.nil?
+              @individual_drink_info["projected_rating"] = @drink_rating_average
+            else
+              @individual_drink_info["projected_rating"] = drink.best_guess
+            end
             @individual_drink_info["style_preference"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
           end
