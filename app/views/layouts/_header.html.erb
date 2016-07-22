@@ -53,7 +53,7 @@
 					            <% if current_user.role_id == 1 || current_user.role_id == 2 %>
 						            <li class="dropdown-header">Admin links</li>
 						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
-						            <li class="dropdown-link"><%= link_to "Deliveries", admin_deliveries_path %></li>
+						            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
 						            <li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path("stock") %></li>
 									<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
 						            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path("#{current_user.id}-in_stock") %></li>

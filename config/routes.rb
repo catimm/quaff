@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, :user_beer_ratings, :recommendations, :inventories, :deliveries
+    resources :users, :user_beer_ratings, :recommendations, :inventories, :fulfillment
   end
   
   namespace :admin do
@@ -143,7 +143,7 @@ Rails.application.routes.draw do
   get 'admin/recommendations/admin_review_delivery/:id' => 'admin/recommendations#admin_review_delivery', :as =>'admin_review_delivery'
   get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
   post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
-  get 'admin/deliveries/admin_confirm_delivery/:id' => 'admin/deliveries#admin_confirm_delivery', :as =>'admin_confirm_delivery'
+  get 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'

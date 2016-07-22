@@ -1,4 +1,4 @@
-class Admin::DeliveriesController < ApplicationController
+class Admin::FulfillmentController < ApplicationController
   before_filter :verify_admin
   require "stripe"
  
@@ -101,7 +101,7 @@ class Admin::DeliveriesController < ApplicationController
                                       change_noted: false)
                                       
     # redirect back to delivery page
-    redirect_to admin_deliveries_path
+    redirect_to admin_fulfillment_index_path
     
   end # end admin_confirm_delivery method
   
