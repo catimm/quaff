@@ -389,6 +389,7 @@ task :assess_drink_recommendations => :environment do
       
       # assess each drink to add if rated highly enough
       @assessed_drinks.each do |drink|
+        Rails.logger.debug("This drink: #{drink.id.inspect}")
         # find if user has rated/had this drink before
         @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: drink.id)
         @drink_ratings_last = @drink_ratings.last
