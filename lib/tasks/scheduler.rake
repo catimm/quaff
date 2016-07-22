@@ -325,7 +325,7 @@ task :assess_drink_recommendations => :environment do
       # get drink type info 
       @drink_types = BeerType.all
 
-      Rails.logger.debug("this user: #{user.id.inspect}")
+      #Rails.logger.debug("this user: #{user.id.inspect}")
       # get all drink styles the user claims to like
       @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
       
@@ -367,7 +367,7 @@ task :assess_drink_recommendations => :environment do
       
       # create an aggregated list of all beer types the user should like
       @final_user_type_likes = @user_type_likes + @additional_drink_types + @relational_drink_types_one + @relational_drink_types_two + @relational_drink_types_three
-      Rails.logger.debug("types liked: #{@final_user_type_likes.inspect}")
+      #Rails.logger.debug("types liked: #{@final_user_type_likes.inspect}")
       # removes duplicates from the array
       @final_user_type_likes = @final_user_type_likes.uniq
       @final_user_type_likes = @final_user_type_likes.grep(Integer)
@@ -383,7 +383,7 @@ task :assess_drink_recommendations => :environment do
       end
       # get count of total drinks to be assessed
       @available_assessed_drinks = @assessed_drinks.length
-      Rails.logger.debug("# of available drinks: #{@available_assessed_drinks.inspect}")
+      #Rails.logger.debug("# of available drinks: #{@available_assessed_drinks.inspect}")
       # create empty hash to hold list of drinks that have been assessed
       @compiled_assessed_drinks = Array.new
       
