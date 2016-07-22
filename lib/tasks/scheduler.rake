@@ -316,9 +316,9 @@ task :assess_drink_recommendations => :environment do
     # get count of total beers that have no info
     @all_number_complete_brewery_beers = @all_complete_brewery_beers.length
     
-    # get user info
-    @role_ids = [1, 2, 3, 4]
-    @users = User.where(role_id: @role_ids)
+    # get user info from users who have completed delivery preferences
+    @delivery_preference_user_ids = DeliveryPreference.all.pluck(:user_id)
+    @users = User.where(id: @delivery_preference_user_ids)
     
     # determine viable drinks for each user
     @users.each do |user|
