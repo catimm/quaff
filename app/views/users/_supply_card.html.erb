@@ -1,7 +1,7 @@
-<div class="col-xs-12 col-sm-4 beer-tile-container">
+<div class="col-xs-12 col-sm-4 beer-tile-container" id="user-supply-<%= drink.id %>">
 	<% if @view == "cellar" %>
-		<div class="fridge-icon btn btn-default" data-toggle="tooltip" title="Click to move this drink to your cooler.">
-			<%= link_to "#", :class => 'text-center' do %>
+		<div id="<%= drink.id %>" class="fridge-icon btn btn-default" data-toggle="tooltip" title="Click to move this drink to your cooler.">
+			<%= link_to "#", :class => 'text-center', data: {toggle: "modal", target: "#move_drink_to_cooler"} do %>
 				<img class="img-responsive center-block" alt="Responsive image" src="<%= image_url('fridge.png') %>">
 			<% end %>
 		</div>
@@ -59,22 +59,21 @@
 		</div>
 		<div class="row no-margin recent-rating-tile-second-last-row">
 		</div>
-		<% @drink_supply = @user_supply.where(user_id: current_user.id, beer_id: drink.beer.id).first %>
 		<div class="row no-margin next-delivery-tile-last-row">
 			<div class="col-xs-6 no-padding">
-				<div class="supply-quantity-change-minus" id="user-delivery-minus-<%= @drink_supply.id %>">
+				<div class="supply-quantity-change-minus" id="user-delivery-minus-<%= drink.id %>">
 					<p><i class="fa fa-minus"></i> qty</p>
 				</div>
 			</div>
 			<div class="col-xs-6 no-padding">
-				<div class="supply-quantity-change-add" id="user-delivery-add-<%= @drink_supply.id %>">
+				<div class="supply-quantity-change-add" id="user-delivery-add-<%= drink.id %>">
 					<p><i class="fa fa-plus"></i> qty</p>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="quantity-holder" id="user-supply-<%= @drink_supply.id %>">
-		<h3 id="drink-quantity-<%= @drink_supply.id %>"><%= @drink_supply.quantity %></h3>
+	<div class="quantity-holder" id="user-supply-<%= drink.id %>">
+		<h3 id="drink-quantity-<%= drink.id %>"><%= drink.quantity %></h3>
 		<p>qty</p>
 	</div>
 </div>	

@@ -176,6 +176,39 @@ class UsersController < ApplicationController
     
   end # end of supply method
   
+  def move_drink_to_cooler
+    @cellar_drink = UserSupply.find_by_id(params[:id])
+    Rails.logger.debug("Cellar drink: #{@cellar_drink.inspect}")
+    if @cellar_drink.quantity == "1"
+      # just change supply type from cellar to cooler
+      @cellar_drink.update(supply_type_id: 1)
+    else
+      # find if this drink also already exists in the cooler
+      @cooler_drink = UserSupply.where(user_id: current_user.id, beer_id: @cellar_drink.beer_id, supply_type_id: 1).first
+      Rails.logger.debug("Cooler drink: #{@cooler_drink.inspect}")
+      # get new cellar quantity
+      @new_cellar_quantity = (@cellar_drink.quantity - 1)
+      # update cellar supply
+      @cellar_drink.update(quantity: @new_cellar_quantity)
+        
+      if @cooler_drink.blank?
+        # create a cooler supply
+        UserSupply.create(user_id: current_user.id, 
+                          beer_id: @cellar_drink.beer_id, 
+                          supply_type_id: 1, 
+                          quantity: 1,
+                          cellar_note: @cellar_drink.cellar_note,
+                          projected_rating: @cellar_drink.projected_rating)
+      else # just add to the current cooler quantity
+        @new_cooler_quantity = (@cooler_drink.quantity + 1)
+        @cooler_drink.update(quantity: @new_cooler_quantity)
+      end
+    end
+    
+    render js: "window.location = '#{user_supply_path(current_user.id, 'cellar')}'"
+    
+  end # end of move_drink_to_cooler method
+  
   def add_supply_drink
     
   end # end add_supply_drink method

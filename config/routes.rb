@@ -70,6 +70,7 @@ Rails.application.routes.draw do
   patch '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'reset_customer_delivery_date'
   post '/users/deliveries_update_estimates/:id' => 'users#deliveries_update_estimates', :as => 'deliveries_update_estimates'
   patch '/users/deliveries_update_preferences/:id' => 'users#deliveries_update_preferences', :as => 'deliveries_update_preferences' 
+  post '/users/move_drink_to_cooler/:id' => 'users#move_drink_to_cooler', :as => 'move_drink_to_cooler'
   post '/users/change_supply_drink/:id' => 'users#change_supply_drink', :as => 'change_supply_drink'
   post '/users/add_drink/:id' => 'users#add_drink', :as => 'add_drink'
   post '/users/profile/:id' => 'users#create_drink_descriptors', :as => 'create_drink_descriptors'

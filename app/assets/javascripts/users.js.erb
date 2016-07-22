@@ -477,6 +477,26 @@ $(function () {
 		// make page not jump to top
 		return false;
 	});
+	$(document).on("click", ".fridge-icon", function() {
+		var supply_id = $(this).attr('id');
+		$(".move-drink-to-cooler-confirmation").attr('id', supply_id);
+	});
+	
+	$(document).on("click", ".move-drink-to-cooler-confirmation", function() {
+		var supply_id = $(this).attr('id');
+		
+		// remove modal
+	    $('#move_drink_to_cooler').modal('hide');
+		
+		// send to controller to change database 
+		$.ajax({
+		  type: "POST",
+		  url: "/users/move_drink_to_cooler/" + supply_id
+		});
+		// make page not jump to top
+		return false;
+		
+	});
 	
 	// allow customers to remove drinks from wishlist
 	$(document).on("click", ".remove-drink-from-wishlist", function() {
