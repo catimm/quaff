@@ -19,12 +19,12 @@
 		<div class="row no-margin">
 			<% if !@user_cellar.blank? %>
 				<div class="row no-margin recent-rating-holder">
-					<% @user_cellar.each do |drink| %>
+					<% @user_cellar_final.each do |drink| %>
 						<%= render(partial: 'supply_card', locals: { drink: drink }) %>
 					<% end%>
 				</div>
 				<div class="col-sm-12" id="fav-drink-types-container">
-					<%= will_paginate @user_cellar, renderer: BootstrapPagination::Rails %>
+					<%= will_paginate @user_cellar_final, renderer: BootstrapPagination::Rails %>
 				</div>
 			<% else %>
 				<div class="row no-margin">

@@ -1,5 +1,12 @@
 <div class="col-xs-12 col-sm-4 beer-tile-container">
-	<%= link_to new_user_rating_path(current_user.id, drink.id, :source => @view), :class => 'rate-beer text-center' do %>
+	<% if @view == "cellar" %>
+		<div class="fridge-icon btn btn-default" data-toggle="tooltip" title="Click to move this drink to your cooler.">
+			<%= link_to "#", :class => 'text-center' do %>
+				<img class="img-responsive center-block" alt="Responsive image" src="<%= image_url('fridge.png') %>">
+			<% end %>
+		</div>
+	<% end %>
+	<%= link_to new_user_rating_path(current_user.id, drink.beer.id, :source => @view), :class => 'rate-beer text-center' do %>
 		<i class="fa fa-thumbs-up"></i>
 		<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
 		<p>rate</p>
@@ -7,8 +14,8 @@
 	<div class="drink-supply-tile">
 		<div class="row no-margin ratings-image-holder-row">
 			<div class="col-xs-4 col-sm-5 no-padding wishlist-image-holder-column">
-				<% if !drink.brewery.image.blank? %>
-					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.brewery.image %>">
+				<% if !drink.beer.brewery.image.blank? %>
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
 				<% else %>
 					<div class="brewery-image-holder-empty-ratings-page text-center">
 						<h2><i class="fa fa-beer"></i></h2>
@@ -16,54 +23,43 @@
 				<% end %>
 			</div>
 			<div class="col-xs-8 col-sm-7 wishlist-best-guess">
-				<% if drink.user_rating %>
-					<% @drink_best_guess = ((((drink.best_guess) * 2).round)/2.0) %>
-					<% if @drink_best_guess > 10 %>
-						<% @drink_best_guess = 10 %>
-					<% end %>
-					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= @drink_best_guess %></span></p>
+				<% if drink.beer.user_rating %>
+					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= drink.projected_rating %></span></p>
 					<p>You rated it:</p>
-					<h1 class="user-rating"><%= drink.user_rating.round(2) %><span class="recent-user-rating-context">/10</span></h1>
+					<h1 class="user-rating"><%= drink.beer.user_rating.round(2) %><span class="recent-user-rating-context">/10</span></h1>
 				<% else %>
 					<p class="filler-best-guess-text"></p>
 					<p>Our <span class="best-guess">best guess</span> for you:</p>
-					<% if drink.best_guess > 10 %>
-						<% drink.best_guess == 10 %>
-					<% end %>
-					<% if drink.best_guess % 1 == 0 %>
-						<h1 class="best-guess"><%= ((((drink.best_guess) * 2).round)/2.0) %><span class="recent-user-rating-context">/10</span></h1>
-					<% else %>
-						<h1 class="best-guess"><%= ((((drink.best_guess) * 2).round)/2.0) %><span class="recent-user-rating-context">/10</span></h1>
-					<% end %>
+					<h1 class="best-guess"><%= drink.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
 				<% end %>
 			</div>
 		</div>
 		<div class="row no-margin drink-name-and-info-row">
-			<%= render 'layouts/drink_name_and_info', drink: drink%>	
+			<%= render 'layouts/drink_name_and_info', drink: drink.beer %>	
 		</div>
 		<div class="row no-margin cloud-descriptor-row">
 			<div class="col-xs-12">
 				<p>Described as:</p>
-				<div class="cloud-holder" id="drink_<%= drink.id %>"></div>
+				<div class="cloud-holder" id="drink_<%= drink.beer.id %>"></div>
 			</div>	
 		</div>
 		<div class="row no-margin list-overview hidden-xs">
 			<div class="col-xs-12 why-statement">
 				<p>Why you might like this:</p>
-				<% if drink.recommendation_rationale == "style" %>
-					<% if  drink.is_hybrid == "yes" %>
-						<%= render 'locations/hybrid_rating_rationale', beer: drink %>
+				<% if drink.beer.recommendation_rationale == "style" %>
+					<% if  drink.beer.is_hybrid == "yes" %>
+						<%= render 'locations/hybrid_rating_rationale', beer: drink.beer %>
 					<% else %>
-						<%= render 'locations/nonhybrid_rating_rationale', beer: drink %>
+						<%= render 'locations/nonhybrid_rating_rationale', beer: drink.beer %>
 					<% end %>
 				<% else %>
-					<%= render 'locations/type_rating_rationale', beer: drink %>
+					<%= render 'locations/type_rating_rationale', beer: drink.beer %>
 				<% end %>
 			</div>
 		</div>
 		<div class="row no-margin recent-rating-tile-second-last-row">
 		</div>
-		<% @drink_supply = @user_supply.where(user_id: current_user.id, beer_id: drink.id).first %>
+		<% @drink_supply = @user_supply.where(user_id: current_user.id, beer_id: drink.beer.id).first %>
 		<div class="row no-margin next-delivery-tile-last-row">
 			<div class="col-xs-6 no-padding">
 				<div class="supply-quantity-change-minus" id="user-delivery-minus-<%= @drink_supply.id %>">

@@ -2462,6 +2462,17 @@ $beer-header-lines-to-show-fp: 1;
   height: 450px;
   position: relative;
 }
+.fridge-icon {
+  width: 30px;
+  height: 30px;
+  border: 1px solid $normal-text;
+  border-radius: 4px;
+  padding: 5px;
+  z-index: 1000;
+  position: absolute;
+  left: 14px;
+  top: 22px;
+}
 .rate-beer {
   width: 42px;
   height: 42px;

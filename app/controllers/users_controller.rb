@@ -129,14 +129,8 @@ class UsersController < ApplicationController
       end
       # send full array to JQCloud
       gon.drink_descriptor_array = @final_descriptors_cloud
-      
-      # get best guess for each relevant drink
-      @supply_drink_ids = Array.new
-      @user_cooler.each do |drink|
-        #best_guess(drink.beer_id, current_user.id)
-        @supply_drink_ids << drink.beer_id
-      end
-      @user_cooler = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
+
+      @user_cooler_final = @user_cooler.paginate(:page => params[:page], :per_page => 12)
       #Rails.logger.debug("User cooler: #{@user_cooler.inspect}")
       @cooler_chosen = "chosen"
     elsif @view == "cellar"
@@ -154,12 +148,8 @@ class UsersController < ApplicationController
       # send full array to JQCloud
       gon.drink_descriptor_array = @final_descriptors_cloud
       
-      # get best guess for each relevant drink
-      @supply_drink_ids = Array.new
-      @user_cellar.each do |drink|
-        @supply_drink_ids << drink.beer_id
-      end
-      @user_cellar = best_guess(@supply_drink_ids, current_user.id).paginate(:page => params[:page], :per_page => 12)
+      @user_cellar_final = @user_cellar.paginate(:page => params[:page], :per_page => 12)
+      
       @cellar_chosen = "chosen"
     else
       @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)

@@ -14,7 +14,11 @@
 	<% if !drink.beer_type_id.nil? %>
 		<h5 class="tile-subheader beer-info no-overflow beer-type-info"><%= drink.beer_type.beer_type_name %></h5>
 		<% if drink.beer_type.cellarable == true %>
-			<p class="cellarable" data-toggle="tooltip" title="<%= drink.beer_type.cellarable_info %>">cellarable</p>
+			<% if drink.cellar_note.nil? %>
+				<p class="cellarable" data-toggle="tooltip" title="<%= drink.beer_type.cellarable_info %>">cellarable</p>
+			<% else %>
+				<p class="cellarable" data-toggle="tooltip" title="<%= drink.cellar_note %>">cellarable</p>
+			<% end %>
 		<% end %>
 	<% else %>
 		<h5 class="tile-subheader beer-info">Style unknown</h5>
