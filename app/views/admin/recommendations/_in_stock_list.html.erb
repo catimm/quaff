@@ -2,6 +2,7 @@
     <tr>
       <th><%= sortable "beers.beer_name", "Drink" %></th>
       <th><%= sortable "beers.beer_type_id", "Drink Type" %></th>
+      <th>ABV</th>
       <th><%= sortable "new_drink", "New" %></th>
       <th>#</th>
       <th><%= sortable "projected_rating", "Rating" %></th>
@@ -25,6 +26,7 @@
 	        <% end %>
 	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
 	        <td><%= drink.beer.beer_type.beer_type_short_name %></td>
+	        <td><%= drink.beer.beer_abv %></td>
 	        <td><%= drink.new_drink.humanize %></td>
 	        <% if drink.new_drink == true %>
 	        	<td>0</td>
