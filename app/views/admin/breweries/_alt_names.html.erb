@@ -1,22 +1,54 @@
 <div>
-		<h5>Current alternative names:</h5>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h5>Current alternative names:</h5>
+		</div>
+	</div>
 	<% if @alt_names.blank? %>
-		<h5>None included yet</h5>
+		<div class="row no-margin">	
+			<div class="col-xs-12">
+				<h5>None included yet</h5>
+			</div>
+		</div>
 	<% else %>
 		<% @alt_names.each do |n| %>
 			<% if n == @alt_names.last %> 
-				<h5><%= n.name %></h5>
+				<div class="row no-margin">
+					<div class="col-xs-6">
+						<h5><%= n.name %></h5>
+					</div>
+					<div class="col-xs-6">
+						<%= form_for n, :url => {:action => 'delete_alt_brewery_name', :id => n.id } do |f| %>
+							<%= f.hidden_field :id, :value => n %>
+							<%= f.submit "Remove", class: "btn btn-danger inputButton2" %>			
+						<% end %>
+					</div>
+				</div>
 			<% else %>
-				<h5><%= n.name %>, </h5>
+				<div class="row no-margin">
+					<div class="col-xs-6">
+						<h5><%= n.name %>, </h5>
+					</div>
+					<div class="col-xs-6">
+						<%= form_for n, :url => {:action => 'delete_alt_brewery_name', :id => n.id } do |f| %>
+							<%= f.hidden_field :id, :value => n %>
+							<%= f.submit "Remove", class: "btn btn-danger inputButton2" %>			
+						<% end %>
+					</div>
+				</div>
 			<% end %>
 		<% end %>	
 	<% end %>
 	</br>
-	<div class="text-center">
-		<%= form_for @brewery_alt_names, :url => {:action => 'create_alt_brewery'} do |f| %>
-			<%= f.hidden_field :brewery_id, :value => @brewery_info.id %>
-			<%= f.text_field :name, :class => "form-control", placeholder: "Add alternative name", autofocus: true %>
-			<%= f.submit "Add name", class: "btn btn-success inputButton2" %>			
-		<% end %>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<div class="text-center">
+				<%= form_for @brewery_alt_names, :url => {:action => 'create_alt_brewery'} do |f| %>
+					<%= f.hidden_field :brewery_id, :value => @brewery_info.id %>
+					<%= f.text_field :name, :class => "form-control", placeholder: "Add alternative name", autofocus: true %>
+					<%= f.submit "Add name", class: "btn btn-success inputButton2" %>			
+				<% end %>
+			</div>
+		</div>
 	</div>
 </div>

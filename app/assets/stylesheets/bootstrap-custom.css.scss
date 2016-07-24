@@ -1855,7 +1855,9 @@ $beer-header-lines-to-show-fp: 1;
   font-weight: 500;
   margin-top: -5px;
 }
-
+.alt-name {
+  float: left;
+}
 .rate-button {
   width: 120px; 
   font-size: 16px;

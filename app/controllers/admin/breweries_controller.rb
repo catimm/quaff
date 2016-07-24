@@ -85,10 +85,16 @@ class Admin::BreweriesController < ApplicationController
                       brewery_beers: params[:brewery][:brewery_beers], image: params[:brewery][:image])
       @brewery.save
     elsif params[:brewery][:form_type] == "delete"
-      @brewery_to_delete = Brewery.find(params[:brewery][:delete_brewery])
+      # get id of brewery to delete
+      @brewery_to_delete = Brewery.find_by_id(params[:brewery][:delete_brewery])
+      
+      # add name to Alt Brewery Name table
+      AltBreweryName.create(name: @brewery_to_delete.brewery_name, brewery_id: params[:brewery][:id])
+      
+      # change beers over to new brewery
       @beers_to_change = Beer.where(brewery_id: @brewery_to_delete.id)
       @beers_to_change.each do |beers|
-        this_beer = Beer.find(beers.id)
+        this_beer = Beer.find_by_id(beers.id)
         this_beer.update(brewery_id: params[:brewery][:id])
         this_beer.save
       end
@@ -96,6 +102,7 @@ class Admin::BreweriesController < ApplicationController
     end
     redirect_to admin_breweries_path
   end 
+  
   
   def alt_brewery_name
     @alt_names = AltBreweryName.where(brewery_id:params[:id])
@@ -105,7 +112,14 @@ class Admin::BreweriesController < ApplicationController
   end
   
   def create_alt_brewery
-    @new_alt_name = AltBreweryName.create!(brewery_name_params)
+    AltBreweryName.create!(brewery_name_params)
+    redirect_to admin_breweries_path
+  end
+  
+  def delete_alt_brewery_name
+    @alt_brewery_name = AltBreweryName.find_by_id(params[:id])
+    @alt_brewery_name.destroy!
+    
     redirect_to admin_breweries_path
   end
   

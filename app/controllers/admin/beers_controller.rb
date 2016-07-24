@@ -94,9 +94,8 @@ class Admin::BeersController < ApplicationController
   
   def update
     # find correct beer
-    @beer = Beer.find(params[:id])
-    # if the edit function is chosen, update this beer's attributes
-    if params[:beer][:form_type] == "edit"
+    @beer = Beer.find_by_id(params[:id])
+
     # update beer attributes
       @beer.update(beer_name: params[:beer][:beer_name], beer_rating_one: params[:beer][:beer_rating_one], 
             number_ratings_one: params[:beer][:number_ratings_one], beer_rating_two: params[:beer][:beer_rating_two], 
@@ -120,52 +119,7 @@ class Admin::BeersController < ApplicationController
           @new_drink_format.save!
         end
       end
-      
-    # if the delete function is chosen, delete this beer
-    elsif params[:beer][:form_type] == "delete"
-      # change associations in beer_locations table
-      @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
-      if !@beer_locations_to_change.empty?
-        @beer_locations_to_change.each do |beers|
-          BeerLocation.update(beers.id, beer_id: params[:beer][:id])
-        end
-      end
-      # change associations in alt_beer_names table
-      @alt_beer_names_to_change = AltBeerName.where(beer_id: @beer.id)
-      if !@alt_beer_names_to_change.empty?
-        @alt_beer_names_to_change.each do |beers|
-          AltBeerName.update(beers.id, beer_id: params[:beer][:id])
-        end
-      end
-      # change associations in user_beer_ratings table
-      @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @beer.id)
-      if !@user_beer_ratings_to_change.empty?
-        @user_beer_ratings_to_change.each do |beers|
-          UserBeerRating.update(beers.id, beer_id: params[:beer][:id])
-        end
-      end
-      # change associations in user_beer_trackings table
-      @user_beer_trackings_to_change = Wishlist.where(beer_id: @beer.id)
-      if !@user_beer_trackings_to_change.empty?
-        @user_beer_trackings_to_change.each do |beers|
-          Wishlist.update(beers.id, beer_id: params[:beer][:id])
-        end
-      end
-      # remove formats associated with this drink
-      @drink_formats = BeerFormat.where(beer_id: @beer.id)
-      if !@drink_formats.empty?
-        @drink_formats.delete_all
-      end
-      # then delete this instance of the beer
-      @beer.destroy
-      # then delete associations with this beer in the collab table
-      @collab_associations = BeerBreweryCollab.where(beer_id: @beer.id)
-      if !@collab_associations.empty?
-        @collab_associations.delete_all
-      end
-      # then delete this instance of the beer
-      @beer.destroy
-    end
+
     redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
   end 
 
@@ -192,11 +146,73 @@ class Admin::BeersController < ApplicationController
     # find the beer to edit
     @beer = Beer.find(params[:id]) 
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
-    @this_brewery = Brewery.find_by(id: params[:brewery_id])
+    @this_brewery = Brewery.find_by_id(params[:brewery_id])
     # pull full list of beers--for delete option
     @beers = Beer.all.order(:beer_name)
     render :partial => 'admin/beers/delete_beer'
   end
+  
+  def delete_beer
+    # find beer being deleted
+    @beer = Beer.find_by_id(params[:id])
+    
+    # add name of beer being deleted to alt beer name table
+    AltBeerName.create(name: @beer.beer_name, beer_id: params[:beer][:id])
+    
+    # change associations in beer_locations table
+    @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
+    if !@beer_locations_to_change.empty?
+      @beer_locations_to_change.each do |beers|
+        BeerLocation.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
+    # change associations in alt_beer_names table
+    @alt_beer_names_to_change = AltBeerName.where(beer_id: @beer.id)
+    if !@alt_beer_names_to_change.empty?
+      @alt_beer_names_to_change.each do |beers|
+        AltBeerName.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
+    # change associations in user_beer_ratings table
+    @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @beer.id)
+    if !@user_beer_ratings_to_change.empty?
+      @user_beer_ratings_to_change.each do |beers|
+        UserBeerRating.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
+    # change associations in user_beer_trackings table
+    @user_beer_trackings_to_change = Wishlist.where(beer_id: @beer.id)
+    if !@user_beer_trackings_to_change.empty?
+      @user_beer_trackings_to_change.each do |beers|
+        Wishlist.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
+    # remove formats associated with this drink
+    @drink_formats = BeerFormat.where(beer_id: @beer.id)
+    if !@drink_formats.empty?
+      @drink_formats.delete_all
+    end
+    # then delete this instance of the beer
+    @beer.destroy
+    # then delete associations with this beer in the collab table
+    @collab_associations = BeerBreweryCollab.where(beer_id: @beer.id)
+    if !@collab_associations.empty?
+      @collab_associations.delete_all
+    end
+    # then delete this instance of the beer
+    @beer.destroy
+  
+    redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
+  end # end of delete_beer method
+  
+  def delete_alt_beer_name
+    @alt_drink_name = AltBeerName.find_by_id(params[:id])
+    @brewery_id = @alt_drink_name.beer.brewery_id
+    @alt_drink_name.destroy!
+    
+    redirect_to admin_brewery_beers_path(@brewery_id)
+    
+  end # end of delete_alt_beer_name method
   
   def clean_location_prep
     # create new instance for form
