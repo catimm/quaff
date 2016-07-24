@@ -3,6 +3,9 @@ class RatingsController < ApplicationController
   include BestGuess
   
   def new
+    # set the page to return to after adding a rating
+    session[:return_to] ||= request.referer
+    
     if params.has_key?(:source)
       @ratings_source = params[:source]
     end
@@ -55,8 +58,9 @@ class RatingsController < ApplicationController
       end
     end
     
-    # now redirect back to locations page
-    redirect_to brewery_beer_path(@beer.brewery.id, @beer)
+    # now redirect back to previous page
+    redirect_to session.delete(:return_to)
+    #redirect_to brewery_beer_path(@beer.brewery.id, @beer)
   end
   
   private
