@@ -17,7 +17,7 @@ module DeliveryEstimator
     @large_percentage = ((large_format.to_f) / (drinks_per_week.to_f)).round(3)
     
     # determine # of large and small format drinks
-    @large_format_number = @delivery_preferences.max_large_format
+    @large_format_number = large_format
     Rails.logger.debug("Large Format #: #{@large_format_number.inspect}")
     @small_format_number = @drink_per_delivery_calculation - (@large_format_number * 2) # this counts each large format as 2 small format drinks
     Rails.logger.debug("Small Format #: #{@small_format_number.inspect}")
