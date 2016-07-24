@@ -11,16 +11,16 @@ module DeliveryEstimator
     
     #determine drinks per delivery
     @drink_per_delivery_calculation = (drinks_per_week * 2.2).round
-    Rails.logger.debug("Drinks per delivery: #{@drink_per_delivery_calculation.inspect}") 
+    #Rails.logger.debug("Drinks per delivery: #{@drink_per_delivery_calculation.inspect}") 
     
     # determine large format percentage
     @large_percentage = ((large_format.to_f) / (drinks_per_week.to_f)).round(3)
     
     # determine # of large and small format drinks
     @large_format_number = large_format
-    Rails.logger.debug("Large Format #: #{@large_format_number.inspect}")
+    #Rails.logger.debug("Large Format #: #{@large_format_number.inspect}")
     @small_format_number = @drink_per_delivery_calculation - (@large_format_number * 2) # this counts each large format as 2 small format drinks
-    Rails.logger.debug("Small Format #: #{@small_format_number.inspect}")
+    #Rails.logger.debug("Small Format #: #{@small_format_number.inspect}")
      
     # determine percentage of cellar/cooler drinks per delivery
     if @customer_sophistication == 1
@@ -39,10 +39,10 @@ module DeliveryEstimator
     @number_of_small_cellar = (@small_format_number * @cellar_percentage)
     @number_of_large_cooler = (@large_format_number * @cooler_percentage)
     @number_of_small_cooler = (@small_format_number * @cooler_percentage)
-    Rails.logger.debug("# large cellar: #{@number_of_large_cellar.inspect}") 
-    Rails.logger.debug("# small cellar: #{@number_of_small_cellar.inspect}") 
-    Rails.logger.debug("# large cooler: #{@number_of_large_cooler.inspect}")
-    Rails.logger.debug("# small cooler: #{@number_of_small_cooler.inspect}") 
+    #Rails.logger.debug("# large cellar: #{@number_of_large_cellar.inspect}") 
+    #Rails.logger.debug("# small cellar: #{@number_of_small_cellar.inspect}") 
+    #Rails.logger.debug("# large cooler: #{@number_of_large_cooler.inspect}")
+    #Rails.logger.debug("# small cooler: #{@number_of_small_cooler.inspect}") 
     
     # get all drinks in inventory
     @inventory = Inventory.all
@@ -84,10 +84,10 @@ module DeliveryEstimator
     else
       @large_cellar_cost = 18
     end
-    Rails.logger.debug("Small cooler cost: #{@small_cooler_cost.inspect}")
-    Rails.logger.debug("Small cellar cost: #{@large_cooler_cost.inspect}")
-    Rails.logger.debug("Large cooler cost: #{@small_cellar_cost.inspect}")
-    Rails.logger.debug("Large cellar cost: #{@large_cellar_cost.inspect}")
+    #Rails.logger.debug("Small cooler cost: #{@small_cooler_cost.inspect}")
+    #Rails.logger.debug("Small cellar cost: #{@large_cooler_cost.inspect}")
+    #Rails.logger.debug("Large cooler cost: #{@small_cellar_cost.inspect}")
+    #Rails.logger.debug("Large cellar cost: #{@large_cellar_cost.inspect}")
    
     
     # multiply drink numbers by drink costs
@@ -95,13 +95,13 @@ module DeliveryEstimator
     @cost_estimate_cooler_large = (@large_cooler_cost * @number_of_large_cooler) 
     @cost_estimate_cellar_small = (@small_cellar_cost * @number_of_small_cellar)
     @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
-    Rails.logger.debug("$ small cooler: #{@cost_estimate_cooler_small.inspect}") 
-    Rails.logger.debug("$ large cooler: #{@cost_estimate_cooler_large.inspect}")
-    Rails.logger.debug("$ small cellar: #{@cost_estimate_cellar_small.inspect}")
-    Rails.logger.debug("$ large cellar: #{@cost_estimate_cellar_large.inspect}") 
+    #Rails.logger.debug("$ small cooler: #{@cost_estimate_cooler_small.inspect}") 
+    #Rails.logger.debug("$ large cooler: #{@cost_estimate_cooler_large.inspect}")
+    #Rails.logger.debug("$ small cellar: #{@cost_estimate_cellar_small.inspect}")
+    #Rails.logger.debug("$ large cellar: #{@cost_estimate_cellar_large.inspect}") 
     
     @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
-    Rails.logger.debug("Total $: #{@total_cost_estimate.inspect}") 
+    #Rails.logger.debug("Total $: #{@total_cost_estimate.inspect}") 
   
     # update delivery prefrence drink total estimation
     if status == "update"

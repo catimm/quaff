@@ -528,7 +528,9 @@ class UsersController < ApplicationController
     @large_format_drinks_per_week = @delivery_preferences.max_large_format
     
     # get estimated cost estimates -- rounded to nearest multiple of 5
-    @delivery_cost_estimate = ((@delivery_preferences.price_estimate) / 5).round * 5
+    @delivery_cost_estimate = @delivery_preferences.price_estimate
+    @delivery_cost_estimate_low = ((@delivery_cost_estimate *0.9) / 5).round * 5
+    @delivery_cost_estimate_high = ((@delivery_cost_estimate *0.9 * 1.1) / 5).round * 5
 
     # get monthly estimates
     @user_subscription = UserSubscription.where(user_id: current_user.id).first
@@ -578,7 +580,9 @@ class UsersController < ApplicationController
       @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
       
       # get estimated cost estimates -- rounded to nearest multiple of 5
-      @delivery_cost_estimate = ((@delivery_preferences.temp_cost_estimate) / 5).round * 5
+      @delivery_cost_estimate = @delivery_preferences.temp_cost_estimate
+      @delivery_cost_estimate_low = ((@delivery_cost_estimate *0.9) / 5).round * 5
+      @delivery_cost_estimate_high = ((@delivery_cost_estimate *0.9 * 1.1) / 5).round * 5
     end
 
     respond_to do |format|
