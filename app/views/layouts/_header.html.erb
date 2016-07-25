@@ -50,7 +50,7 @@
 								<li class="dropdown-link"><%= link_to "My preferences", user_delivery_settings_path(current_user.id) %></li>
 								<li class="dropdown-link"><%= link_to "My styles & top drinks", user_drink_settings_path(current_user.id, 'styles') %></li>
 								
-					            <% if current_user.role_id == 1 || current_user.role_id == 2 %>
+					            <% if current_user.role_id == 1 %>
 						            <li class="dropdown-header">Admin links</li>
 						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
 						            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
@@ -58,6 +58,9 @@
 									<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
 						            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path("#{current_user.id}-in_stock") %></li>
 						            <li class="dropdown-link"><%= link_to "Retail account", retailer_path(session[:retail_id]) %></li>  
+							    <% elsif current_user.role_id == 2 %>
+							    	<li class="dropdown-header">Admin links</li>
+						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
 							    <% end %>
 							    
 							    <li role="separator" class="divider"></li>

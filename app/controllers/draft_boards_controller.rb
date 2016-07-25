@@ -381,7 +381,7 @@ class DraftBoardsController < ApplicationController
   
   private
   def verify_admin
-    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 2 || current_user.role_id == 5 || current_user.role_id == 6 || current_user.role_id == 7
+    redirect_to root_url unless current_user.role_id == 1 || current_user.role_id == 5
   end
 
   def drink_params
