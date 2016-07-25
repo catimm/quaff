@@ -1,7 +1,7 @@
 <div class="col-sm-4 col-xs-12 beer-tile-container" id="drink-tile-<%= drink.id %>">
-	<div class="next-delivery-tile">
+	<div class="next-delivery-tile drink-tile-width-measurement">
 		<div class="row no-margin ratings-image-holder-row">
-			<div class="col-sm-5 no-padding wishlist-image-holder-column">
+			<div class="col-xs-4 col-sm-5 no-padding wishlist-image-holder-column">
 				<% if !drink.beer.brewery.image.blank? %>
 					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
 				<% else %>
@@ -10,7 +10,7 @@
 					</div>
 				<% end %>
 			</div>
-			<div class="col-sm-7 wishlist-best-guess">
+			<div class="col-xs-8 col-sm-7 wishlist-best-guess">
 				<% @user_rating = UserBeerRating.where(user_id: drink.user.id, beer_id: drink.beer.id).pluck(:user_beer_rating)[0] %>
 				<% if !@user_rating.nil? %>
 					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= drink.projected_rating %></span></p>
@@ -25,43 +25,8 @@
 				<% end %>
 			</div>
 		</div>
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<% if drink.beer.collab == true %>
-					<% @title_header = (Beer.collab_brewery_name(drink.beer.id) + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-					<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-				<% else %>
-					<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer_id), :class => 'tile-header beer-tile-header-next-delivery' %>
-				<% end %>
-			</div>
-			<div class="col-xs-12">
-				<% if !drink.beer.beer_type_id.nil? %>
-					<h5 class="tile-subheader beer-info no-overflow beer-type-info"><%= drink.beer.beer_type.beer_type_name %></h5>
-					<% if drink.beer.beer_type.cellarable == true %>
-						<p class="cellarable" data-toggle="tooltip" title="<%= drink.beer.beer_type.cellarable_info %>">cellarable</p>
-					<% end %>
-				<% else %>
-					<h5 class="tile-subheader beer-info">Style unknown</h5>
-				<% end %>
-			</div>
-			<div class="col-xs-6 no-padding-right">
-				<% if !drink.beer.beer_abv.nil? %>
-					<h6 class="tile-subheader beer-info"><%= drink.beer.beer_abv %>% ABV</h6>
-				<% else %>
-					<h6 class="tile-subheader beer-info">ABV N/A</h6>
-				<% end %>
-			</div>
-			<% if !drink.beer.beer_ibu.nil? %>
-				<div class="col-xs-6 no-padding-left text-center ibu-div">
-					<h6 class="tile-subheader beer-info"><%= drink.beer.beer_ibu %> IBUs</h6>
-				</div>
-			<% else %>
-				<div class="col-xs-6"></div>
-			<% end %>	
+		<div class="row no-margin drink-name-and-info-row">
+			<%= render 'layouts/drink_name_and_info', drink: drink.beer %>	
 		</div>
 		<div class="row no-margin cloud-descriptor-row">
 			<div class="col-xs-12">
@@ -69,7 +34,7 @@
 				<div class="cloud-holder-next-delivery" id="drink_<%= drink.beer.id %>"></div>
 			</div>	
 		</div>
-		<div class="row no-margin list-overview">
+		<div class="row no-margin list-overview hidden-xs">
 			<div class="col-xs-12 why-statement">
 				<% drink.beer.likes_style = drink.style_preference %>
 				<p>Why you might like this:</p>
@@ -100,12 +65,12 @@
 			</div>
 		</div>
 		<div class="row no-margin next-delivery-tile-last-row">
-			<div class="col-sm-6 no-padding">
+			<div class="col-xs-6 no-padding">
 				<div class="quantity-change-holder-minus" id="user-delivery-minus-<%= drink.id %>">
 					<p><i class="fa fa-minus"></i> qty</p>
 				</div>
 			</div>
-			<div class="col-sm-6 no-padding" id="limit-per-<%= @limit_per_delivery %>">
+			<div class="col-xs-6 no-padding" id="limit-per-<%= @limit_per_delivery %>">
 				<div class="quantity-change-holder-add" id="user-delivery-add-<%= drink.id %>">
 					<p><i class="fa fa-plus"></i> qty</p>
 				</div>

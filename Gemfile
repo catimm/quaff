@@ -104,7 +104,8 @@ gem 'stripe'
 gem 'humanize_boolean'
 # gem to turn zip code into city/state info
 gem 'area'
-
+# get to add countdown timer to delivery review page
+gem 'jquery-countdown-rails'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

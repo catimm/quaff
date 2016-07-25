@@ -2430,14 +2430,54 @@ $beer-header-lines-to-show-fp: 1;
   padding-top: 30px;
   font-size: 50px;
 }
+.delivery-extra-info-row {
+  margin: 15px 0 0 0 !important;
+}
+.next-delivery-date-notice {
+  border-radius: 6px;
+  background: $white;
+  height: inherit;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  text-align: center !important;
+}
+.next-delivery-month {
+  font-family: 'uppereastsideregular';
+  font-size: 0.9em;
+  margin: 0.4em 0 0.2em 0;
+}
+.next-delivery-day {
+  font-family: 'uppereastsideregular';
+  font-size: 0.9em;
+  margin: 0.3em 0 0.2em 0;
+}
+.next-delivery-date {
+  font-family: 'uppereastsideregular';
+  font-size: 1.85em;
+  font-weight: 600;
+  margin: 0.125em 0;
+}
 .next-delivery-text {
   color: $rating-text;
-  margin-top: 30px;
-  padding-right: 17px;
+  margin-top: 0 !important;
+}
+.next-delivery-text.review-ends {
+  margin-top: 15px;
 }
 .next-delivery-subtext {
   color: $less-emphasized-text;
-  padding-right: 17px;
+  margin-top: 0 !important;
+}
+// Override timer class
+.is-countdown {
+  border: none !important;
+  background: transparent !important;
+}
+.countdown-amount {
+  font-size: 24px !important;
+}
+.countdown-period {
+  font-size: 12px !important;
 }
 .drink-preference-view-option {
   margin-top: 30px !important;
@@ -3733,6 +3773,7 @@ $delivery-beer-header-lines-to-show: 2;
   color: $normal-text;
   font-weight: 500;
   margin-bottom: 2.5px;
+  font-size: 17px;
 }
 .delivery-quantity-text {
   padding-top: 7.5px;
@@ -4641,7 +4682,7 @@ $delivery-beer-header-lines-to-show: 2;
     padding: 0;
     font-size: 36px;
   }
-  .mobile-supply-menu-holder {
+  .mobile-menu-holder {
     padding: 0 !important;
   }
   .drink-preference-view-option {
@@ -4700,11 +4741,107 @@ $delivery-beer-header-lines-to-show: 2;
     font-size: 10px;
     margint-top: 2.5px;
   }
-  .cloud-holder {
+  .cloud-holder, .cloud-holder-next-delivery {
     height: 50px !important;
   }
   .quantity-holder {
-    bottom: 12.5px;
+    bottom: 15px;
+    h3 {
+      font-size: 20px;
+    }
+  }
+  // Mobile Deliveries page
+  .next-delivery-tile {
+  height: 335px;
+  }
+  .next-delivery-tile-no-review {
+    height: 300px;
+  }
+  .next-delivery-text {
+    font-size: 16px;
+    padding: 0 !important;
+    margin: 5px 0 !important;
+  }
+  .next-delivery-subtext {
+    font-size: 12px;
+    padding: 0 !important;
+    margin: 5px 0 !important;
+  }
+  .next-delivery-date-notice {
+    border-radius: 6px;
+    background: $white;
+    height: inherit;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+    -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+    text-align: center !important;
+  }
+  .next-delivery-month {
+    font-family: 'uppereastsideregular';
+    font-size: 0.6em;
+    margin: 0.2em 0 0.2em 0;
+  }
+  .next-delivery-day {
+    font-family: 'uppereastsideregular';
+    font-size: 0.6em;
+    margin: 0.15em 0 0.1em 0;
+  }
+  .next-delivery-date {
+    font-family: 'uppereastsideregular';
+    font-size: 1em;
+    font-weight: 600;
+    margin: 0.125em 0;
+  }
+  .delivery-mobile-spacer {
+    height: 50px;
+  }
+  .countdown-amount {
+    font-size: 16px !important;
+  }
+  .countdown-period {
+    font-size: 10px !important;
+  }
+  .countdown-section {
+    width: 24% !important;
+  }
+  .delivery-info-box {
+    text-align: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 4px;
+    border-radius: 6px;
+    p {
+      font-size: 10px;
+    }
+    h4 {
+      font-size: 16px;
+    }
+  }
+  .recent-user-rating-context {
+    font-size: 10px;
+  }
+  .size-and-price {
+    margin: 5px 0 2.5px 0;
+    font-size: 14px;
+  }
+  .limit-per-delivery {
+    font-size: 11px
+  }
+  .mobile-delivery-info-holder {
+    padding: 0 2px !important;
+  }
+  .delivery-info-box.total-price-stats {
+    width: 100%;
+  }
+  .delivery-info-box.monthly-estimate {
+    border: 1px solid $less-emphasized-text;
+    h4 {
+      color: $less-emphasized-text;
+    }
+  }
+  .past-review-text {
+    font-size: 11px;
+    padding-right: 0 !important;
+    margin: 5px 0 10px 0;
   }
   // Mobile Index page
 .banner-xs {
@@ -5380,7 +5517,6 @@ div#admin_user_delivery.modal.in, div#admin_user_feedback.modal.in, div#admin_re
   left: 50%;
   margin: -12px 0 0 -12px;
 }
-
 /*
 Animate.css - http://daneden.me/animate
 Licensed under the ☺ license (http://licence.visualidiot.com/)
@@ -5435,42 +5571,3 @@ ul {
 p {
   font-family: inherit !important;
 }
-
-
-/* Add CSS for pdf print format */
-@media print {
-  .print-menu-retailer-logo-image-med {
-    img {
-      margin: 0;
-      padding: 0; 
-      float: left;
-    }
-  }
-  .print-menu-retailer-page-title {
-    padding: 15px 0 0 67.5px;
-    margin: 0;
-  }
-  .special-print-pint-column {
-    width: 11% !important;
-  }
-  .last-updated {
-    color: $less-emphasized-text;
-    font-size: 14px;
-  }
-  .table.pdf-menu-table {
-    font-size: 12px !important;
-    td, th {
-      padding: 8px 6px !important;
-    }
-  }
-  .print-menu-tap-column {
-    padding: 0 !important;
-  }
-  .print-menu-extra-size {
-    font-size: 85%;
-    color: $less-emphasized-text !important;
-  }
-  .print-menu-extra-italic {
-    font-style: italic;
-  }
-} /* End of CSS for pdf print format */

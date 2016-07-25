@@ -377,6 +377,9 @@ class UsersController < ApplicationController
         @next_delivery_date = @delivery.delivery_date
         @next_delivery_review_start_date = @next_delivery_date - 3.days
         @next_delivery_review_end_date = @next_delivery_date - 1.day
+        @time_left = @next_delivery_review_end_date.to_i - Time.now.to_i
+        Rails.logger.debug("Time to Delivery end date: #{@time_left.inspect}")
+        gon.review_period_ends = @time_left
       
         # get next delivery drink info for view
         if @delivery.status == "user review" || @delivery.status == "in progress"

@@ -34,13 +34,19 @@ $(function () {
 	  };
 	})();
 	
+	// add review end countdown clock
+	$('#review-ends-on').countdown({until: gon.review_period_ends, format: 'dhmS',
+										labels: ['Yr', 'Mo', 'Wk', 'Days', 'Hours', 'Mins', 'Secs'],
+										labels1: ['Yr', 'Mo', 'Wk', 'Day', 'Hour', 'Min', 'Sec']
+									});
+							    
 	// ensure only one delivery date option is chosen
 	$(document).on("change", ".first_delivery_date_chosen", function() {
 		$(this).parent().siblings(".drink-preference-choice").children("input").removeAttr('checked');
 	});
 	
 	// set width of quantity holder--in supply and delivery review views--equal to portion of tile width
-	drink_tile_width = $(".drink-supply-tile").width();
+	drink_tile_width = $(".drink-tile-width-measurement").width();
 	quantity_holder_width = (drink_tile_width * .15);
 	$(".quantity-holder").width(quantity_holder_width).height(quantity_holder_width);
 	

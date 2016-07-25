@@ -34,6 +34,9 @@ module DeliveryEstimator
       @cooler_percentage = 0.9
     end
     
+    # determine max number of cellar drinks per delivery
+    @max_cellar = (@drink_per_delivery_calculation * @cellar_percentage).ceil
+
     # determine number of large/small cellar/cooler drinks
     @number_of_large_cellar = (@large_format_number * @cellar_percentage)  
     @number_of_small_cellar = (@small_format_number * @cellar_percentage)
