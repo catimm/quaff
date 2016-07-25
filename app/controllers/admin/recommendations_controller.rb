@@ -60,7 +60,9 @@ class Admin::RecommendationsController < ApplicationController
       @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id)
       
       # count number of drinks in delivery
-      @drink_count = @next_delivery_plans.sum(:quantity)
+      @next_delivery_large_format_count = @next_delivery_plans.where(large_format: true).count
+      @large_format_multiplier = (@next_delivery_large_format_count * 2)
+      @drink_count = (@next_delivery_plans.sum(:quantity) - @next_delivery_large_format_count) + @large_format_multiplier
       # count number of drinks that are new to user
       @next_delivery_new = 0
       @next_delivery_retry = 0
