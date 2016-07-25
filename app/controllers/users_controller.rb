@@ -466,7 +466,7 @@ class UsersController < ApplicationController
 
     # set small/large format drink estimates
     @large_delivery_estimate = @delivery_preferences.max_large_format
-    @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
+    @small_delivery_estimate = @drink_per_delivery_calculation - (@large_delivery_estimate * 2)
     
     # find if customer has recieved first delivery or is within one day of it
     @first_delivery = @delivery_preferences.first_delivery_date
@@ -577,7 +577,7 @@ class UsersController < ApplicationController
       @drink_delivery_estimate = @drink_per_delivery_calculation
       # get small/large format estimates
       @large_delivery_estimate = @large_format_drinks_per_week
-      @small_delivery_estimate = @drink_per_delivery_calculation - @large_delivery_estimate
+      @small_delivery_estimate = @drink_per_delivery_calculation - (@large_delivery_estimate * 2)
       
       # get estimated cost estimates -- rounded to nearest multiple of 5
       @delivery_cost_estimate = @delivery_preferences.temp_cost_estimate

@@ -2321,7 +2321,12 @@ $beer-header-lines-to-show-fp: 1;
 .drinks-per-week-meaning-parent {
   border: 1px solid $normal-text;
   padding: 10px;
-  margin-top: 15px;
+  margin-top: 25px;
+}
+.large-format-meaning-parent {
+  border: 1px solid $normal-text;
+  padding: 10px;
+  margin-top: 30px;
 }
 .drinks-per-week-meaning-text {
   color: $normal-text;
