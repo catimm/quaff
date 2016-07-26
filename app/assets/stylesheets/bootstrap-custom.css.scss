@@ -3870,6 +3870,10 @@ $delivery-beer-header-lines-to-show: 2;
   margin-top: 30px;
   padding-right: 30px;
 }
+// Delivery history page
+.past-delivery-total {
+    color: $normal-text !important;
+  }
 // Admin recommendation review page
 .second-row-next-delivery-review {
   margin: 10px 0 !important;

@@ -98,7 +98,7 @@ class Admin::FulfillmentController < ApplicationController
     @next_delivery = Delivery.create(user_id: @delivery.user_id, 
                                       delivery_date: @next_delivery_date,
                                       status: "admin prep",
-                                      change_noted: false)
+                                    delivery_change_confirmation: false)
                                       
     # redirect back to delivery page
     redirect_to admin_fulfillment_index_path

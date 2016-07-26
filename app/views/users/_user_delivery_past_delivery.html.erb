@@ -3,62 +3,85 @@
 <% @subtotal_total = 0 %>
 <% @tax_total = 0 %>
 <% @price_total = 0 %>
-<table class="table table-striped">
-		    <tr>
-		      <th>Maker</th>
-		      <th>Drink</th>
-		      <th>Drink type</th>
-		      <th>Format</th>
-		      <th>New/Repeat</th>
-		      <th>Cooler/Cellar</th>
-		      <th>Quantity</th>
-		      <th>Price</th>
-		      <th>Subtotal</th>
-		      <th>Tax</th>
-		      <th>Total</th>
-		    </tr>
-			<% @delivery_drinks.each do |drink| %>
-				<tr>
-			        <td><%= drink.beer.brewery.short_brewery_name %></td>
-			        <td><%= drink.beer.beer_name %></td>
-			        <td><%= drink.beer.beer_type.beer_type_name %></td>
-			        <td><%= drink.inventory.size_format.format_name %></td>
-			        <% if drink.new_drink == true %>
-			        	<% @new_or_repeat = "New" %>
-			        <% else %>
-			        	<% @new_or_repeat = "Repeat" %>
-			        <% end %>
-			        <td><%= @new_or_repeat %></td>
-			       <% if drink.cellar == true %>
-			        	<% @cooler_or_cellar = "Cellar" %>
-			        <% else %>
-			        	<% @cooler_or_cellar = "Cooler" %>
-			        <% end %>
-			        <td><%= @cooler_or_cellar %></td>   
-			        <td><%= drink.quantity %></td>
-			        <% @quantity_total += drink.quantity %>
-			        <td><%= number_to_currency(drink.drink_price, precision: 2) %></td>
-			        <% @subtotal = (drink.quantity * drink.drink_price) %>
-			        <% @subtotal_total += @subtotal %>
-			        <td><%= number_to_currency(@subtotal, precision: 2) %></td>
-			        <% @tax = (@subtotal * 0.096) %>
-			        <% @tax_total += @tax %>
-			        <td><%= number_to_currency(@tax, precision: 2) %></td>
-			        <% @total = (@subtotal + @tax)%>
-			        <% @price_total += @total %>
-			        <td><%= number_to_currency(@total, precision: 2) %></td>
-			    </tr>
-			<% end %>
-				<tr>
-					<td></td>
-			        <td></td>
-			        <td></td>
-			        <td></td>
-			        <td></td>   
-			        <td><b><%= @quantity_total %></b></td>
-			        <td></td>
-			        <td><b><%= number_to_currency(@subtotal_total, precision: 2) %></b></td>
-			        <td><%= number_to_currency(@tax_total, precision: 2) %></td>
-			        <td><b><%= number_to_currency(@price_total, precision: 2) %></b></td>
-				</tr>
-		</table>
+<% if delivery.delivery_date > 4.weeks.ago %>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-10">
+			<div class="table-responsive">
+				<table class="table table-striped">
+				    <tr>
+				      <th>Maker</th>
+				      <th>Drink</th>
+				      <th>Drink type</th>
+				      <th>Format</th>
+				      <th>Quantity</th>
+				      <th>Price</th>
+				      <th>Subtotal</th>
+				      <th>Tax</th>
+				      <th>Total</th>
+				    </tr>
+					<% @delivery_drinks.each do |drink| %>
+						<tr>
+					        <td><%= drink.beer.brewery.short_brewery_name %></td>
+					        <td><%= drink.beer.beer_name %></td>
+					        <td><%= drink.beer.beer_type.beer_type_name %></td>
+					        <td><%= drink.inventory.size_format.format_name %></td>  
+					        <td><%= drink.quantity %></td>
+					        <% @quantity_total += drink.quantity %>
+					        <td><%= number_to_currency(drink.drink_price, precision: 2) %></td>
+					        <% @subtotal = (drink.quantity * drink.drink_price) %>
+					        <td><%= number_to_currency(@subtotal, precision: 2) %></td>
+					        <% @tax = (@subtotal * 0.096) %>
+					        <td><%= number_to_currency(@tax, precision: 2) %></td>
+					        <% @total = (@subtotal + @tax)%>
+					        <td><%= number_to_currency(@total, precision: 2) %></td>
+					    </tr>
+					<% end %>
+						<tr>
+							<td></td>
+					        <td></td>
+					        <td></td>
+					        <td></td>  
+					        <td><b><%= @quantity_total %></b></td>
+					        <td></td>
+					        <td><b><%= number_to_currency(delivery.subtotal, precision: 2) %></b></td>
+					        <td><%= number_to_currency(delivery.sales_tax, precision: 2) %></td>
+					        <td><b><%= number_to_currency(delivery.total_price, precision: 2) %></b></td>
+						</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+<% else %>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-10">
+			<div class="table-responsive">
+				<table class="table table-striped">
+				    <tr>
+				      <th>Maker</th>
+				      <th>Drink</th>
+				      <th>Drink type</th>
+				      <th>Format</th>
+				      <th>Quantity</th>
+				    </tr>
+					<% @delivery_drinks.each do |drink| %>
+						<tr>
+					        <td><%= drink.beer.brewery.short_brewery_name %></td>
+					        <td><%= drink.beer.beer_name %></td>
+					        <td><%= drink.beer.beer_type.beer_type_name %></td>
+					        <td><%= drink.inventory.size_format.format_name %></td>  
+					        <td><%= drink.quantity %></td>
+					        <% @quantity_total += drink.quantity %>
+					    </tr>
+					<% end %>
+						<tr>
+							<td></td>
+					        <td></td>
+					        <td></td>
+					        <td></td>  
+					        <td><b><%= @quantity_total %></b></td>
+						</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+<% end %>
