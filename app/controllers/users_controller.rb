@@ -498,6 +498,17 @@ class UsersController < ApplicationController
     @next_thursday = Date.today.next_week.advance(:days=>3) + 13.hours
     @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days + 13.hours
     
+     # set options for changing the next delivery date
+    @next_delivery = @delivery.delivery_date
+    @today = DateTime.now
+    @current_time_difference_for_next_delivery = ((@next_delivery - @today) / (60*60*24)).floor
+    #Rails.logger.debug("Current difference: #{@current_time_difference_for_next_delivery.inspect}")
+    if @current_time_difference_for_next_delivery < 1
+      @first_change_date_option = @next_thursday
+    else
+      @first_change_date_option = @this_thursday
+    end
+    
     # set the chosen date
     if @first_delivery.to_date == @next_thursday
       # set current style variable for CSS plan outline
@@ -514,16 +525,6 @@ class UsersController < ApplicationController
       @start_1_chosen = "show"
       @start_2_chosen = "hidden"
       @start_3_chosen = "hidden"
-    end
-    
-    # set options for changing the next delivery date
-    @next_delivery = @delivery.delivery_date
-    @today = DateTime.now
-    @current_time_difference_for_next_delivery = ((@first_delivery - @today) / (60*60*24)).floor
-    if @current_time_difference_for_next_delivery < 1
-      @first_change_date_option = @next_thursday
-    else
-      @first_change_date_option = @this_thursday
     end
     
     # set drink category choice
