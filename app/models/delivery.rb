@@ -14,6 +14,7 @@
 #  admin_delivery_review_note       :text
 #  admin_delivery_confirmation_note :text
 #  delivery_change_confirmation     :boolean
+#  customer_has_previous_packaging  :boolean
 #
 
 class Delivery < ActiveRecord::Base

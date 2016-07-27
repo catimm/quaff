@@ -115,9 +115,12 @@ class UserMailer < ActionMailer::Base
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     # get the customer's message
     @customer_message = CustomerDeliveryMessage.where(delivery_id: delivery.id).first
-     if !@customer_message.blank?
+    if !@customer_message.blank?
       @message = @customer_message.message
     end
+    
+    # find if customer has previous packaging
+    @last_delivery = Delivery.where(user_id: customer.id, status: 'delivered').order('delivery_date DESC').first
     
     payload  = {
       recipients: [
@@ -132,6 +135,7 @@ class UserMailer < ActionMailer::Base
         customer_name: customer.first_name,
         delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery.delivery_date.day.ordinalize}"),
         customer_message: @message,
+        previous_packaging: @last_delivery.customer_has_previous_packaging,
         admin_note: delivery.admin_delivery_confirmation_note,
         drink: drinks
       }
@@ -144,7 +148,10 @@ class UserMailer < ActionMailer::Base
   
   def customer_delivery_confirmation_no_changes(customer, delivery, drinks)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-
+    
+    # find if customer has previous packaging
+    @last_delivery = Delivery.where(user_id: customer.id, status: 'delivered').order('delivery_date DESC').first
+    
     payload  = {
       recipients: [
         {
@@ -157,6 +164,7 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer.first_name,
         delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery.delivery_date.day.ordinalize}"),
+        previous_packaging: @last_delivery.customer_has_previous_packaging,
         drink: drinks
       }
     }
@@ -204,6 +212,7 @@ class UserMailer < ActionMailer::Base
       },
       substitution_data: {
         customer_name: customer.first_name,
+        customer_id: customer.id,
         delivery_date: (delivery_info.delivery_date).strftime("%A, %b #{delivery_info.delivery_date.day.ordinalize}"),
         total_quantity: drink_quantity,
         total_subtotal: "%.2f" % (delivery_info.subtotal),
@@ -219,7 +228,16 @@ class UserMailer < ActionMailer::Base
   
   def welcome_email(customer, membership_name, subscription_fee, renewal_date, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-     
+    
+    @customer_delivery_preference = DeliveryPreference.find_by_user_id(customer.id)
+    if @customer_delivery_preference.drink_option_id == 1
+      @drink_preference = "beer"
+    elsif @customer_delivery_preference.drink_option_id == 2
+      @drink_preference = "cider"
+    else
+      @drink_preference = "beer/cider"
+    end
+    
     payload  = {
       recipients: [
         {
@@ -231,6 +249,7 @@ class UserMailer < ActionMailer::Base
       },
       substitution_data: {
         customer_first_name: customer.first_name,
+        drink_preference: @drink_preference,
         customer_id: customer.id,
         membership_name: membership_name,
         subscription_fee: subscription_fee,
