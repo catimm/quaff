@@ -46,6 +46,8 @@ $extra-light-blue-gray: #f7fafa;
 $extra-light-soft-gray: #fafafa;
 $button-green: #5cb85c;
 $bootstrap-info-blue: #5bc0de;
+$bootstrap-red-button-hover-background: #c9302c;
+$bootstrap-red-button-hover-border: #ac2925;
 
 
 // Functional use of colors for project
@@ -2139,6 +2141,24 @@ $beer-header-lines-to-show-fp: 1;
     color: $best-guess-text;
   }
 }
+.auto-renew-info {
+  color: $normal-text;
+  margin-bottom: 20px;
+}
+.auto-confirm-confirmation-text {
+  color: $normal-text;
+  .turn-off-renew {
+    color: $bootstrap-red-button-hover-background;
+  }
+  .turn-on-renew {
+    color: $user-action;
+  }
+}
+.turn-off-renew-button:hover {
+  color: $white;
+  background: $bootstrap-red-button-hover-background;
+  border: 1px solid $bootstrap-red-button-hover-border;
+}
 // User Signup Process
 .getting-started-header {
   color: $action-background;
@@ -2399,6 +2419,7 @@ $beer-header-lines-to-show-fp: 1;
 .user-plan-chosen-text {
   color: $user-rating-text;
   margin-top: 10px !important;
+  font-weight: 500;
 }
 .user-info-form {
   margin-top: -10px;
@@ -2831,6 +2852,42 @@ $beer-header-lines-to-show-fp: 1;
   color: $normal-text;
   margin-top: 0;
   font-size: 22px;
+}
+.pause-delivery-button {
+  width: 40%;
+  margin-top: 20px;
+}
+.delivery-date-change-row-holder {
+  margin: 2.5px 0;
+}
+.delivery-date-change-row {
+  border-radius: 6px;
+  background: $white;
+  height: inherit;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  width: 90%;
+}
+.delivery-change-month, .delivery-change-day {
+  font-family: 'uppereastsideregular';
+  font-size: 12px;
+  margin: 5px 0;
+}
+.delivery-change-date {
+  font-family: 'uppereastsideregular';
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+.confirm-date-change-button {
+  width: 100%;
+  margin-top: 10px;
+}
+.delivery-date-change-row.chosen {
+  background: rgba(0,135,203, 0.4);
+}
+.delivery-date-change-row:hover {
+  background: rgba(0,135,203, 0.4);
 }
 .delivery-detail {
   color: $action-background;
@@ -5225,6 +5282,7 @@ $delivery-beer-header-lines-to-show: 2;
   .user-account-header {
     font-size: 28px;
   }
+  
   
 // Footer css
   .footer {

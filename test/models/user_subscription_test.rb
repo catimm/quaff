@@ -12,6 +12,7 @@
 #  trial_ended                :boolean
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
+#  auto_renew_subscription_id :integer
 #
 
 require 'test_helper'

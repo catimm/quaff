@@ -39,7 +39,7 @@ class Admin::FulfillmentController < ApplicationController
     # charge customer
     @customer_subscription = UserSubscription.where(user_id: @delivery.user_id).first
     @total_price = (@delivery.total_price * 100).floor # put total charge in cents
-    @charge_description = 'A ' + @delivery_date + ' Knird delivery.'
+    @charge_description = @delivery_date + ' Knird delivery.'
     Stripe::Charge.create(
       :amount => @total_price, # in cents
       :currency => "usd",

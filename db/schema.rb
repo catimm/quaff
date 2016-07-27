@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160722053526) do
+ActiveRecord::Schema.define(version: 20160726192100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -449,6 +449,7 @@ ActiveRecord::Schema.define(version: 20160722053526) do
     t.boolean  "trial_ended"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.integer  "auto_renew_subscription_id"
   end
 
   create_table "user_supplies", force: :cascade do |t|

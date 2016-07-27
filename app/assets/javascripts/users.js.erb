@@ -39,6 +39,17 @@ $(function () {
 										labels: ['Yr', 'Mo', 'Wk', 'Days', 'Hours', 'Mins', 'Secs'],
 										labels1: ['Yr', 'Mo', 'Wk', 'Day', 'Hour', 'Min', 'Sec']
 									});
+	
+	// add logic to change delivery date
+	$(document).on('click', '.delivery-date-change-row', function () {
+		$(this).addClass('chosen');
+		$(this).parent().siblings('.delivery-date-change-row-holder').children('.delivery-date-change-row').removeClass('chosen');
+		
+		var week_number = $(this).attr('id');
+		
+		$("#confirm-date-change-button").attr("href", "/users/change_next_delivery_date/" + week_number);
+		
+	});
 							    
 	// ensure only one delivery date option is chosen
 	$(document).on("change", ".first_delivery_date_chosen", function() {

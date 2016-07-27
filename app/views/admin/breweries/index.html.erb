@@ -25,7 +25,8 @@
 					<%= link_to "Reindex DB", admin_brewery_path(current_user.id), :class => "btn btn-primary admin-action-buttons" %>
 				</div>
 				<div class="col-xs-10 col-sm-2 text-right">
-					<%= link_to "Add new brewery", new_admin_brewery_path, :class => "btn btn-success admin-action-buttons", data: {toggle: "modal", target: "#new_brewery"} %>
+					<%= link_to "Add new brewery", new_admin_brewery_path, :class => "btn btn-success admin-action-buttons", 
+								data: {toggle: "modal", target: "#new_brewery"} %>
 				</div>
 			</div>
 			<%# <div class="row no-margin filter-holding-row"> %>

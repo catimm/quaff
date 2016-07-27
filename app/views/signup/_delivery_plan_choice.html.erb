@@ -12,7 +12,7 @@
 				<div class="col-sm-10 no-padding">
 					<ul class="retail-plan-feature-list">
 						<li>Personalized, curated drink deliveries</li>
-						<li>Includes 2 deliveries per month</li>
+						<li>Includes 7 deliveries over 3 months</li>
 						<li>Additional deliveries only $4 each</li>
 						<li>5% member dividend on drink purchases</li>
 					</ul>
@@ -23,16 +23,19 @@
 					<h5 class="contract-type-header">3-month membership contract<sup  data-toggle="tooltip" title="You will be charged $30 for this membership but can cancel at any time and are under no obligation to buy any more drinks from Knird.">?</sup></h5>
 					<h2 class="user-plan-cost">$10<span class="with-contract">/mo</span></h2>
 					<% if !@customer_plan.blank? %>
-						<% if @customer_plan.subscription_id == 2 %>
-							<h2 class="user-plan-chosen-text">Current Plan</h2>
+						<% if @customer_plan.subscription_id == 2 || @customer_plan.subscription_id == 5 %>
+							<h4 class="user-plan-chosen-text">Enjoy is your current plan.</h4>
 						<% else %>
-							<% if @user.beta_tester == true %>
-								<%= link_to process_user_plan_choice_path("account-1-enjoy_beta"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"} do %>
+							<% if @current_page == "signup" %>
+								<%= link_to "#", class: 'btn btn-primary formButton-start-plan', 
+										data: {toggle: "modal", target: "#signup_change_plan_to_enjoy"} do %>
 									<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
 								<% end %>
+								
 							<% else %>
-								<%= link_to process_user_plan_choice_path("account-1-enjoy"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"} do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
+								<%= link_to "#", class: 'btn btn-primary formButton-start-plan', 
+										data: {toggle: "modal", target: "#change_auto_renew_plan_to_enjoy"} do %>
+									<i class="fa fa-refresh" aria-hidden="true"> Change auto renew to the Enjoy Plan</i>
 								<% end %>
 							<% end %>
 						<% end %>
@@ -88,7 +91,7 @@
 				<div class="col-sm-10 no-padding">
 					<ul class="retail-plan-feature-list">
 						<li>Personalized, curated drink deliveries</li>
-						<li>Includes 2 deliveries per month</li>
+						<li>Includes 26 deliveries over 12 months</li>
 						<li>Additional deliveries only $3 each</li>
 						<li>10% member dividend on drink purchases</li>
 						<li>Preferred access to limited and rare drinks</li>
@@ -100,16 +103,19 @@
 					<h5 class="contract-type-header">12-month membership contract<sup  data-toggle="tooltip" title="You will be charged $100 for this membership but can cancel at any time and are under no obligation to buy any more drinks from Knird.">?</sup></h5>
 					<h2 class="user-plan-cost">$8.33<span class="with-contract">/mo</span></h2>
 					<% if !@customer_plan.blank? %>
-						<% if @customer_plan.subscription_id == 1 %>
-							<h2 class="user-plan-chosen-text">Current Plan</h2>
+						<% if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4 %>
+							<h4 class="user-plan-chosen-text">Relish is your current plan.</h4>
 						<% else %>
-							<% if @user.beta_tester == true %>
-								<%= link_to process_user_plan_choice_path("account-1-relish_beta"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
+							<% if @current_page == "signup" %>
+								<%= link_to "#", class: 'btn btn-primary formButton-start-plan', 
+										data: {toggle: "modal", target: "#signup_change_plan_to_relish"} do %>
 									<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
 								<% end %>
+								
 							<% else %>
-								<%= link_to process_user_plan_choice_path("account-1-relish"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
+								<%= link_to "#", class: 'btn btn-primary formButton-start-plan', 
+										data: {toggle: "modal", target: "#change_auto_renew_plan_to_relish"} do %>
+									<i class="fa fa-refresh" aria-hidden="true"> Change auto renew to the Relish Plan</i>
 								<% end %>
 							<% end %>
 						<% end %>

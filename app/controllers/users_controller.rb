@@ -33,6 +33,9 @@ class UsersController < ApplicationController
       # set link as chosen
       @plan_chosen = "chosen"
       
+      # set current page for user view
+      @current_page = "user"
+    
       # get customer plan details
       @customer_plan = UserSubscription.where(user_id: @user.id).first
       
@@ -374,11 +377,15 @@ class UsersController < ApplicationController
       
       # get delivery date info
       if !@delivery.blank?
+        @time_now = Time.now
         @next_delivery_date = @delivery.delivery_date
         @next_delivery_review_start_date = @next_delivery_date - 3.days
         @next_delivery_review_end_date = @next_delivery_date - 1.day
+        if @time_now > @next_delivery_review_start_date && @time_now < @next_delivery_review_end_date
+          @current_review_time = true
+        end
         @time_left = @next_delivery_review_end_date.to_i - Time.now.to_i
-        Rails.logger.debug("Time to Delivery end date: #{@time_left.inspect}")
+        #Rails.logger.debug("Time to Delivery end date: #{@time_left.inspect}")
         gon.review_period_ends = @time_left
       
         # get next delivery drink info for view
@@ -459,6 +466,9 @@ class UsersController < ApplicationController
     # get user's delivery info
     @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
     
+    # get user's subscription info for delivery change date
+    
+    
     #Rails.logger.debug("Delivery preferences: #{@delivery_preferences.inspect}") 
     # update time of last save
 
@@ -479,14 +489,15 @@ class UsersController < ApplicationController
     # get dates of next few Thursdays
     @date_time_now = DateTime.now
     #Rails.logger.debug("1st: #{@date_thursday.inspect}")
-    @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
+    @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 13.hours
     @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
     
-    if @time_difference >= 10
-      @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
-    end
-    @next_thursday = Date.today.next_week.advance(:days=>3)
-    @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
+    #if @time_difference >= 10
+      @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days + 13.hours
+    #end
+    @next_thursday = Date.today.next_week.advance(:days=>3) + 13.hours
+    @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days + 13.hours
+    
     # set the chosen date
     if @first_delivery.to_date == @next_thursday
       # set current style variable for CSS plan outline
@@ -503,6 +514,13 @@ class UsersController < ApplicationController
       @start_1_chosen = "show"
       @start_2_chosen = "hidden"
       @start_3_chosen = "hidden"
+    end
+    
+    # set options for changing the next delivery date
+    if @current_time_difference < 1
+      @first_change_date_option = @next_thursday
+    else
+      @first_change_date_option = @this_thursday
     end
     
     # set drink category choice
@@ -614,6 +632,29 @@ class UsersController < ApplicationController
     render js: "window.location = '#{user_delivery_settings_path(current_user.id)}'"
 
   end # end of deliveries_update_preferences
+  
+  def change_next_delivery_date
+    @weeks_from_now = params[:id].to_i
+    
+    # get user's delivery info
+    @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
+    
+    # get date of this thursday
+    @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days + 13.hours
+    
+    # determine which week the new delivery date is
+    if @weeks_from_now == 1
+      @new_delivery_date = @this_thursday
+    else
+      @new_delivery_date = @this_thursday + ((@weeks_from_now - 1) * 7).days
+    end
+    
+    # now update delivery date
+    @delivery.update(delivery_date: @new_delivery_date)
+    
+    redirect_to user_delivery_settings_path(current_user.id)
+    
+  end # end of change_next_delivery_date method
   
   def change_delivery_drink_quantity
     # get data to add/update
@@ -824,13 +865,13 @@ class UsersController < ApplicationController
   
   def plan
     # find if user has a plan already
-    @user_plan = UserSubscription.find_by_user_id(params[:id])
+    @customer_plan = UserSubscription.find_by_user_id(params[:id])
     
-    if !@user_plan.blank?
-      if @user_plan.subscription_id == 1
+    if !@customer_plan.blank?
+      if @customer_plan.subscription_id == 1
         # set current style variable for CSS plan outline
         @relish_current = "current"
-      elsif @user_plan.subscription_id == 2
+      elsif @customer_plan.subscription_id == 2
         # set current style variable for CSS plan outline
         @enjoy_current = "current"
       else 
@@ -843,7 +884,7 @@ class UsersController < ApplicationController
   
   def choose_plan 
     # find user's current plan
-    @user_plan = UserSubscription.find_by_user_id(params[:id])
+    @customer_plan = UserSubscription.find_by_user_id(params[:id])
     #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
     # find subscription level id
     @subscription_level_id = Subscription.where(subscription_level: params[:format]).first
@@ -872,6 +913,17 @@ class UsersController < ApplicationController
     redirect_to :action => "plan", :id => current_user.id
     
   end # end choose initial plan method
+  
+  def plan_rewewal_update
+    @user_subscription = UserSubscription.find_by_user_id(params[:id])
+    if @user_subscription.auto_renew_subscription_id.nil?
+      @user_subscription.update(auto_renew_subscription_id: @user_subscription.subscription_id)
+    else
+      @user_subscription.update(auto_renew_subscription_id: nil)
+    end
+    
+    redirect_to user_account_settings_path(current_user.id, "plan")
+  end # end plan_rewewal_update method
   
   def stripe_webhooks
     #Rails.logger.debug("Webhooks is firing")
@@ -913,14 +965,17 @@ class UsersController < ApplicationController
           #Rails.logger.debug("Customer created event")
           # get the customer number
           @stripe_customer_number = event_object['id']
-          @stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
+          # no longer using a stripe subscription--@stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
           # get the user's info
           @user_email = event_object['email']
-          @user_id = User.where(email: @user_email).pluck(:id).first
+          @user_id = User.find_by_email(@user_email).pluck(:id)
+          
+          # get user's subscription info
           @user_subscription = UserSubscription.find_by_user_id(@user_id)
-          #Rails.logger.debug("User's Sub: #{@user_subscription.inspect}")
-          # update the user's info
-          @user_subscription.update(stripe_customer_number: @stripe_customer_number, stripe_subscription_number: @stripe_subscription_number)
+          
+          # update the user's subscription info
+          @user_subscription.update(stripe_customer_number: @stripe_customer_number)
+          
       end
     rescue Exception => ex
       render :json => {:status => 422, :error => "Webhook call failed"}

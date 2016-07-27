@@ -54,6 +54,7 @@ class User < ActiveRecord::Base
   has_many :user_deliveries
   has_many :admin_user_deliveries
   has_many :craft_stages
+  has_many :user_subscriptions
   has_many :user_delivery_addresses
   accepts_nested_attributes_for :user_delivery_addresses, :allow_destroy => true
   

@@ -35,15 +35,17 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-4 delivery-mobile-spacer hidden-sm hidden-md hidden-lg hidden-xl"></div>
-							<div class="col-xs-4 col-sm-2 text-right no-padding">
-								<h5 class="next-delivery-subtext">
-									Review ends:
-								</h5>
-							</div>
-							<div class="col-xs-8 col-sm-5 no-padding-right small-padding">
-								<h3 class="next-delivery-text review-ends"><span id="review-ends-on"></span></h3>
-							</div>
+							<% if @current_review_time %>
+								<div class="col-xs-4 delivery-mobile-spacer hidden-sm hidden-md hidden-lg hidden-xl"></div>
+								<div class="col-xs-4 col-sm-2 text-right no-padding">
+									<h5 class="next-delivery-subtext">
+										Review ends:
+									</h5>
+								</div>
+								<div class="col-xs-8 col-sm-5 no-padding-right small-padding">
+									<h3 class="next-delivery-text review-ends"><span id="review-ends-on"></span></h3>
+								</div>
+							<% end %>
 						</div>
 					<% end %>
 				<% end %>

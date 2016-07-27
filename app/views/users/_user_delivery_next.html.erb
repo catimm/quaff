@@ -1,8 +1,10 @@
 <% if !@delivery.blank? %>
 	<% if @delivery.status == "admin prep" %>
 		<div class="row no-margin">
-			<h4 class="no-results-empty-message">Your next delivery will be available to review by 1pm PT on <%= (@next_delivery_review_start_date).strftime("%A, %b %e, %Y") %>. 
-				<br>We'll send you an email to notify you when it's ready. Until then, have a drink and relax!</h4>				
+			<div class="col-xs-12">
+				<h4 class="no-results-empty-message">Your next delivery will be available to review by 1pm PT on <%= (@next_delivery_review_start_date).strftime("%A, %b %e, %Y") %>. 
+					<br>We'll send you an email to notify you when it's ready. Until then, have a drink and relax!</h4>				
+			</div>
 		</div>
 	<% elsif @delivery.status == "user review" %>
 		<div class="row no-margin">

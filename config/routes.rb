@@ -56,6 +56,8 @@ Rails.application.routes.draw do
   get '/users/supply_removal/:id' => 'users#supply_removal', :as => 'supply_removal'
   get '/users/add_supply_drink/:id' => 'users#add_supply_drink', :as => 'add_supply_drink'
   get  '/users/drink_search/:id(/:query)' => 'users#drink_search', :as => 'drink_search'
+  get '/users/plan_rewewal_update/:id' => 'users#plan_rewewal_update', :as => 'plan_rewewal_update'
+  get '/users/change_next_delivery_date/:id' => 'users#change_next_delivery_date', :as => 'change_next_delivery_date'
   post '/users/wishlist_removal/:id' => 'users#wishlist_removal', :as => 'wishlist_removal'
   post '/users/update_profile/:id' => 'users#update_profile'
   post '/users/update_delivery_address/:id' => 'users#update_delivery_address'

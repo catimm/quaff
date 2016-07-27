@@ -235,7 +235,7 @@ class SignupController < ApplicationController
       if @step == "1"
         # find if user has a plan already
         @customer_plan = UserSubscription.find_by_user_id(current_user.id)
-      
+        Rails.logger.debug("Customer plan info: #{@customer_plan.inspect}")
         if !@customer_plan.blank?
           if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4
             # set current style variable for CSS plan outline
@@ -382,11 +382,14 @@ class SignupController < ApplicationController
 
     else
       if @input == "this"
-        @start_date = Date.today.next_week.advance(:days=>3) - 7.days
+        @start_date = (@time_now.next_week.advance(:days=>3) - 7.days).change({ hour: 13 })
+        Rails.logger.debug("Start this Date: #{@start_date.inspect}")
       elsif @input == "next"
-        @start_date = Date.today.next_week.advance(:days=>3)
+        @start_date = DateTime.now.next_week.advance(:days=>3).change({ hour: 13 })
+        Rails.logger.debug("Start next Date: #{@start_date.inspect}")
       else
-        @start_date = Date.today.next_week.advance(:days=>3) + 7.days
+        @start_date = (DateTime.now.next_week.advance(:days=>3) + 7.days).change({ hour: 13 })
+        Rails.logger.debug("Start following Date: #{@start_date.inspect}")
       end
       
       # update the start date
@@ -398,6 +401,21 @@ class SignupController < ApplicationController
         @customer_next_delivery = Delivery.create(user_id: current_user.id, delivery_date: @start_date, status: "admin prep")
       end
       
+      # get user subscription info
+      @user_plan = UserSubscription.find_by_user_id(current_user.id)
+      
+      # get proper active until date
+      if @user_plan.subscription_id == 1 || @user_plan.subscription_id == 4
+        @active_until = @start_date + 12.months
+      end
+      
+      if @user_plan.subscription_id == 2 || @user_plan.subscription_id == 5
+        @active_until = @start_date + 3.months
+      end
+      
+      # update user subscription info active until date
+      @user_plan.update(active_until: @active_until)
+      
       # update step completed if need be
       if @user.getting_started_step == 7
         @user.update(getting_started_step: 8)
@@ -405,7 +423,6 @@ class SignupController < ApplicationController
         
       # set next step
       @next_step = "account-3"
-      
     end
     
     # redirect
@@ -526,50 +543,34 @@ class SignupController < ApplicationController
     @input = @data_split[2]
     
     #get user info
-    @user = User.find(current_user.id)
+    @user = User.find_by_id(current_user.id)
     
     # find if user has a plan already
     @user_plan = UserSubscription.find_by_user_id(current_user.id)
     #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
     
     # find subscription level id
-    @subscription_level_id = Subscription.where(subscription_level: @input).first
-    
-    # set active until date
-    if @input == "enjoy" || @input == "enjoy_beta"
-      @active_until = 3.months.from_now
-    else
-      @active_until = 12.months.from_now
-    end
+    @subscription_info = Subscription.where(subscription_level: @input).first
       
     if @user_plan.blank?
-      # first create Stripe acct
-      @plan_info = Stripe::Plan.retrieve(@input)
-      #Rails.logger.debug("Plan info: #{@plan_info.inspect}")
-      #Create a stripe customer object on signup
-      customer = Stripe::Customer.create(
-              :description => @plan_info.statement_descriptor,
-              :source => params[:stripeToken],
-              :email => current_user.email,
-              :plan => @input
-            )
- 
       # create a new user_subscription row
-      @user_subscription = UserSubscription.create(user_id: current_user.id, subscription_id: @subscription_level_id.id,
-                                active_until: @active_until)
+      UserSubscription.create(user_id: current_user.id, subscription_id: @subscription_info.id, auto_renew_subscription_id: @subscription_info.id)
+                                
+      # create Stripe customer acct
+      customer = Stripe::Customer.create(
+              :source => params[:stripeToken],
+              :email => current_user.email
+            )
+
     else
-      # first update Stripe acct
-      customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
-      @plan_info = Stripe::Plan.retrieve(@input)
-      #Rails.logger.debug("Customer: #{customer.inspect}")
-      customer.description = @plan_info.statement_descriptor
-      customer.save
-      subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
-      subscription.plan = @input
-      subscription.save
-      
-      # now update user plan info in the DB
-      @user_plan.update(subscription_id: @subscription_level_id.id, active_until: @active_until)
+      if request_url.include? "signup"
+        # update both user plan and renew plan info in the DB
+        @user_plan.update(subscription_id: @subscription_info.id, auto_renew_subscription_id: @subscription_info.id)
+      else
+        # update user auto renew plan info in the DB
+        @user_plan.update(auto_renew_subscription_id: @subscription_info.id)        
+      end
+        
     end
     
     # determine where to send user next
@@ -601,8 +602,35 @@ class SignupController < ApplicationController
       @user.update(getting_started_step: 9)
     end
     
+    # customer Subscription info
+    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    
+    # charge customer for plan chosen
+    # get subscription info
+    @subscription_info = Subscription.find_by_id(@user_subscription.subscription_id) 
+    
+    # set charge info
+    if @user_subscription.subscription_id == 1
+      @total_price = (@subscription_info.subscription_cost * 100).floor # put total charge in cents
+      @charge_description = 'Knird Relish Membership (12 mos)'
+    end
+    
+    if @user_subscription.subscription_id == 2
+      @total_price = (@subscription_info.subscription_cost * 100).floor # put total charge in cents
+      @charge_description = 'Knird Enjoy Membership (3 mos)'
+    end
+    
+    if @user_subscription.subscription_id == 1 || @user_subscription.subscription_id == 2
+      # now charge customer for their membership dues
+      Stripe::Charge.create(
+        :amount => @total_price, # in cents
+        :currency => "usd",
+        :customer => @stripe_customer_number,
+        :description => @charge_description
+      )
+    end # end of check whether user should be charged for either Relish or Enjoy plan
+    
     # get info to send customer a welcome email
-    @user_subscription = UserSubscription.where(user_id: current_user.id).first
     @user_renewal_date = (@user_subscription.active_until).strftime("%B %e, %Y")
     @user_subscription_name = @user_subscription.subscription.subscription_name
     @user_subscription_cost = (@user_subscription.subscription.subscription_cost).to_f
