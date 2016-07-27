@@ -517,7 +517,10 @@ class UsersController < ApplicationController
     end
     
     # set options for changing the next delivery date
-    if @current_time_difference < 1
+    @next_delivery = @delivery.delivery_date
+    @today = DateTime.now
+    @current_time_difference_for_next_delivery = ((@first_delivery - @today) / (60*60*24)).floor
+    if @current_time_difference_for_next_delivery < 1
       @first_change_date_option = @next_thursday
     else
       @first_change_date_option = @this_thursday
