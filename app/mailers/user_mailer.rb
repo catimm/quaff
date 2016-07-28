@@ -225,6 +225,34 @@ class UserMailer < ActionMailer::Base
     p response
   end # end of select_invite_email email
   
+    def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date, new_active_until)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    if new_active_until == true
+      @user_subscription_info = UserSubscription.find_by_user_id(customer.id)
+      @new_active_until = (@user_subscription_info.active_until).strftime("%B %-d, %Y")
+    end
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'delivery-date-change-confirmation'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        old_delivery_date: (old_delivery_date).strftime("%B #{old_delivery_date.day.ordinalize}"),
+        new_delivery_date: (new_delivery_date).strftime("%B #{new_delivery_date.day.ordinalize}"),
+        new_active_until: @new_active_until
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of delivery_date_change_confirmation email
   
   def welcome_email(customer, membership_name, subscription_fee, renewal_date, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

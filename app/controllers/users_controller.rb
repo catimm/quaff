@@ -643,7 +643,10 @@ class UsersController < ApplicationController
   def change_next_delivery_date
     @new_delivery_date = DateTime.parse(params[:id])
     #Rails.logger.debug("Date chosen: #{@new_delivery_date.inspect}")
-
+    
+    # get user info
+    @customer = User.find_by_id(current_user.id)
+    
     # get user's delivery info
     @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
     
@@ -666,11 +669,15 @@ class UsersController < ApplicationController
     
     if @possible_new_active_until_date > @current_active_until_date
       @user_subscription.update(active_until: @possible_new_active_until_date)
+      @new_active_until = true
     end
-
+    
+    # send a confirmation email about the change
+    UserMailer.delivery_date_change_confirmation(@customer, @delivery.delivery_date, @new_delivery_date, @new_active_until).deliver_now
+    
     # now update delivery date
     @delivery.update(delivery_date: @new_delivery_date)
-    
+
     redirect_to user_delivery_settings_path(current_user.id)
     
   end # end of change_next_delivery_date method
