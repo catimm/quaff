@@ -24,7 +24,8 @@
 			        <td><%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></td>
 			        <% if delivery.status == "in progress" %>
 			        	<td>
-							<%= link_to "Confirm", admin_confirm_delivery_path(delivery.id), :class => "btn btn-success admin-check-button" %>
+							<%= link_to "Confirm", "#", :class => "btn btn-success admin-check-button", :id => "#{delivery.id}", 
+								data: {toggle: "modal", target: "#delivery_details_confirmation"} %>
 						</td>
 			        <% else %>
 			        	<td><%= delivery.status %></td>
@@ -55,6 +56,42 @@
 				    </tr>
 				<% end %>
 			</table>
+		<% end %>
+	</div>
+</div>
+<div id="delivery_details_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm delivery</h3>
+	</div>
+	<div class="modal-body">
+		<%= form_tag admin_confirm_delivery_path(1), id: "confirm-delivery-info" do %>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<%= label :old_packaging, 'Customer returned old packaging' %>
+					<%= hidden_field_tag :old_packaging, false %>
+					<%= check_box_tag :old_packaging, checked = true, :class => "form-control" %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<%= label :new_packaging, 'Customer kept new packaging' %>
+					<%= hidden_field_tag :new_packaging, false %>
+					<%= check_box_tag :new_packaging, checked = true, :class => "form-control" %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<%= label :final_delivery_notes, 'Delivery notes' %>
+					<%= text_field_tag :final_delivery_notes, nil, :class => "form-control" %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-6 remove-button-holder">
+					<%= submit_tag "Confirm", class: "btn btn-default btn-success formButton" %>
+				</div>
+			</div>
 		<% end %>
 	</div>
 </div>

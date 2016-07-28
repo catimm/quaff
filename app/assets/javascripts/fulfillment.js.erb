@@ -1,0 +1,12 @@
+$(function() {
+	
+	// add logic to add delivery id to confirm form
+	$(document).on('click', '.admin-check-button', function () {
+		var delivery_id = $(this).attr('id');
+		
+		$("#confirm-delivery-info").attr("action", "/admin/fulfillment/admin_confirm_delivery/" + delivery_id);
+	
+	});
+	
+	
+});

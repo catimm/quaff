@@ -33,6 +33,7 @@ class Admin::FulfillmentController < ApplicationController
   end # end of index method
   
   def admin_confirm_delivery
+
     # get delivery info
     @delivery = Delivery.find(params[:id])
     @delivery_date = (@delivery.delivery_date).strftime("%B %e, %Y")
@@ -87,8 +88,32 @@ class Admin::FulfillmentController < ApplicationController
     # clear admin_user_deliveries table
     @current_admin_prep_drinks = AdminUserDelivery.where(delivery_id: @delivery.id).destroy_all
     
-    # update delivery status
-    @delivery.update(status: "delivered")
+    # get last delivery
+    @last_delivery = Delivery.where(user_id: @delivery.user_id, status: 'delivered').order('delivery_date DESC').first
+    #Rails.logger.debug("Last Delivery: #{@last_delivery.inspect}")
+    # update last delivery info
+    if params[:old_packaging] == "true"
+      @last_delivery.update(customer_has_previous_packaging: false)
+    else
+      @last_delivery.update(customer_has_previous_packaging: true)
+    end
+    
+    # update current delivery info
+    @delivery.update(status: "delivered", 
+                      customer_has_previous_packaging: params[:new_packaging],
+                      final_delivery_notes: params[:final_delivery_notes])
+    
+    # get user subscription info
+    @user_subscription = UserSubscription.find_by_user_id(@delivery.user_id)
+    
+    # get current delivery totals
+    @original_deliveries_this_period = @user_subscription.deliveries_this_period
+    @new_deliveries_this_period = @original_deliveries_this_period + 1
+    @original_total_deliveries = @user_subscription.total_deliveries
+    @new_total_deliveries = @original_total_deliveries + 1
+    
+    # add to subscription delivery totals
+    @user_subscription.update(deliveries_this_period: @new_deliveries_this_period, total_deliveries: @new_total_deliveries)
     
     # start next delivery cycle
     # get new delivery date

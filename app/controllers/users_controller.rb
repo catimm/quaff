@@ -181,14 +181,14 @@ class UsersController < ApplicationController
   
   def move_drink_to_cooler
     @cellar_drink = UserSupply.find_by_id(params[:id])
-    Rails.logger.debug("Cellar drink: #{@cellar_drink.inspect}")
+    #Rails.logger.debug("Cellar drink: #{@cellar_drink.inspect}")
     if @cellar_drink.quantity == "1"
       # just change supply type from cellar to cooler
       @cellar_drink.update(supply_type_id: 1)
     else
       # find if this drink also already exists in the cooler
       @cooler_drink = UserSupply.where(user_id: current_user.id, beer_id: @cellar_drink.beer_id, supply_type_id: 1).first
-      Rails.logger.debug("Cooler drink: #{@cooler_drink.inspect}")
+      #Rails.logger.debug("Cooler drink: #{@cooler_drink.inspect}")
       # get new cellar quantity
       @new_cellar_quantity = (@cellar_drink.quantity - 1)
       # update cellar supply
@@ -492,21 +492,24 @@ class UsersController < ApplicationController
     @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 13.hours
     @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
     
-    #if @time_difference >= 10
-      @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days + 13.hours
-    #end
+    @today = DateTime.now
+    @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days + 13.hours
     @next_thursday = Date.today.next_week.advance(:days=>3) + 13.hours
     @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days + 13.hours
     
      # set options for changing the next delivery date
+    @current_time_difference_now_and_thursday = ((@this_thursday - @today) / (60*60*24)).floor
     @next_delivery = @delivery.delivery_date
-    @today = DateTime.now
     @current_time_difference_for_next_delivery = ((@next_delivery - @today) / (60*60*24)).floor
-    #Rails.logger.debug("Current difference: #{@current_time_difference_for_next_delivery.inspect}")
+    Rails.logger.debug("Current difference: #{@current_time_difference_for_next_delivery.inspect}")
     if @current_time_difference_for_next_delivery < 1
       @first_change_date_option = @next_thursday
     else
-      @first_change_date_option = @this_thursday
+      if @current_time_difference_now_and_thursday < 1
+        @first_change_date_option = @next_thursday
+      else
+        @first_change_date_option = @this_thursday
+      end
     end
     
     # set the chosen date
@@ -638,21 +641,33 @@ class UsersController < ApplicationController
   end # end of deliveries_update_preferences
   
   def change_next_delivery_date
-    @weeks_from_now = params[:id].to_i
-    
+    @new_delivery_date = DateTime.parse(params[:id])
+    #Rails.logger.debug("Date chosen: #{@new_delivery_date.inspect}")
+
     # get user's delivery info
     @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
     
-    # get date of this thursday
-    @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days + 13.hours
-    
-    # determine which week the new delivery date is
-    if @weeks_from_now == 1
-      @new_delivery_date = @this_thursday
-    else
-      @new_delivery_date = @this_thursday + ((@weeks_from_now - 1) * 7).days
+    # extend current membership active until date if new delivery date is pushed into the future
+    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    @current_active_until_date = @user_subscription.active_until
+    #Rails.logger.debug("Current active date: #{@current_active_until_date.inspect}")
+    if @user_subscription.subscription_id == 1 || @user_subscription.subscription_id == 4
+      @total_membership_deliveries = 26
     end
+     if @user_subscription.subscription_id == 2 || @user_subscription.subscription_id == 5
+      @total_membership_deliveries = 7
+    end
+    @customer_deliveries_this_subscription = @user_subscription.deliveries_this_period
+    @customer_remaining_deliveries = @total_membership_deliveries - @customer_deliveries_this_subscription
+    @total_remaining_weeks_needed = ((@customer_remaining_deliveries * 2) - 2)
+    #Rails.logger.debug("Total weeks needed: #{@total_remaining_weeks_needed.inspect}")
+    @possible_new_active_until_date = @new_delivery_date + (@total_remaining_weeks_needed * 7).days
+    #Rails.logger.debug("Possible new date: #{@possible_new_active_until_date.inspect}")
     
+    if @possible_new_active_until_date > @current_active_until_date
+      @user_subscription.update(active_until: @possible_new_active_until_date)
+    end
+
     # now update delivery date
     @delivery.update(delivery_date: @new_delivery_date)
     

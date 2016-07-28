@@ -30,7 +30,7 @@ module QuerySearch
       # check search term agains breweries and beers to grab relevant matches
       # If search term contains white spaces, run first block of code
         if search_term.match(/\s+/)
-          Rails.logger.debug("Search results: #{result.inspect}")
+          #Rails.logger.debug("Search results: #{result.inspect}")
           # find name of this brewery
           this_brewery = result.brewery_name.downcase
           #Rails.logger.debug("Recognized as having whitespaces")

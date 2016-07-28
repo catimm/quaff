@@ -13,6 +13,8 @@
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #  auto_renew_subscription_id :integer
+#  deliveries_this_period     :integer
+#  total_deliveries           :integer
 #
 
 require 'test_helper'

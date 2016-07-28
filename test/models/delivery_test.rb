@@ -15,6 +15,7 @@
 #  admin_delivery_confirmation_note :text
 #  delivery_change_confirmation     :boolean
 #  customer_has_previous_packaging  :boolean
+#  final_delivery_notes             :text
 #
 
 require 'test_helper'

@@ -235,7 +235,7 @@ class SignupController < ApplicationController
       if @step == "1"
         # find if user has a plan already
         @customer_plan = UserSubscription.find_by_user_id(current_user.id)
-        Rails.logger.debug("Customer plan info: #{@customer_plan.inspect}")
+        #Rails.logger.debug("Customer plan info: #{@customer_plan.inspect}")
         if !@customer_plan.blank?
           if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4
             # set current style variable for CSS plan outline
@@ -383,13 +383,10 @@ class SignupController < ApplicationController
     else
       if @input == "this"
         @start_date = (@time_now.next_week.advance(:days=>3) - 7.days).change({ hour: 13 })
-        Rails.logger.debug("Start this Date: #{@start_date.inspect}")
       elsif @input == "next"
         @start_date = DateTime.now.next_week.advance(:days=>3).change({ hour: 13 })
-        Rails.logger.debug("Start next Date: #{@start_date.inspect}")
       else
         @start_date = (DateTime.now.next_week.advance(:days=>3) + 7.days).change({ hour: 13 })
-        Rails.logger.debug("Start following Date: #{@start_date.inspect}")
       end
       
       # update the start date

@@ -120,14 +120,14 @@ class Admin::RecommendationsController < ApplicationController
       
       # get recommended drink not in stock
       @drink_recommendations_not_in_stock = @drink_recommendations.recommended_packaged_not_in_stock.uniq.joins(:beer).order(sort_column + " " + sort_direction)
-      Rails.logger.debug("Recos not in stock: #{@drink_recommendations_not_in_stock.inspect}")
+      #Rails.logger.debug("Recos not in stock: #{@drink_recommendations_not_in_stock.inspect}")
     else
       # set view in CSS
       @not_in_inventory_chosen = "chosen"
       
       # get recommended drink not in inventory
       @drink_recommendations_not_in_inventory = @drink_recommendations.recommended_packaged_not_in_inventory.uniq.joins(:beer).order(sort_column + " " + sort_direction)
-      Rails.logger.debug("Recos not in inventory #{@drink_recommendations_not_in_inventory.inspect}")
+      #Rails.logger.debug("Recos not in inventory #{@drink_recommendations_not_in_inventory.inspect}")
     end  
 
     

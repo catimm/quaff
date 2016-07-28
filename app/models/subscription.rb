@@ -9,6 +9,7 @@
 #  subscription_cost          :decimal(5, 2)
 #  subscription_name          :string
 #  subscription_months_length :integer
+#  extra_delivery_cost        :decimal(5, 2)
 #
 
 class Subscription < ActiveRecord::Base
