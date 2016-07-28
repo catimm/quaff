@@ -523,7 +523,7 @@ task :top_of_mind_reminder => :environment do
   # only run this code if today is Thursday
     if Date.today.strftime("%A") == "Thursday"
       # get all users who received a delivery last week
-      @last_week_deliveries = Delivery.where(delivery_date: 8.days.ago..6.days.ago) 
+      @last_week_deliveries = Delivery.where(delivery_date: 8.days.ago..6.days.ago, status: "delivered") 
       
       # make array to hold users who have not made changes
       @user_with_few_ratings = Array.new
