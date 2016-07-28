@@ -35,7 +35,7 @@ class Admin::FulfillmentController < ApplicationController
   def admin_confirm_delivery
 
     # get delivery info
-    @delivery = Delivery.find(params[:id])
+    @delivery = Delivery.find_by_id(params[:id])
     @delivery_date = (@delivery.delivery_date).strftime("%B %e, %Y")
     # charge customer
     @customer_subscription = UserSubscription.where(user_id: @delivery.user_id).first
