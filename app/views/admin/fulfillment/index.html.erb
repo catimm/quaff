@@ -24,7 +24,7 @@
 			        <td><%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></td>
 			        <% if delivery.status == "in progress" %>
 			        	<td>
-							<%= link_to "Confirm", "#", :class => "btn btn-success admin-check-button", :id => "#{delivery.id}", 
+							<%= link_to "Confirm", "#", :class => "btn btn-success delivery-confirm-button", :id => "#{delivery.id}", 
 								data: {toggle: "modal", target: "#delivery_details_confirmation"} %>
 						</td>
 			        <% else %>

@@ -3,7 +3,7 @@ class Admin::FulfillmentController < ApplicationController
   require "stripe"
  
   def index
-    @live_delivery_info = Delivery.where.not(status: "delivered").order('delivery_date DESC')
+    @live_delivery_info = Delivery.where.not(status: "delivered").order('delivery_date ASC')
     @delivered_delivery_info = Delivery.where(status: "delivered").order('delivery_date DESC')
     
     # determine number of drinks in each delivery currently live

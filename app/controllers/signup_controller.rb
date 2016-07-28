@@ -551,7 +551,11 @@ class SignupController < ApplicationController
       
     if @user_plan.blank?
       # create a new user_subscription row
-      UserSubscription.create(user_id: current_user.id, subscription_id: @subscription_info.id, auto_renew_subscription_id: @subscription_info.id)
+      UserSubscription.create(user_id: current_user.id, 
+                              subscription_id: @subscription_info.id, 
+                              auto_renew_subscription_id: @subscription_info.id,
+                              deliveries_this_period: 0,
+                              total_deliveries: 0)
                                 
       # create Stripe customer acct
       customer = Stripe::Customer.create(
