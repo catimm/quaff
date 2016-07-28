@@ -546,7 +546,7 @@ task :top_of_mind_reminder => :environment do
        
     end # end of day of week test
   
-end # end of end_user_review_period_reminder task
+end # end of top_of_mind_reminder task
 
 desc "end user review remindes and send email if Wed"
 task :end_user_review_period_reminder => :environment do

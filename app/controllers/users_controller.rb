@@ -775,6 +775,7 @@ class UsersController < ApplicationController
     
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
+    @new_quantity = @original_quantity - 1
     @drink_price = @user_delivery_info.inventory.drink_price
     @current_inventory_reserved = @inventory.reserved
 
@@ -791,13 +792,13 @@ class UsersController < ApplicationController
     @new_inventory_reserved = @current_inventory_reserved - 1
     @inventory.update(reserved: @new_inventory_reserved)
     # add change to the customer_delivery_changes table
-    @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @user_delivery_id).first
+    @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @data).first
     if !@customer_delivery_change.blank?
       @customer_delivery_change.update(new_quantity: @new_quantity, change_noted: false)
     else
       @new_customer_delivery_change = CustomerDeliveryChange.new(user_id: current_user.id, 
                                                                   delivery_id: @user_delivery_info.delivery_id,
-                                                                  user_delivery_id: @user_delivery_id,
+                                                                  user_delivery_id: @data,
                                                                   beer_id: @user_delivery_info.beer_id,
                                                                   original_quantity: @original_quantity,
                                                                   new_quantity: @new_quantity,
