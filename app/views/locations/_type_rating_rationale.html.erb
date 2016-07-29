@@ -2,7 +2,7 @@
 	<% if beer.beer_rating >= 8 && beer.likes_style == "yes" %>
 		<% if !beer.this_beer_descriptors.nil? %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You like <%= beer.beer_type.beer_type_short_name %>s described as 
 							<%= beer.this_beer_descriptors %>.</p>
@@ -19,7 +19,7 @@
 			</ul>
 		<% else %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You like <%= beer.beer_type.beer_type_short_name %>s.</p>
 					</li>
@@ -37,7 +37,7 @@
 	<% elsif beer.beer_rating >= 8 && beer.likes_style == "neither" %>
 		<% if !beer.this_beer_descriptors.nil? %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You typically like <%= beer.beer_type.beer_type_short_name %>s 
 							described as <%= beer.this_beer_descriptors %>.</p>
@@ -54,7 +54,7 @@
 			</ul>
 		<% else %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You typically like <%= beer.beer_type.beer_type_short_name %>s.</p>
 					</li>
@@ -72,7 +72,7 @@
 	<% elsif beer.beer_rating >= 8 && beer.likes_style == "no" %>
 		<% if !beer.this_beer_descriptors.nil? %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">Though you don't typically like <%= beer.beer_type.beer_type_short_name %>s 
 							described as <%= beer.this_beer_descriptors %>, others have rated this quite highly.</p>
@@ -86,7 +86,7 @@
 			</ul>	
 		<% else %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">Though you don't typically like <%= beer.beer_type.beer_type_short_name %>s, 
 						others have rated this quite highly.</p>
@@ -102,7 +102,7 @@
 	<% elsif beer.beer_rating >= 6 && beer.likes_style == "yes" %>
 		<% if !beer.this_beer_descriptors.nil? %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You like <%= beer.beer_type.beer_type_short_name %>s described as 
 							<%= beer.this_beer_descriptors %>.</p>
@@ -116,7 +116,7 @@
 			</ul>
 		<% else %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You like <%= beer.beer_type.beer_type_short_name %>s.</p>
 					</li>
@@ -131,7 +131,7 @@
 	<% elsif beer.beer_rating >= 6 && beer.likes_style == "neither" %>
 		<% if !beer.this_beer_descriptors.nil? %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You typically like <%= beer.beer_type.beer_type_short_name %>s 
 							described as <%= beer.this_beer_descriptors %>.</p>
@@ -145,7 +145,7 @@
 			</ul>
 		<% else %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">You typically like <%= beer.beer_type.beer_type_short_name %>s.</p>
 					</li>
@@ -160,7 +160,7 @@
 	<% elsif beer.beer_rating >= 6 && beer.likes_style == "no" %>
 		<% if !beer.this_beer_descriptors.nil? %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">Though you don't typically like <%= beer.beer_type.beer_type_short_name %>s 
 							described as <%= beer.this_beer_descriptors %>, 
@@ -175,7 +175,7 @@
 			</ul>
 		<% else %>
 			<ul>
-				<% if !beer.beer_type.nil %>
+				<% if !beer.beer_type.nil? %>
 					<li>
 						<p class="recommendation-reasons">Though you don't typically like <%= beer.beer_type.beer_type_short_name %>s, 
 						others have rated this highly...</p>
@@ -190,7 +190,7 @@
 		<% end %>
 	<% elsif beer.beer_rating >= 0 && beer.likes_style == "yes" %>
 		<ul>
-			<% if !beer.beer_type.nil %>
+			<% if !beer.beer_type.nil? %>
 				<li>
 					<p class="recommendation-reasons">Though you typically like <%= beer.beer_type.beer_type_short_name %>s, 
 					others haven't rated this too kindly...</p>
@@ -205,7 +205,7 @@
 		</ul>
 	<% else %>
 		<ul>
-			<% if !beer.beer_type.nil %>
+			<% if !beer.beer_type.nil? %>
 				<li>
 					<p class="recommendation-reasons">We know you don't like <%= beer.beer_type.beer_type_short_name %>s 
 						described as <%= beer.this_beer_descriptors %>; also, others haven't rated this too kindly...</p>
