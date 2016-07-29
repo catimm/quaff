@@ -6,7 +6,10 @@ $(function() {
 	$("#rater").on("slide", function(slideEvt) {
 		$("#visible-rating h1").text(slideEvt.value);
 	});
-
+	$("#rater").on("change", function() {
+		var this_value = $(this).val();
+		$("#visible-rating h1").html(this_value);
+	});
 	// to grab list of descriptors for this beer
 	$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
 		theme: 'facebook',
@@ -28,4 +31,10 @@ $(function() {
 	var token_field_width = $("#user_beer_rating_beer_attributes_descriptor_list_tokens").width();
 	// set note field to match width of token input field
 	$(".rating-notes-container").width(token_field_width - 28);
+	
+	// show rest of top descriptors
+	$(document).on('click', '#show-more-descriptors', function () {
+		$(this).parent('.show-more-descriptors').siblings('.token-input-list-facebook_rating.rating-page-descriptor-list-holder').children('.token-input-token-facebook_rating').removeClass('hidden').addClass('show');
+		$(this).parent('.show-more-descriptors').removeClass("show").addClass("hidden");
+	});
 });

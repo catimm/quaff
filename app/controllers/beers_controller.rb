@@ -114,7 +114,7 @@ class BeersController < ApplicationController
     end
     #Rails.logger.debug("Each beer descriptors: #{cloud_array.inspect}")
      
-    gon.beer_array = cloud_array
+    gon.beer_array = cloud_array.first(7)
   end
   
   def create

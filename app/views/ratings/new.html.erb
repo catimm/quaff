@@ -93,16 +93,26 @@
 					<div class="rating-step-container text-left">
 						<h5 class="step-number">2<sup>nd</sup></h5>
 					</div>
-					<p class="common-description-heading">Add keyword descriptors to describe drink--click bubble words or type in your own.</p>
+					<p class="common-description-heading">Add descriptors to describe drink--click bubbles or type your own.</p>
 					<% if !@this_descriptors.blank? %>
-						<ul class="token-input-list-facebook_rating">
-						<% @this_descriptors.each do |descriptor| %>
-							<li class="token-input-token-facebook_rating">
-								<p><%= descriptor %></p>
-								<span class="token-input-delete-token-facebook_rating">+</span>
-							</li>
+						<ul class="token-input-list-facebook_rating rating-page-descriptor-list-holder">
+						<% @this_descriptors.each_with_index do |descriptor, i| %>
+							<% if i <= 2 %>
+								<li class="token-input-token-facebook_rating show">
+									<p><%= descriptor %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% else %>
+								<li class="token-input-token-facebook_rating hidden">
+									<p><%= descriptor %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% end %>
 						<% end %>
 						</ul>
+						<div class="show-more-descriptors show">
+							<i id="show-more-descriptors" class="fa fa-plus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to see more top descriptors."></i>
+						</div>
 					<% end %>
 					<%= rate.fields_for :beer do |beer| %> 
 				    	<%= beer.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>

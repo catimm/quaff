@@ -1122,6 +1122,9 @@ p {
     text-align: left;
     margin: 7px 0 0 0px;
   }
+.rating-page-descriptor-list-holder {
+    float: left;
+ }
 #rating-slider .slider-selection {
   background: $soft-border;
 }
@@ -1589,6 +1592,11 @@ $beer-header-lines-to-show-fp: 1;
 }
 .user-rating {
   color: $user-rating-text;
+}
+.user-rating-acknowledged {
+  color: $user-rating-text;
+  font-size: 13px;
+  font-weight: 500;
 }
 .why-statement {
   p {
@@ -3765,7 +3773,7 @@ input[type="checkbox"] {
   }
   
 }
-.show-more-price-info {
+.show-more-price-info, .show-more-descriptors {
   color: $user-action;
 }
 .tooltip > .tooltip-inner {

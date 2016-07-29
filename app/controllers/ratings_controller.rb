@@ -1,6 +1,7 @@
 class RatingsController < ApplicationController
   before_filter :authenticate_user!
   include BestGuess
+  include DrinkDescriptors
   
   def new
     # set the page to return to after adding a rating
@@ -17,8 +18,8 @@ class RatingsController < ApplicationController
     
     @user_drink_rating = UserBeerRating.new
     @user_drink_rating.build_beer
-    @this_descriptors = @this_drink.descriptors
-    @this_descriptors = @this_descriptors.uniq
+    @this_descriptors = drink_descriptors(@this_drink, 10)
+    #@this_descriptors = @this_descriptors.uniq
     # Rails.logger.debug("descxriptor list: #{@this_descriptors.inspect}")
     @this_drink_best_guess = best_guess(@drink_id, current_user.id).first
     @our_best_guess = @this_drink_best_guess.best_guess

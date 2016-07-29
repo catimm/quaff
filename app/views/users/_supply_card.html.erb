@@ -23,10 +23,14 @@
 				<% end %>
 			</div>
 			<div class="col-xs-8 col-sm-7 wishlist-best-guess">
-				<% if drink.beer.user_rating %>
+				<% @user_rating = UserBeerRating.where(user_id: drink.user.id, beer_id: drink.beer.id).pluck(:user_beer_rating)[0] %>
+				<% if @user_rating >= 10.0 %>
+					<% @user_rating = 10 %>
+				<% end %>
+				<% if !@user_rating.nil? %>
 					<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= drink.projected_rating %></span></p>
-					<p>You rated it:</p>
-					<h1 class="user-rating"><%= drink.beer.user_rating.round(2) %><span class="recent-user-rating-context">/10</span></h1>
+					<p><span class="user-rating-acknowledged">You rated</span> it:</p>
+					<h1 class="user-rating"><%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
 				<% else %>
 					<p class="filler-best-guess-text"></p>
 					<p>Our <span class="best-guess">best guess</span> for you:</p>
