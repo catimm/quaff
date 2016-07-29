@@ -101,3 +101,25 @@
 			</div>
 	</div>
 </div>
+<div id="drink_per_customer_limit" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>You've reached the quantity limit!</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Apologies, but the 
+					<span id="quantity-limit-drink-name"></span> 
+					has a limit of 
+					<span id="actual-quantity-limit"></span> 
+					per customer. You know, supply and demand and stuff....
+				</h4>
+			</div>
+		</div>
+			<div class="col-sm-3"></div>
+			<div class="col-sm-6 remove-button-holder">
+				<%= link_to "Grrr, OK", "#", :class => 'btn btn-success wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+	</div>
+</div>

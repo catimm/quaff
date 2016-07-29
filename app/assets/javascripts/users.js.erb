@@ -569,7 +569,11 @@ $(function () {
 			  url: "/users/change_delivery_drink_quantity/add-" + drink_id
 			});
 		} else {
-			alert("Sorry, the limit on this drink is " + limit_per +".")
+			var drink_name = $(this).parent().parent('.next-delivery-tile-last-row').siblings('.drink-name-and-info-row').children('.drink-name-col').children('.beer-tile-header').children('.combined-drink-text').html();
+			$("#quantity-limit-drink-name").html(drink_name);
+			$("#actual-quantity-limit").html(limit_per);
+			// show modal
+		    $('#drink_per_customer_limit').modal('show');
 		}
 		
 	});
