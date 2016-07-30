@@ -1,6 +1,7 @@
 <% @user_rating_info = UserBeerRating.where(user_id: drink.user.id, beer_id: drink.beer.id) %>
 <% if !@user_rating_info.nil? %>
-	<% @user_rating = @user_rating_info.average(:user_beer_rating).round(2) %>
+	<% @user_rating = @user_rating_info.average(:user_beer_rating) %>
+	<% Rails.logger.debug("User Rating: #{@user_rating.inspect}") %>
 	<% if @user_rating >= 10.0 %>
 		<% @user_rating = 10 %>
 	<% end %>
