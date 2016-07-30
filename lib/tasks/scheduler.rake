@@ -776,15 +776,12 @@ task :update_supply_projected_ratings => :environment do
   include BestGuess
   
   # get new ratings submitted in the last hour
-  #@recent_ratings = UserBeerRating.where('updated_at > ?', 1.hour.ago).pluck(:user_id)
+  @recent_ratings = UserBeerRating.where('updated_at > ?', 1.hour.ago).pluck(:user_id)
   # get unique users
-  #@users_with_new_ratings = @recent_ratings.uniq
-  
-  @all_users_with_supply = UserSupply.all.pluck(:user_id)
-  @unique_users_with_supply = @all_users_with_supply.uniq
+  @users_with_new_ratings = @recent_ratings.uniq
     
    # loop through each user to update the projected ratings of their current supply
-   @unique_users_with_supply.each do |this_user_id|
+   @users_with_new_ratings.each do |this_user_id|
       @user_supplies = UserSupply.where(user_id: this_user_id)
  
       @user_supplies.each do |drink|
