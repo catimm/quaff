@@ -4,8 +4,6 @@
 	<% if @user_rating >= 10.0 %>
 		<% @user_rating = 10 %>
 	<% end %>
-<% end %>
-<% if !@user_rating_info.nil? && !@user_rating.nil? %>
 	<p>Our <span class="best-guess">best guess</span> was: <span class="best-guess"><%= drink.projected_rating %></span></p>
 	<% if @user_rating_info.count > 1 %>
 		<p><span class="user-rating-acknowledged">Your avg rating</span>:</p>
