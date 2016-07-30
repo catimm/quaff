@@ -1,0 +1,96 @@
+<%= form_for @user_drink_rating, :url => {:controller => "ratings", :action => "rate_drink_from_supply", :user_id => current_user.id, :id => drink.id }, remote: true do |rate| %>
+<%= rate.submit "Save!", class: "btn btn-default btn-success rate-beer-save-rating text-center" %>
+<%= link_to "Back", "#", :class => 'btn btn-danger skip-rate-beer-now', :id => "#{drink.id}" %>
+<div class="drink-rating-tile drink-tile-width-measurement">
+	<div class="row no-margin ratings-image-holder-row">
+		<div class="col-xs-4 col-sm-5 no-padding wishlist-image-holder-column">
+			<% if !drink.beer.brewery.image.blank? %>
+				<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+			<% else %>
+				<div class="brewery-image-holder-empty-ratings-page text-center">
+					<h2><i class="fa fa-beer"></i></h2>
+				</div>
+			<% end %>
+		</div>
+		<div class="col-xs-8 col-sm-7 wishlist-best-guess">
+			<p><span class="user-rating-acknowledged">Your rating</span>:</p>
+			<h1 class="user-rating"><span id="visible-rating">0</span><span class="recent-user-rating-context">/10</span></h1>
+		</div>
+	</div>
+	<div class="row no-margin drink-name-and-info-row">
+		<%= render 'layouts/drink_name_and_info', drink: drink.beer %>	
+	</div>
+		<%= rate.hidden_field :user_id, :value => current_user.id %>
+		<%= rate.hidden_field :rated_on, :value => Time.now %>
+		<%= rate.hidden_field :drank_at, :value => @view %>
+		<%= rate.hidden_field :quantity, :value => drink.quantity %>
+		<%= rate.hidden_field :beer_id, :value => drink.beer_id %>
+		<%= rate.hidden_field :projected_rating, :value => drink.projected_rating %>
+		<%= rate.hidden_field :current_descriptors, :value => "" %>
+		<%= rate.hidden_field :beer_type_id, :value => drink.beer.beer_type_id %>
+		<div class="row no-margin rating-top-row">
+			<div class="col-xs-4 rating-holder text-center">
+				<div class="rating-step-container-in-supply text-left">
+					<h6 class="step-number-in-supply">1<sup>st</sup></h6>
+				</div>
+				<p class="common-description-heading-in-supply first">Rate drink:</p>
+			</div>
+			<div class="col-xs-8 rating-holder text-center">
+				<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
+                 data: {'slider-id' => 'rating-slider-in-supply',
+                 		'slider-min' => '0',
+                        'slider-max' => '10',
+                        'slider-step' => '0.5',
+                        'slider-value' => '0',
+                        'slider-orientation' => 'horizontal' } %> 
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 descriptor-holder-in-supply text-left">
+				<div class="rating-step-container-in-supply text-left">
+					<h6 class="step-number-in-supply">2<sup>nd</sup></h6>
+				</div>
+				<p class="common-description-heading-in-supply second">Add drink descriptors:</p>
+				<% if !@this_descriptors.blank? %>
+					<ul class="token-input-list-facebook_rating rating-page-descriptor-list-holder-in-supply">
+					<% @this_descriptors.each_with_index do |descriptor, i| %>
+						<% if i <= 2 %>
+							<li class="token-input-token-facebook_rating show">
+								<p><%= descriptor %></p>
+								<span class="token-input-delete-token-facebook_rating">+</span>
+							</li>
+						<% else %>
+							<li class="token-input-token-facebook_rating hidden">
+								<p><%= descriptor %></p>
+								<span class="token-input-delete-token-facebook_rating">+</span>
+							</li>
+						<% end %>
+					<% end %>
+						<div class="show-more-descriptors show">
+							<i id="show-more-descriptors-in-supply" class="fa fa-plus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to see more top descriptors."></i>
+						</div>
+					</ul>
+					
+				<% end %>
+			</div>
+			<div class="col-xs-12 descriptor-holder-box-in-supply">
+				<%= rate.fields_for :beer do |beer| %> 
+			    	<%= beer.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control token-input-holder-in-supply" %>
+			    <% end %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 comment-holder-in-supply">
+				<div class="rating-step-container-in-supply text-left">
+					<h6 class="step-number-in-supply">3<sup>rd</sup></h6>
+				</div>
+				<p class="common-description-heading-in-supply">Add extra thoughts (optional):</p>
+			</div>
+			<div class="col-xs-12">
+				<div class="rating-notes-container-in-supply">
+					<%= rate.text_area :comment, :class => "form-control", placeholder: "Additional comments (optional)" %>
+				</div>
+			</div>
+		</div>
+</div>
+<% end %>

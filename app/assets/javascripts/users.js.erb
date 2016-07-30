@@ -515,6 +515,42 @@ $(function () {
 		
 	});
 	
+	// show rating card in drink supply view
+	$(document).on("click", ".rate-drink-from-supply", function() {
+		var parent_id = $(this).parent().attr('id');
+		var toRemove = 'user-supply-';
+		var supply_id = parent_id.replace(toRemove,'');
+		
+		// send to controller to get rating card loaded 
+		$.ajax({
+		  type: "GET",
+		  url: "/users/load_rating_form_in_supply/" + supply_id
+		});
+		
+		// make page not jump to top
+		return false;
+
+	}); 
+	
+	// show rating card in drink supply view
+	$(document).on("click", ".skip-rate-beer-now", function() {
+		var supply_id = $(this).attr('id');
+		
+		// send to controller to get rating card loaded 
+		$.ajax({
+		  type: "GET",
+		  url: "/users/reload_drink_skip_rating/" + supply_id
+		});
+		
+		// make page not jump to top
+		return false;
+
+	}); 
+	
+	// submit drink rating from supply
+	$(document).on("submit", ".new_user_beer_rating", function(){
+		
+	})
 	// allow customers to remove drinks from wishlist
 	$(document).on("click", ".remove-drink-from-wishlist", function() {
 		var drink_id = $(this).attr('id');
@@ -671,6 +707,7 @@ $(function () {
 	 if (gon.drink_type_descriptor_array != undefined) {
 			 // create word cloud and return to view
 		     for (i = 0; i < gon.drink_type_descriptor_array.length; i++) { 
+			    
 			    if ( gon.drink_type_descriptor_array[i][1].length > 0 ) {
 				    $("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(gon.drink_type_descriptor_array[i][1], {
 				  		autoResize: true
@@ -682,6 +719,7 @@ $(function () {
 				 }
 			 }
 	 } else if (gon.drink_descriptor_array != undefined) {
+			 
 			 // create word cloud and return to view
 		     for (i = 0; i < gon.drink_descriptor_array.length; i++) { 
 			    if ( gon.drink_descriptor_array[i][1].length > 0 ) {

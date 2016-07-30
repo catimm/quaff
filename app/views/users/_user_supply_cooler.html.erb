@@ -19,7 +19,9 @@
 		<div class="row no-margin">
 			<% if !@user_cooler.blank? %>
 				<% @user_cooler_final.each do |drink| %>
-					<%= render(partial: 'supply_card', locals: { drink: drink }) %>
+					<div class="col-xs-12 col-sm-4 beer-tile-container" id="user-supply-<%= drink.id %>">
+						<%= render(partial: 'supply_card', locals: { drink: drink }) %>
+					</div>
 				<% end %>
 				<div class="col-sm-12" id="fav-drink-types-container">
 					<%= will_paginate @user_cooler_final, renderer: BootstrapPagination::Rails %>

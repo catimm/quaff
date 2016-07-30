@@ -2,6 +2,7 @@ class RatingsController < ApplicationController
   before_filter :authenticate_user!
   include BestGuess
   include DrinkDescriptors
+  include DrinkDescriptorCloud
   
   def new
     # set the page to return to after adding a rating
@@ -62,11 +63,60 @@ class RatingsController < ApplicationController
     # now redirect back to previous page
     redirect_to session.delete(:return_to)
     #redirect_to brewery_beer_path(@beer.brewery.id, @beer)
-  end
+  end # end of create method
+  
+  def rate_drink_from_supply
+    @user = current_user
+    @beer = Beer.find(params[:user_beer_rating][:beer_id])
+    params[:user_beer_rating][:current_descriptors] = params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens]
+    # post new rating and related info
+    new_user_rating = UserBeerRating.new(rating_params)
+    new_user_rating.save!
+    @user.tag(@beer, :with => params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens], :on => :descriptors)
+    
+    # remove from cooler or cellar if drank from either source
+    if params.fetch(:user_beer_rating, {}).fetch(:drank_at, false)
+      @ratings_source = params[:user_beer_rating][:drank_at]
+      if @ratings_source == 'cooler'
+        @rated_drink = UserSupply.where(user_id: current_user.id, beer_id: params[:user_beer_rating][:beer_id], supply_type_id: 1).first
+        if @rated_drink.quantity == 1
+          @supply_gone = true
+          @rated_drink.destroy!
+        else
+          @supply_gone = false
+          @original_quantity = @rated_drink.quantity
+          @new_quantity = @original_quantity - 1
+          @rated_drink.update(quantity: @new_quantity)
+          # get word cloud descriptors
+          @drink_type_descriptors = drink_descriptor_cloud(@rated_drink.beer)
+          @drink_type_descriptors_final = @drink_type_descriptors[1]
+        end
+      elsif @ratings_source == 'cellar'
+        @rated_drink = UserSupply.where(user_id: current_user.id, beer_id: params[:user_beer_rating][:beer_id], supply_type_id: 2).first
+        if @rated_drink.quantity == 1
+          @supply_gone = true
+          @rated_drink.destroy!
+        else
+          @supply_gone = false
+          @original_quantity = @rated_drink.quantity
+          @new_quantity = @original_quantity - 1
+          @rated_drink.update(quantity: @new_quantity)
+          # get word cloud descriptors
+          @drink_type_descriptors = drink_descriptor_cloud(@rated_drink.beer)
+          @drink_type_descriptors_final = @drink_type_descriptors[1]
+        end
+      end
+    end
+    
+    respond_to do |format|
+      format.js { render :layout => false }
+      format.html
+    end # end of redirect to jquery
+    
+  end # end of rate_drink_from_supply method
   
   private
-
-     
+ 
      # Never trust parameters from the scary internet, only allow the white list through.
     def rating_params
       params.require(:user_beer_rating).permit(:user_id, :beer_id, :drank_at, :projected_rating, :user_beer_rating, :comment,

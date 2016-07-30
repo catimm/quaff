@@ -58,6 +58,9 @@ Rails.application.routes.draw do
   get  '/users/drink_search/:id(/:query)' => 'users#drink_search', :as => 'drink_search'
   get '/users/plan_rewewal_update/:id' => 'users#plan_rewewal_update', :as => 'plan_rewewal_update'
   get '/users/change_next_delivery_date/:id' => 'users#change_next_delivery_date', :as => 'change_next_delivery_date'
+  get '/users/load_rating_form_in_supply/:id' => 'users#load_rating_form_in_supply'
+  get '/users/reload_drink_skip_rating/:id' => 'users#reload_drink_skip_rating'
+  
   post '/users/wishlist_removal/:id' => 'users#wishlist_removal', :as => 'wishlist_removal'
   post '/users/update_profile/:id' => 'users#update_profile'
   post '/users/update_delivery_address/:id' => 'users#update_delivery_address'
@@ -80,7 +83,7 @@ Rails.application.routes.draw do
   post '/users/add_fav_drink' => 'users#add_fav_drink', :as => 'add_fav_drink'
   post '/users/set_search_box_id/:id' => 'users#set_search_box_id', :as => 'set_search_box_id'
   post '/users/remove_fav_drink/:id' => 'users#remove_fav_drink', :as => 'remove_fav_drink'
-  
+  post '/ratings/:user_id/rate_drink_from_supply/:id' => 'ratings#rate_drink_from_supply', :as => 'rate_drink_from_supply'
   # user signup process
   get '/signup/getting_started/:id' => 'signup#getting_started', :as => 'getting_started'
   post '/signup/process_input/:id' => 'signup#process_input', :as => 'process_input'

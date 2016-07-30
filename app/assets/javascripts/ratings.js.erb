@@ -17,7 +17,7 @@ $(function() {
 		minChars: 2,
 	    allowFreeTagging: true,
 	    preventDuplicates: true,
-	    hintText: 'Type beer descriptor (e.g. citrusy, piney, etc.)'
+	    hintText: 'Type drink descriptor (e.g. citrusy, dry, etc.)'
 	});
 	// to add already used descriptor to this user's list of descriptors
 	$('.token-input-list-facebook_rating li').on('click', function(){
@@ -32,9 +32,14 @@ $(function() {
 	// set note field to match width of token input field
 	$(".rating-notes-container").width(token_field_width - 28);
 	
-	// show rest of top descriptors
+	// show rest of top descriptors in normal ratings view
 	$(document).on('click', '#show-more-descriptors', function () {
 		$(this).parent('.show-more-descriptors').siblings('.token-input-list-facebook_rating.rating-page-descriptor-list-holder').children('.token-input-token-facebook_rating').removeClass('hidden').addClass('show');
+		$(this).parent('.show-more-descriptors').removeClass("show").addClass("hidden");
+	});
+	// show rest of top descriptors in supply ratings view
+	$(document).on('click', '#show-more-descriptors-in-supply', function () {
+		$(this).parent('.show-more-descriptors').siblings('.token-input-token-facebook_rating').removeClass('hidden').addClass('show');
 		$(this).parent('.show-more-descriptors').removeClass("show").addClass("hidden");
 	});
 });

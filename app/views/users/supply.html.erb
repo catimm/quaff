@@ -20,6 +20,12 @@
 			</div>
 		</div>
 	</div>
+	<div class="row no-margin supply-spinner text-center hidden">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Updating...</h4>
+		</div>
+	</div>
 	<div class="row">
 		<div class="container" id="preference-view-choice">
 			<% if @view == "cooler" %>
@@ -46,7 +52,7 @@
 			<div class="col-sm-4 remove-button-holder">
 				<%= link_to "#", :class => 'subtract-drink-confirmation text-center btn btn-danger remove-drink-button' do %>
 					<i class="fa fa-minus"></i>
-					Remove drink
+					Remove it!
 				<% end %>
 			</div>
 			<div class="col-sm-4 remove-button-holder">
@@ -69,7 +75,7 @@
 			<div class="col-sm-4 remove-button-holder">
 				<%= link_to "#", :class => 'subtract-drink-from-wishlist-confirmation text-center btn btn-danger remove-drink-button' do %>
 					<i class="fa fa-minus"></i>
-					Remove drink
+					Remove it!
 				<% end %>
 			</div>
 			<div class="col-sm-4 remove-button-holder">
@@ -77,4 +83,5 @@
 			</div>
 		</div>
 	</div>
+	<div class="row no-margin rating-from-supply hidden"></div>
 <%= render 'layouts/footer' %>

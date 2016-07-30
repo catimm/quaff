@@ -1,0 +1,49 @@
+$(function() {
+	// set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	$(".supply-spinner").removeClass('hidden').addClass('show');
+	timer = setTimeout(function() { //then give it a second before removing it
+	    	$(".supply-spinner").removeClass('show').addClass('hidden');
+	    }, 1500);
+	
+	<% if @supply_gone == false %>
+		$("#user-supply-<%= @rated_drink.id %>").html("<%= escape_javascript(render 'users/supply_card', drink: @rated_drink ) %>");
+		$('.rating-from-supply').removeClass('show').addClass('hidden');
+		
+		// set width of quantity holder--in supply and delivery review views--equal to portion of tile width
+		drink_tile_width = $(".drink-tile-width-measurement").width();
+		quantity_holder_width = (drink_tile_width * .15);
+		$(".quantity-holder").width(quantity_holder_width).height(quantity_holder_width);
+		
+		// default word cloud if no descriptors exist 
+		var word_array = [
+	          {text: "descriptors", weight: 15},
+	          {text: "no", weight: 7},
+	          {text: "yet", weight: 4}
+	      ];
+		
+		var descriptor_array = <%= raw @drink_type_descriptors_final.to_json %>
+	
+		 // descriptor clouds for drink types
+		 // create word cloud and return to view
+	    <% if !@drink_type_descriptors.nil? %>
+		   
+		    $("#drink_<%= @rated_drink.beer_id %>").jQCloud(descriptor_array, {
+		  		autoResize: true
+		     });
+		<% else %>
+			$("#drink_<%= @rated_drink.beer_id %>").jQCloud(word_array, {
+		 		autoResize: true
+		    });
+		 <% end %>
+	<% else %>
+		$("#user-supply-<%= @rated_drink.id %>").remove();
+		$('.rating-from-supply').removeClass('show').addClass('hidden');	
+	<% end %>
+});

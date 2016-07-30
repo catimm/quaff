@@ -1,0 +1,31 @@
+$(function() {
+	$("#user-supply-<%= @this_supply_id %>").html("<%= escape_javascript(render 'rating_drink_card_current', drink: @user_supply ) %>");
+	// for rating slider
+	$("#rater").slider({
+		tooltip: 'hide'
+	});
+	$("#rater").on("slide", function(slideEvt) {
+		$("#visible-rating").text(slideEvt.value);
+	});
+	$("#rater").on("change", function() {
+		var this_value = $(this).val();
+		$("#visible-rating").html(this_value);
+	});
+	// to grab list of descriptors for this beer
+	$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput('/beers/descriptors.json', {
+		theme: 'facebook',
+		placeholder: 'Click bubbles or type words (separate w/comma)',
+		minChars: 2,
+	    allowFreeTagging: true,
+	    preventDuplicates: true,
+	    hintText: 'Type drink descriptor (e.g. citrusy, dry, etc.)'
+	});
+	// to add already used descriptor to this user's list of descriptors
+	$('.token-input-list-facebook_rating li').on('click', function(){
+		$(this).addClass("hide");
+		var descriptor = $(this).children('p').html();
+		$('#user_beer_rating_beer_attributes_descriptor_list_tokens').tokenInput("add", {id: descriptor, name: descriptor});
+		return false;
+	});
+	$('.rating-from-supply').removeClass('hidden').addClass('show');
+});

@@ -10,7 +10,7 @@
 			<div class="row no-margin recent-rating-holder">
 				<% @recent_user_ratings.each do |rating| %>
 					<div class="col-sm-3" id="recent-activity">
-						<%= render(partial: 'rating_card', locals: { drink: rating }) %>
+						<%= render(partial: 'rating_drink_card_history', locals: { drink: rating }) %>
 					</div>
 				<% end%>
 			</div>

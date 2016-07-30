@@ -20,7 +20,9 @@
 			<% if !@user_cellar.blank? %>
 				<div class="row no-margin recent-rating-holder">
 					<% @user_cellar_final.each do |drink| %>
-						<%= render(partial: 'supply_card', locals: { drink: drink }) %>
+						<div class="col-xs-12 col-sm-4 beer-tile-container" id="user-supply-<%= drink.id %>">
+							<%= render(partial: 'supply_card', locals: { drink: drink }) %>
+						</div>
 					<% end%>
 				</div>
 				<div class="col-sm-12" id="fav-drink-types-container">

@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!, :except => [:stripe_webhooks]
   include DrinkTypeDescriptorCloud
   include DrinkDescriptorCloud
+  include DrinkDescriptors
   include CreateNewDrink
   include DeliveryEstimator
   include BestGuess
@@ -114,7 +115,7 @@ class UsersController < ApplicationController
     # get correct view
     @view = params[:format]
     # get user supply data
-    @user_supply = UserSupply.where(user_id: params[:id])
+    @user_supply = UserSupply.where(user_id: params[:id]).order(:id)
     #Rails.logger.debug("View is: #{@view.inspect}")
     
     # get data for view
@@ -178,6 +179,46 @@ class UsersController < ApplicationController
     end # end choice between cooler, cellar and wishlist views
     
   end # end of supply method
+  
+  def reload_drink_skip_rating
+    # set id for container to hold rating form
+    @this_supply_id = params[:id]
+    #get user supply info for the drink to be rated
+    @user_supply = UserSupply.find_by_id(params[:id])
+    
+    # get word cloud descriptors
+    @drink_type_descriptors = drink_descriptor_cloud(@user_supply.beer)
+    @drink_type_descriptors_final = @drink_type_descriptors[1]
+    
+    respond_to do |format|
+      format.js
+      format.html
+    end # end of redirect to jquery
+    
+  end # end of reload_drink_after_rating method
+  
+  def load_rating_form_in_supply
+    # set id for container to hold rating form
+    @this_supply_id = params[:id]
+    #get user supply info for the drink to be rated
+    @user_supply = UserSupply.find_by_id(params[:id])
+    
+    if @user_supply.supply_type_id == 1
+      @view = "cooler"
+    elsif @user_supply.supply_type_id == 2
+      @view = "cellar"
+    end
+     # to prepare for new ratings
+    @user_drink_rating = UserBeerRating.new
+    @user_drink_rating.build_beer
+    @this_descriptors = drink_descriptors(@user_supply.beer, 10)
+    
+    respond_to do |format|
+      format.js
+      format.html
+    end # end of redirect to jquery
+    
+  end # end of load_rating_form_in_supply method
   
   def move_drink_to_cooler
     @cellar_drink = UserSupply.find_by_id(params[:id])
