@@ -118,6 +118,12 @@ class UsersController < ApplicationController
     @user_supply = UserSupply.where(user_id: params[:id]).order(:id)
     #Rails.logger.debug("View is: #{@view.inspect}")
     
+    @user_supply.each do |supply|
+      if supply.projected_rating.nil?
+        best_guess(supply.beer_id, current_user.id)
+      end
+    end
+    
     # get data for view
     if @view == "cooler"
       @user_cooler = @user_supply.where(supply_type_id: 1)
