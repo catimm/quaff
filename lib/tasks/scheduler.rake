@@ -422,9 +422,14 @@ task :assess_drink_recommendations => :environment do
             else
               @individual_drink_info["projected_rating"] = drink.best_guess
             end
-            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["likes_style"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
-            
+            @individual_drink_info["this_beer_descriptors"] = drink.this_beer_descriptors
+            @individual_drink_info["beer_style_name_one"] = drink.beer_style_name_one
+            @individual_drink_info["beer_style_name_two"] = drink.beer_style_name_two
+            @individual_drink_info["recommendation_rationale"] = drink.recommendation_rationale
+            @individual_drink_info["is_hybrid"] = drink.is_hybrid
+
             # insert this data into hash
             @compiled_assessed_drinks << @individual_drink_info
           end
@@ -434,8 +439,13 @@ task :assess_drink_recommendations => :environment do
             @individual_drink_info["user_id"] = user.id
             @individual_drink_info["beer_id"] = drink.id
             @individual_drink_info["projected_rating"] = drink.best_guess
-            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["likes_style"] = drink.likes_style
             @individual_drink_info["new_drink"] = true  
+            @individual_drink_info["this_beer_descriptors"] = drink.this_beer_descriptors
+            @individual_drink_info["beer_style_name_one"] = drink.beer_style_name_one
+            @individual_drink_info["beer_style_name_two"] = drink.beer_style_name_two
+            @individual_drink_info["recommendation_rationale"] = drink.recommendation_rationale
+            @individual_drink_info["is_hybrid"] = drink.is_hybrid
             
             # insert this data into hash
             @compiled_assessed_drinks << @individual_drink_info
@@ -780,7 +790,13 @@ task :update_supply_projected_ratings => :environment do
         if @projected_rating > 10
           @projected_rating = 10
         end
-        UserSupply.update(drink.id, projected_rating: @projected_rating)
+        UserSupply.update(drink.id, projected_rating: @projected_rating,
+                                    likes_style: @best_guess[0].likes_style,
+                                    this_beer_descriptors: @best_guess[0].this_beer_descriptors,
+                                    beer_style_name_one: @best_guess[0].beer_style_name_one,
+                                    beer_style_name_two: @best_guess[0].beer_style_name_two,
+                                    recommendation_rationale: @best_guess[0].recommendation_rationale,
+                                    is_hybrid: @best_guess[0].is_hybrid)
       end # end of loop through each drink in current supply for each user
       
     end # end of loop through each user to update projected ratings

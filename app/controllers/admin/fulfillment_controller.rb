@@ -67,12 +67,26 @@ class Admin::FulfillmentController < ApplicationController
           @new_cellar_drink = UserSupply.create(user_id: drink.user_id, 
                                                 beer_id: drink.beer_id, 
                                                 supply_type_id: 2, 
-                                                quantity: drink.quantity)
+                                                quantity: drink.quantity,
+                                                projected_rating: drink.projected_rating,
+                                                likes_style: drink.likes_style,
+                                                this_beer_descriptors: drink.this_beer_descriptors,
+                                                beer_style_name_one: drink.beer_style_name_one,
+                                                beer_style_name_two: drink.beer_style_name_two,
+                                                recommendation_rationale: drink.recommendation_rationale,
+                                                is_hybrid: drink.is_hybrid)
         else
           @new_cooler_drink = UserSupply.create(user_id: drink.user_id, 
                                                 beer_id: drink.beer_id, 
                                                 supply_type_id: 1, 
-                                                quantity: drink.quantity)
+                                                quantity: drink.quantity,
+                                                projected_rating: drink.projected_rating,
+                                                likes_style: drink.likes_style,
+                                                this_beer_descriptors: drink.this_beer_descriptors,
+                                                beer_style_name_one: drink.beer_style_name_one,
+                                                beer_style_name_two: drink.beer_style_name_two,
+                                                recommendation_rationale: drink.recommendation_rationale,
+                                                is_hybrid: drink.is_hybrid)
         end
       end
       

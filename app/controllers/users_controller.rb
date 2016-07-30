@@ -304,7 +304,7 @@ class UsersController < ApplicationController
     @this_action = @this_info_split[1]
     @this_drink_id = @this_info_split[2]
     
-    # get suplly type id
+    # get supply type id
     @this_supply_type = SupplyType.where(designation: @this_supply_type_designation).first
     
     # update User Supply table
@@ -312,7 +312,23 @@ class UsersController < ApplicationController
       @user_supply = UserSupply.where(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id).first
       @user_supply.destroy!
     else
-      @user_supply = UserSupply.new(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id, quantity: 1)
+      # get drink best guess info
+      @best_guess = best_guess(@this_drink_id, current_user.id)
+      @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
+      if @projected_rating > 10
+        @projected_rating = 10
+      end
+      @user_supply = UserSupply.new(user_id: current_user.id, 
+                                    beer_id: @this_drink_id, 
+                                    supply_type_id: @this_supply_type.id, 
+                                    quantity: 1,
+                                    projected_rating: @projected_rating,
+                                    likes_style: @best_guess[0].likes_style,
+                                    this_beer_descriptors: @best_guess[0].this_beer_descriptors,
+                                    beer_style_name_one: @best_guess[0].beer_style_name_one,
+                                    beer_style_name_two: @best_guess[0].beer_style_name_two,
+                                    recommendation_rationale: @best_guess[0].recommendation_rationale,
+                                    is_hybrid: @best_guess[0].is_hybrid)
       @user_supply.save!
     end
     

@@ -201,9 +201,14 @@ class Admin::RecommendationsController < ApplicationController
                                                       cellar: @cellar, 
                                                       large_format: @large_format,
                                                       projected_rating: @drink_recommendation.projected_rating,
-                                                      style_preference: @drink_recommendation.style_preference,
+                                                      likes_style: @drink_recommendation.likes_style,
                                                       quantity: 1,
-                                                      delivery_id: @customer_next_delivery.id)
+                                                      delivery_id: @customer_next_delivery.id,
+                                                      this_beer_descriptors: @drink_recommendation.this_beer_descriptors,
+                                                      beer_style_name_one: @drink_recommendation.beer_style_name_one,
+                                                      beer_style_name_two: @drink_recommendation.beer_style_name_two,
+                                                      recommendation_rationale: @drink_recommendation.recommendation_rationale,
+                                                      is_hybrid: @drink_recommendation.is_hybrid)
 
       
       # set new price in Delivery table
@@ -257,18 +262,23 @@ class Admin::RecommendationsController < ApplicationController
         
       else # add entry
         # put info into user_deliveries table
-        @next_user_delivery_addition = UserDelivery.create(user_id: @drink_recommendation.user_id, 
+        @next_user_delivery_addition = UserDelivery.create(user_id: @next_delivery_admin_info.user_id, 
                                                         inventory_id: @inventory_id, 
                                                         beer_id: @inventory.beer_id, 
-                                                        new_drink: @drink_recommendation.new_drink, 
+                                                        new_drink: @next_delivery_admin_info.new_drink, 
                                                         cellar: @cellar, 
                                                         large_format: @large_format,
-                                                        projected_rating: @drink_recommendation.projected_rating,
-                                                        style_preference: @drink_recommendation.style_preference,
+                                                        projected_rating: @next_delivery_admin_info.projected_rating,
+                                                        likes_style: @next_delivery_admin_info.likes_style,
                                                         quantity: 1,
                                                         delivery_id: @customer_next_delivery.id,
                                                         drink_cost: @inventory.drink_cost,
-                                                        drink_price: @inventory.drink_price)
+                                                        drink_price: @inventory.drink_price,
+                                                        this_beer_descriptors: @next_delivery_admin_info.this_beer_descriptors,
+                                                        beer_style_name_one: @next_delivery_admin_info.beer_style_name_one,
+                                                        beer_style_name_two: @next_delivery_admin_info.beer_style_name_two,
+                                                        recommendation_rationale: @next_delivery_admin_info.recommendation_rationale,
+                                                        is_hybrid: @next_delivery_admin_info.is_hybrid)
         
         # now make addition to the customer_delivery_changes table   
         @new_customer_delivery_change = CustomerDeliveryChange.create(user_id: @drink_recommendation.user_id,
