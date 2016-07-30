@@ -18,6 +18,6 @@
 	<% if !drink.projected_rating.nil? %>
 		<h1 class="best-guess"><%= drink.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
 	<% else %>
-		<h1 class="best-guess"><%= drink.beer.buest_guess %><span class="recent-user-rating-context">/10</span></h1>
+		<h1 class="best-guess"><%= drink.beer.best_guess %><span class="recent-user-rating-context">/10</span></h1>
 	<% end %>
 <% end %>
