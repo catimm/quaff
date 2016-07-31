@@ -29,13 +29,13 @@
 		<%= rate.hidden_field :current_descriptors, :value => "" %>
 		<%= rate.hidden_field :beer_type_id, :value => drink.beer.beer_type_id %>
 		<div class="row no-margin rating-top-row">
-			<div class="col-xs-4 rating-holder text-center">
+			<div class="col-xs-12 col-sm-4 rating-holder text-center">
 				<div class="rating-step-container-in-supply text-left">
 					<h6 class="step-number-in-supply">1<sup>st</sup></h6>
 				</div>
 				<p class="common-description-heading-in-supply first">Rate drink:</p>
 			</div>
-			<div class="col-xs-8 rating-holder text-center">
+			<div class="col-xs-12 col-sm-8 rating-holder text-center">
 				<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
                  data: {'slider-id' => 'rating-slider-in-supply',
                  		'slider-min' => '0',

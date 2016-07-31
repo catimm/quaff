@@ -4890,6 +4890,13 @@ $delivery-beer-header-lines-to-show: 2;
     padding: 0;
     font-size: 36px;
   }
+  .drink-rating-tile {
+    height: 450px !important;
+  }
+  #rating-slider-in-supply {
+    margin: 10px 0 0 5px !important;
+    width: 90% !important;
+  }
   .mobile-menu-holder {
     padding: 0 !important;
   }
@@ -4904,7 +4911,7 @@ $delivery-beer-header-lines-to-show: 2;
   .formButton-send-note {
     margin: 5px 0 !important;
   }
-  .drink-supply-tile, .drink-rating-tile {
+  .drink-supply-tile {
     height: 300px !important;
   }
   .overview-tile-2 {
@@ -4965,6 +4972,7 @@ $delivery-beer-header-lines-to-show: 2;
   .next-delivery-tile-no-review {
     height: 300px;
   }
+  
   .next-delivery-text {
     font-size: 16px;
     padding: 0 !important;
