@@ -1,5 +1,6 @@
+<% @beer = Beer.find_by_id(beer.beer_id) %>
 <% if !beer.likes_style.nil? %>
-	<% if beer.best_guess >= 8 && beer.likes_style == "yes" %>
+	<% if beer.projected_rating >= 8 && beer.likes_style == "yes" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">You like <%= beer.beer_style_name_one %>, so here we are.</p>
@@ -7,77 +8,77 @@
 			<li>
 				<p class="recommendation-reasons">Others have rated this highly.</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
-	<% elsif beer.best_guess >= 8 && beer.likes_style == "neither" %>
+	<% elsif beer.projected_rating >= 8 && beer.likes_style == "neither" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Though <%= beer.beer_style_name_one %> aren't your faves, others have rated this highly...</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
-	<% elsif beer.best_guess >= 8 && beer.likes_style == "no" %>
+	<% elsif beer.projected_rating >= 8 && beer.likes_style == "no" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name_one %>, 
 				others have rated this quite highly.</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>	
-	<% elsif beer.best_guess >= 6 && beer.likes_style == "yes" %>
+	<% elsif beer.projected_rating >= 6 && beer.likes_style == "yes" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">You like <%= beer.beer_style_name_one %>, so here we are.</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
-	<% elsif beer.best_guess >= 6 && beer.likes_style == "neither" %>
+	<% elsif beer.projected_rating >= 6 && beer.likes_style == "neither" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Though <%= beer.beer_style_name_one %> aren't your faves, others have rated this highly...</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">This is a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">This is a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
-	<% elsif beer.best_guess >= 6 && beer.likes_style == "no" %>
+	<% elsif beer.projected_rating >= 6 && beer.likes_style == "no" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Though you don't like <%= beer.beer_style_name_one %>, 
 				others have rated this highly...</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
-	<% elsif beer.best_guess >= 0 && beer.likes_style == "yes" %>
+	<% elsif beer.projected_rating >= 0 && beer.likes_style == "yes" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Though you like <%= beer.beer_style_name_one %>, 
 				others haven't rated this too kindly...</p>
 			</li>
 		</ul>
-	<% elsif beer.best_guess >= 0 && beer.likes_style == "niether" %>
+	<% elsif beer.projected_rating >= 0 && beer.likes_style == "niether" %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Others haven't rated this too kindly...</p>
@@ -92,29 +93,29 @@
 		</ul>
 	<% end %>
 <% else %>
-	<% if beer.best_guess >= 8 %>
+	<% if beer.projected_rating >= 8 %>
 		<ul>									
 			<li>
 				<p class="recommendation-reasons">Others have rated this highly.</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>	
-	<% elsif beer.best_guess >= 6 %>
+	<% elsif beer.projected_rating >= 6 %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Others have rated this as just OK.</p>
 			</li>
-			<% if !beer.speciality_notice.blank? %>
+			<% if !@beer.speciality_notice.blank? %>
 			<li>
-				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= beer.speciality_notice %></span> beer</p>
+				<p class="recommendation-reasons">It's a <span><i class="fa fa-tag"></i> <%= @beer.speciality_notice %></span> beer</p>
 			</li>
 			<% end %>
 		</ul>
-	<% else beer.best_guess >= 0 %>
+	<% else beer.projected_rating >= 0 %>
 		<ul>
 			<li>
 				<p class="recommendation-reasons">Others haven't rated this too kindly...</p>

@@ -25,16 +25,15 @@
 		</div>
 		<div class="row no-margin list-overview hidden-xs">
 			<div class="col-xs-12 why-statement">
-				<% drink.beer.likes_style = drink.style_preference %>
 				<p>Why you might like this:</p>
-				<% if drink.beer.recommendation_rationale == "style" %>
-					<% if  drink.beer.is_hybrid == "yes" %>
-						<%= render 'locations/hybrid_rating_rationale', beer: drink.beer %>
+				<% if drink.recommendation_rationale == "style" %>
+					<% if  drink.is_hybrid == "yes" %>
+						<%= render 'locations/hybrid_rating_rationale', beer: drink %>
 					<% else %>
-						<%= render 'locations/nonhybrid_rating_rationale', beer: drink.beer %>
+						<%= render 'locations/nonhybrid_rating_rationale', beer: drink %>
 					<% end %>
 				<% else %>
-					<%= render 'locations/type_rating_rationale', beer: drink.beer %>
+					<%= render 'locations/type_rating_rationale', beer: drink %>
 				<% end %>
 			</div>
 		</div>
