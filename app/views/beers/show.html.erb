@@ -97,12 +97,12 @@
 							<p>Why, you ask?</p>
 							<% if @beer.recommendation_rationale == "style" %>
 								<% if  @beer.is_hybrid == "yes" %>
-									<%= render 'locations/hybrid_rating_rationale', beer: @beer %>
+									<%= render 'hybrid_rating_rationale', beer: @beer %>
 								<% else %>
-									<%= render 'locations/nonhybrid_rating_rationale', beer: @beer %>
+									<%= render 'nonhybrid_rating_rationale', beer: @beer %>
 								<% end %>
 							<% else %>
-								<%= render 'locations/type_rating_rationale', beer: @beer %>
+								<%= render 'type_rating_rationale', beer: @beer %>
 							<% end %>
 						</div>
 					</div>
