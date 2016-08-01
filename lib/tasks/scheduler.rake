@@ -408,8 +408,13 @@ task :assess_drink_recommendations => :environment do
             else
               @individual_drink_info["projected_rating"] = drink.best_guess
             end
-            @individual_drink_info["style_preference"] = drink.likes_style
+            @individual_drink_info["likes_style"] = drink.likes_style
             @individual_drink_info["new_drink"] = false
+            @individual_drink_info["this_beer_descriptors"] = drink.this_beer_descriptors
+            @individual_drink_info["beer_style_name_one"] = drink.beer_style_name_one
+            @individual_drink_info["beer_style_name_two"] = drink.beer_style_name_two
+            @individual_drink_info["recommendation_rationale"] = drink.recommendation_rationale
+            @individual_drink_info["is_hybrid"] = drink.is_hybrid
             
             # insert this data into hash
             @compiled_assessed_drinks << @individual_drink_info
