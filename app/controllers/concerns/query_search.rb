@@ -31,18 +31,17 @@ module QuerySearch
         if !@search_array.blank? #check to make sure there are terms to check
           # check search term agains breweries and beers to grab relevant matches
           if search_term.match(/\s+/) # If search term contains white spaces, run first block of code
-            
-            
+
             #Rails.logger.debug("Search results: #{result.inspect}")
               
                 # find name of this brewery
-                if !result.short_brewery_name.nil?
-                  this_brewery = result.short_brewery_name.downcase
-                  Rails.logger.debug("This brewery has short name: #{this_brewery.inspect}")
-                else
+                #if !result.short_brewery_name.nil?
+                  #this_brewery = result.short_brewery_name.downcase
+                  #Rails.logger.debug("This brewery has short name: #{this_brewery.inspect}")
+                #else
                   this_brewery = result.brewery_name.downcase
                   Rails.logger.debug("This brewery long name: #{this_brewery.inspect}")
-                end
+                #end
                 Rails.logger.debug("Recognized as having whitespaces")
                 
                 if result.collab == true
@@ -53,6 +52,7 @@ module QuerySearch
                   @collab_beers.each do |brewery_beer|
                     
                     collab_brewery_name = Beer.collab_brewery_name(brewery_beer.id)
+                    Rails.logger.debug("Brewery beerS: #{collab_brewery_name.inspect}")
                     
                     if result.brewery_name.downcase.include? @search_term          
                         #Rails.logger.debug("Recognized as WS collab brewery search")
@@ -67,6 +67,7 @@ module QuerySearch
                         @search_array.each do |term_check|
                           if this_beer.include? term_check
                             if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                              Rails.logger.debug("Brewery beer: #{brewery_beer.inspect}")
                               @search_results << brewery_beer
                             end
                           end
