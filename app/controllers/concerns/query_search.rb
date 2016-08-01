@@ -7,10 +7,10 @@ module QuerySearch
       operator: 'or',
       fields: [{ 'beer_name^10' => :word_middle }, 'brewery_name', 'short_brewery_name^10']
      
-    #Rails.logger.debug("Search results: #{@search.inspect}")
+    Rails.logger.debug("Search results: #{@search.inspect}")
     
     @search_results = Array.new
-    @search.each do |result|
+    @search.each_with_index do |result, search_index|
       if result.dont_include != true # make sure this brewery should be included
         # make search case lower case
         @search_term = search_term.downcase
@@ -19,135 +19,166 @@ module QuerySearch
           @temp_array = search_term.downcase.split(/\s+/)
           @search_array = Array.new
           @temp_array.each do |brewery_check|
-            if result.brewery_name.downcase.include? brewery_check
+            if !result.brewery_name.downcase.include? brewery_check
               #
             else
               @search_array << brewery_check
-            end
-          end
-        end
-      #Rails.logger.debug("Search Terms: #{@search_array.inspect}")
-      # check search term agains breweries and beers to grab relevant matches
-      # If search term contains white spaces, run first block of code
-        if search_term.match(/\s+/)
-          #Rails.logger.debug("Search results: #{result.inspect}")
-          # find name of this brewery
-          this_brewery = result.brewery_name.downcase
-          #Rails.logger.debug("Recognized as having whitespaces")
-          if result.collab == true
-            #Rails.logger.debug("Recognized as WS collab")
-            @collabs = BeerBreweryCollab.where(brewery_id: result.id).pluck(:beer_id)
-            @collab_beers = Beer.where(id: @collabs)
-            @collab_beers.each do |brewery_beer|
-              collab_brewery_name = Beer.collab_brewery_name(brewery_beer.id)
-              if result.brewery_name.downcase.include? @search_term          
-                  #Rails.logger.debug("Recognized as WS collab brewery search")
-                  @search_results << brewery_beer
-              else
-                #Rails.logger.debug("Recognized as WS collab beer search")
-                this_beer = brewery_beer.beer_name.downcase
-                if @temp_array.any? { |w| collab_brewery_name =~ /#{w}/ } 
-                  #Rails.logger.debug("Matches brewery")
-                  @search_array.each do |term_check|
-                    if this_beer.include? term_check
-                      if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
-                        @search_results << brewery_beer
-                      end
-                    end
-                  end
+            end # end of adding search term to search array
+          end # end of brewery check
+        end # end of check whether search contains a whitespace
+        Rails.logger.debug("Search Terms: #{@search_array.inspect}")
+        
+        if !@search_array.blank? #check to make sure there are terms to check
+          # check search term agains breweries and beers to grab relevant matches
+          if search_term.match(/\s+/) # If search term contains white spaces, run first block of code
+            
+            
+            #Rails.logger.debug("Search results: #{result.inspect}")
+              
+                # find name of this brewery
+                if !result.short_brewery_name.nil?
+                  this_brewery = result.short_brewery_name.downcase
+                  Rails.logger.debug("This brewery has short name: #{this_brewery.inspect}")
                 else
-                  #Rails.logger.debug("Doesn't match brewery")
-                    @temp_array.each do |term_check|
-                      if brewery_beer.beer_name.downcase.include? term_check
-                        if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
-                          @search_results << brewery_beer
-                        end
-                      end
-                    end
+                  this_brewery = result.brewery_name.downcase
+                  Rails.logger.debug("This brewery long name: #{this_brewery.inspect}")
                 end
-              end
-            end
-          end
-          if result.brewery_name.downcase.include? @search_term
-            #Rails.logger.debug("Recognized as WS brewery search")
-            @brewery_beers = Beer.where(brewery_id: result.id)
-            @brewery_beers.each do |brewery_beer|
-              if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
-                @search_results << brewery_beer
-              end
-            end
-          else 
-            if @temp_array.any? { |w| this_brewery =~ /#{w}/ } 
-              #Rails.logger.debug("Matches brewery")
-              @brewery_beers = Beer.where(brewery_id: result.id)
-              @brewery_beers.each do |brewery_beer|
-                @search_array.each do |term_check|
-                  if brewery_beer.beer_name.downcase.include? term_check
+                Rails.logger.debug("Recognized as having whitespaces")
+                
+                if result.collab == true
+                  Rails.logger.debug("Recognized as WS collab")
+                  @collabs = BeerBreweryCollab.where(brewery_id: result.id).pluck(:beer_id)
+                  
+                  @collab_beers = Beer.where(id: @collabs)
+                  @collab_beers.each do |brewery_beer|
+                    
+                    collab_brewery_name = Beer.collab_brewery_name(brewery_beer.id)
+                    
+                    if result.brewery_name.downcase.include? @search_term          
+                        #Rails.logger.debug("Recognized as WS collab brewery search")
+                        @search_results << brewery_beer
+                    else
+                      #Rails.logger.debug("Recognized as WS collab beer search")
+                      
+                      this_beer = brewery_beer.beer_name.downcase
+                      
+                      if @temp_array.any? { |w| collab_brewery_name =~ /#{w}/ } 
+                        Rails.logger.debug("Matches brewery")
+                        @search_array.each do |term_check|
+                          if this_beer.include? term_check
+                            if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                              @search_results << brewery_beer
+                            end
+                          end
+                        end
+                      else
+                        Rails.logger.debug("Doesn't match brewery")
+                          @temp_array.each do |term_check|
+                            if brewery_beer.beer_name.downcase.include? term_check
+                              if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                                @search_results << brewery_beer
+                              end
+                            end
+                          end 
+                       end # end of check whether results exist in the temp array
+                    
+                    end # end of check whether brewery name exists in search term
+                  
+                  end # end of cycle through each brewery drink (@collab_beers)
+                
+                end # end of check whether search result possesses a collab
+                
+                if result.brewery_name.downcase.include? @search_term
+                  Rails.logger.debug("Recognized as WS brewery search")
+                  @brewery_beers = Beer.where(brewery_id: result.id)
+                  @brewery_beers.each do |brewery_beer|
                     if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
                       @search_results << brewery_beer
                     end
                   end
-                end
-              end
-            else
-              #Rails.logger.debug("Doesn't match brewery")
-              @brewery_beers = Beer.where(brewery_id: result.id)
-              @brewery_beers.each do |brewery_beer|
-                term_count = 0
-                @temp_array.each do |term_check|
-                  if brewery_beer.beer_name.downcase.include? term_check
-                    term_count += 1
-                  end
-                end
-                if term_count == @temp_array.count
-                  if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
-                    @search_results << brewery_beer
-                  end
-                end
-              end
-            end
-          end # end whitespace (array) beer list building loop  
-        else # run loop for non-whitespace search-term beer list building
-          #Rails.logger.debug("Recognized as NOT having whitespaces")
-          if result.collab == true
-              #Rails.logger.debug("Recognized as NWS collab")
-              @collabs = BeerBreweryCollab.where(brewery_id: result.id).pluck(:beer_id)
-              @collab_beers = Beer.where(id: @collabs)
-              @collab_beers.each do |brewery_beer|
-                if result.brewery_name.downcase.include? @search_term         
-                    #Rails.logger.debug("Recognized as NWS collab brewery search")
-                    @search_results << brewery_beer
-                else
-                  if brewery_beer.beer_name.downcase.include? @search_term
-                    #Rails.logger.debug("Recognized as NWS collab beer search")
-                    if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin 
-                      @search_results << brewery_beer
+                else 
+                  if @temp_array.any? { |w| this_brewery =~ /#{w}/ } 
+                    Rails.logger.debug("Matches brewery")
+                    @brewery_beers = Beer.where(brewery_id: result.id)
+                    @brewery_beers.each do |brewery_beer|
+                      @search_array.each do |term_check|
+                        if brewery_beer.beer_name.downcase.include? term_check
+                          if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                            @search_results << brewery_beer
+                          end
+                        end
+                      end
                     end
-                  end
-                end
-              end
-          end
-          if result.brewery_name.downcase.include? @search_term
-              #Rails.logger.debug("Recognized as NWS brewery search")
-              @brewery_beers = Beer.where(brewery_id: result.id)
-              @brewery_beers.each do |brewery_beer|
-                if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
-                  @search_results << brewery_beer
-                end
-              end
-          else 
-            #Rails.logger.debug("Recognized as NWS beer search")
-            @brewery_beers = Beer.where(brewery_id: result.id)
-            @brewery_beers.each do |brewery_beer|
-              if brewery_beer.beer_name.downcase.include? @search_term
-                if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
-                  @search_results << brewery_beer
-                end
-              end
-            end
-          end # end non-whitespace search-term beer list building loop
-        end # end whitespace search-term vs non-whitespace search-term check
+                  else
+                    #Rails.logger.debug("Doesn't match brewery")
+                    @brewery_beers = Beer.where(brewery_id: result.id)
+                    @brewery_beers.each do |brewery_beer|
+                      term_count = 0
+                      @temp_array.each do |term_check|
+                        if brewery_beer.beer_name.downcase.include? term_check
+                          term_count += 1
+                        end
+                      end
+                      if term_count == @temp_array.count
+                        if brewery_beer.user_addition != true # make sure drink added by user has been validated by admin
+                          @search_results << brewery_beer
+                        end
+                      end
+                    end # end of cycle through each brewery beer
+                  end # end of check whether results exist in the temp array
+                
+                end # end whitespace (array) beer list building loop  
+              
+              #end # end of check whether first brewery result found matches the search term
+            
+            else # run loop for non-whitespace search-term beer list building
+              #Rails.logger.debug("Recognized as NOT having whitespaces")
+              if result.collab == true
+                  #Rails.logger.debug("Recognized as NWS collab")
+                  @collabs = BeerBreweryCollab.where(brewery_id: result.id).pluck(:beer_id)
+                  @collab_beers = Beer.where(id: @collabs)
+                  @collab_beers.each do |brewery_beer|
+                    if result.brewery_name.downcase.include? @search_term         
+                        #Rails.logger.debug("Recognized as NWS collab brewery search")
+                        @search_results << brewery_beer
+                    else
+                      if brewery_beer.beer_name.downcase.include? @search_term
+                        #Rails.logger.debug("Recognized as NWS collab beer search")
+                        if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin 
+                          @search_results << brewery_beer
+                        end
+                      end
+                    end
+                    
+                  end # end of cycle through each collab drink
+                end # end of check whether result has collab drinks
+              
+                if result.brewery_name.downcase.include? @search_term
+                    #Rails.logger.debug("Recognized as NWS brewery search")
+                    @brewery_beers = Beer.where(brewery_id: result.id)
+                    @brewery_beers.each do |brewery_beer|
+                      if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
+                        @search_results << brewery_beer
+                      end
+                    end
+                else 
+                  #Rails.logger.debug("Recognized as NWS beer search")
+                  @brewery_beers = Beer.where(brewery_id: result.id)
+                  @brewery_beers.each do |brewery_beer|
+                    if brewery_beer.beer_name.downcase.include? @search_term
+                      if brewery_beer.user_addition != true # make sure and drink added by user has been validated by admin
+                        @search_results << brewery_beer
+                      end
+                    end
+                  end  
+                 end # end non-whitespace search-term beer list building loop
+         
+          end # end whitespace search-term vs non-whitespace search-term check
+        
+        end # end of check whether @search_array is blank
+        
       end # end check on whether this brewery should be included
+    
     end # end each search term check
     @final_search_results = Array.new
     @evaluated_drinks = Array.new
@@ -223,6 +254,6 @@ module QuerySearch
       end
     end # end of 1st loop
     @final_search_results = @final_search_results.uniq
-    #Rails.logger.debug("Final Search results in query: #{@final_search_results.inspect}")
+    Rails.logger.debug("Final Search results in query: #{@final_search_results.inspect}")
   end
 end

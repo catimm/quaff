@@ -148,7 +148,7 @@ class Admin::BeersController < ApplicationController
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
     @this_brewery = Brewery.find_by_id(params[:brewery_id])
     # pull full list of beers--for delete option
-    @beers = Beer.all.order(:beer_name)
+    @beers = Beer.all.order(beer_name: :desc, id: :asc)
     render :partial => 'admin/beers/delete_beer'
   end
   
