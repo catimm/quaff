@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160730215646) do
+ActiveRecord::Schema.define(version: 20160803210101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -261,8 +261,14 @@ ActiveRecord::Schema.define(version: 20160730215646) do
   create_table "invitation_requests", force: :cascade do |t|
     t.string   "email"
     t.string   "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "first_name"
+    t.string   "zip_code"
+    t.string   "city"
+    t.string   "state"
+    t.boolean  "delivery_ok"
+    t.datetime "birthday"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -517,6 +523,7 @@ ActiveRecord::Schema.define(version: 20160730215646) do
     t.string   "last_name"
     t.integer  "getting_started_step"
     t.boolean  "beta_tester"
+    t.datetime "birthday"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -531,6 +538,15 @@ ActiveRecord::Schema.define(version: 20160730215646) do
     t.datetime "removed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "zip_codes", force: :cascade do |t|
+    t.string   "zip_code"
+    t.boolean  "covered"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "city"
+    t.string   "state"
   end
 
 end

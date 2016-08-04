@@ -108,6 +108,8 @@ gem 'area'
 gem 'jquery-countdown-rails'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+# gem to make forms easier to manage
+gem 'simple_form'
 
 # Use unicorn as the app server
 # gem 'unicorn'

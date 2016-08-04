@@ -1,0 +1,48 @@
+$(function () {
+		$(document).on('keyup', '#check-zip-code', function () {
+		   var zipCode = $(this).val();
+		   if(zipCode.length > 4){
+		       $.ajax({
+				  type: "GET",
+				  url: "/reloads/zip_code_response/" + zipCode
+				});
+		   }
+		});  
+		
+		// show rating card in drink supply view
+		$(document).on("click", ".show-zip-search", function() {
+			
+			// send to controller to get rating card loaded 
+			$.ajax({
+			  type: "GET",
+			  url: "/reloads/try_another_zip"
+			});
+			
+			// make page not jump to top
+			return false;
+	
+		});
+		
+		// set function for sticky scroller
+		function lockHeaderButton() {
+			//if ( window.location.pathname == '/' ) {
+			if(window.location.href.indexOf("reloads") > -1) {
+			    var move = function() {
+			        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
+			        var ot = $("#home-scroller-anchor").offset().top;
+			        if(st > ot) {
+			            $("#home-header-get-started-button").removeClass("hidden").addClass("show");
+			        } else {
+			            if(st <= ot) {
+			                $("#home-header-get-started-button").removeClass("show").addClass("hidden");
+			            }
+			        }
+			    };
+			    $(window).scroll(move);
+			    move();
+			}
+		}
+		$(document).on("scroll", function() {
+		    lockHeaderButton();
+		});
+});

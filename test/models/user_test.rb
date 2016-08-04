@@ -30,6 +30,7 @@
 #  last_name              :string
 #  getting_started_step   :integer
 #  beta_tester            :boolean
+#  birthday               :datetime
 #
 
 require 'test_helper'

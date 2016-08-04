@@ -1,0 +1,22 @@
+# == Schema Information
+#
+# Table name: zip_codes
+#
+#  id         :integer          not null, primary key
+#  zip_code   :string
+#  covered    :boolean
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  city       :string
+#  state      :string
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  zip_code: MyString
+  covered: false
+
+two:
+  zip_code: MyString
+  covered: false

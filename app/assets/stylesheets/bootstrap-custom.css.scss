@@ -55,6 +55,7 @@ $gray-body-background: $light-gray;
 $signup-category-image-background-start: $medium-light-gray;
 $signup-category-image-background-chosen: $super-light-faded-blue;
 $soft-border: $extra-light-gray;
+$homepage-works-icon: $medium-light-gray; 
 $header-text: $black;
 $normal-text: $dark-gray;
 $more-emphasized-text: $extra-dark-gray;
@@ -305,41 +306,74 @@ label {
 }
 // Index page
 .banner {
-    background: url("https://s3-us-west-2.amazonaws.com/knird/index/home3_adj.jpg") no-repeat fixed center center / cover transparent;
-    background-clip: border-box;
-    background-origin: padding-box;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    height: 110vh;
+   height: 90vh;
 }
-.banner-xs {
-    background: url("https://s3-us-west-2.amazonaws.com/knird/index/home3_adj_xs.jpg") no-repeat fixed center center / cover transparent;
-    background-clip: border-box;
-    background-origin: padding-box;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    height: 110vh;
+
+.homepage-emphasis {
+  color: $action-background
 }
 .valueStatement {
   padding-top: 13%;
   height:100vh;
   width: 100%;
   position: fixed;
-  color: #fff;
-  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
+  color: $normal-text;
   text-align: left;
   div {
-    h1.brand-font {
-      font-size: 500% !important;
+    h1.brand-subfont {
+      font-size: 265% !important;
+      .homepage-extra-spacing {
+        letter-spacing: 1px;
+      }
     }
     h3.brand-subfont {
       margin-top: 0;
     }
   }
+}
+#homepage-get-started-box {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  padding: 10px 10px 20px 10px;
+  margin-top: 20px;
+}
+.homepage-or-try-another-zip {
+  margin-top: 20px;
+}
+.homepage-request-invite-birthday-holder {
+  sup {
+        top: -0.7em;
+        font-size: 70%;
+        color: $normal-text;
+        border: 1px solid $normal-text;
+        border-radius: 4px;
+        width: 8px;
+        height: 8px;
+        padding: 1px 3px;
+        margin-left: 2px;
+      }
+}
+.check-zip-code-button {
+  width:85%;
+  padding: 20px 7.5px;
+  
+}
+.check-zip-code-button::-webkit-input-placeholder {
+ font-size: 14px;
+ color: $user-action;
+}
+.check-zip-code-button:-moz-placeholder { /* Firefox 18- */
+   font-size: 14px;
+   color: $user-action;
+}
+.check-zip-code-button::-moz-placeholder {  /* Firefox 19+ */
+   font-size: 14px; 
+   color: $user-action;
+}
+.check-zip-code-button:-ms-input-placeholder {  
+   font-size: 14px; 
+   color: $user-action; 
 }
 .formButton-index-Banner {
   width: 100%;
@@ -348,7 +382,7 @@ label {
 }
 ::-webkit-input-placeholder, :-moz-placeholder, ::-moz-placeholder, :-ms-input-placeholder {
   color: $gray-body-background;
-  font-size: 11px;
+  font-size: 12px;
   position: relative;
   z-index: 1000;
   font-family: inherit !important;
@@ -361,7 +395,7 @@ label {
   background: $action-background;
 }
 .background-dark {
-  background: #f7fAfA;
+  background: $soft-gray-background;
   position: relative;
   z-index: 1000;
 }
@@ -372,6 +406,15 @@ label {
 }
 .first-section {
   margin-top: -90px;
+}
+.formButton-get-started-bottom-homepage {
+  width: 100%;
+  margin: 20px 0;
+  font-size: 16px;
+}
+.homepage-last-row {
+  padding-bottom: 40px;
+  margin-bottom: -20px !important;
 }
 .index-section-header {
   text-align: center;
@@ -418,19 +461,66 @@ label {
   }
 }
 .value-prop-row {
-  margin: 10px 0 20px 0;
+  margin: 0 0 20px 0;
 }
-.valueDesc {
+.value-prop-holder {
+  margin: 15px 0 10px 0;
+}
+.value-header {
+  color: $normal-text;
+}
+.value-desc {
   width: 80%;
   margin: 0 auto;
   text-align: center;
+  color: $normal-text;
+}
+.how-it-works-holder-row {
+  margin: 0 0 20px 0 !important;
+}
+.how-it-works-number {
+  float: right;
+  border: 2px solid $action-background;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  padding: 5px;
+  h1 {
+    font-size: 300%;
+    color: $action-background;
+    font-weight: 500;
+    margin: 0 0 5px 11px;
+  }
+}
+.how-it-works-text-holder {
+  margin-top: 12px;
+}
+.how-it-works-icon-holder {
+  float: left;
+  margin-right: 7.5px;
+  i {
+    color: $homepage-works-icon;
+  }
+}
+.how-it-works-desc {
+  width: 80%;
+  float: left;
+  margin-top: 0;
+  color: $normal-text;
+  span {
+    color: $action-background;
+  }
+}
+.vertical-dotted-line {
+  border-right: 2px dashed $action-background;
+  height: 20px;
+  margin: 0 22px 0 0 !important; 
 }
 .icon-background {
-  width: 40px;
-  height: 40px;
-  padding: 7.5px 2px;
-  background: $value-prop-icon-background;
-  border-color: $value-prop-icon-background-border;
+  width: 80px;
+  height: 80px;
+  padding: 16px 4px 0 2px;
+  background: $action-background;
   border: 1px solid #fff;
   border-radius: 50%;
   display: inline-block;
@@ -438,15 +528,29 @@ label {
   h3 {
     color: #fff;
     margin: 0;
-    .fa.fa-smile-o {
-      font-size: 28px;
-      padding: 0 2.5px 20px 3px;
-      margin-top: -2px;
-    }
   }
 }
-.request-invitation-section {
-  padding-bottom: 50px;
+.icon-background-alt {
+  width: 80px;
+  height: 80px;
+  padding: 15px 4px 0 0;
+  background: $action-background;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  h3 {
+    color: #fff;
+    margin: 0;
+  }
+}
+.membership-plan-includes {
+  color: $normal-text;
+  text-align: left !important;
+  margin: 10px 0 5px -12.5px !important;
+}
+.how-it-works-section {
+  padding-bottom: 30px;
 }
 .request-invitation-row {
   margin: 30px 0;
@@ -454,6 +558,7 @@ label {
 .formButton-invitation-request {
   width: 100%;
   background: $step-background;
+  margin-top: 10px;
 }
 .invitation-request-response {
   color: $action-background;
@@ -992,6 +1097,7 @@ p {
 .contract-type-header {
   color: $normal-text; 
   font-weight: 500;
+  margin-top: 25px;
   sup {
     border: 1px solid $normal-text;
     border-radius: 4px;
@@ -1023,6 +1129,12 @@ p {
         }
       }
   }
+}
+.homepage-plan-options {
+  text-align: center;
+  border: 1px solid $less-emphasized-text !important;
+  border-radius: 6px;
+  margin: 0 !important;
 }
 .retail-plan-update-options {
   text-align: center;
@@ -2008,11 +2120,35 @@ $beer-header-lines-to-show-fp: 1;
       margin: 5px 0 0 0 !important;
     }
   }
+  .navbar-header-home {
+    text-align: center !important;
+    a { 
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1.1;
+      padding: 0;
+      margin: 8px 0 4px 0 !important;
+      display: block;
+      text-decoration: none;
+    }
+  }
   .navbar-right {
     a {
       font-weight: 400;
     }
   }
+}
+.formButton-home-header-get-started-button {
+  width: 100%;
+  margin: 12.5px 0 0 30px !important;
+  background: transparent;
+  border-color: #4cae4c !important;
+}
+.formButton-home-get-started-button:hover {
+  width: 100%;
+  margin-top: 7.5px;
+  background: $user-action !important;
+  border-color: #4cae4c !important;
 }
 .dropdown-toggle {
   height: 64px;
@@ -2318,7 +2454,7 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-plan-holder {
   background: $white;
-  height: 320px !important;
+  height: 365px !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
@@ -5061,15 +5197,6 @@ $delivery-beer-header-lines-to-show: 2;
   }
   // Mobile Index page
 .banner-xs {
-    background: url("https://s3-us-west-2.amazonaws.com/knird/index/home3_adj_xs.jpg") no-repeat center center / cover transparent;
-    background-clip: border-box;
-    background-origin: padding-box;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    background-attachment:scroll;
-    background-position:left top;
     height: 110vh;
 }
 .valueStatement {
@@ -5077,18 +5204,34 @@ $delivery-beer-header-lines-to-show: 2;
   height:100vh;
   width: 100%;
   position: relative;
-  color: #fff;
-  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
+  color: $normal-text;
   text-align: left;
-  .col-xs-8 {
-    padding: 0 5px 0 20px;
-    h1.brand-font {
-      font-size: 350% !important;
+  div {
+    h1.brand-subfont {
+      font-size: 165% !important;
+      .homepage-extra-spacing {
+        letter-spacing: 1px;
+      }
     }
     h3.brand-subfont {
+      font-size: 120%;
       margin-top: 0;
-      font-size: 125%;
     }
+  }
+}
+.vertical-dotted-line {
+  height: 80px;
+}
+.membership-plan-includes {
+  margin-left: 5px !important;
+}
+.homepage-plan-options {
+  text-align: center;
+  border: 1px solid $less-emphasized-text !important;
+  border-radius: 6px;
+  margin: 0 0 10px 0 !important;
+  li {
+    margin-left: 15px !important;
   }
 }
 .formButton-index-Banner {

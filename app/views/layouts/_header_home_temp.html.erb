@@ -1,0 +1,66 @@
+<nav class="navbar navbar-default navbar-fixed-top homeNavbar" role="navigation">
+    <div class="container">
+    	<div class="row no-margin">
+    		<div class="col-xs-0 col-sm-4"></div>   
+            <div class="navbar-header-home col-xs-4 col-sm-4">
+                <%= link_to "Knird", root_path, id: "logo", class:"visible-sm visible-md visible-lg brand-font" %>
+                <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
+        	</div>	
+        	<div class="col-xs-0 col-sm-1"></div>
+	    	<div class="col-xs-8 col-sm-2 hidden" id="home-header-get-started-button">
+			    <%= link_to "Get started", "#", :anchor => "homepage-get-started-box", class: 'btn btn-default btn-success formButton-home-header-get-started-button' %>         	
+	       	</div>
+    	
+    	<!-- Collect the nav links, forms, and other content for toggling -->
+	            <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
+	                <ul class="nav navbar-nav">
+	                  <% if user_signed_in? %>
+					   	<% if current_user.role_id != 5 %>
+					   		<li class="navLinks dropdown">
+					          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+					          <ul class="dropdown-menu">
+					            
+					            <li class="dropdown-header">Activity</li>
+					            <li class="dropdown-link"><%= link_to "My deliveries", user_deliveries_path('next') %></li>
+					            <li class="dropdown-link"><%= link_to "My ratings", user_profile_path('recent_ratings') %></li>
+					            <li class="dropdown-link"><%= link_to "My supply", user_supply_path(current_user.id, 'cooler') %></li>
+								
+								<li class="dropdown-header">Settings</li>
+								<li class="dropdown-link"><%= link_to "My account", user_account_settings_path(current_user.id, "plan") %></li>
+								<li class="dropdown-link"><%= link_to "My preferences", user_delivery_settings_path(current_user.id) %></li>
+								<li class="dropdown-link"><%= link_to "My styles & top drinks", user_drink_settings_path(current_user.id, 'styles') %></li>
+								
+					            <% if current_user.role_id == 1 %>
+						            <li class="dropdown-header">Admin links</li>
+						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+						            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
+						            <li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path("stock") %></li>
+									<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
+						            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path("#{current_user.id}-in_stock") %></li>
+						            <li class="dropdown-link"><%= link_to "Retail account", retailer_path(session[:retail_id]) %></li>  
+							    <% elsif current_user.role_id == 2 %>
+							    	<li class="dropdown-header">Admin links</li>
+						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+							    <% end %>
+							    
+							    <li role="separator" class="divider"></li>
+							    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
+					          </ul>
+					        </li>
+					  	<% else %>
+					  		<li class="navLinks dropdown">
+					          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+					          <ul class="dropdown-menu">
+							    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
+					          </ul>
+					        </li>
+					  	<% end %>
+					  <% else %>
+			          	<li class="navLinks"> <%= link_to "Log in", new_user_session_path %></li>
+					  <% end %>
+	                </ul>
+	            </div> <!-- /.nav links -->
+	            
+    	</div> <!-- /.row -->
+    </div> <!-- /.container -->  
+</nav>
