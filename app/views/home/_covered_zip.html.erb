@@ -1,0 +1,37 @@
+<h4 class="knird-delivers-confirmation-text">Bully for you, we deliver to <%= @location %>!</h4>
+<%= simple_form_for @request_invitation, :url => {:controller => "home", :action => "create"}, :remote => true do |invite| %>
+	<%= invite.input :city, :as => :hidden, :input_html => { :value => @city } %>
+	<%= invite.input :state, :as => :hidden, :input_html => { :value => @state } %>
+	<%= invite.input :zip_code, :as => :hidden, :input_html => { :value => @zip_code } %>
+	<%= invite.input :delivery_ok, :as => :hidden, :input_html => { :value => @covered } %>
+	<div class="row no-margin">
+		<div class="col-xs-3 no-padding-right">
+			<%= label :first_name, 'First name' %>
+		</div>
+		<div class="col-xs-9">
+			<%= invite.input :first_name, input_html: { class: "form-control" }, placeholder: "What should we call you?", label: false %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-3 no-padding-right">
+			<%= label :email, 'Email' %>
+		</div>
+		<div class="col-xs-9">
+			<%= invite.input :email, input_html: { class: "form-control" }, placeholder: "What is your email address?", label: false %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-3 no-padding-right homepage-request-invite-birthday-holder">
+			<%= label :birthday, 'Birthday' %> <sup  data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup>
+		</div>
+		<div class="col-xs-9">
+			<%= invite.input :birthday, as: :string, input_html: { type: :date, class: "form-control" }, label: false %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-10">
+			<%= invite.submit "Request an invitation", class: "btn btn-default btn-success formButton-invitation-request" %>
+		</div>
+	</div>
+<% end %>

@@ -1,0 +1,8 @@
+$(function() {
+	<% if @covered == true %>
+	   $("#homepage-get-started-box").html("<%= escape_javascript(render 'covered_zip' ) %>");
+	<% else %>
+		$("#homepage-get-started-box").html("<%= escape_javascript(render 'not_covered_zip' ) %>");
+	<% end %>
+	$('[data-toggle="tooltip"]').tooltip();
+});

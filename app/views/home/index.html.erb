@@ -5,100 +5,45 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	</head>
 	<body class="index-body">
-		<%= render 'layouts/header_home' %> 
+		<%= render 'layouts/header_home_temp' %> 
 		<!-- Page Content -->
-	        <header class="banner visible-sm visible-md visible-lg">
+	        <header class="banner">
 	        	<div class="row valueStatement">
-		            <div class="col-sm-5 col-md-6"></div>
-		            <div class="col-sm-4 col-md-5">
-		                <h1 class="brand-font">Knird</h1>
-		                <h3 class="brand-subfont">Drink what you love. Love what you drink.</h3>
-		            </div>
-		            <div class="col-sm-1 col-md-1"></div>
-		        	<div class="col-sm-5 col-md-6"></div>
-		            <div class="col-sm-3 col-md-3">
-		                <%= link_to "Request an invitation", "#request-invitation", class: 'btn btn-default btn-success formButton-index-Banner' %>
-		            </div>
-		            <div class="col-sm-3 col-md-3"></div>
-		        </div>
-	        </header>
-	        <header class="banner-xs visible-xs">	
-	        	<div class="row valueStatement">
-		            <div class="col-xs-4"></div>
-		            <div class="col-xs-8">
-		                <h1 class="brand-font">Knird</h1>
-		                <h3 class="brand-subfont">Drink what you love. Love what you drink.</h3>
-		            </div>
-		            <div class="col-xs-0"></div>
-		        	<div class="col-xs-4"></div>
-		            <div class="col-xs-7 mobile-container-fix">
-		                <%= link_to "Request an invitation", "#request-invitation", class: 'btn btn-default btn-primary formButton-index-Banner' %>
-		            </div>
-		            <div class="col-xs-1"></div>
+	        		<div class="container">
+			            <div class="col-xs-0 col-sm-1"></div>
+			            <div class="col-xs-12 col-sm-6 no-padding-right">
+			                <h1 class="brand-subfont"><span class="homepage-emphasis">Craft</span> beer and cider.<br> 
+			                	<span class="homepage-extra-spacing"><span class="homepage-emphasis">Curated</span> just for you.</span><br> 
+			                	<span class="homepage-emphasis">Delivered</span> to your door. 
+			                </h1>
+			                <h3 class="brand-subfont"><span class="homepage-emphasis">100% enjoyment</span>. 0% hassle.</h3>
+			            </div>
+			            <div class="col-xs-0 col-sm-1"></div>
+			        	<div class="col-xs-12 col-sm-5">
+			        		<div id="homepage-get-started-box">
+								<% if @view == "original" %>
+									<%= render 'zip_search_box' %>
+								<% end %>
+			        		</div>
+			        	</div>
+
+			    	</div>
 		        </div>
 	        </header>
 	        <!-- /.row -->	
+	        <div id="home-scroller-anchor"></div>
 	        <section class="background-dark value-prop-section">
-	   			<div class="container">
-		   			<div class="row">
-		        		<div class="col-xs-0 col-sm-1 col-md-0"></div>
-		        		<div class="col-xs-12 col-sm-10 col-md-12">
-		        			<h3 class="index-section-header">Knird is the simplest, fastest way to find locally available craft beer and ciders you will love.</h3> 
-		        		</div>
-		        	</div>
-		        	<div class="row value-prop-row">
-		        		<div class="col-sm-4">
-		        			<div class="icon-background">
-		        				<h3><i class="fa fa-heart"></i></h3>
-		        			</div>
-		        			<h4>Make it personal.</h4> 
-		        			<h5 class="valueDesc">Get personalized recommendations for drinks you'll love.</h5>
-		        		</div>
-		        		<div class="col-sm-4">
-		        			<div class="icon-background">
-		        				<h3><i class="fa fa-thumbs-up"></i></h3>
-		        			</div>
-		        			<h4>Make it easy.</h4>
-		        			<h5 class="valueDesc">Effortlessly find drinks you love at locally accessible retailers.</h5>
-		        		</div>
-		        		<div class="col-sm-4">
-		        			<div class="icon-background">
-		        				<h3><i class="fa fa-smile-o"></i></h3>
-		        			</div>
-		        			<h4>Make it convenient.</h4> 
-		        			<h5 class="valueDesc">Track drinks of interest and get notified when they become locally available.</h5>
-		        		</div>		
-		        	</div>
-		        </div>
+	   			<%= render 'value_prop_section' %>
 	        </section>
 	        <!-- /.row -->
-	        <section class="background-light request-invitation-section">
-	   			<div class="container">
-		   			<div class="row">
-		        		<div class="col-xs-0 col-sm-1 col-md-0"></div>
-		        		<div class="col-xs-12 col-sm-10 col-md-12">
-		        			<h3 class="index-section-header">We're currently in a closed beta, but request an invitation to check it out!</h3> 
-		        		</div>
-		        	</div>
-		        	<div class="row request-invitation-row show" id="request-invitation">
-		        		<%= form_for @request_invitation, :url => {:controller => "home", :action => "create"}, :remote => true do |invite| %>
-							<div class="col-sm-2 col-xs-0"></div>
-							<div class="col-xs-2 text-right no-padding-right">
-								<%= label :email, 'Email address' %>
-							</div>
-							<div class="col-sm-4 col-xs-10">
-								<%= invite.email_field :email, :class => "form-control", required: true, placeholder: "Add your email address here" %>
-							</div>
-							<div class="col-sm-2 col-xs-12">
-								<%= invite.submit "Submit", class: "btn btn-default btn-success formButton-invitation-request" %>
-							</div>
-						<% end %>
-		        	</div>
-		        	<div class="row request-invitation-row hidden text-center" id="request-invitation-thanks">
-						<h4 class="invitation-request-response">Thanks for your interest! We'll be in touch soon.</h4>
-		        	</div>       	
-		        </div>
+	        <section class="background-light how-it-works-section">
+	   			<%= render 'how_it_works_section' %>
 	        </section>
+	       	 <!-- /.row -->
+	       	<section class="background-dark homepage-last-row">
+				<%= render 'membership_plan_section' %>
+	        </section>
+	        <!-- /.row -->
 		<%= render 'layouts/footer' %>
 	</body>
 </html>

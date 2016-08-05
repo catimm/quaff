@@ -126,9 +126,8 @@ Rails.application.routes.draw do
   post '/retailers/info_request' => 'retailers#info_request'
   resources :retailers
   
-  get 'reloads/try_another_zip' => 'reloads#try_another_zip', :as => 'try_another_zip'
-  get 'reloads/zip_code_response/:id' => 'reloads#zip_code_response'
-  post 'reloads/create' => 'reloads#create'
+  get 'home/try_another_zip' => 'home#try_another_zip', :as => 'try_another_zip'
+  get 'home/zip_code_response/:id' => 'home#zip_code_response'
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
