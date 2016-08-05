@@ -548,6 +548,14 @@ label {
   color: $normal-text;
   text-align: left !important;
   margin: 10px 0 5px -12.5px !important;
+  sup {
+    border: 1px solid $normal-text;
+    border-radius: 4px;
+    width: 12px;
+    height: 12px;
+    padding: 1px 3px;
+    margin-left: 2.5px;
+  }
 }
 .how-it-works-section {
   padding-bottom: 30px;
