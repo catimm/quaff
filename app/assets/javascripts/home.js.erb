@@ -4,7 +4,7 @@ $(function () {
 		   if(zipCode.length > 4){
 		       $.ajax({
 				  type: "GET",
-				  url: "/reloads/zip_code_response/" + zipCode
+				  url: "/home/zip_code_response/" + zipCode
 				});
 		   }
 		});  
@@ -15,7 +15,7 @@ $(function () {
 			// send to controller to get rating card loaded 
 			$.ajax({
 			  type: "GET",
-			  url: "/reloads/try_another_zip"
+			  url: "/home/try_another_zip"
 			});
 			
 			// make page not jump to top
@@ -25,8 +25,8 @@ $(function () {
 		
 		// set function for sticky scroller
 		function lockHeaderButton() {
-			//if ( window.location.pathname == '/' ) {
-			if(window.location.href.indexOf("reloads") > -1) {
+			if ( window.location.pathname == '/' ) {
+			//if(window.location.href.indexOf("reloads") > -1) {
 			    var move = function() {
 			        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
 			        var ot = $("#home-scroller-anchor").offset().top;
