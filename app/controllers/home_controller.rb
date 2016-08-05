@@ -38,7 +38,7 @@ class HomeController < ApplicationController
     @location = @city + ", " + @state + " " + @zip_code
     
     #check if zip code is covered
-    @accepted_zip_codes = ["98122","53545","90120"]
+    @accepted_zip_codes = ["98122","98112","98199"]
     
     if @accepted_zip_codes.include? @zip_code
       @covered = true
