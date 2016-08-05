@@ -480,6 +480,7 @@ label {
 }
 .how-it-works-number {
   float: right;
+  background: $white;
   border: 2px solid $action-background;
   height: 60px;
   width: 60px;
@@ -493,7 +494,7 @@ label {
   }
 }
 .how-it-works-text-holder {
-  margin-top: 12px;
+  margin-top: 16px;
 }
 .how-it-works-icon-holder {
   float: left;
@@ -503,7 +504,6 @@ label {
   }
 }
 .how-it-works-desc {
-  width: 80%;
   float: left;
   margin-top: 0;
   color: $normal-text;
@@ -5219,6 +5219,19 @@ $delivery-beer-header-lines-to-show: 2;
     }
   }
 }
+.how-it-works-text-holder {
+  margin-top: 16px;
+  padding-left: 5px;
+  padding-right: 0;
+}
+
+.how-it-works-icon-holder {
+  margin-right: 4px;
+}
+.how-it-works-desc {
+  width: 84%;
+}
+
 .vertical-dotted-line {
   height: 80px;
 }

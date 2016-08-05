@@ -9,7 +9,7 @@
 			<%= label :first_name, 'First name' %>
 		</div>
 		<div class="col-xs-9">
-			<%= invite.input :first_name, input_html: { class: "form-control" }, placeholder: "What should we call you?", label: false %>
+			<%= invite.input :first_name, input_html: { class: "form-control" }, placeholder: "What should we call you?", required: true, label: false %>
 		</div>
 	</div>
 	<div class="row no-margin">
@@ -17,7 +17,7 @@
 			<%= label :email, 'Email' %>
 		</div>
 		<div class="col-xs-9">
-			<%= invite.input :email, input_html: { class: "form-control" }, placeholder: "What is your email address?", label: false %>
+			<%= invite.input :email, input_html: { class: "form-control" }, placeholder: "What is your email address?", required: true, label: false %>
 		</div>
 	</div>
 	<div class="row no-margin">
@@ -25,7 +25,7 @@
 			<%= label :birthday, 'Birthday' %> <sup  data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup>
 		</div>
 		<div class="col-xs-9">
-			<%= invite.input :birthday, as: :string, input_html: { type: :date, class: "form-control" }, label: false %>
+			<%= invite.input :birthday, as: :string, input_html: { type: :date, class: "form-control" }, required: true, label: false %>
 		</div>
 	</div>
 	<div class="row no-margin">
