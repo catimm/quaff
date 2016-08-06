@@ -110,9 +110,11 @@
 							<% end %>
 						<% end %>
 						</ul>
-						<div class="show-more-descriptors show">
-							<i id="show-more-descriptors" class="fa fa-plus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to see more top descriptors."></i>
-						</div>
+						<% if @this_descriptors.length > 3 %>
+							<div class="show-more-descriptors show">
+								<i id="show-more-descriptors" class="fa fa-plus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to see more top descriptors."></i>
+							</div>
+						<% end %>
 					<% end %>
 					<%= rate.fields_for :beer do |beer| %> 
 				    	<%= beer.text_field :descriptor_list_tokens, data: { load: @beer_descriptors }, :class => "form-control" %>

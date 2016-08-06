@@ -306,15 +306,15 @@ label {
 }
 // Index page
 .banner {
-   height: 90vh;
+   min-height: 90vh;
 }
 
 .homepage-emphasis {
   color: $action-background
 }
 .valueStatement {
-  padding-top: 13%;
-  height:100vh;
+  padding: 13% 0 20px 0;
+  height:90vh;
   width: 100%;
   position: fixed;
   color: $normal-text;
@@ -5204,12 +5204,9 @@ $delivery-beer-header-lines-to-show: 2;
     margin: 5px 0 10px 0;
   }
   // Mobile Index page
-.banner-xs {
-    height: 110vh;
-}
 .valueStatement {
-  padding-top: 25%;
-  height:100vh;
+  padding-top: 20%;
+  height:100%;
   width: 100%;
   position: relative;
   color: $normal-text;
@@ -5223,9 +5220,12 @@ $delivery-beer-header-lines-to-show: 2;
     }
     h3.brand-subfont {
       font-size: 120%;
-      margin-top: 0;
+      margin: 0;
     }
   }
+}
+.homepage-or-try-another-zip {
+  margin: 10px 0 0 0 !important;
 }
 .how-it-works-text-holder {
   margin-top: 16px;
