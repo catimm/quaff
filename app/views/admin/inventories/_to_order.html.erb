@@ -15,6 +15,7 @@
 		      <th>Drink</th>
 		      <th>Drink Type</th>
 		      <th>Reserved #</th>
+		      <th>Add</th>
 		    </tr>
 		    <% @inventory_to_order.each do |order| %>
 			    <tr>
@@ -22,6 +23,10 @@
 			    	<td><%= order.beer.beer_name %></td>
 			    	<td><%= order.beer.beer_type.beer_type_name %></td>
 			    	<td><%= order.reserved %></td>
+			    	<td><%= link_to edit_admin_inventory_path(order.id), :class => "btn btn-success edit-beer-info" do %>
+			        		<i class="fa fa-plus"></i>
+			        	<% end %>
+			        </td>
 			    </tr>
 			<% end %>
 		</table>
