@@ -25,7 +25,7 @@
 				<% end %>
 			</div>
 			<div class="col-xs-8 col-sm-7 wishlist-best-guess">
-				<% @user_rating = UserBeerRating.where(user_id: drink.user.id, beer_id: drink.beer.id).pluck(:user_beer_rating)[0] %>
+				<% @user_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.id).pluck(:user_beer_rating)[0] %>
 				<% if !@user_rating.nil? %>
 					<% if @user_rating >= 10.0 %>
 						<% @user_rating = 10 %>
