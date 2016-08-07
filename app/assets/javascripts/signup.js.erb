@@ -111,12 +111,14 @@ $(function() {
 		var current_page = id_split[1];
 
 		var large_format_original = $(".number-box-holder.large-format.chosen").attr('id');
-		var split_original = large_format_original.split('-');
-		var large_format = split_original[0];
-		
-		if(large_format > drinks_per_week){
-			large_format = drinks_per_week;
-			$("#delivery_preference_max_large_format").val(large_format);
+		if(large_format_original != undefined) {
+			var split_original = large_format_original.split('-');
+			var large_format = split_original[0];
+			
+			if(large_format > drinks_per_week){
+				large_format = drinks_per_week;
+				$("#delivery_preference_max_large_format").val(large_format);
+			}
 		}
 		
 		if(current_page == "signup") {
