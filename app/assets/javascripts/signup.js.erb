@@ -2,6 +2,20 @@ $(function() {
 	// set default for unsaved form monitoring
 	var unsaved = false;
 	
+	// hide spinner
+	$(".spinner-signup").hide();
+	
+	
+	// show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner-signup").show(0);
+	});
+	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner-signup").delay(500).hide(0);
+	});
+  
 	// change unsaved back to true if save button is clicked
 	$(document).on('click', '#update_delivery_preferences_button', function () {
 	    unsaved = false;

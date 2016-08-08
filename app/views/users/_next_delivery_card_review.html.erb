@@ -44,8 +44,17 @@
 				<% @total_price = (drink.inventory.drink_price * 1.096) %>
 				<h4 class="size-and-price"><%= drink.inventory.size_format.format_name %> - <%= number_to_currency(@total_price, precision: 2) %> each <span class="including-tax-text">(inc. tax)</span></h4>
 				<% if drink.inventory.limit_per.nil? || drink.inventory.limit_per == 0 %>
-					<h6 class="limit-per-delivery">No limit per delivery</h6>
-					<% @limit_per_delivery = 0 %>
+					<% @available_stock = drink.inventory.stock - drink.inventory.reserved %>
+					<% if @available_stock > 4 %>
+						<h6 class="limit-per-delivery">No limit per delivery</h6>
+						<% @limit_per_delivery = 0 %>
+					<% elsif @available_stock <= 0 %>
+						<h6 class="limit-per-delivery">Limit per delivery: 1</h6>
+						<% @limit_per_delivery = 1 %>
+					<% else %>
+						<h6 class="limit-per-delivery">Limit per delivery: <%= @available_stock %></h6>
+						<% @limit_per_delivery = @available_stock %>
+					<% end %>
 				<% else %>
 					<h6 class="limit-per-delivery">Limit per delivery: <%= drink.inventory.limit_per %></h6>
 					<% @limit_per_delivery = drink.inventory.limit_per %>

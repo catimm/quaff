@@ -93,9 +93,9 @@ class Admin::FulfillmentController < ApplicationController
       # update inventory
       @inventory = Inventory.find(drink.inventory_id)
       @original_stock = @inventory.stock
-      @new_stock = @original_stock - 1
+      @new_stock = @original_stock - drink.quantity
       @original_reserved = @inventory.reserved
-      @new_reserved = @original_reserved - 1
+      @new_reserved = @original_reserved - drink.quantity
       @inventory.update(stock: @new_stock, reserved: @new_reserved)
     end # end of loop through each delivery drink
     

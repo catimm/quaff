@@ -2,15 +2,20 @@
     <div class="container">
     	<div class="row no-margin">
     		<div class="col-xs-0 col-sm-4"></div>   
-            <div class="navbar-header-home col-xs-4 col-sm-4">
+            <div class="navbar-header-home col-xs-2 col-sm-4">
                 <%= link_to "Knird", root_path, id: "logo", class:"visible-sm visible-md visible-lg brand-font" %>
                 <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
         	</div>	
         	<div class="col-xs-0 col-sm-1"></div>
-	    	<div class="col-xs-8 col-sm-2 hidden" id="home-header-get-started-button">
+	    	<div class="col-xs-6 col-sm-2 hidden" id="home-header-get-started-button">
 			    <%= link_to "Get started", "#", :anchor => "homepage-get-started-box", class: 'btn btn-default btn-success formButton-home-header-get-started-button' %>         	
 	       	</div>
-    	
+    		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
     	<!-- Collect the nav links, forms, and other content for toggling -->
 	            <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
 	                <ul class="nav navbar-nav">
