@@ -271,10 +271,12 @@ class SignupController < ApplicationController
           @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
           
           if @time_difference >= 10
-            @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
+            @next_thursday = Date.today.next_week.advance(:days=>3) - 7.days
+            @second_thursday = Date.today.next_week.advance(:days=>3)
+          else
+            @next_thursday = Date.today.next_week.advance(:days=>3)
+            @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
           end
-          @next_thursday = Date.today.next_week.advance(:days=>3)
-          @second_thursday = Date.today.next_week.advance(:days=>3) + 7.days
           
           # determine which date is already chosen
           if @first_delivery.to_date == @next_thursday
@@ -297,8 +299,8 @@ class SignupController < ApplicationController
           # get dates of next few Thursdays
           @date_time_now = DateTime.now
           #Rails.logger.debug("1st: #{@date_time_now.inspect}")
-          @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 12.hours
-          @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
+          @date_time_next_thursday_one = Date.today.next_week.advance(:days=>3) + 13.hours
+          @time_difference = ((@date_time_next_thursday_one - @date_time_now) / (60*60*24)).floor
           
           if @time_difference >= 10
             @this_thursday = Date.today.next_week.advance(:days=>3) - 7.days
@@ -381,13 +383,25 @@ class SignupController < ApplicationController
         @next_step = "account-1"
 
     else
-      if @input == "this"
-        @start_date = (@time_now.next_week.advance(:days=>3) - 7.days).change({ hour: 13 })
-      elsif @input == "next"
-        @start_date = DateTime.now.next_week.advance(:days=>3).change({ hour: 13 })
+      # get dates of next few Thursdays
+      @date_time_now = DateTime.now
+      @date_time_next_thursday_one = Date.today.next_week.advance(:days=>3) + 13.hours
+      @time_difference = ((@date_time_next_thursday_one - @date_time_now) / (60*60*24)).floor
+          
+      if @time_difference >= 10
+        if @input == "next"
+          @start_date = (@date_time_now.next_week.advance(:days=>3) - 7.days).change({ hour: 13 })
+        elsif @input == "second"
+          @start_date = @date_time_now.next_week.advance(:days=>3).change({ hour: 13 })
+        end
       else
-        @start_date = (DateTime.now.next_week.advance(:days=>3) + 7.days).change({ hour: 13 })
+        if @input == "next"
+          @start_date = @date_time_now.next_week.advance(:days=>3).change({ hour: 13 })
+        elsif @input == "second"
+          @start_date = (@date_time_now.next_week.advance(:days=>3) + 7.days).change({ hour: 13 })
+        end
       end
+      
       
       # update the start date
       @delivery_preferences.update(first_delivery_date: @start_date)

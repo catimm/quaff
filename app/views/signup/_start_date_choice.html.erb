@@ -1,74 +1,29 @@
-<% if @time_difference >= 10 %>
-	<div class="col-xs-12 col-sm-4 no-padding signup-plan-start-holder-parent">
-		<div class="row no-margin signup-plan-start-holder left text-center" id="this-<%= @current_page %>">
-			<div class="col-xs-12 start-month-holder">
-				<h1 class="signup-start-month"><%= (@this_thursday).strftime("%^B") %></h1>
-			</div>
-			<div class="col-xs-12 start-date-holder">
-				<h1 class="signup-start-date"><%= (@this_thursday).strftime("%e") %></h1>
-			</div>
-			<div class="col-xs-12 start-day-holder">
-				<h1 class="signup-start-day"><%= (@this_thursday).strftime("%^A") %></h1>
-			</div>
+<div class="col-xs-0 col-sm-2"></div>
+<div class="col-xs-12 col-sm-4 no-padding signup-plan-start-holder-parent">
+	<div class="row no-margin signup-plan-start-holder left text-center" id="next-<%= @current_page %>">
+		<div class="col-xs-12 start-month-holder">
+			<h1 class="signup-start-month"><%= (@next_thursday).strftime("%^B") %></h1>
 		</div>
-		<div class="signup-plan-start-holder-chosen-cover left <%= @start_1_chosen %>" id="next-<%= @current_page %>"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-plan-start-holder-parent">
-		<div class="row no-margin signup-plan-start-holder middle-option text-center">
-			<div class="col-xs-12 start-month-holder">
-				<h1 class="signup-start-month"><%= (@next_thursday).strftime("%^B") %></h1>
-			</div>
-			<div class="col-xs-12 start-date-holder">
-				<h1 class="signup-start-date"><%= (@next_thursday).strftime("%e") %></h1>
-			</div>
-			<div class="col-xs-12 start-day-holder">
-				<h1 class="signup-start-day"><%= (@next_thursday).strftime("%^A") %></h1>
-			</div>
+		<div class="col-xs-12 start-date-holder">
+			<h1 class="signup-start-date"><%= (@next_thursday).strftime("%e") %></h1>
 		</div>
-		<div class="signup-plan-start-holder-chosen-cover left <%= @start_2_chosen %>"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-plan-start-holder-parent">
-		<div class="row no-margin signup-plan-start-holder right text-center" id="second-<%= @current_page %>">
-			<div class="col-xs-12 start-month-holder">
-				<h1 class="signup-start-month"><%= (@second_thursday).strftime("%^B") %></h1>
-			</div>
-			<div class="col-xs-12 start-date-holder">
-				<h1 class="signup-start-date"><%= (@second_thursday).strftime("%e") %></h1>
-			</div>
-			<div class="col-xs-12 start-day-holder">
-				<h1 class="signup-start-day"><%= (@second_thursday).strftime("%^A") %></h1>
-			</div>
+		<div class="col-xs-12 start-day-holder">
+			<h1 class="signup-start-day"><%= (@next_thursday).strftime("%^A") %></h1>
 		</div>
-		<div class="signup-plan-start-holder-chosen-cover right <%= @start_3_chosen %>"></div>
 	</div>
-<% else %>
-	<div class="col-xs-0 col-sm-2"></div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-plan-start-holder-parent">
-		<div class="row no-margin signup-plan-start-holder left text-center" id="next-<%= @current_page %>">
-			<div class="col-xs-12 start-month-holder">
-				<h1 class="signup-start-month"><%= (@next_thursday).strftime("%^B") %></h1>
-			</div>
-			<div class="col-xs-12 start-date-holder">
-				<h1 class="signup-start-date"><%= (@next_thursday).strftime("%e") %></h1>
-			</div>
-			<div class="col-xs-12 start-day-holder">
-				<h1 class="signup-start-day"><%= (@next_thursday).strftime("%^A") %></h1>
-			</div>
+	<div class="signup-plan-start-holder-chosen-cover left <%= @start_2_chosen %>"></div>
+</div>
+<div class="col-xs-12 col-sm-4 no-padding signup-plan-start-holder-parent">
+	<div class="row no-margin signup-plan-start-holder right text-center" id="second-<%= @current_page %>">
+		<div class="col-xs-12 start-month-holder">
+			<h1 class="signup-start-month"><%= (@second_thursday).strftime("%^B") %></h1>
 		</div>
-		<div class="signup-plan-start-holder-chosen-cover left <%= @start_2_chosen %>"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-plan-start-holder-parent">
-		<div class="row no-margin signup-plan-start-holder right text-center" id="second-<%= @current_page %>">
-			<div class="col-xs-12 start-month-holder">
-				<h1 class="signup-start-month"><%= (@second_thursday).strftime("%^B") %></h1>
-			</div>
-			<div class="col-xs-12 start-date-holder">
-				<h1 class="signup-start-date"><%= (@second_thursday).strftime("%e") %></h1>
-			</div>
-			<div class="col-xs-12 start-day-holder">
-				<h1 class="signup-start-day"><%= (@second_thursday).strftime("%^A") %></h1>
-			</div>
+		<div class="col-xs-12 start-date-holder">
+			<h1 class="signup-start-date"><%= (@second_thursday).strftime("%e") %></h1>
 		</div>
-		<div class="signup-plan-start-holder-chosen-cover right <%= @start_3_chosen %>"></div>
+		<div class="col-xs-12 start-day-holder">
+			<h1 class="signup-start-day"><%= (@second_thursday).strftime("%^A") %></h1>
+		</div>
 	</div>
-<% end %>
+	<div class="signup-plan-start-holder-chosen-cover right <%= @start_3_chosen %>"></div>
+</div>
