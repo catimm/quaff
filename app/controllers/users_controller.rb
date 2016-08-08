@@ -1055,13 +1055,17 @@ class UsersController < ApplicationController
           #Rails.logger.debug("Customer created event")
           # get the customer number
           @stripe_customer_number = event_object['id']
+          #Rails.logger.debug("Stripe customer number: #{@stripe_customer_number.inspect}")
           # no longer using a stripe subscription--@stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
           # get the user's info
           @user_email = event_object['email']
-          @user_id = User.find_by_email(@user_email).pluck(:id)
+          #Rails.logger.debug("Customer email #{@user_email.inspect}")
+          @user_info = User.find_by_email(@user_email)
+          #Rails.logger.debug("User ID: #{@user_info.inspect}")
           
           # get user's subscription info
-          @user_subscription = UserSubscription.find_by_user_id(@user_id)
+          @user_subscription = UserSubscription.find_by_user_id(@user_info.id)
+          #Rails.logger.debug("User Subscription: #{@user_subscription.inspect}")
           
           # update the user's subscription info
           @user_subscription.update(stripe_customer_number: @stripe_customer_number)

@@ -39,15 +39,16 @@ class Admin::FulfillmentController < ApplicationController
     @delivery_date = (@delivery.delivery_date).strftime("%B %e, %Y")
     # charge customer
     @customer_subscription = UserSubscription.where(user_id: @delivery.user_id).first
-    @total_price = (@delivery.total_price * 100).floor # put total charge in cents
-    @charge_description = @delivery_date + ' Knird delivery.'
-    Stripe::Charge.create(
-      :amount => @total_price, # in cents
-      :currency => "usd",
-      :customer => @customer_subscription.stripe_customer_number,
-      :description => @charge_description
-    )
-    
+    if @delivery.total_price != 0
+      @total_price = (@delivery.total_price * 100).floor # put total charge in cents
+      @charge_description = @delivery_date + ' Knird delivery.'
+      Stripe::Charge.create(
+        :amount => @total_price, # in cents
+        :currency => "usd",
+        :customer => @customer_subscription.stripe_customer_number,
+        :description => @charge_description
+      )
+    end
     # move drinks to customer's cooler and cellar
     # get drinks being delivered
     @delivery_drinks = UserDelivery.where(delivery_id: @delivery.id)
@@ -105,13 +106,14 @@ class Admin::FulfillmentController < ApplicationController
     # get last delivery
     @last_delivery = Delivery.where(user_id: @delivery.user_id, status: 'delivered').order('delivery_date DESC').first
     #Rails.logger.debug("Last Delivery: #{@last_delivery.inspect}")
-    # update last delivery info
-    if params[:old_packaging] == "true"
-      @last_delivery.update(customer_has_previous_packaging: false)
-    else
-      @last_delivery.update(customer_has_previous_packaging: true)
+    if !@last_delivery.blank?
+      # update last delivery info
+      if params[:old_packaging] == "true"
+        @last_delivery.update(customer_has_previous_packaging: false)
+      else
+        @last_delivery.update(customer_has_previous_packaging: true)
+      end
     end
-    
     # update current delivery info
     @delivery.update(status: "delivered", 
                       customer_has_previous_packaging: params[:new_packaging],
