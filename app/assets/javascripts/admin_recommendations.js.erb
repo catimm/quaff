@@ -21,6 +21,22 @@ $(function() {
 		});
 	});
 	
+	// change status of delivery ready to share with customer
+	$(document).on('change', '#share_with_customer', function () {
+		var this_delivery_id = $(this).parent().attr('id');
+		
+		if ($(this).is(':checked')) {
+		    var this_value = true;
+		} else {
+		    var this_value = false;
+		}
+
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/admin_share_delivery_with_customer/" + this_delivery_id + "-" + this_value
+		});
+	});
+	
 	// enable admin to reduce drink quantity in next delivery
 	$(document).on('click', '.subtract-drink-quantity', function () {
 		var this_id = $(this).attr('id');

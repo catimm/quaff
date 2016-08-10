@@ -270,7 +270,7 @@ desc "Check User Additions"
 task :check_user_additions => :environment do
     
     # set admin emails to receive updates
-    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+    @admin_emails = ["carl@drinkknird.com"]
     
     # get list of user added beers
     @user_added_beers = Beer.where(user_addition: true)
@@ -488,7 +488,7 @@ end # end of update_user_beer_ratings task
 desc "Find Recent DB Additions"
 task :find_recent_additions => :environment do
     # set admin emails to receive updates
-    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+    @admin_emails = ["carl@drinkknird.com"]
     
     # set current Time
     @now = Time.now
@@ -807,3 +807,59 @@ task :update_supply_projected_ratings => :environment do
     end # end of loop through each user to update projected ratings
   
 end # end of update_supply_projected_ratings task
+
+desc "share admin drink prep with customers"
+task :share_admin_prep_with_customer => :environment do
+  # only run this code if today is Monday
+    if Date.today.strftime("%A") == "Monday"
+      # get customers who have drinks slated for delivery this week
+      @customers_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true)
+      
+      @customers_with_deliveries.each do |customer_delivery|
+        @next_delivery_plans = AdminUserDelivery.where(delivery_id: customer_delivery.id).order('projected_rating DESC')
+        
+        # get total quantity of next delivery
+        @total_quantity = @next_delivery_plans.sum(:quantity)
+        
+        # create array of drinks for email
+        @email_drink_array = Array.new
+        
+        # put drinks in user_delivery table to share with customer
+        @next_delivery_plans.each do |drink|
+          @user_delivery = UserDelivery.create(drink.attributes)
+          @user_delivery.save!
+          
+          # attach current drink cost and price to this drink
+          @user_delivery.update(drink_cost: drink.inventory.drink_cost, drink_price: drink.inventory.drink_price)
+          
+          # create array of for individual drink info
+          @subtotal = (drink.quantity * drink.inventory.drink_price)
+          @tax = (@subtotal * 0.096).round(2)
+          @total = (@subtotal + @tax)
+          
+          # add drink data to array for customer review email
+          @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                                      :drink => drink.beer.beer_name,
+                                      :drink_type => drink.beer.beer_type.beer_type_short_name,
+                                      :projected_rating => drink.projected_rating,
+                                      :format => drink.inventory.size_format.format_name,
+                                      :quantity => drink.quantity}).as_json
+          # push this array into overall email array
+          @email_drink_array << @drink_data
+        end
+        #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
+        # change status in delivery table
+        @customer_next_delivery = Delivery.find_by_id(customer_delivery.id)
+        @customer_next_delivery.update(status: "user review")
+        
+        # creat customer variable for email to customer
+        @customer = User.find_by_id(@customer_next_delivery.user_id)
+       
+        # send email to customer for review
+        UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array, @total_quantity).deliver_now
+      
+      end # end of loop through each customer 
+
+    end # end of day of week test
+  
+end # end of share_admin_prep_with_customer task

@@ -4363,6 +4363,17 @@ $delivery-beer-header-lines-to-show: 2;
 .current-selected-user {
   color: $best-guess-text;
 }
+.ready-to-share-text {
+  float: left;
+}
+#share_with_customer {
+  margin: 15px 0 0 5px;
+  -ms-transform: scale(1.25); /* IE */
+  -moz-transform: scale(1.25); /* FF */
+  -webkit-transform: scale(1.25); /* Safari and Chrome */
+  -o-transform: scale(1.25); /* Opera */
+  padding: 10px;
+}
 .admin-recommendation-table th .current {
   padding-right: 12px;
 }

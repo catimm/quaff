@@ -542,52 +542,21 @@ class Admin::RecommendationsController < ApplicationController
   end #end of admin_user_delivery method
   
   def admin_share_delivery_with_customer
-    # get drinks slated for next delivery
-    @customer_next_delivery = Delivery.where(user_id: params[:id], status: "admin prep").first
-    @next_delivery_plans = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id).order('projected_rating DESC')
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @delivery_id = @data_split[0]
+    @share_with_customer_status = @data_split[1]
     
-    # get total quantity of next delivery
-    @total_quantity = @next_delivery_plans.sum(:quantity)
+    @next_customer_delivery = Delivery.find_by_id(@delivery_id)
     
-    # create array of drinks for email
-    @email_drink_array = Array.new
-    
-    # put drinks in user_delivery table to share with customer
-    @next_delivery_plans.each do |drink|
-      @user_delivery = UserDelivery.create(drink.attributes)
-      @user_delivery.save!
-      
-      # attach current drink cost and price to this drink
-      @user_delivery.update(drink_cost: drink.inventory.drink_cost, drink_price: drink.inventory.drink_price)
-      
-      # create array of for individual drink info
-      @subtotal = (drink.quantity * drink.inventory.drink_price)
-      @tax = (@subtotal * 0.096).round(2)
-      @total = (@subtotal + @tax)
-      
-      # add drink data to array for customer review email
-      @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                                  :drink => drink.beer.beer_name,
-                                  :drink_type => drink.beer.beer_type.beer_type_short_name,
-                                  :projected_rating => drink.projected_rating,
-                                  :format => drink.inventory.size_format.format_name,
-                                  :quantity => drink.quantity}).as_json
-      # push this array into overall email array
-      @email_drink_array << @drink_data
+    # update status
+    if @share_with_customer_status == "true"
+      @next_customer_delivery.update(share_admin_prep_with_user: true)
+    else
+      @next_customer_delivery.update(share_admin_prep_with_user: false)
     end
-    #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
-    # change status in delivery table
-    @customer_next_delivery.update(status: "user review")
     
-    # creat customer variable for email to customer
-    @customer = User.find(params[:id])
-   
-    # send email to customer for review
-    UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array, @total_quantity).deliver_now
-    
-    # send back to admin recommendation view
-    redirect_to admin_recommendation_path(params[:id].to_s + "-in_stock")
-    
+    render :nothing => true
   end # end of share_delivery_with_customer method
   
   def admin_user_feedback
@@ -612,9 +581,9 @@ class Admin::RecommendationsController < ApplicationController
     
     # drink preference
     if @delivery_preferences.drink_option_id == 1
-      @drink_preference = "Beer Only"
+      @drink_preference = "Beer"
     elsif @delivery_preferences.drink_option_id == 2
-      @drink_preference = "Cider Only"
+      @drink_preference = "Cider"
     else
       @drink_preference = "Beer & Cider"
     end
