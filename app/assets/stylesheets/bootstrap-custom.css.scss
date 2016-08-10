@@ -354,6 +354,17 @@ label {
         margin-left: 2px;
       }
 }
+#signup_birthdate_note {
+  top: -0.7em;
+  font-size: 70%;
+  color: $normal-text;
+  border: 1px solid $normal-text;
+  border-radius: 4px;
+  width: 8px;
+  height: 8px;
+  padding: 1px 3px;
+  margin-left: 2px;
+}
 .check-zip-code-button {
   width:85%;
   padding: 20px 7.5px;

@@ -31,7 +31,7 @@
 					<div class="col-xs-8 col-sm-9">
 						<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false %>
 					</div>
-					<label for="birthdate_field" class="col-xs-4 col-sm-3 control-label">Birthdate</label>
+					<label for="birthdate_field" class="col-xs-4 col-sm-3 control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label> 
 					<div class="col-xs-8 col-sm-9">
 						<%= f.input :birthday, as: :string, input_html: { type: :date, class: "form-control", id: "birthdate_field" }, placeholder: "Birthdate", label: false %>
 					</div>
