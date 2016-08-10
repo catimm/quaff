@@ -826,8 +826,9 @@ class UsersController < ApplicationController
       @new_customer_delivery_change.save!
     end
     
-    # set new delivery details
+    # set new delivery details and delivery info
     @next_delivery = UserDelivery.where(delivery_id: @user_delivery_info.delivery_id)
+    @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
       
     # count number of drinks in delivery
     @drink_count = @next_delivery.sum(:quantity)
