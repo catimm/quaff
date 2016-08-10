@@ -530,8 +530,7 @@ class UsersController < ApplicationController
     @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
     
     # get user's subscription info for delivery change date
-    
-    
+
     #Rails.logger.debug("Delivery preferences: #{@delivery_preferences.inspect}") 
     # update time of last save
 
@@ -564,7 +563,7 @@ class UsersController < ApplicationController
     @current_time_difference_now_and_thursday = ((@this_thursday - @today) / (60*60*24)).floor
     @next_delivery = @delivery.delivery_date
     @current_time_difference_for_next_delivery = ((@next_delivery - @today) / (60*60*24)).floor
-    Rails.logger.debug("Current difference: #{@current_time_difference_for_next_delivery.inspect}")
+    #Rails.logger.debug("Current difference: #{@current_time_difference_for_next_delivery.inspect}")
     if @current_time_difference_for_next_delivery < 1
       @first_change_date_option = @next_thursday
     else

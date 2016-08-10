@@ -2476,6 +2476,9 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-category-image-holder:hover, .signup-journey-image-holder:hover, .signup-plan-holder:hover, .signup-plan-start-holder:hover {
   background: $signup-category-image-background-start;
+  h3, p {
+    color: $white;
+  }
 }
 .signup-category-image-holder.chosen, .signup-journey-image-holder.chosen, .signup-plan-holder.chosen, .signup-plan-start-holder.chosen {
   background: $signup-category-image-background-chosen;
@@ -2510,23 +2513,20 @@ $beer-header-lines-to-show-fp: 1;
   border-right: 2px solid $normal-text;
 }
 .signup-category-image-first-level-text {
-  color: $white;
+  color: $normal-text;
   margin-top: -10px;
   text-align: center;
-  text-shadow: rgba(0, 0, 0, 0.8) 1px 1px 8px;
 }
 .signup-journey-image-first-level-text-with-second-level {
-  color: $white;
+  color: $normal-text;
   margin-top: -25px;
   text-align: center;
-  text-shadow: rgba(0, 0, 0, 0.8) 1px 1px 8px;
 }
 .signup-journey-image-second-level-text {
-  color: $white;
+  color: $normal-text;
   font-size: 16px;
   margin-top: -5px;
   text-align: center;
-  text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 4px;
 }
 .signup-start-month, .signup-start-day {
   font-family: 'uppereastsideregular';
@@ -2607,6 +2607,9 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-style-tile:hover {
     background: $signup-category-image-background-start;
+    h5 {
+      color: $white;
+    }
 }
 .signup-style-tile.chosen {
   border-radius: 6px;

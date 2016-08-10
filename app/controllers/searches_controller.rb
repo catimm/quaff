@@ -74,6 +74,9 @@ class SearchesController < ApplicationController
   end # end index action
   
   def add_drink
+    # set the page to return to after adding a rating
+    session[:return_to] ||= request.referer
+    
     @new_beer = Beer.new
   end # end add_beer action
 end
