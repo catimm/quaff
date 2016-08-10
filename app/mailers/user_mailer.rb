@@ -225,7 +225,7 @@ class UserMailer < ActionMailer::Base
     p response
   end # end of select_invite_email email
   
-    def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date, new_active_until)
+  def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date, new_active_until)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     if new_active_until == true
       @user_subscription_info = UserSubscription.find_by_user_id(customer.id)

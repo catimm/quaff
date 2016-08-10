@@ -737,9 +737,18 @@ class UsersController < ApplicationController
     # send a confirmation email about the change
     UserMailer.delivery_date_change_confirmation(@customer, @delivery.delivery_date, @new_delivery_date, @new_active_until).deliver_now
     
-    # now update delivery date
-    @delivery.update(delivery_date: @new_delivery_date)
-
+    # send Admin an email about delivery date change 
+    AdminMailer.delivery_date_change_notice('carl@drinkknird.com', @customer, @delivery.delivery_date, @new_delivery_date).deliver_now
+    
+    # remove drinks from user delivery table
+    @user_delivery_drinks = UserDelivery.where(delivery_id: @delivery.id)
+    if !@user_delivery_drinks.blank?
+      @user_delivery_drinks.destroy_all
+    end
+    
+    # now update delivery date and status
+    @delivery.update(delivery_date: @new_delivery_date, status: "admin prep")
+    
     redirect_to user_delivery_settings_path(current_user.id)
     
   end # end of change_next_delivery_date method

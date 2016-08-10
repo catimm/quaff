@@ -1,7 +1,8 @@
 <div class="col-sm-12">
 		<div class="row no-margin">
 		    <div class="col-sm-2">
-		    	<h5>Customer is a <br> <b><%= @drink_preference %> <%= @self_identified %></b></h5>
+		    	<h5><b><%= @drink_preference %> <%= @self_identified %></b></h5>
+		    	<h5>Next: <b><%= @customer_next_delivery.delivery_date.strftime("%m/%d/%y") %></b></h5>
 		    </div>
 		    <div class="col-sm-2 no-padding">
 		    	<h5>Price range: <%= @cost_estimate %></h5>

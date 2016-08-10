@@ -26,6 +26,32 @@ class AdminMailer < ActionMailer::Base
     
   end # end of retailer_drink_help email
   
+  def delivery_date_change_notice(admin_email, customer, old_delivery_date, new_delivery_date)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
+      ],
+      content: {
+        template_id: 'delivery-date-change-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        customer_username: customer.username,
+        old_delivery_date: (old_delivery_date).strftime("%B #{old_delivery_date.day.ordinalize}"),
+        new_delivery_date: (new_delivery_date).strftime("%B #{new_delivery_date.day.ordinalize}")
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of delivery_date_change_notice email
+  
+  
   def info_requested_email(admin_email, name, email)
     #Rails.logger.debug("Name: #{name.inspect}")
     #Rails.logger.debug("Email: #{email.inspect}")

@@ -99,9 +99,9 @@ class Admin::RecommendationsController < ApplicationController
       @delivery_preferences = DeliveryPreference.where(user_id: params[:id]).first
       # drink preference
       if @delivery_preferences.drink_option_id == 1
-        @drink_preference = "Beer Only"
+        @drink_preference = "Beer"
       elsif @delivery_preferences.drink_option_id == 2
-        @drink_preference = "Cider Only"
+        @drink_preference = "Cider"
       else
         @drink_preference = "Beer & Cider"
       end
