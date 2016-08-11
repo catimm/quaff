@@ -121,6 +121,9 @@ class UserMailer < ActionMailer::Base
     
     # find if customer has previous packaging
     @last_delivery = Delivery.where(user_id: customer.id, status: 'delivered').order('delivery_date DESC').first
+    if !@last_delivery.nil?
+      @previous_packaging = @last_delivery.customer_has_previous_packaging 
+    end
     
     payload  = {
       recipients: [
@@ -135,7 +138,7 @@ class UserMailer < ActionMailer::Base
         customer_name: customer.first_name,
         delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery.delivery_date.day.ordinalize}"),
         customer_message: @message,
-        previous_packaging: @last_delivery.customer_has_previous_packaging,
+        previous_packaging: @previous_packaging,
         admin_note: delivery.admin_delivery_confirmation_note,
         drink: drinks
       }
@@ -151,7 +154,9 @@ class UserMailer < ActionMailer::Base
     
     # find if customer has previous packaging
     @last_delivery = Delivery.where(user_id: customer.id, status: 'delivered').order('delivery_date DESC').first
-    
+    if !@last_delivery.nil?
+      @previous_packaging = @last_delivery.customer_has_previous_packaging 
+    end
     payload  = {
       recipients: [
         {
@@ -164,7 +169,7 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer.first_name,
         delivery_date: (delivery.delivery_date).strftime("%A, %B #{delivery.delivery_date.day.ordinalize}"),
-        previous_packaging: @last_delivery.customer_has_previous_packaging,
+        previous_packaging: @previous_packaging,
         drink: drinks
       }
     }
