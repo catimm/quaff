@@ -601,7 +601,7 @@ end # end of end_user_review_period_reminder task
 desc "end user reviews and send email if Wed"
 task :end_user_review_period => :environment do
   # only run this code if today is Wednesday
-    #if Date.today.strftime("%A") == "Wednesday"
+    if Date.today.strftime("%A") == "Wednesday"
       # get all users currently reviewing the next delivery
       @deliveries_in_review = Delivery.where(status: "user review") 
       
@@ -645,7 +645,7 @@ task :end_user_review_period => :environment do
         
       end # end of looping through each delivery in review
     
-    #end # end of day of week test
+    end # end of day of week test
   
 end # end of end_user_review_period task
 
