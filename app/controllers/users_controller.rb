@@ -519,6 +519,9 @@ class UsersController < ApplicationController
     # set current page for jquery routing--preferences vs singup settings
     @current_page = "preferences"
     
+    # get user subscription info (for when we offer the Sample plan)
+    #@user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    
     # get drink options
     @drink_options = DrinkOption.all
     
@@ -594,14 +597,17 @@ class UsersController < ApplicationController
     
     # set drink category choice
     if @delivery_preferences.drink_option_id == 1
+      @drink_type_preference = "beers"
       @beer_chosen = "show"
       @cider_chosen = "hidden"
       @beer_and_cider_chosen = "hidden"
     elsif @delivery_preferences.drink_option_id == 2
+      @drink_type_preference = "ciders"
       @beer_chosen = "hidden"
       @cider_chosen = "show"
       @beer_and_cider_chosen = "hidden"
     elsif @delivery_preferences.drink_option_id == 3
+      @drink_type_preference = "beers/ciders"
       @beer_chosen = "hidden"
       @cider_chosen = "hidden"
       @beer_and_cider_chosen = "show"

@@ -46,6 +46,7 @@ class User < ActiveRecord::Base
   has_many :user_beer_ratings
   has_many :beers, through: :user_beer_ratings
   has_many :wishlists
+  has_many :deliveries
   has_many :user_notification_preferences
   has_many :user_style_preferences
   has_many :user_locations

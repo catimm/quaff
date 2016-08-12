@@ -3,7 +3,7 @@
 	<h4>Showing: <span class="current-selected-user" id="current-user-recommendations"><%= @drink_recommendations[0].user.username %></span></h4>
 </div>
 <div class="col-sm-3">
-	<%= collection_select(@drink_recommendations, :user_id, User.where(id: @customer_ids), :id, :username, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "#{@view}"}) %>
+	<%= collection_select(@drink_recommendations, :user_id, Delivery.where(user_id: @customer_ids).where.not(status: "delivered").order('delivery_date asc'), :user_id, :recommendation_drop_down_view, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "#{@view}"}) %>
 </div>
 <div class="col-sm-2 no-padding">
 	<h5>Status: <%= @customer_next_delivery.status %></h5>

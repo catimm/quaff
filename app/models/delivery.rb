@@ -28,4 +28,10 @@ class Delivery < ActiveRecord::Base
   has_many :customer_delivery_changes
   
   attr_accessor :delivery_quantity # hold number of drinks to be in the delivery
+  
+  # create view in admin recommendation drop down
+  def recommendation_drop_down_view
+    "#{delivery_date.strftime("%m/%d/%y")}: #{user.first_name} [#{user.username}]"
+  end
+  
 end
