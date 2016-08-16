@@ -212,8 +212,8 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .dropdown-menu {
   z-index: 5000 !important;
-  }
-  
+ }
+
 .top-row {
   margin-bottom: 20px;
 }
@@ -3322,8 +3322,10 @@ $beer-header-lines-to-show-fp: 1;
   margin-bottom: 5px !important;
 }  
 .ratings-image-holder-column {
-  height: 70px;
   padding: 10px 0 0 10px !important;
+}
+.img-responsive.ratings-image {
+  max-height: 100px;
 }
 .brewery-image-holder-empty-ratings-page {
   padding: 0;
@@ -3425,6 +3427,18 @@ $descriptor-lines-to-show: 2;
   background: $white;
   z-index: 100 !important;
 }
+// Supply CSS
+.supply-image-holder-row {
+  height:130px !important; 
+  margin-bottom: 5px !important;
+}  
+.supply-image-holder-column {
+  padding: 10px 0 0 10px !important;
+}
+.img-responsive.supply-image {
+  max-height: 125px;
+}
+
 // Wishlist css style
 .remove-drink-from-wishlist {
   position: absolute;
@@ -5092,6 +5106,11 @@ $delivery-beer-header-lines-to-show: 2;
   .wishlist-image-holder-column {
     height: 110px;
   }
+    // Supply CSS
+  .supply-image-holder-row {
+    height:100px !important; 
+    margin-bottom: 5px !important;
+  }  
   .wishlist-best-guess {
     padding-top: 5px !important;
     p {

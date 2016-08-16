@@ -11,10 +11,10 @@
 	<p>rate</p>
 <% end %>
 <div class="drink-supply-tile drink-tile-width-measurement">
-	<div class="row no-margin ratings-image-holder-row">
-		<div class="col-xs-4 col-sm-5 no-padding wishlist-image-holder-column">
+	<div class="row no-margin supply-image-holder-row">
+		<div class="col-xs-4 col-sm-5 no-padding supply-image-holder-column">
 			<% if !drink.beer.brewery.image.blank? %>
-				<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+				<img class="img-responsive supply-image center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
 			<% else %>
 				<div class="brewery-image-holder-empty-ratings-page text-center">
 					<h2><i class="fa fa-beer"></i></h2>

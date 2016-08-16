@@ -1,11 +1,25 @@
 <%= render 'layouts/header' %> 
 <div class="row no-margin first-row">
-	<div class="container first-row-container">
-		<div class="col-sm-5 no-padding">
-			<h1 class="section-header">Delivery Settings</h1>
+		<div class="container first-row-container">
+			<div class="col-xs-12 col-sm-4 no-padding">
+				<h1 class="section-header">Deliveries</h1>
+			</div>
+			<div class="col-xs-12 col-sm-8">
+				<div class="row no-margin">
+					<div class="col-xs-0 col-sm-3 mobile-menu-holder"></div>
+					<div class="col-xs-4 col-sm-3 mobile-menu-holder">
+						<%= link_to "Upcoming", user_deliveries_path('next'), class: "drink-preference-view-option", id: "next" %>
+					</div>
+					<div class="col-xs-4 col-sm-2 mobile-menu-holder no-padding-left">
+						<%= link_to "History", user_deliveries_path('history'), class: "drink-preference-view-option", id: "history" %>
+					</div>
+					<div class="col-xs-4 col-sm-3 mobile-menu-holder no-padding-right">
+						<%= link_to "Delivery settings", user_delivery_settings_path, class: "drink-preference-view-option chosen", id: "settings" %>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-</div>
 <div class="row">
 	<div class="container" id="user-delivery-preferences-holder">
 	    <%= render 'user_delivery_preferences' %>

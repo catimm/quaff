@@ -1,30 +1,19 @@
 $(function () {
-	// show welcome modal immediately following signup process
-	if (gon.user_post_signup == 9) {
-		$(window).load(function(){
-	        $('#delivery_settings_welcome').modal('show');
-	    });
-	    $.ajax({
-		  type: "POST",
-		  url: "/users/deliveries_update_estimates/post_signup-10"
-		});
-	}
 
 	// hide spinner
 	$(".spinner").hide();
 	
 	
-  // show spinner on AJAX start
-  $(document).ajaxStart(function(){
-    $(".spinner").show();
-  });
-
-  // hide spinner on AJAX stop
-  $(document).ajaxStop(function(){
-    $(".spinner").hide();
-  });
-	  
+  	// show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner").show();
+	});
 	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner").hide();
+	});
+	  
 	// set delay function
 	var delay = (function(){
 	  var timer = 0;
@@ -33,107 +22,6 @@ $(function () {
 	    timer = setTimeout(callback, ms);
 	  };
 	})();
-	
-	// add review end countdown clock
-	$('#review-ends-on').countdown({until: gon.review_period_ends, format: 'dhmS',
-										labels: ['Yr', 'Mo', 'Wk', 'Days', 'Hours', 'Mins', 'Secs'],
-										labels1: ['Yr', 'Mo', 'Wk', 'Day', 'Hour', 'Min', 'Sec']
-									});
-	
-	// add logic to change delivery date
-	$(document).on('click', '.delivery-date-change-row', function () {
-		$(this).addClass('chosen');
-		$(this).parent().siblings('.delivery-date-change-row-holder').children('.delivery-date-change-row').removeClass('chosen');
-		
-		var week_number = $(this).attr('id');
-		
-		$("#confirm-date-change-button").attr("href", "/users/change_next_delivery_date/" + week_number);
-		
-	});
-							    
-	// ensure only one delivery date option is chosen
-	$(document).on("change", ".first_delivery_date_chosen", function() {
-		$(this).parent().siblings(".drink-preference-choice").children("input").removeAttr('checked');
-	});
-	
-	// set width of quantity holder--in supply and delivery review views--equal to portion of tile width
-	drink_tile_width = $(".drink-tile-width-measurement").width();
-	quantity_holder_width = (drink_tile_width * .15);
-	$(".quantity-holder").width(quantity_holder_width).height(quantity_holder_width);
-	
-	// get width of estimate column
-	estimate_column_width = $("#estimate-column").width();
-	// make estimate tile holder same width as column
-	$("#scroller").width(estimate_column_width);
-	$("#scroller2").width(estimate_column_width);
-	
-	// set function for sticky scroller
-	function moveScroller() {
-		if(window.location.href.indexOf("users/delivery_settings") > -1) {
-		    var move = function() {
-		        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
-		        var ot = $("#scroller-anchor").offset().top;
-		        var s1 = $("#last-updated-holder");
-		        var s2 = $("#scroller");
-		        var s3 = $("#scroller2");
-		        if(st > ot) {
-		            s1.css({
-		                position: "fixed",
-		                top: "50px"
-		            });
-		            s2.css({
-		                position: "fixed",
-		                top: "105px"
-		            });
-		            s3.css({
-		                position: "fixed",
-		                top: "150px"
-		            });
-		        } else {
-		            if(st <= ot) {
-		                s1.css({
-		                    position: "relative",
-		                    top: ""
-		                });
-		                s2.css({
-		                    position: "relative",
-		                    top: ""
-		                });
-		                s3.css({
-		                    position: "relative",
-		                    top: ""
-		                });
-		            }
-		        }
-		    };
-		    $(window).scroll(move);
-		    move();
-		}
-	}
-	$(document).on("scroll", function() {
-	    moveScroller();
-	});
-	
-	// send form id to session variable
-	$(".fav-drink-field").one("focus", function() {
-		var this_form_id = $(this).attr('id');
-		$.ajax({
-		  type: "POST",
-		  url: "/users/set_search_box_id/" + this_form_id
-		});
-	});
-	
-	// remove fav drink
-	$(".remove-fav-drink").on("click", function() {
-		var this_form_id = $(this).parent().siblings(".fav-drink-form-holder").children("form").children("span").children(".form-control.typeahead.fav-drink-field.tt-input").attr('id');
-		$(this).parent().siblings(".fav-drink-form-holder").children("form").children("span").children(".form-control.typeahead.fav-drink-field.tt-input").val('');
-		$.ajax({
-		  type: "POST",
-		  url: "/users/remove_fav_drink/" + this_form_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
 	
 	// show user profile block when this link is clicked, if it isn't already showing
 	$("#user-profile-link").on("click", function() {
@@ -241,27 +129,6 @@ $(function () {
 		return false;
 	});
 	
-	// show user profile block when this link is clicked, if it isn't already showing
-	$("#user-styles-link").on("click", function() {
-		if ($("#user-styles").hasClass("hidden")) {
-			$("#user-styles").removeClass("hidden").addClass("show");
-			$("#user-drinks").removeClass("show").addClass("hidden");
-			$("#user-styles-link").addClass("selected");
-			$("#user-drinks-link").removeClass("selected");
-		}
-	});
-	
-	// if this link isn't already active, show underline when mouse over
-	$("#user-styles-link").on("mouseover", function() {
-		if ($("#user-styles").hasClass("hidden")) {
-			$(this).css("text-decoration", "underline");
-		}
-	});
-	
-	// remove underline when mouse out	
-	$("#user-styles-link").on("mouseout", function() {
-		$(this).css("text-decoration", "none");
-	});
 	
 	// show user profile block when this link is clicked, if it isn't already showing
 	$("#user-drinks-link").on("click", function() {
@@ -285,72 +152,6 @@ $(function () {
 		$(this).css("text-decoration", "none");
 	});
 	
-	// allow user to dislike beer style
-	$(".dislike-style").on("click", function() {
-		var this_style_id = $(this).parent().attr('id');
-		if ($(this).siblings(".dislike-style-chosen").hasClass("hidden")) {
-			// change view/UI
-			$(this).removeClass("show").addClass("hidden");
-			$(this).siblings(".dislike-style-chosen").removeClass("hidden").addClass("show");
-			// add overlay
-			$(this).siblings(".overview-tile-4").addClass("show").removeClass("hidden");
-			// if like is already chosen, reverse it
-			if ($(this).siblings(".like-style-chosen").hasClass("show")) {
-				$(this).siblings(".like-style-chosen").removeClass("show").addClass("hidden");	
-			}
-			if ($(this).siblings(".like-style").hasClass("hidden")) {
-				$(this).siblings(".like-style").removeClass("hidden").addClass("show");
-			}
-		}
-		$.ajax({
-		  type: "POST",
-		  url: "/users/update_styles_preferences/dislike-" + this_style_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
-	
-	// allow user to reverse dislike of beer style
-	$(".dislike-style-chosen").on("click", function() {
-		var this_style_id = $(this).parent().attr('id');
-		if ($(this).hasClass("show")) {
-			$(this).removeClass("show").addClass("hidden");
-			$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
-			// remove overlay
-			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
-		}
-		$.ajax({
-		  type: "POST",
-		  url: "/users/update_styles_preferences/neutral-" + this_style_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
-	
-	// allow user to like beer style
-	$(".like-style").on("click", function() {
-		var this_style_id = $(this).parent().attr('id');
-		if ($(this).siblings(".like-style-chosen").hasClass("hidden")) {
-			$(this).removeClass("show").addClass("hidden");
-			$(this).siblings(".like-style-chosen").removeClass("hidden").addClass("show");
-			// add overlay
-			$(this).siblings(".overview-tile-4").addClass("show").removeClass("hidden");
-			// if dislike is already chosen, reverse it
-			if ($(this).siblings(".dislike-style-chosen").hasClass("show")) {
-				$(this).siblings(".dislike-style-chosen").removeClass("show").addClass("hidden");
-			}
-			if ($(this).siblings(".dislike-style").hasClass("hidden")) {
-				$(this).siblings(".dislike-style").removeClass("hidden").addClass("show");
-			}
-		}
-		$.ajax({
-		  type: "POST",
-		  url: "/users/update_styles_preferences/like-" + this_style_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
-	
 	// search for drinks to add to supply
 	$(document).on("keyup", ".supply-drink-search", function() {
 		value = $(this).val();
@@ -360,23 +161,6 @@ $(function () {
 			  url: "/users/drink_search/1/" + value
 			});
 	    }, 500 );
-	});
-	
-	// allow user to reverse like of beer style
-	$(".like-style-chosen").on("click", function() {
-		var this_style_id = $(this).parent().attr('id');
-		if ($(this).hasClass("show")) {
-			$(this).removeClass("show").addClass("hidden");
-			$(this).siblings(".like-style").removeClass("hidden").addClass("show");
-			// remove overlay
-			$(this).siblings(".overview-tile-4").removeClass("show").addClass("hidden");
-		}
-		$.ajax({
-		  type: "POST",
-		  url: "/users/update_styles_preferences/neutral-" + this_style_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
 	});
 	
 	// change drink cooler status
@@ -412,29 +196,6 @@ $(function () {
 		// prevent page from jumping to the top after click event
 		return false;
 	});
-	// find width of style preference overview tile
-	style_width = $(".overview-tile-3").width();
-	half_style_width = style_width/2;
-	// make width of selected style overlay equal that of the overview tile
-	$(".overview-tile-4").width(style_width);
-	// make width of style preference row equal that of the overview tile
-	$(".like-style-chosen").width(style_width);
-	$(".dislike-style-chosen").width(style_width);
-	// make chosen preference appear in middle of tile regardless of tile size
-	$(".dislike-style-chosen").children(".dislike-style-middle").css("left",style_width - half_style_width - 18);
-	$(".like-style-chosen").children(".like-style-middle").css("left",style_width - half_style_width - 18);
-	
-	// find width of style preference overview tile for mobile
-	mobile_style_width = $(".row-horizon").children(".mobile.style-tile-container").width();
-	half_style_width = mobile_style_width/2;
-	// make width of selected style overlay equal that of the overview tile
-	$(".mobile.overview-tile-4").width(mobile_style_width);
-	// make width of style preference row equal that of the overview tile
-	$(".mobile.like-style-chosen").width(mobile_style_width);
-	$(".mobile.dislike-style-chosen").width(mobile_style_width);
-	// make chosen preference appear in middle of tile regardless of tile size
-	$(".mobile.dislike-style-chosen").children(".mobile.dislike-style-middle").css("left",mobile_style_width - half_style_width - 18);
-	$(".mobile.like-style-chosen").children(".mobile.like-style-middle").css("left",mobile_style_width - half_style_width - 18);
 	
 	// find width of the navbar search input box
 	navbar_search_width = $("#header-navbar").children(".input-group").width() + 20;
@@ -451,49 +212,7 @@ $(function () {
 		$(this).removeClass("almost-chosen");
 	});
 	
-	// allow customers to add or subtract drinks from delivery
-	$(document).on("click", ".quantity-change-holder-minus", function() {
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		
-		// change quantity shown on screen
-		var original_quantity = $("#drink-quantity-" + drink_id).html();
-		if(original_quantity > 1) {
-			var new_quantity = original_quantity - 1;
-			$("#drink-quantity-" + drink_id).html(new_quantity);
-			
-			// send to controller to change database 
-			$.ajax({
-			  type: "POST",
-			  url: "/users/change_delivery_drink_quantity/subtract-" + drink_id
-			});
-		} else {
-		
-			// attach new id
-			$('#remove_drink_confirmation_delivery_review').children('.modal-body').children('.remove-button-holder').children('a').attr('id', drink_id);
-
-			// show modal
-		    $('#remove_drink_confirmation_delivery_review').modal('show');
-		}
-	});
-	$(document).on("click", ".subtract-drink-confirmation-delivery-review", function() {
-		var drink_id = $(this).attr('id');
-		
-		// remove drink tile
-		$('#drink-tile-' + drink_id).remove();
-		
-		// remove modal
-	    $('#remove_drink_confirmation_delivery_review').modal('hide');
-		
-		// send to controller to change database 
-		$.ajax({
-		  type: "POST",
-		  url: "/users/remove_delivery_drink_quantity/" + drink_id
-		});
-		// make page not jump to top
-		return false;
-	});
+	
 	$(document).on("click", ".fridge-icon", function() {
 		var supply_id = $(this).attr('id');
 		$(".move-drink-to-cooler-confirmation").attr('id', supply_id);
@@ -579,40 +298,6 @@ $(function () {
 		// make page not jump to top
 		return false;
 	});
-	$(document).on("click", ".quantity-change-holder-add", function() {
-		
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		
-		var parent_id = $(this).parent().attr('id');
-		var toRemove = 'limit-per-';
-		var limit_per = parent_id.replace(toRemove,'');
-		
-		if(limit_per == 0) {
-			limit_per = 100
-		}
-		
-		// change quantity shown on screen
-		var original_quantity = +($("#drink-quantity-" + drink_id).html());
-		var new_quantity = original_quantity + 1;
-		if(new_quantity <= limit_per) {
-			$("#drink-quantity-" + drink_id).html(new_quantity);
-		
-			// send to controller to change database
-			$.ajax({
-			  type: "POST",
-			  url: "/users/change_delivery_drink_quantity/add-" + drink_id
-			});
-		} else {
-			var drink_name = $(this).parent().parent('.next-delivery-tile-last-row').siblings('.drink-name-and-info-row').children('.drink-name-col').children('.beer-tile-header').children('.combined-drink-text').html();
-			$("#quantity-limit-drink-name").html(drink_name);
-			$("#actual-quantity-limit").html(limit_per);
-			// show modal
-		    $('#drink_per_customer_limit').modal('show');
-		}
-		
-	});
 	
 	// allow customers to add or subtract drinks from supply
 	$(document).on("click", ".supply-quantity-change-minus", function() {
@@ -667,31 +352,6 @@ $(function () {
 		$.ajax({
 		  type: "POST",
 		  url: "/users/change_supply_drink_quantity/add-" + drink_id
-		});
-	});
-	
-	// to add already used descriptor to this user's list of descriptors for drink type
-	$(document).on("click", ".token-input-list-facebook_rating li", function() {
-		var target_id = $(this).parent().siblings('form').children('input.form-control').attr('id');
-		var target = "#" + target_id
-		$(this).addClass("hide");
-		var descriptor = $(this).children('p').html();
-		$(target).tokenInput("add", {id: descriptor, name: descriptor});
-		return false;
-	});
-	
-	$( ".add-descriptors-field" ).each(function() {
-	  var this_id = $(this).attr('id');
-	  $("#" + this_id).tokenInput('/beers/descriptors.json', {
-			theme: 'facebook',
-			tokenLimit: 5,
-			placeholder: 'Choose from list or add your own (separate w/comma)',
-			minChars: 2,
-		    allowFreeTagging: true,
-		    preventDuplicates: true,
-		    zindex: 9999,
-		    hintText: 'Type drink descriptor (e.g. citrusy, piney, etc.)',
-		    prePopulate: $("#" + this_id).data('load')
 		});
 	});
 	
