@@ -1,3 +1,4 @@
 $(function() {
 	$("#add-supply-holder").html("<%= escape_javascript(render 'supply_search_results', drinks: @final_search_results ) %>");
+	$('[data-toggle="tooltip"]').tooltip();
 });

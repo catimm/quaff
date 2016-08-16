@@ -18,15 +18,8 @@ class DrinkPreferencesController < ApplicationController
     
     # get user ratings history
     @user_ratings = UserBeerRating.where(user_id: @user.id)
-    
-    if @view == "recent_ratings"
-      # set css class for chosen view
-      @ratings_chosen = "chosen"
-      
-      # get recent user ratings history
-      @recent_user_ratings = @user_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
-    
-    elsif @view == "drink_types"
+
+    if @view == "drink_types"
       # set css class for chosen view
       @drink_types_chosen = "chosen"
        

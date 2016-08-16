@@ -9,13 +9,13 @@
 				<div class="row no-margin">
 					<div class="col-sm-3 no-padding"></div>
 					<div class="col-sm-3">
-						<%= link_to "My Cooler", user_supply_path(current_user.id, 'cooler'), class: "drink-preference-view-option #{@cooler_chosen}", id: "cooler" %>
+						<%= link_to "Cooler", user_supply_path(current_user.id, 'cooler'), class: "drink-preference-view-option #{@cooler_chosen}", id: "cooler" %>
 					</div>
 					<div class="col-sm-3">
-						<%= link_to "My Cellar", user_supply_path(current_user.id, 'cellar'), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
+						<%= link_to "Cellar", user_supply_path(current_user.id, 'cellar'), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
 					</div>
 					<div class="col-sm-3">
-						<%= link_to "My Wishlist", user_supply_path(current_user.id, 'wishlist'), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
+						<%= link_to "Wishlist", user_supply_path(current_user.id, 'wishlist'), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
 					</div>
 				</div>
 				<div class="row add-supply-search-col">
@@ -39,7 +39,7 @@
 	<div class="row no-margin spinner text-center">
 		<div class="spinner-text">
 			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
-			<h4>Search results loading...</h4>
+			<h4>Processing...</h4>
 		</div>
 	</div>
 	<div class="row">

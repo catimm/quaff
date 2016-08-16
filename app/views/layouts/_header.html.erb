@@ -40,14 +40,14 @@
 					          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
 					          <ul class="dropdown-menu">
 					            
-					            <li class="dropdown-header">My everyday</li>
+					            <li class="dropdown-header">My activity</li>
 					            <li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path('next') %></li>
 					            <li class="dropdown-link"><%= link_to "Drink preferences", user_profile_path('drink_types') %></li>
-					            <li class="dropdown-link"><%= link_to "Recent activity", user_profile_path('recent_ratings') %></li>
+					            <li class="dropdown-link"><%= link_to "Recent activity", recent_user_ratings_path(current_user.id) %></li>
 					            <li class="dropdown-link"><%= link_to "Supply", user_supply_path(current_user.id, 'cooler') %></li>
 								
 								<li class="dropdown-header">My settings</li>
-								<li class="dropdown-link"><%= link_to "Account", user_account_settings_path(current_user.id, "plan") %></li>
+								<li class="dropdown-link"><%= link_to "Account settings", user_account_settings_path(current_user.id, "plan") %></li>
 								
 					            <% if current_user.role_id == 1 %>
 						            <li class="dropdown-header">Admin links</li>

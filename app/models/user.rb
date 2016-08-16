@@ -44,6 +44,7 @@ class User < ActiveRecord::Base
   
   belongs_to :role       
   has_many :user_beer_ratings
+  has_many :friends
   has_many :beers, through: :user_beer_ratings
   has_many :wishlists
   has_many :deliveries

@@ -1,7 +1,7 @@
 <div class="row no-margin">
 	<div class="col-sm-12">
 		<h3 class="recent-ratings-header">My recent ratings</h3>
-		<h5 class="page-subheader"> <%= (@user_ratings.count).floor %> drinks rated since <%= (@user.created_at).strftime("%b %e, %Y") %></h5>
+		<h5 class="page-subheader"> <%= number_with_delimiter(@user_ratings.count, :delimiter => ',') %> drinks rated since <%= (@user.created_at).strftime("%b %e, %Y") %></h5>
 	</div>
 </div>
 <div class="row">

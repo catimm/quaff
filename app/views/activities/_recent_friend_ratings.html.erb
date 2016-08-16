@@ -1,0 +1,41 @@
+<div class="row no-margin">
+	<div class="col-sm-8">
+		<h3 class="recent-ratings-header">Friends' recent ratings</h3>
+	</div>
+	<% if !@user_friends.blank? %>
+	<div class="col-sm-3">
+		<%= link_to "Connect with friends", "#", :class => "btn btn-success connect-with-friends-button"%>
+	</div>
+	<% end %>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<% if !@user_friends.blank? %>
+			<% if !@recent_friend_ratings.blank? %>
+				<div class="row no-margin recent-rating-holder">
+					<% @recent_friend_ratings.each do |rating| %>
+						<div class="col-sm-3" id="recent-activity">
+							<%= render(partial: 'rating_drink_card_history', locals: { drink: rating }) %>
+						</div>
+					<% end%>
+				</div>
+				<div class="col-sm-12" id="fav-drink-types-container">
+					<%= will_paginate @recent_friend_ratings, renderer: BootstrapPagination::Rails %>
+				</div>
+			<% else %>
+				<div class="row no-margin">
+					<h4 class="no-results-empty-message">Your friends haven't rated any drinks yet. Time to buy them a drink!</h4>
+				</div>
+			<% end %>
+		<% else %>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<h4 class="no-results-empty-message">You haven't connected with any friends yet. Click the button to find your friends.</h4>
+				</div>
+				<div class="col-sm-3">
+					<%= link_to "Connect with friends", "#", :class => "btn btn-success connect-with-friends-button"%>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>

@@ -45,18 +45,16 @@ Rails.application.routes.draw do
   end
   
   root :to => 'home#index'
-  # route to user profile page
+  # routes to user profile pages
   get '/users/account_settings/:id' => 'users#account_settings', :as => 'user_account_settings'  
-  get '/users/supply/:id' => 'users#supply', :as => 'user_supply'
-  get '/users/add_drink_descriptors/:id' => 'users#add_drink_descriptors', :as => 'add_drink_descriptors'
-  get '/users/supply_removal/:id' => 'users#supply_removal', :as => 'supply_removal'
-  get '/users/add_supply_drink/:id' => 'users#add_supply_drink', :as => 'add_supply_drink'
-  get  '/users/drink_search/:id(/:query)' => 'users#drink_search', :as => 'drink_search'
   get '/users/plan_rewewal_update/:id' => 'users#plan_rewewal_update', :as => 'plan_rewewal_update' 
-  get '/users/load_rating_form_in_supply/:id' => 'users#load_rating_form_in_supply'
-  get '/users/reload_drink_skip_rating/:id' => 'users#reload_drink_skip_rating'
+  post '/users/update_profile/:id' => 'users#update_profile'
+  post '/users/update_delivery_address/:id' => 'users#update_delivery_address'
+  patch '/users/update_password/:id' => 'users#update_password'
+  post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
+  post '/stripe-webhooks' => 'users#stripe_webhooks'
   
-  # route to user deliveries pages
+  # routes to user deliveries pages
   get '/deliveries/deliveries/:id' => 'deliveries#deliveries', :as => 'user_deliveries'
   get '/deliveries/delivery_settings/:id' => 'deliveries#delivery_settings', :as => 'user_delivery_settings'
   post '/deliveries/deliveries_update_estimates/:id' => 'deliveries#deliveries_update_estimates', :as => 'deliveries_update_estimates'
@@ -66,29 +64,37 @@ Rails.application.routes.draw do
   post '/deliveries/remove_delivery_drink_quantity/:id' => 'deliveries#remove_delivery_drink_quantity'
   post '/deliveries/customer_delivery_messages/' => 'deliveries#customer_delivery_messages', :as => 'customer_delivery_messages'
   
-  # route to user drink preferences pages
+  # routes to user drink preferences pages
   get '/drink_preferences/drink_profile/:id' => 'drink_preferences#drink_profile', :as => 'user_profile'
   get '/drink_preferences/drink_settings/:id' => 'drink_preferences#drink_settings', :as => 'user_drink_settings'
   post '/drink_preferences/profile/:id' => 'drink_preferences#create_drink_descriptors', :as => 'create_drink_descriptors'
   post '/drink_preferences/update_styles_preferences/:id' => 'drink_preferences#style_preferences', :as => 'user_style_preference'
   
-  post '/users/wishlist_removal/:id' => 'users#wishlist_removal', :as => 'wishlist_removal'
-  post '/users/update_profile/:id' => 'users#update_profile'
-  post '/users/update_delivery_address/:id' => 'users#update_delivery_address'
-  patch '/users/update_password/:id' => 'users#update_password'
-  post '/users/change_supply_drink_quantity/:id' => 'users#change_supply_drink_quantity', :as => 'change_supply_drink_quantity'
-  post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
-  post '/stripe-webhooks' => 'users#stripe_webhooks'
-  post '/users/customer_deliveryd_date/:id' => 'users#customer_delivery_date', :as => 'customer_delivery_date'
+  # routes to user activity pages
+  get '/activities/user_ratings/:id' => 'activities#user_ratings', :as => 'recent_user_ratings'
+  get '/activities/friend_ratings/:id' => 'activities#friend_ratings', :as => 'recent_friend_ratings'
+  
+  # routes to user supply pages
+  get '/supplies/supply/:id' => 'supplies#supply', :as => 'user_supply'
+  get '/supplies/load_rating_form_in_supply/:id' => 'supplies#load_rating_form_in_supply'
+  get '/supplies/reload_drink_skip_rating/:id' => 'supplies#reload_drink_skip_rating'
+  post '/supplies/move_drink_to_cooler/:id' => 'supplies#move_drink_to_cooler', :as => 'move_drink_to_cooler'
+  get '/supplies/add_supply_drink/:id' => 'supplies#add_supply_drink', :as => 'add_supply_drink'
+  get '/supplies/drink_search/:id(/:query)' => 'supplies#drink_search', :as => 'drink_search'
+  post '/supplies/change_supply_drink/:id' => 'supplies#change_supply_drink', :as => 'change_supply_drink'
+  post '/supplies/wishlist_removal/:id' => 'supplies#wishlist_removal', :as => 'wishlist_removal'
+  get '/supplies/supply_removal/:id' => 'supplies#supply_removal', :as => 'supply_removal'
+  post '/supplies/change_supply_drink_quantity/:id' => 'supplies#change_supply_drink_quantity', :as => 'change_supply_drink_quantity'
+  post '/supplies/set_search_box_id/:id' => 'supplies#set_search_box_id', :as => 'set_search_box_id'
+
+  # user ratings
+  post '/ratings/:user_id/rate_drink_from_supply/:id' => 'ratings#rate_drink_from_supply', :as => 'rate_drink_from_supply'
+  
+  # orphan routes
+  post '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'customer_delivery_date'
   patch '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'reset_customer_delivery_date'
   
-  post '/users/move_drink_to_cooler/:id' => 'users#move_drink_to_cooler', :as => 'move_drink_to_cooler'
-  post '/users/change_supply_drink/:id' => 'users#change_supply_drink', :as => 'change_supply_drink'
-  post '/users/add_drink/:id' => 'users#add_drink', :as => 'add_drink'
-  post '/users/add_fav_drink' => 'users#add_fav_drink', :as => 'add_fav_drink'
-  post '/users/set_search_box_id/:id' => 'users#set_search_box_id', :as => 'set_search_box_id'
-  post '/users/remove_fav_drink/:id' => 'users#remove_fav_drink', :as => 'remove_fav_drink'
-  post '/ratings/:user_id/rate_drink_from_supply/:id' => 'ratings#rate_drink_from_supply', :as => 'rate_drink_from_supply'
+  
   # user signup process
   get '/signup/getting_started/:id' => 'signup#getting_started', :as => 'getting_started'
   post '/signup/process_input/:id' => 'signup#process_input', :as => 'process_input'

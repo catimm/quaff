@@ -70,7 +70,7 @@ $(function () {
 	var timer;
 	
 	// update user info
-	$(document).on("keyup", ".user-info-field", function() {
+	$(document).on("change", ".user-info-field", function() {
 		
 		var this_id = $(this).attr('id');
 		var toRemove = 'user_';
@@ -152,51 +152,6 @@ $(function () {
 		$(this).css("text-decoration", "none");
 	});
 	
-	// search for drinks to add to supply
-	$(document).on("keyup", ".supply-drink-search", function() {
-		value = $(this).val();
-		delay(function(){
-			$.ajax({
-			  type: "GET",
-			  url: "/users/drink_search/1/" + value
-			});
-	    }, 500 );
-	});
-	
-	// change drink cooler status
-	$(document).on("click", ".change-cooler-button", function() {
-		// hide this button
-		$(this).addClass('hidden');
-		//show the remove version of button
-		$(this).siblings('*[id*=cooler]').removeClass('hidden');
-		// get id of button
-		var this_id = $(this).attr('id');
-		// send info to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/users/change_supply_drink/" + this_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
-	
-	// change drink cellar status
-	$(document).on("click", ".change-cellar-button", function() {
-		// hide this button
-		$(this).addClass('hidden');
-		//show the remove version of button
-		$(this).siblings('*[id*=cellar]').removeClass('hidden');
-		// get id of button
-		var this_id = $(this).attr('id');
-		// send info to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/users/change_supply_drink/" + this_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
-	
 	// find width of the navbar search input box
 	navbar_search_width = $("#header-navbar").children(".input-group").width() + 20;
 	// make the dropdown search result box match the width of the search input box
@@ -211,150 +166,7 @@ $(function () {
 	$(document).on("mouseout", ".drink-preference-view-option", function() {
 		$(this).removeClass("almost-chosen");
 	});
-	
-	
-	$(document).on("click", ".fridge-icon", function() {
-		var supply_id = $(this).attr('id');
-		$(".move-drink-to-cooler-confirmation").attr('id', supply_id);
-	});
-	
-	$(document).on("click", ".move-drink-to-cooler-confirmation", function() {
-		var supply_id = $(this).attr('id');
-		
-		// remove modal
-	    $('#move_drink_to_cooler').modal('hide');
-		
-		// send to controller to change database 
-		$.ajax({
-		  type: "POST",
-		  url: "/users/move_drink_to_cooler/" + supply_id
-		});
-		// make page not jump to top
-		return false;
-		
-	});
-	
-	// show rating card in drink supply view
-	$(document).on("click", ".rate-drink-from-supply", function() {
-		var parent_id = $(this).parent().attr('id');
-		var toRemove = 'user-supply-';
-		var supply_id = parent_id.replace(toRemove,'');
-		
-		// send to controller to get rating card loaded 
-		$.ajax({
-		  type: "GET",
-		  url: "/users/load_rating_form_in_supply/" + supply_id
-		});
-		
-		// make page not jump to top
-		return false;
 
-	}); 
-	
-	// show rating card in drink supply view
-	$(document).on("click", ".skip-rate-beer-now", function() {
-		var supply_id = $(this).attr('id');
-		
-		// send to controller to get rating card loaded 
-		$.ajax({
-		  type: "GET",
-		  url: "/users/reload_drink_skip_rating/" + supply_id
-		});
-		
-		// make page not jump to top
-		return false;
-
-	}); 
-	
-	// submit drink rating from supply
-	$(document).on("submit", ".new_user_beer_rating", function(){
-		
-	})
-	// allow customers to remove drinks from wishlist
-	$(document).on("click", ".remove-drink-from-wishlist", function() {
-		var drink_id = $(this).attr('id');
-		
-		// attach new id
-		$('#remove_drink_from_wishlist_confirmation').children('.modal-body').children('.remove-button-holder').children('a').attr('id', drink_id);
-
-		// show modal
-	    $('#remove_drink_from_wishlist_confirmation').modal('show');
-
-	}); 
-	$(document).on("click", ".subtract-drink-from-wishlist-confirmation", function() {
-		var drink_id = $(this).attr('id');
-		
-		// remove drink tile
-		$('#wishlist-drink-' + drink_id).remove();
-		
-		// remove modal
-	    $('#remove_drink_from_wishlist_confirmation').modal('hide');
-		
-		// send to controller to change database 
-		$.ajax({
-		  type: "POST",
-		  url: "/users/wishlist_removal/" + drink_id
-		});
-		// make page not jump to top
-		return false;
-	});
-	
-	// allow customers to add or subtract drinks from supply
-	$(document).on("click", ".supply-quantity-change-minus", function() {
-		// get drink id
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		
-		// get drink quantity
-		var original_quantity = $("#drink-quantity-" + drink_id).html();
-		
-		// create new id
-		var new_id = drink_id + "-" + original_quantity
-		
-		// attach new id
-		$('#remove_drink_confirmation').children('.modal-body').children('.remove-button-holder').children('a').attr('id', new_id);
-
-		// show modal
-	    $('#remove_drink_confirmation').modal('show');
-
-	});
-	$(document).on("click", ".subtract-drink-confirmation", function() {
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[0];
-		var drink_quantity = split_id[1];
-		
-		// remove modal
-	    $('#remove_drink_confirmation').modal('hide');
-	    
-		// change quantity shown on screen
-		var new_quantity = drink_quantity - 1;
-		$("#drink-quantity-" + drink_id).html(new_quantity);
-			
-		// send to controller to change database 
-		$.ajax({
-		  type: "POST",
-		  url: "/users/change_supply_drink_quantity/subtract-" + drink_id
-		});
-	});
-	$(document).on("click", ".supply-quantity-change-add", function() {
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		
-		// change quantity shown on screen
-		var original_quantity = +($("#drink-quantity-" + drink_id).html());
-		var new_quantity = original_quantity + 1;
-		$("#drink-quantity-" + drink_id).html(new_quantity);
-		
-		// send to controller to change database
-		$.ajax({
-		  type: "POST",
-		  url: "/users/change_supply_drink_quantity/add-" + drink_id
-		});
-	});
-	
 	// default word cloud if no descriptors exist 
 	var word_array = [
           {text: "descriptors", weight: 15},
@@ -395,19 +207,5 @@ $(function () {
 	 } else {
 	 	return;
 	 }
-	 
-	// show/hide subtotal and sales tax on user delivery stats
-	$(document).on("click", ".show-more-price-info", function() {
-		$(this).removeClass("show").addClass("hidden");
-		$(this).siblings(".delivery-info-box.subtotal").removeClass("hidden").addClass("show");
-		$(this).siblings(".delivery-info-box.sales-tax").removeClass("hidden").addClass("show");
-		$(this).siblings(".show-less-price-info").removeClass("hidden").addClass("show");
-	});
-	$(document).on("click", ".show-less-price-info", function() {
-		$(this).removeClass("show").addClass("hidden");
-		$(this).siblings(".delivery-info-box.subtotal").removeClass("show").addClass("hidden");
-		$(this).siblings(".delivery-info-box.sales-tax").removeClass("show").addClass("hidden");
-		$(this).siblings(".show-more-price-info").removeClass("hidden").addClass("show");
-	});
 	 
 });
