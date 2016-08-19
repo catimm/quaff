@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   #  store_location_for(:user, request.url)
   #end
   
-  def authenticate_user_from_token!
+  def authenticate_user_from_token! # I can't recall why this is here, so I'm leaving it for now to not potentially mess up other code
     email = params[:email].presence
     user = email && User.find_by_email(email)
   
@@ -40,7 +40,17 @@ class ApplicationController < ActionController::Base
       render :status => 401, :json => {:success => false, :errors => ["Unauthorized access"] }
     end
   end
-    
+  
+  def authenticate_user!
+    if user_signed_in?
+      super
+    else
+      redirect_to login_path, :notice => 'Please log in first!'
+      ## if you want render 404 page
+      ## render :file => File.join(Rails.root, 'public/404'), :formats => [:html], :status => 404, :layout => false
+    end
+  end
+  
   rescue_from CanCan::AccessDenied do |exception|
     flash[:error] = "Access denied!"
     redirect_to root_url

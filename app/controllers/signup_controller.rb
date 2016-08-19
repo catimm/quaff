@@ -562,7 +562,7 @@ class SignupController < ApplicationController
     
     # find subscription level id
     @subscription_info = Subscription.where(subscription_level: @input).first
-      active_until
+      
     if @user_plan.blank?
       # create a new user_subscription row
       UserSubscription.create(user_id: current_user.id, 
