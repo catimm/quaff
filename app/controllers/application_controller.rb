@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception (:exception).
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
-  #before_filter :store_current_location, :unless => :devise_controller?
   before_action :configure_permitted_parameters, if: :devise_controller?
   
   protected
@@ -23,10 +22,6 @@ class ApplicationController < ActionController::Base
   
   private
   
-  #def store_current_location
-  #  store_location_for(:user, request.url)
-  #end
-  
   def authenticate_user_from_token! # I can't recall why this is here, so I'm leaving it for now to not potentially mess up other code
     email = params[:email].presence
     user = email && User.find_by_email(email)
@@ -45,6 +40,7 @@ class ApplicationController < ActionController::Base
     if user_signed_in?
       super
     else
+      session[:user_return_to] = request.fullpath
       redirect_to new_user_session_path, :notice => 'Please log in first!'
       ## if you want render 404 page
       ## render :file => File.join(Rails.root, 'public/404'), :formats => [:html], :status => 404, :layout => false
@@ -57,6 +53,7 @@ class ApplicationController < ActionController::Base
   end
   
   def after_sign_in_path_for(resource)
+    #Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
     @user = current_user
     if current_user.role_id == 1 || current_user.role_id == 5
       session[:retail_id] = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
