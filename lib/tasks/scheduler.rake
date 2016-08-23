@@ -811,9 +811,9 @@ end # end of update_supply_projected_ratings task
 desc "share admin drink prep with customers"
 task :share_admin_prep_with_customer => :environment do
   # only run this code if today is Monday
-    if Date.today.strftime("%A") == "Monday"
+    #if Date.today.strftime("%A") == "Monday"
       # get customers who have drinks slated for delivery this week
-      @customers_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true)
+      @customers_with_deliveries = Delivery.where(user_id: 5, status: "admin prep", share_admin_prep_with_user: true)
       
       @customers_with_deliveries.each do |customer_delivery|
         @next_delivery_plans = AdminUserDelivery.where(delivery_id: customer_delivery.id).order('projected_rating DESC')
@@ -826,7 +826,21 @@ task :share_admin_prep_with_customer => :environment do
         
         # put drinks in user_delivery table to share with customer
         @next_delivery_plans.each do |drink|
-          @user_delivery = UserDelivery.create(drink.attributes)
+          @user_delivery = UserDelivery.create(user_id: drink.user_id,
+                                                beer_id: drink.beer_id,
+                                                inventory_id: drink.inventory_id,
+                                                new_drink: drink.new_drink,
+                                                projected_rating: drink.projected_rating,
+                                                likes_style: drink.likes_style,
+                                                quantity: drink.quantity,
+                                                cellar: drink.cellar,
+                                                large_format: drink.large_format,
+                                                delivery_id: drink.delivery_id,
+                                                this_beer_descriptors: drink.this_beer_descriptors,
+                                                beer_style_name_one: drink.beer_style_name_one,
+                                                beer_style_name_two: drink.beer_style_name_two,
+                                                recommendation_rationale: drink.recommendation_rationale,
+                                                is_hybrid: drink.is_hybrid)
           @user_delivery.save!
           
           # attach current drink cost and price to this drink
@@ -860,6 +874,6 @@ task :share_admin_prep_with_customer => :environment do
       
       end # end of loop through each customer 
 
-    end # end of day of week test
+    #end # end of day of week test
   
 end # end of share_admin_prep_with_customer task
