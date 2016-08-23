@@ -811,12 +811,12 @@ end # end of update_supply_projected_ratings task
 desc "share admin drink prep with customers"
 task :share_admin_prep_with_customer => :environment do
   # only run this code if today is Monday
-    if Date.today.strftime("%A") == "Monday"
+    #if Date.today.strftime("%A") == "Monday"
       # get customers who have drinks slated for delivery this week
       @customers_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true)
       
       @customers_with_deliveries.each do |customer_delivery|
-        @next_delivery_plans = AdminUserDelivery.where(delivery_id: customer_delivery.id).order('projected_rating DESC')
+        @next_delivery_plans = AdminUserDelivery.where(user_id: 5, delivery_id: customer_delivery.id).order('projected_rating DESC')
         
         # get total quantity of next delivery
         @total_quantity = @next_delivery_plans.sum(:quantity)
@@ -874,6 +874,6 @@ task :share_admin_prep_with_customer => :environment do
       
       end # end of loop through each customer 
 
-    end # end of day of week test
+    #end # end of day of week test
   
 end # end of share_admin_prep_with_customer task
