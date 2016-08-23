@@ -1,5 +1,5 @@
 <% if beer.best_guess >= 8 && beer.likes_style == "yes" %>
-	<% if !beer.this_beer_descriptors.nil? %>
+	<% if !beer.this_beer_descriptors.blank? %>
 		<ul>
 			<% if beer.beer_type_id.nil? %>
 				<li>
@@ -34,7 +34,7 @@
 		</ul>
 	<% end %>
 <% elsif beer.best_guess >= 8 && beer.likes_style == "neither" %>
-	<% if !beer.this_beer_descriptors.nil? %>
+	<% if !beer.this_beer_descriptors.blank? %>
 		<ul>
 			<% if beer.beer_type_id.nil? %>
 				<li>
@@ -69,7 +69,7 @@
 		</ul>
 	<% end %>
 <% elsif beer.best_guess >= 8 && beer.likes_style == "no" %>
-	<% if !beer.this_beer_descriptors.nil? %>
+	<% if !beer.this_beer_descriptors.b? %>
 		<ul>
 			<% if beer.beer_type_id.nil? %>
 				<li>
@@ -99,7 +99,7 @@
 		</ul>
 	<% end %>
 <% elsif beer.best_guess >= 6 && beer.likes_style == "yes" %>
-	<% if !beer.this_beer_descriptors.nil? %>
+	<% if !beer.this_beer_descriptors.blank? %>
 		<ul>
 			<% if beer.beer_type_id.nil? %>
 				<li>
@@ -128,7 +128,7 @@
 		</ul>
 	<% end %>
 <% elsif beer.best_guess >= 6 && beer.likes_style == "neither" %>
-	<% if !beer.this_beer_descriptors.nil? %>
+	<% if !beer.this_beer_descriptors.blank? %>
 		<ul>
 			<% if beer.beer_type_id.nil? %>
 				<li>
@@ -157,7 +157,7 @@
 		</ul>
 	<% end %>
 <% elsif beer.best_guess >= 6 && beer.likes_style == "no" %>
-	<% if !beer.this_beer_descriptors.nil? %>
+	<% if !beer.this_beer_descriptors.blank? %>
 		<ul>
 			<% if beer.beer_type_id.nil? %>
 				<li>

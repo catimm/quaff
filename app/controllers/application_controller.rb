@@ -62,8 +62,8 @@ class ApplicationController < ActionController::Base
       session[:retail_id] = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
     end
     # set a different first view based on the user type
-    if !session["user_return_to"].nil?
-      @first_view = session["user_return_to"]
+    if !session[:user_return_to].nil?
+      @first_view = session[:user_return_to]
     elsif current_user.role_id == 1
       @first_view = admin_breweries_path
     elsif  current_user.role_id == 5
@@ -81,5 +81,6 @@ class ApplicationController < ActionController::Base
   
   def after_sign_out_path_for(resource_or_scope)
     root_path
+    session.delete(:user_return_to)
   end
 end
