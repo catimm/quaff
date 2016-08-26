@@ -73,6 +73,11 @@ Rails.application.routes.draw do
   # routes to user activity pages
   get '/activities/user_ratings/:id' => 'activities#user_ratings', :as => 'recent_user_ratings'
   get '/activities/friend_ratings/:id' => 'activities#friend_ratings', :as => 'recent_friend_ratings'
+  get '/activities/manage_friends/:id' => 'activities#manage_friends', :as => 'manage_friends'
+  get '/activities/find_friends/:id' => 'activities#find_friends', :as => 'find_friends'
+  get '/activities/friend_search/:id(/:query)' => 'activities#process_friend_search', :as => 'friend_search'
+  post '/activities/process_friend_changes/:id' => 'activities#process_friend_changes'
+  post '/activities/process_friend_changes_on_find_page/:id' => 'activities#process_friend_changes_on_find_page'
   
   # routes to user supply pages
   get '/supplies/supply/:id' => 'supplies#supply', :as => 'user_supply'

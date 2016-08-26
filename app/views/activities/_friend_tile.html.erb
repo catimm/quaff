@@ -1,0 +1,43 @@
+
+	<div class="friend-search-tile">
+		<div class="row no-margin">
+			<div class="col-xs-3">
+				<% if friend.user_graphic.nil? %>
+					<%= render 'layouts/user_initials', friend: friend %>
+				<% else %>
+					<%= render 'layouts/user_graphic', friend: friend %>
+				<% end %>
+			</div>
+			<div class="col-xs-7 no-padding">
+				<h4 class="friend-name"><%= friend.first_name %> <%= friend.last_name %></h4>
+				<h5 class="friend-username"><%= friend.username %></h5>
+			</div>
+			<div class="col-xs-2 no-padding">
+				<% @friend_status = Friend.where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)", current_user.id, friend.id, friend.id, current_user.id) %>
+				<% if @friend_status.blank? %>
+					<div class="friend-response add" data-toggle="tooltip" title="Click to send a friend request.">
+						<i class="fa fa-plus-square-o fa-2x"></i>
+					</div>
+				<% else %>
+					<% if @friend_status[0].confirmed == true %>
+						<div class="friend-response drop" data-toggle="tooltip" title="Click to remove this person as a friend.">
+							<i class="fa fa-times-circle fa-2x"></i>
+						</div>
+					<% else %>
+						<% if @friend_status[0].user_id == current_user.id %>
+							<div class="friend-response pending drop" data-toggle="tooltip" title="Click to remove the friend request.">
+								<p>pending</p>
+								<i class="fa fa-times-circle fa-2x"></i>
+							</div>
+						<% else %>
+							<div class="friend-response pending invite">
+								<p>pending</p>
+								<i class="fa fa-plus-square-o fa-2x add-friend" data-toggle="tooltip" title="Click to add as friend."></i>
+								<i class="fa fa-times-circle fa-2x decline-friend" data-toggle="tooltip" title="Click to decline the friend request."></i>
+							</div>
+						<% end %>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>

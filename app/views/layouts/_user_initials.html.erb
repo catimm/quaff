@@ -1,0 +1,16 @@
+<% if !friend.first_name.nil? %>
+	<% @first_name_initial = friend.first_name[0,1] %>
+<% else %>
+	<% @first_name_initial = "G" %>
+<% end %>
+<% if !friend.last_name.nil? %>
+	<% @last_name_initial = friend.last_name[0,1] %>
+<% elsif !friend.first_name.nil? && !friend.last_name.nil? %>
+	<% @last_name_initial = "$" %>
+<% else %>
+	<% @last_name_initial = "" %>
+<% end %>
+<% @friend_initials = @first_name_initial + @last_name_initial %>
+<div class="user-initial-holder-div <%= friend.user_color %>">
+	<h3 class="user-initial-text"><%= @friend_initials %></h3>
+</div>

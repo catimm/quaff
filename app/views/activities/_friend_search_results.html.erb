@@ -1,0 +1,14 @@
+<% if !@friend_search_results.blank? %>
+	<% @friend_search_results.each do |friend| %>
+		<% if friend.id != current_user.id %>
+			<div class="col-sm-4 col-xs-12 friend-tile-container" id="friend-id-<%= friend.id %>">
+				<%= render 'friend_tile', friend: friend %>	
+			</div>	
+		<% end %>		
+	<% end %>
+	<div class="col-sm-12">
+		<%= js_will_paginate @friend_search_results %>
+	</div>
+<% else %>
+	<h3 class="recent-ratings-header">Sorry, no results found!</h3>
+<% end %>

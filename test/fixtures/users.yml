@@ -31,6 +31,8 @@
 #  getting_started_step   :integer
 #  beta_tester            :boolean
 #  birthday               :datetime
+#  user_graphic           :string
+#  user_color             :string
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

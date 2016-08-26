@@ -31,6 +31,8 @@
 #  getting_started_step   :integer
 #  beta_tester            :boolean
 #  birthday               :datetime
+#  user_graphic           :string
+#  user_color             :string
 #
 
 class User < ActiveRecord::Base
@@ -38,6 +40,9 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :registerable
   devise :invitable, :database_authenticatable, :omniauthable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauth_providers => [:facebook, :twitter]
+  
+  # add searchkick to find other users (friends)
+  searchkick
   
   # for ActsAsTaggableOn gem
   acts_as_tagger

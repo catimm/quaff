@@ -1,0 +1,45 @@
+<%= render 'layouts/header' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-xs-12 col-sm-5 no-padding">
+				<h1 class="section-header">Manage Friends</h1>
+			</div>
+			<div class="col-sm-7">
+				<div class="row no-margin">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-3 text-center">
+						<%= link_to "My ratings", recent_user_ratings_path(current_user.id), class: "drink-preference-view-option" %>
+					</div>
+					<div class="col-sm-4 text-center">
+						<%= link_to "Other ratings", recent_friend_ratings_path(current_user.id), class: "drink-preference-view-option" %>
+					</div>
+					<div class="col-sm-3 text-center no-padding">
+						<%= link_to "Manage friends", manage_friends_path(current_user.id), class: "drink-preference-view-option chosen" %>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin spinner text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row first-row-manage-friends">
+		<div class="container">
+			<div class="col-xs-12 col-sm-9">
+				<h3 class="recent-ratings-header">Connect with your Knirdy friends</h3>
+			</div>
+			<% if !@user_friends.blank? %>
+				<div class="col-xs-12 col-sm-3">
+					<%= link_to "Connect with more friends", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+				</div>
+			<% end %>
+		</div>
+	</div>
+	<div class="row" id="friend-activity-holder">
+		<%= render 'friend_activity' %>
+	</div>
+<%= render 'layouts/footer' %>

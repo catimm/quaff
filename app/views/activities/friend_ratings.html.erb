@@ -11,7 +11,10 @@
 						<%= link_to "My ratings", recent_user_ratings_path(current_user.id), class: "drink-preference-view-option" %>
 					</div>
 					<div class="col-sm-4 text-center">
-						<%= link_to "Friends ratings", recent_friend_ratings_path(current_user.id), class: "drink-preference-view-option chosen" %>
+						<%= link_to "Other ratings", recent_friend_ratings_path(current_user.id), class: "drink-preference-view-option chosen" %>
+					</div>
+					<div class="col-sm-3 text-center no-padding">
+						<%= link_to "Manage friends", manage_friends_path(current_user.id), class: "drink-preference-view-option" %>
 					</div>
 				</div>
 			</div>

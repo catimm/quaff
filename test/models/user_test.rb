@@ -31,6 +31,8 @@
 #  getting_started_step   :integer
 #  beta_tester            :boolean
 #  birthday               :datetime
+#  user_graphic           :string
+#  user_color             :string
 #
 
 require 'test_helper'

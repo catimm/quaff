@@ -3335,10 +3335,6 @@ $beer-header-lines-to-show-fp: 1;
     font-size: 32px;
   }
 }
-.connect-with-friends-button {
-  width: 100%;
-  margin-top: 20px;
-}
 .user-ratings-col {
   padding-top: 10px !important;
   text-align: center;
@@ -3430,6 +3426,171 @@ $descriptor-lines-to-show: 2;
   background: $white;
   z-index: 100 !important;
 }
+// Activity CSS
+.first-row-manage-friends {
+  margin-bottom: 20px;
+}
+.connect-with-friends-button {
+  width: 100%;
+  margin-top: 20px;
+}
+.friend-search-holder {
+  margin: 15px 0 0 0 !important;
+}
+#pending-friend-request-holder {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+.pending-friend-request-header {
+  color: $normal-text;
+  margin: 10px;
+}
+.friend-image-container {
+  position: absolute;
+  z-index: 100;
+  top: -5px;
+  left: 17.5px;
+  height: 40px;
+  width: 40px;
+}
+#friend-search-results-holder {
+  padding: 15px 0 0 0 !important;
+}
+.friend-tile-container {
+  margin-bottom: 10px;
+}
+.friend-search-tile {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  height: 60px;
+  width: 97.5%;
+  position: relative;
+}
+.user-initial-holder-div {
+  margin: 5px 0 0 -5px;
+  border-radius: 4px;
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  padding-top: 10px;
+}
+.user-initial-text {
+  color: $white;
+  margin: 0 !important;
+}
+.user-initial-holder-div-small {
+  margin: 5px 0 0 -4px;
+  border-radius: 4px;
+  height: 35px;
+  width: 35px;
+  text-align: center;
+  padding-top: 8px;
+}
+.light-aqua-blue {
+  background: $light-aqua-blue;
+}
+.light-orange {
+  background: $light-orange;
+}
+.faded-blue {
+  background: $faded-blue;
+}
+.light-purple {
+  background: $light-purple;
+}
+.faded-green {
+  background: $faded-green;
+}
+.light-yellow {
+  background: $light-yellow;
+}
+.faded-red {
+  background: $faded-red;
+}
+.user-graphic-holder-div {
+  margin: 5px 0 0 -5px;
+}
+.user-graphic-img {
+  border-radius: 4px;
+  height: 50px;
+  width: 50px;
+}
+.user-graphic-holder-div-small {
+  margin: 5px 0 0 -10px;
+}
+.user-graphic-img-small {
+  border-radius: 4px;
+  height: 35px;
+  width: 35px;
+}
+.friend-name {
+  color: $normal-text;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.friend-username {
+  color: $less-emphasized-text;
+  margin-top: 5px;
+}
+.friend-response {
+  margin-top: 16px;
+}
+.friend-response.add {
+  color: $user-action;
+  padding: 0 0 0 0;
+}
+.friend-response.drop {
+  color: $warning-red;
+  padding: 0 0 0 0;
+}
+.friend-response.pending {
+  color: $less-emphasized-text;
+  p {
+    margin: 20px 0 0 -20px;
+  }
+}
+.friend-response.pending.drop {
+  margin-left: -10px;
+  p {
+    color: $less-emphasized-text;
+    margin: -10px 0 0 -10px;
+    font-size: 12px;
+  }
+  i {
+    color: $warning-red;
+    padding: 0 0 0 0;
+  }
+}
+.friend-response.pending.invite {
+  margin-left: -10px;
+  padding: 0 !important;
+  p {
+    color: $less-emphasized-text;
+    margin: -10px 0 0 3px;
+    font-size: 12px;
+  }
+  i.fa.fa-plus-square-o.fa-2x.add-friend {
+    color: $user-action;
+    padding: 0 0 0 0;
+    float: left;
+    display: block;
+    margin: 3px 5px 0 0;
+  }
+  i.fa.fa-times-circle.fa-2x.decline-friend {
+    color: $warning-red;
+    padding: 0 0 0 0;
+    float: left;
+    display: block;
+    margin: 3px 0 0 0;
+  }
+}
+
 // Supply CSS
 .supply-image-holder-row {
   height:130px !important; 

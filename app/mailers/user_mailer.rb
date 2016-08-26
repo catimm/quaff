@@ -295,7 +295,33 @@ class UserMailer < ActionMailer::Base
     p response
 
   end # end of select_invite_email email  
+  
+  def friend_request(customer, friend)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'friend-request'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        customer_id: customer.id,
+        friend_first_name: friend.first_name,
+        friend_last_name: friend.last_name,
+        friend_username: friend.username
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of friend_request email
+  
   def expiring_trial_email(owner, location)
     #Rails.logger.debug("Owner info: #{owner.first_name.inspect}")
     #Rails.logger.debug("Location info: #{location.name.inspect}")

@@ -1,12 +1,7 @@
 <div class="row no-margin">
 	<div class="col-sm-8">
-		<h3 class="recent-ratings-header">Friends' recent ratings</h3>
+		<h3 class="recent-ratings-header">Other interesting ratings</h3>
 	</div>
-	<% if !@user_friends.blank? %>
-	<div class="col-sm-3">
-		<%= link_to "Connect with friends", "#", :class => "btn btn-success connect-with-friends-button"%>
-	</div>
-	<% end %>
 </div>
 <div class="row">
 	<div class="col-sm-12">
@@ -14,9 +9,7 @@
 			<% if !@recent_friend_ratings.blank? %>
 				<div class="row no-margin recent-rating-holder">
 					<% @recent_friend_ratings.each do |rating| %>
-						<div class="col-sm-3" id="recent-activity">
-							<%= render(partial: 'rating_drink_card_history', locals: { drink: rating }) %>
-						</div>
+						<%= render(partial: 'friend_rating_drink_card_history', locals: { drink: rating }) %>
 					<% end%>
 				</div>
 				<div class="col-sm-12" id="fav-drink-types-container">
@@ -30,10 +23,10 @@
 		<% else %>
 			<div class="row no-margin">
 				<div class="col-sm-12">
-					<h4 class="no-results-empty-message">You haven't connected with any friends yet. Click the button to find your friends.</h4>
+					<h4 class="no-results-empty-message">You haven't connected with any friends yet. Find some now!</h4>
 				</div>
 				<div class="col-sm-3">
-					<%= link_to "Connect with friends", "#", :class => "btn btn-success connect-with-friends-button"%>
+					<%= link_to "Connect with friends", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
 				</div>
 			</div>
 		<% end %>

@@ -612,6 +612,10 @@ class SignupController < ApplicationController
     @user = User.find(current_user.id)
     @user.update(user_params)
     
+    # update user color
+    @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+    @user.update(user_color: @user_color)
+    
     # update step completed if need be
     if @user.getting_started_step == 8
       @user.update(getting_started_step: 9)

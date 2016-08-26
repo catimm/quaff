@@ -1,0 +1,4 @@
+$(function() {
+	$("#friend-search-results-holder").html("<%= escape_javascript(render 'friend_search_results', friend: @friend_search_results ) %>");
+	$('[data-toggle="tooltip"]').tooltip();
+});
