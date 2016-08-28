@@ -174,17 +174,17 @@ class SuppliesController < ApplicationController
     @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
     
     # create array to hold descriptors cloud
-    @final_descriptors_cloud = Array.new
+    #@final_descriptors_cloud = Array.new
     
     # get top descriptors for drink types the user likes
-    @final_search_results.each do |drink|
-      @drink_id_array = Array.new
-      @drink_type_descriptors = drink_descriptor_cloud(drink)
-      @final_descriptors_cloud << @drink_type_descriptors
-      #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
-    end
+    #@final_search_results.each do |drink|
+    #  @drink_id_array = Array.new
+    #  @drink_type_descriptors = drink_descriptor_cloud(drink)
+    #  @final_descriptors_cloud << @drink_type_descriptors
+    #  #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
+    #end
     # send full array to JQCloud
-    gon.drink_search_descriptor_array = @final_descriptors_cloud
+    #gon.drink_search_descriptor_array = @final_descriptors_cloud
     
     #Rails.logger.debug("Final Search results in method: #{@final_search_results.inspect}")
 

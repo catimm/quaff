@@ -1,4 +1,4 @@
-<div class="col-sm-3" id="recent-activity">
+<div class="col-xs-6 col-sm-3" id="recent-activity">
 	<div class="friend-image-container">
 		<% @friend = User.find_by_id(drink.user_id) %>
 		<% if @friend.user_graphic.nil? %>
@@ -9,7 +9,7 @@
 	</div>
 	<div class="recent-rating-tile">
 		<div class="row no-margin ratings-image-holder-row">
-			<div class="col-sm-6 no-padding ratings-image-holder-column">
+			<div class="col-xs-6 no-padding ratings-image-holder-column">
 				<% if !drink.beer.brewery.image.blank? %>
 					<img class="img-responsive ratings-image center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
 				<% else %>
@@ -18,7 +18,7 @@
 					</div>
 				<% end %>
 			</div>
-			<div class="col-sm-6 no-padding user-ratings-col">
+			<div class="col-xs-6 no-padding user-ratings-col">
 				<% if drink.user_beer_rating == 10.0 %>
 					<% @drink_rating = (drink.user_beer_rating).floor %>
 				<% else %>
@@ -28,19 +28,19 @@
 			</div>
 		</div>
 		<div class="row no-margin">
-			<div class="col-sm-12">
+			<div class="col-xs-12">
 				<% if drink.beer.collab == true %>
 					<% @title_header = (drink.beer.collab_brewery_name(beer.id) + " " + "<span class=combined-drink-text>"+ drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header' %>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header-rating-history' %>
 				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
 					<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+ drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header' %>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header-rating-history' %>
 				<% else %>
 					<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+ drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header' %>
+					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header-rating-history' %>
 				<% end %>
 			</div>
-			<div class="col-sm-12">
+			<div class="col-xs-12">
 				<% if !drink.beer.beer_type_id.nil? %>
 					<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer.beer_type.beer_type_name %></h5>
 				<% else %>
@@ -49,7 +49,7 @@
 			</div>	
 		</div>
 		<div class="row no-margin ratings-tile-rows-descriptors">
-			<div class="col-sm-12 recent-user-ratings-tile-subtitle-headers">
+			<div class="col-xs-12 recent-user-ratings-tile-subtitle-headers">
 				<p>descriptors</p>
 					<% if !drink.current_descriptors.nil? %>
 						<% @descriptor_list_initial = drink.current_descriptors.split(',') %>

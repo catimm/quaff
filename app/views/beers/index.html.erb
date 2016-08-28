@@ -1,82 +1,34 @@
 <%= render 'layouts/header' %> 
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-1 col-xs-0"></div>
-			<div class="col-sm-10 col-xs-12 search-result-tile">
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-xs-12 col-sm-5 no-padding">
+				<h1 class="section-header">Search results</h1>
+			</div>
+			<div class="col-xs-12 col-sm-7 add-drink-search-holder">
+				<div class="row no-margin">
+					<div class="col-xs-6 mobile-no-padding">
+						<h5 class="text-center dont-see-search-result-text">Don't see the drink you're looking for?</h5>
+					</div>
+					<div class="col-xs-6">
+						<%= link_to user_add_drink_path, class: 'btn btn-default btn-success formButton' do %>
+							<i class="fa fa-plus"> add a drink</i>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="container">
+			<div class="col-xs-12">
 				<% if @final_search_results.empty? %>
 					<div class="row">
 						<div class="col-sm-8 col-xs-12">
 							<h4 class="no-search-results">Sorry, we don't see a match....Add it!</h4>
 						</div>
-						<div class="col-sm-4 col-xs-12">
-							<h5 class="text-center">Don't see the drink you're looking for?</h4>
-							<%= link_to user_add_drink_path, class: 'btn btn-default btn-success formButton' do %>
-								<i class="fa fa-plus"> add a drink</i>
-							<% end %>
-						</div>
 					</div>
 				<% else %>
-					<div class="row">
-						<div class="col-sm-8 col-xs-12">
-							<% @final_search_results.each_with_index do |beer, index| %>
-								<div class="row no-margin">
-									<div class="col-xs-4 brewery-image-holder">	
-										<% if !beer.brewery.image.nil? %>
-											<div class="brewery-image-holder-full text-center">
-												<img class="img-responsive center-block" alt="Responsive image" src="<%= beer.brewery.image %>">
-											</div>	
-										<% else %>
-											<div class="brewery-image-holder-empty text-center">
-												<h1><i class="fa fa-beer"></i></h1>
-											</div>
-										<% end %>
-									</div>
-									<div class="col-xs-8 no-padding-left">
-										<% if beer.collab == true %>
-											<% @collab_brewery_name = Beer.collab_brewery_name(beer.id) %>
-											<h5 class="search-brewery-header"><%= @collab_brewery_name %></h5>
-										<% else %>
-											<h5 class="search-brewery-header"><%= beer.brewery.brewery_name %> </h5>
-										<% end %>
-										<%= link_to beer.beer_name, brewery_beer_path(beer.brewery.id, beer.id), :class => 'search-beer-header' %>
-										<% if !beer.beer_type_id.nil? %>
-											<h5 class="search-beer-info no-overflow"><%= beer.beer_type.beer_type_name %></h5>
-										<% else %>
-											<h5 class="search-beer-info">Style unknown</h5>
-										<% end %>
-										<div class="row">
-											<div class="col-xs-6 col-sm-4 no-padding-right">
-												<% if !beer.beer_abv.nil? %>
-													<h6 class="tile-subheader beer-info"><%= beer.beer_abv %>% ABV</h6>
-												<% else %>
-													<h6 class="tile-subheader beer-info">ABV N/A</h6>
-												<% end %>
-											</div>
-											<% if !beer.beer_ibu.nil? %>
-												<div class="col-xs-6 col-sm-4 no-padding-left text-center ibu-div">
-													<h6 class="tile-subheader beer-info"><%= beer.beer_ibu %> IBUs</h6>
-												</div>
-											<% else %>
-												<div class="col-xs-6 col-sm-4"></div>
-											<% end %>
-										</div>
-									</div>
-								</div>
-								<div class="row no-margin">	
-
-								</div>
-								<% if index != @search_results.size - 1 %>
-							    	<hr>
-							  	<% end %>
-							<% end %>
-						</div>
-						<div class="col-sm-4 col-xs-12">
-							<h5 class="text-center">Don't see the drink you're looking for?</h5>
-							<%= link_to user_add_drink_path, class: 'btn btn-default btn-success formButton' do %>
-								<i class="fa fa-plus"> add a drink</i>
-							<% end %>
-						</div>
-					</div>
+					<%= render 'drink_search_results', drinks: @final_search_results %>
 				<% end %>
 			</div>
 		</div>

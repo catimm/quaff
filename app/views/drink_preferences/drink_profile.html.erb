@@ -6,14 +6,14 @@
 			</div>
 			<div class="col-sm-7">
 				<div class="row no-margin">
-					<div class="col-sm-1"></div>
-					<div class="col-sm-4 no-padding-left">
-						<%= link_to "Favorite drink types", user_profile_path('drink_types'), class: "drink-preference-view-option #{@drink_types_chosen}", id: "drink-types" %>
+					<div class="col-xs-0 col-sm-1"></div>
+					<div class="col-xs-4 no-padding-left">
+						<%= link_to "Favorite types", user_profile_path('drink_types'), class: "drink-preference-view-option #{@drink_types_chosen}", id: "drink-types" %>
 					</div>
-					<div class="col-sm-4 text-center">
+					<div class="col-xs-4 text-center">
 						<%= link_to "Favorite producers", user_profile_path('producers'), class: "drink-preference-view-option #{@producers_chosen}", id: "producers" %>
 					</div>
-					<div class="col-sm-3 text-right">
+					<div class="col-xs-3 text-right">
 						<%= link_to "Style settings", user_drink_settings_path(current_user.id, 'styles'), class: "drink-preference-view-option #{@styles_chosen}", id: "styles" %>
 					</div>
 				</div>
@@ -22,9 +22,7 @@
 	</div>
 	<div class="row">
 		<div class="container">
-			<% if @view == "recent_ratings" %>
-				<%= render 'user_profile_recent_ratings' %>
-			<% elsif @view == "drink_types" %>
+			<% if @view == "drink_types" %>
 				<%= render 'user_profile_favorite_drink_type' %>
 			<% else %>
 				<%= render 'user_profile_favorite_producers' %>

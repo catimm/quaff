@@ -21,7 +21,7 @@ class UserBeerRating < ActiveRecord::Base
   belongs_to :beer
   belongs_to :beer_type
   
-  accepts_nested_attributes_for :beer, :update_only => true
+  accepts_nested_attributes_for :beer
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   

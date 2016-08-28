@@ -7,11 +7,11 @@
 <% if !@user_ratings_by_brewery.blank? %>
 	<div class="row no-margin">
 		<% @user_ratings_by_brewery.each do |brewery| %>
-			<div class="col-sm-2 fav-drink-col">
+			<div class="col-xs-6 col-sm-2 fav-drink-col">
 				<%= render(partial: 'user_profile_favorite_producer_tile', locals: { brewery: brewery }) %>
 			</div>
 		<% end%>
-		<div class="col-sm-12" id="fav-drink-types-container">
+		<div class="col-xs-12" id="fav-drink-types-container">
 			<%= will_paginate @user_ratings_by_brewery, renderer: BootstrapPagination::Rails %>
 		</div>
 	</div>

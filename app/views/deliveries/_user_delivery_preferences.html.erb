@@ -14,7 +14,7 @@
 			<hr>
 			<div class="row no-margin">
 				<div class="col-sm-9 no-padding">
-					<h3 class="delivery-preference-prompt">Your next delivery:</h3>
+					<h3 class="delivery-preference-prompt">My next delivery:</h3>
 					<p class="delivery-detail">You will receive 2 deliveries per month--every other Thursday.</p>
 					<% if @current_time_difference_for_next_delivery > 1 %>
 						<%= link_to "Change next delivery date", "#", :class => "btn btn-primary pause-delivery-button", 
@@ -86,7 +86,9 @@
 			<% end %>
 		</div>
 		<div class="row no-margin" id="scroller">
-			<%= f.submit "Save changes", disabled: true, class: "btn btn-default update_delivery_preferences", id: "update_delivery_preferences_button" %>
+			<div class="col-xs-12">
+				<%= f.submit "Save changes", disabled: true, class: "btn btn-default update_delivery_preferences", id: "update_delivery_preferences_button" %>
+			</div>
 		</div>
 		<div class="row no-margin estimated-delivery-price-holder" id="scroller2">
 			<%= render 'user_delivery_estimates_for_customer' %>

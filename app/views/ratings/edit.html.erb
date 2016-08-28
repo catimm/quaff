@@ -1,0 +1,146 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row">
+		<div class="col-sm-3 col-xs-0"></div>
+		<div class="col-sm-6 col-xs-12 rating-tile">
+			<div class="row">
+				<div class="col-sm-3 col-xs-4 brewery-image-holder">	
+					<div class="brewery-image-holder-full-page">	
+						<% if !@this_drink.brewery.image.nil? %>
+							<div class="brewery-image-holder-full text-center">
+								<img class="img-responsive center-block" alt="Responsive image" src="<%= @this_drink.brewery.image %>">
+							</div>	
+						<% else %>
+							<div class="brewery-image-holder-empty-full-page text-center">
+								<h1><i class="fa fa-beer"></i></h1>
+							</div>
+						<% end %>
+					</div>
+				</div>
+				<div class="col-sm-9 col-xs-8 no-padding-left rating-drink-info">
+					<div class="row">
+						<div class="col-xs-12">
+							<% if @this_drink.collab == true %>
+								<h5 class="tile-header beer-tile-header rating-header"><%= Beer.collab_brewery_name(@this_drink.id) %> 
+									<span class="combined-drink-text"><%= @this_drink.beer_name %></span>
+								</h5>
+							<% elsif @this_drink.brewery.short_brewery_name.nil? %>
+								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.brewery_name %> 
+									<span class="combined-drink-text"><%= @this_drink.beer_name %></span>
+								</h5>
+							<% else %>
+								<h5 class="tile-header beer-tile-header rating-header"><%= @this_drink.brewery.short_brewery_name %> 
+									<span class="combined-drink-text"><%= @this_drink.beer_name %></span>
+								</h5>
+							<% end %>
+						</div>
+						<div class="col-xs-12">
+							<% if !@this_drink.beer_type_id.nil? %>
+								<h5 class="tile-subheader beer-info no-overflow"><%= @this_drink.beer_type.beer_type_name %></h5>
+							<% else %>
+								<h5 class="tile-subheader beer-info">Style unknown</h5>
+							<% end %>
+						</div>
+						<div class="col-xs-6 no-padding-right">
+							<% if !@this_drink.beer_abv.nil? %>
+								<h6 class="tile-subheader beer-info"><%= @this_drink.beer_abv %>% ABV</h6>
+							<% else %>
+								<h6 class="tile-subheader beer-info">ABV N/A</h6>
+							<% end %>
+						</div>
+						<% if !@this_drink.beer_ibu.nil? %>
+							<div class="col-xs-6 no-padding-left text-center ibu-div">
+								<h6 class="tile-subheader beer-info"><%= @this_drink.beer_ibu %> IBUs</h6>
+							</div>
+						<% else %>
+							<div class="col-xs-6"></div>
+						<% end %>
+					</div>
+				</div>			
+			</div>
+			<%= form_for @user_drink_rating, :url => {:controller => "ratings", :action => "update"} do |rate| %>
+			<%= rate.hidden_field :user_id, :value => @user.id %>
+			<% if !@ratings_source.nil? %>
+				<%= rate.hidden_field :drank_at, :value => @ratings_source %>
+			<% end %>
+			<%= rate.hidden_field :rated_on, :value =>  @user_drink_rating.rated_on %>
+			<%= rate.hidden_field :beer_id, :value => @this_drink.id %>
+			<%= rate.hidden_field :projected_rating, :value => @our_best_guess %>
+			<%= rate.hidden_field :current_descriptors, :value => "" %>
+			<%= rate.hidden_field :beer_type_id, :value => @this_drink.beer_type_id %>
+			<div class="row rating-top-row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-10 col-xs-12 rating-holder text-center">
+					<div class="rating-step-container text-left">
+						<h5 class="step-number">1<sup>st</sup></h5>
+					</div>
+					<p class="common-description-heading">Rate drink 0 - 10</p>
+					<div class="text-center" id="visible-rating">
+						<h1><%= @user_drink_rating.user_beer_rating %></h1>
+					</div>
+					<%= rate.text_field :user_beer_rating, id: 'rater', type: 'text',
+	                 data: {'slider-id' => 'rating-slider',
+	                 		'slider-min' => '0',
+	                        'slider-max' => '10',
+	                        'slider-step' => '0.5',
+	                        'slider-value' => @user_drink_rating.user_beer_rating,
+	                        'slider-orientation' => 'horizontal' } %> 
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-10 col-xs-12 descriptor-holder text-left">
+					<div class="rating-step-container text-left">
+						<h5 class="step-number">2<sup>nd</sup></h5>
+					</div>
+					<p class="common-description-heading">Add descriptors to describe drink--click bubbles or type your own.</p>
+					<% if !@this_descriptors.blank? %>
+						<ul class="token-input-list-facebook_rating-edit rating-page-descriptor-list-holder">
+						<% @this_descriptors.each_with_index do |descriptor, i| %>
+							<% if i <= 2 %>
+								<li class="token-input-token-facebook_rating show">
+									<p><%= descriptor %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% else %>
+								<li class="token-input-token-facebook_rating hidden">
+									<p><%= descriptor %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% end %>
+						<% end %>
+						</ul>
+						<% if @this_descriptors.length > 3 %>
+							<div class="show-more-descriptors show">
+								<i id="show-more-descriptors" class="fa fa-plus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to see more top descriptors."></i>
+							</div>
+						<% end %>
+					<% end %>
+					<%= rate.fields_for :beer, @user_drink_rating.build_beer do |beer| %> 
+				    	<%= beer.text_field :descriptor_list_tokens, data: { load: @final_descriptor_list }, :class => "form-control", id: "edit_user_beer_rating_beer_attributes_descriptor_list_tokens" %>
+				    <% end %>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-10 col-xs-12 comment-holder">
+					<div class="rating-step-container text-left">
+						<h5 class="step-number">3<sup>rd</sup></h5>
+					</div>
+					<p class="common-description-heading">Optional: add extra thoughts if you'd like.</p>
+					<div class="edit-rating-notes-container">
+						<%= rate.text_area :comment, :class => "form-control", placeholder: "Additional comments (optional)" %>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-1 col-xs-0"></div>
+				<div class="col-sm-10 col-xs-12 comment-holder">
+					<%= rate.submit "Update", class: "btn btn-default btn-success formButton" %>
+				</div>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

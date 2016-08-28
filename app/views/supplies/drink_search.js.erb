@@ -1,4 +1,9 @@
 $(function() {
-	$("#add-supply-holder").html("<%= escape_javascript(render 'supply_search_results', drinks: @final_search_results ) %>");
+	<% if !@final_search_results.empty? %>
+		$("#add-supply-holder").html("<%= escape_javascript(render 'supply_search_results', drinks: @final_search_results ) %>");
+	<% else %>
+		$('.recent-ratings-header').addClass('hidden');
+		$('.no-search-results').removeClass('hidden').addClass('show');
+	<% end %>
 	$('[data-toggle="tooltip"]').tooltip();
 });

@@ -6,12 +6,16 @@ class BeersController < ApplicationController
   include CreateNewDrink
   
   def index
-    if params[:format].present?
-      query_search(params[:format])
-    else
-      @search = []
+    # conduct search
+    query_search(params[:format])
+    Rails.logger.debug("Search results: #{@final_search_results.inspect}")
+    # get best guess for each drink found
+    @search_drink_ids = Array.new
+    @final_search_results.each do |drink|
+      @search_drink_ids << drink.id
     end
-     
+    @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
+    
   end
   
   def show
@@ -94,7 +98,7 @@ class BeersController < ApplicationController
     #Rails.logger.debug("after best guess beer's info: #{@beer.inspect}")
     
     # get user's ratings for this beer if any exist
-    @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).reverse
+    @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).order('created_at DESC')
     @number_of_ratings = @user_rating_for_this_beer.count
     
     # send beer ids to javascript file to create jcloud

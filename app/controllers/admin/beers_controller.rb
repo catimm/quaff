@@ -83,11 +83,11 @@ class Admin::BeersController < ApplicationController
   
   def edit
     # find the beer to edit
-    @beer = Beer.find(params[:id]) 
+    @beer = Beer.find_by_id(params[:id]) 
     @beer_format = BeerFormat.where(beer_id: @beer.id)
     @size_formats = SizeFormat.all
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
-    @this_brewery = Brewery.find_by(id: params[:brewery_id])
+    @this_brewery = Brewery.find_by_id(params[:brewery_id])
     # grab beer type list for editing
     @beer_types = BeerType.all.order(:beer_type_name)
   end
@@ -239,6 +239,7 @@ class Admin::BeersController < ApplicationController
     def find_descriptor_tags
       @params_info = params[:id]
       @beer_descriptors = params[:id].present? ? Beer.find(params[:id]).descriptors.map{|t| {id: t.name, name: t.name }} : []
+      Rails.logger.debug("beer descriptor info: #{@beer_descriptors.inspect}")
      end
     
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -22,186 +22,106 @@
 	</div>
 </div>
 <div class="row no-margin">
-	<div class="col-xs-12">
-		<div class="row visible-sm visible-md visible-lg">
-			<% @styles.each do |style| %>
-				<% if style.style_name != "Hybrids" %>
-					<div class="col-sm-3 col-xs-12 style-tile-container">
-						<%= render 'group_style_form', style: style %>
-						
-						<div class="overview-tile-3" id="<%= style.id %>">
-							<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
-							<%= link_to "#", :class => 'style-indicator dislike-style text-center hidden' do %>
-								<i class="fa fa-times"></i>
-							<% end %>
-						<% else %>
-							<%= link_to "#", :class => 'style-indicator dislike-style text-center show' do %>
-								<i class="fa fa-times"></i>
-							<% end %>
-						<% end %>
-						<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
-							<%= link_to "#", :class => 'style-indicator like-style text-center hidden' do %>
-								<i class="fa fa-check"></i>
-							<% end %>
-						<% else %>
-							<%= link_to "#", :class => 'style-indicator like-style text-center show' do %>
-								<i class="fa fa-check"></i>
-							<% end %>
-						<% end %>
-						<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
-							<div class="overview-tile-4 show"></div>
-						<% elsif @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
-							<div class="overview-tile-4 show"></div>
-						<% else %>
-							<div class="overview-tile-4 hidden"></div>
-						<% end %>
-							<div class="row no-margin text-center">
-								<div class="style-image-holder">		
-									<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
-								</div>
-							</div>
-							<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
-								<div class="row no-margin dislike-style-chosen show">
-									<%= link_to "#", :class => 'style-indicator dislike-style-middle text-center' do %>
-										<i class="fa fa-times"></i>
-									<% end %>
-								</div>
-							<% else %>
-								<div class="row no-margin dislike-style-chosen hidden">
-									<%= link_to "#", :class => 'style-indicator dislike-style-middle text-center' do %>
-										<i class="fa fa-times"></i>
-									<% end %>
-								</div>
-							<% end %>
-							<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
-								<div class="row no-margin like-style-chosen show text-center">
-									<%= link_to "#", :class => 'style-indicator like-style-middle text-center' do %>
-										<i class="fa fa-check"></i>
-									<% end %>
-								</div>
-							<% else %>
-								<div class="row no-margin like-style-chosen hidden text-center">
-									<%= link_to "#", :class => 'style-indicator like-style-middle text-center' do %>
-										<i class="fa fa-check"></i>
-									<% end %>
-								</div>
-							<% end %>
-							<div class="row no-margin">
-								<div class="col-xs-12">
-									<h5 class="tile-header style-tile-header"><%= style.style_name %></h5>
-								</div>	
-							</div>
-							<div class="row no-margin">
-								<% @style_examples = find_style_examples(style.id) %>
-								<div class="col-xs-12 style-why-statement">
-									<p>Such as:</p>
-										<ul>
-											<% @style_examples.each do |example| %>
-												<% if !example.brewery.short_brewery_name.blank? %>
-													<% @title_header = example.brewery.short_brewery_name + " " + example.beer_name %>
-													<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
-												<% else %>
-													<% @title_header = example.brewery.brewery_name + " " + example.beer_name %>
-													<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
-												<% end %>
-											<% end %>
-										</ul>
-								</div>
-								<div class="col-xs-12 overview-tile-footer"></div>
-							</div>
+	<% @styles.each do |style| %>
+		<% if style.style_name != "Hybrids" %>
+			<div class="col-sm-3 col-xs-6 style-tile-container">
+				<%= render 'group_style_form', style: style %>
+				
+				<div class="overview-tile-3" id="<%= style.id %>">
+					<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
+					<%= link_to "#", :class => 'style-indicator dislike-style text-center hidden' do %>
+						<i class="fa fa-times"></i>
+					<% end %>
+				<% else %>
+					<%= link_to "#", :class => 'style-indicator dislike-style text-center show' do %>
+						<i class="fa fa-times"></i>
+					<% end %>
+				<% end %>
+				<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
+					<%= link_to "#", :class => 'style-indicator like-style text-center hidden' do %>
+						<i class="fa fa-check"></i>
+					<% end %>
+				<% else %>
+					<%= link_to "#", :class => 'style-indicator like-style text-center show' do %>
+						<i class="fa fa-check"></i>
+					<% end %>
+				<% end %>
+				<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
+					<div class="overview-tile-4 show"></div>
+				<% elsif @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
+					<div class="overview-tile-4 show"></div>
+				<% else %>
+					<div class="overview-tile-4 hidden"></div>
+				<% end %>
+					<div class="row no-margin text-center">
+						<div class="style-image-holder">		
+							<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
 						</div>
 					</div>
-				<% end %>
-			<% end %>
-		</div>	
-		<div class="row row-horizon visible-xs">
-			<% @styles.each do |style| %>
-				<% if style.style_name != "Hybrids" %>
-					<div class="col-xs-12 mobile style-tile-container">
-						<%= render 'group_style_form', style: style %>
-						<div class="overview-tile-3">
-							<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
-							<%= link_to "#", :class => 'style-indicator dislike-style text-center hidden' do %>
+					<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
+						<div class="row no-margin dislike-style-chosen show">
+							<%= link_to "#", :class => 'style-indicator dislike-style-middle text-center' do %>
 								<i class="fa fa-times"></i>
 							<% end %>
-						<% else %>
-							<%= link_to "#", :class => 'style-indicator dislike-style text-center show' do %>
-								<i class="fa fa-times"></i>
-							<% end %>
-						<% end %>
-						<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
-							<%= link_to "#", :class => 'style-indicator like-style text-center hidden' do %>
-								<i class="fa fa-check"></i>
-							<% end %>
-						<% else %>
-							<%= link_to "#", :class => 'style-indicator like-style text-center show' do %>
-								<i class="fa fa-check"></i>
-							<% end %>
-						<% end %>
-						<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
-							<div class="mobile overview-tile-4 show"></div>
-						<% elsif @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
-							<div class="mobile overview-tile-4 show"></div>
-						<% else %>
-							<div class="mobile overview-tile-4 hidden"></div>
-						<% end %>
-							<div class="row no-margin text-center">
-								<div class="img-responsive style-image-holder" alt="Responsive image" style="background-image: url(<%= style.style_image_url %>)">		
-								</div>
-							</div>
-							<% if @user_dislikes.map{|a| a.beer_style_id}.include? style.id %>
-								<div class="row no-margin mobile dislike-style-chosen show">
-									<%= link_to "#", :class => 'style-indicator mobile dislike-style-middle text-center' do %>
-										<i class="fa fa-times"></i>
-									<% end %>
-								</div>
-							<% else %>
-								<div class="row no-margin mobile dislike-style-chosen hidden">
-									<%= link_to "#", :class => 'style-indicator mobile dislike-style-middle text-center' do %>
-										<i class="fa fa-times"></i>
-									<% end %>
-								</div>
-							<% end %>
-							<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
-								<div class="row no-margin mobile like-style-chosen show text-center">
-									<%= link_to "#", :class => 'style-indicator mobile like-style-middle text-center' do %>
-										<i class="fa fa-check"></i>
-									<% end %>
-								</div>
-							<% else %>
-								<div class="row no-margin mobile like-style-chosen hidden text-center">
-									<%= link_to "#", :class => 'style-indicator mobile like-style-middle text-center' do %>
-										<i class="fa fa-check"></i>
-									<% end %>
-								</div>
-							<% end %>
-							<div class="row no-margin">
-								<div class="col-xs-12">
-									<h5 class="tile-header style-tile-header"><%= style.style_name %></h5>
-								</div>	
-							</div>
-							<div class="row no-margin">
-								<% @style_examples = find_style_examples(style.id) %>
-								<div class="col-xs-12 style-why-statement">
-									<p>Such as:</p>
-										<ul>
-											<% @style_examples.each do |example| %>
-												<% if !example.brewery.short_brewery_name.blank? %>
-													<% @title_header = example.brewery.short_brewery_name + " " + example.beer_name %>
-													<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
-												<% else %>
-													<% @title_header = example.brewery.brewery_name + " " + example.beer_name %>
-													<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
-												<% end %>
-											<% end %>
-										</ul>
-								</div>
-								<div class="col-xs-12 overview-tile-footer"></div>
-							</div>
 						</div>
+					<% else %>
+						<div class="row no-margin dislike-style-chosen hidden">
+							<%= link_to "#", :class => 'style-indicator dislike-style-middle text-center' do %>
+								<i class="fa fa-times"></i>
+							<% end %>
+						</div>
+					<% end %>
+					<% if @user_likes.map{|a| a.beer_style_id}.include? style.id %>
+						<div class="row no-margin like-style-chosen show text-center">
+							<%= link_to "#", :class => 'style-indicator like-style-middle text-center' do %>
+								<i class="fa fa-check"></i>
+							<% end %>
+						</div>
+					<% else %>
+						<div class="row no-margin like-style-chosen hidden text-center">
+							<%= link_to "#", :class => 'style-indicator like-style-middle text-center' do %>
+								<i class="fa fa-check"></i>
+							<% end %>
+						</div>
+					<% end %>
+					<div class="row no-margin">
+						<div class="col-xs-12">
+							<h5 class="tile-header style-tile-header"><%= style.style_name %></h5>
+						</div>	
 					</div>
-				<% end %>
-			<% end %>
-		</div>
-	</div>
+					<div class="row no-margin">
+						<% @style_examples = find_style_examples(style.id) %>
+						<div class="col-xs-12 style-why-statement">
+							<p>Such as:</p>
+								<ul class="visible-sm visible-md visible-lg visible-xl">
+									<% @style_examples.each do |example| %>
+										<% if !example.brewery.short_brewery_name.blank? %>
+											<% @title_header = example.brewery.short_brewery_name + " " + example.beer_name %>
+											<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+										<% else %>
+											<% @title_header = example.brewery.brewery_name + " " + example.beer_name %>
+											<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+										<% end %>
+									<% end %>
+								</ul>
+								<ul class="visible-xs">
+									<% @style_examples.each_with_index do |example, index| %>
+										<% if index <= 1 %>
+											<% if !example.brewery.short_brewery_name.blank? %>
+												<% @title_header = example.brewery.short_brewery_name + " " + example.beer_name %>
+												<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+											<% else %>
+												<% @title_header = example.brewery.brewery_name + " " + example.beer_name %>
+												<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+											<% end %>
+										<% end %>
+									<% end %>
+								</ul>
+						</div>
+						<div class="col-xs-12 styles-overview-tile-footer"></div>
+					</div>
+				</div>
+			</div>
+		<% end %>
+	<% end %>
 </div>

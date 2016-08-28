@@ -7,7 +7,7 @@ module QuerySearch
       operator: 'or',
       fields: [{ 'beer_name^10' => :word_middle }, 'brewery_name', 'short_brewery_name^10']
      
-    #Rails.logger.debug("Search results: #{@search.inspect}")
+    Rails.logger.debug("Search results: #{@search.inspect}")
     
     @search_results = Array.new
     @search.each_with_index do |result, search_index|
