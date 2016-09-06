@@ -153,7 +153,7 @@ class Beer < ActiveRecord::Base
     collab_breweries = BeerBreweryCollab.where(beer_id: beer_id)
     collab_brewery_names = ""
     collab_breweries.each do |collab, index|
-      brewery = Brewery.where(id: collab.brewery_id)[0]
+      brewery = Brewery.find_by_id(collab.brewery_id)
       if !brewery.nil?
         if !brewery.short_brewery_name.nil?
           if collab == collab_breweries.last
