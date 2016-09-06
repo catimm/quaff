@@ -239,7 +239,7 @@ class Admin::BeersController < ApplicationController
     def find_descriptor_tags
       @params_info = params[:id]
       @beer_descriptors = params[:id].present? ? Beer.find(params[:id]).descriptors.map{|t| {id: t.name, name: t.name }} : []
-      Rails.logger.debug("beer descriptor info: #{@beer_descriptors.inspect}")
+      #Rails.logger.debug("beer descriptor info: #{@beer_descriptors.inspect}")
      end
     
     # Never trust parameters from the scary internet, only allow the white list through.

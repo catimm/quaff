@@ -8,7 +8,7 @@ class BeersController < ApplicationController
   def index
     # conduct search
     query_search(params[:format])
-    Rails.logger.debug("Search results: #{@final_search_results.inspect}")
+    #Rails.logger.debug("Search results: #{@final_search_results.inspect}")
     # get best guess for each drink found
     @search_drink_ids = Array.new
     @final_search_results.each do |drink|

@@ -20,7 +20,7 @@ class HomeController < ApplicationController
       @response = "notify"
     end
     
-    Rails.logger.debug("Response: #{@response.inspect}")
+    #Rails.logger.debug("Response: #{@response.inspect}")
     
     respond_to do |format|
       format.js

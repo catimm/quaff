@@ -11,7 +11,7 @@ module DrinkDescriptors
       @descriptor = descriptor["name"]
       @this_beer_descriptors << @descriptor
     end
-    Rails.logger.debug("this drink type's all descriptor list: #{@this_beer_descriptors.inspect}")
+    #Rails.logger.debug("this drink type's all descriptor list: #{@this_beer_descriptors.inspect}")
     # attach count to each descriptor type to find the drink's most common descriptors
     @this_beer_descriptor_count = @this_beer_descriptors.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
     # put descriptors in descending order of importance

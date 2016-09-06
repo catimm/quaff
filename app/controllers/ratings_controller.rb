@@ -80,7 +80,7 @@ class RatingsController < ApplicationController
     @final_descriptor_list = @current_descriptors.map{|t| {id: t, name: t }}
 
     @this_descriptors = drink_descriptors(@this_drink, 10) - @current_descriptors
-    Rails.logger.debug("drink descriptors: #{@this_descriptors.inspect}")
+    #Rails.logger.debug("drink descriptors: #{@this_descriptors.inspect}")
     
     @user_drink_rating.build_beer
     #Rails.logger.debug("drink rating info: #{@user_drink_rating.inspect}")
@@ -108,9 +108,9 @@ class RatingsController < ApplicationController
     
     # set updated descriptor tags
     @old_descriptor_list = @drink.descriptors_from(@user).map(&:inspect).join(', ')
-    Rails.logger.debug("old descriptor list: #{@old_descriptor_list.inspect}")
+    #Rails.logger.debug("old descriptor list: #{@old_descriptor_list.inspect}")
     @all_descriptor_list = @new_descriptor_list + "," + @old_descriptor_list
-    Rails.logger.debug("all descriptor list: #{@all_descriptor_list.inspect}")
+    #Rails.logger.debug("all descriptor list: #{@all_descriptor_list.inspect}")
     @user.tag(@drink, :with => @all_descriptor_list, :on => :descriptors)
     
     # now redirect back to previous page
