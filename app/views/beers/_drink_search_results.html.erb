@@ -18,7 +18,7 @@
 			<div class="row no-margin">
 				<div class="col-xs-12">
 					<% if drink.collab == true %>
-						<% @title_header = (drink.collab_brewery_name(beer.id) + " " + "<span class=combined-drink-text>"+ drink.beer_name+"</span>").html_safe %>
+						<% @title_header = (drink.collab_brewery_name(drink.id) + " " + "<span class=combined-drink-text>"+ drink.beer_name+"</span>").html_safe %>
 						<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
 					<% elsif drink.brewery.short_brewery_name.nil? %>
 						<% @title_header = (drink.brewery.brewery_name + " " + "<span class=combined-drink-text>"+ drink.beer_name+"</span>").html_safe %>
