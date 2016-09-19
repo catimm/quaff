@@ -36,8 +36,8 @@ class UserDelivery < ActiveRecord::Base
   scope :delivered_recently, ->(user_id, drink_id) {
     where(user_id: user_id, beer_id: drink_id).
     joins(:delivery).
-    where('deliveries.status = ?', "delivered").
-    where('deliveries.delivery_date > ?', 6.weeks.ago)
+    where('deliveries.status = ?', "delivered")
+    #where('deliveries.delivery_date > ?', 6.weeks.ago)
   } # end of within_last scope
   
 end
