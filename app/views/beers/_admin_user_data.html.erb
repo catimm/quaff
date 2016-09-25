@@ -3,25 +3,7 @@
 	<ul>
 		<li>
 			<h5>
-				<b><%= @users_would_like %> <%= "customer".pluralize(@users_would_like) %></b> would like this drink.
-			</h5>
-			<ul>
-				<li>
-					<p class='lists-of-customers'>
-						<% @list_of_customers_who_like.each_with_index do |customer, i| %>
-							<% if i == @list_of_customers_who_like.size - 1 %>
-								<span><%= i + 1 %>) </span> <%= customer %>	
-							<% else %>
-								<span><%= i + 1 %>) </span> <%= customer %>,
-							<% end %>
-						<% end %>
-					</p>
-				</li>
-			</ul>
-		</li>
-		<li>
-			<h5>
-				For <b><%= @users_have_not_had %> <%= "customer".pluralize(@users_have_not_had) %></b> it would be a <b>new drink</b>.
+				<b><%= @users_have_not_had %> <%= "customer".pluralize(@users_have_not_had) %></b> would like this drink and it would be new</b>.
 			</h5>
 			<ul>
 				<li>
@@ -39,7 +21,7 @@
 		</li>
 		<li>
 			<h5>
-				For <b><%= @users_have_had %> <%= "customer".pluralize(@users_have_had) %></b> it would be a <b>'retry' drink</b>.
+				<b><%= @users_have_had %> <%= "customer".pluralize(@users_have_had) %></b> users would like this drink and it would be a <b>'retry' drink</b>.
 			</h5>
 			<ul>
 				<li>

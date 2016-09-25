@@ -42,15 +42,15 @@ class BeersController < ApplicationController
        @this_user_best_guess = best_guess(params[:id], customer.id)[0]
        if @this_user_best_guess.best_guess >= 7.75
          @users_would_like += 1
-         @this_customer_likes = customer.first_name + " [" + customer.username + "]"
+         @this_customer_likes = customer.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
          @list_of_customers_who_like << @this_customer_likes
          @drink_rating_check = UserBeerRating.where(user_id: customer.id, beer_id: params[:id]).first
          if !@drink_rating_check.nil?
           @users_have_had += 1
-          @this_customer_had = customer.first_name + " [" + customer.username + "]"
+          @this_customer_had = customer.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
           @list_of_customers_who_had << @this_customer_had
          else
-          @this_customer_not_had = customer.first_name + " [" + customer.username + "]"
+          @this_customer_not_had = customer.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
           @list_of_customers_who_not_had << @this_customer_not_had
          end  # end of check on whether user has had drink
        end # end of best guess minimum check
