@@ -1,5 +1,4 @@
 class InvitationsController < Devise::InvitationsController
-  before_filter :authenticate_user!, only: [:new, :create]
   before_filter :verify_admin, only: [:new, :create]
   
   def new
