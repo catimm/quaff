@@ -36,9 +36,9 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def authenticate_user!
+  def authenticate_user!(options={})
     if user_signed_in?
-      super
+      super(options)
     else
       session[:user_return_to] = request.fullpath
       redirect_to new_user_session_path, :notice => 'Please log in first!'
