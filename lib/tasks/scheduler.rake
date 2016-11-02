@@ -811,7 +811,7 @@ end # end of update_supply_projected_ratings task
 desc "share admin drink prep with customers"
 task :share_admin_prep_with_customer => :environment do
   # only run this code if today is Monday
-    if Date.today.strftime("%A") == "Wednesday"
+    if Date.today.strftime("%A") == "Monday"
       # get customers who have drinks slated for delivery this week
       @customers_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true)
       
