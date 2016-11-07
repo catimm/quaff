@@ -28,14 +28,6 @@
 			        <% end %>
 			        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
 	        		<td><%= drink.beer.beer_type.beer_type_name %></td>
-			        <% @drink_recommendation = AdminUserDelivery.where(delivery_id: drink.delivery_id, beer_id: drink.beer.id).first %>
-			        	<% if @drink_recommendation.new_drink == true %>
-			        		<td><%= @drink_recommendation.projected_rating %></td>
-				        <% else %>
-				        	<% @avg_rating = UserBeerRating.where(user_id: @chosen_user_id, beer_id: drink.beer.id).average(:user_beer_rating) %>
-				        	<td><%= @avg_rating.round(2) %></td>
-				        <% end %>
-			        <td><%= @drink_recommendation.new_drink.humanize %></td>
 			        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 			        <td><%= drink.original_quantity %></td>
 			        <td><%= drink.new_quantity %></td>
