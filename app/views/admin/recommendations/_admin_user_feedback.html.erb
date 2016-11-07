@@ -28,7 +28,7 @@
 			        <% end %>
 			        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
 	        		<td><%= drink.beer.beer_type.beer_type_name %></td>
-			        <% @drink_recommendation = UserDrinkRecommendation.where(user_id: @chosen_user_id, beer_id: drink.beer.id).first %>
+			        <% @drink_recommendation = AdminUserDelivery.where(delivery_id: delivery_id, beer_id: drink.beer.id).first %>
 			        	<% if @drink_recommendation.new_drink == true %>
 			        		<td><%= @drink_recommendation.projected_rating %></td>
 				        <% else %>
