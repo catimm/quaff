@@ -15,6 +15,7 @@ gem 'coffee-rails', '~> 4.0.0'
 
 group :development do
   gem 'ultrahook' # to test webhook locally
+  gem 'derailed' # to test memory use of gems
 end
 
 # Use jquery as the JavaScript library
