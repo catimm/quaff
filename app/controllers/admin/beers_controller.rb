@@ -187,6 +187,13 @@ class Admin::BeersController < ApplicationController
         Wishlist.update(beers.id, beer_id: params[:beer][:id])
       end
     end
+    # change associations in user_supplies table
+    @user_supplies_to_change = UserSupply.where(beer_id: @beer.id)
+    if !@user_supplies_to_change.empty?
+      @user_supplies_to_change.each do |beers|
+        UserSupply.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
     # remove formats associated with this drink
     @drink_formats = BeerFormat.where(beer_id: @beer.id)
     if !@drink_formats.empty?
