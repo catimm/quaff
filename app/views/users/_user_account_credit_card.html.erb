@@ -1,0 +1,37 @@
+<div class="row">
+	<div class="container">
+		<div class="col-xs-12 col-sm-10">
+			<h3 class="recent-ratings-header">My credit card info</h3>
+		</div>
+		<div class="col-xs-12 col-sm-2">
+			<%= form_tag add_new_card_path(current_user.id), class:"add-new-card-button" do %>
+				<input name="plan_id" type="hidden"></input>
+	          	<script 
+	          		class="stripe-button" 
+	          		name="Knird" 
+	          		data-currency="USD" 
+	          		data-panel-label="Add new card"
+	          		data-label="Add a new card"
+	          		data-email="<%= current_user.email %>" 
+	          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+	          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+	          		src="https://checkout.stripe.com/checkout.js">
+	          	</script>
+			<% end %>
+		</div>	
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row">
+			<% @customer_cards.each do |card| %>
+				<%= render 'credit_card_details', card: card %>
+			<% end %>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-10">
+				<h6>*Note: you must have at least one credit card on file. Please add a new card first before removing your current card. Thanks!</h3>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,26 @@
+<% if card.brand == "Visa" %>
+	<% @card_visual = 'visa' %>
+<% elsif card.brand == "MasterCard" %>
+	<% @card_visual = 'mastercard' %>
+<% elsif card.brand == "AmericanExpress" %>
+	<% @card_visual = 'amex' %>
+<% else %>
+	<% @card_visual = 'diners-club' %>
+<% end %>
+<div class="col-xs-12 col-sm-4">
+	<div class="row">
+		<div class="col-xs-4 card-visual-holder">
+			<i class="fa fa-cc-<%= @card_visual %> fa-5x" aria-hidden="true"></i>
+		</div>
+		<div class="col-xs-8 card-info-holder">
+			<p class="credit-card-info-text last4">&hellip; <%= card.last4 %></p>
+			<p class="credit-card-info-text"><%= card.exp_month %>/<%= card.exp_year %></p>
+		</div>
+
+		<% if @customer_cards.data.length > 1 %>
+		<div class="col-xs-4">
+			<%= link_to "Delete card", delete_credit_card_path(card.id), :class => "btn btn-danger delete-credit-card-button" %>
+		</div>
+		<% end %>
+	</div>
+</div>

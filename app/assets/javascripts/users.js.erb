@@ -157,6 +157,11 @@ $(function () {
 	// make the dropdown search result box match the width of the search input box
 	$(".tt-menu").width(navbar_search_width);
 	
+	// find height of credit card visual
+	credit_card_height = $(".card-visual-holder").height();
+	// make credit card info div the same height
+	$(".card-info-holder").height(credit_card_height);
+	
 	// add hover effect to drink preferences page
 	$(document).on("mouseover", ".drink-preference-view-option", function() {
 		$(this).addClass("almost-chosen");

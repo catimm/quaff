@@ -14,6 +14,9 @@
 				<div class="col-sm-3 text-right">
 					<%= link_to "Personal info", user_account_settings_path(current_user.id, 'info'), class: "drink-preference-view-option #{@info_chosen}", id: "next" %>
 				</div>
+				<div class="col-sm-3 text-right">
+					<%= link_to "Credit card", user_account_settings_path(current_user.id, 'card'), class: "drink-preference-view-option #{@card_chosen}", id: "card" %>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -22,8 +25,10 @@
 	<div class="container" id="preference-view-choice">
 		<% if @view == "info" %>
 			<%= render 'user_account_info' %>
-		<% else %>
+		<% elsif @view == "plan" %>
 			<%= render 'user_account_plan' %>
+		<% else %>
+			<%= render 'user_account_credit_card' %>
 		<% end %>
 	</div>
 </div>

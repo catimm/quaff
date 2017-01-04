@@ -55,38 +55,17 @@ class UsersController < ApplicationController
       
     else
       # set link as chosen
-      @journey_chosen = "chosen"
+      @card_chosen = "chosen"
       
-      # get user delivery preferences info
-      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+      # find user's current plan
+      @customer_plan = UserSubscription.find_by_user_id(current_user.id)
+      #Rails.logger.debug("User Plan info: #{@customer_plan.inspect}")
       
-      # set drink category choice
-      if @delivery_preferences.drink_option_id == 1
-        @drink_preference = "beer"
-      elsif @delivery_preferences.drink_option_id == 2
-        @drink_preference = "cider"
-      else
-        @drink_preference = "beer/cider"
-      end
-      
-      # set user craft stage if it exists
-      if @user.craft_stage_id == 1
-        @casual_chosen = "show"
-        @geek_chosen = "hidden"
-        @conn_chosen = "hidden"
-      elsif @user.craft_stage_id == 2
-        @casual_chosen = "hidden"
-        @geek_chosen = "show"
-        @conn_chosen = "hidden"
-      elsif @user.craft_stage_id == 3
-        @casual_chosen = "hidden"
-        @geek_chosen = "hidden"
-        @conn_chosen = "show"
-      else
-        @casual_chosen = "hidden"
-        @geek_chosen = "hidden"
-        @conn_chosen = "hidden"
-      end
+      # customer's Stripe card info
+      @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
+                                          all(:object => "card")
+      #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
+
       
     end
   end
@@ -136,7 +115,7 @@ class UsersController < ApplicationController
   def choose_plan 
     # find user's current plan
     @customer_plan = UserSubscription.find_by_user_id(params[:id])
-    #Rails.logger.debug("User Plan info: #{@user_plan.inspect}")
+    #Rails.logger.debug("User Plan info: #{@customer_plan.inspect}")
     # find subscription level id
     @subscription_level_id = Subscription.where(subscription_level: params[:format]).first
     
@@ -148,17 +127,17 @@ class UsersController < ApplicationController
     end
     
     # update Stripe acct
-    customer = Stripe::Customer.retrieve(@user_plan.stripe_customer_number)
+    customer = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number)
     @plan_info = Stripe::Plan.retrieve(params[:format])
     #Rails.logger.debug("Customer: #{customer.inspect}")
     customer.description = @plan_info.statement_descriptor
     customer.save
-    subscription = customer.subscriptions.retrieve(@user_plan.stripe_subscription_number)
+    subscription = customer.subscriptions.retrieve(@customer_plan.stripe_subscription_number)
     subscription.plan = params[:format]
     subscription.save
     
     # now update user plan info in the DB
-    @user_plan.update(subscription_id: @subscription_level_id.id, active_until: @active_until)
+    @customer_plan.update(subscription_id: @subscription_level_id.id, active_until: @active_until)
 
     
     redirect_to :action => "plan", :id => current_user.id
@@ -322,6 +301,35 @@ class UsersController < ApplicationController
       format.js { render 'last_updated.js.erb' }
     end # end of redirect to jquery
   end
+  
+  def add_new_card
+    # get customer subscription info
+    @customer_subscription_info = UserSubscription.find_by_user_id(params[:id])
+    
+    # get customer Stripe account info
+    @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)
+
+    # add new credit card to customer Stripe acct
+    @customer.sources.create(:card => params[:stripeToken])
+
+    # redirect back to credit card page
+    redirect_to user_account_settings_path(current_user.id, 'card')
+    
+  end # end of add_new_card
+  
+  def  delete_credit_card
+    # get customer subscription info
+    @customer_subscription_info = UserSubscription.find_by_user_id(current_user.id)
+    
+    # get customer Stripe account info
+    @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)
+    
+    # delete the credit  card
+    @customer.sources.retrieve(params[:id]).delete
+    
+    # redirect back to credit card page
+    redirect_to user_account_settings_path(current_user.id, 'card')
+  end # end of delete_credit_card method
   
   def destroy
     @user = User.find(current_user.id)

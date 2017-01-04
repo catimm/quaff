@@ -53,6 +53,8 @@ Rails.application.routes.draw do
   patch '/users/update_password/:id' => 'users#update_password'
   post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
   post '/stripe-webhooks' => 'users#stripe_webhooks'
+  post 'users/add_new_card/:id' => 'users#add_new_card' , :as => 'add_new_card'
+  get 'users/delete_credit_card/:id' => 'users#delete_credit_card' , :as => 'delete_credit_card'
   
   # routes to user deliveries pages
   get '/deliveries/deliveries/:id' => 'deliveries#deliveries', :as => 'user_deliveries'

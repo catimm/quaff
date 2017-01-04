@@ -2706,6 +2706,22 @@ $beer-header-lines-to-show-fp: 1;
     line-height: 1.2;
   }
 }
+.add-new-card-button {
+  margin: 20px 0 0 0;
+}
+
+.card-visual-holder, .card-info-holder {
+  margin-bottom: 5px;
+  i {
+    color: $normal-text;
+  }
+}
+.credit-card-info-text {
+  color: $normal-text;
+}
+.credit-card-info-text.last4 {
+  padding-top: 15px;
+}
 // User Profile Page
 .first-row {
   background: $soft-gray-background;

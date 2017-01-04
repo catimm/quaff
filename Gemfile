@@ -99,7 +99,7 @@ gem 'newrelic_rpm'
 # using Wicked PDF to print drink menu html pages to pdf
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
-# using Strip gem to manage subscription payments
+# using Stripe gem to manage subscription payments
 gem 'stripe'
 # turns boolean t/f to yes/no
 gem 'humanize_boolean'
