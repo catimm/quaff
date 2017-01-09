@@ -6,7 +6,7 @@ module BestGuess
   def best_guess(beer_ids, user_id)
     #Rails.logger.debug("best guess beer ids #{beer_ids.inspect}")
     #initial beers
-    @beers = Beer.where(id: beer_ids, dont_include: [false, nil])
+    @beers = Beer.where(id: beer_ids)
     # grab user's style preferences
     @user_style_preferences = UserStylePreference.where(user_id: user_id)
     # separate likes from dislikes

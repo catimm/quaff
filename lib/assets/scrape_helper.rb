@@ -32,8 +32,8 @@ module ScrapeHelper
             # check to see if alternative brewery name table
             @alt_brewery_name = AltBreweryName.where("name like ?", "%#{collaborator}%")
             if @alt_brewery_name.blank? # not found in Alternative Brewery Table
-              # since brewery isn't found in either Brewery Table, insert it
-              new_brewery = Brewery.new(:brewery_name => collaborator, :collab => true)
+              # since brewery isn't found in either Brewery Table, insert it into the Temp table
+              new_brewery = TempBrewery.new(:brewery_name => collaborator, :collab => true, :vetted => false)
               new_brewery.save
               if index == 0 # if first collaborator, make this the default brewery name for the matching process below
                 @related_brewery = new_brewery
@@ -87,11 +87,11 @@ module ScrapeHelper
       
       # if brewery does not exist in db(s), insert all info into Breweries, Beers, and BeerLocation tables
       if @related_brewery.empty?
-        # first add new brewery to breweries table & add correct collab status
-        new_brewery = Brewery.new(:brewery_name => @this_maker_name, :collab => false)
+        # first add new brewery to temp breweries table & add correct collab status
+        new_brewery = TempBrewery.new(:brewery_name => @this_maker_name, :collab => false, :vetted => false)
         new_brewery.save!
-        # then add new beer to beers table       
-        new_beer = Beer.new(:beer_name => @this_drink_name, :brewery_id => new_brewery.id, :touched_by_location => @this_location_id)
+        # then add new beer to temp beers table       
+        new_beer = TempBreweriesTempBeer.new(:beer_name => @this_drink_name, :brewery_id => new_brewery.id, :touched_by_location => @this_location_id, :vetted => false)
         new_beer.save!
         # finally add new beer option to beer_locations table
         new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id)
@@ -135,7 +135,7 @@ module ScrapeHelper
             @brewery_collaborators.each do |collaborator|
               @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: @recognized_beer.id)
               if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
-                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
+                collab_insert = TempBeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => @recognized_beer.id)
                 collab_insert.save
               end
             end
@@ -157,8 +157,8 @@ module ScrapeHelper
           end
         else
           #Rails.logger.debug("This is firing, so it thinks this beer IS NOT in the beers table")
-          # if beer doesn't exist in DB, first add new beer to beers table       
-          new_beer = Beer.new(:beer_name => @this_drink_name, :brewery_id => @related_brewery[0].id, :touched_by_location => @this_location_id)
+          # if beer doesn't exist in DB, first add new beer to temp beers table       
+          new_beer = TempBeer.new(:beer_name => @this_drink_name, :brewery_id => @related_brewery[0].id, :touched_by_location => @this_location_id, :vetted => false)
           new_beer.save!
           # then add new beer option to beer_locations table
           new_option = BeerLocation.new(:beer_id => new_beer.id, :location_id => @this_location_id)
@@ -169,7 +169,7 @@ module ScrapeHelper
             @brewery_collaborators.each do |collaborator|
               @collab_check = BeerBreweryCollab.where(brewery_id: collaborator.id, beer_id: new_beer.id)
               if @collab_check.empty? # if this beer isn't connected with this brewery in collab table, insert it
-                collab_insert = BeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
+                collab_insert = TempBeerBreweryCollab.new(:brewery_id => collaborator.id, :beer_id => new_beer.id)
                 collab_insert.save
               end
             end

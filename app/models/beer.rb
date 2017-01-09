@@ -30,7 +30,7 @@
 #  touched_by_user      :integer
 #  collab               :boolean
 #  short_beer_name      :string
-#  dont_include         :boolean
+#  vetted               :boolean
 #  touched_by_location  :integer
 #  cellar_note          :text
 #
@@ -223,24 +223,6 @@ class Beer < ActiveRecord::Base
     joins(:beer_locations).merge(BeerLocation.all_current)
   }
   
-  # scope only relevant drinks 
-  scope :all_relevant_drinks, -> { 
-    where(dont_include: [false, nil])
-  }
-  
-  # scope only drinks currently available 
-  scope :live_beers, -> { 
-    where(dont_include: [false, nil]).
-    joins(:beer_locations).merge(BeerLocation.current)
-  }
-  
-  # scope only all drinks shown in admin pages 
-  scope :live_beers_by_breweries, -> { 
-    where(dont_include: [false, nil]).
-    joins(:beer_locations).merge(BeerLocation.current).
-    joins(:brewery).order('breweries.brewery_name')
-  }
-  
   # scope only drinks currently available at a particular location
   scope :live_beers_at_location, ->(location_id) { 
     joins(:beer_locations).merge(BeerLocation.active_beers(location_id)) 
@@ -264,7 +246,7 @@ class Beer < ActiveRecord::Base
     where("rating_one_na = ? OR beer_rating_one IS NOT NULL OR beer_type_id IS NOT NULL", true)
     where("rating_two_na IS NULL OR rating_two_na = ?", false).
     where("rating_three_na IS NULL OR rating_three_na = ?", false).
-    where(beer_rating_two: nil, beer_rating_three: nil, dont_include: [false, nil]).
+    where(beer_rating_two: nil, beer_rating_three: nil).
     joins(:beer_formats).
     where('beer_formats.beer_id IS NOT NULL')
   }

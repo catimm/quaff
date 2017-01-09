@@ -14,6 +14,7 @@
 #  comment             :text
 #  current_descriptors :text
 #  beer_type_id        :integer
+#  admin_vetted        :boolean
 #
 
 class UserBeerRating < ActiveRecord::Base

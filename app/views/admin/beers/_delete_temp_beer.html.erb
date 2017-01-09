@@ -1,0 +1,8 @@
+<%= form_for [:admin, @beer], :url => admin_delete_drink_from_brewery_path(@temp_drink.id) do |g| %>
+	<h5>Deleting:</h5>
+	<h5 class="brewery-name-with-id"><%= @temp_drink.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= @temp_drink.id %> ]</h6>
+	<h5>Connect its beers to id:</h5>
+	<% options = options_from_collection_for_select(@beers, :id, :connect_deleted_beer, @temp_drink.id) %>
+	<%= g.select :id,  options %>
+	<%= g.submit "Delete beer", class: "btn btn-default btn-warning formButton" %>			
+<% end %>

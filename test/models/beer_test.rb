@@ -30,7 +30,7 @@
 #  touched_by_user      :integer
 #  collab               :boolean
 #  short_beer_name      :string
-#  dont_include         :boolean
+#  vetted               :boolean
 #  touched_by_location  :integer
 #  cellar_note          :text
 #

@@ -173,6 +173,10 @@ Rails.application.routes.draw do
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'
+  get 'admin/breweries/merge_brewery_prep/:id' => 'admin/breweries#merge_brewery_prep', :as => 'admin_merge_brewery_prep'
+  get 'admin/breweries/add_new_brewery/:id' => 'admin/breweries#add_new_brewery', :as => 'admin_add_new_brewery'
+  get 'admin/breweries/delete_temp_brewery/:id' => 'admin/breweries#delete_temp_brewery', :as => 'admin_delete_temp_brewery'
+  post 'admin/breweries/merge_breweries/:id' => 'admin/breweries#merge_breweries', :as => 'admin_merge_breweries'
   post 'admin/breweries/alt_names' => 'admin/breweries#create_alt_brewery', :as => 'admin_create_brewery_names'
   patch 'admin/breweries/delete_alt_name/:id' => 'admin/breweries#delete_alt_brewery_name', :as => 'admin_delete_alt_brewery_name'
   get 'admin/beers/alt_names/:id' => 'admin/beers#alt_beer_name', :as => 'admin_alt_beer_names'
@@ -181,6 +185,10 @@ Rails.application.routes.draw do
   get 'admin/beers/delete_beer_prep/:brewery_id/:id' => 'admin/beers#delete_beer_prep', :as => 'admin_delete_beer_prep'
   patch 'admin/beers/delete_beer/:brewery_id/:id' => 'admin/beers#delete_beer', :as => 'admin_delete_beer'
   get 'admin/needs_work_beers(.:format)' => 'admin/beers#show', :as => 'admin_needs_work_beers'
+  get 'admin/beers/temp_drinks/:brewery_id/' => 'admin/beers#temp_drinks', :as => 'admin_brewery_temp_beers'
+  get 'admin/beers/add_drink_to_brewery/:id/' => 'admin/beers#add_drink_to_brewery', :as => 'admin_add_drink_to_brewery'
+  get 'admin/beers/delete_drink_from_brewery_prep/:id' => 'admin/beers#delete_drink_from_brewery_prep', :as => 'admin_delete_drink_from_brewery_prep'
+  post 'admin/beers/delete_drink_from_brewery/:id/' => 'admin/beers#delete_drink_from_brewery', :as => 'admin_delete_drink_from_brewery'
   
   # to get clean location modal window 
   get 'admin/beers/clean_location/:beer_id' => 'admin/beers#clean_location_prep', :as => 'admin_clean_location_prep'

@@ -17,6 +17,7 @@
 #  recommendation_rationale :string
 #  is_hybrid                :boolean
 #  likes_style              :string
+#  admin_vetted             :boolean
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

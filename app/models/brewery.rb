@@ -13,7 +13,7 @@
 #  brewery_beers       :integer
 #  short_brewery_name  :string
 #  collab              :boolean
-#  dont_include        :boolean
+#  vetted              :boolean
 #  brewery_state_long  :string
 #  facebook_url        :string
 #  twitter_url         :string
@@ -53,12 +53,7 @@ class Brewery < ActiveRecord::Base
   scope :order_by_brewery_name, -> {
     order(:brewery_name) 
   }
-  
-  # scope all live breweries
-  scope :live_breweries, -> {
-    where(dont_include: [false, nil]) 
-  }
-  
+
   # scope all breweries in stock
   scope :makers_in_stock, ->(brewery_id) { 
     where(id: brewery_id).

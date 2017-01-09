@@ -12,6 +12,8 @@
 		<p><span class="user-rating-acknowledged">Your rating</span>:</p>
 	<% end %>
 	<h1 class="user-rating"><%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
+<% elsif !drink.touched_by_user.blank? %>
+	<h6>This was just added; our <span class="best-guess">best guess</span> for you will be available soon!</h6>
 <% else %>
 	<p>Our <span class="best-guess">best guess</span> for you:</p>
 		<h1 class="best-guess"><%= drink.best_guess %><span class="recent-user-rating-context">/10</span></h1>

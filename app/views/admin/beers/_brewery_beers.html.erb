@@ -1,94 +1,113 @@
 <% @brewery_beers.each do |d| %>
-	<% if @need_attention_beers.map{|a| a.id}.include? d.id %>
-	<div class="row small-padding current-beer-background-attention-needed">
-	<% elsif @usable_incomplete_beers.map{|a| a.id}.include? d.id %>
-	<div class="row small-padding current-beer-usable-background">
-	<% elsif @complete_beers.map{|a| a.id}.include? d.id %>
-	<div class="row small-padding current-beer-complete-background">
-	<% else %>
-	<div class="row small-padding">
-	<% end %>
-		<div class="col-sm-2">
-			<% if d.beer_name.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
+	<% if d.vetted == false %>
+			<div class="row small-padding">
+			<div class="col-sm-2">
 				<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
-			<% end %>
+			</div>
+			<div class="col-sm-1">
+				<h5><%= (d.updated_at).strftime("%-m/%d/%y")  %></h5>
+			</div>
+			<div class="col-sm-1">
+				<% if @this_brewery.nil? %>
+					<% @this_brewery = Brewery.find_by(id: d.brewery_id) %>
+				<% end %>
+				<%= link_to "Add", admin_add_drink_to_brewery_path(d.id), class: "btn btn-success" %>
+			</div>
+			<div class="col-sm-1">
+				<%= link_to "Delete", admin_delete_drink_from_brewery_prep_path(d.id), class: "btn btn-danger editButton",
+				data: {toggle: "modal", target: "#delete_temp_beer"} %>
+			</div>
 		</div>
-		<div class="col-sm-1">
-			<h5><%= (d.updated_at).strftime("%-m/%d/%y")  %></h5>
-		</div>
-		<div class="col-sm-1">
-			<% if d.beer_type.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
-				<h5><%= d.beer_type.beer_type_name %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-1">
-			<% if d.beer_rating.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
-				<h5><%= d.beer_rating %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-1">
-			<% if d.beer_abv.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
-				<h5><%= d.beer_abv %>%</h5>
-			<% end %>
-		</div>
-		<div class="col-sm-1">
-			<% if d.beer_ibu.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
-				<h5><%= d.beer_ibu %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-1">
-			<% if !d.beer_type.nil? %>
-				<% if d.beer_type.cellarable.blank? %>
+	<% else %>
+		<div class="row small-padding">
+			<div class="col-sm-2">
+				<% if d.beer_name.blank? %>
 					<h5 class="need-text">[need]</h5>
 				<% else %>
-					<% if d.beer_type.cellarable == true %>
-						<% @cellar = "Yes" %>
-					<% else %>
-						<% @cellar = "No" %>
-					<% end %>
-					<h5 class="no-overflow"><%= @cellar %></h5>
+					<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
 				<% end %>
-			<% else %>
-				<h5 class="need-text">[need]</h5>
-			<% end %>
+			</div>
+			<div class="col-sm-1">
+				<h5><%= (d.updated_at).strftime("%-m/%d/%y")  %></h5>
+			</div>
+			<div class="col-sm-1">
+				<% if d.beer_type.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5><%= d.beer_type.beer_type_name %></h5>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<% if d.beer_rating.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5><%= d.beer_rating %></h5>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<% if d.beer_abv.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5><%= d.beer_abv %>%</h5>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<% if d.beer_ibu.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5><%= d.beer_ibu %></h5>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<% if !d.beer_type.nil? %>
+					<% if d.beer_type.cellarable.blank? %>
+						<h5 class="need-text">[need]</h5>
+					<% else %>
+						<% if d.beer_type.cellarable == true %>
+							<% @cellar = "Yes" %>
+						<% else %>
+							<% @cellar = "No" %>
+						<% end %>
+						<h5 class="no-overflow"><%= @cellar %></h5>
+					<% end %>
+				<% else %>
+					<h5 class="need-text">[need]</h5>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<% if d.speciality_notice.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5><%= d.speciality_notice %></h5>
+				<% end %>
+			</div>
+			<div class="col-sm-2">
+				<% if !d.original_descriptors.blank? %>
+					<h5 class="need-text">have originals</h5>
+				<% elsif d.descriptor_list.blank? %>
+					<h5 class="need-text">[need]</h5>
+				<% else %>
+					<h5><%= raw d.descriptors.join(', ') %></h5>
+				<% end %>
+			</div>
+			<div class="col-sm-1">
+				<% if @this_brewery.nil? %>
+					<% @this_brewery = Brewery.find_by(id: d.brewery_id) %>
+				<% end %>
+				<%= link_to "Edit beer", edit_admin_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success" %>
+			</div>
+			<div class="col-sm-1">
+				<%= link_to "Edit names", admin_alt_beer_names_path(d.id), class: "btn btn-default editButton",
+				data: {toggle: "modal", target: "#edit_alt_names"} %>
+			</div>
 		</div>
-		<div class="col-sm-1">
-			<% if d.speciality_notice.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
-				<h5><%= d.speciality_notice %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-2">
-			<% if !d.original_descriptors.blank? %>
-				<h5 class="need-text">have originals</h5>
-			<% elsif d.descriptor_list.blank? %>
-				<h5 class="need-text">[need]</h5>
-			<% else %>
-				<h5><%= raw d.descriptors.join(', ') %></h5>
-			<% end %>
-		</div>
-		<div class="col-sm-1">
-			<% if @this_brewery.nil? %>
-				<% @this_brewery = Brewery.find_by(id: d.brewery_id) %>
-			<% end %>
-			<%= link_to "Edit beer", edit_admin_brewery_beer_path(@this_brewery.id, d.id), class: "btn btn-success" %>
-		</div>
-		<div class="col-sm-1">
-			<%= link_to "Edit names", admin_alt_beer_names_path(d.id), class: "btn btn-default editButton",
-			data: {toggle: "modal", target: "#edit_alt_names"} %>
-		</div>
-	</div>
+	<% end %>
 	<hr/>
 <% end %>
-
+<div id="delete_temp_beer" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Delete beer</h3>
+	</div>
+	<div class="modal-body"></div>
+</div>

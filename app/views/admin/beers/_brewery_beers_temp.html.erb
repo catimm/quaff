@@ -1,0 +1,43 @@
+<% @brewery_beers_temp.each do |d| %>
+	<div class="row small-padding">
+		<div class="col-sm-2">
+			<% if d.beer_name.blank? %>
+				<h5 class="need-text">[need]</h5>
+			<% else %>
+				<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
+			<% end %>
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-1">
+
+		</div>
+		<div class="col-sm-1">
+
+		</div>
+		<div class="col-sm-2">
+
+		</div>
+		<div class="col-sm-1">
+
+		</div>
+		<div class="col-sm-1">
+
+		</div>
+	</div>
+	<hr/>
+<% end %>
+

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160826170309) do
+ActiveRecord::Schema.define(version: 20170107011013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(version: 20160826170309) do
     t.integer  "touched_by_user"
     t.boolean  "collab"
     t.string   "short_beer_name"
-    t.boolean  "dont_include"
+    t.boolean  "vetted"
     t.integer  "touched_by_location"
     t.text     "cellar_note"
   end
@@ -163,7 +163,7 @@ ActiveRecord::Schema.define(version: 20160826170309) do
     t.integer  "brewery_beers"
     t.string   "short_brewery_name"
     t.boolean  "collab"
-    t.boolean  "dont_include"
+    t.boolean  "vetted"
     t.string   "brewery_state_long"
     t.string   "facebook_url"
     t.string   "twitter_url"
@@ -373,6 +373,96 @@ ActiveRecord::Schema.define(version: 20160826170309) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
+  create_table "temp_beer_brewery_collabs", force: :cascade do |t|
+    t.integer  "beer_id"
+    t.integer  "brewery_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "temp_beers", force: :cascade do |t|
+    t.string   "beer_name",            limit: 255
+    t.string   "beer_type_old_name",   limit: 255
+    t.float    "beer_rating_one"
+    t.integer  "number_ratings_one"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "brewery_id"
+    t.float    "beer_abv"
+    t.integer  "beer_ibu"
+    t.string   "beer_image",           limit: 255
+    t.string   "speciality_notice",    limit: 255
+    t.text     "original_descriptors"
+    t.text     "hops"
+    t.text     "grains"
+    t.text     "brewer_description"
+    t.integer  "beer_type_id"
+    t.float    "beer_rating_two"
+    t.integer  "number_ratings_two"
+    t.float    "beer_rating_three"
+    t.integer  "number_ratings_three"
+    t.boolean  "rating_one_na"
+    t.boolean  "rating_two_na"
+    t.boolean  "rating_three_na"
+    t.boolean  "user_addition"
+    t.integer  "touched_by_user"
+    t.boolean  "collab"
+    t.string   "short_beer_name"
+    t.boolean  "vetted"
+    t.integer  "touched_by_location"
+    t.text     "cellar_note"
+  end
+
+  create_table "temp_breweries", force: :cascade do |t|
+    t.string   "brewery_name",        limit: 255
+    t.string   "brewery_city",        limit: 255
+    t.string   "brewery_state_short", limit: 255
+    t.string   "brewery_url",         limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "image"
+    t.integer  "brewery_beers"
+    t.string   "short_brewery_name"
+    t.boolean  "collab"
+    t.boolean  "vetted"
+    t.string   "brewery_state_long"
+    t.string   "facebook_url"
+    t.string   "twitter_url"
+  end
+
+  create_table "temp_breweries_temp_beers", force: :cascade do |t|
+    t.string   "beer_name",            limit: 255
+    t.string   "beer_type_old_name",   limit: 255
+    t.float    "beer_rating_one"
+    t.integer  "number_ratings_one"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "brewery_id"
+    t.float    "beer_abv"
+    t.integer  "beer_ibu"
+    t.string   "beer_image",           limit: 255
+    t.string   "speciality_notice",    limit: 255
+    t.text     "original_descriptors"
+    t.text     "hops"
+    t.text     "grains"
+    t.text     "brewer_description"
+    t.integer  "beer_type_id"
+    t.float    "beer_rating_two"
+    t.integer  "number_ratings_two"
+    t.float    "beer_rating_three"
+    t.integer  "number_ratings_three"
+    t.boolean  "rating_one_na"
+    t.boolean  "rating_two_na"
+    t.boolean  "rating_three_na"
+    t.boolean  "user_addition"
+    t.integer  "touched_by_user"
+    t.boolean  "collab"
+    t.string   "short_beer_name"
+    t.boolean  "vetted"
+    t.integer  "touched_by_location"
+    t.text     "cellar_note"
+  end
+
   create_table "user_beer_ratings", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
@@ -385,6 +475,7 @@ ActiveRecord::Schema.define(version: 20160826170309) do
     t.text     "comment"
     t.text     "current_descriptors"
     t.integer  "beer_type_id"
+    t.boolean  "admin_vetted"
   end
 
   create_table "user_deliveries", force: :cascade do |t|
@@ -502,6 +593,7 @@ ActiveRecord::Schema.define(version: 20160826170309) do
     t.string   "recommendation_rationale"
     t.boolean  "is_hybrid"
     t.string   "likes_style"
+    t.boolean  "admin_vetted"
   end
 
   create_table "users", force: :cascade do |t|
@@ -547,8 +639,9 @@ ActiveRecord::Schema.define(version: 20160826170309) do
     t.integer  "user_id"
     t.integer  "beer_id"
     t.datetime "removed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.boolean  "admin_vetted"
   end
 
   create_table "zip_codes", force: :cascade do |t|

@@ -23,7 +23,7 @@
 					</div>
 					<div class="row no-margin">
 						<div class="col-xs-12">
-							<% if @beer.beer_type.cellarable == true %>
+							<% if !@beer.beer_type_id.nil? && @beer.beer_type.cellarable == true %>
 					        	<% @cellarable = "C" %>
 					        	<% @cellarable_info = @beer.beer_type.cellarable_info %>
 					        <% else %>
@@ -81,6 +81,8 @@
 									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((@beer.best_guess) * 2).round)/2.0) %></span> but you rated it:</p>
 									<h1 class="user-rating"><%= @beer.user_rating.round(2) %></h1>
 								<% end %>
+							<% elsif !@beer.touched_by_user.blank? %>
+								<h5>This was just added; our <span class="best-guess">best guess</span> for you will be available soon!</h5>
 							<% else %>
 								<p>Our <span class="best-guess">best guess</span> for you:</p>
 								<% if @beer.best_guess > 10 %>

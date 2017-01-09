@@ -4,16 +4,16 @@
 		<div class="page-header">
 			<div class="row no-margin">
 				<div class="col-sm-7 visible-sm visible-md visible-lg">
-					<h3><%= @brewery_count.length %> breweries in the database</h3>
+					<h3><%= @brewery_count %> breweries in the database</h3>
 					<h4 class="live-beer-count"> 
-						<%= link_to @beer_count.length.to_s + " beers in the db", "#", :class => "live-beer-count" %> (
+						<%= link_to @beer_count.to_s + " beers in the db", "#", :class => "live-beer-count" %> (
 						<%= link_to @all_number_complete_beers.to_s + " done", "#", :class => "complete-beer-text" %> /
 						<%= link_to @all_number_usable_incomplete_beers.to_s + " partial", "#", :class => "usable-beer-text" %> /
 						<%= link_to @all_number_need_attention_beers.to_s + " need attention", "#", :class => "attention-needed-beer-text" %> )
 					</h4>
 				</div>
 				<div class="col-xs-12 visible-xs">
-					<h4><%= @brewery_count.length %> breweries (<%= @beer_count.length %> beers)</h4>
+					<h4><%= @brewery_count %> breweries (<%= @beer_count %> beers)</h4>
 					<h5 class="live-beer-count">
 						<%= link_to @number_live_beers.to_s + " beers live", admin_needs_work_beers_path("live"), :class => "live-beer-count" %> (
 						<%= link_to @number_complete_beers.to_s + " done", admin_needs_work_beers_path("green"), :class => "complete-beer-text" %> /
@@ -77,7 +77,13 @@
 		</div>
 		<div class="modal-body"></div>
 	</div>
-
+	<div id="merge_breweries" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Merge with existing brewery</h3>
+		</div>
+		<div class="modal-body"></div>
+	</div>
 </div>
 
 <%= render 'layouts/footer' %>

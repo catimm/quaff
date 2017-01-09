@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: beers
+# Table name: temp_beers
 #
 #  id                   :integer          not null, primary key
 #  beer_name            :string(255)
@@ -35,16 +35,6 @@
 #  cellar_note          :text
 #
 
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+class TempBeer < ActiveRecord::Base
 
-one:
-  name: MyString
-  type: 
-  rating: 9.99
-  number_ratings: 1
-
-two:
-  name: MyString
-  type: 
-  rating: 9.99
-  number_ratings: 1
+end

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: breweries
+# Table name: temp_breweries
 #
 #  id                  :integer          not null, primary key
 #  brewery_name        :string(255)
@@ -19,10 +19,7 @@
 #  twitter_url         :string
 #
 
-require 'test_helper'
+class TempBrewery < ActiveRecord::Base
 
-class BreweryTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  
 end

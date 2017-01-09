@@ -1,0 +1,6 @@
+<%= form_for [:admin, @brewery], :url => admin_merge_breweries_path(@brewery_to_merge) do |g| %>
+	<h5>Merge drinks with:</h5>
+	<% options = options_from_collection_for_select(@breweries_perm, :id, :connect_deleted_brewery, @brewery_to_merge) %>
+	<%= g.select :id,  options %>
+	<%= g.submit "Complete merge", class: "btn btn-default btn-warning formButton" %>			
+<% end %>

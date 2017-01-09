@@ -4,7 +4,9 @@ class Admin::BeersController < ApplicationController
   
   def index
     # find non-collab beers produced by brewery
-    @brewery_beers = Beer.all_brewery_beers(params[:brewery_id]).uniq
+    @perm_beers = Beer.where(brewery_id:params[:brewery_id])
+    @temp_beers = TempBeer.where(brewery_id: params[:brewery_id])
+    @brewery_beers = (@perm_beers + @temp_beers).sort_by{|e| e[:beer_name]}
     #Rails.logger.debug("Brewery beers: #{@brewery_beers.inspect}")
     #@brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     # find collab beers produced by brewery
@@ -15,20 +17,26 @@ class Admin::BeersController < ApplicationController
     # grab brewery info
     @this_brewery = Brewery.find_by(id: params[:brewery_id])
     # get list of IDs for all live Beers
-    @live_beers = Beer.live_beers
+    #@live_beers = Beer.live_beers
     # Rails.logger.debug("Live beers: #{@live_beers.inspect}")
     # get list of Beer IDs for live beers that have all information provided
-    @complete_beers = Beer.live_beers.complete_beers
+    #@complete_beers = Beer.live_beers.complete_beers
     # Rails.logger.debug("Live & Complete beers: #{@complete_beers.inspect}")
     # get list of Beer IDs for live beers that don't yet have any information (top priority)
-    @need_attention_beers = Beer.live_beers.need_attention_beers
+    #@need_attention_beers = Beer.live_beers.need_attention_beers
     # Rails.logger.debug("Live & Need Attention beers: #{@need_attention_beers.inspect}")
     # get list Beer IDs for usable but incomplete beers that still need attention
-    @usable_incomplete_beers = Beer.live_beers.usable_incomplete_beers
+    #@usable_incomplete_beers = Beer.live_beers.usable_incomplete_beers
     # Rails.logger.debug("Live & Usable/Imcomplete beers: #{@usable_incomplete_beers.inspect}")
     # to create a new Beer Name instance
     @brewery_alt_names = AltBeerName.new
   end
+  
+  def temp_drinks
+    # grab brewery info
+    @this_brewery = TempBrewery.find_by_id(params[:brewery_id])
+    @brewery_beers_temp = TempBreweriesTempBeer.where(brewery_id: params[:brewery_id])
+  end # end of temp_drinks action
   
   def show
     # get list of Beer IDs for all live beers
@@ -107,7 +115,7 @@ class Admin::BeersController < ApplicationController
             brewer_description: params[:beer][:brewer_description], beer_type_id: params[:beer][:beer_type_id],
             rating_one_na: params[:beer][:rating_one_na], rating_two_na: params[:beer][:rating_two_na], 
             rating_three_na: params[:beer][:rating_three_na], touched_by_user: params[:beer][:touched_by_user],
-            user_addition: params[:beer][:user_addition], dont_include: params[:beer][:dont_include],
+            user_addition: params[:beer][:user_addition], vetted: params[:beer][:vetted],
             cellar_note: params[:beer][:cellar_note])
       @beer.save!
       
@@ -231,6 +239,102 @@ class Admin::BeersController < ApplicationController
     render :partial => 'admin/beers/clean_location'
   end
   
+  def add_drink_to_brewery
+    # find beer being deleted
+    @temp_drink = TempBeer.find_by_id(params[:id])
+    @brewery_id = @temp_drink.brewery_id
+    
+    # add data to permanent drink table
+    @perm_drink = Beer.create(@temp_drink.attributes.merge({:vetted => nil}))
+    
+    # change associations in user_beer_ratings table
+    @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id, admin_vetted: false)
+    if !@user_beer_ratings_to_change.empty?
+      @user_beer_ratings_to_change.each do |beers|
+        UserBeerRating.update(beers.id, beer_id: @perm_drink.id)
+      end
+    end
+    # change associations in user_beer_trackings table
+    @user_wishlist_to_change = Wishlist.where(beer_id: @temp_drink.id, admin_vetted: false)
+    if !@user_wishlist_to_change.empty?
+      @user_wishlist_to_change.each do |beers|
+        Wishlist.update(beers.id, beer_id: @perm_drink.id)
+      end
+    end
+    # change associations in user_supplies table
+    @user_supplies_to_change = UserSupply.where(beer_id: @temp_drink.id, admin_vetted: false)
+    if !@user_supplies_to_change.empty?
+      @user_supplies_to_change.each do |beers|
+        UserSupply.update(beers.id, beer_id: @perm_drink.id)
+      end
+    end
+    
+    # then delete associations with this beer in the collab table
+    @collab_associations = BeerBreweryCollab.where(beer_id: @temp_drink.id)
+    if !@collab_associations.empty?
+      @collab_associations.delete_all
+    end
+    
+    # then delete this instance of the beer
+    @temp_drink.destroy
+  
+    redirect_to admin_brewery_beers_path(@brewery_id)
+  end # end add_drink_to_brewery action
+  
+  def delete_drink_from_brewery_prep
+    # pull full list of beers--for delete option
+    @beers = Beer.all.order(beer_name: :asc, id: :desc)
+    
+    @temp_drink = TempBeer.find_by_id(params[:id])
+    
+    # to create a new beer instance
+    @beer = Beer.new
+    
+    render :partial => 'admin/beers/delete_temp_beer'
+  end # end delete_drink_from_brewery_prep action
+  
+  def delete_drink_from_brewery
+    # find beer being deleted
+    @beer = TempBeer.find_by_id(params[:id])
+    @brewery_id = @beer.brewery_id
+    
+    # add name of beer being deleted to alt beer name table
+    AltBeerName.create(name: @beer.beer_name, beer_id: params[:beer][:id])
+    
+    # change associations in user_beer_ratings table
+    @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @beer.id, admin_vetted: false)
+    if !@user_beer_ratings_to_change.empty?
+      @user_beer_ratings_to_change.each do |beers|
+        UserBeerRating.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
+    # change associations in user_beer_trackings table
+    @user_wishlist_to_change = Wishlist.where(beer_id: @beer.id, admin_vetted: false)
+    if !@user_wishlist_to_change.empty?
+      @user_wishlist_to_change.each do |beers|
+        Wishlist.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
+    # change associations in user_supplies table
+    @user_supplies_to_change = UserSupply.where(beer_id: @beer.id, admin_vetted: false)
+    if !@user_supplies_to_change.empty?
+      @user_supplies_to_change.each do |beers|
+        UserSupply.update(beers.id, beer_id: params[:beer][:id])
+      end
+    end
+    
+    # then delete associations with this beer in the collab table
+    @collab_associations = BeerBreweryCollab.where(beer_id: @beer.id)
+    if !@collab_associations.empty?
+      @collab_associations.delete_all
+    end
+    
+    # then delete this instance of the beer
+    @beer.destroy
+  
+    redirect_to admin_brewery_beers_path(@brewery_id)
+  end # end delete_drink_from_brewery action
+  
   def descriptors
     #Rails.logger.debug("Descriptors is called too")
     descriptors = Beer.descriptor_counts.by_tag_name(params[:q]).map{|t| {id: t.name, name: t.name }}
@@ -254,7 +358,7 @@ class Admin::BeersController < ApplicationController
       params.require(:beer).permit(:beer_name, :beer_type, :beer_rating_one, :number_ratings_one, :beer_rating_two, 
       :number_ratings_two, :beer_rating_three, :number_ratings_three,:beer_abv, :beer_ibu, :brewery_id, :beer_image, 
       :speciality_notice, :descriptor_list_tokens, :original_descriptors, :hops, :grains, :brewer_description, :beer_type_id,
-      :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user, :user_addition, :dont_include, :cellar_note)
+      :rating_one_na, :rating_two_na, :rating_three_na, :touched_by_user, :user_addition, :vetted, :cellar_note)
     end
     
     def beer_name_params

@@ -3,7 +3,7 @@ module RetailerDrinkHelp
   
   def retailer_drink_help(draft_board_id)
     # set admin emails to receive updates
-    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+    @admin_emails = ["carl@drinkknird.com"]
     
     # get location info
     @location_id = DraftBoard.where(id: draft_board_id).pluck(:location_id)[0]

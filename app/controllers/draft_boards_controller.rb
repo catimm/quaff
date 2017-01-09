@@ -327,7 +327,7 @@ class DraftBoardsController < ApplicationController
   
   def create_new_drink
     # set admin emails to receive updates
-    @admin_emails = ["tony@drinkknird.com", "carl@drinkknird.com"]
+    @admin_emails = ["carl@drinkknird.com"]
     # get retailer info
     @retail_id = session[:retail_id]
     @retailer = Location.find(@retail_id)
