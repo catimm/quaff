@@ -1,0 +1,52 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-early-signup">
+		<%= render 'early_signup_guide' %>
+	</div>
+    <% if @view == "code" %>
+    	<%= render 'code_verification' %>  
+    <% elsif @view == "account" %>
+    	<%= render 'account_info' %>  
+    <% else %>
+    	<%= render 'billing_info' %>
+    <% end %>
+<div id="early_code_request" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 class="getting-started-header">Request an early signup code</h3>
+	</div>
+	<div class="modal-body initial-message-after-signup">
+		<div class="row no-margin">
+			<%= simple_form_for @request_invitation, :url => {:controller => "signup", :action => "request_code"} do |invite| %>
+				<div class="row no-margin">
+					<div class="col-xs-3 no-padding-right">
+						<%= label :first_name, 'First name' %>
+					</div>
+					<div class="col-xs-9">
+						<%= invite.input :first_name, input_html: { class: "form-control" }, placeholder: "What should we call you?", required: true, label: false %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-3 no-padding-right">
+						<%= label :email, 'Email' %>
+					</div>
+					<div class="col-xs-9">
+						<%= invite.input :email, input_html: { class: "form-control" }, placeholder: "What is your email address?", required: true, label: false %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-1"></div>
+					<div class="col-xs-10">
+						<%= invite.submit "Submit", class: "btn btn-default btn-success formButton-invitation-request" %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</div> 
+</div>
+<%= render 'layouts/footer' %>

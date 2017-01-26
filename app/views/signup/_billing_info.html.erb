@@ -1,10 +1,4 @@
 <div class="container">
-	<div class="row">
-		<div class="col-xs-0 col-sm-1 col-md-0"></div>
-		<div class="col-xs-12 col-sm-10 col-md-12">
-			<h3 class="index-section-header">Knird membership plans are literally the best thing you will see today</h3> 
-		</div>
-	</div>
 	<div class="row value-prop-row">
 		<div class="col-sm-4">
 			<div class="row homepage-plan-options">
@@ -39,6 +33,24 @@
 								</sup>
 							</h5>
 							<h2 class="retailer-plan-cost">$12<span class="with-contract">/mo</span></h2>
+						</div>
+					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding early-plan-button-container">
+							<%= form_tag process_early_user_plan_choice_path("one_month", @early_user.id), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_month"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="1 month Plan @ $12/mo" 
+					          		data-currency="USD" 
+					          		data-label="Start with the 1 month plan"
+					          		data-email="<%= @early_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
 						</div>
 					</div>
 				</div>
@@ -83,6 +95,24 @@
 							<h2 class="retailer-plan-cost">$10<span class="with-contract">/mo</span></h2>
 						</div>
 					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding early-plan-button-container">
+							<%= form_tag process_early_user_plan_choice_path("three_month", @early_user.id), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="three_month"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="3 month Plan @ $10/mo" 
+					          		data-currency="USD" 
+					          		data-label="Start with the 3 month plan"
+					          		data-email="<%= @early_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -125,14 +155,26 @@
 							<h2 class="retailer-plan-cost">$8<span class="with-contract">/mo</span></h2>					
 						</div>
 					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding early-plan-button-container">
+							<%= form_tag process_early_user_plan_choice_path("twelve_month", @early_user.id), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="twelve_month"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="12 month Plan @ $8/mo" 
+					          		data-currency="USD" 
+					          		data-label="Start with the 12 month plan"
+					          		data-email="<%= @early_user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="row no-margin">
-		<div class="col-sm-4"></div>
-		<div class="col-sm-4">
-			<%= link_to "Get started", early_signup_path("code"), :anchor => "homepage-get-started-box", class: 'btn btn-default btn-success formButton-get-started-bottom-homepage' %>
 		</div>
 	</div>
 </div>

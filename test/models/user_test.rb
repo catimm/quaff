@@ -33,6 +33,8 @@
 #  birthday               :datetime
 #  user_graphic           :string
 #  user_color             :string
+#  special_code           :string
+#  tpw                    :string
 #
 
 require 'test_helper'

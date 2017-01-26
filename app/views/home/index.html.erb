@@ -18,20 +18,15 @@
 			                </h1>
 			                <h3 class="brand-subfont"><span class="homepage-emphasis">100% enjoyment</span>. 0% hassle.</h3>
 			            </div>
-			            <div class="col-xs-0 col-sm-1"></div>
-			        	<div class="col-xs-12 col-sm-5">
-			        		<div id="homepage-get-started-box">
-								<% if @view == "original" %>
-									<%= render 'zip_search_box' %>
-								<% end %>
-			        		</div>
-			        	</div>
-
 			    	</div>
 		        </div>
 	        </header>
-	        <!-- /.row -->	
+	        <!-- /.row -->
 	        <div id="home-scroller-anchor"></div>
+	        <section class="background-light about-us-section">
+	   			<%= render 'about_us_section' %>
+	        </section>
+	        <!-- /.row -->	
 	        <section class="background-dark value-prop-section">
 	   			<%= render 'value_prop_section' %>
 	        </section>

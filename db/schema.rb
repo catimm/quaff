@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170107011013) do
+ActiveRecord::Schema.define(version: 20170123224210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,6 +224,13 @@ ActiveRecord::Schema.define(version: 20170107011013) do
     t.integer  "drink_option_id"
     t.integer  "max_large_format"
     t.integer  "max_cellar"
+  end
+
+  create_table "discount_codes", force: :cascade do |t|
+    t.string   "discount_code"
+    t.integer  "user_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "draft_boards", force: :cascade do |t|
@@ -510,6 +517,7 @@ ActiveRecord::Schema.define(version: 20170107011013) do
     t.text     "special_instructions"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.boolean  "location_type"
   end
 
   create_table "user_drink_recommendations", force: :cascade do |t|
@@ -627,6 +635,8 @@ ActiveRecord::Schema.define(version: 20170107011013) do
     t.datetime "birthday"
     t.string   "user_graphic"
     t.string   "user_color"
+    t.string   "special_code"
+    t.string   "tpw"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

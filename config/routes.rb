@@ -104,11 +104,18 @@ Rails.application.routes.draw do
   
   # user signup process
   get '/signup/getting_started/:id' => 'signup#getting_started', :as => 'getting_started'
+  get '/signup/early_signup/:id' => 'signup#early_signup', :as => 'early_signup'
+  post '/signup/request_code' => 'signup#request_code', :as => 'request_code'
+  get '/signup/request_verification/:id' => 'signup#request_verification', :as => 'request_verification'
+  post '/signup/code_verification/:id' => 'signup#code_verification', :as => 'code_verification'
+  get '/signup/early_signup_confirmation/:id' => 'signup#early_signup_confirmation', :as => 'early_signup_confirmation'
   post '/signup/process_input/:id' => 'signup#process_input', :as => 'process_input'
   post '/signup/process_style_input/:id' => 'signup#process_style_input'
   post '/signup/process_drinks_per_week/:id' => 'signup#process_drinks_per_week'
   post '/signup/process_user_plan_choice/:id' => 'signup#process_user_plan_choice', :as => 'process_user_plan_choice'  
+  post '/signup/process_early_user_plan_choice/:id' => 'signup#process_early_user_plan_choice', :as => 'process_early_user_plan_choice' 
   patch '/signup/account_info_process' => 'signup#account_info_process', :as => 'account_info_process'
+  post '/signup/early_account_info' => 'signup#early_account_info', :as => 'early_account_info'
   
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"

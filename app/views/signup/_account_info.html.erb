@@ -1,0 +1,115 @@
+<div class="row">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-sm-1"></div>
+			<div class="col-xs-12 col-sm-10 delivery-thoughts-container">
+				<h5 class="delivery-thoughts-text">A couple thoughts when choosing your delivery address below:</h5>
+				<ul>
+					<li>
+						<h5 class="delivery-thoughts-text">
+							Alcohol must be delivered to someone who is 21+; please consider that when choosing home or 
+							work as a delivery location.
+					</li>
+					<li>
+						<h5 class="delivery-thoughts-text zip-code-neighborhoods">
+							Initially we'll deliver to your home or work in Amazon's downtown offices, Bellevue, Capitol 
+							Hill, Central District, Downtown Seattle, Eastlake, Magnolia, Madison Park, Microsoft's main 
+							campus, Montlake, Westlake, and Queen Anne.
+							<span id="zip-code-toggle-show" class="zip-code-toggle show">show zip codes</span>
+							<span id="zip-code-list" class="delivery-thoughts-text hidden">
+								Zip codes: 98004, 98101, 98102, 98104, 98109, 98112, 98119, 98121, 98122, 98199.
+							<span id="zip-code-toggle-hide" class="zip-code-toggle hidden">hide zip codes</span>
+							</span>
+						</h5>
+					</li>
+					<li>
+						<h5 class="delivery-thoughts-text">
+							If you don't see your neighborhood, sign up anyway! We'll expand quickly, and you 
+							could influence where we go next.
+						</h5>
+					</li>
+					<li>
+						<h5 class="delivery-thoughts-text">
+							Knird's delivery case is low-profile to avoid undue attention in the workplace.
+						</h5>
+					</li>
+				</ul>
+				
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row early-signup-form-section">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<div class="row no-margin user-info-form">
+					<h4 class="signup-form-header personal-info">Personal info</h4>
+					<%= simple_form_for @user, :url => {:controller => "signup", :action => "early_account_info"}, :html => { :class => 'form-horizontal' } do |f| %>
+						<label for="first_name_field" class="col-xs-4 col-sm-3 control-label">First name</label>
+						<div class="col-xs-8 col-sm-9">
+							<%= f.input :first_name, input_html: { class: "form-control", id: "first_name_field" }, placeholder: "First name", label: false, required: true %>
+						</div>
+						<label for="last_name_field" class="col-xs-4 col-sm-3 control-label">Last name</label>
+						<div class="col-xs-8 col-sm-9">
+							<%= f.input :last_name, input_html: { class: "form-control", id: "last_name_field" }, placeholder: "Last name", label: false, required: true %>
+						</div>
+						<label for="email_field" class="col-xs-4 col-sm-3 control-label">Email</label>
+						<div class="col-xs-8 col-sm-9">
+							<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+						</div>
+						<label for="birthdate_field" class="col-xs-4 col-sm-3 control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label> 
+						<div class="col-xs-8 col-sm-9">
+							<%= f.input :birthday, as: :string, input_html: { type: :date, class: "form-control", id: "birthdate_field" }, placeholder: "Birthdate", label: false, required: true %>
+						</div>
+						<%= f.input :special_code, :as => :hidden, :input_html => { :value => @code } %>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6">
+					<div class="row no-margin user-info-form">
+						<h4 class="signup-form-header delivery-info">Delivery info</h4>
+						<%= f.simple_fields_for :user_delivery_addresses, UserDeliveryAddress.new do |address| %>
+							<%= address.input :city, :as => :hidden %>
+							<%= address.input :state, :as => :hidden %>
+							<label for="address_one_field" class="col-xs-4 col-sm-3 control-label">Location type</label>
+							<div class="col-xs-8 col-sm-9">
+							<%= address.input :location_type, :collection => [[true, 'Work'], [false, 'Home']],
+																:label_method => :last,
+																:value_method => :first,
+																:as => :radio_buttons,
+																input_html: { class: "radio-inline", id: "location_type_field" },
+																label: false, required: true %>
+							</div>
+							<label for="address_one_field" class="col-xs-4 col-sm-3 control-label">Address</label>
+							<div class="col-xs-8 col-sm-9">
+								<%= address.input :address_one, input_html: { class: "form-control", id: "address_one_field" }, placeholder: "Delivery Street Address", label: false, required: true %>
+							</div>
+							<label for="address_two_field" class="col-xs-4 col-sm-3 control-label">Unit/Floor</label>
+							<div class="col-xs-8 col-sm-9">
+								<%= address.input :address_two, input_html: { class: "form-control", id: "address_two_field" }, placeholder: "Extra delivery info (Floor, Unit, Apt, etc.)", label: false %>
+							</div>
+							<label for="zip_code_field" class="col-xs-4 col-sm-3 control-label">Zip code</label>
+							<div class="col-xs-8 col-sm-9">
+								<%= address.input :zip, input_html: { class: "form-control", id: "zip_code_field" }, placeholder: "Zip Code", label: false, required: true %>
+							</div>
+							<label for="instructions_field" class="col-xs-4 col-sm-3 control-label">Special instructions</label>
+							<div class="col-xs-8 col-sm-9">
+								<%= address.input :special_instructions, input_html: { class: "form-control", id: "instructions_field" }, placeholder: "Any special instructions for deliveries?", label: false %>
+							</div>
+						<% end %>
+					</div>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-0 col-sm-4"></div>
+				<div class="col-xs-12 col-sm-4 text-center">
+					<%= f.submit "Create Account", class: "btn btn-default btn-success formButton" %>
+					<h5 class="terms-and-conditions-text">By clicking 'Create Account', you agree to our 
+							<%= link_to "terms", terms_path %> and <%= link_to "privacy policy", privacy_path %>.
+					</h5>
+				</div>
+			</div>
+			
+			<% end %>
+	</div>
+</div>

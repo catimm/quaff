@@ -16,6 +16,45 @@ $(function() {
 	  $(".spinner-signup").delay(500).hide(0);
 	});
   
+  // set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	// clear invalid response 
+	$(document).on("keyup", "#discount_code", function() {
+		$('#invalid_code').addClass('hidden');
+	});
+	
+	// search for discount code to see if valid
+	$(document).on("click", ".code-verification-next-button", function() {
+		value = $('#discount_code').val();
+		delay(function(){
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/code_verification/" + value
+			});
+	    }, 500 );
+	});
+	
+	// show zip codes
+	$(document).on("click", "#zip-code-toggle-show", function() {
+		$(this).removeClass("show").addClass("hidden");
+		$('#zip-code-list').removeClass("hidden").addClass("show");
+		$('#zip-code-toggle-hide').removeClass("hidden").addClass("show");
+	});
+	
+	// hide zip codes
+	$(document).on("click", "#zip-code-toggle-hide", function() {
+		$(this).removeClass("show").addClass("hidden");
+		$('#zip-code-list').removeClass("show").addClass("hidden");
+		$('#zip-code-toggle-show').removeClass("hidden").addClass("show");
+	});
+	
 	// change unsaved back to true if save button is clicked
 	$(document).on('click', '#update_delivery_preferences_button', function () {
 	    unsaved = false;
@@ -26,15 +65,6 @@ $(function() {
 	        return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
 	    }
 	});
-
-	// set delay function
-	var delay = (function(){
-	  var timer = 0;
-	  return function(callback, ms){
-	    clearTimeout (timer);
-	    timer = setTimeout(callback, ms);
-	  };
-	})();
 	
 	// show welcome modal before starting signup process
 	if (gon.user_signup_step == 0) {

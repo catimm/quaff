@@ -1,5 +1,6 @@
 class SignupController < ApplicationController
-  before_filter :verify_not_complete
+  before_filter :verify_not_complete, :except => ["early_signup", "code_verification", "request_code", 
+                                                  "request_verification", "early_account_info"]
   include DeliveryEstimator
   require "stripe"
   
@@ -321,6 +322,77 @@ class SignupController < ApplicationController
     end
   end # end of signup method
   
+  def early_signup
+    # get current view
+    @view = params[:id]
+    
+    # set current page for jquery data routing
+    @current_page = "signup"
+    
+    # create User object 
+    @user = User.new
+
+    # instantiate invitation request 
+    @request_invitation = InvitationRequest.new
+    
+    if @view == "code"
+      # set guide CSS
+      @code_step = 'current'
+      
+    elsif @view == "account"
+      # set guide CSS
+      @code_step = 'complete'
+      @account_step = 'current'
+      
+      # get special code
+      @code = params[:format]
+    else
+      # set guide CSS
+      @code_step = 'complete'
+      @account_step = 'complete'
+      @billing_step = 'current'
+      
+      # get early user info
+      @early_user = User.find_by_id(params[:format])
+      
+    end # end of choosing correct step
+    
+  end # end of early signup action
+  
+  def request_code
+    @early_invitation_request = InvitationRequest.create(early_code_request_params)
+    
+    # send notification to admin
+    AdminMailer.early_code_request("carl@drinkknird.com", @early_invitation_request.first_name, @early_invitation_request.email).deliver_now
+    
+    # route to verification page
+    redirect_to request_verification_path(@early_invitation_request.first_name)
+    
+  end # end of request_code action
+  
+  def request_verification
+    @name = params[:id]
+  end # end of request_verification action
+  
+  def code_verification
+    # get special code
+    @code = params[:user][:special_code]
+    
+    @code_check = DiscountCode.where(discount_code: @code)
+    #Rails.logger.debug("Code check info: #{@code_check.inspect}")
+    
+    if !@code_check.blank?
+      render js: "window.location = '#{early_signup_path("account", @code)}'"
+      #redirect_to early_signup_path("account", @code)
+    else
+      respond_to do |format|
+        format.js
+        format.html
+      end # end of redirect to jquery
+    end
+    
+  end # end discount_code method
+  
   def process_input
     # get data
     @data = params[:id]
@@ -605,6 +677,69 @@ class SignupController < ApplicationController
     
   end # end process_user_plan_choice
   
+  def process_early_user_plan_choice
+    # get data
+    @plan_name = params[:id]
+    
+    #get user info
+    @early_user = User.find_by_id(params[:format])
+    
+    # find subscription level id
+    @subscription_info = Subscription.where(subscription_level: @plan_name).first
+
+    # set active_until date
+    if @subscription_info.id == 1
+      @active_until = Date.today + 1.month
+    elsif @subscription_info.id == 2
+      @active_until = Date.today + 3.months
+    else
+      @active_until = Date.today + 1.year
+    end
+    
+    # create a new user_subscription row
+    UserSubscription.create(user_id: @early_user.id, 
+                            subscription_id: @subscription_info.id, 
+                            active_until: @active_until,
+                            auto_renew_subscription_id: @subscription_info.id,
+                            deliveries_this_period: 0,
+                            total_deliveries: 0)
+                              
+    # create Stripe customer acct
+    customer = Stripe::Customer.create(
+            :source => params[:stripeToken],
+            :email => @early_user.email,
+            :plan => @plan_name
+          )
+
+    # assign invitation code for user to share
+    @next_available_code = DiscountCode.where(user_id: nil).first
+    @next_available_code.update(user_id: @early_user.id)
+    
+    # redirect to confirmation page
+    redirect_to early_signup_confirmation_path(@early_user.id)
+    
+  end # end process_early_user_plan_choice
+  
+  def early_signup_confirmation
+    # get user info
+    @early_user = User.find_by_id(params[:id])
+    # get user subscription info
+    @early_user_subscription = UserSubscription.find_by_user_id(params[:id])
+    if @early_user_subscription.subscription_id == 1
+      @user_subscription = "1 month"
+    elsif @early_user_subscription.subscription_id == 2
+      @user_subscription = "3 month"
+    else
+      @user_subscription = "12 month"
+    end
+    # get user's invitation code
+    @user_invitation_code = DiscountCode.where(user_id: params[:id]).first
+    
+    # send early signup follow-up email
+    UserMailer.early_signup_followup(@early_user, @user_subscription, @user_invitation_code.discount_code).deliver_now
+    
+  end # end of early_signup_confirmation action
+  
   def account_info_process
     @zip = params[:user][:user_delivery_addresses_attributes]["0"][:zip]
     params[:user][:user_delivery_addresses_attributes]["0"][:city] = @zip.to_region(:city => true)
@@ -662,13 +797,43 @@ class SignupController < ApplicationController
     redirect_to user_delivery_settings_path(current_user.id)
   end # end account_info_process method
   
+  def early_account_info
+    # get zip and find city/state
+    @zip = params[:user][:user_delivery_addresses_attributes]["0"][:zip]
+    params[:user][:user_delivery_addresses_attributes]["0"][:city] = @zip.to_region(:city => true)
+    params[:user][:user_delivery_addresses_attributes]["0"][:state] = @zip.to_region(:state => true)
+    # create user friendly temporary password
+    generated_password = Devise.friendly_token.first(8)
+    params[:user][:password] = generated_password
+    params[:user][:tpw] = generated_password
+    @user = User.create(early_user_params)
+    
+    # update user color
+    @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+    @user.update(user_color: @user_color)
+    
+    redirect_to early_signup_path("billing", @user.id)
+  end # end early_account_info method
+  
   private
   def verify_not_complete
     redirect_to user_supply_path(current_user.id, 'cooler') unless current_user.getting_started_step.nil? || current_user.getting_started_step < 10 || current_user.role_id == 1
   end
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :username, user_delivery_addresses_attributes: [:address_one, 
-                                  :address_two, :city, :state, :zip, :special_instructions ])  
+    params.require(:user).permit(:first_name, :last_name, :email, :birthday, 
+                                  user_delivery_addresses_attributes: [:address_one, :address_two, :city, :state, 
+                                  :zip, :special_instructions, :location_type ])  
   end
+  
+  def early_user_params
+    params.require(:user).permit(:password, :first_name, :last_name, :email, :birthday, :special_code, :tpw,
+                                  user_delivery_addresses_attributes: [:address_one, :address_two, :city, :state, 
+                                  :zip, :special_instructions, :location_type ])  
+  end
+  
+  def early_code_request_params
+    params.require(:invitation_request).permit(:first_name, :email)  
+  end
+  
 end # end of controller

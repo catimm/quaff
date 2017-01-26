@@ -28,13 +28,15 @@ $(function () {
 			if ( window.location.pathname == '/' ) {
 			//if(window.location.href.indexOf("reloads") > -1) {
 			    var move = function() {
-			        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight() + 5;
+			        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight();
 			        var ot = $("#home-scroller-anchor").offset().top;
 			        if(st > ot) {
 			            $("#home-header-get-started-button").removeClass("hidden").addClass("show");
+			            $("#home-navbar").addClass("common_navbar");
 			        } else {
 			            if(st <= ot) {
 			                $("#home-header-get-started-button").removeClass("show").addClass("hidden");
+			                $("#home-navbar").removeClass("common_navbar");
 			            }
 			        }
 			    };

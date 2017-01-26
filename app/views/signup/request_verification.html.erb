@@ -1,0 +1,18 @@
+<%= render 'layouts/header_early_signup' %> 
+<div class="row early-signup-verification-section">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-0 col-sm-3"></div>
+			<div class="col-xs-12 col-sm-6">
+				<h3 class="request-confirmation-text">Hi <span class="request-confirmation-name"><%= @name %></span>. Thanks for your interest in Knird! We got your request and we'll be in touch soon.</h3>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-0 col-sm-4"></div>
+			<div class="col-xs-12 col-sm-4">
+				<%= link_to "Return to homepage", root_path, class: "btn btn-default btn-success formButton-get-started-bottom-homepage" %>
+			</div>
+		</div>
+	</div>	
+</div>
+<%= render 'layouts/footer' %>

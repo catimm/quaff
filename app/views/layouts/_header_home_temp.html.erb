@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-fixed-top homeNavbar" role="navigation">
+<nav id="home-navbar" class="navbar navbar-default navbar-fixed-top homeNavbar" role="navigation">
     <div class="container">
     	<div class="row no-margin">
     		<div class="col-xs-0 col-sm-4"></div>   
@@ -8,7 +8,7 @@
         	</div>	
         	<div class="col-xs-0 col-sm-1"></div>
 	    	<div class="col-xs-6 col-sm-2 hidden" id="home-header-get-started-button">
-			    <%= link_to "Get started", "#", :anchor => "homepage-get-started-box", class: 'btn btn-default btn-success formButton-home-header-get-started-button' %>         	
+			    <%= link_to "Get started", early_signup_path("code"), :anchor => "homepage-get-started-box", class: 'btn formButton-home-header-get-started-button' %>         	
 	       	</div>
     		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
                 <span class="sr-only">Toggle navigation</span>

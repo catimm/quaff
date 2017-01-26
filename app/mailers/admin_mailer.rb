@@ -52,32 +52,27 @@ class AdminMailer < ActionMailer::Base
   end # end of delivery_date_change_notice email
   
   
-  def info_requested_email(admin_email, name, email)
-    #Rails.logger.debug("Name: #{name.inspect}")
-    #Rails.logger.debug("Email: #{email.inspect}")
-    # determine if this is prod environment
-    @prod = User.where(email: "carl@drinkknird.com")[0]
-    # mandrill template info
-    template_name = "info-requested-email"
-    template_content = []
-    message = {
-      merge: true,
-      to: [
-        {:email => admin_email}
+  def early_code_request(admin_email, requestor_name, requestor_email)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
       ],
-      inline_css: true,
-      merge_vars: [
-        { rcpt: admin_email,
-          vars: [
-             {name: "name", content: name},
-             {name: "email", content: email}
-           ]
-         }
-      ]
+      content: {
+        template_id: 'early-code-request'
+      },
+      substitution_data: {
+        requestor_name: requestor_name,
+        requestor_email: requestor_email
+      }
     }
-    if !@prod.nil?
-      mandrill_client.messages.send_template template_name, template_content, message
-    end
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+
   end # end of user added email
   
   def porting_details_email(username, total_drinks, total_drinks_added, total_new_breweries, total_new_drinks, new_drink_info, new_drink_info_count, no_beer_type_id, no_beer_type_id_count)

@@ -305,19 +305,26 @@ label {
   font-size: 12px;
 }
 // Index page
-.banner {
-   min-height: 90vh;
-}
-
 .homepage-emphasis {
   color: $action-background
+}
+.banner {
+    min-height: 100vh;
+    background: url("https://s3-us-west-2.amazonaws.com/knird/banner.jpg") no-repeat fixed center center / cover transparent;
+    background-clip: border-box;
+    background-origin: padding-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 .valueStatement {
   padding: 13% 0 20px 0;
   height:90vh;
   width: 100%;
   position: fixed;
-  color: $normal-text;
+  color: $white;
+  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
   text-align: left;
   div {
     h1.brand-subfont {
@@ -431,6 +438,18 @@ label {
   text-align: center;
   margin: 35px 0;
 }
+.about-us-text {
+  color: $normal-text;
+  text-align: justify;
+  line-height: 2;
+  font-size: 20px;
+}
+.about-us-text-emphais {
+  color: $action-background;
+}
+.about-us-text.second-about-us-paragraph {
+  margin: 20px 0 30px 0;
+}
 .index-locations-list-container {
   height: 45px;
   overflow: hidden;
@@ -466,25 +485,31 @@ label {
 }
 .value-prop-section {
   margin: 0;
-  padding-bottom: 50px !important;
+  padding-bottom: 60px !important;
   div {
     text-align: center;
   }
 }
 .value-prop-row {
-  margin: 0 0 20px 0;
+  margin: 0 0 25px 0;
 }
 .value-prop-holder {
   margin: 15px 0 10px 0;
 }
 .value-header {
   color: $normal-text;
+  text-align: left;
+  font-size: 20px;
+  padding-top: 6.5px;
+  float: left;
+  width: 90%;
 }
 .value-desc {
-  width: 80%;
+  font-size: 18px;
   margin: 0 auto;
   text-align: center;
   color: $normal-text;
+  line-height: 1.2;
 }
 .how-it-works-holder-row {
   margin: 0 0 20px 0 !important;
@@ -528,9 +553,8 @@ label {
   margin: 0 22px 0 0 !important; 
 }
 .icon-background {
-  width: 80px;
-  height: 80px;
-  padding: 16px 4px 0 2px;
+  width: 90px;
+  height: 90px;
   background: $action-background;
   border: 1px solid #fff;
   border-radius: 50%;
@@ -539,6 +563,23 @@ label {
   h3 {
     color: #fff;
     margin: 0;
+    .fa-2x {
+      font-size: 2.5em;
+    }
+  }
+}
+.icon-background.heart-icon {
+  padding: 18px 0 0 2px;
+}
+.icon-background.truck-icon {
+  padding: 13px 4px 0 2px;
+}
+.icon-background.plus-icon {
+  padding: 16px 0 0 4px;
+}
+.quick-help {
+  i {
+    color: $action-background;
   }
 }
 .icon-background-alt {
@@ -558,7 +599,7 @@ label {
 .membership-plan-includes {
   color: $normal-text;
   text-align: left !important;
-  margin: 10px 0 5px -12.5px !important;
+  margin: 10px 0 5px -17.5px !important;
   sup {
     border: 1px solid $normal-text;
     border-radius: 4px;
@@ -1152,6 +1193,7 @@ p {
     height: 12px;
     padding: 1px 3px;
     margin-left: 2.5px;
+    font-size: 12px;
   }
 }
 .plan-button {
@@ -1204,7 +1246,7 @@ p {
 }
 .retail-plan-header {
   text-align: center;
-  color: $more-emphasized-text;
+  color: $user-rating-text;
   font-weight: 500;
   margin-bottom: 15px;
 }
@@ -1218,7 +1260,14 @@ p {
   text-align: left;
   color: $normal-text;
   height: 125px;
-  padding-left: 5px !important;
+  padding-left: 0 !important;
+}
+.retail-plan-feature-list-12-mo {
+  text-align: left;
+  color: $normal-text;
+  height: 125px;
+  padding-left: 0 !important;
+  width: 105%;
 }
 .retail-plan-option-or {
   color: $normal-text;
@@ -2142,7 +2191,13 @@ $beer-header-lines-to-show-fp: 1;
   border-color: #4cae4c !important;
 }
 .homeNavbar {
+  background: transparent !important;
+  border-color: transparent !important;
+  z-index: 9999;
+}
+.signup_navbar, .common_navbar {
   background: $dark-gray !important;
+  border-color: $dark-gray !important;
   z-index: 9999;
 }
 .navbar {
@@ -2185,17 +2240,19 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
 }
-.formButton-home-header-get-started-button {
+.btn.formButton-home-header-get-started-button {
   width: 100%;
   margin: 12.5px 0 0 30px !important;
   background: transparent;
   border-color: #4cae4c !important;
+  color: #4cae4c !important;
 }
-.formButton-home-get-started-button:hover {
+.btn.formButton-home-header-get-started-button:hover {
   width: 100%;
   margin-top: 7.5px;
   background: $user-action !important;
   border-color: #4cae4c !important;
+  color: $white !important;
 }
 .dropdown-toggle {
   height: 64px;
@@ -2431,7 +2488,6 @@ $beer-header-lines-to-show-fp: 1;
   margin: 10px 0;
 }
 .signup-guide-column-holder {
-  background: $gray-body-background;
   text-align: center;
   div {
     color: $signup-category-image-background-start;
@@ -2439,12 +2495,20 @@ $beer-header-lines-to-show-fp: 1;
     font-weight: 200;
     margin-top: 11px;
   }
+  a:hover {
+    text-decoration: none;
+    color: $medium-gray; 
+  }
 }
 .signup-guide-column-holder.last-column {
   min-height: 30px;
 }
 .signup-guide-column-holder.current, .signup-guide-column-holder.complete {
   background: $white;
+  a:hover {
+    text-decoration: underline;
+    color: $action-background;
+  }
 }
 .guide-header {
   color: $less-emphasized-text;
@@ -2459,6 +2523,10 @@ $beer-header-lines-to-show-fp: 1;
 }
 .first-row-signup {
   margin-top: 14.5px !important;
+  min-height: 35px;
+}
+.first-row-early-signup {
+  margin: 10px 0 10px 0 !important;
   min-height: 35px;
 }
 .first-row-container-signup {
@@ -2721,6 +2789,71 @@ $beer-header-lines-to-show-fp: 1;
 }
 .credit-card-info-text.last4 {
   padding-top: 15px;
+}
+// Early Signup Page
+.code-verification-cushion {
+  height: 30px;
+}
+#discount_code {
+  width: 85% !important;
+}
+.delivery-thoughts-container {
+  border: 1px solid $normal-text;
+  border-radius: 6px;
+}
+.delivery-thoughts-text {
+  color: $normal-text;
+}
+.early-signup-form-section {
+  margin-top: 10px;
+}
+.signup-form-header.personal-info {
+  margin: 5px 0 15px 25px !important; 
+}
+.signup-form-header.delivery-info {
+  margin: 5px 0 15px 10px !important; 
+}
+.discount-code-response {
+  color: $current-beer-attention-needed-background;
+  display: block;
+  margin: -15px 0 0 -10px !important;
+}
+.early-signup-verification-section {
+  margin-top: 25px;
+}
+.request-confirmation-text {
+  color: $normal-text;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+.request-confirmation-name {
+  color: $action-background;
+}
+.early-plan-button-container {
+  margin: 5px 0;
+}
+.early-signup-confirmation-text {
+  color: $normal-text;
+  ul {
+    margin-left: 5px;
+    li {
+      padding: 5px 0 7px 0;
+      line-height: 1.2;
+    }
+  }
+}
+.zip-code-toggle {
+  color: $action-background;
+  font-size: 13px;
+}
+.zip-code-toggle.show {
+  display: inline !important;
+}
+#zip-code-list {
+  line-height: 1.5;
+}
+.zip-code-toggle:hover {
+  text-decoration: underline;
 }
 // User Profile Page
 .first-row {
@@ -5597,7 +5730,8 @@ $delivery-beer-header-lines-to-show: 2;
   height:100%;
   width: 100%;
   position: relative;
-  color: $normal-text;
+  color: $white;
+  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
   text-align: left;
   div {
     h1.brand-subfont {
@@ -5625,14 +5759,14 @@ $delivery-beer-header-lines-to-show: 2;
   margin-right: 4px;
 }
 .how-it-works-desc {
-  width: 84%;
+  
 }
 
 .vertical-dotted-line {
   height: 80px;
 }
 .membership-plan-includes {
-  margin-left: 5px !important;
+  margin-left: 0 !important;
 }
 .homepage-plan-options {
   text-align: center;

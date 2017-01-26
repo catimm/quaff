@@ -27,7 +27,31 @@ class UserMailer < ActionMailer::Base
     p response
     
   end # end of select_invite_email email
+  
+  def early_signup_followup(customer, membership, invitation_code)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'early-signup-invite'
+      },
+      substitution_data: {
+        early_user: customer.first_name,
+        membership: membership,
+        invitation_code: invitation_code
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of early_signup_followup email
+  
   def customer_delivery_review(customer, delivery_info, delivery_drinks, total_quantity)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     @review_date = (delivery_info.delivery_date - 1.day)

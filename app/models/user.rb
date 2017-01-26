@@ -33,6 +33,8 @@
 #  birthday               :datetime
 #  user_graphic           :string
 #  user_color             :string
+#  special_code           :string
+#  tpw                    :string
 #
 
 class User < ActiveRecord::Base
@@ -67,6 +69,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :user_delivery_addresses, :allow_destroy => true
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
+  attr_accessor :valid_discount_code # to hold list of top drink descriptors
   
   # set user roles for cancancan
   def super_admin?
