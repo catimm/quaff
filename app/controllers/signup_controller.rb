@@ -726,11 +726,17 @@ class SignupController < ApplicationController
     # get user subscription info
     @early_user_subscription = UserSubscription.find_by_user_id(params[:id])
     if @early_user_subscription.subscription_id == 1
-      @user_subscription = "1 month"
+      @user_subscription = "1-month"
+      @bottle_caps = "40"
+      @number_of_drinks = "one free drink"
     elsif @early_user_subscription.subscription_id == 2
-      @user_subscription = "3 month"
+      @user_subscription = "3-month"
+      @bottle_caps = "80"
+      @number_of_drinks = "two free drinks"
     else
-      @user_subscription = "12 month"
+      @user_subscription = "12-month"
+      @bottle_caps = "120"
+      @number_of_drinks = "three free drinks"
     end
     # get user's invitation code
     @user_invitation_code = DiscountCode.where(user_id: params[:id]).first

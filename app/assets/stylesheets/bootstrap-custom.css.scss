@@ -498,18 +498,16 @@ label {
 }
 .value-header {
   color: $normal-text;
-  text-align: left;
+  text-align: justify;
   font-size: 20px;
-  padding-top: 6.5px;
   float: left;
   width: 90%;
 }
 .value-desc {
   font-size: 18px;
   margin: 0 auto;
-  text-align: center;
   color: $normal-text;
-  line-height: 1.2;
+  line-height: 1.5;
 }
 .how-it-works-holder-row {
   margin: 0 0 20px 0 !important;
@@ -2854,6 +2852,18 @@ $beer-header-lines-to-show-fp: 1;
 }
 .zip-code-toggle:hover {
   text-decoration: underline;
+}
+.early-signup-checkout-extra-note {
+  color: $normal-text;
+  text-align: justify;
+  float: left;
+}
+.early-signup-checkout-extra-note.asterisk {
+  margin-top: 5px;
+}
+.early-signup-checkout-extra-note.note-text {
+  width: 97%;
+  margin-left: 5px;
 }
 // User Profile Page
 .first-row {
