@@ -5759,24 +5759,91 @@ $delivery-beer-header-lines-to-show: 2;
 .homepage-or-try-another-zip {
   margin: 10px 0 0 0 !important;
 }
+.about-us-text {
+  line-height: 1.5;
+  font-size: 16px;
+}
+.value-prop-holder {
+  margin: 0 !important;
+}
+.icon-background {
+  width: 60px;
+  height: 60px;
+  h3 {
+    margin: 0;
+    .fa-2x {
+      font-size: 1.5em;
+    }
+  }
+}
+.icon-background.heart-icon {
+  padding: 12px 0 0 0;
+}
+.icon-background.truck-icon {
+  padding: 10px 4px 0 0;
+}
+.icon-background.plus-icon {
+  padding: 13px 0 0 1px;
+}
+.value-header {
+  font-size: 16px;
+}
+.value-desc {
+  font-size: 16px;
+}
+.how-it-works-number {
+  border: 1px solid $action-background;
+  height: 30px;
+  width: 30px;
+  padding: 3px 5px 5px 5px;
+  h1 {
+    font-size: 150%;
+    font-weight: 400;
+    margin: 0 0 3px 3px;
+  }
+}
 .how-it-works-text-holder {
-  margin-top: 16px;
+  margin-top: 3px;
   padding-left: 5px;
   padding-right: 0;
 }
 
 .how-it-works-icon-holder {
-  margin-right: 4px;
+  display: none;
 }
 .how-it-works-desc {
-  
+  font-size: 16px;
 }
-
 .vertical-dotted-line {
-  height: 80px;
+  height: 60px;
+  margin: 0 8px 0 0 !important;
 }
 .membership-plan-includes {
   margin-left: 0 !important;
+}
+.retail-plan-header {
+  color: $user-rating-text;
+  font-weight: 400;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+.mobile-membership-plan-list {
+  padding: 0 10px !important;
+}
+.contract-type-header {
+  margin-top: 50px;
+}
+.contract-type-header.mobile-early-signup-1-mo {
+  margin-top: 40px;
+}
+.contract-type-header.mobile-early-signup-3-mo {
+  margin-top: 100px;
+}
+.contract-type-header.mobile-early-signup-12-mo {
+  margin-top: 120px;
+}
+.early-signup-checkout-extra-note.note-text {
+  width: 94%;
 }
 .homepage-plan-options {
   text-align: center;
@@ -5824,6 +5891,32 @@ $delivery-beer-header-lines-to-show: 2;
   width: 100%;
   background: $step-background;
   margin-top: 10px;
+}
+// Early signup
+.guide-header {
+  margin-top: 10px;
+  font-size: 13px; 
+  span {
+    display: none;
+  }
+}
+.guide-header.current {
+  font-size: 14px;
+  margin-top: 10px;
+  span {
+    display: none;
+  }
+}
+#new_user {
+  label, div {
+    padding: 0 !important;
+  }
+}
+.request-confirmation-text {
+  font-size: 18px;
+}
+.early-signup-confirmation-text {
+  font-size: 14px;
 }
 // Retailer index page
 .banner-xs-retail {

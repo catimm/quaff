@@ -1,6 +1,7 @@
 class SignupController < ApplicationController
   before_filter :verify_not_complete, :except => ["early_signup", "code_verification", "request_code", 
-                                                  "request_verification", "early_account_info"]
+                                                  "request_verification", "early_account_info", 
+                                                  "process_early_user_plan_choice", "early_signup_confirmation"]
   include DeliveryEstimator
   require "stripe"
   
