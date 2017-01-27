@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: reward_points
+#
+#  id                         :integer          not null, primary key
+#  user_id                    :integer
+#  total_points               :float
+#  transaction_points         :float
+#  reward_transaction_type_id :integer
+#  beer_id                    :integer
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  total_points: 1.5
+  transaction_points: 1.5
+  reward_transaction_type_id: 1
+  beer_id: 1
+
+two:
+  user_id: 1
+  total_points: 1.5
+  transaction_points: 1.5
+  reward_transaction_type_id: 1
+  beer_id: 1

@@ -379,7 +379,7 @@ class SignupController < ApplicationController
     # get special code
     @code = params[:user][:special_code]
     
-    @code_check = DiscountCode.where(discount_code: @code)
+    @code_check = SpecialCode.where(special_code: @code)
     #Rails.logger.debug("Code check info: #{@code_check.inspect}")
     
     if !@code_check.blank?
@@ -392,7 +392,7 @@ class SignupController < ApplicationController
       end # end of redirect to jquery
     end
     
-  end # end discount_code method
+  end # end special_code method
   
   def process_input
     # get data
@@ -684,17 +684,24 @@ class SignupController < ApplicationController
     
     #get user info
     @early_user = User.find_by_id(params[:format])
+    Rails.logger.debug("Early user info: #{@early_user.inspect}")
     
     # find subscription level id
     @subscription_info = Subscription.where(subscription_level: @plan_name).first
 
-    # set active_until date
+    # set active_until date and reward point info
     if @subscription_info.id == 1
       @active_until = Date.today + 1.month
+      @bottle_caps = 40
+      @reward_transaction_typ_id = 4
     elsif @subscription_info.id == 2
       @active_until = Date.today + 3.months
+      @bottle_caps = 80
+      @reward_transaction_typ_id = 5
     else
       @active_until = Date.today + 1.year
+      @bottle_caps = 120
+      @reward_transaction_typ_id = 6
     end
     
     # create a new user_subscription row
@@ -713,9 +720,26 @@ class SignupController < ApplicationController
           )
 
     # assign invitation code for user to share
-    @next_available_code = DiscountCode.where(user_id: nil).first
+    @next_available_code = SpecialCode.where(user_id: nil).first
     @next_available_code.update(user_id: @early_user.id)
     
+    # award reward points to @early_user for signup up early
+    RewardPoint.create(user_id: @early_user.id, total_points: @bottle_caps, transaction_points: @bottle_caps,
+                        reward_transaction_type_id: @reward_transaction_typ_id) 
+
+    # find user id of person who invited the early user
+    @invitor = SpecialCode.where(special_code: @early_user.special_code).first
+    Rails.logger.debug("Invitor info: #{@invitor.inspect}")
+    
+    # award reward points to person who invited the early user
+    if @invitor.user.role_id != 1 || @invitor.user.role_id != 2 # make sure invitor is not an admin
+      @invitor_current_reward_points = RewardPoint.where(user_id: @invitor.user_id).first
+      @new_total_points = @invitor_current_reward_points.total_points + 30
+      
+      RewardPoint.create(user_id: @invitor.user_id, total_points: @new_total_points, transaction_points: 30,
+                          reward_transaction_type_id: 1) 
+    end
+                     
     # redirect to confirmation page
     redirect_to early_signup_confirmation_path(@early_user.id)
     
@@ -740,10 +764,10 @@ class SignupController < ApplicationController
       @number_of_drinks = "three free drinks"
     end
     # get user's invitation code
-    @user_invitation_code = DiscountCode.where(user_id: params[:id]).first
+    @user_invitation_code = SpecialCode.where(user_id: params[:id]).first
     
     # send early signup follow-up email
-    UserMailer.early_signup_followup(@early_user, @user_subscription, @user_invitation_code.discount_code).deliver_now
+    UserMailer.early_signup_followup(@early_user, @user_subscription, @user_invitation_code.special_code).deliver_now
     
   end # end of early_signup_confirmation action
   
@@ -813,6 +837,7 @@ class SignupController < ApplicationController
     generated_password = Devise.friendly_token.first(8)
     params[:user][:password] = generated_password
     params[:user][:tpw] = generated_password
+    params[:user][:role_id] = 4
     @user = User.create(early_user_params)
     
     # update user color
@@ -828,13 +853,13 @@ class SignupController < ApplicationController
   end
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :email, :birthday, 
+    params.require(:user).permit(:first_name, :last_name, :email, :birthday,
                                   user_delivery_addresses_attributes: [:address_one, :address_two, :city, :state, 
                                   :zip, :special_instructions, :location_type ])  
   end
   
   def early_user_params
-    params.require(:user).permit(:password, :first_name, :last_name, :email, :birthday, :special_code, :tpw,
+    params.require(:user).permit(:password, :first_name, :last_name, :email, :birthday, :special_code, :tpw, :role_id,
                                   user_delivery_addresses_attributes: [:address_one, :address_two, :city, :state, 
                                   :zip, :special_instructions, :location_type ])  
   end

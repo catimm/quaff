@@ -13,12 +13,11 @@
 						<li>Your early signup earned you <%= @bottle_caps %> bottle caps (reward points). This is 
 							enough to get you <%= @number_of_drinks %> if you chose. Cheers!</li>
 						<li><b>Want more free drinks?</b> You can earn 30 bottle caps for each friend that joins&mdash;with at 
-							least a 3-month membership&mdash;using your personal invitation code (<b><%= @user_invitation_code.discount_code %></b>). To make this 
+							least a 3-month membership&mdash;using your personal invitation code (<b><%= @user_invitation_code.special_code %></b>). To make this 
 							easy, we've sent you an email that has info you can forward to invite others.</li>
-						<li>Although you signed up before Knird has officially launched, you 
-							were charged the full membership cost. However, your <%= @user_subscription %> membership will
-							not officially begin until your first delivery and you won't be billed extra for the time 
-							between now and then.</li>
+						<li>As a reminder, when you signed up early, we charged you the full membership cost. However, 
+							your <%= @user_subscription %>  membership will not officially begin until your first delivery 
+							and you won't be billed extra for the time between now and then.</li>
 						<li>Before we start delivering we'll send you a link to complete your drink profile and then set up 
 							time for your introductory sync with your curator.</li>
 						<li>Please <%= mail_to "questions@drinkknird.com", "contact us" %> with any questions you have!</li>

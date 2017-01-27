@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170123224210) do
+ActiveRecord::Schema.define(version: 20170127194508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -226,13 +226,6 @@ ActiveRecord::Schema.define(version: 20170123224210) do
     t.integer  "max_cellar"
   end
 
-  create_table "discount_codes", force: :cascade do |t|
-    t.string   "discount_code"
-    t.integer  "user_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
   create_table "draft_boards", force: :cascade do |t|
     t.integer  "location_id"
     t.datetime "created_at",  null: false
@@ -332,6 +325,24 @@ ActiveRecord::Schema.define(version: 20170123224210) do
     t.datetime "removed_at"
   end
 
+  create_table "reward_points", force: :cascade do |t|
+    t.integer  "user_id"
+    t.float    "total_points"
+    t.float    "transaction_points"
+    t.integer  "reward_transaction_type_id"
+    t.integer  "beer_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "reward_transaction_types", force: :cascade do |t|
+    t.string   "reward_title"
+    t.string   "reward_description"
+    t.string   "reward_impact"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string   "role_name",  limit: 255
     t.datetime "created_at"
@@ -342,6 +353,13 @@ ActiveRecord::Schema.define(version: 20170123224210) do
     t.string   "format_name"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "special_codes", force: :cascade do |t|
+    t.string   "special_code"
+    t.integer  "user_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|
