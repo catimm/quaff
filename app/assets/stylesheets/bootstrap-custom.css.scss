@@ -5735,6 +5735,16 @@ $delivery-beer-header-lines-to-show: 2;
     margin: 5px 0 10px 0;
   }
   // Mobile Index page
+.banner {
+    min-height: 100vh;
+    background: url("https://s3-us-west-2.amazonaws.com/knird/banner.jpg") no-repeat scroll center center / cover transparent;
+    background-clip: border-box;
+    background-origin: padding-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
 .valueStatement {
   padding-top: 20%;
   height:100%;

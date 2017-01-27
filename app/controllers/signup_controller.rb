@@ -684,7 +684,7 @@ class SignupController < ApplicationController
     
     #get user info
     @early_user = User.find_by_id(params[:format])
-    Rails.logger.debug("Early user info: #{@early_user.inspect}")
+    #Rails.logger.debug("Early user info: #{@early_user.inspect}")
     
     # find subscription level id
     @subscription_info = Subscription.where(subscription_level: @plan_name).first
@@ -729,10 +729,12 @@ class SignupController < ApplicationController
 
     # find user id of person who invited the early user
     @invitor = SpecialCode.where(special_code: @early_user.special_code).first
-    Rails.logger.debug("Invitor info: #{@invitor.inspect}")
+    @invitor_role = @invitor.user.role_id
+    #Rails.logger.debug("Invitor info: #{@invitor.inspect}")
+    #Rails.logger.debug("Invitor role id: #{@invitor_role.inspect}")
     
     # award reward points to person who invited the early user
-    if @invitor.user.role_id != 1 || @invitor.user.role_id != 2 # make sure invitor is not an admin
+    if (@invitor_role == 3) || (@invitor_role == 4) # make sure invitor is not an admin
       @invitor_current_reward_points = RewardPoint.where(user_id: @invitor.user_id).first
       @new_total_points = @invitor_current_reward_points.total_points + 30
       
