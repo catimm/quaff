@@ -6281,11 +6281,89 @@ $delivery-beer-header-lines-to-show: 2;
   }
 }
 @media(min-width: 768px) {
-  .image-holder {
-    position: fixed;
-    top: 120px;
-    right: 10px;
-    width: 100px;
+  // Mobile Index page
+  .banner {
+      min-height: 100vh;
+      background: url("https://s3-us-west-2.amazonaws.com/knird/banner.jpg") no-repeat scroll center center / cover transparent;
+      background-clip: border-box;
+      background-origin: padding-box;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+  }
+  .valueStatement {
+    div {
+      h1.brand-subfont {
+        font-size: 210% !important;
+        .homepage-extra-spacing {
+          letter-spacing: 1px;
+        }
+      }
+      h3.brand-subfont {
+        font-size: 160%;
+        margin: 0;
+      }
+    }
+  }
+  .value-header {
+    margin: 0 0 10px 25px;
+  }
+
+  .how-it-works-desc {
+    width: 90%;
+  }
+  .vertical-dotted-line {
+    height: 80px;
+  }
+
+  .contract-type-header {
+    margin-top: 80px;
+  }
+
+  .early-signup-checkout-extra-note.note-text {
+    width: 94%;
+  }
+  .homepage-plan-options {
+    text-align: center;
+    border: 1px solid $less-emphasized-text !important;
+    border-radius: 6px;
+    margin: 0 0 10px 0 !important;
+    li {
+      margin-left: 15px !important;
+    }
+  }
+ 
+  // Early signup
+  .guide-header {
+    margin-top: 10px;
+    font-size: 13px; 
+  }
+  .guide-header.current {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  .invitation-code-label {
+    text-align: left !important;
+  }
+
+  .request-confirmation-text {
+    font-size: 18px;
+  }
+  .early-signup-confirmation-text {
+    font-size: 14px;
+  }
+  .contract-type-header.mobile-early-signup-1-mo {
+    margin-top: 180px;
+  }
+  .contract-type-header.mobile-early-signup-3-mo {
+    margin-top: 180px;
+  }
+  .contract-type-header.mobile-early-signup-12-mo {
+    margin-top: 180px;
+  }
+  .early-signup-checkout-extra-note.note-text {
+    width: 94%;
   }
 }
 /* Medium devices (desktops, 992px and up) */
