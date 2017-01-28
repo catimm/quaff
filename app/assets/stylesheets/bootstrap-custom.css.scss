@@ -6379,11 +6379,15 @@ $delivery-beer-header-lines-to-show: 2;
   }
 }
 @media (min-width: 1000px) {
-  .image-holder {
-    position: fixed;
-    top: 120px;
-    right: 10px;
-    width: 115px;
+  .banner {
+      min-height: 100vh;
+      background: url("https://s3-us-west-2.amazonaws.com/knird/banner.jpg") no-repeat fixed center center / cover transparent;
+      background-clip: border-box;
+      background-origin: padding-box;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
   }
 }
 @media (min-width: 1200px) {
