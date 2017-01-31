@@ -81,7 +81,7 @@
 									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((@beer.best_guess) * 2).round)/2.0) %></span> but you rated it:</p>
 									<h1 class="user-rating"><%= @beer.user_rating.round(2) %></h1>
 								<% end %>
-							<% elsif !@beer.touched_by_user.blank? %>
+							<% elsif @beer.user_addition != false %>
 								<h5>This was just added; our <span class="best-guess">best guess</span> for you will be available soon!</h5>
 							<% else %>
 								<p>Our <span class="best-guess">best guess</span> for you:</p>

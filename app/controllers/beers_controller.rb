@@ -101,6 +101,13 @@ class BeersController < ApplicationController
     @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).order('created_at DESC')
     @number_of_ratings = @user_rating_for_this_beer.count
     
+    # get beer readiness info
+    if @beer.vetted == true || @beer.user_addition == false
+      @drink_is_ready == true
+    else
+      @drink_is_ready == false
+    end
+    
     # send beer ids to javascript file to create jcloud
     beer_descriptor = Array.new
     @beer_descriptors = Beer.find(@beer.id).descriptors

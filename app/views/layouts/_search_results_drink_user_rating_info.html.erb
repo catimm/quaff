@@ -12,7 +12,7 @@
 		<p><span class="user-rating-acknowledged">Your rating</span>:</p>
 	<% end %>
 	<h1 class="user-rating"><%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
-<% elsif !drink.touched_by_user.blank? %>
+<% elsif drink.user_addition != false %>
 	<h6>This was just added; our <span class="best-guess">best guess</span> for you will be available soon!</h6>
 <% else %>
 	<p>Our <span class="best-guess">best guess</span> for you:</p>
