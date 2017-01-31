@@ -1,4 +1,7 @@
 $(function() {
+	// set up use of tooltip within a link
+	$('[data-tooltip="tooltip"]').tooltip();
+	
 	// set default for unsaved form monitoring
 	var unsaved = false;
 	
@@ -41,18 +44,18 @@ $(function() {
 	    }, 500 );
 	});
 	
-	// show zip codes
-	$(document).on("click", "#zip-code-toggle-show", function() {
+	// show extra thoughts for mobile 
+	$(document).on("click", "#mobile-extra-thoughts-link", function() {
 		$(this).removeClass("show").addClass("hidden");
-		$('#zip-code-list').removeClass("hidden").addClass("show");
-		$('#zip-code-toggle-hide').removeClass("hidden").addClass("show");
+		$('#mobile-extra-thoughts-link-to-hide').removeClass("hidden").addClass("show");
+		$('#mobile-delivery-thoughts-container').removeClass("hidden").addClass("show");
 	});
 	
-	// hide zip codes
-	$(document).on("click", "#zip-code-toggle-hide", function() {
+	// hide extra thoughts for mobile
+	$(document).on("click", "#mobile-extra-thoughts-link-to-hide", function() {
 		$(this).removeClass("show").addClass("hidden");
-		$('#zip-code-list').removeClass("show").addClass("hidden");
-		$('#zip-code-toggle-show').removeClass("hidden").addClass("show");
+		$('#mobile-extra-thoughts-link').removeClass("hidden").addClass("show");
+		$('#mobile-delivery-thoughts-container').removeClass("show").addClass("hidden");
 	});
 	
 	// change unsaved back to true if save button is clicked

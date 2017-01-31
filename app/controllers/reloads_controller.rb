@@ -6,7 +6,7 @@ class ReloadsController < ApplicationController
     
   def index
     # get user info
-    @early_user = User.find_by_id(8)
+    @early_user = User.find_by_id(11)
     # get user subscription info
     @early_user_subscription = UserSubscription.find_by_user_id(@early_user.id)
     if @early_user_subscription.subscription_id == 1

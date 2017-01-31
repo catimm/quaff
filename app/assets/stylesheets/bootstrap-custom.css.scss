@@ -157,12 +157,12 @@ $large-format-color: $bright-aqua-blue;
     font-family:'FontAwesome';
     font-weight:normal;
     font-style:normal;
-    src:url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?v=4.3.0');
-    src:url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'),
-        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'),
-        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'),
-        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'),
-        url('http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+    src:url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?v=4.3.0');
+    src:url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'),
+        url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'),
+        url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'),
+        url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'),
+        url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
 }
 @font-face {
     font-family: 'troikaregular';
@@ -2801,6 +2801,16 @@ $beer-header-lines-to-show-fp: 1;
 }
 .delivery-thoughts-text {
   color: $normal-text;
+  span {
+    font-weight: 500;
+  }
+}
+.delivery-area-header {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+#initial_delivery_area {
+  margin-top: -50px !important;
 }
 .early-signup-form-section {
   margin-top: 10px;
@@ -2823,6 +2833,14 @@ $beer-header-lines-to-show-fp: 1;
   color: $normal-text;
   margin-bottom: 20px;
   font-size: 22px;
+}
+.user_user_delivery_addresses_location_type {
+  margin: 0 0 29px -10px !important;
+  .radio {
+    margin: 0 20px 10px 0 !important;
+    padding-left: 0 !important;
+    float: left;
+  }
 }
 .request-confirmation-name {
   color: $action-background;
@@ -5927,6 +5945,35 @@ $delivery-beer-header-lines-to-show: 2;
 }
 .early-signup-confirmation-text {
   font-size: 14px;
+}
+#mobile-extra-thoughts-link, #mobile-extra-thoughts-link-to-hide {
+  color: $action-background;
+  margin-left: 10px;
+}
+.user_user_delivery_addresses_location_type {
+  margin: 0 0 29px 0 !important;
+  .radio {
+    margin: 0 30px 10px 0 !important;
+    padding-left: 0 !important;
+    float: left;
+  }
+}
+.user-info-form {
+  label {
+    padding-left: 0 !important;
+  }
+  div {
+    padding: 0 !important;
+  }
+}
+#first_name_field, #last_name_field, #email_field, #birthdate_field {
+  width: 95% !important;
+}
+.signup-form-header.personal-info {
+  margin: 5px 0 15px 0 !important; 
+}
+.signup-form-header.delivery-info {
+  margin: 5px 0 15px 0 !important; 
 }
 // Retailer index page
 .banner-xs-retail {
