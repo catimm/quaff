@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170127194508) do
+ActiveRecord::Schema.define(version: 20170201194048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -649,7 +649,7 @@ ActiveRecord::Schema.define(version: 20170127194508) do
     t.integer  "craft_stage_id"
     t.string   "last_name"
     t.integer  "getting_started_step"
-    t.boolean  "beta_tester"
+    t.string   "cohort"
     t.datetime "birthday"
     t.string   "user_graphic"
     t.string   "user_color"

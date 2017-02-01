@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   
-  devise_for :users, controllers: { invitations: "invitations", omniauth_callbacks: "authentications" }
+  devise_for :users, controllers: { invitations: "invitations", 
+                                    omniauth_callbacks: "authentications",
+                                    passwords: "passwords" }
   resources :users do
     resources :drinks, :ratings, :rewards, :trackings   
   end
@@ -105,6 +107,7 @@ Rails.application.routes.draw do
   # user signup process
   get '/signup/getting_started/:id' => 'signup#getting_started', :as => 'getting_started'
   get '/signup/early_signup/:id' => 'signup#early_signup', :as => 'early_signup'
+  get '/signup/early_customer_password_response/:id' => 'signup#early_customer_password_response', :as => 'early_customer_password_response'
   post '/signup/request_code' => 'signup#request_code', :as => 'request_code'
   get '/signup/request_verification/:id' => 'signup#request_verification', :as => 'request_verification'
   post '/signup/code_verification/:id' => 'signup#code_verification', :as => 'code_verification'

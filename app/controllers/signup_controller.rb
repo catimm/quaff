@@ -1,7 +1,8 @@
 class SignupController < ApplicationController
   before_filter :verify_not_complete, :except => ["early_signup", "code_verification", "request_code", 
                                                   "request_verification", "early_account_info", 
-                                                  "process_early_user_plan_choice", "early_signup_confirmation"]
+                                                  "process_early_user_plan_choice", "early_signup_confirmation",
+                                                  "early_customer_password_response"]
   include DeliveryEstimator
   require "stripe"
   
@@ -840,6 +841,7 @@ class SignupController < ApplicationController
     params[:user][:password] = generated_password
     params[:user][:tpw] = generated_password
     params[:user][:role_id] = 4
+    params[:user][:cohort] = "f_&_f"
     @user = User.create(early_user_params)
     
     # update user color
@@ -848,6 +850,10 @@ class SignupController < ApplicationController
     
     redirect_to early_signup_path("billing", @user.id)
   end # end early_account_info method
+  
+  def early_customer_password_response 
+    @customer = User.find_by_id(params[:id])
+  end # end of early_customer_password_response action
   
   private
   def verify_not_complete
@@ -861,9 +867,9 @@ class SignupController < ApplicationController
   end
   
   def early_user_params
-    params.require(:user).permit(:password, :first_name, :last_name, :email, :birthday, :special_code, :tpw, :role_id,
-                                  user_delivery_addresses_attributes: [:address_one, :address_two, :city, :state, 
-                                  :zip, :special_instructions, :location_type ])  
+    params.require(:user).permit(:password, :first_name, :last_name, :email, :birthday, :special_code, :tpw, :role_id, 
+                                  :cohort, user_delivery_addresses_attributes: [:address_one, :address_two, :city, 
+                                  :state, :zip, :special_instructions, :location_type ])  
   end
   
   def early_code_request_params

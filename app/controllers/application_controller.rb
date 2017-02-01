@@ -7,17 +7,15 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) << :role_id
-    devise_parameter_sanitizer.for(:sign_up) << :username
-    devise_parameter_sanitizer.for(:invite) << :first_name
-    devise_parameter_sanitizer.for(:invite) << :beta_tester
-    devise_parameter_sanitizer.for(:invite) << :getting_started_step
-    devise_parameter_sanitizer.for(:accept_invitation) << :first_name
-    devise_parameter_sanitizer.for(:accept_invitation) << :username
-    devise_parameter_sanitizer.for(:accept_invitation) << :role_id
-    devise_parameter_sanitizer.for(:account_update) { |u| 
-      u.permit(:password, :password_confirmation, :current_password) 
-    }
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:role_id])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:username])
+    devise_parameter_sanitizer.permit(:invite, keys: [:first_name])
+    devise_parameter_sanitizer.permit(:invite, keys: [:cohort])
+    devise_parameter_sanitizer.permit(:invite, keys: [:getting_started_step])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: [:first_name])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: [:username])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: [:role_id])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:password, :password_confirmation, :current_password])
   end
   
   private

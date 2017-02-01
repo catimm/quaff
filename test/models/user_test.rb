@@ -29,7 +29,7 @@
 #  craft_stage_id         :integer
 #  last_name              :string
 #  getting_started_step   :integer
-#  beta_tester            :boolean
+#  cohort                 :string
 #  birthday               :datetime
 #  user_graphic           :string
 #  user_color             :string
