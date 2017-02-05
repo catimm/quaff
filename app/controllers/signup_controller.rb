@@ -840,15 +840,27 @@ class SignupController < ApplicationController
     generated_password = Devise.friendly_token.first(8)
     params[:user][:password] = generated_password
     params[:user][:tpw] = generated_password
+    # fill in other miscelaneous user info
     params[:user][:role_id] = 4
     params[:user][:cohort] = "f_&_f"
-    @user = User.create(early_user_params)
-    
-    # update user color
+    # get a random color for the user
     @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
-    @user.update(user_color: @user_color)
+    params[:user][:user_color] = @user_color
     
-    redirect_to early_signup_path("billing", @user.id)
+    # check if user has already registered
+    @already_registered = User.find_by_email(params[:user][:email])
+    
+    if @already_registered.blank?
+      @user = User.create(early_user_params)
+      redirect_to early_signup_path("billing", @user.id)
+    else
+      @user_delivery_address = UserDeliveryAddress.where(user_id: @already_registered.id).first
+      params[:user][:user_delivery_addresses_attributes]["0"][:id] = @user_delivery_address.id
+      @already_registered.update_attributes(early_user_params)
+      redirect_to early_signup_path("billing", @already_registered.id)
+    end
+    
+    
   end # end early_account_info method
   
   def early_customer_password_response 
@@ -868,8 +880,8 @@ class SignupController < ApplicationController
   
   def early_user_params
     params.require(:user).permit(:password, :first_name, :last_name, :email, :birthday, :special_code, :tpw, :role_id, 
-                                  :cohort, user_delivery_addresses_attributes: [:address_one, :address_two, :city, 
-                                  :state, :zip, :special_instructions, :location_type ])  
+                                  :cohort, :user_color, user_delivery_addresses_attributes: [:id, :address_one, 
+                                  :address_two, :city, :state, :zip, :special_instructions, :location_type ])  
   end
   
   def early_code_request_params

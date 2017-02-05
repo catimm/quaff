@@ -594,6 +594,17 @@ label {
     margin: 0;
   }
 }
+.craft-stage-container {
+  text-align: center;
+  margin: 20px 0;
+  padding: 0 50px;
+}
+.craft-stage-explanation {
+  color: $normal-text;
+  font-style: italic;
+  text-align: center;
+}
+
 .membership-plan-includes {
   color: $normal-text;
   text-align: left !important;
@@ -5869,13 +5880,13 @@ $delivery-beer-header-lines-to-show: 2;
 .contract-type-header {
   margin-top: 50px;
 }
-.contract-type-header.mobile-early-signup-1-mo {
+.contract-type-header.mobile-early-signup.one-month-plan {
   margin-top: 40px;
 }
-.contract-type-header.mobile-early-signup-3-mo {
+.contract-type-header.mobile-early-signup.three-month-plan {
   margin-top: 100px;
 }
-.contract-type-header.mobile-early-signup-12-mo {
+.contract-type-header.mobile-early-signup.twelve-month-plan {
   margin-top: 120px;
 }
 .early-signup-checkout-extra-note.note-text {
@@ -6408,13 +6419,7 @@ $delivery-beer-header-lines-to-show: 2;
   .early-signup-confirmation-text {
     font-size: 14px;
   }
-  .contract-type-header.mobile-early-signup-1-mo {
-    margin-top: 180px;
-  }
-  .contract-type-header.mobile-early-signup-3-mo {
-    margin-top: 180px;
-  }
-  .contract-type-header.mobile-early-signup-12-mo {
+  .contract-type-header.mobile-early-signup {
     margin-top: 180px;
   }
   .early-signup-checkout-extra-note.note-text {
