@@ -266,13 +266,16 @@ class Admin::BeersController < ApplicationController
     # find beer being deleted
     if (params[:id] < "14324")
       @temp_drink = Beer.find_by_id(params[:id])
+      @temp_drink.update_attributes(vetted: true)
+      @perm_drink = @temp_drink
     else
       @temp_drink = TempBeer.find_by_id(params[:id])
+      # add data to permanent drink table
+      @perm_drink = Beer.create(@temp_drink.attributes.merge({:vetted => nil}))
     end
     @brewery_id = @temp_drink.brewery_id
     
-    # add data to permanent drink table
-    @perm_drink = Beer.create(@temp_drink.attributes.merge({:vetted => nil}))
+    
     
     # change associations in user_beer_ratings table
     @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id, admin_vetted: false)
