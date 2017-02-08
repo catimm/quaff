@@ -40,6 +40,8 @@ gem 'bootstrap-sass', '3.3.3'
 gem 'bootstrap-social-rails', '~> 4.8.0'
 gem 'bootstrap-modal-rails'
 gem 'font-awesome-sass', '~> 4.3.0'
+gem 'elusive-icons-sass'
+
 # run on thin client
 gem 'thin'
 # screen scraping functionality

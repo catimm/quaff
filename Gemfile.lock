@@ -119,6 +119,8 @@ GEM
     elasticsearch-transport (1.0.12)
       faraday
       multi_json
+    elusive-icons-sass (2.0.1)
+      sass (>= 3.2)
     equalizer (0.0.10)
     erubis (2.7.0)
     eventmachine (1.0.7)
@@ -377,6 +379,7 @@ DEPENDENCIES
   derailed
   devise (~> 4.1.1)
   devise_invitable
+  elusive-icons-sass
   fb_graph
   figaro
   filterrific

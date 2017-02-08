@@ -3,6 +3,8 @@
 @import "bootstrap-social";
 @import "font-awesome-sprockets";
 @import "font-awesome";
+@import "elusive-icons-sprockets";
+@import "elusive-icons";
 @import url(http://fonts.googleapis.com/css?family=Kreon:400,700);
 
 // Descriptive colors for project
@@ -172,6 +174,8 @@ $large-format-color: $bright-aqua-blue;
     font-style: normal;
 
 }
+
+
 html {
   position: relative;
   min-height: 100%;
@@ -441,8 +445,9 @@ label {
 .about-us-text {
   color: $normal-text;
   text-align: justify;
-  line-height: 2;
+  line-height: 2.5;
   font-size: 20px;
+  margin-bottom: 60px;
 }
 .about-us-text-emphais {
   color: $action-background;
@@ -491,7 +496,7 @@ label {
   }
 }
 .value-prop-row {
-  margin: 0 0 25px 0;
+  margin: 40px 0;
 }
 .value-prop-holder {
   margin: 15px 0 10px 0;
@@ -508,6 +513,9 @@ label {
   margin: 0 auto;
   color: $normal-text;
   line-height: 1.5;
+}
+.how-it-works-overview {
+  margin: 20px 0 30px 0;
 }
 .how-it-works-holder-row {
   margin: 0 0 20px 0 !important;
@@ -530,6 +538,9 @@ label {
 .how-it-works-text-holder {
   margin-top: 16px;
 }
+.how-it-works-text-holder.second-point {
+  margin-top: 5px;
+}
 .how-it-works-icon-holder {
   float: left;
   margin-right: 7.5px;
@@ -541,9 +552,14 @@ label {
   float: left;
   margin-top: 0;
   color: $normal-text;
+  line-height: 1.5;
+  vertical-align: middle !important;
   span {
     color: $action-background;
   }
+}
+.how-it-works-desc.second-point {
+  margin-bottom: 0;
 }
 .vertical-dotted-line {
   border-right: 2px dashed $action-background;
@@ -551,19 +567,16 @@ label {
   margin: 0 22px 0 0 !important; 
 }
 .icon-background {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   background: $action-background;
   border: 1px solid #fff;
   border-radius: 50%;
   display: inline-block;
   vertical-align: middle;
-  h3 {
+  i {
     color: #fff;
     margin: 0;
-    .fa-2x {
-      font-size: 2.5em;
-    }
   }
 }
 .icon-background.heart-icon {
@@ -594,17 +607,41 @@ label {
     margin: 0;
   }
 }
+.expectations-statements {
+  font-size: 18px;
+  color: $normal-text;
+  line-height: 1.5;
+  margin-left: -15px;
+}
+.expectations-second-statement {
+  margin-top: 10px;
+}
+.expectations-third-statement {
+  margin: 30px 0 40px 0;
+  text-align: center;
+  font-size: 20px;
+}
 .craft-stage-container {
   text-align: center;
   margin: 20px 0;
-  padding: 0 50px;
+  padding: 0 70px;
 }
 .craft-stage-explanation {
   color: $normal-text;
-  font-style: italic;
   text-align: center;
 }
-
+.craft-journey-icons {
+  color: $action-background;
+  margin: 5px 0 10px 0;
+}
+.sample-disclamier-text {
+  color: $normal-text;
+}
+#explorer_sample, #geek_sample, #connoisseur_sample {
+  width: 70% !important;
+  margin-left: -35% !important;
+  top: 50%;
+}
 .membership-plan-includes {
   color: $normal-text;
   text-align: left !important;
@@ -2844,6 +2881,9 @@ $beer-header-lines-to-show-fp: 1;
   color: $normal-text;
   margin-bottom: 20px;
   font-size: 22px;
+}
+.password-info {
+  margin-bottom: 20px;
 }
 .early-signup-password-note {
   color: $normal-text;
@@ -5807,7 +5847,7 @@ $delivery-beer-header-lines-to-show: 2;
   margin: 10px 0 0 0 !important;
 }
 .about-us-text {
-  line-height: 1.5;
+  line-height: 2;
   font-size: 16px;
 }
 .value-prop-holder {
@@ -5862,8 +5902,17 @@ $delivery-beer-header-lines-to-show: 2;
   font-size: 16px;
 }
 .vertical-dotted-line {
-  height: 60px;
+  height: 70px;
   margin: 0 8px 0 0 !important;
+}
+.mobile-second-dotted-line {
+  height: 110px;
+}
+.expectations-statements {
+  font-size: 16px;
+  color: $normal-text;
+  line-height: 1.5;
+  margin-left: 0;
 }
 .membership-plan-includes {
   margin-left: 0 !important;
@@ -5939,7 +5988,7 @@ $delivery-beer-header-lines-to-show: 2;
   background: $step-background;
   margin-top: 10px;
 }
-// Early signup
+// Mobile Early signup
 .guide-header {
   margin-top: 10px;
   font-size: 13px; 
@@ -5964,6 +6013,9 @@ $delivery-beer-header-lines-to-show: 2;
 }
 .early-signup-confirmation-text {
   font-size: 14px;
+}
+.how-it-works-mobile-col {
+  padding: 0;
 }
 #mobile-extra-thoughts-link, #mobile-extra-thoughts-link-to-hide {
   color: $action-background;
@@ -6436,6 +6488,17 @@ $delivery-beer-header-lines-to-show: 2;
     top: 120px;
     right: 10px;
     width: 125px;
+  }
+  .value-header {
+    margin: 5px 0 10px 0;
+  }
+  .early-signup-confirmation-text {
+    font-size: 18px;
+  }
+  .request-confirmation-text {
+    color: $normal-text;
+    margin-bottom: 20px;
+    font-size: 22px;
   }
 }
 @media (min-width: 1000px) {

@@ -15,4 +15,11 @@ module ApplicationHelper
     link_to title, {:sort => column, :direction => direction}, {:class => css_class}
   end #end of sortable helper method
   
+  # use this helper to render an svg file
+  def svg(name) 
+    file_path = "#{Rails.root}/app/assets/images/#{name}.svg" 
+    return File.read(file_path).html_safe if File.exists?(file_path) 
+    '(not found)' 
+  end
+  
 end

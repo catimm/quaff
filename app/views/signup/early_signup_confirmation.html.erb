@@ -2,11 +2,17 @@
 <div class="row early-signup-verification-section">
 	<div class="container">
 		<div class="row no-margin">
-			<div class="col-xs-0 col-sm-2"></div>
-			<div class="col-xs-12 col-sm-8">
-				<h3 class="request-confirmation-text">Hi <span class="request-confirmation-name">
-					<%= @early_user.first_name %></span>. Thank you for signing up early for a <%= @user_subscription %> 
+			<div class="col-xs-0 col-sm-1"></div>
+			<div class="col-xs-12 col-sm-10">
+				<h3 class="request-confirmation-text"><span class="request-confirmation-name">Hi <%= @early_user.first_name %></span>.
+					 Thank you for signing up early for a <%= @user_subscription %> 
 						Knird membership.  We can't wait to get you a drink!</h3>
+				<h4 class="early-signup-confirmation-text password-info"><b>What's next?</b>  
+					<span class="request-confirmation-name">Before we officially launch we'll send you a temporary 
+						password</span> 
+						so you can log in to your Knird account, complete your drink profile, and set up time for an 
+						introductory sync with your curator.
+				</h4>
 				<h4 class="early-signup-confirmation-text">Until then, just a few thoughts for you:</h4>
 				<h4 class="early-signup-confirmation-text">
 					<ul>
@@ -18,8 +24,6 @@
 						<li>As a reminder, when you signed up early, we charged you the full membership cost. However, 
 							your <%= @user_subscription %>  membership will not officially begin until your first delivery 
 							and you won't be billed extra for the time between now and then.</li>
-						<li>Before we start delivering we'll send you a temporary password so you can log in, complete your 
-							drink profile, and set up time for an introductory sync with your curator.</li>
 						<li>Please <%= mail_to "questions@drinkknird.com", "contact us" %> with any questions you have!</li>
 					</ul>
 				</h4>
