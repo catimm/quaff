@@ -305,9 +305,11 @@ class Admin::BeersController < ApplicationController
       @collab_associations.delete_all
     end
     
-    # then delete this instance of the beer
-    @temp_drink.destroy
-  
+    # then delete the temp instance of the drink
+    if (params[:id] < "14324")
+      @temp_drink.destroy
+    end
+    
     redirect_to admin_brewery_beers_path(@brewery_id)
   end # end add_drink_to_brewery action
   
