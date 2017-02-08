@@ -152,7 +152,7 @@ class Admin::BeersController < ApplicationController
   
   def delete_beer_prep
     # find the beer to edit
-    @beer = Beer.find(params[:id]) 
+    @beer = Beer.find_by_id(params[:id]) 
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
     @this_brewery = Brewery.find_by_id(params[:brewery_id])
     # pull full list of beers--for delete option
@@ -221,11 +221,17 @@ class Admin::BeersController < ApplicationController
   end # end of delete_beer method
   
   def delete_temp_beer
-    # find beer being deleted
-    @beer = TempBeer.find_by_id(params[:id])
-    @beer.destroy
-    
-     # add name of drink being deleted to alt beer name table if it isn't already there
+    if params[:id] < 14324
+      # find beer being deleted
+      @beer = Beer.find_by_id(params[:id])
+      @beer.destroy
+    else
+      # find beer being deleted
+      @beer = TempBeer.find_by_id(params[:id])
+      @beer.destroy
+    end
+
+    # add name of drink being deleted to alt beer name table if it isn't already there
     @drink_name = AltBeerName.where(name: @beer.beer_name)
     
     if @drink_name.blank?
@@ -302,7 +308,12 @@ class Admin::BeersController < ApplicationController
     # pull full list of beers--for delete option
     @beers = Beer.all.order(beer_name: :asc, id: :desc)
     
-    @temp_drink = TempBeer.find_by_id(params[:id])
+    # find whether it is an old or new drink
+    if params[:id] < 14324
+      @temp_drink = Beer.find_by_id(params[:id])
+    else
+      @temp_drink = TempBeer.find_by_id(params[:id])
+    end
     
     # to create a new beer instance
     @beer = Beer.new
@@ -312,7 +323,12 @@ class Admin::BeersController < ApplicationController
   
   def delete_drink_from_brewery
     # find beer being deleted
-    @beer = TempBeer.find_by_id(params[:id])
+    if params[:id] < 14324
+      @beer = Beer.find_by_id(params[:id])
+    else
+      @beer = TempBeer.find_by_id(params[:id])
+    end
+    
     @brewery_id = @beer.brewery_id
     
     # add name of beer being deleted to alt beer name table
