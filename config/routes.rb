@@ -194,6 +194,7 @@ Rails.application.routes.draw do
   patch 'admin/beers/delete_alt_name/:id' => 'admin/beers#delete_alt_beer_name', :as => 'admin_delete_alt_beer_name'
   get 'admin/beers/delete_beer_prep/:brewery_id/:id' => 'admin/beers#delete_beer_prep', :as => 'admin_delete_beer_prep'
   patch 'admin/beers/delete_beer/:brewery_id/:id' => 'admin/beers#delete_beer', :as => 'admin_delete_beer'
+  get 'admin/beers/delete_temp_beer/:brewery_id/:id' => 'admin/beers#delete_temp_beer', :as => 'admin_delete_temp_beer'
   get 'admin/needs_work_beers(.:format)' => 'admin/beers#show', :as => 'admin_needs_work_beers'
   get 'admin/beers/temp_drinks/:brewery_id/' => 'admin/beers#temp_drinks', :as => 'admin_brewery_temp_beers'
   get 'admin/beers/add_drink_to_brewery/:id/' => 'admin/beers#add_drink_to_brewery', :as => 'admin_add_drink_to_brewery'

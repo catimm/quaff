@@ -207,24 +207,41 @@ class Admin::BeersController < ApplicationController
     if !@drink_formats.empty?
       @drink_formats.delete_all
     end
-    # then delete this instance of the beer
-    @beer.destroy
+    
     # then delete associations with this beer in the collab table
     @collab_associations = BeerBreweryCollab.where(beer_id: @beer.id)
     if !@collab_associations.empty?
       @collab_associations.delete_all
     end
+    
     # then delete this instance of the beer
     @beer.destroy
   
     redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
   end # end of delete_beer method
   
+  def delete_temp_beer
+    # find beer being deleted
+    @beer = TempBeer.find_by_id(params[:id])
+    @beer.destroy
+    
+     # add name of drink being deleted to alt beer name table if it isn't already there
+    @drink_name = AltBeerName.where(name: @beer.beer_name)
+    
+    if @drink_name.blank?
+     AltBeerName.create(name: @beer.beer_name, beer_id: params[:id])
+    end
+    
+    # redirect back to brewery page
+    redirect_to admin_brewery_beers_path(params[:brewery_id])
+    
+  end # end of delete_temp_beer method
+  
   def delete_alt_beer_name
     @alt_drink_name = AltBeerName.find_by_id(params[:id])
     @brewery_id = @alt_drink_name.beer.brewery_id
     @alt_drink_name.destroy!
-    
+
     redirect_to admin_brewery_beers_path(@brewery_id)
     
   end # end of delete_alt_beer_name method
