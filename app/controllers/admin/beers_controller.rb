@@ -264,7 +264,11 @@ class Admin::BeersController < ApplicationController
   
   def add_drink_to_brewery
     # find beer being deleted
-    @temp_drink = TempBeer.find_by_id(params[:id])
+    if (params[:id] < "14324")
+      @temp_drink = Beer.find_by_id(params[:id])
+    else
+      @temp_drink = TempBeer.find_by_id(params[:id])
+    end
     @brewery_id = @temp_drink.brewery_id
     
     # add data to permanent drink table
