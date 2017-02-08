@@ -221,7 +221,7 @@ class Admin::BeersController < ApplicationController
   end # end of delete_beer method
   
   def delete_temp_beer
-    if params[:id] < 14324
+    if (params[:id] < "14324")
       # find beer being deleted
       @beer = Beer.find_by_id(params[:id])
       @beer.destroy
@@ -309,7 +309,7 @@ class Admin::BeersController < ApplicationController
     @beers = Beer.all.order(beer_name: :asc, id: :desc)
     
     # find whether it is an old or new drink
-    if params[:id] < 14324
+    if (params[:id] < "14324")
       @temp_drink = Beer.find_by_id(params[:id])
     else
       @temp_drink = TempBeer.find_by_id(params[:id])
@@ -323,7 +323,7 @@ class Admin::BeersController < ApplicationController
   
   def delete_drink_from_brewery
     # find beer being deleted
-    if params[:id] < 14324
+    if (params[:id] < "14324")
       @beer = Beer.find_by_id(params[:id])
     else
       @beer = TempBeer.find_by_id(params[:id])
