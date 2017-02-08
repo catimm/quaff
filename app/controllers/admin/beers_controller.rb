@@ -306,7 +306,7 @@ class Admin::BeersController < ApplicationController
     end
     
     # then delete the temp instance of the drink
-    if (params[:id] < "14324")
+    if (params[:id] > "14324")
       @temp_drink.destroy
     end
     
