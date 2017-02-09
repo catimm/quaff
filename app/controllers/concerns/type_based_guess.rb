@@ -3,7 +3,7 @@ module TypeBasedGuess
   include DrinkDescriptors
 
   def type_based_guess(this_beer, user_id)
-    Rails.logger.debug("type based guess is being used")
+    #Rails.logger.debug("type based guess is being used")
     # to note that this drink recommendation is based on type input
     this_beer.recommendation_rationale = "type"
     # set baseline projected rating for this beer

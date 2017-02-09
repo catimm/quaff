@@ -2,7 +2,7 @@ module StyleBasedGuess
   extend ActiveSupport::Concern
 
   def style_based_guess(this_beer)
-     Rails.logger.debug("style based guess is being used")
+     #Rails.logger.debug("style based guess is being used")
      # to note that this drink recommendation is based on style input
      this_beer.recommendation_rationale = "style"
      # Rails.logger.debug("Beer info: #{this_beer.inspect}")

@@ -40,7 +40,7 @@ class BeersController < ApplicationController
      
      @customers.each do |customer|
        if customer.user.username.blank?
-         @username = "no UN"
+         @username = customer.user.first_name + customer.user.last_name[0]
        else
          @username = customer.user.username
        end
@@ -54,10 +54,10 @@ class BeersController < ApplicationController
          @drink_rating_check = UserBeerRating.where(user_id: customer.user_id, beer_id: params[:id]).first
          if !@drink_rating_check.nil?
           @users_have_had += 1
-          @this_customer_had = customer.user.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+          @this_customer_had = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
           @list_of_customers_who_had << @this_customer_had
          else
-          @this_customer_not_had = customer.user.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+          @this_customer_not_had = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
           @list_of_customers_who_not_had << @this_customer_not_had
          end  # end of check on whether user has had drink
        end # end of best guess minimum check
