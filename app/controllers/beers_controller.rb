@@ -28,9 +28,9 @@ class BeersController < ApplicationController
    if current_user.role_id == 1
      # get unique customer ids
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
-     @role_ids = [1, 2, 3, 4] 
-     @customers = User.where(role_id: @role_ids)
-     #Rails.logger.debug("Customer ids: #{@customer_ids.inspect}")
+     #@role_ids = [1, 2, 3, 4] 
+     @customers = UserSubscription.all
+     #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
      @users_have_had = 0
@@ -39,18 +39,25 @@ class BeersController < ApplicationController
      @list_of_customers_who_not_had = Array.new
      
      @customers.each do |customer|
-       @this_user_best_guess = best_guess(params[:id], customer.id)[0]
+       if customer.user.username.blank?
+         @username = "no UN"
+       else
+         @username = customer.user.username
+       end
+       #Rails.logger.debug("Customer name #{customer.user.inspect}")
+       @this_user_best_guess = best_guess(params[:id], customer.user_id)[0]
+       #Rails.logger.debug("Customer best guess: #{@this_user_best_guess.best_guess.inspect}")
        if @this_user_best_guess.best_guess >= 7.75
          @users_would_like += 1
-         @this_customer_likes = customer.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+         @this_customer_likes = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
          @list_of_customers_who_like << @this_customer_likes
-         @drink_rating_check = UserBeerRating.where(user_id: customer.id, beer_id: params[:id]).first
+         @drink_rating_check = UserBeerRating.where(user_id: customer.user_id, beer_id: params[:id]).first
          if !@drink_rating_check.nil?
           @users_have_had += 1
-          @this_customer_had = customer.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+          @this_customer_had = customer.user.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
           @list_of_customers_who_had << @this_customer_had
          else
-          @this_customer_not_had = customer.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+          @this_customer_not_had = customer.user.username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
           @list_of_customers_who_not_had << @this_customer_not_had
          end  # end of check on whether user has had drink
        end # end of best guess minimum check
