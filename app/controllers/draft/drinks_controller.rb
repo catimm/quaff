@@ -1,5 +1,5 @@
 class Draft::DrinksController < ApplicationController
-  before_filter :allow_iframe_requests
+  #before_filter :allow_iframe_requests
   include DrinkDescriptors
   layout false
   
@@ -77,8 +77,8 @@ class Draft::DrinksController < ApplicationController
       end
   end
   
-  def allow_iframe_requests
-    response.headers.delete('X-Frame-Options')
-  end
+  #def allow_iframe_requests
+  #  response.headers.delete('X-Frame-Options')
+  #end
 
 end
