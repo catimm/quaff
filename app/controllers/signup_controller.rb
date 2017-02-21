@@ -920,6 +920,7 @@ class SignupController < ApplicationController
     @current_page = "signup"
     
     # create User object 
+    @user = User.new
     @account = Account.new
 
     # instantiate invitation request 
