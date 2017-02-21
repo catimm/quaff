@@ -35,6 +35,7 @@
 #  user_color             :string
 #  special_code           :string
 #  tpw                    :string
+#  account_id             :integer
 #
 
 require 'test_helper'

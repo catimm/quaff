@@ -1,0 +1,20 @@
+# == Schema Information
+#
+# Table name: accounts
+#
+#  id              :integer          not null, primary key
+#  account_type    :string
+#  number_of_users :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  account_type: MyString
+  number_of_users: 1
+
+two:
+  account_type: MyString
+  number_of_users: 1

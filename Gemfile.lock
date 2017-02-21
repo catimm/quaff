@@ -60,6 +60,8 @@ GEM
       json
     bcrypt (3.1.11)
     benchmark-ips (2.7.2)
+    bootstrap-datepicker-rails (1.6.4.1)
+      railties (>= 3.0)
     bootstrap-modal-rails (2.2.5)
       railties (>= 3.1)
     bootstrap-sass (3.3.3)
@@ -195,6 +197,7 @@ GEM
     mime-types (2.99.2)
     mini_portile2 (2.1.0)
     minitest (5.9.0)
+    modernizr-rails (2.7.1)
     multi_json (1.11.0)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -370,6 +373,7 @@ DEPENDENCIES
   annotate (= 2.6.5)
   area
   autonumeric-rails
+  bootstrap-datepicker-rails
   bootstrap-modal-rails
   bootstrap-sass (= 3.3.3)
   bootstrap-social-rails (~> 4.8.0)
@@ -394,6 +398,7 @@ DEPENDENCIES
   jquery-ui-rails
   json
   koala (~> 1.8.0rc1)
+  modernizr-rails
   nested_form!
   newrelic_rpm
   nokogiri

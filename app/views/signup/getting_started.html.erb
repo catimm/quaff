@@ -1,4 +1,4 @@
-<%= render 'layouts/header_signup' %> 
+<%= render 'layouts/header_early_signup' %> 
 	<div class="row no-margin spinner-signup text-center">
 		<div class="spinner-text">
 			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
@@ -65,11 +65,7 @@
 		<div class="row no-margin">
 			<div class="col-sm-2"></div>
 			<div class="col-sm-4 remove-button-holder">
-				<% if @user.beta_tester == true %>
-					<%= link_to "Yep, positive", process_user_plan_choice_path("account-1-enjoy_beta"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% else %>
-					<%= link_to "Yep, positive", process_user_plan_choice_path("account-1-enjoy"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% end %>
+				
 				
 			</div>
 			<div class="col-sm-4 remove-button-holder">
@@ -92,11 +88,7 @@
 		<div class="row no-margin">
 			<div class="col-sm-2"></div>
 			<div class="col-sm-4 remove-button-holder">
-				<% if @user.beta_tester == true %>
-					<%= link_to "Yep, positive", process_user_plan_choice_path("account-1-relish_beta"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% else %>
-					<%= link_to "Yep, positive", process_user_plan_choice_path("account-1-relish"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% end %>
+				
 				
 			</div>
 			<div class="col-sm-4 remove-button-holder">

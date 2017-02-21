@@ -23,6 +23,8 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 gem 'jquery-turbolinks' #to make sure turbolinks and jquery play nice together
+# use Modernizr to find fallbacks for browsers lacking feature support
+gem 'modernizr-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -39,6 +41,7 @@ gem 'figaro'
 gem 'bootstrap-sass', '3.3.3'
 gem 'bootstrap-social-rails', '~> 4.8.0'
 gem 'bootstrap-modal-rails'
+gem 'bootstrap-datepicker-rails'
 gem 'font-awesome-sass', '~> 4.3.0'
 gem 'elusive-icons-sass'
 

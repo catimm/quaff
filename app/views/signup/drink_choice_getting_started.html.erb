@@ -1,0 +1,45 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-signup">
+		<%= render 'signup_guide' %>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drink-preference-signup">
+			<div class="col-sm-1"></div>
+			<div class="col-xs-12 col-sm-10 text-center">
+				<%= render 'drink_preferences_guide' %>
+			</div>
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">What do you primarily drink?</h2>
+				<h5 class="signup-question-detail">You can update this answer on your delivery preference page at any time.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row signup-drink-category-row-holder">
+		<div class="container">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-8">
+				<%= render 'drink_category_choice' %>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-1 col-sm-4"></div>
+				<div class="col-xs-10 col-sm-4">
+					<% if !@delivery_preferences.blank? %>
+						<%= link_to "Next", drink_journey_getting_started_path(@user.id), class: "btn btn-default btn-success user-info-next-button", id: "drink_choice_next_step_button" %>
+					<% else %>
+						<%= link_to "Next", drink_journey_getting_started_path(@user.id), disabled: true, class: "btn btn-default btn-success user-info-next-button", id: "drink_choice_next_step_button" %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

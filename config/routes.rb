@@ -105,7 +105,31 @@ Rails.application.routes.draw do
   
   
   # user signup process
-  get '/signup/getting_started/:id' => 'signup#getting_started', :as => 'getting_started'
+  get '/signup/user_getting_started/:id' => 'signup#user_getting_started', :as => 'user_getting_started'
+  patch '/signup/process_user_getting_started' => 'signup#process_user_getting_started', :as => 'process_user_getting_started'
+  
+  get '/signup/drink_choice_getting_started/:id' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
+  post '/signup/process_drink_choice_getting_started/:id' => 'signup#process_drink_choice_getting_started', :as => 'process_drink_choice_getting_started'
+  
+  get '/signup/drink_journey_getting_started/:id' => 'signup#drink_journey_getting_started', :as => 'drink_journey_getting_started'
+  post '/signup/process_drink_journey_getting_started/:id' => 'signup#process_drink_journey_getting_started', :as => 'process_drink_journey_getting_started'
+  
+  get '/signup/drink_style_likes_getting_started/:id' => 'signup#drink_style_likes_getting_started', :as => 'drink_style_likes_getting_started'
+  post '/signup/process_drink_style_likes_getting_started/:id' => 'signup#process_drink_style_likes_getting_started', :as => 'process_drink_style_likes_getting_started'
+  get '/signup/drink_style_dislikes_getting_started/:id' => 'signup#drink_style_dislikes_getting_started', :as => 'drink_style_dislikes_getting_started'
+
+  get '/signup/drinks_weekly_getting_started/:id' => 'signup#drinks_weekly_getting_started', :as => 'drinks_weekly_getting_started'
+  post '/signup/process_drinks_weekly_getting_started/:id' => 'signup#process_drinks_weekly_getting_started', :as => 'process_drinks_weekly_getting_started'
+
+  get '/signup/drinks_large_getting_started/:id' => 'signup#drinks_large_getting_started', :as => 'drinks_large_getting_started'
+  post '/signup/process_drinks_large_getting_started/:id' => 'signup#process_drinks_large_getting_started', :as => 'process_drinks_large_getting_started'
+    
+  get '/signup/account_address_getting_started/:id' => 'signup#account_address_getting_started', :as => 'account_address_getting_started'
+  post '/signup/process_account_address_getting_started' => 'signup#process_account_address_getting_started', :as => 'process_account_address_getting_started'
+  
+  get '/signup/account_membership_getting_started/:id' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
+  post '/signup/process_account_membership_getting_started' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
+  
   get '/signup/early_signup/:id' => 'signup#early_signup', :as => 'early_signup'
   get '/signup/early_customer_password_response/:id' => 'signup#early_customer_password_response', :as => 'early_customer_password_response'
   post '/signup/request_code' => 'signup#request_code', :as => 'request_code'
@@ -114,9 +138,9 @@ Rails.application.routes.draw do
   get '/signup/early_signup_confirmation/:id' => 'signup#early_signup_confirmation', :as => 'early_signup_confirmation'
   post '/signup/process_input/:id' => 'signup#process_input', :as => 'process_input'
   post '/signup/process_style_input/:id' => 'signup#process_style_input'
-  post '/signup/process_drinks_per_week/:id' => 'signup#process_drinks_per_week'
   post '/signup/process_user_plan_choice/:id' => 'signup#process_user_plan_choice', :as => 'process_user_plan_choice'  
   post '/signup/process_early_user_plan_choice/:id' => 'signup#process_early_user_plan_choice', :as => 'process_early_user_plan_choice' 
+  
   patch '/signup/account_info_process' => 'signup#account_info_process', :as => 'account_info_process'
   post '/signup/early_account_info' => 'signup#early_account_info', :as => 'early_account_info'
   

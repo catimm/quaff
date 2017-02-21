@@ -35,6 +35,7 @@
 #  user_color             :string
 #  special_code           :string
 #  tpw                    :string
+#  account_id             :integer
 #
 
 class User < ActiveRecord::Base
@@ -43,34 +44,36 @@ class User < ActiveRecord::Base
   devise :invitable, :database_authenticatable, :omniauthable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauth_providers => [:facebook, :twitter]
   
+  validates_confirmation_of :password
+  
   # add searchkick to find other users (friends)
   searchkick
   
   # for ActsAsTaggableOn gem
   acts_as_tagger
   
-  belongs_to :role       
+  belongs_to :role 
+  belongs_to :account
+  
+  has_many :user_deliveries    
+  has_many :admin_user_deliveries   
+  has_many :user_subscriptions
   has_many :user_beer_ratings
   has_many :friends
   has_many :beers, through: :user_beer_ratings
   has_many :wishlists
-  has_many :deliveries
   has_many :user_notification_preferences
   has_many :user_style_preferences
   has_many :user_locations
   has_many :user_drink_recommendations
   has_many :user_fav_drinks
   has_many :user_supplies
-  has_many :user_deliveries
-  has_many :admin_user_deliveries
   has_many :craft_stages
-  has_many :user_subscriptions
   has_many :reward_points
-  has_many :user_delivery_addresses
-  accepts_nested_attributes_for :user_delivery_addresses, :allow_destroy => true
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   attr_accessor :valid_special_code # to hold special code
+  attr_accessor :password_confirmation # to confirm password
   
   # set user roles for cancancan
   def super_admin?
@@ -81,24 +84,16 @@ class User < ActiveRecord::Base
     self.role.role_name == "admin"
   end
   
-  def super_retailer?
-    self.role.role_name == "super_retailer"
-  end
-  
-  def retailer?
-    self.role.role_name == "retailer"
-  end
-  
-  def retailer_test?
-    self.role.role_name == "retailer_test"
-  end
-  
   def super_user?
     self.role.role_name == "super_user"
   end
   
   def user?
-    self.role.role_name == "user"
+    self.role.role_name == "user_owner"
+  end
+  
+  def user?
+    self.role.role_name == "user_additional"
   end
   
   def free?

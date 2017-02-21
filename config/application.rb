@@ -22,26 +22,26 @@ module BestiesCode
     # config.i18n.default_locale = :de
     
     # config middleware for CORS requests for retailers draft boards
-    config.middleware.insert_before 0, "Rack::Cors", :debug => true, :logger => (-> { Rails.logger }) do
-      allow do
-        origins '*'
+    #config.middleware.insert_before 0, "Rack::Cors", :debug => true, :logger => (-> { Rails.logger }) do
+    #  allow do
+    #    origins '*'
 
-        resource '/draft.js',
-          :headers => :any,
-          :methods => [:get, :post, :options],
-          :credentials => true,
-          :max_age => 0
+    #    resource '/draft.js',
+    #      :headers => :any,
+    #      :methods => [:get, :post, :options],
+    #      :credentials => true,
+    #      :max_age => 0
 
-        resource '*',
-          :headers => :any,
-          :methods => [:get, :post, :delete, :put, :options, :head],
-          :max_age => 0
-      end
-    end # end of Rack::Cors config
+    #    resource '*',
+    #      :headers => :any,
+    #      :methods => [:get, :post, :delete, :put, :options, :head],
+    #      :max_age => 0
+    #  end
+    #end # end of Rack::Cors config
     
     # add pdfKit middleware
     #require 'pdfkit'
     #config.middleware.use PDFKit::Middleware, :print_media_type => true
-    
+
   end
 end

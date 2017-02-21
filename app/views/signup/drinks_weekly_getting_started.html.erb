@@ -1,0 +1,34 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-signup">
+		<%= render 'signup_guide' %>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-sm-1"></div>
+			<div class="col-xs-12 col-sm-10 text-center">
+				<%= render 'drink_preferences_guide' %>
+			</div>
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">How many <%= @drink_preference %> do you drink at home each week?</h2>
+				<h5 class="signup-question-detail">You can update this on your delivery preferences page anytime after signup.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-xs-0 col-sm-3"></div>
+			<div class="col-xs-12 col-sm-6 number-box-holder-grandparent">
+				<%= render 'drinks_per_week_choice'%>
+			</div>
+		</div>
+	</div>
+	<div class="row drinks-per-week-meaning-row <%= @drinks_per_week_meaning_show_status %>" id="drinks-per-week-meaning-row">
+		<%= render 'drinks_per_week_meaning' %>
+	</div>
+<%= render 'layouts/footer' %>

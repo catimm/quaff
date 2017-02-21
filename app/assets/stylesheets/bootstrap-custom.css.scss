@@ -634,6 +634,14 @@ label {
   color: $action-background;
   margin: 5px 0 10px 0;
 }
+.signup-journey-header {
+  margin: 0 !important;
+  padding-top: 20px !important;
+}
+.craft-journey-icons-signup {
+  color: $action-background;
+  margin: 25px 0 25px 0;
+}
 .sample-disclamier-text {
   color: $normal-text;
 }
@@ -2546,6 +2554,12 @@ $beer-header-lines-to-show-fp: 1;
     color: $medium-gray; 
   }
 }
+.pipe-separator {
+  color: $signup-category-image-background-start;
+  display: inline-block;
+  float: right;
+  font-weight: 500;
+}
 .signup-guide-column-holder.last-column {
   min-height: 30px;
 }
@@ -2558,14 +2572,19 @@ $beer-header-lines-to-show-fp: 1;
 }
 .guide-header {
   color: $less-emphasized-text;
-  margin: 7px 0 3px 0;
+  margin: 10px 0 3px 0 !important;
+  height: 20px !important;
 }
 .guide-header.current {
   color: $action-background;
   font-size: 16px;
+  margin: 7px 0 3px 0 !important;
+  height: 20px !important;
 }
 .guide-header.complete {
   color: $header-text;
+  margin: 10px 0 3px 0 !important;
+  height: 20px !important;
 }
 .first-row-signup {
   margin-top: 14.5px !important;
@@ -2592,7 +2611,7 @@ $beer-header-lines-to-show-fp: 1;
 .signup-question-detail {
   color: $normal-text;
   font-style: italic;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 .signup-start-date-text {
   color: $normal-text;
@@ -2600,8 +2619,8 @@ $beer-header-lines-to-show-fp: 1;
     color: $black;
   }
 }
-.signup-start-date-row-holder, .signup-drink-category-row-holder {
-  height: 380px !important;
+.signup-start-date-row-holder {
+  height: 300px !important;
   font-size: 48px;
   .container {
     height: inherit;
@@ -2609,9 +2628,10 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-category-image-holder, .signup-journey-image-holder, .signup-plan-start-holder {
   background: $white;
-  height: 100% !important;
+  height: 250px !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  text-align: center;
 }
 .signup-plan-holder {
   background: $white;
@@ -2722,9 +2742,7 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: 25px;
 }
 .large-format-meaning-parent {
-  border: 1px solid $normal-text;
   padding: 10px;
-  margin-top: 30px;
 }
 .drinks-per-week-meaning-text {
   color: $normal-text;
@@ -2732,6 +2750,14 @@ $beer-header-lines-to-show-fp: 1;
     color: $header-text;
     font-size: 22px;
   }
+}
+.estimated-delivery-price-holder-signup {
+  margin: 20px 0 10px 0 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
 }
 .drinks-per-delivery-highlight-change {
   color: $action-background !important;
@@ -2754,9 +2780,7 @@ $beer-header-lines-to-show-fp: 1;
     -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     border-radius: 6px;
     background: $white;
-    height: 120px;
-    position: relative;
-    
+    position: relative;  
 }
 .signup-style-tile:hover {
     background: $signup-category-image-background-start;
@@ -2767,7 +2791,6 @@ $beer-header-lines-to-show-fp: 1;
 .signup-style-tile.chosen {
   border-radius: 6px;
   background: rgba(0,135,203, 0.4);
-  height: 120px;
   position: absolute;
   top: 0;
   left: 15px;
@@ -2778,24 +2801,39 @@ $beer-header-lines-to-show-fp: 1;
       left: 42%;
     }
 }
+.style-image-holder {
+    background-repeat: no-repeat;
+    padding: 15% 20%;
+}
 .signup-style-tile-header {
   font-weight: 500;
   text-align: center;
-  margin-top: -10px;
+  margin-top: -15px;
+  font-size: 12.5px;
 }
 .signup-styles-tally-box {
   border: 1px solid $normal-text;
-  height: 120px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
-.signup-styles-tally-text {
+.gluten-free-label {
+  margin: 0 20px 0 15px;
+}
+.delivery_preference_gluten_free {
+  width: 55% !important;
+  float: left;
+}
+.gluten-free-question {
   color: $normal-text;
-  font-size: 21px;
-  font-weight: 500;
   margin-left: 10%;
-  width: 75%;
+  width: 80%;
+  line-height: 1.2;
+  font-size: 15px;
 }
 .signup-styles-next-step {
   width: 80%;
+  margin: 15px 0 0 0;
 }
 .user-plan-cost {
   color: $user-action;
@@ -2808,6 +2846,10 @@ $beer-header-lines-to-show-fp: 1;
 }
 .user-info-form {
   margin-top: -10px;
+}
+.user-info-next-button {
+  margin-top: 25px !important;
+  width: 95% !important;
 }
 .terms-and-conditions-text {
   color: $normal-text;
@@ -4099,12 +4141,6 @@ $descriptor-lines-to-show: 2;
 .tiny-like-style {
   background: $step-background;
   padding: 1px;
-}
-.style-image-holder {
-    background-repeat: no-repeat;
-    height: 80px;
-    width: 80px;
-    margin: 10px auto; 
 }
 .example-beer-header {
   color: $dark-gray;

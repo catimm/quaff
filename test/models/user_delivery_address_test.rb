@@ -3,7 +3,7 @@
 # Table name: user_delivery_addresses
 #
 #  id                   :integer          not null, primary key
-#  user_id              :integer
+#  account_id           :integer
 #  address_one          :string
 #  address_two          :string
 #  city                 :string

@@ -35,16 +35,20 @@ class PasswordsController < Devise::PasswordsController
 
   # PUT /resource/password
   def update
+    Rails.logger.debug("Devise update is being hit")
     self.resource = resource_class.reset_password_by_token(resource_params)
     yield resource if block_given?
 
     if resource.errors.empty?
+      Rails.logger.debug("Devise update errors are empty")
       resource.unlock_access! if unlockable?(resource)
       if Devise.sign_in_after_reset_password
+        Rails.logger.debug("Devise sign in after reset")
         flash_message = resource.active_for_authentication? ? :updated : :updated_not_active
         set_flash_message!(:notice, flash_message)
         sign_in(resource_name, resource)
       else
+        Rails.logger.debug("Devise NO sign in after reset")
         set_flash_message!(:notice, :updated_not_active)
       end
       respond_with resource, location: after_resetting_password_path_for(resource)

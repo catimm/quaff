@@ -1,0 +1,5 @@
+$(function() {
+	// temporarily highlight this change
+	$("#drinks-per-week-meaning").removeClass('hidden').addClass('show');
+	$("#estimated-delivery-price-holder-signup").html("<%= escape_javascript(render 'per_delivery_estimate' ) %>");
+});

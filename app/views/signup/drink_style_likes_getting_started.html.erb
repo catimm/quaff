@@ -1,0 +1,119 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-signup">
+		<%= render 'signup_guide' %>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-sm-1"></div>
+			<div class="col-xs-12 col-sm-10 text-center">
+				<%= render 'drink_preferences_guide' %>
+			</div>
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">Choose up to 5 styles you really like</h2>
+				<h5 class="signup-question-detail">You can provide more detail on your drink preferences page anytime after signup.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="row">
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10">
+					<% @styles_for_like.each do |style| %>
+						<div class="col-xs-12 col-sm-2">
+							<div class="signup-style-tile like-style-tile" id="<%= style.id %>">
+								<div class="row no-margin text-center">
+									<div class="style-image-holder">
+										<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
+									</div>
+									<h5 class="signup-style-tile-header"><%= style.style_name %></h5>
+								</div>
+							</div>
+							<% if !@user_likes.blank? %>
+								<% if @user_likes.include? style.id %>
+									<div class="signup-style-tile like-style-tile chosen show" id="<%= style.id %>">
+										<div class="style-indicator like-style-middle text-center">
+											<i class="fa fa-check"></i>
+										</div>
+									</div>
+								<% else %>
+									<div class="signup-style-tile like-style-tile chosen hidden" id="<%= style.id %>">
+										<div class="style-indicator like-style-middle text-center">
+											<i class="fa fa-check"></i>
+										</div>
+									</div>
+								<% end %>
+							<% else %>
+								<div class="signup-style-tile like-style-tile chosen hidden" id="<%= style.id %>">
+									<div class="style-indicator like-style-middle text-center">
+										<i class="fa fa-check"></i>
+									</div>
+								</div>
+							<% end %>
+						</div>
+					<% end %>
+					<div class="col-xs-12 col-sm-2">
+						<div class="signup-styles-tally-box">
+							<div class="row no-margin">
+								<h5 class="gluten-free-question">Do you drink gluten-free drinks?</h5>
+							</div>
+							<div class="row no-margin text-center">
+								<%= simple_form_for @delivery_preferences, 
+									:url => {:controller => "signup", :action => "process_drink_style_likes_getting_started"}, 
+									:remote => true, :html => { :class => 'form-horizontal' } do |f| %>
+									<label for="gluten_free_field" class="col-xs-4 col-sm-3 control-label gluten-free-label">Yes</label>
+									<%= f.input :gluten_free, input_html: { class: "form-control", id: "gluten_free_field" }, 
+										:label => false, :as => :boolean do %>
+											<% f.check_box :gluten_free, {}, "true", "false" %>
+									 <% end %>
+									
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="row no-margin text-center">
+				<div class="col-xs-0 col-sm-4"></div>
+				<div class="col-xs-12 col-sm-4">
+					<% if @number_of_liked_styles >= 1 %>
+						<%= link_to "Next", drink_style_dislikes_getting_started_path(@user.id), class: "btn btn-default btn-success signup-styles-next-step", id: "liked_styles_next_step_button" %>
+					<% else %>
+						<%= link_to "Next", drink_style_dislikes_getting_started_path(@user.id), disabled: true, class: "btn btn-default signup-styles-next-step", id: "liked_styles_next_step_button" %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="max_likes" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>You've reached the max</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<h4>For now, you can only choose 5&mdash;just delete one to add another. Never fear, you can fine tune this on 
+						your delivery preferences page after you sign up.
+					</h4>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-4"></div>
+				<div class="col-sm-4 remove-button-holder">
+					<%= link_to "Got it!", "#", :class => 'btn btn-success wait-button', :data => {:dismiss=>"modal"} %>
+				</div>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

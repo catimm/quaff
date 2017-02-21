@@ -1,0 +1,152 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-signup">
+		<%= render 'signup_guide' %>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="row no-margin">
+				<h5 class="delivery-thoughts-text hidden-sm hidden-md hidden-lg hidden-xl" id="mobile-extra-thoughts-link">Click to read a few helpful notes</h5>
+				<h5 class="delivery-thoughts-text hidden hidden-sm hidden-md hidden-lg hidden-xl" id="mobile-extra-thoughts-link-to-hide">Click to hide notes</h5>
+				<div class="col-xs-12 hidden-sm hidden-md hidden-lg hidden-xl delivery-thoughts-container hidden" id="mobile-delivery-thoughts-container">
+					<ul>
+						<li>
+							<h5 class="delivery-thoughts-text">
+								Alcohol must be hand-delivered to someone who is 21+; this may influence the best delivery 
+								location for you.
+						</li>
+						<li>
+							<h5 class="delivery-thoughts-text">
+								If you choose to receive your delivery at work, Knird's delivery case is low-profile to avoid undue attention.
+							</h5>
+						</li>
+						<li>
+							<h5 class="delivery-thoughts-text zip-code-neighborhoods">
+								As a reminder, we currently deliver to Amazon's downtown offices, Capitol 
+								Hill, Central District, Downtown Bellevue, Downtown Seattle, Eastlake, Magnolia, 
+								Madison Park, Microsoft's main campus, Montlake, Westlake, and Queen Anne.
+							</h5>
+						</li>
+					</ul>
+				</div>
+				<div class="hidden-xs col-sm-12 delivery-thoughts-container">
+					<div class="row">
+						<div class="col-sm-9 col-md-10">
+							<ul>
+								<li>
+									<h5 class="delivery-thoughts-text">
+										Alcohol must be hand-delivered to someone who is 21+; this may influence the best delivery 
+										location for you.
+								</li>
+								<li>
+									<h5 class="delivery-thoughts-text">
+										If you choose to receive your delivery at work, Knird's delivery case is low-profile to avoid undue attention.
+									</h5>
+								</li>
+								<li>
+									<h5 class="delivery-thoughts-text zip-code-neighborhoods">
+										As a reminder, we currently deliver to Amazon's downtown offices, Capitol 
+										Hill, Central District, Downtown Bellevue, Downtown Seattle, Eastlake, Magnolia, 
+										Madison Park, Microsoft's main campus, Montlake, Westlake, and Queen Anne.
+									</h5>
+								</li>
+							</ul>
+						</div>
+						<div class="col-sm-3 col-md-2 no-padding-left">
+							<h5 class="delivery-area-header">Delivery area</h5>
+							<div class="delivery-area-map-container">
+								<%= link_to "#", :class => 'text-center', 
+											data: {toggle: "modal", target: "#initial_delivery_area", tooltip: "tooltip", 
+													title: "Click to see larger image"} do %>
+									<img class="img-responsive center-block" alt="Responsive image" src="<%= image_url('https://s3-us-west-2.amazonaws.com/knird/index/Knird_delivery_area_initial_with_shading.jpg') %>">
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row early-signup-form-section">
+		<div class="container">
+			<div class="row no-margin">
+				<div class="col-xs-0 col-sm-3 text-right">
+					<h4 class="signup-form-header delivery-info">Delivery info</h4>
+				</div>
+				<div class="col-xs-12 col-sm-6">
+					<%= simple_form_for @user_delivery_address, :url => {:controller => "signup", :action => "process_account_address_getting_started"}, :html => { :class => 'form-horizontal' } do |address| %>
+						<%= address.hidden_field :account_id, value: @account.id  %>
+						<%= address.hidden_field :user_id, value: @user.id %>
+							<%= address.input :city, :as => :hidden %>
+							<%= address.input :state, :as => :hidden %>
+							<div class="row no-margin user-info-form">
+								<label for="address_one_field" class="col-xs-5 col-sm-4 control-label">Location type</label>
+								<div class="col-xs-7 col-sm-8 no-padding-left">
+								<%= address.input :location_type, :collection => [[true, 'Work'], [false, 'Home']],
+																	:label_method => :last,
+																	:value_method => :first,
+																	:as => :radio_buttons,
+																	:item_wrapper_class => 'radio-inline',
+																	label: false, required: true %>
+								</div>
+							</div>
+							<div class="row no-margin user-info-form">
+								<label for="address_one_field" class="col-xs-4 col-sm-3 control-label">Address</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= address.input :address_one, input_html: { class: "form-control", id: "address_one_field" }, placeholder: "Delivery Street Address", label: false, required: true %>
+								</div>
+							</div>
+							<div class="row no-margin user-info-form">
+								<label for="address_two_field" class="col-xs-4 col-sm-3 control-label">Unit/Floor</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= address.input :address_two, input_html: { class: "form-control", id: "address_two_field" }, placeholder: "Extra delivery info (Floor, Unit, Apt, etc.)", label: false %>
+								</div>
+							</div>
+								<div class="row no-margin user-info-form">
+								<label for="zip_code_field" class="col-xs-4 col-sm-3 control-label">Zip code</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= address.input :zip, input_html: { class: "form-control", id: "zip_code_field" }, placeholder: "Zip Code", label: false, required: true %>
+								</div>
+							</div>
+							<div class="row no-margin user-info-form">
+								<label for="instructions_field" class="col-xs-4 col-sm-3 control-label">Special instructions</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= address.input :special_instructions, input_html: { class: "form-control", id: "instructions_field" }, placeholder: "Any special instructions for deliveries?", label: false %>
+								</div>
+							</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-1 col-sm-4"></div>
+		<div class="col-xs-10 col-sm-4 text-center">
+			<%= address.submit "Next", class: "btn btn-default btn-success formButton" %>
+		</div>
+	</div>
+			
+	<% end %>
+<div id="initial_delivery_area" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 class="getting-started-header">Current delivery area</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<img class="img-responsive center-block" alt="Responsive image" src="<%= image_url('https://s3-us-west-2.amazonaws.com/knird/index/Knird_delivery_area_initial_with_shading.jpg') %>">
+				<h5 class="delivery-thoughts-text zip-code-neighborhoods">
+					We currently deliver to Amazon's downtown offices, Capitol 
+					Hill, Central District, Downtown Bellevue, Downtown Seattle, Eastlake, Magnolia, 
+					Madison Park, Microsoft's main campus, Montlake, Westlake, and Queen Anne. But we'll expand quickly!
+				</h5>
+			</div>
+		</div>
+	</div> 
+</div>
+<%= render 'layouts/footer' %>

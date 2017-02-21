@@ -14,6 +14,7 @@
 // require jquery.turbolinks
 //= require jquery_ujs
 //= require jquery.countdown
+//= require modernizr
 // require turbolinks
 //= require circliful
 //= require chosen-jquery
@@ -29,6 +30,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
+//= require bootstrap-datepicker
 //= require_tree .
 jQuery( function($) {
     $('i').tooltip();

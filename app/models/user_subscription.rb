@@ -15,9 +15,11 @@
 #  auto_renew_subscription_id :integer
 #  deliveries_this_period     :integer
 #  total_deliveries           :integer
+#  account_id                 :integer
 #
 
 class UserSubscription < ActiveRecord::Base
   belongs_to :user
   belongs_to :subscription
+  belongs_to :account
 end

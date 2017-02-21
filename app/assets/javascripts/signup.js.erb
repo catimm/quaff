@@ -1,4 +1,9 @@
 $(function() {
+	// use Modernizr to add datepicker view to browsers that don't support date
+	if (!Modernizr.inputtypes.date) {
+	  $("input[type='date']").datepicker();
+	}
+
 	// set up use of tooltip within a link
 	$('[data-tooltip="tooltip"]').tooltip();
 	
@@ -7,7 +12,6 @@ $(function() {
 	
 	// hide spinner
 	$(".spinner-signup").hide();
-	
 	
 	// show spinner on AJAX start
 	$(document).ajaxStart(function(){
@@ -19,6 +23,12 @@ $(function() {
 	  $(".spinner-signup").delay(500).hide(0);
 	});
   
+  	// set height of style tiles in likes/dislikes views to equal width
+	style_tile_width = $(".signup-style-tile").width();
+	$(".signup-style-tile").height(style_tile_width);
+	$(".signup-style-tile.chosen").height(style_tile_width);
+	$(".signup-styles-tally-box").height(style_tile_width);
+	
   // set delay function
 	var delay = (function(){
 	  var timer = 0;
@@ -104,8 +114,10 @@ $(function() {
 			// send data to controller
 			$.ajax({
 			  type: "POST",
-			  url: "/signup/process_input/category-irrelevant-" + new_value
+			  url: "/signup/process_drink_choice_getting_started/" + new_value
 			});
+			
+			$('#drink_choice_next_step_button').removeAttr('disabled');
 		} else {
 			$('#delivery_preference_drink_option_id').val(new_value);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
@@ -134,7 +146,9 @@ $(function() {
 		}
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_input/journey-irrelevant-" + new_value
+			var controller_url = "/signup/process_drink_journey_getting_started/" + new_value
+			
+			$('#drink_journey_next_step_button').removeAttr('disabled');
 		} else {
 			var controller_url = "/users/deliveries_update_estimates/craft_journey-" + new_value
 		}
@@ -144,7 +158,17 @@ $(function() {
 		  type: "POST",
 		  url: controller_url
 		});
+	});
+	
+	$(document).on('click', '#delivery_preference_gluten_free', function () {
 		
+		var new_value = $(this).val();
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/signup/process_drink_style_likes_getting_started/" + new_value
+		});
 	});
 	
 	// add logic to change background color of number boxes and send data to controller
@@ -169,7 +193,7 @@ $(function() {
 		}
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_drinks_per_week/" + drinks_per_week
+			var controller_url = "/signup/process_drinks_weekly_getting_started/" + drinks_per_week
 			if($("#drinks-per-week-meaning-row").hasClass("hidden")) {
 				$("#drinks-per-week-meaning-row").removeClass("hidden").addClass("show");
 			}
@@ -232,7 +256,7 @@ $(function() {
 		}
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_input/preferences-2-" + large_format
+			var controller_url = "/signup/process_drinks_large_getting_started/preferences-2-" + large_format
 		} else {
 			$("#delivery_preference_max_large_format").val(large_format);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
@@ -289,7 +313,8 @@ $(function() {
 				});
 			} else {
 				styles_liked = styles_liked - 1;
-				alert("You can only choose 5!");
+				
+				$("#max_likes").modal("show");
 			}
 		} else {
 			styles_liked = styles_liked - 1;

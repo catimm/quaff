@@ -13,6 +13,8 @@
 #  drink_option_id     :integer
 #  max_large_format    :integer
 #  max_cellar          :integer
+#  gluten_free         :boolean
+#  admin_comments      :text
 #
 
 require 'test_helper'

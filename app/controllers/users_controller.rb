@@ -24,7 +24,7 @@ class UsersController < ApplicationController
       @info_chosen = "chosen"
       
       # get user delivery info
-      @delivery_address = UserDeliveryAddress.where(user_id: @user.id).first
+      @delivery_address = UserDeliveryAddress.find_by_account_id(@user.account_id)
       
       # set birthday to Date
       @birthday =(@user.birthday).strftime("%Y-%m-%d")
@@ -255,19 +255,28 @@ class UsersController < ApplicationController
   
   def update_password
     @user = User.find(current_user.id)
-    if @user.update_with_password(user_params)
-      # Sign in the user by passing validation in case their password changed
-      sign_in @user, :bypass => true
-      # set saved message
-      flash[:success] = "New password saved!"            
-      # redirect back to user account page
-      redirect_to user_account_settings_path(current_user.id, 'info')
+
+    if @user.valid_password?(params[:user][:current_password])
+      if @user.update_with_password(user_params)
+        # Sign in the user by passing validation in case their password changed
+        sign_in @user, :bypass => true
+        # set saved message
+        flash[:success] = "New password saved!"            
+        # redirect back to user account page
+        redirect_to user_account_settings_path(current_user.id, 'info')
+      else
+        # set saved message
+        flash[:failure] = "Sorry, new passwords didn't match."
+        # redirect back to user account page
+        redirect_to user_account_settings_path(current_user.id, 'info')
+      end
     else
       # set saved message
-      flash[:failure] = "Sorry, invalid password."
+      flash[:failure] = "Sorry, current password didn't match."
       # redirect back to user account page
-      redirect_to user_account_settings_path(current_user.id, 'info')
+      redirect_to user_account_settings_path(current_user.id, 'info')   
     end
+
   end
   
   def update_delivery_address

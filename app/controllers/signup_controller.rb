@@ -6,6 +6,592 @@ class SignupController < ApplicationController
   include DeliveryEstimator
   require "stripe"
   
+  def user_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    Rails.logger.debug("User info: #{@user.inspect}")
+    
+    #set guide view
+    @user_chosen = 'current'
+    
+  end # end getting_started_user action
+  
+  def process_user_getting_started
+    @user = User.find(current_user.id)
+    
+    if @user.update_with_password(user_params)
+      # Sign in the user by passing validation in case their password changed
+      sign_in @user, :bypass => true
+         
+      # redirect to next step in signup process
+      redirect_to drink_choice_getting_started_path(@user.id)
+    else
+      # set saved message
+      flash[:failure] = "Sorry, new passwords didn't match."
+      # redirect back to user account page
+      redirect_to user_getting_started_path(@user.id)
+    end
+
+    # update getting started step & remove temporary password
+    if @user.getting_started_step == 0
+      @user.update(getting_started_step: 1, tpw: nil)
+    end
+    
+  end # end process_user_getting_started action
+  
+  def drink_choice_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    
+    #set guide view & current page
+    @user_chosen = 'complete'
+    @drink_chosen = 'current'
+    @drink_choice_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    # get Delivery Preference info if it exists
+      if !@delivery_preferences.blank?
+        if @delivery_preferences.drink_option_id == 1
+          @beer_chosen = "show"
+          @cider_chosen = "hidden"
+          @beer_and_cider_chosen = "hidden"
+        elsif @delivery_preferences.drink_option_id == 2
+          @beer_chosen = "hidden"
+          @cider_chosen = "show"
+          @beer_and_cider_chosen = "hidden"
+        else
+          @beer_chosen = "hidden"
+          @cider_chosen = "hidden"
+          @beer_and_cider_chosen = "show"
+        end
+      else
+        @beer_chosen = "hidden"
+        @cider_chosen = "hidden"
+        @beer_and_cider_chosen = "hidden"
+      end
+      
+  end # end getting_started_user action
+  
+  def process_drink_choice_getting_started
+    # get data
+    @data = params[:id]
+    
+    # get User info 
+    @user = User.find(current_user.id)
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    # save the drink category data
+    if !@delivery_preferences.blank?
+      @delivery_preferences.update(drink_option_id: @data)
+    else
+      @new_delivery_preference = DeliveryPreference.create(user_id: @user.id, drink_option_id: @data)
+    end
+    
+    # update step completed if need be
+    if @user.getting_started_step == 1
+      @user.update(getting_started_step: 2)
+    end
+    
+    # don't change the view
+    render :nothing => true
+    
+  end # end process_drink_choice_getting_started action
+  
+  def drink_journey_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    
+    #set guide view & current page
+    @user_chosen = 'complete'
+    @drink_chosen = 'current'
+    @drink_choice_chosen = 'complete'
+    @drink_journey_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    # set drink category choice
+      if @delivery_preferences.drink_option_id == 1
+        @drink_preference = "beer"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_preference = "cider"
+      else
+        @drink_preference = "beer/cider"
+      end
+      
+      # set user craft stage if it exists
+      if @user.craft_stage_id == 1
+        @explorer_chosen = "show"
+        @geek_chosen = "hidden"
+        @conn_chosen = "hidden"
+      elsif @user.craft_stage_id == 2
+        @explorer_chosen = "hidden"
+        @geek_chosen = "show"
+        @conn_chosen = "hidden"
+      elsif @user.craft_stage_id == 3
+        @explorer_chosen = "hidden"
+        @geek_chosen = "hidden"
+        @conn_chosen = "show"
+      else
+        @explorer_chosen = "hidden"
+        @geek_chosen = "hidden"
+        @conn_chosen = "hidden"
+      end
+      
+  end # end of drink_journey_getting_started action
+  
+  def process_drink_journey_getting_started
+    # get data
+    @data = params[:id]
+    
+    # get User info 
+    @user = User.find(current_user.id)
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    # update step completed if need be
+    if @user.getting_started_step == 2 # update both
+      @user.update(getting_started_step: 3, craft_stage_id: @data)
+    else
+      # just save the user craft stage data
+      @user.update(craft_stage_id: @data)
+    end
+    
+    # don't change the view
+    render :nothing => true
+  end # end of process_drink_journey_getting_started action
+  
+  def drink_style_likes_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'current'
+    @drink_choice_chosen = 'complete'
+    @drink_journey_chosen = 'complete'
+    @drink_likes_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+     # set style list for like list
+      if @delivery_preferences.drink_option_id == 1
+        @styles_for_like = BeerStyle.where(signup_beer: true).order('style_order ASC')
+      elsif @delivery_preferences.drink_option_id == 2
+        @styles_for_like = BeerStyle.where(signup_cider: true).order('style_order ASC')
+      else
+        @styles_for_like = BeerStyle.where(signup_beer_cider: true).order('style_order ASC')
+      end
+      
+      # find if user has already liked/disliked styles
+      @user_style_preferences = UserStylePreference.where(user_id: current_user.id)
+      
+      if !@user_style_preferences.blank?
+        # get specific likes/dislikes
+        @user_style_likes = @user_style_preferences.where(user_preference: "like")
+        @user_style_dislikes = @user_style_preferences.where(user_preference: "dislike")
+        
+        if !@user_style_likes.nil?
+          @user_likes = Array.new
+          @user_style_likes.each do |style|
+            if style.beer_style_id == 3 || style.beer_style_id == 4 || style.beer_style_id == 5
+              @user_likes << 1
+            elsif style.beer_style_id == 6 || style.beer_style_id == 16
+              @user_likes << 32
+            elsif style.beer_style_id == 7 || style.beer_style_id == 9
+              @user_likes << 33
+            elsif style.beer_style_id == 10
+              @user_likes << 34
+            elsif style.beer_style_id == 11 || style.beer_style_id == 12
+              @user_likes << 35
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 26 || style.beer_style_id == 30 || style.beer_style_id == 31)
+              @user_likes << 36
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 25 || style.beer_style_id == 28 || style.beer_style_id == 29)
+              @user_likes << 37
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 13 || style.beer_style_id == 14)
+              @user_likes << 38
+            else
+              @user_likes << style.beer_style_id
+            end
+          end
+          @user_likes = @user_likes.uniq
+          @number_of_liked_styles = @user_likes.count
+          # send number_of_liked_styles to javascript
+          gon.number_of_liked_styles = @number_of_liked_styles
+        else
+          @number_of_liked_styles = 0
+          # send number_of_liked_styles to javascript
+          gon.number_of_liked_styles = @number_of_liked_styles
+        end
+        
+        if !@user_style_dislikes.nil?
+          @user_dislikes = Array.new
+          @user_style_dislikes.each do |style|
+            if style.beer_style_id == 3 || style.beer_style_id == 4 || style.beer_style_id == 5
+              @user_dislikes << 1
+            elsif style.beer_style_id == 6 || style.beer_style_id == 16
+              @user_dislikes << 32
+            elsif style.beer_style_id == 7 || style.beer_style_id == 9
+              @user_dislikes << 33
+            elsif style.beer_style_id == 10
+              @user_dislikes << 34
+            elsif style.beer_style_id == 11 || style.beer_style_id == 12
+              @user_dislikes << 35
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 26 || style.beer_style_id == 30 || style.beer_style_id == 31)
+              @user_dislikes << 36
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 25 || style.beer_style_id == 28 || style.beer_style_id == 29)
+              @user_dislikes << 37
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 13 || style.beer_style_id == 14)
+              @user_dislikes << 38
+            else
+              @user_dislikes << style.beer_style_id
+            end
+          end
+          @user_dislikes = @user_dislikes.uniq
+          @number_of_disliked_styles = @user_dislikes.count
+          # send number_of_liked_styles to javascript
+          gon.number_of_disliked_styles = @number_of_disliked_styles
+        else
+          @number_of_disliked_styles = 0
+          # send number_of_liked_styles to javascript
+          gon.number_of_disliked_styles = @number_of_disliked_styles
+        end
+      else
+        @number_of_liked_styles = 0
+        @number_of_disliked_styles = 0
+        # send number_of_liked_styles to javascript
+        gon.number_of_liked_styles = @number_of_liked_styles
+        gon.number_of_disliked_styles = @number_of_disliked_styles
+      end
+      
+      # set style list for dislike list, removing styles already liked
+      @styles_for_dislike = @styles_for_like.where.not(id: @user_likes).order('style_order ASC')
+      
+  end # end drink_style_likes_getting_started action
+  
+  def process_drink_style_likes_getting_started
+    # get new value
+    if params[:id] == "true"
+      @value = true
+    else
+      @value = false
+    end
+    # get User info 
+    @user = User.find(current_user.id)
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    @delivery_preferences.update(gluten_free: @value)
+    
+    # don't change the view
+    render :nothing => true
+    
+  end # end process_drink_style_likes_getting_started action
+  
+  def drink_style_dislikes_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'current'
+    @drink_choice_chosen = 'complete'
+    @drink_journey_chosen = 'complete'
+    @drink_likes_chosen = 'complete'
+    @drink_dislikes_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+     # set style list for like list
+      if @delivery_preferences.drink_option_id == 1
+        @styles_for_like = BeerStyle.where(signup_beer: true).order('style_order ASC')
+      elsif @delivery_preferences.drink_option_id == 2
+        @styles_for_like = BeerStyle.where(signup_cider: true).order('style_order ASC')
+      else
+        @styles_for_like = BeerStyle.where(signup_beer_cider: true).order('style_order ASC')
+      end
+      
+      # find if user has already liked/disliked styles
+      @user_style_preferences = UserStylePreference.where(user_id: current_user.id)
+      
+      if !@user_style_preferences.blank?
+        # get specific likes/dislikes
+        @user_style_likes = @user_style_preferences.where(user_preference: "like")
+        @user_style_dislikes = @user_style_preferences.where(user_preference: "dislike")
+        
+        if !@user_style_likes.nil?
+          @user_likes = Array.new
+          @user_style_likes.each do |style|
+            if style.beer_style_id == 3 || style.beer_style_id == 4 || style.beer_style_id == 5
+              @user_likes << 1
+            elsif style.beer_style_id == 6 || style.beer_style_id == 16
+              @user_likes << 32
+            elsif style.beer_style_id == 7 || style.beer_style_id == 9
+              @user_likes << 33
+            elsif style.beer_style_id == 10
+              @user_likes << 34
+            elsif style.beer_style_id == 11 || style.beer_style_id == 12
+              @user_likes << 35
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 26 || style.beer_style_id == 30 || style.beer_style_id == 31)
+              @user_likes << 36
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 25 || style.beer_style_id == 28 || style.beer_style_id == 29)
+              @user_likes << 37
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 13 || style.beer_style_id == 14)
+              @user_likes << 38
+            else
+              @user_likes << style.beer_style_id
+            end
+          end
+          @user_likes = @user_likes.uniq
+          @number_of_liked_styles = @user_likes.count
+          # send number_of_liked_styles to javascript
+          gon.number_of_liked_styles = @number_of_liked_styles
+        else
+          @number_of_liked_styles = 0
+          # send number_of_liked_styles to javascript
+          gon.number_of_liked_styles = @number_of_liked_styles
+        end
+        
+        if !@user_style_dislikes.nil?
+          @user_dislikes = Array.new
+          @user_style_dislikes.each do |style|
+            if style.beer_style_id == 3 || style.beer_style_id == 4 || style.beer_style_id == 5
+              @user_dislikes << 1
+            elsif style.beer_style_id == 6 || style.beer_style_id == 16
+              @user_dislikes << 32
+            elsif style.beer_style_id == 7 || style.beer_style_id == 9
+              @user_dislikes << 33
+            elsif style.beer_style_id == 10
+              @user_dislikes << 34
+            elsif style.beer_style_id == 11 || style.beer_style_id == 12
+              @user_dislikes << 35
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 26 || style.beer_style_id == 30 || style.beer_style_id == 31)
+              @user_dislikes << 36
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 25 || style.beer_style_id == 28 || style.beer_style_id == 29)
+              @user_dislikes << 37
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 13 || style.beer_style_id == 14)
+              @user_dislikes << 38
+            else
+              @user_dislikes << style.beer_style_id
+            end
+          end
+          @user_dislikes = @user_dislikes.uniq
+          @number_of_disliked_styles = @user_dislikes.count
+          # send number_of_liked_styles to javascript
+          gon.number_of_disliked_styles = @number_of_disliked_styles
+        else
+          @number_of_disliked_styles = 0
+          # send number_of_liked_styles to javascript
+          gon.number_of_disliked_styles = @number_of_disliked_styles
+        end
+      else
+        @number_of_liked_styles = 0
+        @number_of_disliked_styles = 0
+        # send number_of_liked_styles to javascript
+        gon.number_of_liked_styles = @number_of_liked_styles
+        gon.number_of_disliked_styles = @number_of_disliked_styles
+      end
+      
+      # set style list for dislike list, removing styles already liked
+      @styles_for_dislike = @styles_for_like.where.not(id: @user_likes).order('style_order ASC')
+      
+  end # end drink_style_likes_getting_started action
+  
+  def drinks_weekly_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'current'
+    @drink_choice_chosen = 'complete'
+    @drink_journey_chosen = 'complete'
+    @drink_likes_chosen = 'complete'
+    @drink_dislikes_chosen = 'complete'
+    @drink_per_weeks_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    # set drink category choice
+    if @delivery_preferences.drink_option_id == 1
+      @drink_preference = "beers"
+    elsif @delivery_preferences.drink_option_id == 2
+      @drink_preference = "ciders"
+    else
+      @drink_preference = "beers/ciders"
+    end
+    
+     # get number of drinks per week
+    if !@delivery_preferences.drinks_per_week.nil?
+      @drinks_per_week = @delivery_preferences.drinks_per_week
+      @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
+      @drinks_per_week_meaning_show_status = "show"
+    else
+      @drinks_per_week_meaning_show_status = "hidden"
+    end
+
+      
+  end # end of drinks_weekly_getting_started action
+  
+  def process_drinks_weekly_getting_started
+    # get User info 
+    @user = User.find_by_id(current_user.id)
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    @delivery_preferences.update(drinks_per_week: params[:id])
+      
+    # set variables to show in partial
+    # set drink category choice
+    if @delivery_preferences.drink_option_id == 1
+      @drink_preference = "beers"
+    elsif @delivery_preferences.drink_option_id == 2
+      @drink_preference = "ciders"
+    else
+      @drink_preference = "beers/ciders"
+    end
+    @drinks_per_week = @delivery_preferences.drinks_per_week
+    @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
+    @drinks_per_week_meaning_show_status = "show"
+      
+    # update step completed if need be
+    if current_user.getting_started_step == 5
+      current_user.update(getting_started_step: 6)
+    end
+
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end of drinks_weekly_getting_started action
+  
+  def drinks_large_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'current'
+    @drink_choice_chosen = 'complete'
+    @drink_journey_chosen = 'complete'
+    @drink_likes_chosen = 'complete'
+    @drink_dislikes_chosen = 'complete'
+    @drink_per_weeks_chosen = 'complete'
+    @drink_size_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    # set drink category choice
+    if @delivery_preferences.drink_option_id == 1
+      @drink_preference = "beers"
+    elsif @delivery_preferences.drink_option_id == 2
+      @drink_preference = "ciders"
+    else
+      @drink_preference = "beers/ciders"
+    end
+    
+     # get number of drinks per week
+    if !@delivery_preferences.drinks_per_week.nil?
+      @drinks_per_week = @delivery_preferences.drinks_per_week
+      @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
+      @drinks_per_week_meaning_show_status = "show"
+    else
+      @drinks_per_week_meaning_show_status = "hidden"
+    end
+    
+    # get number of large format drinks per week
+    if !@delivery_preferences.max_large_format.nil?
+      @large_format_drinks_per_week = @delivery_preferences.max_large_format
+    end
+    
+  end # end of drinks_weekly_getting_started action
+  
+  def process_drinks_large_getting_started
+    # get User info 
+    @user = User.find_by_id(current_user.id)
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    # update both format preferences and cost estimator 
+    @delivery_preferences.update(max_large_format: @input)
+    delivery_estimator(current_user.id, @delivery_preferences.drinks_per_week, @input.to_i, "update")
+    
+    # update step completed if need be
+    if @user.getting_started_step == 6
+      @user.update(getting_started_step: 7)
+    end
+    
+    # show delivery cost information and 'next' button
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end of drinks_weekly_getting_started action
+  
+  def account_address_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    #Rails.logger.debug("User info: #{@user.inspect}")
+    
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    #Rails.logger.debug("Account info: #{@account.inspect}")
+    
+    # instantiate new UserDeliveryAddress
+    @user_delivery_address = UserDeliveryAddress.new
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'complete'
+    @account_chosen = 'current'
+    
+  end # end account_getting_started action
+  
+  def process_account_address_getting_started
+    @zip = params[:user_delivery_address][:zip]
+    params[:user_delivery_address][:city] = @zip.to_region(:city => true)
+    params[:user_delivery_address][:state] = @zip.to_region(:state => true)
+    
+    # get User info
+    @user = User.find_by_id(params[:user_delivery_address][:user_id])
+    
+    UserDeliveryAddress.create(address_params)
+    
+    redirect_to account_membership_getting_started_path(@user.id)
+  end # end process_account_getting_started action
+  
+  def account_membership_getting_started
+    # get User info 
+    @user = User.find(params[:id])
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'complete'
+    @account_chosen = 'current'
+    
+  end # end account_getting_started action
+  
+  def process_account_membership_getting_started
+    
+  end # end process_account_getting_started action
+  
   def getting_started
     # get current view
     if params[:id].include? '-'
@@ -55,7 +641,9 @@ class SignupController < ApplicationController
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
     
-    if @view == "category"
+    if @view == "user"
+      
+    elsif @view == "category"
       # set css rule for signup guide header
       @category_chosen = "current"
       # get Delivery Preference info if it exists
@@ -332,7 +920,7 @@ class SignupController < ApplicationController
     @current_page = "signup"
     
     # create User object 
-    @user = User.new
+    @account = Account.new
 
     # instantiate invitation request 
     @request_invitation = InvitationRequest.new
@@ -355,8 +943,8 @@ class SignupController < ApplicationController
       @billing_step = 'current'
       
       # get early user info
-      @early_user = User.find_by_id(params[:format])
-      
+      @early_user = User.find_by_account_id(params[:format])
+      Rails.logger.debug("Early user info: #{@early_user.inspect}")
     end # end of choosing correct step
     
   end # end of early signup action
@@ -476,7 +1064,6 @@ class SignupController < ApplicationController
         end
       end
       
-      
       # update the start date
       @delivery_preferences.update(first_delivery_date: @start_date)
       # update or create delivery data
@@ -519,8 +1106,11 @@ class SignupController < ApplicationController
     @data = params[:id]
     @data_split = @data.split("-")
     @preference = @data_split[0]
+    Rails.logger.debug("Preference info: #{@preference.inspect}")
     @action = @data_split[1]
+    Rails.logger.debug("Action info: #{@action.inspect}")
     @style_info = @data_split[2]
+    Rails.logger.debug("Style info: #{@style_info.inspect}")
     
     # get user info
     @user = User.find(current_user.id)
@@ -528,93 +1118,75 @@ class SignupController < ApplicationController
     @style_id = Array.new
     # set style number 
     if @style_info == "1" 
+      @style_id << 1
       @style_id << 3
       @style_id << 4
       @style_id << 5
     elsif @style_info == "32"
+      @style_id << 32
       @style_id << 6
       @style_id << 16
     elsif @style_info == "33"
+      @style_id << 33
       @style_id << 7
       @style_id << 9
     elsif @style_info == "34"
+      @style_id << 34
       @style_id << 10
     elsif @style_info == "35"
+      @style_id << 35
       @style_id << 11
       @style_id << 12
     elsif @style_info == "36"
+      @style_id << 36
       @style_id << 26
       @style_id << 30
       @style_id << 31
     elsif @style_info == "37"
+      @style_id << 37
       @style_id << 25
       @style_id << 28
       @style_id << 29
     elsif @style_info == "38"
+      @style_id << 38
       @style_id << 13
       @style_id << 14
     else
       @style_id << @style_info
     end
             
-    # find if user has already liked/disliked styles
+    # adjust user liked/disliked styles
     @style_id.each do |style|
-      @user_style_preference = UserStylePreference.where(user_id: current_user.id, beer_style_id: style).first
-      if @user_style_preference.nil?
-        @new_user_style_preference = UserStylePreference.create(user_id: current_user.id, 
-                                                                beer_style_id: style, 
-                                                                user_preference: @preference)
+      if @action == "remove"
+        @user_style_preference = UserStylePreference.where(user_id: current_user.id, 
+                                                          beer_style_id: style, 
+                                                          user_preference: @preference).first
+        if !@user_style_preference.nil?
+          @user_style_preference.destroy
+        end
       else
-        @user_style_preference.destroy
+        @new_user_style_preference = UserStylePreference.create(user_id: current_user.id, 
+                                                                  beer_style_id: style, 
+                                                                  user_preference: @preference)
       end
     end # end of style each do loop
     
      # update step completed if need be
      if @preference == "like"
-      if @user.getting_started_step == 2
-        @user.update(getting_started_step: 3)
+      if @user.getting_started_step == 3
+        @user.update(getting_started_step: 4)
       end
      end
      
      if @preference == "dislike"
-      if @user.getting_started_step == 3
-        @user.update(getting_started_step: 4)
+      if @user.getting_started_step == 4
+        @user.update(getting_started_step: 5)
       end
      end
        
     render :nothing => true
     
   end # end of process_sytle_input method
-  
-  def process_drinks_per_week
-      # get Delivery Preference info if it exists
-      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    
-      @delivery_preferences.update(drinks_per_week: params[:id])
-      
-      # set variables to show in partial
-      # set drink category choice
-      if @delivery_preferences.drink_option_id == 1
-        @drink_preference = "beers"
-      elsif @delivery_preferences.drink_option_id == 2
-        @drink_preference = "ciders"
-      else
-        @drink_preference = "beers/ciders"
-      end
-      @drinks_per_week = @delivery_preferences.drinks_per_week
-      @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
-      @drinks_per_week_meaning_show_status = "show"
-        
-      # update step completed if need be
-      if current_user.getting_started_step == 4
-        current_user.update(getting_started_step: 5)
-      end
-
-      respond_to do |format|
-        format.js
-      end # end of redirect to jquery
-    
-  end # end process_drinks_per_week method
   
   def process_user_plan_choice
     # find which page search request is coming from
@@ -684,7 +1256,7 @@ class SignupController < ApplicationController
     @plan_name = params[:id]
     
     #get user info
-    @early_user = User.find_by_id(params[:format])
+    @early_user = User.find_by_account_id(params[:format])
     #Rails.logger.debug("Early user info: #{@early_user.inspect}")
     
     # find subscription level id
@@ -711,7 +1283,8 @@ class SignupController < ApplicationController
                             active_until: @active_until,
                             auto_renew_subscription_id: @subscription_info.id,
                             deliveries_this_period: 0,
-                            total_deliveries: 0)
+                            total_deliveries: 0,
+                            account_id: params[:format])
                               
     # create Stripe customer acct
     customer = Stripe::Customer.create(
@@ -833,29 +1406,38 @@ class SignupController < ApplicationController
   
   def early_account_info
     # get zip and find city/state
-    @zip = params[:user][:user_delivery_addresses_attributes]["0"][:zip]
-    params[:user][:user_delivery_addresses_attributes]["0"][:city] = @zip.to_region(:city => true)
-    params[:user][:user_delivery_addresses_attributes]["0"][:state] = @zip.to_region(:state => true)
+    @zip = params[:account][:user_delivery_addresses_attributes]["0"][:zip]
+    params[:account][:user_delivery_addresses_attributes]["0"][:city] = @zip.to_region(:city => true)
+    params[:account][:user_delivery_addresses_attributes]["0"][:state] = @zip.to_region(:state => true)
+    # ensure birthdate is in proper format
+    @birthdate = params[:account][:users_attributes]["0"][:birthday]
+    if @birthdate.include? "/"
+      @date = @birthdate.split("/")
+      @month = @date[0]
+      @day = @date[1]
+      @year = @date[2]
+      params[:account][:users_attributes]["0"][:birthday] = @year + "-" + @month + "-" + @day
+    end
     # create user friendly temporary password
     generated_password = Devise.friendly_token.first(8)
-    params[:user][:password] = generated_password
-    params[:user][:tpw] = generated_password
+    params[:account][:users_attributes]["0"][:password] = generated_password
+    params[:account][:users_attributes]["0"][:tpw] = generated_password
     # fill in other miscelaneous user info
-    params[:user][:role_id] = 4
-    params[:user][:cohort] = "f_&_f"
+    params[:account][:users_attributes]["0"][:role_id] = 4
+    params[:account][:users_attributes]["0"][:cohort] = "f_&_f"
     # get a random color for the user
     @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
-    params[:user][:user_color] = @user_color
+    params[:account][:users_attributes]["0"][:user_color] = @user_color
     
     # check if user has already registered
-    @already_registered = User.find_by_email(params[:user][:email])
+    @already_registered = User.find_by_email(params[:account][:users_attributes]["0"][:email])
     
     if @already_registered.blank?
-      @user = User.create(early_user_params)
+      @user = Account.create(early_user_params)
       redirect_to early_signup_path("billing", @user.id)
     else
       @user_delivery_address = UserDeliveryAddress.where(user_id: @already_registered.id).first
-      params[:user][:user_delivery_addresses_attributes]["0"][:id] = @user_delivery_address.id
+      params[:account][:user_delivery_addresses_attributes]["0"][:id] = @user_delivery_address.id
       @already_registered.update_attributes(early_user_params)
       redirect_to early_signup_path("billing", @already_registered.id)
     end
@@ -873,15 +1455,20 @@ class SignupController < ApplicationController
   end
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :email, :birthday,
-                                  user_delivery_addresses_attributes: [:address_one, :address_two, :city, :state, 
-                                  :zip, :special_instructions, :location_type ])  
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :current_password, :password, 
+                                  :password_confirmation)  
+  end
+  
+  def address_params
+    params.require(:user_delivery_address).permit(:account_id, :address_one, 
+                                  :address_two, :city, :state, :zip, :special_instructions, :location_type ) 
   end
   
   def early_user_params
-    params.require(:user).permit(:password, :first_name, :last_name, :email, :birthday, :special_code, :tpw, :role_id, 
-                                  :cohort, :user_color, user_delivery_addresses_attributes: [:id, :address_one, 
-                                  :address_two, :city, :state, :zip, :special_instructions, :location_type ])  
+    params.require(:account).permit(:account_type, :number_of_users, users_attributes: [:password, :first_name, :last_name, :email, 
+                                  :birthday, :special_code, :tpw, :role_id, :cohort, :user_color], 
+                                  user_delivery_addresses_attributes: [:id, :address_one, :address_two, :city, :state, 
+                                  :zip, :special_instructions, :location_type ])  
   end
   
   def early_code_request_params

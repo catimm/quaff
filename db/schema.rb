@@ -11,10 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170201194048) do
+ActiveRecord::Schema.define(version: 20170216185636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string   "account_type"
+    t.integer  "number_of_users"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
 
   create_table "admin_user_deliveries", force: :cascade do |t|
     t.integer  "user_id"
@@ -197,7 +204,7 @@ ActiveRecord::Schema.define(version: 20170201194048) do
   end
 
   create_table "deliveries", force: :cascade do |t|
-    t.integer  "user_id"
+    t.integer  "account_id"
     t.datetime "delivery_date"
     t.decimal  "subtotal",                         precision: 6, scale: 2
     t.decimal  "sales_tax",                        precision: 6, scale: 2
@@ -224,6 +231,8 @@ ActiveRecord::Schema.define(version: 20170201194048) do
     t.integer  "drink_option_id"
     t.integer  "max_large_format"
     t.integer  "max_cellar"
+    t.boolean  "gluten_free"
+    t.text     "admin_comments"
   end
 
   create_table "draft_boards", force: :cascade do |t|
@@ -526,7 +535,7 @@ ActiveRecord::Schema.define(version: 20170201194048) do
   end
 
   create_table "user_delivery_addresses", force: :cascade do |t|
-    t.integer  "user_id"
+    t.integer  "account_id"
     t.string   "address_one"
     t.string   "address_two"
     t.string   "city"
@@ -602,6 +611,7 @@ ActiveRecord::Schema.define(version: 20170201194048) do
     t.integer  "auto_renew_subscription_id"
     t.integer  "deliveries_this_period"
     t.integer  "total_deliveries"
+    t.integer  "account_id"
   end
 
   create_table "user_supplies", force: :cascade do |t|
@@ -655,6 +665,7 @@ ActiveRecord::Schema.define(version: 20170201194048) do
     t.string   "user_color"
     t.string   "special_code"
     t.string   "tpw"
+    t.integer  "account_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
