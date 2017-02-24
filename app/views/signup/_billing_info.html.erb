@@ -52,7 +52,7 @@
 					</div>
 					<div class="row-no-margin">
 						<div class="col-xs-12 no-padding early-plan-button-container">
-							<%= form_tag process_early_user_plan_choice_path("one_month", @early_user.id), class:"plan-button" do %>
+							<%= form_tag process_early_user_plan_choice_path("one_month", @early_user.account_id), class:"plan-button" do %>
 								<input name="plan_id" type="hidden" value="one_month"></input>
 					          	<script 
 					          		class="stripe-button" 
@@ -125,7 +125,7 @@
 					</div>
 					<div class="row-no-margin">
 						<div class="col-xs-12 no-padding early-plan-button-container">
-							<%= form_tag process_early_user_plan_choice_path("three_month", @early_user.id), class:"plan-button" do %>
+							<%= form_tag process_early_user_plan_choice_path("three_month", @early_user.account_id), class:"plan-button" do %>
 								<input name="plan_id" type="hidden" value="three_month"></input>
 					          	<script 
 					          		class="stripe-button" 
@@ -198,7 +198,7 @@
 					</div>
 					<div class="row-no-margin">
 						<div class="col-xs-12 no-padding early-plan-button-container">
-							<%= form_tag process_early_user_plan_choice_path("twelve_month", @early_user.id), class:"plan-button" do %>
+							<%= form_tag process_early_user_plan_choice_path("twelve_month", @early_user.account_id), class:"plan-button" do %>
 								<input name="plan_id" type="hidden" value="twelve_month"></input>
 					          	<script 
 					          		class="stripe-button" 
