@@ -1239,7 +1239,6 @@ p {
 .contract-type-header {
   color: $normal-text; 
   font-weight: 500;
-  margin-top: 25px;
   sup {
     border: 1px solid $normal-text;
     border-radius: 4px;
@@ -1313,14 +1312,15 @@ p {
 .retail-plan-feature-list {
   text-align: left;
   color: $normal-text;
-  height: 125px;
   padding-left: 0 !important;
 }
 .retail-plan-feature-list-12-mo {
   text-align: left;
   color: $normal-text;
-  height: 125px;
   padding-left: 0 !important;
+  width: 105%;
+}
+#retail-plan-feature-list-12-mo {
   width: 105%;
 }
 .retail-plan-option-or {
@@ -2491,8 +2491,14 @@ $beer-header-lines-to-show-fp: 1;
   width: 40%;
   margin: 10px 0;
 }
-#flash_success, #flash_failure, #flash_error, #flash_alert {
-  color: $current-beer-attention-needed-background;
+#flash_success, #flash_failure, #flash_error, #flash_alert, #signup-error-holder, .help-block, .has-error, #username-not-available {
+  color: $current-beer-attention-needed-background !important;
+}
+#username-available {
+  color: $user-action;
+}
+#username-not-available, #username-available {
+  margin: -5px 0 25px -15px !important;
 }
 .edit_user_notification_preference {
   margin-top: 20px;
@@ -2561,7 +2567,7 @@ $beer-header-lines-to-show-fp: 1;
   font-weight: 500;
 }
 .signup-guide-column-holder.last-column {
-  min-height: 30px;
+  min-height: 35px;
 }
 .signup-guide-column-holder.current, .signup-guide-column-holder.complete {
   background: $white;
@@ -2603,15 +2609,48 @@ $beer-header-lines-to-show-fp: 1;
   margin: 15px 0 -5px 0;
   font-size: 12px;
 }
+#signup-thank-you-header {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.signup-next-step-header {
+  color: $normal-text;
+  font-weight: 500;
+  font-size: 20px;
+}
+.signup-next-step-text {
+  color: $normal-text;
+  font-size: 16px;
+  ul {
+    li {
+      line-height: 1.5;
+    }
+  }
+}
+.thank-you-next-button {
+  width: 100%;
+  margin-top: 12.5px;
+}
+.create-password-first-screen {
+  margin-top: 20px !important;
+}
 .signup-question {
   font-size: 22px !important;
   font-weight: 500;
   margin-bottom: 10px;
 }
+.membership-plan-signup {
+  margin-bottom: 20px;
+}
 .signup-question-detail {
   color: $normal-text;
   font-style: italic;
   margin-bottom: 30px;
+}
+.signup-question-detail-set-password {
+  color: $normal-text;
+  font-style: italic;
+  margin-bottom: 0;
 }
 .signup-start-date-text {
   color: $normal-text;
@@ -2628,7 +2667,7 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-category-image-holder, .signup-journey-image-holder, .signup-plan-start-holder {
   background: $white;
-  height: 250px !important;
+  height: 100%;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   text-align: center;
@@ -2827,9 +2866,10 @@ $beer-header-lines-to-show-fp: 1;
 .gluten-free-question {
   color: $normal-text;
   margin-left: 10%;
+  margin-bottom: 0;
   width: 80%;
   line-height: 1.2;
-  font-size: 15px;
+  font-size: 14px;
 }
 .signup-styles-next-step {
   width: 80%;
@@ -2882,9 +2922,7 @@ $beer-header-lines-to-show-fp: 1;
 .code-verification-cushion {
   height: 30px;
 }
-#special_code {
-  width: 85% !important;
-}
+
 .delivery-thoughts-container {
   border: 1px solid $normal-text;
   border-radius: 6px;
@@ -2899,17 +2937,28 @@ $beer-header-lines-to-show-fp: 1;
   font-weight: 500;
   margin-bottom: 5px;
 }
+.delivery-area-map-row {
+  margin: -30px 0 10px 0 !important;
+}
 #initial_delivery_area {
   margin-top: -50px !important;
 }
+.delivery-address-form-section {
+  margin-top: 20px;
+}
+.delivery-address-row, .user-info-form {
+  margin: 10px 0 0 0;
+  div {
+    label {
+      text-align: left !important;
+    }
+  }
+}
+.delivery-address-row.zip-code-field {
+  margin: 20px 0 0 0;
+}
 .early-signup-form-section {
   margin-top: 10px;
-}
-.signup-form-header.personal-info {
-  margin: 5px 0 15px 25px !important; 
-}
-.signup-form-header.delivery-info {
-  margin: 5px 0 15px 10px !important; 
 }
 .discount-code-response {
   color: $current-beer-attention-needed-background;
@@ -3055,9 +3104,17 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 18px;
   display: block;
 }
-.drink-preference-view-option.chosen {
-  color: $header-text;
+.drink-preference-view-option:hover {
+  color: $action-background !important;
+}
+.drink-preference-view-option.current {
+  color: $action-background;
   font-weight: 500;
+}
+.drink-preference-view-option.current:hover {
+  color: $action-background;
+  font-weight: 500;
+  text-decoration: none;
 }
 .drink-preference-view-option.almost-chosen {
   color: $header-text;
@@ -3477,8 +3534,9 @@ $beer-header-lines-to-show-fp: 1;
 }
 .delivery-preference-prompt {
   color: $normal-text;
-  margin-top: 0;
   font-size: 22px;
+  width: 60%;
+  margin: 0 auto;
 }
 .pause-delivery-button {
   width: 40%;
@@ -4483,7 +4541,6 @@ input[type="checkbox"] {
   }
   h4 {
     font-size: 24px;
-    margin: 2px 0 0 0;
   }
 }
 .delivery-info-box.monthly-estimate {
@@ -5847,6 +5904,15 @@ $delivery-beer-header-lines-to-show: 2;
     padding-right: 0 !important;
     margin: 5px 0 10px 0;
   }
+  .preference-estimate-signs {
+    font-size: 13px;
+    float: left;
+    line-height: 0.6;
+    margin: 2px -30px 0 30px;
+  }
+  .delivery-preference-prompt {
+    width: 40%;
+  }
   // Mobile Index page
 .banner {
     min-height: 100vh;
@@ -5950,6 +6016,9 @@ $delivery-beer-header-lines-to-show: 2;
   line-height: 1.5;
   margin-left: 0;
 }
+#mobile-delivery-thoughts-container {
+  margin-bottom: 10px;
+}
 .membership-plan-includes {
   margin-left: 0 !important;
 }
@@ -5962,17 +6031,10 @@ $delivery-beer-header-lines-to-show: 2;
 .mobile-membership-plan-list {
   padding: 0 10px !important;
 }
-.contract-type-header {
-  margin-top: 50px;
-}
-.contract-type-header.mobile-early-signup.one-month-plan {
-  margin-top: 40px;
-}
-.contract-type-header.mobile-early-signup.three-month-plan {
-  margin-top: 100px;
-}
-.contract-type-header.mobile-early-signup.twelve-month-plan {
-  margin-top: 120px;
+.mobile-retail-plan-feature-list {
+  text-align: left;
+  color: $normal-text;
+  padding-left: 0 !important;
 }
 .early-signup-checkout-extra-note.note-text {
   width: 94%;
@@ -6024,6 +6086,14 @@ $delivery-beer-header-lines-to-show: 2;
   background: $step-background;
   margin-top: 10px;
 }
+// Mobile Signup
+.signup-category-image-holder {
+  padding: 0 25px 25px 25px;
+  img {
+    max-width: 216px;
+  }
+ }
+
 // Mobile Early signup
 .guide-header {
   margin-top: 10px;
@@ -6064,23 +6134,6 @@ $delivery-beer-header-lines-to-show: 2;
     padding-left: 0 !important;
     float: left;
   }
-}
-.user-info-form {
-  label {
-    padding-left: 0 !important;
-  }
-  div {
-    padding: 0 !important;
-  }
-}
-#first_name_field, #last_name_field, #email_field, #birthdate_field {
-  width: 95% !important;
-}
-.signup-form-header.personal-info {
-  margin: 5px 0 15px 0 !important; 
-}
-.signup-form-header.delivery-info {
-  margin: 5px 0 15px 0 !important; 
 }
 // Retailer index page
 .banner-xs-retail {
@@ -6470,11 +6523,6 @@ $delivery-beer-header-lines-to-show: 2;
   .vertical-dotted-line {
     height: 80px;
   }
-
-  .contract-type-header {
-    margin-top: 80px;
-  }
-
   .early-signup-checkout-extra-note.note-text {
     width: 94%;
   }
@@ -6507,11 +6555,11 @@ $delivery-beer-header-lines-to-show: 2;
   .early-signup-confirmation-text {
     font-size: 14px;
   }
-  .contract-type-header.mobile-early-signup {
-    margin-top: 180px;
-  }
   .early-signup-checkout-extra-note.note-text {
     width: 94%;
+  }
+  .delivery-preference-prompt {
+    width: 60%;
   }
 }
 /* Medium devices (desktops, 992px and up) */

@@ -1,41 +1,65 @@
-<%= render 'layouts/header' %> 
-<div class="container">
-	<div class="row topRow"> 
-		<div class="col-xs-0 col-sm-3 col-md-4"></div>
-		<div class="col-xs-12 col-sm-6 col-md-4 box">
-			<div class="row">
-				<div class="col-xs-12">
-						<h2>Set a password</h2>
-					    <%= form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => { :method => :put } do |f| %>
-  							<%- flash.each do |name, msg| -%>
-							    <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
-							  <%- end -%>
-							<%= f.hidden_field :invitation_token %>
-							<%= f.hidden_field :role_id, :value => 4 %>
-							<div class="row"> 
-								<div class="col-xs-12">
-							 		<%= f.text_field :first_name, :class => "form-control", required: true, placeholder: "Your first name" %>
-								</div>
-							</div>
-							<div class="row"> 
-								<div class="col-xs-12">
-							 		<%= f.password_field :password, :class => "form-control", required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
-								</div>
-							</div>
-							<div class="row"> 
-								<div class="col-xs-12">
-							 		<%= f.password_field :password_confirmation, :class => "form-control", required: true, placeholder: "Confirm password (8 characters min)" %>
-								</div>
-							</div>
-							<div class="row"> 
-								<div class="col-xs-12">
-							 		<%= f.submit "Get started", class: "btn btn-default btn-success formButton" %> 
-								</div>
-							</div>
-					    <% end %>
-				</div> 
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row create-password-first-screen">
+		<div class="container">
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">First, set a password</h2>
+				<h5 class="signup-question-detail-set-passworrd">You can update this on your account profile page anytime after signup.</h5>
 			</div>
 		</div>
 	</div>
-</div>
-<%= render 'layouts/footer' %>
+	<div class="row">
+		<div class="container">
+			<div class="row"> 
+				<div class="col-xs-0 col-sm-3 col-md-4"></div>
+				<div class="col-xs-12 col-sm-6 col-md-4">
+					<div class="row">
+						<div class="col-xs-12">
+							    <%= simple_form_for(resource, :as => resource_name, :url => invitation_path(resource_name), :html => { :method => :put }) do |f| %>
+		  							<%- flash.each do |name, msg| -%>
+										<% if name == "error" || name == "failure" %>
+											<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+										<% end %>
+									<%- end -%>
+									<%= f.hidden_field :invitation_token %>
+									<div class="row"> 
+										<div class="col-xs-4 col-sm-3 no-padding-left">
+											<label for="first_name_field" class="control-label">First name</label>
+										</div>
+										<div class="col-xs-8 col-sm-9">
+									 		<%= f.input :first_name, 
+									 					input_html: { class: "form-control", id: "first_name_field" }, 
+									 					label: false, required: true, placeholder: "Your first name" %>
+										</div>
+									</div>
+									<div class="row"> 
+										<div class="col-xs-4 col-sm-3 no-padding-left">
+											<label for="password" class="control-label">Password</label>
+										</div>
+										<div class="col-xs-8 col-sm-9">
+									 		<%= f.input :password, input_html: { class: "form-control", id: "password" }, label: false, required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+										</div>
+									</div>
+									<div class="row"> 
+										<div class="col-xs-4 col-sm-3 no-padding-left">
+											<label for="confirm_password" class="control-label">Confirm password</label>
+										</div>
+										<div class="col-xs-8 col-sm-9">
+									 		<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password (8 characters min)" %>
+										</div>
+									</div>
+									<div class="row"> 
+										<div class="col-xs-12">
+									 		<%= f.submit "Next", class: "btn btn-default btn-success formButton" %> 
+									 		<h5 class="terms-and-conditions-text">By clicking "Next", you agree to our 
+												<%= link_to "terms", terms_path %> and <%= link_to "privacy policy", privacy_path %>.
+											</h5>
+										</div>
+									</div>
+							    <% end %>
+						</div> 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/header' %> 

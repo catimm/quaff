@@ -3,11 +3,11 @@ module DeliveryEstimator
   
   def delivery_estimator(customer_id, drinks_per_week, large_format, status)
     # get customer info
-    @customer_info = User.find(customer_id)
+    @customer_info = User.find_by_id(customer_id)
     @customer_sophistication = @customer_info.craft_stage_id
     
     # get customer delivery preferences
-    @delivery_preferences = DeliveryPreference.where(user_id: customer_id).first
+    @delivery_preferences = DeliveryPreference.find_by_user_id(customer_id)
     
     #determine drinks per delivery
     @drink_per_delivery_calculation = (drinks_per_week * 2.2).round

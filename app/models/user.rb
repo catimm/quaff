@@ -30,7 +30,7 @@
 #  last_name              :string
 #  getting_started_step   :integer
 #  cohort                 :string
-#  birthday               :datetime
+#  birthday               :date
 #  user_graphic           :string
 #  user_color             :string
 #  special_code           :string
@@ -45,6 +45,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauth_providers => [:facebook, :twitter]
   
   validates_confirmation_of :password
+  validates_uniqueness_of :username, if: "!username.nil?"
   
   # add searchkick to find other users (friends)
   searchkick
@@ -121,6 +122,7 @@ class User < ActiveRecord::Base
   def self.options_for_select
     order('LOWER(username)').map { |e| [e.username, e.id] }
   end
+
   
   #def apply_omniauth(omni)
   #  authentications.build(:provider => omni['provider'],

@@ -1,0 +1,46 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-signup">
+		<% if @guide == "new_user" %>
+			<%= render 'signup/signup_guide_new_user' %>
+		<% else %>
+			<%= render 'signup/signup_guide_continued_user' %>
+		<% end %>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">Tell us about you</h2>
+				<h5 class="signup-question-detail">You can update this info on your account profile page anytime after signup.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<%= render 'user_complete_signup' %>
+		</div>
+	</div>
+	<div id="complete_signup_welcome" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 class="getting-started-header">Time to complete Knird's signup!</h3>
+		</div>
+		<div class="modal-body initial-message-after-signup">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h5>We have just a few questions for you to get your account and drink preferences fully setup.</h5>
+					<h5>When we're done, you'll be ready for your first delivery of personalized and curated drinks.</h5>
+				</div>
+				<div class="col-xs-1 col-sm-3"></div>
+				<div class="col-xs-10 col-sm-6">
+					<%= link_to "Got it. Let's do this!", "#", :class => 'btn btn-success wait-button', :data => {:dismiss=>"modal"} %>
+				</div>
+			</div>
+		</div> 
+	</div>
+<%= render 'layouts/footer' %>

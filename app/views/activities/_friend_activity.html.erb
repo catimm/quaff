@@ -4,7 +4,7 @@
 			<% if !@user_friends.blank? %>
 				<% @user_friends.each do |friend| %>
 					<div class="col-sm-6 col-xs-12 friend-tile-container" id="friend-id-<%= friend.id %>">
-						<%= render 'friend_tile', friend: friend %>
+						<%= render 'layouts/friend_tile', friend: friend %>
 					</div>
 				<% end%>
 			<% else %>	
@@ -25,7 +25,7 @@
 				<h4 class="pending-friend-request-header">Pending requests</h4>
 				<% @pending_friends.each do |friend| %>
 					<div class="col-xs-12 friend-tile-container padding-5" id="friend-id-<%= friend.id %>">
-						<%= render 'friend_tile', friend: friend %>
+						<%= render 'layouts/friend_tile', friend: friend %>
 					</div>
 				<% end%>
 			</div>						
@@ -40,7 +40,7 @@
 				<h4 class="pending-friend-request-header">Pending requests</h4>
 				<% @pending_friends.each do |friend| %>
 					<div class="col-xs-12 friend-tile-container padding-5" id="friend-id-<%= friend.id %>">
-						<%= render 'friend_tile', friend: friend %>
+						<%= render 'layouts/friend_tile', friend: friend %>
 					</div>
 				<% end%>
 			</div>						
@@ -52,7 +52,7 @@
 			<% if !@user_friends.blank? %>
 				<% @user_friends.each do |friend| %>
 					<div class="col-sm-6 col-xs-12 friend-tile-container" id="friend-id-<%= friend.id %>">
-						<%= render 'friend_tile', friend: friend %>
+						<%= render 'layouts/friend_tile', friend: friend %>
 					</div>
 				<% end%>
 			<% else %>	

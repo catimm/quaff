@@ -88,7 +88,6 @@ class ActivitiesController < ApplicationController
       end
     else
       @new_friend_request = Friend.create(user_id: current_user.id, friend_id: @id)
-      @new_friend_request.save!
     
     end
     

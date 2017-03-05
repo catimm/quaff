@@ -6,13 +6,32 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<%= render 'signup_guide' %>
+		<% if @guide == "new_user_first" %>
+			<%= render 'signup_guide_new_user_first' %>
+		<% elsif @guide == "new_user" %>
+			<%= render 'signup_guide_new_user' %>
+		<% else %>
+			<%= render 'signup_guide_continued_user' %>
+		<% end %>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-sm-1"></div>
+			<div class="col-xs-12 col-sm-10 text-center">
+				<%= render 'account_settings_guide' %>
+			</div>
+			<div class="col-xs-0 col-sm-3 text-center"></div>
+			<div class="col-xs-12 col-sm-6 text-center">
+				<h2 class="signup-question">Where should we deliver your <%= @drink_preference %>?</h2>
+				<h5 class="signup-question-detail">You can update this on your account settings page anytime after signup.</h5>
+			</div>
+		</div>
 	</div>
 	<div class="row">
 		<div class="container">
 			<div class="row no-margin">
-				<h5 class="delivery-thoughts-text hidden-sm hidden-md hidden-lg hidden-xl" id="mobile-extra-thoughts-link">Click to read a few helpful notes</h5>
-				<h5 class="delivery-thoughts-text hidden hidden-sm hidden-md hidden-lg hidden-xl" id="mobile-extra-thoughts-link-to-hide">Click to hide notes</h5>
+				<h5 class="delivery-thoughts-text hidden-sm hidden-md hidden-lg hidden-xl" id="mobile-extra-thoughts-link">Tap to read a few helpful notes</h5>
+				<h5 class="delivery-thoughts-text hidden hidden-sm hidden-md hidden-lg hidden-xl" id="mobile-extra-thoughts-link-to-hide">Tap to hide notes</h5>
 				<div class="col-xs-12 hidden-sm hidden-md hidden-lg hidden-xl delivery-thoughts-container hidden" id="mobile-delivery-thoughts-container">
 					<ul>
 						<li>
@@ -34,9 +53,9 @@
 						</li>
 					</ul>
 				</div>
-				<div class="hidden-xs col-sm-12 delivery-thoughts-container">
+				<div class="hidden-xs col-sm-6 delivery-thoughts-container">
 					<div class="row">
-						<div class="col-sm-9 col-md-10">
+						<div class="col-sm-12">
 							<ul>
 								<li>
 									<h5 class="delivery-thoughts-text">
@@ -57,7 +76,10 @@
 								</li>
 							</ul>
 						</div>
-						<div class="col-sm-3 col-md-2 no-padding-left">
+					</div>
+					<div class="row delivery-area-map-row">
+						<div class="col-sm-3"></div>
+						<div class="col-sm-6">
 							<h5 class="delivery-area-header">Delivery area</h5>
 							<div class="delivery-area-map-container">
 								<%= link_to "#", :class => 'text-center', 
@@ -69,23 +91,15 @@
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row early-signup-form-section">
-		<div class="container">
-			<div class="row no-margin">
-				<div class="col-xs-0 col-sm-3 text-right">
-					<h4 class="signup-form-header delivery-info">Delivery info</h4>
-				</div>
-				<div class="col-xs-12 col-sm-6">
+				<div class="col-sm-6">
 					<%= simple_form_for @user_delivery_address, :url => {:controller => "signup", :action => "process_account_address_getting_started"}, :html => { :class => 'form-horizontal' } do |address| %>
 						<%= address.hidden_field :account_id, value: @account.id  %>
-						<%= address.hidden_field :user_id, value: @user.id %>
 							<%= address.input :city, :as => :hidden %>
 							<%= address.input :state, :as => :hidden %>
-							<div class="row no-margin user-info-form">
-								<label for="address_one_field" class="col-xs-5 col-sm-4 control-label">Location type</label>
+							<div class="row delivery-address-row">
+								<div class="col-xs-5 col-sm-4 no-padding-left">
+									<label for="address_one_field" class="control-label">Location type</label>
+								</div>
 								<div class="col-xs-7 col-sm-8 no-padding-left">
 								<%= address.input :location_type, :collection => [[true, 'Work'], [false, 'Home']],
 																	:label_method => :last,
@@ -95,31 +109,41 @@
 																	label: false, required: true %>
 								</div>
 							</div>
-							<div class="row no-margin user-info-form">
-								<label for="address_one_field" class="col-xs-4 col-sm-3 control-label">Address</label>
+							<div class="row delivery-address-row">
+								<div class="col-xs-4 col-sm-3 no-padding-left">
+									<label for="address_one_field" class="control-label">Address</label>
+								</div>
 								<div class="col-xs-8 col-sm-9">
 									<%= address.input :address_one, input_html: { class: "form-control", id: "address_one_field" }, placeholder: "Delivery Street Address", label: false, required: true %>
 								</div>
 							</div>
-							<div class="row no-margin user-info-form">
-								<label for="address_two_field" class="col-xs-4 col-sm-3 control-label">Unit/Floor</label>
+							<div class="row delivery-address-row">
+								<div class="col-xs-4 col-sm-3 no-padding-left">
+									<label for="address_two_field" class="control-label">Unit/Floor</label>
+								</div>
 								<div class="col-xs-8 col-sm-9">
 									<%= address.input :address_two, input_html: { class: "form-control", id: "address_two_field" }, placeholder: "Extra delivery info (Floor, Unit, Apt, etc.)", label: false %>
 								</div>
 							</div>
-								<div class="row no-margin user-info-form">
-								<label for="zip_code_field" class="col-xs-4 col-sm-3 control-label">Zip code</label>
+							<div class="row delivery-address-row">
+								<div class="col-xs-4 col-sm-3 no-padding-left">
+									<label for="zip_code_field" class="control-label">Zip code</label>
+								</div>
 								<div class="col-xs-8 col-sm-9">
 									<%= address.input :zip, input_html: { class: "form-control", id: "zip_code_field" }, placeholder: "Zip Code", label: false, required: true %>
 								</div>
 							</div>
-							<div class="row no-margin user-info-form">
-								<label for="instructions_field" class="col-xs-4 col-sm-3 control-label">Special instructions</label>
+							<div class="row delivery-address-row">
+								<div class="col-xs-4 col-sm-3 no-padding-left">
+									<label for="instructions_field" class="control-label">Special instructions</label>
+								</div>
 								<div class="col-xs-8 col-sm-9">
 									<%= address.input :special_instructions, input_html: { class: "form-control", id: "instructions_field" }, placeholder: "Any special instructions for deliveries?", label: false %>
 								</div>
 							</div>
 					</div>
+				</div>
+			</div>
 			</div>
 		</div>
 	</div>

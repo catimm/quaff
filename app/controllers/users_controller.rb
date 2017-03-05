@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, :except => [:stripe_webhooks]
+  before_filter :authenticate_user!, :except => [:stripe_webhooks, :new, :create, :edit, :update]
   include DrinkTypeDescriptorCloud
   include DrinkDescriptorCloud
   include DrinkDescriptors
@@ -10,88 +10,203 @@ class UsersController < ApplicationController
   require "stripe"
   require 'json'
   
-  def account_settings
-    # set view
-    @view = params[:format]
+  def new
+    @user = User.new
     
+    #set guide view
+    @user_chosen = 'current'
+    
+  end # end new action
+  
+  def create 
+    # create a new account for the new user
+    @account = Account.create(account_type: "consumer", number_of_users: 1)
+    
+    # fill in other miscelaneous user info
+    params[:user][:account_id] = @account.id
+    params[:user][:role_id] = 4
+    params[:user][:getting_started_step] = 1
+    if params[:user][:special_code].empty?
+      params[:user][:cohort] = "new_user_initiative"
+    else
+      params[:user][:cohort] = "current_user_invite"
+    end
+    # get a random color for the user
+    @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+    params[:user][:user_color] = @user_color
+   
+    # create new user
+    @user = User.new(new_user_params)
+    
+    # if user saved properly, redirect. else show errors
+    if @user.save
+      # Sign in the new user by passing validation
+      sign_in @user, :bypass => true
+      
+      # redirect new user to next step
+      redirect_to drink_choice_getting_started_path(@user.id)
+    else
+      @account.destroy!
+      render :new
+    end
+    
+  end # end create action
+  
+  def edit
+    @user = User.find_by_id(params[:id])
+    #Rails.logger.debug("User info: #{@user.inspect}")
+    if @user.role_id == 1
+      @guide = "new_user" 
+    elsif @user.role_id == 5
+      @guide = "continued_user"
+    else  
+      # check if user has a subscription already (for early signup customers)
+      @user_subscription = UserSubscription.find_by_user_id(@user.id)
+      if !@user_subscription.blank?
+        @guide = "continued_user"
+      else # this view should be for a new user who went back in the signup process
+        @guide = "new_user"
+      end
+    end
+    
+    #set guide view
+    @user_chosen = 'current'
+    
+    # send getting_started_step data to js to show welcome modal if needed
+    gon.user_signup_step = @user.getting_started_step
+    
+  end # end edit action
+  
+  def update 
+    @user = User.find_by_id(current_user.id)
+    
+    if @user.update(user_params)
+      # Sign in the user by passing validation in case their password changed
+      sign_in @user, :bypass => true
+      
+      # update getting started step & remove temporary password
+      if @user.getting_started_step == 0
+        @user.update(getting_started_step: 1, tpw: nil)
+      end
+      
+      # if user is a guest connect them as friends with account owner
+      if @user.role_id == 5
+        # first find the account owner
+        @account_owner = User.where(account_id: @user.account_id, role_id: 4).first
+        # now update friend table
+        @friend_status = Friend.where(user_id: @account_owner.id, friend_id: @user.id).first
+        @friend_status.update(confirmed: true)
+      end
+      
+      # redirect to next step in signup process
+      redirect_to drink_choice_getting_started_path(@user.id)
+    else
+      #Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
+      # set saved message
+      flash[:error] = @user.errors.full_messages[0]
+
+      # redirect back to user account page
+      render :edit
+    end
+  end # end update action 
+  
+  def account_settings_membership
+    # get user info
+    @user = User.find(params[:id])
+    #Rails.logger.debug("User info: #{@user.inspect}")
+
+    # set link as chosen
+    @membership_chosen = "chosen"
+    
+    # set current page for user view
+    @current_page = "user"
+  
+    # get customer plan details
+    @customer_plan = UserSubscription.where(user_id: @user.id).first
+    
+    if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4
+      # set current style variable for CSS plan outline
+      @relish_chosen = "show"
+      @enjoy_chosen = "hidden"
+    else
+      # set current style variable for CSS plan outline
+      @relish_chosen = "hidden"
+      @enjoy_chosen = "show"
+    end
+     
+  end # end of account_settings_membership action
+  
+  def account_settings_profile
+    # get user info
+    @user = User.find(params[:id])
+    #Rails.logger.debug("User info: #{@user.inspect}")
+
+    # set link as chosen
+    @profile_chosen = "chosen"
+    
+    # get user delivery info
+    @delivery_address = UserDeliveryAddress.find_by_account_id(@user.account_id)
+    
+    # set birthday to Date
+    @birthday =(@user.birthday).strftime("%Y-%m-%d")
+   
+    # get last updated info
+    @user_updated = @user.updated_at
+    @preference_updated = latest_date = [@user.updated_at, @delivery_address.updated_at].max
+      
+  end # end of account_settings_profile action
+  
+  def account_settings_guests
     # get user info
     @user = User.find(params[:id])
     #Rails.logger.debug("User info: #{@user.inspect}")
     
-    # get data based on view
-    if @view == "info"
-      # set link as chosen
-      @info_chosen = "chosen"
-      
-      # get user delivery info
-      @delivery_address = UserDeliveryAddress.find_by_account_id(@user.account_id)
-      
-      # set birthday to Date
-      @birthday =(@user.birthday).strftime("%Y-%m-%d")
-     
-      # get last updated info
-      @user_updated = @user.updated_at
-      @preference_updated = latest_date = [@user.updated_at, @delivery_address.updated_at].max
-      
-    elsif @view == "plan"
-      # set link as chosen
-      @plan_chosen = "chosen"
-      
-      # set current page for user view
-      @current_page = "user"
+    # find if the user has added any guests
+    @user_guests = User.where(account_id: @user.account_id, role_id: 5)
     
-      # get customer plan details
-      @customer_plan = UserSubscription.where(user_id: @user.id).first
-      
-      if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4
-        # set current style variable for CSS plan outline
-        @relish_chosen = "show"
-        @enjoy_chosen = "hidden"
-      else
-        # set current style variable for CSS plan outline
-        @relish_chosen = "hidden"
-        @enjoy_chosen = "show"
-      end
-      
-    else
-      # set link as chosen
-      @card_chosen = "chosen"
-      
-      # find user's current plan
-      @customer_plan = UserSubscription.find_by_user_id(current_user.id)
-      #Rails.logger.debug("User Plan info: #{@customer_plan.inspect}")
-      
-      # customer's Stripe card info
-      @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
-                                          all(:object => "card")
-      #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
-
-      
-    end
-  end
+  end # end of account_settings_guests action
   
-  def update
-    # update user info if submitted
-    if !params[:user].blank?
-      User.update(params[:id], username: params[:user][:username], first_name: params[:user][:first_name],
-                  email: params[:user][:email])
-      # set saved message
-      @message = "Your profile is updated!"
-    end
-    # update user preferences if submitted
-    if !params[:user_notification_preference].blank?
-      @user_preference = UserNotificationPreference.where(user_id: current_user.id)[0]
-      UserNotificationPreference.update(@user_preference.id, preference_one: params[:user_notification_preference][:preference_one], threshold_one: params[:user_notification_preference][:threshold_one],
-                  preference_two: params[:user_notification_preference][:preference_two], threshold_two: params[:user_notification_preference][:threshold_two])
-      # set saved message
-      @message = "Your notification preferences are updated!"
-    end
+  def account_settings_cc
+    # get user info
+    @user = User.find(params[:id])
+    #Rails.logger.debug("User info: #{@user.inspect}")
     
-    # set saved message
-    flash[:success] = @message         
-    # redirect back to user account page
-    redirect_to user_path(current_user.id)
-  end
+    # set link as chosen
+    @card_chosen = "chosen"
+    
+    # find user's current plan
+    @customer_plan = UserSubscription.find_by_user_id(current_user.id)
+    #Rails.logger.debug("User Plan info: #{@customer_plan.inspect}")
+    
+    # customer's Stripe card info
+    @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
+                                        all(:object => "card")
+    #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
+
+  end # end of account_settings_cc action
+  
+  #def update
+  #  # update user info if submitted
+  #  if !params[:user].blank?
+  #    User.update(params[:id], username: params[:user][:username], first_name: params[:user][:first_name],
+  #                email: params[:user][:email])
+  #    # set saved message
+  #    @message = "Your profile is updated!"
+  #  end
+  #  # update user preferences if submitted
+  #  if !params[:user_notification_preference].blank?
+  #    @user_preference = UserNotificationPreference.where(user_id: current_user.id)[0]
+  #    UserNotificationPreference.update(@user_preference.id, preference_one: params[:user_notification_preference][:preference_one], threshold_one: params[:user_notification_preference][:threshold_one],
+  #                preference_two: params[:user_notification_preference][:preference_two], threshold_two: params[:user_notification_preference][:threshold_two])
+  #    # set saved message
+  #    @message = "Your notification preferences are updated!"
+  #  end
+  #  
+  #  # set saved message
+  #  flash[:success] = @message         
+  #  # redirect back to user account page
+  #  redirect_to user_path(current_user.id)
+  #end
   
   def plan
     # find if user has a plan already
@@ -152,7 +267,7 @@ class UsersController < ApplicationController
       @user_subscription.update(auto_renew_subscription_id: nil)
     end
     
-    redirect_to user_account_settings_path(current_user.id, "plan")
+    redirect_to account_settings_membership_path(current_user.id)
   end # end plan_rewewal_update method
   
   def stripe_webhooks
@@ -263,18 +378,18 @@ class UsersController < ApplicationController
         # set saved message
         flash[:success] = "New password saved!"            
         # redirect back to user account page
-        redirect_to user_account_settings_path(current_user.id, 'info')
+        redirect_to account_settings_profile_path(current_user.id)
       else
         # set saved message
         flash[:failure] = "Sorry, new passwords didn't match."
         # redirect back to user account page
-        redirect_to user_account_settings_path(current_user.id, 'info')
+        redirect_to account_settings_profile_path(current_user.id)
       end
     else
       # set saved message
       flash[:failure] = "Sorry, current password didn't match."
       # redirect back to user account page
-      redirect_to user_account_settings_path(current_user.id, 'info')   
+      redirect_to account_settings_profile_path(current_user.id)   
     end
 
   end
@@ -323,11 +438,11 @@ class UsersController < ApplicationController
     @customer.sources.create(:card => params[:stripeToken])
 
     # redirect back to credit card page
-    redirect_to user_account_settings_path(current_user.id, 'card')
+    redirect_to account_settings_cc_path(current_user.id)
     
   end # end of add_new_card
   
-  def  delete_credit_card
+  def delete_credit_card
     # get customer subscription info
     @customer_subscription_info = UserSubscription.find_by_user_id(current_user.id)
     
@@ -338,7 +453,7 @@ class UsersController < ApplicationController
     @customer.sources.retrieve(params[:id]).delete
     
     # redirect back to credit card page
-    redirect_to user_account_settings_path(current_user.id, 'card')
+    redirect_to account_settings_cc_path(current_user.id)
   end # end of delete_credit_card method
   
   def destroy
@@ -348,10 +463,19 @@ class UsersController < ApplicationController
   end
   
   private
-     
+  
   def user_params
-    # NOTE: Using `strong_parameters` gem
-    params.require(:user).permit(:password, :password_confirmation, :current_password)
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday)  
   end
+  
+  def new_user_params
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :role_id, :password, :cohort, 
+                                  :password_confirmation, :special_code, :user_color, :account_id, :getting_started_step)  
+  end
+    
+  #def user_params
+    # NOTE: Using `strong_parameters` gem
+  #  params.require(:user).permit(:password, :password_confirmation, :current_password)
+  #end
   
 end

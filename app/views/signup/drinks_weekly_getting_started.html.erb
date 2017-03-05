@@ -6,7 +6,13 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<%= render 'signup_guide' %>
+		<% if @guide == "new_user_first" %>
+			<%= render 'signup_guide_new_user_first' %>
+		<% elsif @guide == "new_user" %>
+			<%= render 'signup_guide_new_user' %>
+		<% else %>
+			<%= render 'signup_guide_continued_user' %>
+		<% end %>
 	</div>
 	<div class="row">
 		<div class="container" id="user-drinks-per-week-signup">

@@ -1,4 +1,4 @@
-<% if @drink_preference == "beer" %>
+<div class="row">
 	<div class="col-xs-12 col-sm-4 no-padding signup-journey-image-holder-parent">
 		<div class="signup-journey-image-holder left" id="casual-<%= @current_page %>">
 			<h3 class="homepage-emphasis signup-journey-header">Explorer</h3>
@@ -23,54 +23,4 @@
 		</div>
 		<div class="signup-journey-image-holder-chosen-cover right <%= @conn_chosen %>"></div>
 	</div>
-<% elsif @drink_preference == "cider" %>
-	<div class="col-xs-12 col-sm-4 no-padding signup-journey-image-holder-parent">
-		<div class="signup-journey-image-holder left" id="casual-<%= @current_page %>">
-			<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/cider-fan.png">
-			<h3 class="signup-journey-image-first-level-text-with-second-level">Casual</h3>
-			<p class="signup-journey-image-second-level-text">Not a priority, but I dig it</p>
-		</div>
-		<div class="signup-journey-image-holder-chosen-cover left <%= @casual_chosen %>"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-journey-image-holder-parent">
-		<div class="signup-journey-image-holder middle-option" id="geek-<%= @current_page %>">
-			<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/cider-geek.png">
-			<h3 class="signup-journey-image-first-level-text-with-second-level">Geek</h3>
-			<p class="signup-journey-image-second-level-text">It's a priority</p>
-		</div>
-		<div class="signup-journey-image-holder-chosen-cover <%= @geek_chosen %>"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-journey-image-holder-parent">
-		<div class="signup-journey-image-holder right" id="conn-<%= @current_page %>">
-			<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/cider-conn.png">
-			<h3 class="signup-journey-image-first-level-text-with-second-level">Connoisseur</h3>
-			<p class="signup-journey-image-second-level-text">It's my only priority</p>
-		</div>
-		<div class="signup-journey-image-holder-chosen-cover right <%= @conn_chosen %>"></div>
-	</div>
-<% else %>
-	<div class="col-xs-12 col-sm-4 no-padding signup-journey-image-holder-parent">
-		<div class="signup-journey-image-holder left" id="casual-<%= @current_page %>">
-			<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/beer-and-cider-fan.png">
-			<h3 class="signup-journey-image-first-level-text-with-second-level">Casual</h3>
-			<p class="signup-journey-image-second-level-text">Not a priority, but I dig it</p>
-		</div>
-		<div class="signup-journey-image-holder-chosen-cover left <%= @casual_chosen %>"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-journey-image-holder-parent">
-		<div class="signup-journey-image-holder middle-option" id="geek-<%= @current_page %>">
-			<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/beer-and-cider-geek.png">
-			<h3 class="signup-journey-image-first-level-text-with-second-level">Geek</h3>
-			<p class="signup-journey-image-second-level-text">It's a priority</p>
-		</div>
-		<div class="signup-journey-image-holder-chosen-cover <%= @geek_chosen %>"></div>
-	</div>
-	<div class="col-xs-12 col-sm-4 no-padding signup-journey-image-holder-parent">
-		<div class="signup-journey-image-holder right" id="conn-<%= @current_page %>">
-			<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/beer-and-cider-conn.png">
-			<h3 class="signup-journey-image-first-level-text-with-second-level">Connoisseur</h3>
-			<p class="signup-journey-image-second-level-text">It's my only priority</p>
-		</div>
-		<div class="signup-journey-image-holder-chosen-cover right <%= @conn_chosen %>"></div>
-	</div>
-<% end %>
+</div>

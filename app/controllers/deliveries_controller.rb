@@ -19,7 +19,8 @@ class DeliveriesController < ApplicationController
       @next_chosen = "chosen"
       
       # get user's delivery info
-      @delivery = Delivery.where(user_id: current_user.id).where.not(status: "delivered").first
+      @user = User.find_by_id(current_user.id)
+      @delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
       
       # get delivery date info
       if !@delivery.blank?
@@ -96,6 +97,7 @@ class DeliveriesController < ApplicationController
   end # end deliveries method
  
   def delivery_settings
+    
     # send user status to jquery to show modal for first time visit after signup
     gon.user_post_signup = current_user.getting_started_step
     
@@ -209,7 +211,7 @@ class DeliveriesController < ApplicationController
     # get estimated cost estimates -- rounded to nearest multiple of 5
     @delivery_cost_estimate = @delivery_preferences.price_estimate
     @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+    @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
 
     # get monthly estimates
     @user_subscription = UserSubscription.where(user_id: current_user.id).first
@@ -254,6 +256,7 @@ class DeliveriesController < ApplicationController
       # get data for delivery estimates
       @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
       @drink_delivery_estimate = @drink_per_delivery_calculation
+      
       # get small/large format estimates
       @large_delivery_estimate = @large_format_drinks_per_week
       @small_delivery_estimate = @drink_per_delivery_calculation - (@large_delivery_estimate * 2)

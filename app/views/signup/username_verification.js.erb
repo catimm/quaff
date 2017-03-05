@@ -1,0 +1,9 @@
+<% if @response == "no" %>
+	$("#username-not-available").removeClass('hidden').addClass('show');
+	$("#username-not-available").html("<%= @message %>");
+<% else %>
+	$("#username-available").removeClass('hidden').addClass('show');
+	$("#username-available").html("<%= @message %>");
+	$('#user-info-next-button').removeAttr('disabled');
+	$('#user-info-next-button').addClass('btn-success');
+<% end %>

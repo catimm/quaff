@@ -35,45 +35,35 @@
 	            <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
 	                <ul class="nav navbar-nav">
 	                  <% if user_signed_in? %>
-					   	<% if current_user.role_id != 5 %>
-					   		<li class="navLinks dropdown">
-					          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
-					          <ul class="dropdown-menu">
-					            
-					            <li class="dropdown-header">My activity</li>
-					            <li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path('next') %></li>
-					            <li class="dropdown-link"><%= link_to "Drink preferences", user_profile_path('drink_types') %></li>
-					            <li class="dropdown-link"><%= link_to "Recent activity", recent_user_ratings_path(current_user.id) %></li>
-					            <li class="dropdown-link"><%= link_to "Supply", user_supply_path(current_user.id, 'cooler') %></li>
-								
-								<li class="dropdown-header">My settings</li>
-								<li class="dropdown-link"><%= link_to "Account settings", user_account_settings_path(current_user.id, "plan") %></li>
-								
-					            <% if current_user.role_id == 1 %>
-						            <li class="dropdown-header">Admin links</li>
-						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
-						            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
-						            <li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path("stock") %></li>
-									<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
-						            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path("#{current_user.id}-in_stock") %></li>
-						            <li class="dropdown-link"><%= link_to "Retail account", retailer_path(session[:retail_id]) %></li>  
-							    <% elsif current_user.role_id == 2 %>
-							    	<li class="dropdown-header">Admin links</li>
-						            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
-							    <% end %>
-							    
-							    <li role="separator" class="divider"></li>
-							    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
-					          </ul>
-					        </li>
-					  	<% else %>
-					  		<li class="navLinks dropdown">
-					          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
-					          <ul class="dropdown-menu">
-							    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
-					          </ul>
-					        </li>
-					  	<% end %>
+				   		<li class="navLinks dropdown">
+				          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+				          <ul class="dropdown-menu">
+				            
+				            <li class="dropdown-header">My activity</li>
+				            <li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path('next') %></li>
+				            <li class="dropdown-link"><%= link_to "Drink preferences", user_profile_path('drink_types') %></li>
+				            <li class="dropdown-link"><%= link_to "Recent activity", recent_user_ratings_path(current_user.id) %></li>
+				            <li class="dropdown-link"><%= link_to "Supply", user_supply_path(current_user.id, 'cooler') %></li>
+							
+							<li class="dropdown-header">My settings</li>
+							<li class="dropdown-link"><%= link_to "Account settings", account_settings_membership_path(current_user.id) %></li>
+							
+				            <% if current_user.role_id == 1 %>
+					            <li class="dropdown-header">Admin links</li>
+					            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+					            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
+					            <li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path("stock") %></li>
+								<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
+					            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path("#{current_user.id}-in_stock") %></li>
+						    <% elsif current_user.role_id == 2 %>
+						    	<li class="dropdown-header">Admin links</li>
+					            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+						    <% end %>
+						    
+						    <li role="separator" class="divider"></li>
+						    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
+				          </ul>
+				        </li>
 					  <% else %>
 			          	<li class="navLinks"> <%= link_to "Log in", new_user_session_path %></li>
 					  <% end %>

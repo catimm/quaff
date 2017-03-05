@@ -1,0 +1,83 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-early-signup">
+		<%= render 'early_signup_guide' %>
+	</div>
+    <div class="row code-verification-cushion">
+		<div class="container">
+			<div class="row no-margin"></div>
+		</div>
+	</div>
+	<div class="row early-signup-form-section">
+		<div class="container">
+			<div class="row no-margin">
+				<div class="col-xs-0 col-sm-2 col-md-3"></div>
+				<div class="col-xs-12 col-sm-8 col-md-6">
+					<div class="row no-margin user-info-form">
+						<%= simple_form_for @user, :url => '/early_signup/process_invitation_code/:id', :html => { :class => 'form-horizontal' }, :remote => true do |f| %>
+							<div class="col-xs-3 col-sm-4 col-md-3 no-padding-left">
+								<label for="discount_field" class="control-label invitation-code-label">Invitation code</label> 	
+							</div>
+							<div class="col-xs-8">
+								<%= f.input :special_code, as: :string, 
+											input_html: { class: "form-control", id: "special_code" }, 
+											placeholder: "Early signup invitation code here", 
+											label: false, required: true %>
+								<h5 class="discount-code-response hidden" id="invalid_code"></h5>
+							</div>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-0 col-sm-3 col-md-4"></div>
+					<div class="col-xs-12 col-sm-6 col-md-4 text-center">
+						<%= f.submit "Next", class: "btn btn-success formButton code-verification-next-button" %>
+						<h5 class="terms-and-conditions-text">Don't have a code? 
+							<%= link_to "Request one here", "#", :class => 'text-center', data: {toggle: "modal", target: "#early_code_request"} %>
+						</h5>
+					</div>
+				</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	<div id="early_code_request" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 class="getting-started-header">Request an early signup code</h3>
+		</div>
+		<div class="modal-body initial-message-after-signup">
+			<div class="row no-margin">
+				<%= simple_form_for @request_invitation, :url => {:controller => "early_signup", :action => "request_code"} do |invite| %>
+					<div class="row no-margin">
+						<div class="col-xs-3 no-padding-right">
+							<%= label :first_name, 'First name' %>
+						</div>
+						<div class="col-xs-9">
+							<%= invite.input :first_name, input_html: { class: "form-control" }, placeholder: "What should we call you?", required: true, label: false %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-3 no-padding-right">
+							<%= label :email, 'Email' %>
+						</div>
+						<div class="col-xs-9">
+							<%= invite.input :email, input_html: { class: "form-control" }, placeholder: "What is your email address?", required: true, label: false %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-1"></div>
+						<div class="col-xs-10">
+							<%= invite.submit "Submit", class: "btn btn-default btn-success formButton-invitation-request" %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div> 
+	</div>
+
+<%= render 'layouts/footer' %>

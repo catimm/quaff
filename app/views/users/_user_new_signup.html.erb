@@ -1,0 +1,94 @@
+<%= simple_form_for @user, :html => { :class => 'form-horizontal' } do |f| %>
+	<div class="row no-margin">
+		<div class="col-xs-1 hidden-sm hidden-md hidden-lg hidden-xl"></div>
+		<div class="col-xs-10 col-sm-6" id="mobile-user-signup-first-col">
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding-left">
+						<label for="first_name_field" class="control-label">First name</label>
+					</div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :first_name, 
+							input_html: { class: "form-control", id: "first_name_field" }, 
+							placeholder: "First name", label: false, required: true,
+							:value => @first %>
+					</div>
+				</div>
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding-left">
+						<label for="last_name_field" class="control-label">Last name</label>
+					</div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :last_name, input_html: { class: "form-control", id: "last_name_field" }, placeholder: "Last name", label: false, required: true %>
+					</div>
+				</div>
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding-left">
+						<label for="username_field" class="control-label">Username</label>
+					</div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :username, input_html: { class: "form-control", id: "username_field" }, placeholder: "Username", label: false, required: true %>
+						<h5 class="hidden" id="username-not-available"></h5>
+						<h5 class="hidden" id="username-available"></h5>
+					</div>
+				</div>
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding-left">
+						<label for="birthdate_field" class="control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label> 
+					</div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :birthday, as: :string, 
+							input_html: { type: :date, 
+										  class: "form-control", 
+										  id: "birthdate_field"}, 
+							placeholder: "Birthdate", label: false, required: true %>
+					</div>
+				</div>
+		</div>
+		<div class="col-xs-1 hidden-sm hidden-md hidden-lg hidden-xl mobile-user-signup-filler-col"></div>
+		<div class="col-xs-1 hidden-sm hidden-md hidden-lg hidden-xl"></div>
+		<div class="col-xs-10 col-sm-6">
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding-left">
+						<label for="email_field" class="control-label">Email</label>
+					</div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+					</div>
+				</div>
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding-left">
+						<label for="password" class="control-label">Password</label>
+					</div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :password, input_html: { class: "form-control", id: "password" }, placeholder: "New password (Min 8 characters)", label: false, required: true %>
+					</div>
+				</div>
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding-left">
+						<label for="confirm_password" class="control-label">Confirm password</label>
+					</div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password" %>
+					</div>
+				</div>
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-3 col-sm-3 no-padding-left">
+						<label for="special_code" class="control-label">Special code</label>
+					</div>
+					<div class="col-xs-1 col-sm-0"></div>
+					<div class="col-xs-8 col-sm-9">
+						<%= f.input :special_code, input_html: { class: "form-control", id: "special_code" }, label: false, required: false, placeholder: "Have a code? Put it here!" %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-1 col-sm-4"></div>
+			<div class="col-xs-10 col-sm-4 text-center">
+				<%= f.submit "Next", class: "btn btn-default btn-success formButton user-info-next-button" %>
+				<h5 class="terms-and-conditions-text">By clicking "Next", you agree to our 
+						<%= link_to "terms", terms_path %> and <%= link_to "privacy policy", privacy_path %>.
+				</h5>
+			</div>
+		</div>
+<% end %>

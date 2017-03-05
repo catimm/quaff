@@ -18,9 +18,23 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:password, :password_confirmation, :current_password])
   end
   
+  def resource_name
+    :user
+  end
+
+  def resource
+    @resource ||= User.new
+  end
+
+  def devise_mapping
+    @devise_mapping ||= Devise.mappings[:user]
+  end
+  
+  helper_method :resource, :resource_name, :devise_mapping
+  
   private
   
-  def authenticate_user_from_token! # I can't recall why this is here, so I'm leaving it for now to not potentially mess up other code
+  def authenticate_user_from_token! # I think this refers to tokens provided to users invited to join
     email = params[:email].presence
     user = email && User.find_by_email(email)
   
@@ -53,17 +67,15 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     #Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
     @user = current_user
-    if current_user.role_id == 1 
-      session[:retail_id] = UserLocation.where(user_id: current_user.id).pluck(:location_id)[0]
-    end
+
     # set a different first view based on the user type
     if !session[:user_return_to].nil?
       @first_view = session[:user_return_to]
     elsif current_user.role_id == 1
       @first_view = admin_breweries_path
     else
-      if @user.getting_started_step < 10
-        @first_view = getting_started_path('category')
+      if @user.getting_started_step < 8
+        @first_view = edit_user_path(@user.id)
       else
         @first_view = user_supply_path(current_user.id, 'cooler')
       end

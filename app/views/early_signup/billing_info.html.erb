@@ -1,0 +1,409 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-early-signup">
+		<%= render 'early_signup_guide' %>
+	</div>
+    <div class="container hidden-sm hidden-md hidden-lg hidden-xl">
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10">
+				<div class="row homepage-plan-options">
+					<div class="col-xs-12 no-padding">
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<h3 class="retail-plan-header">1 month membership</h3>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-0 col-sm-1"></div>
+							<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
+								<h5 class="membership-plan-includes">Plan includes:</h5>
+								<ul class="mobile-retail-plan-feature-list">
+									<li>2 personalized, curated deliveries</li>
+									<li>Direct access to personal drink curator</li>
+									<li>An introductory sync with your curator</li>
+									<li>An early signup bonus of 40 bottle caps (reward points), enough for 1 free 
+										drink *</li>
+								</ul>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding">
+								<h5 class="contract-type-header mobile-early-signup one-month-plan">
+									Membership cost
+									<sup  data-toggle="tooltip" title="The $12 1-month membership includes the items listed 
+																		but does not include the cost of the drinks. However,
+																		our drink prices are competetive, in line with local 
+																		shops. Also, although the membership fee is 
+																		non-refundable, you can stop deliveries at any 
+																		time and are under no obligation to buy any more 
+																		drinks from Knird.">
+										?
+									</sup>
+								</h5>
+								<h2 class="retailer-plan-cost">$12<span class="with-contract">/mo</span></h2>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding early-plan-button-container">
+								<%= form_tag process_billing_info_path("one_month", @early_user.account_id), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="one_month"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		data-name="Knird" 
+						          		data-description="$12 for Knird's 1-month plan" 
+						          		data-currency="USD" 
+						          		data-label="Start with the 1 month plan"
+						          		data-email="<%= @early_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10">
+				<div class="row homepage-plan-options">
+					<div class="col-xs-12 no-padding">
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<h3 class="retail-plan-header">3 month membership</h3>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-0 col-sm-1"></div>
+							<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
+								<h5 class="membership-plan-includes">Plan includes:</h5>
+								<ul class="mobile-retail-plan-feature-list">
+									<li>6 personalized, curated deliveries</li>
+									<li>Direct access to personal drink curator</li>
+									<li>An introductory sync with your curator</li>
+									<li>1 curated tasting session for you</li>
+									<li>Reward points for limited/rare drinks</li>
+									<li>An early signup bonus of 80 bottle caps (reward points), enough for 2 free 
+										drinks *</li>
+								</ul>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding">
+								<h5 class="contract-type-header mobile-early-signup three-month-plan">
+									Membership cost
+									<sup  data-toggle="tooltip" title="The $30 3-month membership includes the items listed 
+																		but does not include the cost of the drinks. However,
+																		our drink prices are competetive, in line with local 
+																		shops. Also, although the membership fee is 
+																		non-refundable, you can stop deliveries at any 
+																		time and are under no obligation to buy any more 
+																		drinks from Knird.">
+										?
+									</sup>
+								</h5>
+								<h2 class="retailer-plan-cost">$10<span class="with-contract">/mo</span></h2>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding early-plan-button-container">
+								<%= form_tag process_billing_info_path("three_month", @early_user.account_id), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="three_month"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		data-name="Knird" 
+						          		data-description="$30 for Knird's 3-month plan ($10/mo)" 
+						          		data-currency="USD" 
+						          		data-label="Start with the 3 month plan"
+						          		data-email="<%= @early_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10">
+				<div class="row homepage-plan-options">
+					<div class="col-xs-12 no-padding">	
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<h3 class="retail-plan-header">12 month membership</h3>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-0 col-sm-1"></div>
+							<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
+								<h5 class="membership-plan-includes">Plan includes:</h5>
+								<ul class="mobile-retail-plan-feature-list">
+									<li>25 personalized, curated deliveries</li>
+									<li>Direct access to personal drink curator</li>
+									<li>An introductory sync with your curator</li>
+									<li>4 curated tasting sessions for you & friends</li>
+									<li>1.5x reward points for limited/rare drinks</li>
+									<li>An early signup bonus of 120 bottle caps (reward points), enough for 3 free 
+										drinks *</li>
+								</ul>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding">
+								<h5 class="contract-type-header mobile-early-signup twelve-month-plan">
+									Membership cost
+									<sup  data-toggle="tooltip" title="The $96 12-month membership includes the items listed 
+																		but does not include the cost of the drinks. However,
+																		our drink prices are competetive, in line with local 
+																		shops. Also, although the membership fee is 
+																		non-refundable, you can stop deliveries at any 
+																		time and are under no obligation to buy any more 
+																		drinks from Knird.">
+										?
+									</sup>
+								</h5>
+								<h2 class="retailer-plan-cost">$8<span class="with-contract">/mo</span></h2>					
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding early-plan-button-container">
+								<%= form_tag process_billing_info_path("twelve_month", @early_user.account_id), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="twelve_month"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		data-name="Knird" 
+						          		data-description="$96 for Knird's 12-month plan ($8/mo)" 
+						          		data-currency="USD" 
+						          		data-label="Start with the 12 month plan"
+						          		data-email="<%= @early_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row value-prop-row">
+			<div class="col-xs-12">
+				<h3 class="early-signup-checkout-extra-note asterisk">*</h3>
+				<h5 class="early-signup-checkout-extra-note note-text">
+					Although you're signing up before Knird is officially open for business, you'll be 
+					charged the full membership cost immediately. However, the time of your membership will
+					not officially begin until your first delivery.
+				</h5>
+			</div>
+		</div>
+	</div>
+	<div class="container hidden-xs">
+		<div class="row value-prop-row">
+			<div class="col-sm-4">
+				<div class="row homepage-plan-options">
+					<div class="col-xs-12 no-padding">
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<h3 class="retail-plan-header">1 month membership</h3>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-0 col-sm-1"></div>
+							<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
+								<h5 class="membership-plan-includes">Plan includes:</h5>
+								<ul class="retail-plan-feature-list">
+									<li>2 personalized, curated deliveries</li>
+									<li>Direct access to personal drink curator</li>
+									<li>An introductory sync with your curator</li>
+									<li>An early signup bonus of 40 bottle caps (reward points), enough for 1 free 
+										drink *</li>
+								</ul>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding">
+								<h5 class="contract-type-header non-mobile-early-signup">
+									Membership cost
+									<sup  data-toggle="tooltip" title="The $12 1-month membership includes the items listed 
+																		but does not include the cost of the drinks. However,
+																		our drink prices are competetive, in line with local 
+																		shops. Also, although the membership fee is 
+																		non-refundable, you can stop deliveries at any 
+																		time and are under no obligation to buy any more 
+																		drinks from Knird.">
+										?
+									</sup>
+								</h5>
+								<h2 class="retailer-plan-cost">$12<span class="with-contract">/mo</span></h2>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding early-plan-button-container">
+								<%= form_tag process_billing_info_path("one_month", @early_user.account_id), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="one_month"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		data-name="Knird" 
+						          		data-description="$12 for Knird's 1-month plan" 
+						          		data-currency="USD" 
+						          		data-label="Start with the 1 month plan"
+						          		data-email="<%= @early_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="row homepage-plan-options">
+					<div class="col-xs-12 no-padding">
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<h3 class="retail-plan-header">3 month membership</h3>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-xs-0 col-sm-1"></div>
+							<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
+								<h5 class="membership-plan-includes">Plan includes:</h5>
+								<ul class="retail-plan-feature-list">
+									<li>6 personalized, curated deliveries</li>
+									<li>Direct access to personal drink curator</li>
+									<li>An introductory sync with your curator</li>
+									<li>1 curated tasting session for you</li>
+									<li>Reward points for limited/rare drinks</li>
+									<li>An early signup bonus of 80 bottle caps (reward points), enough for 2 free 
+										drinks *</li>
+								</ul>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding">
+								<h5 class="contract-type-header non-mobile-early-signup">
+									Membership cost
+									<sup  data-toggle="tooltip" title="The $30 3-month membership includes the items listed 
+																		but does not include the cost of the drinks. However,
+																		our drink prices are competetive, in line with local 
+																		shops. Also, although the membership fee is 
+																		non-refundable, you can stop deliveries at any 
+																		time and are under no obligation to buy any more 
+																		drinks from Knird.">
+										?
+									</sup>
+								</h5>
+								<h2 class="retailer-plan-cost">$10<span class="with-contract">/mo</span></h2>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding early-plan-button-container">
+								<%= form_tag process_billing_info_path("three_month", @early_user.account_id), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="three_month"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		data-name="Knird" 
+						          		data-description="$30 for Knird's 3-month plan ($10/mo)" 
+						          		data-currency="USD" 
+						          		data-label="Start with the 3 month plan"
+						          		data-email="<%= @early_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="row homepage-plan-options">
+					<div class="col-xs-12 no-padding">	
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<h3 class="retail-plan-header">12 month membership</h3>
+							</div>
+						</div>
+						<div class="row no-margin">
+							<div class="col-sm-1"></div>
+							<div class="col-sm-10 no-padding mobile-membership-plan-list">
+								<h5 class="membership-plan-includes">Plan includes:</h5>
+								<ul class="retail-plan-feature-list" id="retail-plan-feature-list-12-mo">
+									<li>25 personalized, curated deliveries</li>
+									<li>Direct access to personal drink curator</li>
+									<li>An introductory sync with your curator</li>
+									<li>4 curated tasting sessions for you & friends</li>
+									<li>1.5x reward points for limited/rare drinks</li>
+									<li>An early signup bonus of 120 bottle caps (reward points), enough for 3 free 
+										drinks *</li>
+								</ul>
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding">
+								<h5 class="contract-type-header non-mobile-early-signup">
+									Membership cost
+									<sup  data-toggle="tooltip" title="The $96 12-month membership includes the items listed 
+																		but does not include the cost of the drinks. However,
+																		our drink prices are competetive, in line with local 
+																		shops. Also, although the membership fee is 
+																		non-refundable, you can stop deliveries at any 
+																		time and are under no obligation to buy any more 
+																		drinks from Knird.">
+										?
+									</sup>
+								</h5>
+								<h2 class="retailer-plan-cost">$8<span class="with-contract">/mo</span></h2>					
+							</div>
+						</div>
+						<div class="row-no-margin">
+							<div class="col-xs-12 no-padding early-plan-button-container">
+								<%= form_tag process_billing_info_path("twelve_month", @early_user.account_id), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="twelve_month"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		data-name="Knird" 
+						          		data-description="$96 for Knird's 12-month plan ($8/mo)" 
+						          		data-currency="USD" 
+						          		data-label="Start with the 12 month plan"
+						          		data-email="<%= @early_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row value-prop-row">
+			<div class="col-xs-12">
+				<h3 class="early-signup-checkout-extra-note asterisk">*</h3>
+				<h5 class="early-signup-checkout-extra-note note-text">
+					Although you're signing up before Knird is officially open for business, you'll be 
+					charged the full membership cost immediately. However, the time of your membership will
+					not officially begin until your first delivery.
+				</h5>
+			</div>
+		</div>
+	</div>
+
+<%= render 'layouts/footer' %>

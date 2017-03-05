@@ -30,7 +30,7 @@
 #  last_name              :string
 #  getting_started_step   :integer
 #  cohort                 :string
-#  birthday               :datetime
+#  birthday               :date
 #  user_graphic           :string
 #  user_color             :string
 #  special_code           :string

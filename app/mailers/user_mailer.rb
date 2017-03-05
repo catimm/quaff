@@ -28,6 +28,31 @@ class UserMailer < ActionMailer::Base
     
   end # end of select_invite_email email
   
+  def guest_invite_email(invited, invitor)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: invited.email },
+        }
+      ],
+      content: {
+        template_id: 'guest-invite-email'
+      },
+      substitution_data: {
+        invited: invited.first_name,
+        invitor: invitor.first_name,
+        invitor_email: invitor.email,
+        token: invited.raw_invitation_token
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of guest_invite_email email
+  
   def early_signup_followup(customer, membership, invitation_code)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
@@ -51,6 +76,29 @@ class UserMailer < ActionMailer::Base
     p response
     
   end # end of early_signup_followup email
+  
+  def early_user_complete_signup(customer)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'early-user-complete-signup-email'
+      },
+      substitution_data: {
+        customer: customer.first_name,
+        token: customer.tpw
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of early_user_complete_signup email
   
   def customer_delivery_review(customer, delivery_info, delivery_drinks, total_quantity)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

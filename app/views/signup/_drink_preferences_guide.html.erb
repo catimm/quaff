@@ -1,44 +1,54 @@
-
-<div class="col-sm-2 no-padding signup-guide-column-holder <%= @drink_choice_chosen %>">
-	<%= link_to "drink choice", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_choice_chosen}" %>
+<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_choice_chosen %>">
+	<%= link_to "drink choice", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_choice_chosen} hidden-xs" %>
+	<%= link_to "choice", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_choice_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 	<h5 class="pipe-separator">&#124;</h5>
 </div>
-<div class="col-sm-2 no-padding signup-guide-column-holder <%= @drink_journey_chosen %>">
+<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_journey_chosen %>">
 	<% if @user.getting_started_step >= 2 %>
-		<%= link_to "drink journey", drink_journey_getting_started_path(@user.id), class: "guide-header #{@drink_journey_chosen}" %>
+		<%= link_to "drink journey", drink_journey_getting_started_path(@user.id), class: "guide-header #{@drink_journey_chosen} hidden-xs" %>
+		<%= link_to "journey", drink_journey_getting_started_path(@user.id), class: "guide-header #{@drink_journey_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 	<% else %>
-		<h5 class="guide-header">drink journey</h5>
+		<h5 class="guide-header hidden-xs">drink journey</h5>
+		<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">journey</h5>
 	<% end %>
 	<h5 class="pipe-separator">&#124;</h5>
 </div>
-<div class="col-sm-2 no-padding signup-guide-column-holder <%= @drink_likes_chosen %>">
+<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column <%= @drink_likes_chosen %>">
 	<% if @user.getting_started_step >= 3 %>
-		<%= link_to "drink likes", drink_style_likes_getting_started_path(@user.id), class: "guide-header #{@drink_likes_chosen}" %>
+		<%= link_to "drink likes", drink_style_likes_getting_started_path(@user.id), class: "guide-header #{@drink_likes_chosen} hidden-xs" %>
+		<%= link_to "likes", drink_style_likes_getting_started_path(@user.id), class: "guide-header #{@drink_likes_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 	<% else %>
-		<h5 class="guide-header">drink likes</h5>
+		<h5 class="guide-header hidden-xs">drink likes</h5>
+		<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">likes</h5>
 	<% end %>
-	<h5 class="pipe-separator">&#124;</h5>
+	<h5 class="pipe-separator hidden-xs">&#124;</h5>
 </div>
-<div class="col-sm-2 no-padding signup-guide-column-holder <%= @drink_dislikes_chosen %>">
+<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_dislikes_chosen %>">
 	<% if @user.getting_started_step >= 4 %>
-		<%= link_to "drink dislikes", drink_style_dislikes_getting_started_path(@user.id), class: "guide-header #{@drink_dislikes_chosen}" %>
+		<%= link_to "drink dislikes", drink_style_dislikes_getting_started_path(@user.id), class: "guide-header #{@drink_dislikes_chosen} hidden-xs" %>
+		<%= link_to "dislikes", drink_style_dislikes_getting_started_path(@user.id), class: "guide-header #{@drink_dislikes_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 	<% else %>
-		<h5 class="guide-header">drink dislikes</h5>
+		<h5 class="guide-header hidden-xs">drink dislikes</h5>
+		<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">dislikes</h5>
 	<% end %>
 	<h5 class="pipe-separator">&#124;</h5>
 </div>
-<div class="col-sm-2 no-padding signup-guide-column-holder <%= @drink_per_weeks_chosen %>">
+<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_per_weeks_chosen %>">
 	<% if @user.getting_started_step >= 5 %>
-		<%= link_to "drinks per week", drinks_weekly_getting_started_path(@user.id), class: "guide-header #{@drink_per_weeks_chosen}" %>
+		<%= link_to "drinks per week", drinks_weekly_getting_started_path(@user.id), class: "guide-header #{@drink_per_weeks_chosen} hidden-xs" %>
+		<%= link_to "per week", drinks_weekly_getting_started_path(@user.id), class: "guide-header #{@drink_per_weeks_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 	<% else %>
-		<h5 class="guide-header">drinks per week</h5>
+		<h5 class="guide-header hidden-xs">drinks per week</h5>
+		<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">per week</h5>
 	<% end %>
 	<h5 class="pipe-separator">&#124;</h5>
 </div>
-<div class="col-sm-2 no-padding signup-guide-column-holder <%= @drink_size_chosen %>">
+<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column<%= @drink_size_chosen %>">
 	<% if @user.getting_started_step >= 6 %>
-		<%= link_to "drink size", drinks_large_getting_started_path(@user.id), class: "guide-header #{@drink_size_chosen}" %>
+		<%= link_to "drink size", drinks_large_getting_started_path(@user.id), class: "guide-header #{@drink_size_chosen} hidden-xs" %>
+		<%= link_to "size", drinks_large_getting_started_path(@user.id), class: "guide-header #{@drink_size_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 	<% else %>
 		<h5 class="guide-header">drink size</h5>
+		<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">size</h5>
 	<% end %>
 </div>

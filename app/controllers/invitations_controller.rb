@@ -1,5 +1,5 @@
 class InvitationsController < Devise::InvitationsController
-  before_filter :authenticate_user!
+  #before_filter :authenticate_user!
   before_filter :verify_admin, only: [:new, :create]
   
   def new
@@ -50,6 +50,38 @@ class InvitationsController < Devise::InvitationsController
     end
   end
   
+  # method to allow account owner to invite a guest
+  def guest_invite
+    @invitor_id = params[:id]
+    # create new user object
+    @new_guest = User.new
+    
+  end # end of invite_guest action
+  
+  def process_guest_invite
+    # add invited person to User model
+    @invited_user = User.invite!(invite_params, current_inviter) do |u|
+      # Skip sending the default Devise Invitable e-mail
+      u.skip_invitation = true
+    end
+    # get info on invitor
+    @invitor = User.find_by_id(params[:user][:invited_by_id])
+    # get a random color for the user
+    @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+    # Set the value for :invitation_sent_at because we skip calling the Devise Invitable method deliver_invitation which normally sets this value
+    @invited_user.attributes = {invitation_sent_at: Time.now.utc, role_id: 5, getting_started_step: 0, 
+                                    cohort: "guest", user_color: @user_color, account_id: @invitor.account_id}
+    @invited_user.save(validate: false)                         
+    
+    #create friend connection with invited guest
+    @new_friend_request = Friend.create(user_id: @invitor.id, friend_id: @invited_user.id)
+    
+    # send original email invitation
+    UserMailer.guest_invite_email(@invited_user, current_user).deliver_now  
+    
+    redirect_to account_settings_guests_path(@invitor.id)
+  end # end of process_invite_guest action
+  
   # method to allow retailer admin/owner to invite others
   def invite_team_member_new
     @new_team_member = User.new
@@ -60,7 +92,7 @@ class InvitationsController < Devise::InvitationsController
   private
   
   def after_accept_path_for(resource)
-    getting_started_path("category")
+    edit_user_path(current_user.id)
   end
   
   def verify_admin

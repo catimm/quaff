@@ -1,116 +1,171 @@
-<div class="row">
-	<div class="container">
-		<div class="col-xs-12">
-			<h3 class="recent-ratings-header">My current plan</h3>
-		</div>
-		<% if !@customer_plan.auto_renew_subscription_id.nil? %>
-			<div class="col-xs-12 col-sm-10">
-				<% if @customer_plan.auto_renew_subscription_id == @customer_plan.subscription_id %>
-					<h4 class="auto-renew-info">Your <%= @customer_plan.subscription.subscription_name %> plan is currently set to renew on <%= (@customer_plan.active_until).strftime("%b %-d, %Y") %>.</h4>
-				<% else %>
-					<% @renew_to_plan = Subscription.find_by_id(@customer_plan.auto_renew_subscription_id) %>
-					<h4 class="auto-renew-info">Your <%= @customer_plan.subscription.subscription_name %> plan is currently set to renew to the <%= @renew_to_plan.subscription_name %> plan on <%= (@customer_plan.active_until).strftime("%b %-d, %Y") %>.</h4>
-				<% end %>
-			</div>
-			<div class="col-xs-12 col-sm-2">
-				<%= link_to "Turn off auto renew", "#", :class => "btn btn-default turn-off-renew-button",
-						data: {toggle: "modal", target: "#auto_renew_change"} %>
-			</div>	
-		<% else %>
-			<div class="col-xs-12 col-sm-10">
-				<h4 class="auto-renew-info">Your <%= @customer_plan.subscription.subscription_name %> plan currently has auto renew turned off!</h4>
-			</div>
-			<div class="col-xs-12 col-sm-2">
-				<%= link_to "Turn on auto renew", "#", :class => "btn btn-success turn-on-renew-button",
-						data: {toggle: "modal", target: "#auto_renew_change"} %>
-			</div>
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-8">
+		<h3 class="recent-ratings-header">Select the best plan for you</h3>
+	</div>
+	<div class="col-xs-12 col-sm-4" id="last-updated-holder">
+		<% if !@deliveries_last_updated.nil? %>
+			<%= render 'layouts/preferences_last_updated' %>
 		<% end %>
 	</div>
 </div>
-<div class="row">
-	<div class="container">
-		<%= render 'signup/delivery_plan_choice'%>
-	</div>
-</div>
-<div id="auto_renew_change" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your auto renew settings change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<% if !@customer_plan.auto_renew_subscription_id.nil? %>
-					<h4 class="auto-confirm-confirmation-text">Are you sure you want to <span class="turn-off-renew">turn off auto renew</span>?</h4>
-				<% else %>
-					<h4 class="auto-confirm-confirmation-text">Are you sure you want to <span class="turn-on-renew">turn on auto renew</span> for your <%= @customer_plan.subscription.subscription_name %> plan?</h4>
-				<% end %>
+<div class="row no-margin">
+		<div class="col-sm-4">
+			<div class="row no-margin retail-plan-update-options <%= @sample_current %>">
+				<div class="col-xs-12 no-padding">
+					<div class="row no-margin">
+						<div class="col-sm-12">
+							<h3 class="retail-plan-header">Sample</h3>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-10 no-padding">
+							<ul class="retail-plan-feature-list">
+								<li>Personalized, curated drink deliveries</li>
+								<li>Order only when it suits you</li>
+								<li>$6 per delivery</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding">
+							<h5 class="contract-type-header">No membership contract</h5>
+							<h2 class="retailer-plan-cost">$0<span class="with-contract">/mo</span></h2>
+							<% if !@user_plan.blank? %>
+								<% if @user_plan.subscription_id == 3 %>
+									<h2 class="retailer-plan-cost">Current Plan</h2>
+								<% else %>
+									<%= link_to choose_plan_path(current_user.id, "sample"), id: "sample-plan", class: 'btn btn-primary formButton-start-plan', data: {confirm: "Are you sure you want to change your plan?"} do %>
+										<i class="fa fa-refresh" aria-hidden="true"> Change to the Sample Plan</i>
+									<% end %>
+								<% end %>
+							<% else %>
+								<%= form_tag choose_plan_path(current_user.id, "sample"), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="sample"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		name="Knird" 
+						          		data-description="Sample (no contract)" 
+						          		data-currency="USD" 
+						          		data-label="Start the Sample Plan"
+						          		data-email="<%= current_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							<% end %>
+							
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="row no-margin">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-4 remove-button-holder">
-				<% if !@customer_plan.auto_renew_subscription_id.nil? %>
-					<%= link_to "Yep, positive", plan_rewewal_update_path(current_user.id), :class => 'change-auto-renew-confirmation text-center btn btn-danger remove-drink-button' %>
-				<% else %>
-					<%= link_to "Yep, positive", plan_rewewal_update_path(current_user.id), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button' %>
-				<% end %>
-			</div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="change_auto_renew_plan_to_enjoy" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your auto renew plan change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew from the Relish to the Enjoy plan?</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-4 remove-button-holder">
-				<% if @user.cohort == "early_beta" %>
-					<%= link_to "Yep, let's do it", process_user_plan_choice_path("account-1-enjoy_beta"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% else %>
-					<%= link_to "Yep, let's do it", process_user_plan_choice_path("account-1-enjoy"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% end %>		
-			</div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="change_auto_renew_plan_to_relish" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your auto renew plan change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew from the Enjoy to the Relish plan?</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-4 remove-button-holder">
-				<% if @user.cohort == "early_beta" %>
-					<%= link_to "Yep, let's do it", process_user_plan_choice_path("account-1-relish_beta"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% else %>
-					<%= link_to "Yep, let's do it", process_user_plan_choice_path("account-1-relish"), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>
-				<% end %>		
-			</div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+		
+		<div class="col-sm-4">
+			<div class="row no-margin retail-plan-update-options <%= @enjoy_current %> ">
+				<div class="col-xs-12 no-padding">
+					<div class="row no-margin">
+						<div class="col-sm-12">
+							<h3 class="retail-plan-header">Enjoy</h3>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-10 no-padding">
+							<ul class="retail-plan-feature-list">
+								<li>Personalized, curated drink deliveries</li>
+								<li>2 deliveries per month</li>
+								<li>Additional deliveries only $4 each</li>
+								<li>10% member dividend</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding">
+							<h5 class="contract-type-header">3-month membership contract</h5>
+							<h2 class="retailer-plan-cost">$10<span class="with-contract">/mo</span></h2>
+							<% if !@user_plan.blank? %>
+								<% if @user_plan.subscription_id == 2 %>
+									<h2 class="retailer-plan-cost">Current Plan</h2>
+								<% else %>
+									<%= link_to choose_plan_path(current_user.id, "enjoy"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"} do %>
+										<i class="fa fa-refresh" aria-hidden="true"> Change to the Enjoy Plan</i>
+									<% end %>
+								<% end %>
+							<% else %>
+								<%= form_tag choose_plan_path(current_user.id, "enjoy"), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="enjoy"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		name="Knird" 
+						          		data-description="Enjoy (3-month contract)" 
+						          		data-currency="USD" 
+						          		data-label="Start the Enjoy Plan"
+						          		data-email="<%= current_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
+		
+		<div class="col-sm-4">
+			<div class="row no-margin retail-plan-update-options <%= @relish_current %>">
+				<div class="col-xs-12 no-padding">	
+					<div class="row no-margin">
+						<div class="col-sm-12">
+							<h3 class="retail-plan-header">Relish</h3>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-10 no-padding">
+							<ul class="retail-plan-feature-list">
+								<li>Personalized, curated drink deliveries</li>
+								<li>2 deliveries per month</li>
+								<li>Additional deliveries only $3 each</li>
+								<li>10% member dividend</li>
+								<li>Preferred access to limited and rare drinks</li>
+							</ul>
+						</div>
+					</div>
+					<div class="row-no-margin">
+						<div class="col-sm-12 no-padding">
+							<h5 class="contract-type-header">12-month membership contract</h5>
+							<h2 class="retailer-plan-cost">$8.33<span class="with-contract">/mo</span></h2>
+							<% if !@user_plan.blank? %>
+								<% if @user_plan.subscription_id == 1 %>
+									<h2 class="retailer-plan-cost">Current Plan</h2>
+								<% else %>
+									<%= link_to choose_plan_path(current_user.id, "relish"), class: 'btn btn-primary formButton-start-plan', method: :post, data: {confirm: "Are you sure you want to change your plan?"}  do %>
+										<i class="fa fa-refresh" aria-hidden="true"> Change to the Relish Plan</i>
+									<% end %>
+								<% end %>
+							<% else %>
+								<%= form_tag choose_plan_path(current_user.id, "relish"), class:"plan-button" do %>
+									<input name="plan_id" type="hidden" value="relish"></input>
+						          	<script 
+						          		class="stripe-button" 
+						          		name="Knird" 
+						          		data-description="Relish (12-month contract)" 
+						          		data-currency="USD" 
+						          		data-label="Start the Relish Plan"
+						          		data-email="<%= current_user.email %>" 
+						          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+						          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+						          		src="https://checkout.stripe.com/checkout.js">
+						          	</script>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 </div>

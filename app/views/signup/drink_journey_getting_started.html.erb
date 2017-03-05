@@ -6,7 +6,13 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<%= render 'signup_guide' %>
+		<% if @guide == "new_user_first" %>
+			<%= render 'signup_guide_new_user_first' %>
+		<% elsif @guide == "new_user" %>
+			<%= render 'signup_guide_new_user' %>
+		<% else %>
+			<%= render 'signup_guide_continued_user' %>
+		<% end %>
 	</div>
 	<div class="row">
 		<div class="container" id="user-craft-journey-signup">
@@ -22,8 +28,8 @@
 	</div>
 	<div class="row">
 		<div class="container">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-8">
+			<div class="col-xs-1 col-sm-2"></div>
+			<div class="col-xs-10 col-sm-8">
 				<%= render 'craft_journey_choice'%>
 			</div>
 		</div>
@@ -34,9 +40,9 @@
 				<div class="col-xs-1 col-sm-4"></div>
 				<div class="col-xs-10 col-sm-4">
 					<% if !@user.craft_stage_id.blank? %>
-						<%= link_to "Next", drink_style_likes_getting_started_path(@user.id), class: "btn btn-default btn-success user-info-next-button", id: "drink_journey_next_step_button" %>
+						<%= link_to "Next", drink_style_likes_getting_started_path(@user.id), class: "btn btn-success user-info-next-button", id: "drink_journey_next_step_button" %>
 					<% else %>
-						<%= link_to "Next", drink_style_likes_getting_started_path(@user.id), disabled: true, class: "btn btn-default btn-success user-info-next-button", id: "drink_journey_next_step_button" %>
+						<%= link_to "Next", drink_style_likes_getting_started_path(@user.id), disabled: true, class: "btn btn-default user-info-next-button", id: "drink_journey_next_step_button" %>
 					<% end %>
 				</div>
 			</div>

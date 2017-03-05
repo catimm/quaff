@@ -1,4 +1,12 @@
 $(function() {
+	
+	// show welcome modal before starting signup process
+	if (gon.user_signup_step == 0) {
+		$(window).load(function(){
+	        $('#complete_signup_welcome').modal('show');
+	    });
+	}
+	
 	// use Modernizr to add datepicker view to browsers that don't support date
 	if (!Modernizr.inputtypes.date) {
 	  $("input[type='date']").datepicker();
@@ -29,6 +37,22 @@ $(function() {
 	$(".signup-style-tile.chosen").height(style_tile_width);
 	$(".signup-styles-tally-box").height(style_tile_width);
 	
+	// set height of mobile user signup filler column
+	first_col_height = $("#mobile-user-signup-first-col").height();
+	$(".mobile-user-signup-filler-col").height(first_col_height);
+	
+	$( window ).on( "orientationchange", function( event ) {
+		style_tile_width = $(".signup-style-tile").width();
+		$(".signup-style-tile").height(style_tile_width);
+		$(".signup-style-tile.chosen").height(style_tile_width);
+		$(".signup-style-tile.chosen").width(style_tile_width);
+		$(".signup-styles-tally-box").height(style_tile_width);
+	});
+	
+	// set height of membership feature list div
+	feature_list_height_12_mo = $("#retail-plan-feature-list-12-mo").height();
+	$(".retail-plan-feature-list").height(feature_list_height_12_mo);
+	
   // set delay function
 	var delay = (function(){
 	  var timer = 0;
@@ -38,9 +62,34 @@ $(function() {
 	  };
 	})();
 	
-	// clear invalid response 
-	$(document).on("keyup", "#special_code", function() {
-		$('#invalid_code').addClass('hidden');
+	// search for username to see if unique
+	$(document).on("keyup", "#username_field", function() {
+		if ($(".user_username").hasClass('has-error')) {
+			$(".user_username").removeClass('has-error');
+			$(".user_username").children('span').remove();
+		}
+		if ($("#username-not-available").hasClass('show')) {
+			$("#username-not-available").removeClass('show').addClass('hidden');
+		}
+		if ($("#username-available").hasClass('show')) {
+			$("#username-available").removeClass('show').addClass('hidden');
+		}
+		
+		delay(function(){
+			value = $('#username_field').val();
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/username_verification/" + value
+			});
+	    }, 2000 );
+	});
+	
+	// remove email signup error message upon focus
+	$(document).on("focus", "#email_field", function() {
+		if ($('.user_email').hasClass('has-error')) {
+			$('.user_email').removeClass('has-error');
+			$('.user_email').children('span').remove();
+		}
 	});
 	
 	// search for discount code to see if valid
@@ -49,9 +98,16 @@ $(function() {
 		delay(function(){
 			$.ajax({
 			  type: "POST",
-			  url: "/signup/code_verification/" + value
+			  url: "/early_signup/process_invitation_code/" + value
 			});
 	    }, 500 );
+	});
+	
+	// clear invalid response 
+	$(document).on("keyup", "#special_code", function() {
+		if ($("#invalid_code").hasClass('show')) {
+			$("#invalid_code").removeClass('show').addClass('hidden');
+		}
 	});
 	
 	// show extra thoughts for mobile 
@@ -78,13 +134,6 @@ $(function() {
 	        return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
 	    }
 	});
-	
-	// show welcome modal before starting signup process
-	if (gon.user_signup_step == 0) {
-		$(window).load(function(){
-	        $('#getting_started_welcome').modal('show');
-	    });
-	}
 	
 	// find width of tile so overlay matches
 	var like_tile_width = $('.signup-style-tile.like-style-tile').width();
@@ -118,6 +167,7 @@ $(function() {
 			});
 			
 			$('#drink_choice_next_step_button').removeAttr('disabled');
+			$("#drink_choice_next_step_button").removeClass('btn-default').addClass('btn-success');
 		} else {
 			$('#delivery_preference_drink_option_id').val(new_value);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
@@ -149,6 +199,7 @@ $(function() {
 			var controller_url = "/signup/process_drink_journey_getting_started/" + new_value
 			
 			$('#drink_journey_next_step_button').removeAttr('disabled');
+			$("#drink_journey_next_step_button").removeClass('btn-default').addClass('btn-success');
 		} else {
 			var controller_url = "/users/deliveries_update_estimates/craft_journey-" + new_value
 		}
@@ -256,7 +307,7 @@ $(function() {
 		}
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_drinks_large_getting_started/preferences-2-" + large_format
+			var controller_url = "/signup/process_drinks_large_getting_started/" + large_format
 		} else {
 			$("#delivery_preference_max_large_format").val(large_format);
 			$('#update_delivery_preferences_button').removeAttr('disabled');

@@ -3,6 +3,11 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { invitations: "invitations", 
                                     omniauth_callbacks: "authentications",
                                     passwords: "passwords" }
+  devise_scope :user do
+    get 'users/invitation/guest_invite/:id' => 'invitations#guest_invite', :as => 'guest_invite'
+    post 'users/invitation/process_guest_invite' => 'invitations#process_guest_invite', :as => 'process_guest_invite'
+  end
+  
   resources :users do
     resources :drinks, :ratings, :rewards, :trackings   
   end
@@ -48,15 +53,20 @@ Rails.application.routes.draw do
   
   root :to => 'home#index'
   # routes to user profile pages
-  get '/users/account_settings/:id' => 'users#account_settings', :as => 'user_account_settings'  
+  get '/users/user_account_add_guest/:id' => 'users#user_account_add_guest', :as => 'user_account_add_guest'
+  get '/users/account_settings_membership/:id' => 'users#account_settings_membership', :as => 'account_settings_membership'  
+  get '/users/account_settings_profile/:id' => 'users#account_settings_profile', :as => 'account_settings_profile' 
+  get '/users/account_settings_guests/:id' => 'users#account_settings_guests', :as => 'account_settings_guests'
+  get '/users/account_settings_cc/:id' => 'users#account_settings_cc', :as => 'account_settings_cc'
   get '/users/plan_rewewal_update/:id' => 'users#plan_rewewal_update', :as => 'plan_rewewal_update' 
   post '/users/update_profile/:id' => 'users#update_profile'
   post '/users/update_delivery_address/:id' => 'users#update_delivery_address'
   patch '/users/update_password/:id' => 'users#update_password'
   post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
   post '/stripe-webhooks' => 'users#stripe_webhooks'
-  post 'users/add_new_card/:id' => 'users#add_new_card' , :as => 'add_new_card'
-  get 'users/delete_credit_card/:id' => 'users#delete_credit_card' , :as => 'delete_credit_card'
+  post 'users/add_new_card/:id' => 'users#add_new_card', :as => 'add_new_card'
+  get 'users/delete_credit_card/:id' => 'users#delete_credit_card', :as => 'delete_credit_card'
+  
   
   # routes to user deliveries pages
   get '/deliveries/deliveries/:id' => 'deliveries#deliveries', :as => 'user_deliveries'
@@ -103,11 +113,7 @@ Rails.application.routes.draw do
   post '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'customer_delivery_date'
   patch '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'reset_customer_delivery_date'
   
-  
   # user signup process
-  get '/signup/user_getting_started/:id' => 'signup#user_getting_started', :as => 'user_getting_started'
-  patch '/signup/process_user_getting_started' => 'signup#process_user_getting_started', :as => 'process_user_getting_started'
-  
   get '/signup/drink_choice_getting_started/:id' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
   post '/signup/process_drink_choice_getting_started/:id' => 'signup#process_drink_choice_getting_started', :as => 'process_drink_choice_getting_started'
   
@@ -128,24 +134,38 @@ Rails.application.routes.draw do
   post '/signup/process_account_address_getting_started' => 'signup#process_account_address_getting_started', :as => 'process_account_address_getting_started'
   
   get '/signup/account_membership_getting_started/:id' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
-  post '/signup/process_account_membership_getting_started' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
+  post '/signup/process_account_membership_getting_started/:id' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
   
-  get '/signup/early_signup/:id' => 'signup#early_signup', :as => 'early_signup'
-  get '/signup/early_customer_password_response/:id' => 'signup#early_customer_password_response', :as => 'early_customer_password_response'
-  post '/signup/request_code' => 'signup#request_code', :as => 'request_code'
-  get '/signup/request_verification/:id' => 'signup#request_verification', :as => 'request_verification'
-  post '/signup/code_verification/:id' => 'signup#code_verification', :as => 'code_verification'
-  get '/signup/early_signup_confirmation/:id' => 'signup#early_signup_confirmation', :as => 'early_signup_confirmation'
-  post '/signup/process_input/:id' => 'signup#process_input', :as => 'process_input'
+  get '/signup/signup_thank_you/:id' => 'signup#signup_thank_you', :as => 'signup_thank_you'
+  
+  post '/signup/username_verification/:id' => 'signup#username_verification', :as => 'username_verification'
+  
   post '/signup/process_style_input/:id' => 'signup#process_style_input'
   post '/signup/process_user_plan_choice/:id' => 'signup#process_user_plan_choice', :as => 'process_user_plan_choice'  
-  post '/signup/process_early_user_plan_choice/:id' => 'signup#process_early_user_plan_choice', :as => 'process_early_user_plan_choice' 
-  
   patch '/signup/account_info_process' => 'signup#account_info_process', :as => 'account_info_process'
-  post '/signup/early_account_info' => 'signup#early_account_info', :as => 'early_account_info'
   
+  # user early signup process
+  get '/early_signup/invitation_code' => 'early_signup#invitation_code', :as => 'invitation_code'
+  post '/early_signup/process_invitation_code/:id' => 'early_signup#process_invitation_code', :as => 'process_invitation_code'
+  
+  post '/early_signup/request_code' => 'early_signup#request_code', :as => 'request_code'
+  get '/early_signup/request_verification/:id' => 'early_signup#request_verification', :as => 'request_verification'
+  
+  get '/early_signup/account_info/:id' => 'early_signup#account_info', :as => 'account_info'
+  post '/early_signup/process_account_info' => 'early_signup#process_account_info', :as => 'process_account_info'
+  
+  get '/early_signup/billing_info/:id' => 'early_signup#billing_info', :as => 'billing_info'
+  post '/early_signup/process_billing_info/:id' => 'early_signup#process_billing_info', :as => 'process_billing_info'
+  
+  get '/early_signup/early_signup_confirmation/:id' => 'early_signup#early_signup_confirmation', :as => 'early_signup_confirmation'
+  
+  get '/early_signup/early_customer_password_response/:id' => 'early_signup#early_customer_password_response', :as => 'early_customer_password_response'
+  
+  # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
+  
+  # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'
   get '/draft_boards/swap_drinks/:id(.:format)' => 'draft_boards#execute_swap_drinks', :as => 'execute_swap_drinks'
   get '/search-bloodhound-engine.js' => 'draft_boards#edit'

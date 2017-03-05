@@ -1,0 +1,74 @@
+<%= render 'layouts/header' %> 
+	<div class="row">
+		<div class="container" id="signup-thank-you-header">
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">Thank you for joining Knird!</h2>
+				<h5 class="signup-question-detail">Feel free to explore the site. Or use the links below to get a quick start.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<% if @view == "account_owner" %>
+				<div class="row">
+					<div class="col-xs-1 col-sm-2"></div>
+					<div class="col-xs-10 col-sm-6">
+						<h4 class="signup-next-step-header">Add a guest to your account</h4>
+						<h5 class="signup-next-step-text">You can add free guests to your account so others at your address can get their own curated and
+							personlized set of drinks.  Note, the account will share both a delivery address and credit card.</h5>
+					</div>
+					<div class="col-xs-12 col-sm-2 no-padding-right">
+						<%= link_to "Add a guest", account_settings_guests_path(current_user.id), class: "btn btn-default btn-success thank-you-next-button" %>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-1 col-sm-2"></div>
+					<div class="col-xs-10 col-sm-8">
+						<hr>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-1 col-sm-2"></div>
+					<div class="col-xs-10 col-sm-6">
+						<h4 class="signup-next-step-header">Update your delivery settings</h4>
+						<h5 class="signup-next-step-text">You can change your delivery settings at any time, including the 
+							number of drinks you consume, the number of large drinks you'd like, or your next delivery date.</h5>
+					</div>
+					<div class="col-xs-12 col-sm-2 no-padding-right">
+						<%= link_to "View delivery settings", user_delivery_settings_path, class: "btn btn-default btn-success thank-you-next-button" %>
+					</div>
+				</div>
+			<% else %>
+				<div class="row">
+					<div class="col-xs-1 col-sm-2"></div>
+					<div class="col-xs-10 col-sm-6">
+						<h4 class="signup-next-step-header">Update your delivery settings</h4>
+						<h5 class="signup-next-step-text">You can change your delivery settings at any time, including the 
+							number of drinks you consume, the number of large drinks you'd like, or your next delivery date.</h5>
+					</div>
+					<div class="col-xs-12 col-sm-2 no-padding-right">
+						<%= link_to "View delivery settings", user_delivery_settings_path, class: "btn btn-default btn-success thank-you-next-button" %>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-1 col-sm-2"></div>
+					<div class="col-xs-10 col-sm-8">
+						<hr>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-1 col-sm-2"></div>
+					<div class="col-xs-10 col-sm-6">
+						<h4 class="signup-next-step-header">Refine your drink style settings</h4>
+						<h5 class="signup-next-step-text">You can refine your drink style settings to more accurately reflect
+							your preferences.  Do you like Dark Lagers but not other Lagers? You can make the change on your
+							style settings page at any time.</h5>
+					</div>
+					<div class="col-xs-12 col-sm-2 no-padding-right">
+						<%= link_to "Refine drink styles", user_drink_settings_path(current_user.id, 'styles'), class: "btn btn-default btn-success thank-you-next-button" %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>
