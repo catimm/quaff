@@ -5736,6 +5736,25 @@ $delivery-beer-header-lines-to-show: 2;
   .overview-tile-3, .overview-tile-4 {
     height: 230px;
   }
+  .style-tile-container {
+    padding: 5px !important;
+  }
+  $style-header-font-size: 13px;
+  $style-header-line-height: 1.1;
+  $style-header-lines-to-show: 2;
+  .style-tile-header {
+    @extend .tile-header; 
+    display: block; /* Fallback for non-webkit */
+    display: -webkit-box;
+    height: $style-header-font-size*$style-header-line-height*$style-header-lines-to-show; /* Fallback for non-webkit */
+    margin: 5px auto 7.5px auto;
+    font-size: $style-header-font-size;
+    line-height: $style-header-line-height;
+    -webkit-line-clamp: $style-header-lines-to-show;
+    -webkit-box-orient: vertical;
+    overflow: none;
+    text-overflow: none;
+  }
   .styles-overview-tile-footer {
     padding-top: 7.5px;
   }
