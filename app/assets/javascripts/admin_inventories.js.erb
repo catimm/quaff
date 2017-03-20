@@ -1,5 +1,4 @@
 $(function() {
-	
 	// add logic to show/hide inventory  
 	$(document).on('click', '.inventory-view', function () {
 		var this_id = $(this).attr('id');
@@ -19,4 +18,18 @@ $(function() {
 			$(this).parent().parent().next().addClass("hidden");
 		}
 	});
+	
+	// delete multiple drinks at one time
+	$(document).on('click', '#delete-multiple-drinks', function () {
+		var checked_vals = $('.admin-multiple-checkboxes:checkbox:checked').map(function() {
+		    return this.value;
+		}).get();
+		var all_vals = checked_vals.join("-");
+
+		$.ajax({
+		  type: "POST",
+		  url: "/admin/beers/remove_multiple_drinks/" + all_vals
+		});
+	});
+
 });

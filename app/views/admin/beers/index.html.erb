@@ -3,14 +3,17 @@
 	<div class="row header-row">
 		<div class="page-header">
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<% if !@this_brewery.brewery_url.nil? %>
 						<h3><%= link_to @this_brewery.brewery_name, @this_brewery.brewery_url, :target => "_blank", class:"brewery-name-header" %>&nbsp;</h3>
 					<% else %>
 						<h3><%= @this_brewery.brewery_name %></h3>
 					<% end %>
 				</div>
-				<div class="col-sm-4 text-right">
+				<div class="col-sm-3 text-right">
+					<%= link_to "Delete drinks", "#", class: "btn btn-danger inputButton2", id: "delete-multiple-drinks" %>
+				</div>
+				<div class="col-sm-3 text-right">
 					<%= link_to "Add beer", new_admin_brewery_beer_path(@this_brewery.id), class: "btn btn-success inputButton2" %>
 				</div>
 			</div>

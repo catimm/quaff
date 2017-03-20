@@ -225,6 +225,7 @@ Rails.application.routes.draw do
   post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
   post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
+  post 'admin/beers/remove_multiple_drinks/:id' => 'admin/beers#remove_multiple_drinks'
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'
   get 'admin/breweries/merge_brewery_prep/:id' => 'admin/breweries#merge_brewery_prep', :as => 'admin_merge_brewery_prep'

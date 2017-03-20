@@ -23,6 +23,12 @@
 					<%= link_to "Fully Delete", admin_delete_temp_beer_path(d.brewery_id, d.id), class: "btn btn-danger editButton" %>
 				</div>
 			<% end %>
+			<div class="col-sm-2">
+				<label class="checkbox">
+				  Choose multiple <%= check_box_tag d.id, d.id, false, class: 'admin-multiple-checkboxes' %> 
+				</label>
+				
+			</div>
 		</div>
 	<% else %>
 		<div class="row small-padding">

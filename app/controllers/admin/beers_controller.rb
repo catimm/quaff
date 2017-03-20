@@ -224,16 +224,20 @@ class Admin::BeersController < ApplicationController
     if (params[:id] < "14324")
       # find beer being deleted
       @beer = Beer.find_by_id(params[:id])
+      # get drink name
+      @drink_name = AltBeerName.where(name: @beer.beer_name)
+      # destroy drink
       @beer.destroy
     else
       # find beer being deleted
       @beer = TempBeer.find_by_id(params[:id])
+      # get drink name
+      @drink_name = AltBeerName.where(name: @beer.beer_name)
+      # destroy drink
       @beer.destroy
     end
 
     # add name of drink being deleted to alt beer name table if it isn't already there
-    @drink_name = AltBeerName.where(name: @beer.beer_name)
-    
     if @drink_name.blank?
      AltBeerName.create(name: @beer.beer_name, beer_id: params[:id])
     end
@@ -242,6 +246,43 @@ class Admin::BeersController < ApplicationController
     redirect_to admin_brewery_beers_path(params[:brewery_id])
     
   end # end of delete_temp_beer method
+  
+  def remove_multiple_drinks
+    # get each drink id into an array
+    @multiple_drinks = params[:id].split("-").map { |s| s.to_i }
+    # cycle through each drink to delete and save drink name to alt drink name table if not already there
+    @multiple_drinks.each do |drink_id|
+      if (drink_id < 14324)
+        # find beer being deleted
+        @drink = Beer.find_by_id(drink_id)
+        @brewery_id = @drink.brewery_id
+        # get drink name
+        @drink_name = AltBeerName.where(name: @drink.beer_name)
+        # add name of drink being deleted to alt beer name table if it isn't already there
+        if @drink_name.blank?
+         AltBeerName.create(name: @drink.beer_name, beer_id: drink_id)
+        end
+        # destroy drink
+        @drink.destroy
+      else
+        # find beer being deleted
+        @drink = TempBeer.find_by_id(drink_id)
+        @brewery_id = @drink.brewery_id
+        # get drink name
+        @drink_name = AltBeerName.where(name: @drink.beer_name)
+        # add name of drink being deleted to alt beer name table if it isn't already there
+        if @drink_name.blank?
+         AltBeerName.create(name: @drink.beer_name, beer_id: drink_id)
+        end
+        # destroy drink
+        @drink.destroy
+      end
+    end
+    
+    # redirect back to brewery page
+    render js: "window.location = '#{admin_brewery_beers_path(@brewery_id)}'"
+
+  end # end of remove_multiple_drinks method
   
   def delete_alt_beer_name
     @alt_drink_name = AltBeerName.find_by_id(params[:id])
