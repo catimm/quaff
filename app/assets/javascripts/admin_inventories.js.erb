@@ -1,4 +1,8 @@
 $(function() {
+	// set width of header row to same width as container
+	container_width = $(".container").width() + 10;
+	$(".header-row").width(container_width);
+	
 	// add logic to show/hide inventory  
 	$(document).on('click', '.inventory-view', function () {
 		var this_id = $(this).attr('id');

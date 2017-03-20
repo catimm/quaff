@@ -1,57 +1,65 @@
 <%= render 'layouts/header' %> 
 <div class="container admin-container">
 	<div class="row header-row">
-		<div class="page-header">
-			<div class="row">
-				<div class="col-sm-6">
-					<% if !@this_brewery.brewery_url.nil? %>
-						<h3><%= link_to @this_brewery.brewery_name, @this_brewery.brewery_url, :target => "_blank", class:"brewery-name-header" %>&nbsp;</h3>
-					<% else %>
-						<h3><%= @this_brewery.brewery_name %></h3>
-					<% end %>
-				</div>
+		<div class="row small-padding">
+			<div class="col-sm-6">
+				<% if !@this_brewery.brewery_url.nil? %>
+					<h3><%= link_to @this_brewery.brewery_name, @this_brewery.brewery_url, :target => "_blank", class:"brewery-name-header" %>&nbsp;</h3>
+				<% else %>
+					<h3><%= @this_brewery.brewery_name %></h3>
+				<% end %>
+			</div>
+			<% if @touched_by_user == true %>
 				<div class="col-sm-3 text-right">
 					<%= link_to "Delete drinks", "#", class: "btn btn-danger inputButton2", id: "delete-multiple-drinks" %>
 				</div>
+			<% else %>
 				<div class="col-sm-3 text-right">
-					<%= link_to "Add beer", new_admin_brewery_beer_path(@this_brewery.id), class: "btn btn-success inputButton2" %>
+					<%= link_to "Delete drinks", "#", disabled: true, class: "btn btn-danger inputButton2", id: "delete-multiple-drinks" %>
 				</div>
+			<% end %>
+			<div class="col-sm-3 text-right">
+				<%= link_to "Add beer", new_admin_brewery_beer_path(@this_brewery.id), class: "btn btn-success inputButton2" %>
+			</div>
+		</div>
+		<div class="row small-padding">
+			<div class="col-sm-2">
+				<h5><strong>Beer Name</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>Last Updated</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>Beer Type</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>Rating</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>ABV</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>IBU</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>Cellarable</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>Tags</strong></h5>
+			</div>
+			<div class="col-sm-1">
+				<h5><strong>Descriptors</strong></h5>
 			</div>
 		</div>
 	</div>
-	<div class="row small-padding">
-		<div class="col-sm-2">
-			<h5><strong>Beer Name</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Last Updated</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Beer Type</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Rating</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>ABV</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>IBU</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Cellarable</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Tags</strong></h5>
-		</div>
-		<div class="col-sm-1">
-			<h5><strong>Descriptors</strong></h5>
-		</div>
-	</div>
 	<% if !@brewery_beers.empty? %>
-		<%= render 'brewery_beers' %>
+		<div class="row small-padding drink-list-container">
+			<%= render 'brewery_beers' %>
+		</div>
 	<% else %>
-		<h4>No beers yet associated with this brewery.</h4>
+		<div class="row small-padding">
+			<h4>No beers yet associated with this brewery.</h4>
+		</div>
 	<% end %>
 	<div id="edit_beer" class="modal">
 		<div class="modal-header">
