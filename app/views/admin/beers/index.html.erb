@@ -9,15 +9,9 @@
 					<h3><%= @this_brewery.brewery_name %></h3>
 				<% end %>
 			</div>
-			<% if @touched_by_user == true %>
-				<div class="col-sm-3 text-right">
-					<%= link_to "Delete drinks", "#", class: "btn btn-danger inputButton2", id: "delete-multiple-drinks" %>
-				</div>
-			<% else %>
-				<div class="col-sm-3 text-right">
-					<%= link_to "Delete drinks", "#", disabled: true, class: "btn btn-danger inputButton2", id: "delete-multiple-drinks" %>
-				</div>
-			<% end %>
+			<div class="col-sm-3 text-right">
+				<%= link_to "Delete multiple drinks", "#", class: "btn btn-danger inputButton2", id: "delete-multiple-drinks" %>
+			</div>
 			<div class="col-sm-3 text-right">
 				<%= link_to "Add beer", new_admin_brewery_beer_path(@this_brewery.id), class: "btn btn-success inputButton2" %>
 			</div>

@@ -9,14 +9,6 @@ class Admin::BeersController < ApplicationController
     @brewery_beers = (@perm_beers + @temp_beers).sort_by{|e| e[:beer_name]}
     @touched_by_user = false
     #@brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
-    # find if any drinks might need to be deleted
-    @brewery_beers.each do |drink|
-      if drink.vetted == false
-        if !drink.touched_by_user.nil?
-          @touched_by_user = true
-        end
-      end
-    end
     # find collab beers produced by brewery
     #@collab_brewery_beer_ids = BeerBreweryCollab.where(brewery_id: params[:brewery_id]).pluck(:beer_id)
     #@collab_beers = Beer.find(@collab_brewery_beer_ids)
