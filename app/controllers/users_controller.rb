@@ -124,39 +124,43 @@ class UsersController < ApplicationController
     # get customer plan details
     @customer_plan = UserSubscription.where(user_id: @user.id).first
     
-    if @customer_plan.subscription_id == 1 || @customer_plan.subscription_id == 4
-      # set current style variable for CSS plan outline
-      @relish_chosen = "show"
-      @enjoy_chosen = "hidden"
+    # set CSS style indicator
+    if @customer_plan.subscription_id == 1
+      @one_month = "current"
+    elsif @customer_plan.subscription_id == 2
+      @three_month = "current"
     else
-      # set current style variable for CSS plan outline
-      @relish_chosen = "hidden"
-      @enjoy_chosen = "show"
+      @twelve_month = "current"
     end
-     
+    
+    # customer's Stripe card info
+    @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
+                                        all(:object => "card")
+    #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
+    
   end # end of account_settings_membership action
   
   def account_settings_profile
     # get user info
-    @user = User.find(params[:id])
+    @user = User.find_by_id(params[:id])
     #Rails.logger.debug("User info: #{@user.inspect}")
 
     # set link as chosen
     @profile_chosen = "chosen"
     
-    # get user delivery info
-    @delivery_address = UserDeliveryAddress.find_by_account_id(@user.account_id)
+    # get user home address info
+    @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
     
     # set birthday to Date
     @birthday =(@user.birthday).strftime("%Y-%m-%d")
    
     # get last updated info
     @user_updated = @user.updated_at
-    @preference_updated = latest_date = [@user.updated_at, @delivery_address.updated_at].max
+    @preference_updated = latest_date = [@user.updated_at, @home_address.updated_at].max
       
   end # end of account_settings_profile action
   
-  def account_settings_guests
+  def account_settings_mates
     # get user info
     @user = User.find(params[:id])
     #Rails.logger.debug("User info: #{@user.inspect}")
@@ -262,13 +266,66 @@ class UsersController < ApplicationController
   def plan_rewewal_update
     @user_subscription = UserSubscription.find_by_user_id(params[:id])
     if @user_subscription.auto_renew_subscription_id.nil?
+      # change in Knird DB
       @user_subscription.update(auto_renew_subscription_id: @user_subscription.subscription_id)
+    
+      # chanage user subscription auto renewal in Stripe after setting plan_id
+      if params[:id] == "one"
+        @plan_id = "one_month"
+      elsif params[:id] == "three"
+        @plan_id = "three_month"
+      else
+        @plan_id = "twelve_month"
+      end 
+      
+      @customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
+      @subscription = @customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
+      @subscription.plan = @plan_id
+      @subscription.save
     else
+      # change in Knird DB
       @user_subscription.update(auto_renew_subscription_id: nil)
+      
+      # chanage user subscription auto renewal in Stripe
+      @customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
+      @subscription = @customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
+      @subscription.delete(:at_period_end => true)
     end
     
     redirect_to account_settings_membership_path(current_user.id)
   end # end plan_rewewal_update method
+  
+  def process_user_plan_change
+    if params[:id] == "one"
+      @update = 1
+      @plan_id = "one_month"
+    elsif params[:id] == "three"
+      @update = 2
+      @plan_id = "three_month"
+    else
+      @update = 3
+      @plan_id = "twelve_month"
+    end
+    # get user subscription info
+    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    
+    # first update Stripe account info (update Knird DB below)
+    @customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
+    @subscription = @customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
+    # restart plan if same plan is chosen for auto renewal
+    if @user_subscription.subscription_id == @update
+      # update Stripe to make sure current plan is set to renew
+      @subscription.plan = @plan_id
+      @subscription.save
+    else # else make sure Stripe doesn't auto renew current plan
+      @subscription.delete(:at_period_end => true)
+    end
+    
+    # update Knird DB
+    @user_subscription.update(auto_renew_subscription_id: @update)
+    
+    redirect_to account_settings_membership_path(current_user.id)
+  end # end of process_user_plan_change method
   
   def stripe_webhooks
     #Rails.logger.debug("Webhooks is firing")
@@ -349,8 +406,6 @@ class UsersController < ApplicationController
       @user.update(first_name: @data)
     elsif @column == "last_name"
       @user.update(last_name: @data)
-    elsif @column == "username"
-      @user.update(username: @data)
     elsif @column == "birthdate_field"
       @birthday_data = @data_split[1] + "-" + @data_split[2] + "-" + @data_split[3]
       @birthday = Date.parse(@birthday_data) + 12.hours
@@ -394,38 +449,70 @@ class UsersController < ApplicationController
 
   end
   
-  def update_delivery_address
+  def update_home_address
     # get data to add/update
     @data = params[:id]
     @data_split = @data.split("-")
     @column = @data_split[0]
+    #Rails.logger.debug("Column info: #{@column.inspect}")
     @data = @data_split[1]
+    #Rails.logger.debug("Data info: #{@data.inspect}")
     
     # get user info
-    @user_delivery_address = UserDeliveryAddress.where(user_id: current_user.id).first
+    @user_home_address = UserAddress.where(account_id: current_user.account_id, location_type: "Home").first
     
     # update user info
-    if @column == "address_one"
-      @user_delivery_address.update(address_one: @data)
-    elsif @column == "address_two"
-      @user_delivery_address.update(address_two: @data)
-    elsif @column == "city"
-      @user_delivery_address.update(city: @data)
-    elsif @column == "state"
-      @user_delivery_address.update(state: @data)
-    elsif @column == "zip"
-      @user_delivery_address.update(zip: @data)
-    else
-      @user_delivery_address.update(special_instructions: @data)
+    if @column == "address_unit" || @data != nil 
+      if @column == "address_street"
+        @user_home_address.update(address_street: @data)
+      elsif @column == "address_unit"
+        @user_home_address.update(address_unit: @data)
+      elsif @column == "city"
+        @user_home_address.update(city: @data)
+      elsif @column == "state"
+        @user_home_address.update(state: @data)
+      elsif @column == "zip"
+        @user_home_address.update(zip: @data)
+      end
     end
     
     # get time of last update
-    @preference_updated = @user_delivery_address.updated_at
+    @preference_updated = @user_home_address.updated_at
     
     respond_to do |format|
       format.js { render 'last_updated.js.erb' }
     end # end of redirect to jquery
-  end
+  
+  end # end of update_home_address method
+  
+  def username_verification
+    # get special code
+    @username = params[:id]
+    #Rails.logger.debug("username param: #{@username.inspect}")
+    
+    # get current user info
+    @user = User.find_by_id(current_user.id)
+    #Rails.logger.debug("user username: #{@user.username.inspect}")
+  
+    @username_check = User.where(username: @username)
+    
+    if !@username_check.blank?
+      @response = "no"
+      @message =  @username + ' is not available. What else you got?'
+    else
+      @response = "yes"
+      @message = @username + ' is available!'
+      # update username
+      @user.update(username: @username)
+      # get time of last update
+      @preference_updated = @user.updated_at
+    end
+    
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end username_verification method
   
   def add_new_card
     # get customer subscription info
@@ -437,8 +524,8 @@ class UsersController < ApplicationController
     # add new credit card to customer Stripe acct
     @customer.sources.create(:card => params[:stripeToken])
 
-    # redirect back to credit card page
-    redirect_to account_settings_cc_path(current_user.id)
+    # redirect back to membership page
+    redirect_to account_settings_membership_path(current_user.id)
     
   end # end of add_new_card
   
@@ -452,8 +539,9 @@ class UsersController < ApplicationController
     # delete the credit  card
     @customer.sources.retrieve(params[:id]).delete
     
-    # redirect back to credit card page
-    redirect_to account_settings_cc_path(current_user.id)
+    # redirect back to membership page
+    redirect_to account_settings_membership_path(current_user.id)
+    
   end # end of delete_credit_card method
   
   def destroy

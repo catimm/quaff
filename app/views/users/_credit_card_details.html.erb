@@ -18,9 +18,13 @@
 		</div>
 
 		<% if @customer_cards.data.length > 1 %>
-		<div class="col-xs-4">
-			<%= link_to "Delete card", delete_credit_card_path(card.id), :class => "btn btn-danger delete-credit-card-button" %>
-		</div>
+			<div class="col-xs-4">
+				<%= link_to "Delete card", delete_credit_card_path(card.id), :class => "btn btn-danger delete-credit-card-button" %>
+			</div>
+		<% else %>
+			<div class="col-xs-4">
+				<%= link_to "Delete card", "#", :class => "btn btn-default delete-credit-card-button", :title => "You must have at least one credit card on file. Please add a new card before removing your current card.", :data => {toggle: "tooltip", placement: "right"} %>
+			</div>
 		<% end %>
 	</div>
 </div>

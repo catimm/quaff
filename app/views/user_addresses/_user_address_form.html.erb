@@ -1,0 +1,90 @@
+<%= simple_form_for @user_address do |f| %>
+		<%= f.hidden_field :account_id, :value => @account_id %>
+		<%= f.hidden_field :current_delivery_location, :value => @current_delivery %>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-8">
+				<h3 class="user-settings-header"><%= @header %> delivery address</h3>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<div class="row no-margin">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :location_type, 'Location Name' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.input :location_type, priority: [ "Office" ], :collection => ["Office", "Other"], selected: "Office", :class => "form-control new-address-field", required: true, label: false %>
+					</div>
+				</div>
+				<div class="row no-margin other-name-row-holder hidden">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :other_name, 'Other Name' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.text_field :other_name, :class => "form-control new-address-field", placeholder: "Name This Address" %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :address_street, 'Street Address' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.text_field :address_street, :class => "form-control new-address-field", placeholder: "Street Address", required: true %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :address_unit, 'Unit/Floor' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.text_field :address_unit, :class => "form-control new-address-field", placeholder: "Home Apt, Unit, etc." %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :city, 'City' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.text_field :city, :class => "form-control new-address-field", placeholder: "City", required: true %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :state, 'State' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.text_field :state, :class => "form-control new-address-field", placeholder: "State", required: true %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :zip, 'Zip' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.text_field :zip, :class => "form-control new-address-field", placeholder: "Zip Code", required: true %>
+					</div>
+				</div>
+				<div class="row no-margin user-info-form">
+					<div class="col-xs-4 col-sm-3 no-padding">
+						<%= label :special_instructions, 'Delivery Instructions' %>
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.text_field :special_instructions, class: "form-control new-address-field", placeholder: "Any special instructions for deliveries?" %>
+					</div>
+				</div>
+				<div class="row no-margin hidden" id="required-home-address-field-error">
+					<div class="col-xs-4 col-sm-3 no-padding">
+					</div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<h5 class="required-home-address-field-error">Sorry, that field can't be left empty.</h5>
+					</div>
+				</div>
+				<div class="row submit-address-row-holder">
+					<div class="col-xs-4 col-sm-3 no-padding"></div>
+					<div class="col-xs-8 col-sm-9 no-padding-right">
+						<%= f.submit "Submit", :class => "btn btn-success submit-address-button" %>
+					</div>
+				</div>
+			</div>
+		</div>
+<% end %>

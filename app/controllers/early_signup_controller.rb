@@ -117,7 +117,7 @@ class EarlySignupController < ApplicationController
         redirect_to billing_info_path(@user.id)
       end
     else
-      @user_delivery_address = UserDeliveryAddress.where(account_id: @already_registered.account_id).first
+      @user_delivery_address = UserAddress.where(account_id: @already_registered.account_id).first
       params[:account][:user_delivery_addresses_attributes]["0"][:id] = @user_delivery_address.id
       @already_registered.update_attributes(early_user_params)
       redirect_to billing_info_path(@already_registered.id)

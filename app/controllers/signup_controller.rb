@@ -589,7 +589,7 @@ class SignupController < ApplicationController
     
     # determine path for 'Next' button
     if @user.role_id == 4
-      @user_delivery_address = UserDeliveryAddress.find_by_account_id(@user.account_id)
+      @user_delivery_address = UserAddress.find_by_account_id(@user.account_id)
       if @user_delivery_address.blank?
         @next_step = account_address_getting_started_path(@user.id)
       else
@@ -664,8 +664,8 @@ class SignupController < ApplicationController
     @account = Account.find_by_id(@user.account_id)
     #Rails.logger.debug("Account info: #{@account.inspect}")
     
-    # instantiate new UserDeliveryAddress
-    @user_delivery_address = UserDeliveryAddress.new
+    # instantiate new UserAddress
+    @user_delivery_address = UserAddress.new
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
@@ -696,7 +696,7 @@ class SignupController < ApplicationController
     # get User info
     @user = User.find_by_id(current_user.id)
     
-    UserDeliveryAddress.create(address_params)
+    UserAddress.create(address_params)
     
     # update step completed if need be
     if @user.getting_started_step == 7

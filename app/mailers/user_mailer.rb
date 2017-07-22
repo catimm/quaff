@@ -302,12 +302,10 @@ class UserMailer < ActionMailer::Base
     p response
   end # end of select_invite_email email
   
-  def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date, new_active_until)
+  def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-    if new_active_until == true
-      @user_subscription_info = UserSubscription.find_by_user_id(customer.id)
-      @new_active_until = (@user_subscription_info.active_until).strftime("%B %-d, %Y")
-    end
+    @user_subscription_info = UserSubscription.find_by_user_id(customer.id)
+    @new_active_until = (@user_subscription_info.active_until).strftime("%B %-d, %Y")
 
     payload  = {
       recipients: [
@@ -330,6 +328,76 @@ class UserMailer < ActionMailer::Base
     p response
     
   end # end of delivery_date_change_confirmation email
+  
+  def delivery_zone_change_confirmation(customer, location_and_time, old_date, next_date, user_address_info, delivery_zone_info)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    if user_address_info.location_type == "Other"
+      @location_name = user_address_info.other_name
+    else
+      @location_name = user_address_info.location_type
+    end
+    if !user_address_info.address_unit.nil?
+      @street_address = user_address_info.address_street + ", " + user_address_info.address_unit
+    else
+      @street_address = user_address_info.address_street
+    end
+    @city_address = user_address_info.city + ", " + user_address_info.state + " " + user_address_info.zip
+    @new_time = "Every other " + delivery_zone_info.day_of_week + ", " + (delivery_zone_info.start_time).strftime("%l:%M%P") + " - " + (delivery_zone_info.end_time).strftime("%l:%M%P")
+
+    payload  = {
+      recipients: [
+        {
+          address: { 
+            email: customer.email 
+            },
+        }
+      ],
+      content: {
+        template_id: 'delivery-zone-change-confirmation'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        location_and_time: location_and_time,
+        old_date: old_date.strftime("%A, %B %-d"),
+        next_date: next_date.strftime("%A, %B %-d"),
+        location_name: @location_name,
+        street_address: @street_address,
+        city_address: @city_address,
+        new_time: @new_time
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of delivery_zone_change_confirmation email 
+  
+  def delivery_date_with_end_date_change_confirmation(customer, old_delivery_date, new_delivery_date)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    @user_subscription_info = UserSubscription.find_by_user_id(customer.id)
+    @new_active_until = (@user_subscription_info.active_until).strftime("%B %-d, %Y")
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'delivery-date-change-confirmation'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        old_delivery_date: (old_delivery_date).strftime("%B #{old_delivery_date.day.ordinalize}"),
+        new_delivery_date: (new_delivery_date).strftime("%B #{new_delivery_date.day.ordinalize}"),
+        new_active_until: @new_active_until
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of delivery_date_with_end_date_change_confirmation email
   
   def welcome_email(customer, membership_name, subscription_fee, renewal_date, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
@@ -393,6 +461,52 @@ class UserMailer < ActionMailer::Base
     p response
     
   end # end of friend_request email
+  
+  def renewing_membership(customer, new_months, end_date)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'renewing-membership'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        new_months: new_months,
+        new_end_date: end_date
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of renewing_membership email
+  
+  def cancelled_membership(customer)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'cancelled-membership'
+      },
+      substitution_data: {
+        customer_name: customer.first_name
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of cancelled_membership email
   
   def expiring_trial_email(owner, location)
     #Rails.logger.debug("Owner info: #{owner.first_name.inspect}")

@@ -72,46 +72,95 @@ $(function () {
 	
 	// update user info
 	$(document).on("change", ".user-info-field", function() {
-		
 		var this_id = $(this).attr('id');
-		var toRemove = 'user_';
-		var column = this_id.replace(toRemove,'');
-		
-		value = $(this).val();
-		
-		//clear any interval on key up
-		clearInterval(timer);
-		
-		timer = setTimeout(function() { //then give it a second to see if the user is finished
-	    	$.ajax({
-			  type: "POST",
-			  url: "/users/update_profile/" + column + "-" + value
-			});
-	    }, 500);
+		if (this_id != "user_username") {
+			var toRemove = 'user_';
+			var column = this_id.replace(toRemove,'');
+			
+			value = $(this).val();
+			
+			//clear any interval on key up
+			clearInterval(timer);
+			
+			timer = setTimeout(function() { //then give it a second to see if the user is finished
+		    	$.ajax({
+				  type: "POST",
+				  url: "/users/update_profile/" + column + "-" + value
+				});
+		    }, 500);
+		}
 		
 	});
 	
+	// search for username to see if unique
+	$(document).on("keyup", "#user_username", function() {
+		if ($(".user_username").hasClass('has-error')) {
+			$(".user_username").removeClass('has-error');
+			$(".user_username").children('span').remove();
+		}
+		if ($("#username-not-available").hasClass('show')) {
+			$("#username-not-available").removeClass('show').addClass('hidden');
+		}
+		if ($("#username-available").hasClass('show')) {
+			$("#username-available").removeClass('show').addClass('hidden');
+		}
+		
+		delay(function(){
+			value = $('#user_username').val();
+			$.ajax({
+			  type: "POST",
+			  url: "/users/username_verification/" + value
+			});
+	    }, 2000 );
+	});
+		
 	// update user address info
 	$(document).on("keyup", ".user-address-field", function() {
 		
 		var this_id = $(this).attr('id');
-		var toRemove = 'user_user_delivery_addresses_attributes_0_';
+		var toRemove = 'user_user_addresses_';
 		var column = this_id.replace(toRemove,'');
 
 		value = $(this).val();
-		
+		// remove period from end of string if it exists
+		if (value[value.length-1] === ".")
+    	value = value.slice(0,-1);
+    	
 		//clear any interval on key up
 		clearInterval(timer);
 		
+		if ((!$(this).val()) && (column !== "address_unit")) {
+			$("#required-home-address-field-error").removeClass('hidden').addClass('show');
+		} else {
+			if ($("#required-home-address-field-error").hasClass('show')) {
+				$("#required-home-address-field-error").removeClass('show').addClass('hidden');
+			}
+		}
 		timer = setTimeout(function() { //then give it a second to see if the user is finished
 	    	$.ajax({
 			  type: "POST",
-			  url: "/users/update_delivery_address/" + column + "-" + value
+			  url: "/users/update_home_address/" + column + "-" + value
 			});
 	    }, 500);
-		
+
 	});
 	
+	// update change of preferred delivery location & show/hide extra fields
+	$(document).on("change", ".user_user_delivery_addresses_location_type", function() {
+    	selected_value = $(".edit_user input[type=radio]:checked").val();
+    	
+		if(selected_value == 'true'){
+			$(".delivery-address-row-holder").removeClass('hidden').addClass('show');
+		} else {
+			$(".delivery-address-row-holder").removeClass('show').addClass('hidden');
+		}
+		
+		$.ajax({
+			  type: "POST",
+			  url: "/users/update_delivery_address/delivery_preference-" + selected_value
+			});
+    });
+        
 	// show password change form
 	$("#change-password-button").on("click", function() {
 		$(this).removeClass("show").addClass("hidden");

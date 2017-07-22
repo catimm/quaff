@@ -201,7 +201,7 @@ $(function() {
 			$('#drink_journey_next_step_button').removeAttr('disabled');
 			$("#drink_journey_next_step_button").removeClass('btn-default').addClass('btn-success');
 		} else {
-			var controller_url = "/users/deliveries_update_estimates/craft_journey-" + new_value
+			var controller_url = "/delivery_settings/deliveries_update_estimates/craft_journey-" + new_value
 		}
 		
 		// send data to controller
@@ -252,7 +252,7 @@ $(function() {
 			$("#delivery_preference_drinks_per_week").val(drinks_per_week);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
-			var controller_url = "/users/deliveries_update_estimates/drinks_per_week-" + drinks_per_week + "-" + large_format
+			var controller_url = "/delivery_settings/deliveries_update_estimates/drinks_per_week-" + drinks_per_week + "-" + large_format
 			// indicate there is unsave data changed on the page
 			unsaved = true;
 		}
@@ -312,7 +312,7 @@ $(function() {
 			$("#delivery_preference_max_large_format").val(large_format);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
-			var controller_url = "/users/deliveries_update_estimates/large_format-" + drinks_per_week + "-" + large_format
+			var controller_url = "/delivery_settings/deliveries_update_estimates/large_format-" + drinks_per_week + "-" + large_format
 			// indicate there is unsave data changed on the page
 			unsaved = true;
 		}

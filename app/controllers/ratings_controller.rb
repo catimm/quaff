@@ -3,6 +3,8 @@ class RatingsController < ApplicationController
   include BestGuess
   include DrinkDescriptors
   include DrinkDescriptorCloud
+  include DrinkTypeDescriptorCloud
+  require 'json'
   
   def new
     # set the page to return to after adding a rating
@@ -118,6 +120,34 @@ class RatingsController < ApplicationController
     
   end # end of update method
   
+  def user_ratings
+    # get user info
+    @user = User.find(params[:id])
+    
+    # get user ratings history
+    @user_ratings = UserBeerRating.where(user_id: params[:id])
+    
+    # get recent user ratings history
+    @recent_user_ratings = @user_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
+  
+  end # end of user_ratings method 
+  
+  def friend_ratings
+    # get user info
+    @user = User.find(params[:id])
+    
+    # find user's friends
+    @user_friends = Friend.where(confirmed: true).where("user_id = :this_user_id OR friend_id = :this_user_id", this_user_id: params[:id])
+          .pluck(:user_id, :friend_id).uniq.flatten(1) - [current_user.id]
+    #Rails.logger.debug("User friends: #{@user_friends.inspect}")
+    # get friends ratings history
+    @friend_ratings = UserBeerRating.where(user_id: @user_friends)
+    
+    # get recent user ratings history
+    @recent_friend_ratings = @friend_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
+    
+  end # end of friend_ratings method
+  
   def rate_drink_from_supply
     @user = current_user
     @beer = Beer.find(params[:user_beer_rating][:beer_id])
@@ -177,4 +207,4 @@ class RatingsController < ApplicationController
     end
     
     
-end
+end # end of controller

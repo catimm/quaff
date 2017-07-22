@@ -1,0 +1,172 @@
+$(function () {
+	$(document).on("scroll", function() {
+	    var second_row = $("#second-delivery-row").width();
+	    //moveScroller();
+	    if ($(window).scrollTop() > 120) {
+	    	$("#scroller-anchor").addClass("fixed-delivery-preferences-row");
+		    $("#scroller-anchor").width(second_row);
+	    } else {
+	    	$("#scroller-anchor").removeClass("fixed-delivery-preferences-row");
+	    }
+	});
+	
+	// show welcome modal immediately following signup process
+	if (gon.user_post_signup == 9) {
+		$(window).load(function(){
+	        $('#delivery_settings_welcome').modal('show');
+	    });
+	    $.ajax({
+		  type: "POST",
+		  url: "/deliveries/deliveries_update_estimates/post_signup-10"
+		});
+	}
+
+	// hide spinner
+	$(".spinner").hide();
+	
+	
+  // show spinner on AJAX start
+  $(document).ajaxStart(function(){
+    $(".spinner").show();
+  });
+
+  // hide spinner on AJAX stop
+  $(document).ajaxStop(function(){
+    $(".spinner").hide();
+  });
+	  
+	
+	// set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	// add review end countdown clock
+	$('#review-ends-on').countdown({until: gon.review_period_ends, format: 'dhmS',
+										labels: ['Yr', 'Mo', 'Wk', 'Days', 'Hours', 'Mins', 'Secs'],
+										labels1: ['Yr', 'Mo', 'Wk', 'Day', 'Hour', 'Min', 'Sec']
+									});
+	
+	// add logic to change delivery date
+	$(document).on('click', '.delivery-date-change-row', function () {
+		$(this).addClass('chosen');
+		$(this).parent().siblings('.delivery-date-change-row-holder').children('.delivery-date-change-row').removeClass('chosen');
+		
+		var week_number = $(this).attr('id');
+		week_number = $.trim(week_number);
+		
+		$("#confirm-date-change-button").attr("href", "/delivery_settings/change_next_delivery_date/" + week_number);
+		
+	});
+							    
+	// ensure only one delivery date option is chosen
+	$(document).on("change", ".first_delivery_date_chosen", function() {
+		$(this).parent().siblings(".drink-preference-choice").children("input").removeAttr('checked');
+	});
+	
+	// set width of quantity holder--in supply and delivery review views--equal to portion of tile width
+	drink_tile_width = $(".drink-tile-width-measurement").width();
+	quantity_holder_width = (drink_tile_width * .15);
+	$(".quantity-holder").width(quantity_holder_width).height(quantity_holder_width);
+	
+	
+	
+	// allow customers to add or subtract drinks from delivery
+	$(document).on("click", ".quantity-change-holder-minus", function() {
+		var this_id = $(this).attr('id');
+		var split_id = this_id.split("-");
+		var drink_id = split_id[3];
+		
+		// change quantity shown on screen
+		var original_quantity = $("#drink-quantity-" + drink_id).html();
+		if(original_quantity > 1) {
+			var new_quantity = original_quantity - 1;
+			$("#drink-quantity-" + drink_id).html(new_quantity);
+			
+			// send to controller to change database 
+			$.ajax({
+			  type: "POST",
+			  url: "/deliveries/change_delivery_drink_quantity/subtract-" + drink_id
+			});
+		} else {
+		
+			// attach new id
+			$('#remove_drink_confirmation_delivery_review').children('.modal-body').children('.remove-button-holder').children('a').attr('id', drink_id);
+
+			// show modal
+		    $('#remove_drink_confirmation_delivery_review').modal('show');
+		}
+	});
+	$(document).on("click", ".subtract-drink-confirmation-delivery-review", function() {
+		var drink_id = $(this).attr('id');
+		
+		// remove drink tile
+		$('#drink-tile-' + drink_id).remove();
+		
+		// remove modal
+	    $('#remove_drink_confirmation_delivery_review').modal('hide');
+		
+		// send to controller to change database 
+		$.ajax({
+		  type: "POST",
+		  url: "/deliveries/remove_delivery_drink_quantity/" + drink_id
+		});
+		// make page not jump to top
+		return false;
+	});
+	
+	// allow customer to change delivery drink quantity
+	$(document).on("click", ".quantity-change-holder-add", function() {
+		
+		var this_id = $(this).attr('id');
+		var split_id = this_id.split("-");
+		var drink_id = split_id[3];
+		
+		var parent_id = $(this).parent().attr('id');
+		var toRemove = 'limit-per-';
+		var limit_per = parent_id.replace(toRemove,'');
+		
+		if(limit_per == 0) {
+			limit_per = 100
+		}
+		
+		// change quantity shown on screen
+		var original_quantity = +($("#drink-quantity-" + drink_id).html());
+		var new_quantity = original_quantity + 1;
+		if(new_quantity <= limit_per) {
+			$("#drink-quantity-" + drink_id).html(new_quantity);
+		
+			// send to controller to change database
+			$.ajax({
+			  type: "POST",
+			  url: "/deliveries/change_delivery_drink_quantity/add-" + drink_id
+			});
+		} else {
+			var drink_name = $(this).parent().parent('.next-delivery-tile-last-row').siblings('.drink-name-and-info-row').children('.drink-name-col').children('.beer-tile-header').children('.combined-drink-text').html();
+			$("#quantity-limit-drink-name").html(drink_name);
+			$("#actual-quantity-limit").html(limit_per);
+			// show modal
+		    $('#drink_per_customer_limit').modal('show');
+		}
+		
+	});
+	 
+	// show/hide subtotal and sales tax on user delivery stats
+	$(document).on("click", ".show-more-price-info", function() {
+		$(this).removeClass("show").addClass("hidden");
+		$(this).siblings(".delivery-info-box.subtotal").removeClass("hidden").addClass("show");
+		$(this).siblings(".delivery-info-box.sales-tax").removeClass("hidden").addClass("show");
+		$(this).siblings(".show-less-price-info").removeClass("hidden").addClass("show");
+	});
+	$(document).on("click", ".show-less-price-info", function() {
+		$(this).removeClass("show").addClass("hidden");
+		$(this).siblings(".delivery-info-box.subtotal").removeClass("show").addClass("hidden");
+		$(this).siblings(".delivery-info-box.sales-tax").removeClass("show").addClass("hidden");
+		$(this).siblings(".show-more-price-info").removeClass("hidden").addClass("show");
+	});
+	 
+});

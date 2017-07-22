@@ -36,7 +36,7 @@
 	        	<% @number_of_ratings = @user_ratings.count %>
 	        	<% @avg_rating = @user_ratings.average(:user_beer_rating) %>
 	        	<td><%= @number_of_ratings %></td>
-	        	<td><%= @avg_rating.round(2) %></td>
+	        	<td><%= @avg_rating.to_f.round(2) %></td>
 	        <% end %>
 	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 	        <td><%= inventory.size_format.format_name %></td>

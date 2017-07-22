@@ -133,7 +133,7 @@
 				</div>
 				<div class="col-xs-12 col-sm-6">
 					<h4 class="signup-form-header delivery-info">Delivery info</h4>
-						<%= f.simple_fields_for :user_delivery_addresses, UserDeliveryAddress.new do |address| %>
+						<%= f.simple_fields_for :user_addresses, UserAddress.new do |address| %>
 							<%= address.input :city, :as => :hidden %>
 							<%= address.input :state, :as => :hidden %>
 							<div class="row no-margin user-info-form">

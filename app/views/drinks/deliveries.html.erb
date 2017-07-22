@@ -1,0 +1,38 @@
+<%= render 'layouts/header' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-xs-12 col-sm-4 no-padding">
+				<h1 class="section-header">Drinks</h1>
+			</div>
+			<div class="col-xs-12 col-sm-8">
+				<div class="row no-margin">
+					<div class="col-xs-0 col-sm-3 mobile-menu-holder"></div>
+					<div class="col-xs-4 col-sm-3 mobile-menu-holder">
+						<%= link_to "Deliveries", user_deliveries_path('next'), class: "drink-preference-view-option #{@next_chosen}", id: "next" %>
+					</div>
+					<div class="col-xs-4 col-sm-2 mobile-menu-holder no-padding-left">
+						<%= link_to "Cellar", user_supply_path(current_user.id, 'cellar'), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
+					</div>
+					<div class="col-xs-4 col-sm-3 mobile-menu-holder">
+						<%= link_to "Wishlist", user_supply_path(current_user.id, 'wishlist'), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="row no-margin spinner text-center">
+			<div class="spinner-text">
+				<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+				<h4>Updating...</h4>
+			</div>
+		</div>
+		<div class="container" id="deliveries-view">
+			<% if @delivery_view == "next" %>
+				<%= render 'user_delivery_next' %>
+			<% else %>
+				<%= render 'user_delivery_history' %>
+			<% end %>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

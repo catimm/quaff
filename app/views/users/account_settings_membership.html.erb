@@ -1,23 +1,22 @@
 <%= render 'layouts/header' %> 
 <div class="row no-margin first-row">
 	<div class="container first-row-container">
-		<div class="col-sm-5 no-padding">
+		<div class="col-xs-12 col-sm-5">
 			<h1 class="section-header">Account Settings</h1>
-			<h4 class="drinks-rated no-margin"><%= current_user.username %> joined <%= (current_user.created_at).strftime("%b %e, %Y") %></h4>
 		</div>
-		<div class="col-sm-7">
-			<div class="row no-margin">
-				<div class="col-xs-3 text-right">
-					<%= link_to "Guests", account_settings_guests_path(current_user.id), class: "drink-preference-view-option", id: "guests" %>
-				</div>
+		<div class="col-xs-12 col-sm-7">
+			<h4 class="join-date"><%= current_user.username %> joined <%= (current_user.created_at).strftime("%b %e, %Y") %></h4>
+		</div>
+		<div class="col-xs-12 col-sm-6 no-padding">
+			<div class="row">
 				<div class="col-xs-3 text-center">
-					<%= link_to "Profile", account_settings_profile_path(current_user.id), class: "drink-preference-view-option", id: "next" %>
-				</div>
-				<div class="col-xs-3">
 					<%= link_to "Membership", account_settings_membership_path(current_user.id), class: "drink-preference-view-option current", id: "history" %>
 				</div>
 				<div class="col-xs-3 text-center">
-					<%= link_to "Credit card", account_settings_cc_path(current_user.id), class: "drink-preference-view-option", id: "card" %>
+					<%= link_to "Mates", account_settings_mates_path(current_user.id), class: "drink-preference-view-option", id: "guests" %>
+				</div>
+				<div class="col-xs-3 text-center">
+					<%= link_to "Profile", account_settings_profile_path(current_user.id), class: "drink-preference-view-option", id: "next" %>
 				</div>
 			</div>
 		</div>
@@ -26,6 +25,11 @@
 <div class="row">
 	<div class="container" id="preference-view-choice">
 		<%= render 'user_account_membership' %>
+	</div>
+</div>
+<div class="row">
+	<div class="container" id="preference-view-choice">
+		<%= render 'user_account_credit_card' %>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

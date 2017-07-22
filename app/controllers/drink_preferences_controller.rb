@@ -152,35 +152,5 @@ class DrinkPreferencesController < ApplicationController
     redirect_to user_profile_path(current_user.id)
   end # end create_drink_descriptors method
   
-  def style_preferences
-    # get user preference
-    @user_preference_info = params[:id].split("-")
-    @user_preference = @user_preference_info[0]
-    @drink_style_id = @user_preference_info[1]
-    
-    # find current preference if it exists
-    @current_user_preference = UserStylePreference.where(user_id: current_user.id, beer_style_id: @drink_style_id).first
-
-    if !@current_user_preference.blank?
-      if @user_preference == "neutral"
-        @current_user_preference.destroy
-      else
-        @current_user_preference.update(user_preference: @user_preference)
-      end  
-    else
-        @user_style_preference = UserStylePreference.new(user_id: current_user.id, beer_style_id: @drink_style_id, user_preference: @user_preference)
-        @user_style_preference.save!
-    end
-    
-    # get last time user styles was updated
-    @preference_updated = Time.now
-        
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-
-  end
-
-  private
   
 end

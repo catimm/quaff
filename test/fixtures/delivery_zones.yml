@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: delivery_zones
+#
+#  id                     :integer          not null, primary key
+#  zip_code               :string
+#  day_of_week            :string
+#  start_time             :time
+#  end_time               :time
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  weeks_of_year          :string
+#  max_account_number     :integer
+#  current_account_number :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  zip_code: MyString
+  day_of_week: MyString
+  start_time: 2017-07-17 11:45:59
+  end_time: 2017-07-17 11:45:59
+
+two:
+  zip_code: MyString
+  day_of_week: MyString
+  start_time: 2017-07-17 11:45:59
+  end_time: 2017-07-17 11:45:59

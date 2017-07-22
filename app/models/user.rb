@@ -105,6 +105,11 @@ class User < ActiveRecord::Base
     self.subscription.subscription_level == "retain"
   end
   
+  # scope account owner
+  scope :account_owner, -> {
+    where(role_id: [1,4]) 
+  }
+  
   # get recepient emails for Mandrill
   def self.mandrill_emails(users)
    users.map{|user| {:email => user.email}}

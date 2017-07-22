@@ -1,0 +1,39 @@
+<div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+      <% if user_signed_in? %>
+	   		<li class="navLinks dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            
+	            <li class="dropdown-header">My activity</li>
+	            <li class="dropdown-link"><%= link_to "Connections", manage_friends_path(current_user.id) %></li>
+	            <li class="dropdown-link"><%= link_to "Drinks", user_deliveries_path('next') %></li>
+	            <li class="dropdown-link"><%= link_to "Ratings", recent_user_ratings_path(current_user.id) %></li>
+	            <li class="dropdown-link"><%= link_to "Rewards", user_rewards_path(current_user.id) %></li>
+				
+				<li class="dropdown-header">My settings</li>
+				<li class="dropdown-link"><%= link_to "Account", account_settings_membership_path(current_user.id) %></li>
+				<li class="dropdown-link"><%= link_to "Deliveries", user_delivery_settings_path(current_user.id) %></li>
+				<li class="dropdown-link"><%= link_to "Styles", user_style_settings_path(current_user.id) %></li>
+				
+	            <% if current_user.role_id == 1 %>
+		            <li class="dropdown-header">Admin links</li>
+		            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+		            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
+		            <li class="dropdown-link"><%= link_to "Inventory", admin_inventories_path("stock") %></li>
+					<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
+		            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path("#{current_user.id}-in_stock") %></li> 
+			    <% elsif current_user.role_id == 2 %>
+			    	<li class="dropdown-header">Admin links</li>
+		            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+			    <% end %>
+			    
+			    <li role="separator" class="divider"></li>
+			    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
+	          </ul>
+	        </li>
+	  <% else %>
+      	<li class="navLinks"> <%= link_to "Log in", new_user_session_path %></li>
+	  <% end %>
+    </ul>
+</div> 

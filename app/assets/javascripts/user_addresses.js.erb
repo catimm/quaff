@@ -1,0 +1,90 @@
+$(function () {
+
+	// hide spinner
+	$(".spinner").hide();
+	
+	
+  	// show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner").show();
+	});
+	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner").hide();
+	});
+	  
+	// set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	var timer;
+	
+	// update user info
+	$(document).on("change", "#user_address_location_type", function() {
+		value = $(this).val();
+		if (value == "Other") {
+			if ($(".other-name-row-holder").hasClass("hidden")){
+				$(".other-name-row-holder").removeClass("hidden").addClass("show");
+				$("#user_address_other_name").prop('required',true);
+			}
+		} else {
+			if ($(".other-name-row-holder").hasClass("show")){
+				$(".other-name-row-holder").removeClass("show").addClass("hidden");
+				$("#user_address_other_name").prop('required',false);
+			}
+		}
+		
+	});
+	
+	// add location id to delete button
+	$(document).on("click", ".remove-user-address-button", function() {
+		value = $(this).attr('id');
+		$("#remove-location-button").attr("href", "/user_addresses/" + value);	
+	});
+	 
+	// change delivery time
+	$(document).on("click", ".change-delivery-time", function() {
+		// add new date to confirmation message
+		new_date = $(this).siblings(".day-holder").html();
+		new_time = $(this).siblings(".time-holder").html();
+		next_time = $(this).siblings(".next-holder").html();
+		$("#new-delivery-date-and-time").html(new_date + new_time + next_time);
+		
+		calendar_date = next_time.replace('(Starting: ','');
+		calendar_date = calendar_date.replace(')','');
+		calendar_date = calendar_date.replace('.','_');
+		calendar_date = calendar_date.replace('.','_');
+		calendar_date = $.trim(calendar_date);
+		
+		// update URL with correct IDs
+		value = $(this).attr('id');
+		$("#change-delivery-time-button").attr("href", "/delivery_settings/change_delivery_time." + value + "-" + calendar_date);	
+	});
+	
+	// change delivery time and place
+	$(document).on("click", ".change-delivery-time-and-place", function() {
+		// add new date to confirmation message
+		new_location = $(this).parent(".optional-delivery-time-container").attr('id');
+		new_date = $(this).siblings(".day-holder").html();
+		new_time = $(this).siblings(".time-holder").html();
+		next_time = $(this).siblings(".next-holder").html();
+		$("#new-delivery-date-and-time").html(new_location + " on " + new_date + new_time + next_time);
+		
+		calendar_date = next_time.replace('(Starting: ','');
+		calendar_date = calendar_date.replace(')','');
+		calendar_date = calendar_date.replace('.','_');
+		calendar_date = calendar_date.replace('.','_');
+		calendar_date = $.trim(calendar_date);
+		
+		// update URL with correct IDs
+		value = $(this).attr('id');
+		$("#change-delivery-time-button").attr("href", "/delivery_settings/change_delivery_time." + value + "-" + calendar_date);	
+	});
+	
+});

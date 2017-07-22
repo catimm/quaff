@@ -1,0 +1,53 @@
+<%= render 'layouts/header_no_search' %> 
+	<div class="row no-margin first-row">
+		<div class="container first-row-container">
+			<div class="col-xs-12 col-sm-5 no-padding">
+				<h1 class="section-header">Add Drinks</h1>
+				<h4 class="drinks-rated no-margin">
+					Boost your cellar or wishlist
+				</h4>
+			</div>
+			<div class="col-xs-12 col-sm-7 mobile-menu-holder">
+				<div class="row no-margin">
+					<div class="col-xs-0 col-sm-3 no-padding"></div>
+					<div class="col-xs-4 col-sm-3 mobile-menu-holder">
+						<%= link_to "Deliveries", user_deliveries_path('next'), class: "drink-preference-view-option #{@next_chosen}", id: "next" %>
+					</div>
+					<div class="col-xs-4 col-sm-2 mobile-menu-holder no-padding-left">
+						<%= link_to "Cellar", user_supply_path(current_user.id, 'cellar'), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
+					</div>
+					<div class="col-xs-4 col-sm-3 mobile-menu-holder">
+						<%= link_to "Wishlist", user_supply_path(current_user.id, 'wishlist'), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
+					</div>
+				</div>
+				<div class="row add-supply-search-col">
+					<div class="col-sm-3"></div>
+					<div class="col-xs-12 col-sm-8">
+						<%= form_tag drink_search_path, method: :get, :remote => true, :id => "header-navbar", class: 'navbar-form', role: 'search' do %>
+						    <div class="input-group">
+						      <%= text_field_tag :query, params[:query], size: 30, placeholder: "Search beers or breweries", class: "form-control supply-drink-search" %>
+							    <div class="input-group-btn">
+							      <%= button_tag(type: "submit", class: "btn btn-default") do %>
+							        <i class="glyphicon glyphicon-search"></i>
+							      <% end %>
+							    </div>
+						    </div>
+						  <% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin spinner text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container" id="add-supply-holder">
+			<h3 class="recent-ratings-header">Drink search results will show here...</h3>
+			<h4 class="no-search-results hidden">Sorry, we don't see a match....</h4>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>

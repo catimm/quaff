@@ -16,21 +16,24 @@
 		      <th>Status</th>
 		    </tr>
 			<% @live_delivery_info.each do |delivery| %>
-				<tr>
-			        <td><%= delivery.user.first_name %> [<%= delivery.user.username %>]</td>
-			        <td><%= delivery.user.email %></td>
-			        <td><%= delivery.delivery_quantity %></td>
-			        <td><%= number_to_currency(delivery.total_price, precision: 2) %></td>
-			        <td><%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></td>
-			        <% if delivery.status == "in progress" %>
-			        	<td>
-							<%= link_to "Confirm", "#", :class => "btn btn-success delivery-confirm-button", :id => "#{delivery.id}", 
-								data: {toggle: "modal", target: "#delivery_details_confirmation"} %>
-						</td>
-			        <% else %>
-			        	<td><%= delivery.status %></td>
-			        <% end %>    
-			    </tr>
+				<% @account_owners = User.where(account_id:delivery.account,role_id:[1,4]) %>
+					<% @account_owners.each do |owner| %>
+						<tr>
+					        <td><%= owner.first_name %> <%= owner.last_name %> [<%= owner.username %>]</td>
+					        <td><%= owner.email %></td>
+					        <td><%= delivery.delivery_quantity %></td>
+					        <td><%= number_to_currency(delivery.total_price, precision: 2) %></td>
+					        <td><%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></td>
+					        <% if delivery.status == "in progress" %>
+					        	<td>
+									<%= link_to "Confirm", "#", :class => "btn btn-success delivery-confirm-button", :id => "#{delivery.id}", 
+										data: {toggle: "modal", target: "#delivery_details_confirmation"} %>
+								</td>
+					        <% else %>
+					        	<td><%= delivery.status %></td>
+					        <% end %>    
+				    	</tr>
+				    <% end %>
 			<% end %>
 		</table>
 	</div>
@@ -46,14 +49,17 @@
 			      <th>Status</th>
 			    </tr>
 				<% @delivered_delivery_info.each do |delivery| %>
-					<tr>
-				        <td><%= delivery.user.first_name %> [<%= delivery.user.username %>]</td>
-				        <td><%= delivery.user.email %></td>
-				        <td><%= delivery.delivery_quantity %></td>
-				        <td><%= number_to_currency(delivery.total_price, precision: 2) %></td>
-				        <td><%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></td>
-				        <td><%= delivery.status %></td>	        
-				    </tr>
+					<% @account_owners = User.where(account_id:delivery.account,role_id:[1,4]) %>
+					<% @account_owners.each do |owner| %>
+						<tr>
+					        <td><%= owner.first_name %> <%= owner.last_name %> [<%= owner.username %>]</td>
+					        <td><%= owner.email %></td>
+					        <td><%= delivery.delivery_quantity %></td>
+					        <td><%= number_to_currency(delivery.total_price, precision: 2) %></td>
+					        <td><%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></td>
+					        <td><%= delivery.status %></td>	        
+					    </tr>
+					<% end %>
 				<% end %>
 			</table>
 		<% end %>

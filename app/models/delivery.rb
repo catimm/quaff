@@ -31,7 +31,22 @@ class Delivery < ActiveRecord::Base
   
   # create view in admin recommendation drop down
   def recommendation_drop_down_view
-    "#{delivery_date.strftime("%m/%d/%y")}: #{user.first_name} [#{user.username}]"
+    "#{delivery_date.strftime("%m/%d/%y")}: #{account.id}"
+    #"#{delivery_date.strftime("%m/%d/%y")}: #{account.user.first_name} [#{account.user.username}]"
   end
+  
+  # scope account owners
+  scope :account_owner, -> {
+    joins(:account).merge(Account.owner)
+  }
+  # scope not yet delivered
+  scope :not_yet_delivered, -> {
+    where.not(status: "delivered").order('delivery_date ASC')
+  }
+  
+  # scope already delivered
+  scope :already_delivered, -> {
+    where(status: "delivered").order('delivery_date DESC')
+  }
   
 end

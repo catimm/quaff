@@ -215,7 +215,7 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
  height: 59px !important;
 }
 .dropdown-menu {
-  z-index: 5000 !important;
+  z-index: 9999 !important;
  }
 
 .top-row {
@@ -1221,7 +1221,19 @@ p {
 }
 .formButton-start-plan {
   width: 90% !important;
-  margin-bottom: 10px;
+  margin: 10px 0;
+}
+.formButton-renew-plan-set {
+  display: inline-block;
+  width: 90% !important;
+  margin: 10px 0;
+  color: $user-rating-text;
+  border: 1px solid $user-rating-text;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
 }
 .feature-list-column-sign-up {
   font-size: 16px;
@@ -1236,6 +1248,7 @@ p {
   color: $user-rating-text;
   margin-top: 10px !important;
 }
+
 .contract-type-header {
   color: $normal-text; 
   font-weight: 500;
@@ -1278,6 +1291,9 @@ p {
   border-radius: 6px;
   margin: 0 !important;
 }
+.homepage-plan-options.current {
+  border: 3px solid $user-rating-text !important;
+}
 .retail-plan-update-options {
   text-align: center;
   border: 1px solid $less-emphasized-text !important;
@@ -1296,6 +1312,15 @@ p {
 .retail-plan-headline {
   text-align: center;
   margin-bottom: 20px;
+}
+.user-plan-header {
+  text-align: center;
+  color: $normal-text;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+.user-plan-header.current {
+  color: $user-rating-text;
 }
 .retail-plan-header {
   text-align: center;
@@ -2496,23 +2521,20 @@ $beer-header-lines-to-show-fp: 1;
   color: $less-emphasized-text;
   padding-top: 5px;
 }
-.changeButton {
-  font-size: 10px !important;
-  padding: 3px 6px !important;
+.username-response {
+  padding: 5px 0 0 15px;
+  margin-bottom: 10px !important;
 }
-.changeButton.delete-acct {
-  background: $current-beer-attention-needed-background;
-  width: 50%;
-  margin-top: 15px;
-  margin-bottom: 10px;
-}
+.user-settings-header {
+    margin: 10px 0;
+  }
 .changeButton.change-password, .changeButton.change-password-nevermind {
-  background: $less-emphasized-text;
-  border: 1px $normal-text solid;
-  width: 40%;
+  width: 50%;
   margin: 10px 0;
 }
-#flash_success, #flash_failure, #flash_error, #flash_alert, #signup-error-holder, .help-block, .has-error, #username-not-available {
+#flash_success, #flash_failure, #flash_error, 
+#flash_alert, #signup-error-holder, .help-block, .has-error, #username-not-available,
+.required-home-address-field-error {
   color: $current-beer-attention-needed-background !important;
 }
 #username-available {
@@ -2546,6 +2568,10 @@ $beer-header-lines-to-show-fp: 1;
 .auto-renew-info {
   color: $normal-text;
   margin-bottom: 20px;
+  span {
+    color: $user-rating-text;
+    font-weight: 600;
+  }
 }
 .auto-confirm-confirmation-text {
   color: $normal-text;
@@ -2560,6 +2586,95 @@ $beer-header-lines-to-show-fp: 1;
   color: $white;
   background: $bootstrap-red-button-hover-background;
   border: 1px solid $bootstrap-red-button-hover-border;
+}
+
+// User Delivery Location Options
+.location-settings-header {
+    margin: 10px 0 20px 0;
+  }
+.location-address-holder {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  padding-bottom: 5px;
+  padding-right: 5px;
+}
+.add-location-address-holder {
+  text-align: center;
+  min-height: 150px;
+  border: 1.75px dashed $less-emphasized-text;
+  border-radius: 6px;
+}
+.add-location-direction-text {
+  margin-top: 45px;
+  color: $normal-text;
+}
+.add-location {
+  padding: 3px 12px;
+}
+.edit-delivery-location-button {
+    color: $action-background;
+    i {
+      font-size: 16px;
+      padding: 5px 0 0 0;
+    }
+}
+.remove-user-address-button {
+    color: #d9534f;
+    i {
+      font-size: 18px;
+      padding: 5px 0 0 2.5px;
+    }
+}
+.remove-user-address-button:hover {
+    color: #d2322d;
+}
+.location-header {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.location-address {
+  margin: 0;
+}
+.location-instructions {
+  margin: 10px 0 5px 0;
+}
+.current-delivery-info-row {
+  margin: 10px 0;
+}
+.current-delivery-choice {
+  color: $action-background;
+  margin: 2.5px 0;
+}
+.optional-delivery-time-container {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  margin: 0 5px 5px 5px;
+}
+.submit-address-row-holder {
+  margin: 10px 0 0 0;
+}
+.submit-address-button {
+  width: 100%;
+}
+.change-delivery-time, .change-delivery-time-and-place {
+  display: block;
+  padding: 2px 12px;
+  color: $user-action;
+  background: $white;
+  margin: 5px 0;
+}
+.current-delivery-next {
+  color: $normal-text;
+  margin: 0;
+}
+.add-delivery-location-row {
+  padding-top: 20px;
+}
+.no-delivery {
+  color: $normal-text;
+  margin: 0 0 20px 0;
 }
 // User Signup Process
 .getting-started-header {
@@ -2863,7 +2978,9 @@ $beer-header-lines-to-show-fp: 1;
 }
 .style-image-holder {
     background-repeat: no-repeat;
-    padding: 15% 20%;
+    width: 100px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 .signup-style-tile-header {
   font-weight: 500;
@@ -3059,16 +3176,20 @@ $beer-header-lines-to-show-fp: 1;
   background: $soft-gray-background;
   margin-top: 10px !important;
   border-bottom: 1px solid $soft-border;
-  min-height: 160px;
+  
 }
 .first-row-container {
-  height: 140px;
-  margin-top: 10px;
+  
 }
 .section-header {
   font-weight: 500;
-  padding-top: 30px;
+  padding-bottom: 10px;
   font-size: 50px;
+}
+.join-date {
+  padding-top: 40px;
+  padding-bottom: 16px;
+  color: $normal-text;
 }
 .delivery-extra-info-row {
   margin: 15px 0 0 0 !important;
@@ -3120,7 +3241,7 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 12px !important;
 }
 .drink-preference-view-option {
-  margin-top: 30px !important;
+  margin-bottom: 10px;
   color: $normal-text;
   font-size: 18px;
   display: block;
@@ -3280,7 +3401,7 @@ $beer-header-lines-to-show-fp: 1;
 .rate-beer:hover, .rate-drink-from-supply:hover {
     text-decoration: none !important;
   }
-.remove-drink-button, .wait-button {
+.remove-drink-button, .wait-button, .remove-location-button, .change-delivery-time-button {
   width: 100%;
   margin: 10px 0;
 } 
@@ -3556,12 +3677,21 @@ $beer-header-lines-to-show-fp: 1;
 .delivery-preference-prompt {
   color: $normal-text;
   font-size: 22px;
-  width: 60%;
-  margin: 0 auto;
+  margin: 0;
+}
+.mate-preference-header {
+  color: $normal-text;
+  span {
+    color: black;
+    font-size: 18px;
+  }
+}
+.left-delivery-preference-box {
+  border-right: 1px solid $soft-border;
 }
 .pause-delivery-button {
-  width: 40%;
-  margin-top: 20px;
+  width: 60%;
+  margin: 20px 0;
 }
 .delivery-date-change-row-holder {
   margin: 2.5px 0;
@@ -3601,6 +3731,7 @@ $beer-header-lines-to-show-fp: 1;
 .delivery-detail {
   color: $action-background;
   font-style: italic;
+  font-size: 12px;
 }
 .drink-preference-choice {
   float: left;
@@ -3669,11 +3800,19 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 .update_delivery_preferences {
-  width: 100%;
+  width: 80%;
   margin-bottom: 10px;
 }
-#scroller-anchor {
-  margin-top: -15px !important;
+.estimate-holder {
+  background: #fff !important;
+}
+.fixed-delivery-preferences-row {
+  position: fixed;
+  top: 65px;
+  z-index: 9000;
+}
+.mate-delivery-preferences-row {
+  padding-top: 20px;
 }
 .estimated-delivery-price-holder {
   margin: -25px 0 10px 0;
@@ -4160,7 +4299,7 @@ $descriptor-lines-to-show: 2;
 }
 .last-updated-header {
   color: $less-emphasized-text;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 .style-choose-neither {
   font-weight: 500;
@@ -4458,17 +4597,19 @@ ul.pagination.pagination-centered.alpha {
 }
 #new_user_fav_drink, .edit_user, .edit_user_notification_preference, #new_beer, #new_brewery, #edit_brewery, 
 #edit_beer, #new_alt_brewery_name, #new_alt_beer_name, .edit_beer, .edit_location, #new_user, #new_user_beer_rating, 
-#edit_user, .edit_inventory, .new_inventory {
+#edit_user, .edit_user, .edit_inventory, .new_inventory {
   input, select, ul {
-    margin-bottom: 7.5px;
+    margin-bottom: 7.5px !important;
   }
   h6 {
     margin: 5px 0 5px 5px;
   }
 }
-
-.edit_user {
-  margin-top: 15px;
+.user-address-field, .new-address-field {
+  margin-bottom: 7.5px !important;
+}
+.user-delivery-preference-holder-row {
+  margin-left: 0 !important;
 }
 #new_location_tracking {
   label {
@@ -5643,7 +5784,7 @@ $delivery-beer-header-lines-to-show: 2;
     font-weight: 400;
     margin: 5px 0 !important;
     padding: 0;
-    font-size: 36px;
+    font-size: 32px;
   }
   .drink-rating-tile {
     height: 450px !important;
@@ -6068,6 +6209,16 @@ $delivery-beer-header-lines-to-show: 2;
   margin-bottom: 5px;
   font-size: 20px;
 }
+.user-plan-header {
+  text-align: center;
+  color: $normal-text;
+  font-weight: 400;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+.user-plan-header.current {
+  color: $user-rating-text;
+}
 .mobile-membership-plan-list {
   padding: 0 10px !important;
 }
@@ -6087,6 +6238,9 @@ $delivery-beer-header-lines-to-show: 2;
   li {
     margin-left: 15px !important;
   }
+}
+.homepage-plan-options.current {
+  border: 2px solid $user-rating-text !important;
 }
 .formButton-index-Banner {
   width: 100%;
@@ -6575,7 +6729,9 @@ $delivery-beer-header-lines-to-show: 2;
       margin-left: 15px !important;
     }
   }
- 
+ .homepage-plan-options.current {
+  border: 3px solid $user-rating-text !important;
+}
   // Early signup
   .guide-header {
     margin-top: 10px;
@@ -6597,9 +6753,6 @@ $delivery-beer-header-lines-to-show: 2;
   }
   .early-signup-checkout-extra-note.note-text {
     width: 94%;
-  }
-  .delivery-preference-prompt {
-    width: 60%;
   }
 }
 /* Medium devices (desktops, 992px and up) */

@@ -1,0 +1,122 @@
+<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
+			<%= f.hidden_field :first_delivery_date %>
+			<%= f.hidden_field :drink_option_id %>
+			<%= f.hidden_field :drinks_per_week %>
+			<%= f.hidden_field :max_large_format %>
+<div class="row no-margin estimate-holder" id="scroller-anchor">
+	<div class="row no-margin" id="delivery-info-row">
+		<div class="col-sm-8">
+			<h4>Change your preferences below to adjust your per delivery estimates:</h4>
+			<div class="row no-margin" id="delivery-estimates-for-customer">
+				<%= render 'user_delivery_estimates_for_customer' %>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<% if !@preference_updated.nil? %>
+				<%= render 'layouts/preferences_last_updated' %>
+			<% end %>
+			<%= f.submit "Save changes", disabled: true, class: "btn btn-default update_delivery_preferences", id: "update_delivery_preferences_button" %>
+		</div>	
+	</div>
+</div>
+<hr>
+<div class="row no-margin" id="second-delivery-row">
+	<div class="col-xs-12 col-sm-8 no-padding">
+		<div class="row no-margin">
+			<div class="col-xs-8">
+				<h3 class="delivery-preference-prompt">Next delivery:</h3>
+				<% if @days_notice_required > 1 %>
+					<%= link_to "Change next delivery date", "#", :class => "btn btn-primary pause-delivery-button", 
+							data: {toggle: "modal", target: "#pause_delivery"} %>
+				<% else %>
+					<%= link_to "Change next delivery date", "#", :class => "btn btn-default pause-delivery-button", 
+							data: {toggle: "tooltip", title: "It's too late to change this week's delivery date!"} %>
+				<% end %>
+				<p class="delivery-detail">You'll receive 2 deliveries/month--every other Thursday.</p>
+			</div>
+			<div class="col-xs-4">
+				<div class="row no-margin preferences-next-delivery-date text-center">
+					<div class="col-xs-12 start-month-holder">
+						<h1 class="signup-start-month"><%= (@delivery.delivery_date).strftime("%^B") %></h1>
+					</div>
+					<div class="col-xs-12 start-date-holder">
+						<h1 class="signup-start-date"><%= (@delivery.delivery_date).strftime("%e") %></h1>
+					</div>
+					<div class="col-xs-12 start-day-holder">
+						<h1 class="signup-start-day"><%= (@delivery.delivery_date).strftime("%^A") %></h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-8 no-padding">
+		<div class="row no-margin">
+			<div class="col-xs-4">
+				<h3 class="delivery-preference-prompt">Preferred drink?</h3>
+			</div>
+			<div class="col-xs-8">
+				<div class="row no-margin preferences-drink-category-row-holder">
+					<%= render 'delivery_settings/drink_category_choice' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>
+<div class="row no-margin">
+	<div class="col-xs-12 no-padding">
+		<div class="row no-margin">
+			<div class="col-sm-6 no-padding">
+				<h3 class="delivery-preference-prompt">What is the average number of <%= @drink_type_preference %> you drink at home each week?</h3>
+			</div>
+			<div class="col-sm-6 no-padding-right">
+				<%= render 'signup/drinks_per_week_choice'%>
+			</div>
+		</div>
+	</div>
+</div>		
+<hr>
+<div class="row no-margin">
+	<div class="col-sm-6 no-padding">
+		<h3 class="delivery-preference-prompt">What is the max number of large format drinks (22oz) you would drink each week?</h3>
+	</div>
+	<div class="col-sm-6 no-padding-right" id="large_format_drinks_per_week_options">
+		<%= render 'signup/large_format_per_week_choice'%>
+	</div>
+</div>
+<hr>
+<div class="row no-margin">
+	<div class="col-sm-4 no-padding">
+		<h3 class="delivery-preference-prompt">Additional requests</h3>
+	</div>
+	<div class="col-sm-8 delivery-additional-request">
+		<%= f.text_area :additional, {class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I drink only gluten free drinks"'}  %>
+	</div>
+</div>
+<% end %>
+<div id="pause_delivery" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Change your next delivery date</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding">
+				<h5>Choose your next delivery date:</h5>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<%= render 'delivery_date_change_options' %>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-1 col-sm-3"></div>
+			<div class="col-xs-10 col-sm-6">
+				<%= link_to "Confirm date change", change_next_delivery_date_path(current_user.id), 
+					:class => "btn btn-success confirm-date-change-button", :id => "confirm-date-change-button" %>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,70 @@
+<div class="container visible-sm visible-md visible-lg visible-xl">
+	<div class="col-sm-8">
+		<div class="row no-margin">
+			<% if !@user_friends.blank? %>
+				<% @user_friends.each do |friend| %>
+					<div class="col-sm-6 col-xs-12 friend-tile-container" id="friend-id-<%= friend.id %>">
+						<%= render 'layouts/friend_tile', friend: friend %>
+					</div>
+				<% end%>
+			<% else %>	
+				<div class="row no-margin">
+					<div class="col-sm-12">
+						<h4 class="no-results-empty-message">You haven't connected with any friends yet. Add some now!</h4>
+					</div>
+					<div class="col-sm-4">
+						<%= link_to "Connect with friends", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</div>
+	<% if !@pending_friend_ids.blank? %>
+		<div class="col-sm-4">
+			<div class="row" id="pending-friend-request-holder">
+				<h4 class="pending-friend-request-header">Pending requests</h4>
+				<% @pending_friends.each do |friend| %>
+					<div class="col-xs-12 friend-tile-container padding-5" id="friend-id-<%= friend.id %>">
+						<%= render 'layouts/friend_tile', friend: friend %>
+					</div>
+				<% end%>
+			</div>						
+		</div>
+		
+	<% end %>
+</div>
+<div class="container visible-xs">
+	<% if !@pending_friend_ids.blank? %>
+		<div class="col-xs-12">
+			<div class="row" id="pending-friend-request-holder">
+				<h4 class="pending-friend-request-header">Pending requests</h4>
+				<% @pending_friends.each do |friend| %>
+					<div class="col-xs-12 friend-tile-container padding-5" id="friend-id-<%= friend.id %>">
+						<%= render 'layouts/friend_tile', friend: friend %>
+					</div>
+				<% end%>
+			</div>						
+		</div>
+		
+	<% end %>
+	<div class="col-xs-12">
+		<div class="row no-margin">
+			<% if !@user_friends.blank? %>
+				<% @user_friends.each do |friend| %>
+					<div class="col-sm-6 col-xs-12 friend-tile-container" id="friend-id-<%= friend.id %>">
+						<%= render 'layouts/friend_tile', friend: friend %>
+					</div>
+				<% end%>
+			<% else %>	
+				<div class="row no-margin">
+					<div class="col-sm-12">
+						<h4 class="no-results-empty-message">You haven't connected with any friends yet. Find some now!</h4>
+					</div>
+					<div class="col-sm-4">
+						<%= link_to "Connect with friends", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

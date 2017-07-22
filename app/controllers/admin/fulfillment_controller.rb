@@ -4,6 +4,7 @@ class Admin::FulfillmentController < ApplicationController
  
   def index
     @live_delivery_info = Delivery.where.not(status: "delivered").order('delivery_date ASC')
+    Rails.logger.debug("Live deliveries: #{@live_delivery_info.inspect}")
     @delivered_delivery_info = Delivery.where(status: "delivered").order('delivery_date DESC')
     
     # determine number of drinks in each delivery currently live

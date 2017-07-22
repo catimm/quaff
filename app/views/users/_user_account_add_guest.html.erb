@@ -1,44 +1,46 @@
-<div class="col-xs-12 col-sm-6">
-	<div class="row no-margin">
-		<div class="col-xs-12">
-			<h4 class="recent-ratings-header">A few notes about adding guests:</h4>
-			<h5 class="signup-next-step-text">
-				<ul>
-					<li>Adding guests is free!</li>
-					<li>Your guest will receive drinks at the same address you do.</li>
-					<li>Your guest drinks will be billed to your credit card since you're the account owner.</li>
-					<li>Your guest will see all the drinks you receive so you can both easily rate any drinks you share.</li>
-					<li>Any questions? <%= mail_to "questions@drinkknird.com", "Let us know" %>!</li>
-				</ul>
-			</h5>
-		</div>
-	</div>
-</div>
-<div class="col-sm-1 hidden-xs"></div>
-<div class="col-xs-12 col-sm-5">
-	<% if !@user_guests.blank? %>
-		<div class="row no-margin">
-			<h4 class="recent-ratings-header">Your guests:</h4>
-			<% @user_guests.each do |friend| %>
-				<div class="col-xs-12 col-sm-10 friend-tile-container" id="friend-id-<%= friend.id %>">
-					<%= render 'layouts/friend_tile', friend: friend %>
-				</div>
-			<% end%>
-		</div>
-		<div class="row no-margin">
-			<div class="col-xs-12 col-sm-6">
-				<%= link_to "Add a guest", guest_invite_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
-			</div>
-		</div>
-	<% else %>	
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-6">
 		<div class="row no-margin">
 			<div class="col-xs-12">
-				<h4 class="recent-ratings-header">You haven't added any guests yet. Add one now!</h4>
-			</div>
-			<div class="col-xs-12 col-sm-6">
-				<%= link_to "Add a guest", guest_invite_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+				<h4 class="recent-ratings-header">Share the love, add a mate to your Knird account.</h4>
+				<h5 class="signup-next-step-text">
+					<ul>
+						<li>Whether it's your soulmate, roommate, or workmate, adding mates is free!</li>
+						<li>Your mate will receive drinks at the same address you do.</li>
+						<li>Your mate's drinks will be billed to your credit card since you're the account owner.</li>
+						<li>Any questions? <%= mail_to "questions@drinkknird.com", "Let us know" %>!</li>
+					</ul>
+				</h5>
 			</div>
 		</div>
-	<% end %>
-	
+	<hr>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-5">
+		<% if !@user_guests.blank? %>
+			<div class="row no-margin">
+				<h4 class="recent-ratings-header">Your mates:</h4>
+				<% @user_guests.each do |friend| %>
+					<div class="col-xs-12 col-sm-10 friend-tile-container" id="friend-id-<%= friend.id %>">
+						<%= render 'layouts/friend_tile', friend: friend %>
+					</div>
+				<% end%>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-6">
+					<%= link_to "Add a mate", guest_invite_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+				</div>
+			</div>
+		<% else %>	
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding-right">
+					<h4 class="recent-ratings-header">You haven't added any mates yet; add one now!</h4>
+				</div>
+				<div class="col-xs-12 col-sm-6">
+					<%= link_to "Add a mate", guest_invite_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+				</div>
+			</div>
+		<% end %>
+	</div>
 </div>

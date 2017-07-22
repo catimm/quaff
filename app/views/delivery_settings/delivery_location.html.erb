@@ -1,0 +1,251 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Delivery Settings</h1>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<div class="row">
+				<div class="col-xs-4">
+					<%= link_to "My Preferences", user_delivery_settings_path(current_user.id), class: "drink-preference-view-option", id: "next" %>
+				</div>
+				<% if !@mates.blank? %>
+				<div class="col-xs-4">
+					<%= link_to 'Delivery Estimate', user_delivery_settings_total_estimate_path, class: "drink-preference-view-option", id: "history" %>
+				</div>
+				<% end %>
+				<div class="col-xs-4 no-padding-right">
+					<%= link_to 'Delivery Location', user_delivery_settings_location_path, class: "drink-preference-view-option current", id: "history" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container">	
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-7">
+				<h3 class="location-settings-header">Current delivery info</h3>
+				<div class="row no-margin">
+					<div class="col-xs-12 col-sm-5 location-address-holder">
+						<div class="row no-margin">
+							<div class="col-xs-10 no-padding">
+								<h5 class="location-header"><%= @current_delivery_location_name %> </h5>
+								<h5 class="location-address">
+									<%= @current_delivery_location.address_street %>,
+									<% if !@current_delivery_location.address_unit.nil? %>
+										<%= @current_delivery_location.address_unit %>  
+									<% end %>
+								</h5>
+								<h5 class="location-address">
+									<%= @current_delivery_location.city %> <%= @current_delivery_location.state %> <%= @current_delivery_location.zip %>
+								</h5>
+							<% if !@current_delivery_location.special_instructions.blank? %>
+								<h5 class="location-instructions">
+									"<%= @current_delivery_location.special_instructions %>"
+								</h5>
+							<% end %>
+								<h5 class="current-delivery-choice">Every other <%= @current_delivery_time.day_of_week %>,</h5>  
+								<h5 class="current-delivery-choice">
+									<%=  (@current_delivery_time.start_time).strftime("%l:%M%P") %> 
+									- <%= (@current_delivery_time.end_time).strftime("%l:%M%P") %>
+								</h5>
+								<h6 class="current-delivery-next">
+									 (Next: <%= (@next_delivery.delivery_date).strftime("%-m.%-d.%y") %>)
+								</h6>
+							</div>
+							<% if @current_delivery_location.location_type == "Home" %>
+								<div class="col-xs-1 no-padding"></div>
+								<div class="col-xs-1 no-padding">
+									<%= link_to account_settings_profile_path(@user.id), class: 'edit-delivery-location-button' do %>
+										<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
+									<% end %>
+								</div>
+							<% else %>
+								<div class="col-xs-1 no-padding">
+									<%= link_to edit_user_address_path(@current_delivery_location.id, @user.account_id), class: 'edit-delivery-location-button' do %>
+										<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
+									<% end %>
+								</div>
+								<div class="col-xs-1 no-padding">
+									<%= link_to "#", class: 'remove-user-address-button', id: @current_delivery_location.id, data: {toggle: "modal", target: "#remove_user_address"} do %>
+										<i class="fa fa-times-circle" data-toggle="tooltip" title="Remove this location"></i>
+									<% end %>
+								</div>
+							<% end %>
+						</div>
+					</div>
+					<% if !@current_delivery_time_options.nil? %>
+						<div class="row no-margin">
+							<div class="col-xs-12">
+								<h4>Additional <%= @current_delivery_location_name %> delivery options</h4>
+							</div>
+							<% @current_delivery_time_options.each do |option| %>
+								<div class="col-xs-5 col-sm-4 optional-delivery-time-container">
+									<h5 class="current-delivery-choice day-holder">Every other <%= option.day_of_week %>,</h5>  
+									<h5 class="current-delivery-choice time-holder">
+										<%=  (option.start_time).strftime("%l:%M%P") %> 
+										- <%= (option.end_time).strftime("%l:%M%P") %>
+									</h5>
+									<h6 class="current-delivery-next next-holder">
+										 (Starting: <%= (option.next_available_delivery_date).strftime("%-m.%-d.%y") %>)
+									</h6>
+									<%= link_to "#", 
+										class: 'btn btn-success change-delivery-time', data: {toggle: "modal", target: "#change_delivery_time"},
+										id: "#{@current_delivery_location.id}-#{option.id}" do %>
+										<i class="fa fa-check-circle"> choose</i>
+									<% end %>
+								</div>
+							<% end %>
+						</div>
+					<% end %>
+					<% if !@additional_delivery_locations.nil? %>
+					<hr>
+					<h3 class="location-settings-header">Additional delivery options</h3>
+					<% @additional_delivery_locations.each do |location| %>
+								<div class="row no-margin">
+									<div class="col-xs-12 col-sm-5 location-address-holder">
+										<div class="row no-margin">
+											<div class="col-xs-10 no-padding">
+												<% if location.location_type == "Other" %>
+													<% @additional_delivery_location_name = location.other_name.upcase %>
+												<% else %>
+													<% @additional_delivery_location_name = location.location_type.upcase %>
+												<% end %>
+												<h5 class="location-header"><%= @additional_delivery_location_name %></h5>
+												<h5 class="location-address">
+													<%= location.address_street %>,
+													<% if !location.address_unit.nil? %>
+														<%= location.address_unit %>  
+													<% end %>
+												</h5>
+												<h5 class="location-address">
+													<%= location.city %> <%= location.state %> <%= location.zip %>
+												</h5>
+											</div>
+											<% if location.location_type == "Home" %>
+												<div class="col-xs-1 no-padding"></div>
+												<div class="col-xs-1 no-padding">
+													<%= link_to account_settings_profile_path(@user.id), class: 'edit-delivery-location-button' do %>
+														<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
+													<% end %>
+												</div>
+											<% else %>
+												<div class="col-xs-1 no-padding">
+													<%= link_to edit_user_address_path(location.id, @user.account_id), class: 'edit-delivery-location-button' do %>
+														<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
+													<% end %>
+												</div>
+												<div class="col-xs-1 no-padding">
+													<%= link_to "#", class: 'remove-user-address-button', id: location.id, data: {toggle: "modal", target: "#remove_user_address"} do %>
+														<i class="fa fa-times-circle" data-toggle="tooltip" title="Remove this location"></i>
+													<% end %>
+												</div>
+											<% end %>
+										</div>
+										<% if !location.special_instructions.blank? %>
+											<div class="row no-margin">
+												<h5 class="location-instructions">
+													"<%= location.special_instructions %>"
+												</h5>
+											</div>
+										<% end %>
+									</div>
+								</div>
+								<div class="row no-margin">
+									<h4><%= @additional_delivery_location_name %> delivery time options</h4>
+									<% @delivery_time_options = DeliveryZone.where(zip_code: location.zip) %>
+									<% if !@delivery_time_options.blank? %>
+										<% @delivery_time_options = @delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}%>
+										<% @delivery_time_options.each do |option| %>
+											<div class="col-xs-5 col-sm-4 optional-delivery-time-container" id="<%= @additional_delivery_location_name %>">
+												<h5 class="current-delivery-choice day-holder">Every other <%= option.day_of_week %>,</h5>  
+												<h5 class="current-delivery-choice time-holder">
+													<%=  (option.start_time).strftime("%l:%M%P") %> 
+													- <%= (option.end_time).strftime("%l:%M%P") %>
+												</h5>
+												<h6 class="current-delivery-next next-holder">
+													 (Starting: <%= (@delivery_time_options_hash[option.id]).strftime("%-m.%-d.%y") %>)
+												</h6>
+												<%= link_to "#", 
+													class: 'btn btn-success change-delivery-time-and-place', data: {toggle: "modal", target: "#change_delivery_time"},
+													id: "#{location.id}-#{option.id}" do %>
+													<i class="fa fa-check-circle"> choose</i>
+												<% end %>
+											</div>
+										<% end %>
+									<% else %>
+										<div class="col-xs-12">
+											<h5 class="no-delivery">We don't currently deliver to this location.  
+												But if you leave this address in your profile, we'll include it ASAP. 
+												And when we add it, we'll let you know!</h5>
+										</div>
+									<% end %>
+								</div>
+							<hr>
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-5">
+				<div class="row no-margin add-delivery-location-row">
+					<div class="col-xs-0 col-sm-3"></div>
+					<div class="col-xs-12 col-sm-7 add-location-address-holder">
+						<h6 class="add-location-direction-text">add a new delivery location</h6>
+						<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
+							<i class="fa fa-plus"> location</i>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="remove_user_address" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Remove address</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="auto-confirm-confirmation-text">Are you sure you want to remove this address?</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Yep, positive", user_address_path(current_user.id), method: :delete,
+					:class => 'btn btn-danger remove-location-button', :id => "remove-location-button" %>
+			</div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="change_delivery_time" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Change delivery time</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your delivery to <span id="new-delivery-date-and-time"></span>?</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Yep, positive", change_delivery_time_path(current_user.id),
+					:class => 'btn btn-success change-delivery-time-button', :id => "change-delivery-time-button" %>
+			</div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%= render 'layouts/footer' %>

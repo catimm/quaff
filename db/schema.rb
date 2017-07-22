@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170224183503) do
+ActiveRecord::Schema.define(version: 20170721233005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,8 +19,10 @@ ActiveRecord::Schema.define(version: 20170224183503) do
   create_table "accounts", force: :cascade do |t|
     t.string   "account_type"
     t.integer  "number_of_users"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "delivery_location_user_address_id"
+    t.integer  "delivery_zone_id"
   end
 
   create_table "admin_user_deliveries", force: :cascade do |t|
@@ -233,6 +235,18 @@ ActiveRecord::Schema.define(version: 20170224183503) do
     t.integer  "max_cellar"
     t.boolean  "gluten_free"
     t.text     "admin_comments"
+  end
+
+  create_table "delivery_zones", force: :cascade do |t|
+    t.string   "zip_code"
+    t.string   "day_of_week"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "weeks_of_year"
+    t.integer  "max_account_number"
+    t.integer  "current_account_number"
   end
 
   create_table "draft_boards", force: :cascade do |t|
@@ -497,6 +511,22 @@ ActiveRecord::Schema.define(version: 20170224183503) do
     t.text     "cellar_note"
   end
 
+  create_table "user_addresses", force: :cascade do |t|
+    t.integer  "account_id"
+    t.string   "address_street"
+    t.string   "address_unit"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.text     "special_instructions"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.string   "location_type"
+    t.string   "other_name"
+    t.boolean  "current_delivery_location"
+    t.integer  "delivery_zone_id"
+  end
+
   create_table "user_beer_ratings", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
@@ -532,19 +562,6 @@ ActiveRecord::Schema.define(version: 20170224183503) do
     t.string   "beer_style_name_two"
     t.string   "recommendation_rationale"
     t.boolean  "is_hybrid"
-  end
-
-  create_table "user_delivery_addresses", force: :cascade do |t|
-    t.integer  "account_id"
-    t.string   "address_one"
-    t.string   "address_two"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zip"
-    t.text     "special_instructions"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.boolean  "location_type"
   end
 
   create_table "user_drink_recommendations", force: :cascade do |t|
