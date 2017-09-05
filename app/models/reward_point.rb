@@ -3,16 +3,18 @@
 # Table name: reward_points
 #
 #  id                         :integer          not null, primary key
-#  user_id                    :integer
+#  account_id                 :integer
 #  total_points               :float
 #  transaction_points         :float
 #  reward_transaction_type_id :integer
-#  beer_id                    :integer
+#  user_delivery_id           :integer
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
+#  friend_user_id             :integer
 #
 
 class RewardPoint < ActiveRecord::Base
   belongs_to :user 
   belongs_to :beer
+  belongs_to :reward_transaction_type
 end

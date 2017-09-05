@@ -9,132 +9,36 @@
 	</div>
 </div>
 <div class="row no-margin">
-	<div class="col-xs-12 col-sm-6">
-		<%= simple_form_for @user, remote: true do |f| %>
-			<div class="row no-margin">
-				<div class="col-xs-4 col-sm-3 no-padding">
-					<%= label :first_name, 'First name' %>
-				</div>
-				<div class="col-xs-8 col-sm-9 no-padding-right">
-					<%= f.text_field :first_name, :class => "form-control user-info-field", placeholder: "First name" %>
-				</div>
-			</div>
-			<div class="row no-margin">
-				<div class="col-xs-4 col-sm-3 no-padding">
-					<%= label :last_name, 'Last name' %>
-				</div>
-				<div class="col-xs-8 col-sm-9 no-padding-right">
-					<%= f.text_field :last_name, :class => "form-control user-info-field", placeholder: "Last name" %>
-				</div>
-			</div>
-			<div class="row no-margin">
-				<div class="col-xs-4 col-sm-3 no-padding">
-					<%= label :username, 'Username' %>
-				</div>
-				<div class="col-xs-8 col-sm-9 no-padding-right">
-					<%= f.text_field :username, :class => "form-control user-info-field", placeholder: "Username" %>
-					<h5 class="username-response hidden" id="username-not-available"></h5>
-					<h5 class="username-response hidden" id="username-available"></h5>
-				</div>
-			</div>
-			<div class="row no-margin">
-				<div class="col-xs-4 col-sm-3 no-padding">
-					<%= label :email, 'Email' %>
-				</div>
-				<div class="col-xs-8 col-sm-9 no-padding-right">
-					<%= f.text_field :email, :class => "form-control user-info-field", placeholder: "Email" %>
-				</div>
-			</div>
-			<div class="row no-margin">
-				<div class="col-xs-4 col-sm-3 no-padding">
-					<label for="birthdate_field">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label>
-				</div>
-				 <div class="col-xs-8 col-sm-9 no-padding-right">
-					<%= f.input :birthday, as: :string, input_html: { value: @birthday, type: :date, class: "form-control user-info-field", id: "birthdate_field" }, label: false %>
+	<div class="col-xs-12 col-sm-6" id="account-settings-personal-info-holder">
+		<%= simple_form_for @user, :url => update_user_profile_path(current_user.id), :html => { :class => 'form-horizontal' } do |f| %>
+			<%= render 'user_personal_info', f: f  %>
+			<div class="form-group">
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-9 text-center">
+					<%= f.submit "Save personal info", class: "btn btn-success user-info-save-button", id: "user-info-save-button" %>
 				</div>
 			</div>
 		<% end %>
 	<hr>
 	</div>
-	<div class="col-xs-12 col-sm-5">
-		<%- flash.each do |name, msg| -%>
-			<% if name == "success" || name == "failure" %>
-				<%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
-			<% end %>
-		<%- end -%>
+</div>
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-8">
+		<h3 class="user-settings-header">My home address</h3>
 	</div>
 </div>
-<%= simple_form_for(@user, remote: true ) do |f| %>
-	<%= f.simple_fields_for :user_addresses, @home_address do |address| %>
-		<div class="row no-margin">
-			<div class="col-xs-12 col-sm-8">
-				<h3 class="user-settings-header">My home address</h3>
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-6" id="account-settings-home-address-holder">
+		<%= simple_form_for @home_address, :html => { :class => 'form-horizontal' } do |address| %>
+			<%= render 'users/user_home_address_info', address: address  %>
+			<div class="form-group">
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-9 text-center">
+					<%= address.submit "Save home address", class: "btn btn-success user-info-save-button", id: "user-info-save-button" %>
+				</div>
 			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-xs-12 col-sm-6">
-				<div class="row no-margin">
-					<div class="col-xs-4 col-sm-3 no-padding">
-						<%= label :address_street, 'Home Address' %>
-					</div>
-					<div class="col-xs-8 col-sm-9 no-padding-right">
-						<%= address.text_field :address_street, :class => "form-control user-address-field", placeholder: "Home Street Address", required: true %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-4 col-sm-3 no-padding">
-						<%= label :address_unit, 'Home Unit/Floor' %>
-					</div>
-					<div class="col-xs-8 col-sm-9 no-padding-right">
-						<%= address.text_field :address_unit, :class => "form-control user-address-field", placeholder: "Home Apt, Unit, etc." %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-4 col-sm-3 no-padding">
-						<%= label :city, 'Home City' %>
-					</div>
-					<div class="col-xs-8 col-sm-9 no-padding-right">
-						<%= address.text_field :city, :class => "form-control user-address-field", placeholder: "Home City", required: true %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-4 col-sm-3 no-padding">
-						<%= label :state, 'Home State' %>
-					</div>
-					<div class="col-xs-8 col-sm-9 no-padding-right">
-						<%= address.text_field :state, :class => "form-control user-address-field", placeholder: "Home State", required: true %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-4 col-sm-3 no-padding">
-						<%= label :zip, 'Home Zip' %>
-					</div>
-					<div class="col-xs-8 col-sm-9 no-padding-right">
-						<%= address.text_field :zip, :class => "form-control user-address-field", placeholder: "Home Zip Code", required: true %>
-					</div>
-				</div>
-				<% if @home_address.location_type == "Home" %>
-					<div class="row no-margin">
-						<div class="col-xs-4 col-sm-3 no-padding">
-							<%= label :special_instructions, 'Delivery Instructions' %>
-						</div>
-						<div class="col-xs-8 col-sm-9 no-padding-right">
-							<%= address.text_field :special_instructions, class: "form-control user-address-field", placeholder: "Any special instructions for deliveries?" %>
-						</div>
-					</div>
-				<% end %>
-				<div class="row no-margin hidden" id="required-home-address-field-error">
-					<div class="col-xs-4 col-sm-3 no-padding">
-					</div>
-					<div class="col-xs-8 col-sm-9 no-padding-right">
-						<h5 class="required-home-address-field-error">Sorry, that field can't be left empty.</h5>
-					</div>
-				</div>
-			<hr>
-			</div>
-		</div>
-	<% end %>
-<% end %>
+		<% end %>
+		<hr>
+	</div>
+</div>
 <div class="row no-margin">
 	<div class="col-xs-12 col-sm-8">
 		<h3 class="user-settings-header">My password</h3>

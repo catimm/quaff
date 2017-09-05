@@ -22,7 +22,8 @@ class EarlySignupController < ApplicationController
     
     if !@code_check.blank?
       @match = "yes"
-      render js: "window.location = '#{account_info_path(@code)}'"
+      
+      render js: "window.location = '#{new_user_path(@code)}'"
       #redirect_to early_signup_path("account", @code)
     else
       @match = "no"
@@ -250,7 +251,7 @@ class EarlySignupController < ApplicationController
   end
     
   def early_code_request_params
-    params.require(:invitation_request).permit(:first_name, :email)  
+    params.require(:invitation_request).permit(:first_name, :email, :zip_code)  
   end
   
 end # end of controller

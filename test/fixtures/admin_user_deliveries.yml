@@ -2,42 +2,25 @@
 #
 # Table name: admin_user_deliveries
 #
-#  id                       :integer          not null, primary key
-#  user_id                  :integer
-#  beer_id                  :integer
-#  inventory_id             :integer
-#  new_drink                :boolean
-#  projected_rating         :float
-#  likes_style              :string
-#  quantity                 :integer
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  cellar                   :boolean
-#  large_format             :boolean
-#  delivery_id              :integer
-#  this_beer_descriptors    :text
-#  beer_style_name_one      :string
-#  beer_style_name_two      :string
-#  recommendation_rationale :string
-#  is_hybrid                :boolean
+#  id                        :integer          not null, primary key
+#  user_id                   :integer
+#  admin_account_delivery_id :integer
+#  delivery_id               :integer
+#  quantity                  :float
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
   user_id: 1
-  beer_id: 1
-  inventory_id: 1
-  new_drink: false
-  projected_rating: 1.5
-  style_preference: MyString
-  quantity: 1
+  account_delivery_id: 1
+  delivery_id: 1
+  quantity: 1.5
 
 two:
   user_id: 1
-  beer_id: 1
-  inventory_id: 1
-  new_drink: false
-  projected_rating: 1.5
-  style_preference: MyString
-  quantity: 1
+  account_delivery_id: 1
+  delivery_id: 1
+  quantity: 1.5

@@ -116,6 +116,8 @@ gem 'jquery-countdown-rails'
 # gem 'bcrypt', '~> 3.1.7'
 # gem to make forms easier to manage
 gem 'simple_form'
+# D3.js is a JavaScript library for manipulating documents based on data. D3 helps you bring data to life using HTML, SVG and CSS.
+gem 'd3-rails', '~> 3.5.11'
 
 # Use unicorn as the app server
 # gem 'unicorn'

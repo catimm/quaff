@@ -94,7 +94,7 @@ class User < ActiveRecord::Base
   end
   
   def user?
-    self.role.role_name == "user_additional"
+    self.role.role_name == "user_guest"
   end
   
   def free?

@@ -5,12 +5,12 @@
 			<h4>Processing...</h4>
 		</div>
 	</div>
-	<div class="row no-margin first-row-early-signup">
-		<%= render 'early_signup_guide' %>
-	</div>
-    <div class="row code-verification-cushion">
+	<div class="row create-password-first-screen">
 		<div class="container">
-			<div class="row no-margin"></div>
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">Please provide your invitation code.</h2>
+				<h5 class="signup-question-detail-set-password">If you don't yet have an invitation code, you can request one below.</h5>
+			</div>
 		</div>
 	</div>
 	<div class="row early-signup-form-section">
@@ -48,9 +48,15 @@
 	<div id="early_code_request" class="modal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3 class="getting-started-header">Request an early signup code</h3>
+			<h3 class="getting-started-header">Request a signup code</h3>
 		</div>
-		<div class="modal-body initial-message-after-signup">
+		<div class="modal-body request-signup-message">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h5>We're currently limiting signups to ensure we deliver a high-quality experience.  Please let 
+						us know who you are and we'll get you an invite ASAP!</h5>
+				</div>
+			</div>
 			<div class="row no-margin">
 				<%= simple_form_for @request_invitation, :url => {:controller => "early_signup", :action => "request_code"} do |invite| %>
 					<div class="row no-margin">
@@ -66,7 +72,15 @@
 							<%= label :email, 'Email' %>
 						</div>
 						<div class="col-xs-9">
-							<%= invite.input :email, input_html: { class: "form-control" }, placeholder: "What is your email address?", required: true, label: false %>
+							<%= invite.input :email, input_html: { class: "form-control" }, placeholder: "Enter your email address", required: true, label: false %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-3 no-padding-right">
+							<%= label :zip_code, 'Zip code' %>
+						</div>
+						<div class="col-xs-9">
+							<%= invite.input :zip_code, input_html: { class: "form-control" }, placeholder: "What is your zip code where we would dleiver?", required: true, label: false %>
 						</div>
 					</div>
 					<div class="row no-margin">

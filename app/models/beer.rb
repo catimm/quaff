@@ -66,14 +66,9 @@ class Beer < ActiveRecord::Base
   has_many :user_drink_recommendations
   has_many :user_fav_drinks
   has_many :user_supplies
-  has_many :user_deliveries
-  has_many :admin_user_deliveries
+  has_many :account_deliveries
+  has_many :admin_account_deliveries
   
-  # to keep search function indexed properly
-  #after_commit :reindex_brewery
-  #def reindex_brewery
-  #  brewery.reindex # or reindex_async
-  #end
   # the first 8 are for the suggested beer rating formula
   attr_accessor :best_guess
   attr_accessor :ultimate_rating # this will hold a user's rating and/or best_guess to sort by highest rating

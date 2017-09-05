@@ -1,0 +1,23 @@
+$(function () {
+	
+	// set height of first row of drink information
+	drink_info_row_height = $(".drink-name-and-info-holder-universal").height();
+	$(".cloud-descriptors").height(drink_info_row_height);
+	$(".brewery-image-holder-universal").height(drink_info_row_height - 10);
+		
+	// allow customers to see more drink information
+	$(document).on("click", ".drink-info-universal-show-more", function() {
+		$(this).siblings(".drink-info-universal-show-less").removeClass("hidden").addClass("show");
+		$(this).parent(".drink-info-universal-first-row").siblings(".drink-info-universal-second-row").removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+
+	});
+	
+	// allow customers to hide extra drink information
+	$(document).on("click", ".drink-info-universal-show-less", function() {
+		$(this).siblings(".drink-info-universal-show-more").removeClass("hidden").addClass("show");
+		$(this).parent(".drink-info-universal-first-row").siblings(".drink-info-universal-second-row").removeClass("show").addClass("hidden");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
+});

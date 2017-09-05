@@ -19,8 +19,8 @@ class Inventory < ActiveRecord::Base
   belongs_to :beer
   belongs_to :size_format
   
-  has_many :user_deliveries
-  has_many :admin_user_deliveries
+  has_many :account_deliveries
+  has_many :admin_account_deliveries
   
   #scope small cooler drinks
   scope :small_cooler_drinks, -> { 

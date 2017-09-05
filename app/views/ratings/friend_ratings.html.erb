@@ -1,25 +1,24 @@
 <%= render 'layouts/header' %> 
-	<div class="row no-margin first-row">
-		<div class="container first-row-container">
-			<div class="col-xs-12 col-sm-5 no-padding">
-				<h1 class="section-header">Ratings</h1>
-			</div>
-			<div class="col-xs-12 col-sm-7 mobile-no-padding">
-				<div class="row no-margin">
-					<div class="col-xs-0 col-sm-2"></div>
-					<div class="col-xs-3 text-center mobile-no-padding">
-						<%= link_to "My ratings", recent_user_ratings_path(current_user.id), class: "drink-preference-view-option" %>
-					</div>
-					<div class="col-xs-4 text-center mobile-no-padding">
-						<%= link_to "Other ratings", recent_friend_ratings_path(current_user.id), class: "drink-preference-view-option chosen" %>
-					</div>
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Ratings</h1>
+		</div>
+		<div class="col-xs-12 col-sm-7">
+			<div class="row">
+				<div class="col-xs-4">
+					<%= link_to "My ratings", recent_user_ratings_path(current_user.id), class: "drink-preference-view-option" %>
+				</div>
+				<div class="col-xs-4">
+					<%= link_to "Other ratings", recent_friend_ratings_path(current_user.id), class: "drink-preference-view-option current" %>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="container">
-			<%= render 'recent_friend_ratings' %>
-		</div>
+</div>
+<div class="row">
+	<div class="container">
+		<%= render 'recent_friend_ratings' %>
 	</div>
+</div>
 <%= render 'layouts/footer' %>

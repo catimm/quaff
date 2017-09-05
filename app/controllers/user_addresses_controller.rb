@@ -18,9 +18,14 @@ class UserAddressesController < ApplicationController
     # create new address
     @new_address = UserAddress.create(address_params)
     
-    # redirect back to last page before new location page
-    redirect_to session.delete(:return_to)
-    
+    if session[:return_to]
+      # redirect back to last page before new location page
+      redirect_to session.delete(:return_to)
+    else # assume this is  coming from the signup process
+      # redirect to next step in signup process
+      redirect_to drink_choice_getting_started_path(current_user.id)
+    end
+      
   end # end of create method
   
   def edit
@@ -49,8 +54,13 @@ class UserAddressesController < ApplicationController
     @update_address = UserAddress.find_by_id(params[:id])
     @update_address.update(address_params)
     
-    # redirect back to last page before new location page
-    redirect_to session.delete(:return_to)
+    if session[:return_to]
+      # redirect back to last page before new location page
+      redirect_to session.delete(:return_to)
+    else # assume this is  coming from the signup process
+      # redirect to next step in signup process
+      redirect_to drink_choice_getting_started_path(current_user.id)
+    end
     
   end # end of update method
   

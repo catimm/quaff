@@ -26,7 +26,7 @@ class UserMailer < ActionMailer::Base
     response = sp.transmission.send_payload(payload)
     p response
     
-  end # end of select_invite_email email
+  end # end of select_invite_email method
   
   def guest_invite_email(invited, invitor)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
@@ -51,7 +51,30 @@ class UserMailer < ActionMailer::Base
     response = sp.transmission.send_payload(payload)
     p response
     
-  end # end of guest_invite_email email
+  end # end of guest_invite_email method
+  
+  def set_first_password_email(early_user)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: early_user.email },
+        }
+      ],
+      content: {
+        template_id: 'set-first-password'
+      },
+      substitution_data: {
+        customer: early_user.first_name,
+        token: early_user.tpw
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of guest_invite_email method
   
   def early_signup_followup(customer, membership, invitation_code)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
@@ -507,6 +530,74 @@ class UserMailer < ActionMailer::Base
     p response
     
   end # end of cancelled_membership email
+  
+  def seven_day_membership_expiration_notice(customer, subscription)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    if !subscription.auto_renew_subscription_id.blank?
+      @renewal_status = true
+      @new_membership = Subscription.find_by_id(subscription.auto_renew_subscription_id)
+    else
+      @renewal_status = false
+    end
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'seven-day-membership-expiration-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        number_of_deliveries: subscription.deliveries_this_period,
+        knird_membership: subscription.subscription.subscription_name,
+        expiration_date: (subscription.active_until).strftime("%B %-d, %Y"),
+        renewal: @renewal_status,
+        new_membership: @new_membership.subscription_name,
+        customer_id: customer.id
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of seven_day_membership_expiration_notice email
+  
+  def three_day_membership_expiration_notice(customer, subscription)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    if !subscription.auto_renew_subscription_id.blank?
+      @renewal_status = true
+      @new_membership = Subscription.find_by_id(subscription.auto_renew_subscription_id)
+    else
+      @renewal_status = false
+    end
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'three-day-membership-expiration-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        number_of_deliveries: subscription.deliveries_this_period,
+        knird_membership: subscription.subscription.subscription_name,
+        expiration_date: (subscription.active_until).strftime("%B %-d, %Y"),
+        renewal: @renewal_status,
+        new_membership: @new_membership.subscription_name,
+        customer_id: customer.id
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of three_day_membership_expiration_notice email
   
   def expiring_trial_email(owner, location)
     #Rails.logger.debug("Owner info: #{owner.first_name.inspect}")

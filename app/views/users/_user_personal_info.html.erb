@@ -1,0 +1,37 @@
+<div class="form-group">
+	<label for="first_name_field" class="col-xs-4 col-sm-3 control-label">First name</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= f.input :first_name, input_html: { class: "form-control", id: "first_name_field" }, placeholder: "First name", label: false, required: true %>
+	</div>
+</div>
+<div class="form-group">
+	<label for="last_name_field" class="col-xs-4 col-sm-3 control-label">Last name</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= f.input :last_name, input_html: { class: "form-control", id: "last_name_field" }, placeholder: "Last name", label: false, required: true %>
+	</div>
+</div>
+<div class="form-group">
+	<label for="email_field" class="col-xs-4 col-sm-3 control-label">Email</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+	</div>
+</div>
+<div class="form-group">
+	<label for="username_field" class="col-xs-4 col-sm-3 control-label">Username</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= f.input :username, input_html: { class: "form-control", id: "username_field" }, placeholder: "Username", label: false, required: true %>
+		<h5 class="hidden" id="username-not-available"></h5>
+		<h5 class="hidden" id="username-available"></h5>
+	</div>
+</div>
+<div class="form-group">
+	<label for="birthdate_field" class="col-xs-4 col-sm-3 control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label>
+	<div class="col-xs-8 col-sm-9">
+		<%= f.input :birthday, as: :string, 
+			input_html: { type: :date, 
+						  class: "form-control", 
+						  id: "birthdate_field"}, 
+			placeholder: "Birthdate", label: false, required: true %>
+	</div>
+</div>
+		

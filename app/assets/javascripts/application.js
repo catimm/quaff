@@ -30,7 +30,8 @@
 //= require bootstrap-sprockets
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
-//= require bootstrap-datepicker
+//= require bootstrap-datepicker/core
+//= require d3
 //= require_tree .
 jQuery( function($) {
     $('i').tooltip();

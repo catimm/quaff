@@ -16,6 +16,8 @@
 #  deliveries_this_period     :integer
 #  total_deliveries           :integer
 #  account_id                 :integer
+#  renewals                   :integer
+#  currently_active           :boolean
 #
 
 require 'test_helper'

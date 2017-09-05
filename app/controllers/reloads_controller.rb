@@ -5,10 +5,31 @@ class ReloadsController < ApplicationController
   include BestGuess
   require "stripe"
   
+  
   def index
+    #@early_signup_customers = User.where.not(tpw: nil)
+    #Rails.logger.debug("Early signup customers: #{@early_signup_customers.inspect}")
+    
+    #@early_signup_customers.each do |customer|
+    #  # send customer email to complete signup
+    #  UserMailer.set_first_password_email(customer).deliver_now
+    #end
+    
+  end # end of index method
+  
+  def data
+    Rails.logger.debug("This fires")
+    respond_to do |format|
+      format.json {
+        render :json => [1,2,3,4,5]
+      }
+    end
+  end
+  
+  def saving_for_later
     # find customers whose subscription expires today  
     @expiring_subscriptions = UserSubscription.where(active_until: DateTime.now.beginning_of_day.. DateTime.now.end_of_day)
-    Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
+    #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
     
     # loop through each customer and update 
     @expiring_subscriptions.each do |customer|
@@ -77,7 +98,7 @@ class ReloadsController < ApplicationController
        
     end # end loop through expiring customers
       
-  end # end index action
+  end # end saving_for_later method
   
   private
   

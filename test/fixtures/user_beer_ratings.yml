@@ -14,7 +14,7 @@
 #  comment             :text
 #  current_descriptors :text
 #  beer_type_id        :integer
-#  admin_vetted        :boolean
+#  user_delivery_id    :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

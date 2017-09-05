@@ -9,16 +9,18 @@ class DrinksController < ApplicationController
   require 'json'
   
   def deliveries   
-    # get view chosen
-    @delivery_view = params[:id]
+    # set view chosen
+    @deliveries_chosen = "current"
     
-    if @delivery_view == "next" # logic if showing the next view
-      # set CSS for chosen link
-      @next_chosen = "chosen"
+    # get user's delivery info
+    @user = User.find_by_id(current_user.id)
+    @delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
       
-      # get user's delivery info
-      @user = User.find_by_id(current_user.id)
-      @delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
+    # determine if account has multiple users
+    @number_of_users = User.where(account_id: current_user.account_id).count
+    Rails.logger.debug("Number of users: #{@number_of_users.inspect}")
+    
+      
       
       # get delivery date info
       if !@delivery.blank?
@@ -30,11 +32,9 @@ class DrinksController < ApplicationController
           @current_review_time = true
         end
         @time_left = @next_delivery_review_end_date.to_i - Time.now.to_i
-        #Rails.logger.debug("Time to Delivery end date: #{@time_left.inspect}")
+        Rails.logger.debug("Delivery status: #{@delivery.status.inspect}")
         gon.review_period_ends = @time_left
-      
-        # get next delivery drink info for view
-        if @delivery.status == "user review" || @delivery.status == "in progress"
+
           # get next delivery drink info
           @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
   
@@ -48,12 +48,12 @@ class DrinksController < ApplicationController
           # cycle through next delivery drinks to get delivery counts
           @next_delivery.each do |drink|
             @quantity = drink.quantity
-            if drink.cellar == true
+            if drink.account_delivery.cellar == true
               @next_delivery_cellar += (1 * @quantity)
             else
               @next_delivery_cooler += (1 * @quantity)
             end
-            if drink.large_format == true
+            if drink.account_delivery.large_format == true
               @next_delivery_large += (1 * @quantity) 
             else
               @next_delivery_small += (1 * @quantity)
@@ -66,7 +66,7 @@ class DrinksController < ApplicationController
           # get top descriptors for drink types the user likes
           @next_delivery.each do |drink|
             @drink_id_array = Array.new
-            @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+            @drink_type_descriptors = drink_descriptor_cloud(drink.account_delivery.beer)
             @final_descriptors_cloud << @drink_type_descriptors
           end
           # send full array to JQCloud
@@ -79,21 +79,24 @@ class DrinksController < ApplicationController
             @user_delivery_message = CustomerDeliveryMessage.new
           end
         
-        end # end of check whether @delivery has data
-        
-      end # end of check whether delivery is currently under "user review"     
-      
-    else # logic if showing the history view
-      # set CSS for chosen link
-      @history_chosen = "chosen"
-      
-      # get past delivery info
-      @past_deliveries = Delivery.where(user_id: current_user.id, status: "delivered").order('delivery_date DESC')
-      
-    end # end of choosing which view to show
+        end # end of check whether @delivery has data   
     
   end # end deliveries method
 
+  def cellar
+    # set view chosen
+    @cellar_chosen = "current"
+    
+    
+  end # end cellar method
+  
+  def wishlist
+    # set view chosen
+    @wishlist_chosen = "current"
+    
+    
+  end # end wishlist method
+  
   def customer_delivery_messages
     @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: params[:customer_delivery_message][:delivery_id]).first
     if !@customer_delivery_message.blank?

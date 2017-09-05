@@ -12,6 +12,7 @@
 #  weeks_of_year          :string
 #  max_account_number     :integer
 #  current_account_number :integer
+#  beginning_at           :datetime
 #
 
 class DeliveryZone < ActiveRecord::Base

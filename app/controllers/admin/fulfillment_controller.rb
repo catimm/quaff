@@ -4,7 +4,7 @@ class Admin::FulfillmentController < ApplicationController
  
   def index
     @live_delivery_info = Delivery.where.not(status: "delivered").order('delivery_date ASC')
-    Rails.logger.debug("Live deliveries: #{@live_delivery_info.inspect}")
+    #Rails.logger.debug("Live deliveries: #{@live_delivery_info.inspect}")
     @delivered_delivery_info = Delivery.where(status: "delivered").order('delivery_date DESC')
     
     # determine number of drinks in each delivery currently live
@@ -120,8 +120,12 @@ class Admin::FulfillmentController < ApplicationController
                       customer_has_previous_packaging: params[:new_packaging],
                       final_delivery_notes: params[:final_delivery_notes])
     
+    # get user info
+    @user = User.find_by_id(@delivery.user_id)
+    
     # get user subscription info
     @user_subscription = UserSubscription.find_by_user_id(@delivery.user_id)
+    @subscription_total_deliveries = @user_subscription.subscription.deliveries_included
     
     # get current delivery totals
     @original_deliveries_this_period = @user_subscription.deliveries_this_period
@@ -132,15 +136,21 @@ class Admin::FulfillmentController < ApplicationController
     # add to subscription delivery totals
     @user_subscription.update(deliveries_this_period: @new_deliveries_this_period, total_deliveries: @new_total_deliveries)
     
-    # start next delivery cycle
-    # get new delivery date
-    @original_delivery_date = @delivery.delivery_date
-    @next_delivery_date = @original_delivery_date + 2.weeks
-    # insert new line in delivery table
-    @next_delivery = Delivery.create(user_id: @delivery.user_id, 
-                                      delivery_date: @next_delivery_date,
-                                      status: "admin prep",
-                                    delivery_change_confirmation: false)
+    # check if this membership has more deliveries remaining
+    if @new_deliveries_this_period == @subscription_total_deliveries
+      UserMailer.seven_day_membership_expiration_notice(@user, @user_subscription).delivery_now
+    else
+      # start next delivery cycle
+      # get new delivery date
+      @original_delivery_date = @delivery.delivery_date
+      @next_delivery_date = @original_delivery_date + 2.weeks
+      # insert new line in delivery table
+      @next_delivery = Delivery.create(account_id: @delivery.account_id, 
+                                        delivery_date: @next_delivery_date,
+                                        status: "admin prep",
+                                      delivery_change_confirmation: false)
+    end
+    
                                       
     # redirect back to delivery page
     redirect_to admin_fulfillment_index_path

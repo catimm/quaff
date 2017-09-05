@@ -1,0 +1,17 @@
+$(function () {
+	
+	$(".all-bottle-caps").each(function() {
+		// find size of bottle cap - height equals width
+		bottle_cap_height = $(this).height();
+		// find size sibling class 'all-reward-points'
+		reward_points_width = $(this).siblings('.all-reward-points').width();
+		reward_points_height = $(this).siblings('.all-reward-points').height();
+		// find right margins for reward points
+		reward_points_left_margin = (bottle_cap_height - reward_points_width) / 2;
+		reward_points_top_margin = (bottle_cap_height - reward_points_height) / 2;
+		// move reward points inside bottle caps
+		$(this).siblings('.all-reward-points').css('margin-left',reward_points_left_margin);
+		$(this).siblings('.all-reward-points').css('margin-top',reward_points_top_margin);
+	});
+	
+});

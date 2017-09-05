@@ -248,4 +248,58 @@ class AdminMailer < ActionMailer::Base
     p response
     
   end # end of admin_message_review email
+  
+  def admin_failed_invoice_payment_notice(customer, subscription)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: "carl@drinkknird.com" },
+        }
+      ],
+      content: {
+        template_id: 'admin-failed-invoice-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        customer_email: customer.email,
+        customer_id: customer.id,
+        knird_subscription: subscription.id,
+        stripe_subscription: subscription.stripe_subscription_number
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of admin_failed_invoice_payment_notice email
+  
+  def admin_failed_charge_notice(customer, delivery)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: "carl@drinkknird.com" },
+        }
+      ],
+      content: {
+        template_id: 'admin-failed-charge-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        customer_email: customer.email,
+        customer_id: customer.id,
+        delivery_amount: delivery.total_price,
+        delivery_id: delivery.id,
+        delivery_date: delivery.delivery_date
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of admin_failed_charge_notice email
+  
 end

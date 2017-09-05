@@ -55,10 +55,14 @@
 								</h6>
 							</div>
 							<% if @current_delivery_location.location_type == "Home" %>
-								<div class="col-xs-1 no-padding"></div>
 								<div class="col-xs-1 no-padding">
 									<%= link_to account_settings_profile_path(@user.id), class: 'edit-delivery-location-button' do %>
 										<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
+									<% end %>
+								</div>
+								<div class="col-xs-1 no-padding">
+									<%= link_to "#", class: 'remove-home-address-button', id: @current_delivery_location.id do %>
+										<i class="fa fa-times-circle" data-toggle="tooltip" title="You cannot remove your Home address"></i>
 									<% end %>
 								</div>
 							<% else %>
@@ -68,8 +72,8 @@
 									<% end %>
 								</div>
 								<div class="col-xs-1 no-padding">
-									<%= link_to "#", class: 'remove-user-address-button', id: @current_delivery_location.id, data: {toggle: "modal", target: "#remove_user_address"} do %>
-										<i class="fa fa-times-circle" data-toggle="tooltip" title="Remove this location"></i>
+									<%= link_to "#", class: 'remove-home-address-button', id: @current_delivery_location.id do %>
+										<i class="fa fa-times-circle" data-toggle="tooltip" title="Please choose a new delivery time before removing this option"></i>
 									<% end %>
 								</div>
 							<% end %>
@@ -124,12 +128,17 @@
 												</h5>
 											</div>
 											<% if location.location_type == "Home" %>
-												<div class="col-xs-1 no-padding"></div>
 												<div class="col-xs-1 no-padding">
 													<%= link_to account_settings_profile_path(@user.id), class: 'edit-delivery-location-button' do %>
 														<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
 													<% end %>
 												</div>
+												<div class="col-xs-1 no-padding">
+													<%= link_to "#", class: 'remove-home-address-button', id: @current_delivery_location.id do %>
+														<i class="fa fa-times-circle" data-toggle="tooltip" title="You cannot remove your Home address"></i>
+													<% end %>
+												</div>
+												
 											<% else %>
 												<div class="col-xs-1 no-padding">
 													<%= link_to edit_user_address_path(location.id, @user.account_id), class: 'edit-delivery-location-button' do %>

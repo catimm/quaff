@@ -12,6 +12,8 @@
 #
 
 class Account < ActiveRecord::Base
+  has_many :account_deliveries
+  has_many :admin_account_deliveries
   has_many :deliveries
   has_many :user_subscriptions
   has_many :user_addresses

@@ -18,6 +18,7 @@
 #  is_hybrid                :boolean
 #  likes_style              :string
 #  admin_vetted             :boolean
+#  purchased_from_knird     :boolean
 #
 
 require 'test_helper'

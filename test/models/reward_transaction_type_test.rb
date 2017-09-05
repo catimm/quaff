@@ -8,6 +8,7 @@
 #  reward_impact      :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  reward_amount      :integer
 #
 
 require 'test_helper'

@@ -7,10 +7,10 @@
 <% else %>
 	<div class="row">
 		<div class="col-xs-12 col-sm-6">
-			<h3 class="recent-ratings-header">My past deliveries</h3>
+			<h3 class="recent-ratings-header">My deliveries</h3>
 		</div>
 	</div>
-	<% @past_deliveries.each do |delivery| %>
+	<% @next_delivery.each do |delivery| %>
 		<div class="row no-margin">
 			<div class="col-xs-8 hidden-xs">
 				<h4>Delivered: <%= (delivery.delivery_date).strftime("%A, %b %e, %Y") %></h4>
@@ -26,7 +26,7 @@
 			</div>
 		</div>	
 		<div class="row no-margin delivery-drinks-row">
-			<%= render 'user_delivery_past_delivery', delivery: delivery %>
+			<%= render(partial: 'next_delivery_card_review', locals: { drink: delivery }) %>
 		</div>
 		<hr>
 	<% end %>

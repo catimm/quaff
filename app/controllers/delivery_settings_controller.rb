@@ -97,15 +97,11 @@ class DeliverySettingsController < ApplicationController
   end # end deliveries method
  
   def index
-    
-    # send user status to jquery to show modal for first time visit after signup
-    gon.user_post_signup = current_user.getting_started_step
+    # get user info
+    @user = User.find(params[:id])
     
     # set current page for jquery routing--preferences vs singup settings
     @current_page = "preferences"
-
-    # get user info
-    @user = User.find(params[:id])
     
     # find if the account has any other users
     @mates = User.where(account_id: @user.account_id).where.not(id: @user.id)
@@ -329,7 +325,7 @@ class DeliverySettingsController < ApplicationController
   def change_next_delivery_date
     @requested_delivery_date = params[:id] + " 13:00:00"
     @new_delivery_date = DateTime.parse(@requested_delivery_date)
-    Rails.logger.debug("Date chosen: #{@new_delivery_date.inspect}")
+    #Rails.logger.debug("Date chosen: #{@new_delivery_date.inspect}")
     
     # get user info
     @customer = User.find_by_id(current_user.id)
@@ -341,13 +337,8 @@ class DeliverySettingsController < ApplicationController
     @user_subscription = UserSubscription.find_by_user_id(current_user.id)
     @current_active_until_date = @user_subscription.active_until
     #Rails.logger.debug("Current active date: #{@current_active_until_date.inspect}")
-    if @user_subscription.subscription_id == 3
-      @total_membership_deliveries = 26
-    elsif @user_subscription.subscription_id == 2
-      @total_membership_deliveries = 7
-    else 
-      @total_membership_deliveries = 2
-    end
+    @total_membership_deliveries = @user_subscription.subscription.deliveries_included
+    #Rails.logger.debug("Total subscription deliveries: #{@total_membership_deliveries.inspect}")
     @customer_deliveries_this_subscription = @user_subscription.deliveries_this_period
     @customer_remaining_deliveries = @total_membership_deliveries - @customer_deliveries_this_subscription
     @total_remaining_weeks_needed = ((@customer_remaining_deliveries * 2) - 2)
@@ -364,9 +355,9 @@ class DeliverySettingsController < ApplicationController
     subscription.trial_end = @possible_new_active_until_date.to_time.to_i
     subscription.prorate = false
     subscription.save
-    
-    # update number of times customer has pushed out delivery date
-    if @possible_new_active_until_date > @current_active_until_date
+      
+    # send confirmation and update accordingly
+    if @possible_new_active_until_date > @current_active_until_date 
       # send a confirmation email about the change
       UserMailer.delivery_date_with_end_date_change_confirmation(@customer, @delivery.delivery_date, @new_delivery_date).deliver_now
     else  
@@ -626,9 +617,17 @@ class DeliverySettingsController < ApplicationController
         @days_between_today_and_first_option = @first_delivery_date_option - Date.today
         #Rails.logger.debug("Days between today and first option: #{@days_between_today_and_first_option.inspect}")
         if @days_between_today_and_first_option >= @days_notice_required
-          option.next_available_delivery_date = @first_delivery_date_option
+          if @first_delivery_date_option < option.beginning_at
+            option.next_available_delivery_date = option.beginning_at
+          else
+            option.next_available_delivery_date = @first_delivery_date_option
+          end
         else
-          option.next_available_delivery_date = @second_delivery_date_option
+          if @second_delivery_date_option < option.beginning_at
+            option.next_available_delivery_date = option.beginning_at
+          else
+            option.next_available_delivery_date = @second_delivery_date_option
+          end
         end
     end
     
@@ -660,9 +659,17 @@ class DeliverySettingsController < ApplicationController
             # next determine which of two options is best based on days noticed required
             @days_between_today_and_first_option = @first_delivery_date_option - Date.today
             if @days_between_today_and_first_option >= @days_notice_required
-              @delivery_time_options_hash[option.id] = @first_delivery_date_option
+              if @first_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @first_delivery_date_option
+              end
             else
-              @delivery_time_options_hash[option.id] = @second_delivery_date_option
+              if @second_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @second_delivery_date_option
+              end
             end
         end
       end
@@ -737,6 +744,28 @@ class DeliverySettingsController < ApplicationController
       @admin_email = "carl@drinkknird.com"
       AdminMailer.delivery_zone_change_notice(@customer, @admin_email, true, @old_date, @final_delivery_date, @new_delivery_address, @user_delivery_zone).deliver_now
     end
+    
+    # extend current membership active until date if new delivery date is pushed into the future
+    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    @current_active_until_date = @user_subscription.active_until
+    #Rails.logger.debug("Current active date: #{@current_active_until_date.inspect}")
+    @total_membership_deliveries = @user_subscription.subscription.deliveries_included
+    @customer_deliveries_this_subscription = @user_subscription.deliveries_this_period
+    @customer_remaining_deliveries = @total_membership_deliveries - @customer_deliveries_this_subscription
+    @total_remaining_weeks_needed = ((@customer_remaining_deliveries * 2) - 2)
+    #Rails.logger.debug("Total weeks needed: #{@total_remaining_weeks_needed.inspect}")
+    @possible_new_active_until_date = @final_delivery_date + (@total_remaining_weeks_needed * 7).days
+    #Rails.logger.debug("Possible new date: #{@possible_new_active_until_date.inspect}")
+    
+    #update membership end date in our DB
+    @user_subscription.update(active_until: @possible_new_active_until_date)
+    
+    # update membership end date with Stripe
+    customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
+    subscription = customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
+    subscription.trial_end = @possible_new_active_until_date.to_time.to_i
+    subscription.prorate = false
+    subscription.save
     
     # redirect back to the delivery location page
     redirect_to user_delivery_settings_location_path

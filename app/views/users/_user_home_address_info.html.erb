@@ -1,0 +1,33 @@
+<%= address.hidden_field :account_id, :value => @user.account_id %>
+<%= address.hidden_field :location_type, :value => "Home" %>
+<%= address.hidden_field :current_delivery_location, :value => false %>
+<div class="form-group">
+	<label for="address_street_field" class="col-xs-4 col-sm-3 control-label">Home Address <sup  id="signup_birthdate_note" data-toggle="tooltip" title="Home address is required for billing and delivery purposes">?</sup></label>
+	<div class="col-xs-8 col-sm-9">
+		<%= address.input :address_street, input_html: { class: "form-control", id: "address_street_field" }, placeholder: "Home Street Address", label: false, required: true %>
+	</div>
+</div>
+<div class="form-group">
+	<label for="address_unit_field" class="col-xs-4 col-sm-3 control-label">Unit/Floor</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= address.input :address_unit, input_html: { class: "form-control", id: "address_unit_field" }, placeholder: "Home Apt, Unit, etc.", label: false, required: false %>
+	</div>
+</div>
+<div class="form-group">
+	<label for="city_field" class="col-xs-4 col-sm-3 control-label">Home City</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= address.input :city, input_html: { class: "form-control", id: "address_city_field" }, placeholder: "Home City", required: true, label: false %>
+	</div>
+</div>
+<div class="form-group">
+	<label for="state_field" class="col-xs-4 col-sm-3 control-label">Home State</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= address.input :state, input_html: { class: "form-control", id: "address_state_field" }, placeholder: "Home State", required: true, label: false %>
+	</div>
+</div>
+<div class="form-group">
+	<label for="zip_field" class="col-xs-4 col-sm-3 control-label">Home Zip</label>
+	<div class="col-xs-8 col-sm-9">
+		<%= address.input :zip, input_html: { class: "form-control", id: "address_zip_field" }, placeholder: "Home Zip Code", required: true, label: false %>
+	</div>
+</div>

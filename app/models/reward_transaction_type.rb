@@ -8,7 +8,9 @@
 #  reward_impact      :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  reward_amount      :integer
 #
 
 class RewardTransactionType < ActiveRecord::Base
+  has_many :reward_points 
 end

@@ -251,11 +251,13 @@ $(function () {
 		     for (i = 0; i < gon.drink_descriptor_array.length; i++) { 
 			    if ( gon.drink_descriptor_array[i][1].length > 0 ) {
 				    $("#drink_"+gon.drink_descriptor_array[i][0]).jQCloud(gon.drink_descriptor_array[i][1], {
-				  		autoResize: true
+				  		
+				  		removeOverflowing: true
 				     });
 				 } else {
 					$("#drink_"+gon.drink_descriptor_array[i][0]).jQCloud(word_array, {
-				  		autoResize: true
+				  		
+				  		removeOverflowing: true
 				     });
 				 }
 			 }

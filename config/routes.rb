@@ -4,8 +4,8 @@ Rails.application.routes.draw do
                                     omniauth_callbacks: "authentications",
                                     passwords: "passwords" }
   devise_scope :user do
-    get 'users/invitation/guest_invite/:id' => 'invitations#guest_invite', :as => 'guest_invite'
-    post 'users/invitation/process_guest_invite' => 'invitations#process_guest_invite', :as => 'process_guest_invite'
+    get 'users/invitation/invite_mate/:id' => 'invitations#invite_mate', :as => 'invite_mate'
+    post 'users/invitation/process_mate_invite' => 'invitations#process_mate_invite', :as => 'process_mate_invite'
   end
   
   resources :users do
@@ -55,6 +55,9 @@ Rails.application.routes.draw do
   
   root :to => 'home#index'
   # routes to user profile pages
+  get '/users/first_password/accept' => 'users#first_password', :as => 'first_password'
+  patch '/users/process_first_password/:id' => 'users#process_first_password', :as => 'process_first_password'
+  
   get '/users/user_account_add_guest/:id' => 'users#user_account_add_guest', :as => 'user_account_add_guest'
   get '/users/account_settings_membership/:id' => 'users#account_settings_membership', :as => 'account_settings_membership'  
   get '/users/account_settings_profile/:id' => 'users#account_settings_profile', :as => 'account_settings_profile' 
@@ -62,7 +65,7 @@ Rails.application.routes.draw do
   get '/users/account_settings_cc/:id' => 'users#account_settings_cc', :as => 'account_settings_cc'
   get '/users/plan_rewewal_update/:id' => 'users#plan_rewewal_update', :as => 'plan_rewewal_update' 
   post '/users/process_user_plan_change/:id' => 'users#process_user_plan_change', :as => 'process_user_plan_change'
-  post '/users/update_profile/:id' => 'users#update_profile'
+  patch '/users/update_profile/:id' => 'users#update_profile', :as => 'update_user_profile'
   post '/users/update_home_address/:id' => 'users#update_home_address'
   patch '/users/update_password/:id' => 'users#update_password'
   post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
@@ -101,6 +104,8 @@ Rails.application.routes.draw do
   
   # routes to drink pages
   get '/drinks/deliveries/:id' => 'drinks#deliveries', :as => 'user_deliveries'
+  get '/drinks/cellar/:id' => 'drinks#cellar', :as => 'user_cellar'
+  get '/drinks/wishlist/:id' => 'drinks#wishlist', :as => 'user_wishlist'
   get '/drinks/supply/:id' => 'drinks#supply', :as => 'user_supply'
   get '/drinks/load_rating_form_in_supply/:id' => 'drinks#load_rating_form_in_supply'
   get '/drinks/reload_drink_skip_rating/:id' => 'drinks#reload_drink_skip_rating'
@@ -126,6 +131,9 @@ Rails.application.routes.draw do
   patch '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'reset_customer_delivery_date'
   
   # user signup process
+  get '/signup/home_address_getting_started/:id' => 'signup#home_address_getting_started', :as => 'home_address_getting_started'
+  post '/signup/process_home_address_getting_started/:id' => 'signup#process_home_address_getting_started', :as => 'process_home_address_getting_started'
+   
   get '/signup/drink_choice_getting_started/:id' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
   post '/signup/process_drink_choice_getting_started/:id' => 'signup#process_drink_choice_getting_started', :as => 'process_drink_choice_getting_started'
   
@@ -143,7 +151,7 @@ Rails.application.routes.draw do
   post '/signup/process_drinks_large_getting_started/:id' => 'signup#process_drinks_large_getting_started', :as => 'process_drinks_large_getting_started'
     
   get '/signup/account_address_getting_started/:id' => 'signup#account_address_getting_started', :as => 'account_address_getting_started'
-  post '/signup/process_account_address_getting_started' => 'signup#process_account_address_getting_started', :as => 'process_account_address_getting_started'
+  get '/signup/choose_delivery_time' => 'signup#choose_delivery_time', :as => 'choose_delivery_time'
   
   get '/signup/account_membership_getting_started/:id' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
   post '/signup/process_account_membership_getting_started/:id' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
@@ -227,6 +235,7 @@ Rails.application.routes.draw do
   # admin routes
   get 'porting' => 'porting#index'
   get 'reloads' => 'reloads#index'
+  get 'reloads/data', :defaults => { :format => 'json' }
   get 'admin/recommendations/next_delivery_drink/:id' => 'admin/recommendations#next_delivery_drink', :as => 'admin_next_delivery_drink'
   get 'admin/recommendations/change_user_view/:id' => 'admin/recommendations#change_user_view'
   get 'admin/recommendations/change_delivery_drink_quantity/:id' => 'admin/recommendations#change_delivery_drink_quantity', :as => 'admin_change_delivery_drink_quantity'

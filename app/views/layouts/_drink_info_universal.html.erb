@@ -1,0 +1,41 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<div class="col-xs-4 col-sm-2 brewery-image-holder-universal">
+		<% if !drink.account_delivery.beer.brewery.image.blank? %>
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.account_delivery.beer.brewery.image %>">
+		<% else %>
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-xs-4 col-sm-6 no-padding drink-name-and-info-holder-universal">
+		<%= render 'layouts/drink_name_and_info', drink: drink.account_delivery.beer %>	
+	</div>
+	<div class="col-xs-4 cloud-descriptor-holder-universal">
+		<div class="cloud-descriptors" id="drink_<%= drink.account_delivery.beer.id %>"></div>
+	</div>
+	<div class="drink-info-universal-show-more">
+		<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+	</div>
+	<div class="drink-info-universal-show-less hidden">
+		<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+	</div>
+</div>
+<div class="row no-margin drink-info-universal-second-row hidden">	
+	<hr>
+	<div class="col-xs-8 col-sm-4 best-guess-universal">
+		<%= render 'layouts/drink_user_rating_info', drink: drink %>
+	</div>
+	<div class="col-xs-12 col-sm-7 why-statement">
+		<p>Why you might like this:</p>
+		<% if drink.account_delivery.recommendation_rationale == "style" %>
+			<% if  drink.account_delivery.is_hybrid == "yes" %>
+				<%= render 'locations/hybrid_rating_rationale', beer: drink.account_delivery %>
+			<% else %>
+				<%= render 'locations/nonhybrid_rating_rationale', beer: drink.account_delivery %>
+			<% end %>
+		<% else %>
+			<%= render 'locations/type_rating_rationale', beer: drink.account_delivery %>
+		<% end %>
+	</div>
+</div>

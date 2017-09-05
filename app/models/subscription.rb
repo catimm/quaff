@@ -10,8 +10,9 @@
 #  subscription_name          :string
 #  subscription_months_length :integer
 #  extra_delivery_cost        :decimal(5, 2)
+#  deliveries_included        :integer
 #
 
 class Subscription < ActiveRecord::Base
-  has_many :users
+  has_many :user_subscriptions
 end

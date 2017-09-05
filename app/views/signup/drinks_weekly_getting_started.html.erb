@@ -6,20 +6,10 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<% if @guide == "new_user_first" %>
-			<%= render 'signup_guide_new_user_first' %>
-		<% elsif @guide == "new_user" %>
-			<%= render 'signup_guide_new_user' %>
-		<% else %>
-			<%= render 'signup_guide_continued_user' %>
-		<% end %>
+		<%= render 'signup/signup_guide_consumer' %>
 	</div>
 	<div class="row">
 		<div class="container" id="user-drinks-per-week-signup">
-			<div class="col-sm-1"></div>
-			<div class="col-xs-12 col-sm-10 text-center">
-				<%= render 'drink_preferences_guide' %>
-			</div>
 			<div class="col-xs-12 text-center">
 				<h2 class="signup-question">How many <%= @drink_preference %> do you drink at home each week?</h2>
 				<h5 class="signup-question-detail">You can update this on your delivery preferences page anytime after signup.</h5>

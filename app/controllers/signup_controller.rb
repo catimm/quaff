@@ -2,26 +2,66 @@ class SignupController < ApplicationController
   before_filter :authenticate_user!, :except => ["username_verification"]
   include DeliveryEstimator
   require "stripe"
-
+  
+  def home_address_getting_started
+    # get user info
+    @user = User.find_by_id(params[:id])
+    #Rails.logger.debug("User info: #{@user.inspect}")
+    # update getting started step
+    if @user.getting_started_step < 2
+      @user.update(getting_started_step: 2)
+    end
+    
+    
+    # set sub-guide view
+    @subguide = "user_info"
+    
+    # get user home address info
+    @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
+    
+    if @home_address.blank?
+      @home_address = UserAddress.new
+    end
+    
+    #set guide view
+    @user_chosen = 'current'
+    @user_personal_info_chosen = 'complete'
+    @user_home_address_chosen = 'current'
+    
+  end # end of home_address_getting_started method
+  
+  def process_home_address_getting_started
+    # find if user already has a home address in the DB
+    @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
+    
+    if @home_address.blank?
+      # create new address
+      @new_address = UserAddress.create(address_params)
+    else
+      # update user address
+      @home_address.update(address_params)
+    end
+    
+    # set redirect link
+    redirect_to drink_choice_getting_started_path(current_user.id)
+    
+  end # end of process_home_address_getting_started method
+  
   def drink_choice_getting_started
     # get User info 
     @user = User.find_by_id(params[:id])
+    # update getting started step
+    if @user.getting_started_step < 3
+      @user.update(getting_started_step: 3)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
-    end 
-    
+    # set sub-guide view
+    if current_user.role_id == 6 || current_user.role_id == 8 || current_user.role_id == 9
+      @subguide = "drink_event"
+    else
+      @subguide = "drink"
+    end
+     
     #set guide view & current page
     @user_chosen = 'complete'
     @drink_chosen = 'current'
@@ -71,11 +111,6 @@ class SignupController < ApplicationController
       @new_delivery_preference = DeliveryPreference.create(user_id: @user.id, drink_option_id: @data)
     end
     
-    # update step completed if need be
-    if @user.getting_started_step == 1
-      @user.update(getting_started_step: 2)
-    end
-    
     # don't change the view
     render :nothing => true
     
@@ -84,21 +119,17 @@ class SignupController < ApplicationController
   def drink_journey_getting_started
     # get User info 
     @user = User.find(params[:id])
+    # update getting started step
+    if @user.getting_started_step < 4
+      @user.update(getting_started_step: 4)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
-    end 
+    # set sub-guide view
+    if current_user.role_id == 6 || current_user.role_id == 8 || current_user.role_id == 9
+      @subguide = "drink_event"
+    else
+      @subguide = "drink"
+    end
     
     #set guide view & current page
     @user_chosen = 'complete'
@@ -150,13 +181,8 @@ class SignupController < ApplicationController
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     
-    # update step completed if need be
-    if @user.getting_started_step == 2 # update both
-      @user.update(getting_started_step: 3, craft_stage_id: @data)
-    else
-      # just save the user craft stage data
-      @user.update(craft_stage_id: @data)
-    end
+    # save the user craft stage data
+    @user.update(craft_stage_id: @data)
     
     # don't change the view
     render :nothing => true
@@ -165,20 +191,16 @@ class SignupController < ApplicationController
   def drink_style_likes_getting_started
     # get User info 
     @user = User.find(params[:id])
+    # update getting started step
+    if @user.getting_started_step < 5
+      @user.update(getting_started_step: 5)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
+    # set sub-guide view
+    if current_user.role_id == 6 || current_user.role_id == 8 || current_user.role_id == 9
+      @subguide = "drink_event"
+    else
+      @subguide = "drink"
     end 
     
     #set guide view
@@ -309,21 +331,17 @@ class SignupController < ApplicationController
   def drink_style_dislikes_getting_started
     # get User info 
     @user = User.find(params[:id])
+    # update getting started step
+    if @user.getting_started_step < 6
+      @user.update(getting_started_step: 6)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
-    end 
+    # set sub-guide view
+    if current_user.role_id == 6 || current_user.role_id == 8 || current_user.role_id == 9
+      @subguide = "drink_event"
+    else
+      @subguide = "drink"
+    end
     
     #set guide view
     @user_chosen = 'complete'
@@ -430,26 +448,25 @@ class SignupController < ApplicationController
       # set style list for dislike list, removing styles already liked
       @styles_for_dislike = @styles_for_like.where.not(id: @user_likes).order('style_order ASC')
       
+      # determine path for 'Next' button
+      if @user.role_id == 4 || @user.role_id == 5
+        @next_step = drinks_weekly_getting_started_path(@user.id)
+      else
+        @next_step = signup_thank_you_path(@user.id)
+      end
+    
   end # end drink_style_likes_getting_started action
   
   def drinks_weekly_getting_started
     # get User info 
     @user = User.find(params[:id])
+    # update getting started step
+    if @user.getting_started_step < 7
+      @user.update(getting_started_step: 7)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
-    end 
+    # set sub-guide view
+    @subguide = "drink"
     
     #set guide view
     @user_chosen = 'complete'
@@ -505,11 +522,6 @@ class SignupController < ApplicationController
     @drinks_per_week = @delivery_preferences.drinks_per_week
     @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
     @drinks_per_week_meaning_show_status = "show"
-      
-    # update step completed if need be
-    if current_user.getting_started_step == 5
-      current_user.update(getting_started_step: 6)
-    end
 
     respond_to do |format|
       format.js
@@ -520,21 +532,13 @@ class SignupController < ApplicationController
   def drinks_large_getting_started
     # get User info 
     @user = User.find(params[:id])
+    # update getting started step
+    if @user.getting_started_step < 8
+      @user.update(getting_started_step: 8)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
-    end 
+    # set sub-guide view
+    @subguide = "drink"
     
     #set guide view
     @user_chosen = 'complete'
@@ -589,15 +593,11 @@ class SignupController < ApplicationController
     
     # determine path for 'Next' button
     if @user.role_id == 4
-      @user_delivery_address = UserAddress.find_by_account_id(@user.account_id)
-      if @user_delivery_address.blank?
-        @next_step = account_address_getting_started_path(@user.id)
-      else
-        @next_step = signup_thank_you_path(@user.id)
-      end
+      @next_step = account_address_getting_started_path(@user.id)
     else
       @next_step = signup_thank_you_path(@user.id)
     end
+    
   end # end of drinks_weekly_getting_started action
   
   def process_drinks_large_getting_started
@@ -628,11 +628,6 @@ class SignupController < ApplicationController
     @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
     @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
     
-    # update step completed if need be
-    if @user.getting_started_step == 6
-      @user.update(getting_started_step: 7)
-    end
-    
     # show delivery cost information and 'next' button
     respond_to do |format|
       format.js
@@ -644,28 +639,70 @@ class SignupController < ApplicationController
     # get User info 
     @user = User.find_by_id(params[:id])
     #Rails.logger.debug("User info: #{@user.inspect}")
+    # update getting started step
+    if @user.getting_started_step < 9
+      @user.update(getting_started_step: 9)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
-    end 
+    # set sub-guide view
+    @subguide = "account_settings" 
     
     # get Account info
     @account = Account.find_by_id(@user.account_id)
     #Rails.logger.debug("Account info: #{@account.inspect}")
     
-    # instantiate new UserAddress
-    @user_delivery_address = UserAddress.new
+    # get delivery location options
+    @additional_delivery_locations = UserAddress.where(account_id: @user.account_id)
+    
+    # determine number of days needed before allowing change in delivery date
+    @days_notice_required = 3
+
+    #Rails.logger.debug("Days notice required: #{@days_notice_required.inspect}")
+    # determine current week status
+    @current_week_number = Date.today.strftime("%U").to_i
+    if @current_week_number.even?
+      @current_week_status = "even"
+    else
+      @current_week_status = "odd"
+    end
+    
+    # create hash to store additional delivery time options
+    @delivery_time_options_hash = {}
+    
+    # find delivery time options for additional delivery locations
+    @additional_delivery_locations.each do |location|
+      @delivery_time_options = DeliveryZone.where(zip_code: location.zip)
+      if !@delivery_time_options.blank?
+        @delivery_time_options.each do |option| 
+          # first determine next two options based on week alignment
+          if option.weeks_of_year == "every"
+            @first_delivery_date_option = Date.parse(option.day_of_week)
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+          elsif option.weeks_of_year == @current_week_status
+            @first_delivery_date_option = Date.parse(option.day_of_week)
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
+          else
+            @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
+          end
+            # next determine which of two options is best based on days noticed required
+            @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+            if @days_between_today_and_first_option >= @days_notice_required
+              if @first_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @first_delivery_date_option
+              end
+            else
+              if @second_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @second_delivery_date_option
+              end
+            end
+        end
+      end
+    end
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
@@ -688,42 +725,72 @@ class SignupController < ApplicationController
     
   end # end account_getting_started action
   
-  def process_account_address_getting_started
-    @zip = params[:user_delivery_address][:zip]
-    params[:user_delivery_address][:city] = @zip.to_region(:city => true)
-    params[:user_delivery_address][:state] = @zip.to_region(:state => true)
+  def choose_delivery_time
+    # first get correct address and delivery zone
+    @data = params[:format]
+    @data_split = @data.split("-")
+    @address = @data_split[0].to_i
+    #Rails.logger.debug("address: #{@address.inspect}")
+    @delivery_zone = @data_split[1].to_i
+    @delivery_date = @data_split[2]
+    @date_adjustment = @delivery_date.split("_") 
+    @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1] + " 13:00:00"
+    #Rails.logger.debug("date: #{@final_delivery_date.inspect}")
+    @final_delivery_date = DateTime.parse(@final_delivery_date)
+    #Rails.logger.debug("Parsed date: #{@final_delivery_date.inspect}")
     
-    # get User info
-    @user = User.find_by_id(current_user.id)
+    # get user info for confirmation email
+    @customer = User.find_by_id(current_user.id)
     
-    UserAddress.create(address_params)
+    # update the Account info
+    Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
     
-    # update step completed if need be
-    if @user.getting_started_step == 7
-      @user.update(getting_started_step: 8)
+    # find if user already has chosen a delivery address
+    @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
+    #Rails.logger.debug("Delivery address: #{@current_delivery_address.inspect}")
+
+    if !@current_delivery_address.blank? && @current_delivery_address.id == @address # address is chosen and not changing, just the delivery time/zone
+      # update the current delivery time/zone
+      UserAddress.update(@current_delivery_address.id, delivery_zone_id: @delivery_zone)
+      # change next delivery date in deliveries table
+      @user_next_delivery_info = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")[0]
+      # update record
+      if !@user_next_delivery_info.blank?
+        @user_next_delivery_info.update(delivery_date: @final_delivery_date)
+      end
+    else # both address and delivery time/zone need to be updated
+      # update the chosen address to be the delivery address
+      UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
+      # create first line in delivery table, but without status until customer pays membership fee
+      @next_delivery = Delivery.create(account_id: current_user.account_id, 
+                                      delivery_date: @final_delivery_date,
+                                      status: nil,
+                                      delivery_change_confirmation: false)
     end
     
-    redirect_to account_membership_getting_started_path(@user.id)
-  end # end process_account_getting_started action
+    # find if customer already has a subscription (for early sign-up customers)
+    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    
+    if !@user_subscription.blank? && !@user_subscription.stripe_subscription_number.nil?
+      # redirect to thank you page because user already has a subscription
+      redirect_to signup_thank_you_path(current_user.id)
+    else # user needs to choose a subscription 
+      # redirect back to the delivery location page
+      redirect_to account_membership_getting_started_path(current_user.id)
+    end
+    
+  end # end of choose_delivery_time method
   
   def account_membership_getting_started
     # get User info 
     @user = User.find_by_id(params[:id])
+    # update getting started step
+    if @user.getting_started_step < 10
+      @user.update(getting_started_step: 10)
+    end
     
-    # find correct signup guide to render
-    if @user.role_id == 1
-      @guide = "new_user" 
-    elsif @user.role_id == 5
-      @guide = "continued_user"
-    else  
-      # check if user has a subscription already (for early signup customers)
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
-      if !@user_subscription.blank?
-        @guide = "continued_user"
-      else # this view should be for a new user who went back in the signup process
-        @guide = "new_user"
-      end
-    end 
+    # set sub-guide view
+    @subguide = "account_settings"
     
     #set guide view
     @user_chosen = 'complete'
@@ -739,19 +806,22 @@ class SignupController < ApplicationController
     # get data
     @plan_name = params[:id]
     
+    # find subscription level id
+    @subscription_info = Subscription.find_by_subscription_level(@plan_name)
+    
     #get user info
     @user = User.find_by_account_id(params[:format])
     #Rails.logger.debug("Early user info: #{@early_user.inspect}")
     
-    # find subscription level id
-    @subscription_info = Subscription.find_by_subscription_level(@plan_name)
-
+    # get delivery info
+    @delivery_info = Delivery.find_by_account_id(params[:format])
+    
     # set active_until date and reward point info
     if @subscription_info.id == 1
       @active_until = Date.today + 1.month
     elsif @subscription_info.id == 2
       @active_until = Date.today + 3.months
-      if !@user.special_code.nil?
+      if !@user.special_code.blank?
         @bottle_caps = 30
         @reward_transaction_type_id = 1
         # find user who invited the new user
@@ -777,22 +847,37 @@ class SignupController < ApplicationController
       end
     end
     
-    # create a new user_subscription row
-    UserSubscription.create(user_id: @user.id, 
-                            subscription_id: @subscription_info.id, 
-                            active_until: @active_until,
-                            auto_renew_subscription_id: @subscription_info.id,
-                            deliveries_this_period: 0,
-                            total_deliveries: 0,
-                            account_id: params[:format])
-                              
-    # create Stripe customer acct
-    customer = Stripe::Customer.create(
-            :source => params[:stripeToken],
-            :email => @user.email,
-            :plan => @plan_name
-          )
-
+    # check if user already has a subscription row
+    @user_subscription = UserSubscription.find_by_user_id(@user.id)
+    
+    if @user_subscription.blank?
+      # create a new user_subscription row
+      UserSubscription.create(user_id: @user.id, 
+                              subscription_id: @subscription_info.id, 
+                              active_until: @active_until,
+                              auto_renew_subscription_id: @subscription_info.id,
+                              deliveries_this_period: 0,
+                              total_deliveries: 0,
+                              account_id: params[:format],
+                              renewals: 0,
+                              currently_active: true)
+                                
+      # create Stripe customer acct
+      customer = Stripe::Customer.create(
+              :source => params[:stripeToken],
+              :email => @user.email,
+              :plan => @plan_name
+            )
+    else
+      # retrieve customer Stripe info
+      customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number) 
+      # create a new Stripe subscription for customer
+      customer.subscriptions.create(plan: @plan_name)
+    end
+    
+    # update Delivery info with admin prep status
+    @delivery_info.update(status: "admin prep")
+    
     # assign invitation code for user to share
     @next_available_code = SpecialCode.where(user_id: nil).first
     @next_available_code.update(user_id: @user.id)
@@ -805,14 +890,8 @@ class SignupController < ApplicationController
     # get user info
     @user = User.find_by_id(params[:id])
     
-    # find user's profile for thank you message
-    if @user.role_id == 4 
-      @view = "account_owner"
-      if @user.getting_started_step != 8
-        @user.update(getting_started_step: 8)
-      end
-    else
-      @view = "account_guest"
+    if @user.getting_started_step == 10
+      @user.update(getting_started_step: 11)
     end
    
   end # end of signup_thank_you action
@@ -971,32 +1050,17 @@ class SignupController < ApplicationController
                                                                   user_preference: @preference)
       end
     end # end of style each do loop
-    
-     # update step completed if need be
-     if @preference == "like"
-      if @user.getting_started_step == 3
-        @user.update(getting_started_step: 4)
-      end
-     end
-     
-     if @preference == "dislike"
-      if @user.getting_started_step == 4
-        @user.update(getting_started_step: 5)
-      end
-     end
        
     render :nothing => true
     
   end # end of process_sytle_input method
   
   private
-  def verify_not_complete
-    redirect_to user_supply_path(current_user.id, 'cooler') unless current_user.nil? || current_user.getting_started_step < 8 || current_user.role_id == 1
-  end
-  
+
   def address_params
-    params.require(:user_delivery_address).permit(:account_id, :address_one, 
-                                  :address_two, :city, :state, :zip, :special_instructions, :location_type ) 
+    params.require(:user_address).permit(:id, :account_id, :address_street, :address_unit, :city, :state, 
+                                      :zip, :special_instructions, :location_type, :other_name, 
+                                      :current_delivery_location, :delivery_zone_id)  
   end
   
 end # end of controller

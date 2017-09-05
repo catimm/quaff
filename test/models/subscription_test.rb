@@ -10,6 +10,7 @@
 #  subscription_name          :string
 #  subscription_months_length :integer
 #  extra_delivery_cost        :decimal(5, 2)
+#  deliveries_included        :integer
 #
 
 require 'test_helper'

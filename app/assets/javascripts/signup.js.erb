@@ -1,7 +1,7 @@
 $(function() {
 	
 	// show welcome modal before starting signup process
-	if (gon.user_signup_step == 0) {
+	if (gon.getting_started_step == 0) {
 		$(window).load(function(){
 	        $('#complete_signup_welcome').modal('show');
 	    });
@@ -36,6 +36,7 @@ $(function() {
 	$(".signup-style-tile").height(style_tile_width);
 	$(".signup-style-tile.chosen").height(style_tile_width);
 	$(".signup-styles-tally-box").height(style_tile_width);
+	
 	
 	// set height of mobile user signup filler column
 	first_col_height = $("#mobile-user-signup-first-col").height();

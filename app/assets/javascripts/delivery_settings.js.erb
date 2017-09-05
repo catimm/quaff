@@ -9,17 +9,6 @@ $(function () {
 	    	$("#scroller-anchor").removeClass("fixed-delivery-preferences-row");
 	    }
 	});
-	
-	// show welcome modal immediately following signup process
-	if (gon.user_post_signup == 9) {
-		$(window).load(function(){
-	        $('#delivery_settings_welcome').modal('show');
-	    });
-	    $.ajax({
-		  type: "POST",
-		  url: "/deliveries/deliveries_update_estimates/post_signup-10"
-		});
-	}
 
 	// hide spinner
 	$(".spinner").hide();
