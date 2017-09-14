@@ -49,11 +49,11 @@
 </div>
 <div class="row no-margin">
 	<% if !@inventory.nil? %>
-		<%= link_to edit_admin_inventory_path(@beer.id), :class => "btn btn-success edit-beer-info" do %>
+		<%= link_to edit_admin_inventory_path(@drink.id), :class => "btn btn-success edit-beer-info" do %>
 			<i class="fa fa-wrench"> edit inventory</i>
 		<% end %>
 	<% else %>
-		<%= link_to new_admin_inventory_path(@beer.id), :class => "btn btn-success edit-beer-info" do %>
+		<%= link_to new_admin_inventory_path(@drink.id), :class => "btn btn-success edit-beer-info" do %>
 			<i class="fa fa-plus"> add to inventory</i>
 		<% end %>
 	<% end %>

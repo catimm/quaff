@@ -1,6 +1,6 @@
 $(function() {
 	<% if !@final_search_results.empty? %>
-		$("#add-supply-holder").html("<%= escape_javascript(render 'supply_search_results', drinks: @final_search_results ) %>");
+		$("#search-results-holder").html("<%= escape_javascript(render 'drink_card_search_results', drinks: @final_search_results ) %>");
 	<% else %>
 		$('.recent-ratings-header').addClass('hidden');
 		$('.no-search-results').removeClass('hidden').addClass('show');

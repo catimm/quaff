@@ -1,0 +1,19 @@
+<% @user_rating_info = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer_id) %>
+
+<% if !@user_rating_info.blank? %>
+	<% @user_rating = (@user_rating_info.average(:user_beer_rating).to_f).round(1) %>
+	<% if @user_rating >= 10.0 %>
+		<% @user_rating = 10 %>
+	<% end %>
+	<%= render 'layouts/user_initials_xsmall', friend: @user %>
+	<p class="delivery-user-rating-acknowledged">past rating:</p>
+	<h1 class="delivery-user-rating"><%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
+<% else %>
+	<%= render 'layouts/user_initials_xsmall', friend: @user %>
+	<p class="delivery-best-guess-minimized">projected rating:</p>
+	<% if !drink.projected_rating.nil? %>
+		<h1 class="delivery-best-guess"><%= drink.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
+	<% else %>
+		<h1 class="delivery-best-guess"><%= drink.beer.best_guess %><span class="recent-user-rating-context">/10</span></h1>
+	<% end %>
+<% end %>

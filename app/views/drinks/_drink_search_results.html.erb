@@ -1,0 +1,76 @@
+<% drinks.each do |drink| %>
+	<div class="col-sm-3 col-xs-12 beer-tile-container">
+		<div class="supply-search-tile">
+			<div class="row no-margin search-result-ratings-image-holder-row">
+				<div class="col-xs-5 no-padding ratings-image-holder-column">
+					<% if !drink.brewery.image.blank? %>
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.brewery.image %>">
+					<% else %>
+						<div class="brewery-image-holder-empty-ratings-page text-center">
+							<h2><i class="fa fa-beer"></i></h2>
+						</div>
+					<% end %>
+				</div>
+				<div class="col-xs-7 search-result-rating-holder no-padding">
+					<%= render 'layouts/search_results_drink_user_rating_info', drink: drink %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<% if drink.collab == true %>
+						<% @title_header = (drink.collab_brewery_name(beer.id) + " " + "<span class=combined-drink-text>"+ drink.beer_name+"</span>").html_safe %>
+						<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+					<% elsif drink.brewery.short_brewery_name.nil? %>
+						<% @title_header = (drink.brewery.brewery_name + " " + "<span class=combined-drink-text>"+ drink.beer_name+"</span>").html_safe %>
+						<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+					<% else %>
+						<% @title_header = (drink.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+ drink.beer_name+"</span>").html_safe %>
+						<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
+					<% end %>
+				</div>
+				<div class="col-xs-12">
+					<% if !drink.beer_type_id.nil? %>
+						<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer_type.beer_type_name %></h5>
+					<% else %>
+						<h5 class="tile-subheader beer-info">Style unknown</h5>
+					<% end %>
+				</div>	
+				<div class="col-xs-6 no-padding-right">
+					<% if !drink.beer_abv.nil? %>
+						<h6 class="tile-subheader beer-info"><%= drink.beer_abv %>% ABV</h6>
+					<% else %>
+						<h6 class="tile-subheader beer-info">ABV N/A</h6>
+					<% end %>
+				</div>
+				<% if !drink.beer_ibu.nil? %>
+					<div class="col-xs-6 no-padding-left text-center ibu-div">
+						<h6 class="tile-subheader beer-info"><%= drink.beer_ibu %> IBUs</h6>
+					</div>
+				<% else %>
+					<div class="col-xs-6"></div>
+				<% end %>
+			</div>
+			<div class="row no-margin supply-search-tile-last-row">
+				<% @supply_cellar = UserCellarSupply.where(user_id: current_user.id, beer_id: drink.id) %>
+					<% if @supply_cellar.nil? %>
+						<% @cellar_minus = "hidden" %>
+						<% @cellar_plus = "show" %>
+					<% else %>
+						<% @cellar_minus = "show" %>
+						<% @cellar_plus = "hidden" %>
+					<% end %>
+				<% @supply_wishlist = Wishlist.where(user_id: current_user.id, beer_id: drink.id).first %>
+					<% if @supply_wishlist.nil? %>
+						<% @wishlist_minus = "hidden" %>
+						<% @wishlist_plus = "show" %>
+					<% else %>
+						<% @wishlist_minus = "show" %>
+						<% @wishlist_plus = "hidden" %>
+					<% end %>		
+			</div>
+		</div>
+	</div>				
+<% end %>
+<div class="col-xs-12">
+	<%= js_will_paginate @final_search_results %>
+</div>

@@ -7,13 +7,13 @@
 		<div class="col-xs-12 col-sm-7">
 			<div class="row">
 				<div class="col-xs-4">
-					<%= link_to "Deliveries", user_deliveries_path(current_user.id), class: "drink-preference-view-option #{@deliveries_chosen}", id: "next" %>
+					<%= link_to "Deliveries", user_deliveries_path, class: "drink-preference-view-option #{@deliveries_chosen}", id: "next" %>
 				</div>
 				<div class="col-xs-4">
-					<%= link_to "Cellar", user_cellar_path(current_user.id), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
+					<%= link_to "Cellar", user_cellar_path, class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
 				</div>
 				<div class="col-xs-4">
-					<%= link_to "Wishlist", user_wishlist_path(current_user.id), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
+					<%= link_to "Wishlist", user_wishlist_path, class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
 				</div>
 			</div>
 		</div>
@@ -27,7 +27,27 @@
 		</div>
 	</div>
 	<div class="container" id="deliveries-view">
-		
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6 no-padding-right">
+				<h3 class="recent-ratings-header">My wishlist</h3>
+			</div>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-3">
+				<%= link_to drink_search_path(current_user.id), class: 'btn btn-default btn-success formButton-send-note the-supply-button' do %>
+					<i class="fa fa-plus"> add a drink</i>
+				<% end %>
+			</div>
+		</div>
+		<div class="row no-margin cellar-drinks-row">
+			<% if @wishlist_drinks.blank? %>
+				<div class="col-xs-12">
+					<h4 class="recent-ratings-header">Oh no, your wishlist is empty! Time to make a wish...</h4>
+				</div>
+			<% else %>
+				<% @wishlist_drinks.each do |drink| %>
+					
+				<% end %>
+			<% end %>	
+		</div>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

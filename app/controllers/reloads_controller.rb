@@ -18,7 +18,6 @@ class ReloadsController < ApplicationController
   end # end of index method
   
   def data
-    Rails.logger.debug("This fires")
     respond_to do |format|
       format.json {
         render :json => [1,2,3,4,5]

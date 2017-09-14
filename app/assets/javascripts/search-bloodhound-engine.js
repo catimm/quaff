@@ -33,8 +33,8 @@ ready = function() {
 
      var promise = numbers.initialize();
      promise
-      .done(function() { console.log('success!'); })
-      .fail(function() { console.log('err!'); });
+      .done(function() {  })
+      .fail(function() {  });
      
      // instantiate the typeahead UI
         $('.typeahead').typeahead({   

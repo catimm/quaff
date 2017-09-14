@@ -1,146 +1,32 @@
+<%= javascript_include_tag 'drink_page_rating_graphic' %>
 <%= render 'layouts/header' %> 
-<div class="container">
-	<div class="row">
-		<div class="col-sm-1 col-xs-0"></div>
-		<div class="col-sm-10 col-xs-12 beer-info-tile">
-			<div class="row">
-				<div class="col-sm-8 col-xs-12">
-					<div class="row no-margin">
-						<div class="col-xs-4 no-padding">
-							<div class="brewery-image-holder-full-page">	
-								<% if !@beer.brewery.image.nil? %>
-									<div class="brewery-image-holder-full text-center">
-										<img class="img-responsive center-block" alt="Responsive image" src="<%= @beer.brewery.image %>">
-									</div>	
-								<% else %>
-									<div class="brewery-image-holder-empty-full-page text-center">
-										<h1><i class="fa fa-beer"></i></h1>
-									</div>
-								<% end %>
-							</div>
-						</div>
-						<div class="col-xs-7 cloud-holder-full-page" id="cloud-holder-full-page"></div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12">
-							<% if !@beer.beer_type_id.nil? && @beer.beer_type.cellarable == true %>
-					        	<% @cellarable = "C" %>
-					        	<% @cellarable_info = @beer.beer_type.cellarable_info %>
-					        <% else %>
-					        	<% @cellarable = "" %>
-					        <% end %>
-							<% if @beer.collab == true %>
-								<% @collab_brewery_name = Beer.collab_brewery_name(@beer.id) %>
-								<h5 class="tile-header beer-tile-header-full-page"><%= @collab_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %>
-									<sup class="cellarable" data-toggle="tooltip" title="<%= @cellarable_info %>"> <%= @cellarable %></sup>
-								</h5>
-							<% else %>
-								<h5 class="tile-header beer-tile-header-full-page"><%= @beer.brewery.short_brewery_name %> <%= ("<span class=combined-drink-text>"+@beer.beer_name+"</span>").html_safe %>
-									<sup class="cellarable" data-toggle="tooltip" title="<%= @cellarable_info %>"> <%= @cellarable %></sup>
-								</h5>
-							<% end %>
-						</div>
-						<div class="col-xs-12">
-							<% if !@beer.beer_type_id.nil? %>
-								<h5 class="tile-subheader beer-info no-overflow"><%= @beer.beer_type.beer_type_name %></h5>
-							<% else %>
-								<h5 class="tile-subheader beer-info">Style unknown</h5>
-							<% end %>
-						</div>
-						<div class="col-sm-3 col-xs-6 no-padding-right">
-							<% if !@beer.beer_abv.nil? %>
-								<h6 class="tile-subheader beer-info"><%= @beer.beer_abv %>% ABV</h6>
-							<% else %>
-								<h6 class="tile-subheader beer-info">ABV N/A</h6>
-							<% end %>
-						</div>
-						<% if !@beer.beer_ibu.nil? %>
-							<div class="col-sm-3 col-xs-6 no-padding-left text-center ibu-div">
-								<h6 class="tile-subheader beer-info"><%= @beer.beer_ibu %> IBUs</h6>
-							</div>
-						<% else %>
-							<div class="col-xs-6"></div>
-						<% end %>
-					</div>
-					<% if !@beer.brewer_description.nil? %>
-					<div class="row no-margin">
-						<div class="col-xs-12">
-							<h5 class="small-brewer-description" id="brewer-description"><%= @beer.brewer_description %></h5>
-							<%= link_to "+ more", "#", class: "show more-brewer-description", :id => "more-brewer-description" %>
-							<%= link_to "- less", "#", class: "hidden less-brewer-description", :id => "less-brewer-description" %>
-						</div>
-					</div>
-					<% end %>
-					<div class="row no-margin our-best-guess">
-						<div class="col-sm-6 col-xs-12">
-							<% if @beer.user_rating %>
-								<% if ((((@beer.user_rating) * 2).round)/2.0) == ((((@beer.best_guess) * 2).round)/2.0) %>
-									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((@beer.best_guess) * 2).round)/2.0) %></span> and you rated it:</p>
-									<h1 class="user-rating"><%= @beer.user_rating.round(2) %></h1>
-								<% else %>
-									<p>Our <span class="best-guess">best guess</span> was <span class="best-guess"><%= ((((@beer.best_guess) * 2).round)/2.0) %></span> but you rated it:</p>
-									<h1 class="user-rating"><%= @beer.user_rating.round(2) %></h1>
-								<% end %>
-							<% elsif @beer.user_addition != false %>
-								<h5>This was just added; our <span class="best-guess">best guess</span> for you will be available soon!</h5>
-							<% else %>
-								<p>Our <span class="best-guess">best guess</span> for you:</p>
-								<% if @beer.best_guess > 10 %>
-									<% @beer.best_guess == 10 %>
-								<% end %>
-								<% if @beer.best_guess % 1 == 0 %>
-									<h1 class="best-guess"><%= ((((@beer.best_guess) * 2).round)/2.0) %></h1>
-								<% else %>
-									<h1 class="best-guess"><%= ((((@beer.best_guess) * 2).round)/2.0) %></h1>
-								<% end %>
-							<% end %>
-						</div>
-						<div class="col-sm-6 col-xs-12 why-statement full-page">
-							<p>Why, you ask?</p>
-							<% if @beer.recommendation_rationale == "style" %>
-								<% if  @beer.is_hybrid == "yes" %>
-									<%= render 'hybrid_rating_rationale', beer: @beer %>
-								<% else %>
-									<%= render 'nonhybrid_rating_rationale', beer: @beer %>
-								<% end %>
-							<% else %>
-								<%= render 'type_rating_rationale', beer: @beer %>
-							<% end %>
-						</div>
-					</div>
+<div class="container drink-info-container">
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-8">
+					<%= render 'layouts/drink_info', drink: @drink %>
 				</div>
-				<div class="col-sm-4 col-xs-12" id=<%= @beer.id %>>
-					<%= link_to new_user_rating_path(@user_id, @beer.id), class: 'btn btn-default btn-success formButton' do %>
+				<div class="col-xs-12 col-sm-4">
+					<%= link_to new_user_rating_path(@user_id, @drink.id), class: 'btn btn-default btn-success formButton' do %>
 						<i class="fa fa-thumbs-up"></i>
 						<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
 						rate drink
 					<% end %>
-					<% if !@user_rating_for_this_beer.blank? %>
-						<h4 class="beer-location-status">You last drank this on:</h4>
-						<div>
-							<p class="location-name-by-image"><i class="fa fa-calendar"></i> <%= (@user_rating_for_this_beer.first.created_at).strftime("%b %e, %Y") %></p>
-						</div>
-					<% else %>
-							<h4 class="beer-location-status not-seen-message">You've not yet rated this drink. Get to it!</h4>
-					<% end %>
 					<%= render 'wishlist_button', wishlist: @wishlist %>
 				</div>
 			</div>
-			<% if !@user_rating_for_this_beer.blank? || current_user.role_id == 1 %>
 			<hr class="visible-sm visible-md visible-lg" />
 			<div class="row no-margin">
-				<div class="col-sm-6 col-xs-12">
-					<% if !@user_rating_for_this_beer.blank? %>
-						<%= render 'user_history' %>
-					<% end %>
+				<div class="col-xs-12 col-sm-6">
+					<%= render 'user_history' %>
 				</div>
-				<div class="col-sm-6 col-xs-12">
+				<div class="col-xs-12 col-sm-6">
 					<% if current_user.role_id == 1 %>
 						<%= render 'admin_user_data' %>
 					<% end %>
 				</div>
 			</div>
-			<% end %>
 		</div>
 	</div>
 </div>

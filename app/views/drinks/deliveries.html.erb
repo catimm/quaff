@@ -7,28 +7,164 @@
 		<div class="col-xs-12 col-sm-7">
 			<div class="row">
 				<div class="col-xs-4">
-					<%= link_to "Deliveries", user_deliveries_path(current_user.id), class: "drink-preference-view-option #{@deliveries_chosen}", id: "next" %>
+					<%= link_to "Deliveries", user_deliveries_path, class: "drink-preference-view-option #{@deliveries_chosen}", id: "next" %>
 				</div>
 				<div class="col-xs-4">
-					<%= link_to "Cellar", user_cellar_path(current_user.id), class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
+					<%= link_to "Cellar", user_cellar_path, class: "drink-preference-view-option #{@cellar_chosen}", id: "cellar" %>
 				</div>
 				<div class="col-xs-4">
-					<%= link_to "Wishlist", user_wishlist_path(current_user.id), class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
+					<%= link_to "Wishlist", user_wishlist_path, class: "drink-preference-view-option #{@wishlist_chosen}", id: "wishlist" %>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <div class="row">
-	<div class="row no-margin spinner text-center">
-		<div class="spinner-text">
-			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
-			<h4>Updating...</h4>
+	<div class="container" id="deliveries-view">
+		<div class="row no-margin">
+			<div class="col-xs-5 col-sm-3 no-padding-right">
+				<h3 class="recent-ratings-header">My deliveries</h3>
+			</div>
+			<div class="col-xs-7 col-sm-5 col-md-6 no-padding">
+				<h5 class="review-until-message visible-xs hidden-sm hidden-md hidden-lg hidden-xl">
+					Review till <span>1pm on <%= (@next_delivery_review_end_date).strftime("%-m/%-d/%Y") %></span>
+				</h5>
+				<h5 class="review-until-message hidden-xs visible-sm visible-md visible-lg visible-xl">
+					Review until <span>1pm PT on <%= (@next_delivery_review_end_date).strftime("%a, %b %e, %Y") %></span>
+				</h5>
+			</div>
+			<div class="col-xs-10 col-sm-3 no-padding-right">
+				<%= link_to "#", class: 'btn btn-default btn-success formButton-send-note', 
+						data: {toggle: "modal", target: "#customer_delivery_message"} do %>
+					<i class="fa fa-envelope"> make delivery request</i>
+				<% end %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="row no-margin delivery-first-row" id="delivery-first-row-<%= @first_delivery.id %>">
+				<div class="col-xs-12 col-sm-7 col-md-6 no-padding-right" id="delivery-toggle-holder-<%= @first_delivery.id %>">
+					<div class="delivery-drinks-show-more hidden" id="delivery-drinks-more-<%= @first_delivery.id %>">
+						<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+					</div>
+					<div class="delivery-drinks-show-less" id="delivery-drinks-less-<%= @first_delivery.id %>">
+						<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+					</div>
+					<h4 class="delivered-on-date visible-xs hidden-sm hidden-md hidden-lg hidden-xl">Delivered on <%= (@first_delivery.delivery_date).strftime("%a, %b %u %Y") %></h4>
+					<h4 class="delivered-on-date hidden-xs visible-sm visible-md visible-lg visible-xl">Delivered on <%= (@first_delivery.delivery_date).strftime("%A, %B %u %Y") %></h4>
+					<h6 class="show-delivery-stats-text show" id="show-delivery-stats-<%= @first_delivery.id %>">&nbsp;  (<span>show</span> stats)</h6>
+					<h6 class="hide-delivery-stats-text hidden" id="hide-delivery-stats-<%= @first_delivery.id %>">&nbsp;  (<span>hide</span> stats)</h6>
+				</div>
+				<div class="col-xs-12 col-sm-5 col-md-6 no-padding delivery-stats-holder hidden" id="delivery-stats-holder-<%= @first_delivery.id %>">
+					<%= render(partial: 'delivery_stats_for_customer', locals: { delivery: @first_delivery })  %>
+				</div>
+			</div>
+			<div class="row no-margin delivery-second-row show" id="delivery-second-row-<%= @first_delivery.id %>">
+				<% if @first_delivery.status == "user review" %>
+					<% @first_delivery_drinks.each do |drink| %>
+						<%= render(partial: 'drink_card_next_delivery', locals: { drink: drink }) %>
+					<% end %>
+				<% else %>
+					<% @first_delivery_drinks.each do |drink| %>
+						<%= render(partial: 'drink_card_current_delivery', locals: { drink: drink }) %>
+					<% end %>
+				<% end %>	
+			</div>
+		<hr>
+		</div>
+		<% @delivery_history_array.each do |delivery| %>		
+			<div class="row no-margin">
+				<div class="row no-margin" id="delivery-first-row-<%= delivery[0].id %>">	
+					<div class="col-xs-12 col-sm-7 col-md-6 no-padding-right" id="delivery-toggle-holder-<%= delivery[0].id %>">
+						<div class="delivery-drinks-show-more show" id="delivery-drinks-more-<%= delivery[0].id %>">
+							<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+						</div>
+						<div class="delivery-drinks-show-less hidden" id="delivery-drinks-less-<%= delivery[0].id %>">
+							<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+						</div>
+						<h4 class="delivered-on-date visible-xs hidden-sm hidden-md hidden-lg hidden-xl">Delivered on <%= (delivery[0].delivery_date).strftime("%a, %b %u %Y") %></h4>
+						<h4 class="delivered-on-date hidden-xs visible-sm visible-md visible-lg visible-xl">Delivered on <%= (delivery[0].delivery_date).strftime("%A, %B %u %Y") %></h4>
+						<h6 class="show-delivery-stats-text show" id="show-delivery-stats-<%= delivery[0].id %>">&nbsp;  (<span>show</span> stats)</h6>
+						<h6 class="hide-delivery-stats-text hidden" id="hide-delivery-stats-<%= delivery[0].id %>">&nbsp;  (<span>hide</span> stats)</h6>
+					</div>
+					<div class="col-xs-10 col-sm-5 col-md-6 no-padding delivery-stats-holder hidden" id="delivery-stats-holder-<%= delivery[0].id %>">
+						<%= render(partial: 'delivery_stats_for_customer', locals: { delivery: delivery[0] })  %>
+					</div>
+				</div>
+				<div class="row no-margin delivery-second-row history-rows show" id="delivery-second-row-<%= delivery[0].id %>">
+					<% delivery[1].each do |drink| %>
+						<%= render(partial: 'drink_card_previous_delivery', locals: { drink: drink }) %>
+					<% end %>
+				</div>
+			</div>
+			<hr>
+		<% end %>
+	</div>
+</div>
+<div id="add_drink_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Add drink confirmation</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Add extra of this drink to your upcoming order?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "#", :class => 'text-center btn btn-success add-drink-button', remote: true do %>
+				<i class="fa fa-plus"></i>
+				Add it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
 		</div>
 	</div>
-	<div class="container" id="deliveries-view">
-		<% @next_delivery.each do |drink| %>
-			<%= render(partial: 'next_delivery_card_review', locals: { drink: drink }) %>
+</div>
+<div id="remove_drink_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Remove drink confirmation</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Remove this drink from your upcoming order?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "#", :class => 'subtract-drink-confirmation text-center btn btn-danger remove-drink-button', remote: true do %>
+				<i class="fa fa-minus"></i>
+				Remove it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
+<div id="customer_delivery_message" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Send a note about your upcoming delivery</h3>
+	</div>
+	<div class="modal-body">
+		<%= form_for @user_delivery_message, url: customer_delivery_messages_path, html: { method: :post } do |f| %>
+			<%= f.hidden_field :delivery_id, :value => @first_delivery.id %>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<%= f.text_area :message, :class => "form-control", placeholder: "Type your message here" %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-8">
+					<%= f.submit "Send", class: "btn btn-default btn-success formButton" %>
+				</div>
+			</div>
 		<% end %>
 	</div>
 </div>

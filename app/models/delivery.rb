@@ -51,4 +51,29 @@ class Delivery < ActiveRecord::Base
     where(status: "delivered").order('delivery_date DESC')
   }
   
+  # scope drink counts in this delivery
+  def delivery_drink_count
+    self.account_deliveries.sum(:quantity)
+  end
+  
+  # scope small drink count in this delivery
+  def delivery_small_count
+    self.account_deliveries.
+    where(:large_format => false ).
+    sum(:quantity)
+  end
+  
+  # scope large drink count in this delivery
+  def delivery_large_count
+    self.account_deliveries.
+    where(:large_format => true ).
+    sum(:quantity)
+  end
+  
+  # scope cellar drink count in this delivery
+  def delivery_cellar_count
+    self.account_deliveries.
+    where(:cellar => true ).
+    sum(:quantity)
+  end
 end

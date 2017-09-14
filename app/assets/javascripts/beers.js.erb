@@ -25,12 +25,16 @@ $(function() {
 	 if (gon.beer_array != undefined) {
 		 // create word cloud and return to view
 		if ( gon.beer_array.length > 0 ) {
-			$("#cloud-holder-full-page").jQCloud(gon.beer_array, {
-		  		autoResize: true
+			$(".cloud-holder-full-page").jQCloud(gon.beer_array, {
+		  		autoResize: true,
+  				height: 85,
+  				width: 100
 		     });
 		 } else {
-			$("#cloud-holder-full-page").jQCloud(word_array, {
-		  		autoResize: true
+			$(".cloud-holder-full-page").jQCloud(word_array, {
+		  		autoResize: true,
+  				height: 85,
+  				width: 100
 		     });
 		 }
 	 } else {

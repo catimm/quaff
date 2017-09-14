@@ -1,51 +1,28 @@
-<div class="col-xs-1 mobile-delivery-info-holder hidden-sm hidden-md hidden-lg hidden-xl"></div>
-<div class="col-xs-2 col-sm-1 mobile-delivery-info-holder">
-	<div class="delivery-info-box drinks">
-		<p>drinks</p>
-		<h4 class="delivery-preference-prompt"><%= @drink_count %></h4>
-	</div>	
-</div>
-<div class="col-xs-2 col-sm-1 mobile-delivery-info-holder">
-	<div class="delivery-info-box small">
-		<p>small</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_small %></h4>
-	</div>	
-</div>
-<div class="col-xs-2 col-sm-1 mobile-delivery-info-holder">
+<div class="delivery-info-box drinks">
+	<p>drinks</p>
+	<h4 class="delivery-preference-prompt"><%= delivery.delivery_drink_count %></h4>
+</div>	
+<div class="delivery-info-box small">
+	<p>small</p>
+	<h4 class="delivery-preference-prompt"><%= delivery.delivery_small_count %></h4>
+</div>	
+<% if delivery.delivery_large_count != 0 %>
 	<div class="delivery-info-box large">
 		<p>large</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_large %></h4>
-	</div>	
-</div>
-<div class="col-sm-1 hidden-xs">
-	<div class="delivery-info-box new">
-		<p>cooler</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_cooler %></h4>
-	</div>	
-</div>
-<div class="col-sm-1 hidden-xs">
-	<div class="delivery-info-box repeat">
+		<h4 class="delivery-preference-prompt"><%= delivery.delivery_large_count %></h4>
+	</div>
+<% end %>
+<% if delivery.delivery_cellar_count != 0 %>
+	<div class="delivery-info-box cellar">
 		<p>cellar</p>
-		<h4 class="delivery-preference-prompt"><%= @next_delivery_cellar %></h4>
-	</div>	
+		<h4 class="delivery-preference-prompt"><%= delivery.delivery_cellar_count %></h4>
+	</div>
+<% end %>		
+<div class="delivery-info-box total-price" 
+	data-toggle="tooltip" 
+	data-placement="top" 
+	title="Subtotal: <%= number_to_currency(delivery.subtotal, precision: 2) %>; Tax: <%= number_to_currency(delivery.sales_tax, precision: 2) %>; Total: <%= number_to_currency(@first_delivery.total_price, precision: 2) %>">
+	<p>total</p>
+	<h4 class="delivery-preference-prompt"><%= number_to_currency(delivery.total_price, precision: 2) %></h4>
 </div>
-<div class="col-xs-4 col-sm-7 mobile-delivery-info-holder">
-	<div class="delivery-info-box total-price-stats">
-		<p>total</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.total_price, precision: 2) %></h4>
-	</div>
-	<div class="show-more-price-info show hidden-xs">
-		<i class="fa fa-plus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to see the subtotal and sales tax."></i>
-	</div>
-	<div class="delivery-info-box subtotal hidden hidden-xs">
-		<p>subtotal</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.subtotal, precision: 2) %></h4>
-	</div>
-	<div class="delivery-info-box sales-tax hidden hidden-xs">
-		<p>tax</p>
-		<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery.sales_tax, precision: 2) %></h4>
-	</div>
-	<div class="show-less-price-info hidden hidden-xs">
-		<i class="fa fa-minus-square-o fa-lg" data-toggle="tooltip" data-placement="right" title="Click to hide the subtotal and sales tax."></i>
-	</div>
-</div>
+

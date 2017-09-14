@@ -2,17 +2,19 @@
 #
 # Table name: inventories
 #
-#  id             :integer          not null, primary key
-#  stock          :integer
-#  reserved       :integer
-#  order_queue    :integer
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  size_format_id :integer
-#  beer_id        :integer
-#  drink_price    :decimal(5, 2)
-#  drink_cost     :decimal(5, 2)
-#  limit_per      :integer
+#  id                  :integer          not null, primary key
+#  stock               :integer
+#  reserved            :integer
+#  order_queue         :integer
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  size_format_id      :integer
+#  beer_id             :integer
+#  drink_price         :decimal(5, 2)
+#  drink_cost          :decimal(5, 2)
+#  limit_per           :integer
+#  total_batch         :integer
+#  currently_available :boolean
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

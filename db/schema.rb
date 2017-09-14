@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170816190043) do
+ActiveRecord::Schema.define(version: 20170914053242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -223,10 +223,11 @@ ActiveRecord::Schema.define(version: 20170816190043) do
     t.integer  "user_delivery_id"
     t.integer  "original_quantity"
     t.integer  "new_quantity"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.integer  "beer_id"
     t.boolean  "change_noted"
+    t.integer  "account_delivery_id"
   end
 
   create_table "customer_delivery_messages", force: :cascade do |t|
@@ -315,13 +316,15 @@ ActiveRecord::Schema.define(version: 20170816190043) do
     t.integer  "stock"
     t.integer  "reserved"
     t.integer  "order_queue"
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.integer  "size_format_id"
     t.integer  "beer_id"
-    t.decimal  "drink_price",    precision: 5, scale: 2
-    t.decimal  "drink_cost",     precision: 5, scale: 2
+    t.decimal  "drink_price",         precision: 5, scale: 2
+    t.decimal  "drink_cost",          precision: 5, scale: 2
     t.integer  "limit_per"
+    t.integer  "total_batch"
+    t.boolean  "currently_available"
   end
 
   create_table "invitation_requests", force: :cascade do |t|
@@ -583,20 +586,12 @@ ActiveRecord::Schema.define(version: 20170816190043) do
   create_table "user_cellar_supplies", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
-    t.integer  "supply_type_id"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.integer  "quantity"
-    t.text     "cellar_note"
     t.float    "projected_rating"
-    t.text     "this_beer_descriptors"
-    t.string   "beer_style_name_one"
-    t.string   "beer_style_name_two"
-    t.string   "recommendation_rationale"
-    t.boolean  "is_hybrid"
-    t.string   "likes_style"
-    t.boolean  "admin_vetted"
     t.boolean  "purchased_from_knird"
+    t.integer  "account_id"
   end
 
   create_table "user_deliveries", force: :cascade do |t|
@@ -723,9 +718,10 @@ ActiveRecord::Schema.define(version: 20170816190043) do
     t.integer  "user_id"
     t.integer  "beer_id"
     t.datetime "removed_at"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.boolean  "admin_vetted"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.integer  "account_id"
+    t.float    "projected_rating"
   end
 
   create_table "zip_codes", force: :cascade do |t|

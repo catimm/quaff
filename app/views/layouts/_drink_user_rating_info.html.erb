@@ -1,18 +1,19 @@
-<% @user_rating_info = UserBeerRating.where(user_id: drink.user.id, beer_id: drink.account_delivery.beer.id) %>
+<% @user_rating_info = UserBeerRating.where(user_id: current_user.id, beer_id: drink.id) %>
 
 <% if !@user_rating_info.blank? %>
-	<% @user_rating = (@user_rating_info.average(:user_beer_rating).to_f).round(2) %>
+	<% @user_rating = (@user_rating_info.average(:user_beer_rating).to_f).round(1) %>
 	<% if @user_rating >= 10.0 %>
 		<% @user_rating = 10 %>
 	<% end %>
-	<p><span class="best-guess">Our guess</span>: <span class="best-guess"><%= drink.account_delivery.projected_rating %></span></p>	
-	<p><span class="user-rating-acknowledged">Your rating</span>:</p>
-	<h1 class="user-rating"><%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
+	<%= render 'layouts/user_initials_xsmall', friend: @user %>
+	<p class="delivery-user-rating-acknowledged">past rating:</p>
+	<h1 class="delivery-user-rating"><%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
 <% else %>
-	<p><span class="best-guess">Our guess</span>:</p>
-	<% if !drink.account_delivery.projected_rating.nil? %>
-		<h1 class="best-guess"><%= drink.account_delivery.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
+	<%= render 'layouts/user_initials_xsmall', friend: @user %>
+	<p class="delivery-best-guess-minimized">projected rating:</p>
+	<% if !drink.projected_rating.nil? %>
+		<h1 class="delivery-best-guess"><%= drink.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
 	<% else %>
-		<h1 class="best-guess"><%= drink.account_delivery.beer.best_guess %><span class="recent-user-rating-context">/10</span></h1>
+		<h1 class="delivery-best-guess"><%= drink.beer.best_guess %><span class="recent-user-rating-context">/10</span></h1>
 	<% end %>
 <% end %>

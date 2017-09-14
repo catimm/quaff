@@ -39,4 +39,10 @@ jQuery( function($) {
     $('a').tooltip();
     $('sup').tooltip();
     $('p').tooltip();
+    $('h1').tooltip();
+    $('h2').tooltip();
+    $('h3').tooltip();
+    $('h4').tooltip();
+    $('h5').tooltip();
+    $('h6').tooltip();
 });

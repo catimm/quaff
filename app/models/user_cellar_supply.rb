@@ -2,27 +2,20 @@
 #
 # Table name: user_cellar_supplies
 #
-#  id                       :integer          not null, primary key
-#  user_id                  :integer
-#  beer_id                  :integer
-#  supply_type_id           :integer
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
-#  quantity                 :integer
-#  cellar_note              :text
-#  projected_rating         :float
-#  this_beer_descriptors    :text
-#  beer_style_name_one      :string
-#  beer_style_name_two      :string
-#  recommendation_rationale :string
-#  is_hybrid                :boolean
-#  likes_style              :string
-#  admin_vetted             :boolean
-#  purchased_from_knird     :boolean
+#  id                   :integer          not null, primary key
+#  user_id              :integer
+#  beer_id              :integer
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  quantity             :integer
+#  projected_rating     :float
+#  purchased_from_knird :boolean
+#  account_id           :integer
 #
 
 class UserCellarSupply < ActiveRecord::Base
   belongs_to :user
+  belongs_to :account
   belongs_to :beer
   belongs_to :supply_type
 end

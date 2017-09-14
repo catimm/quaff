@@ -1,0 +1,30 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<div class="col-xs-3 brewery-image-holder-universal">
+		<% if !drink.beer.brewery.image.blank? %>
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+		<% else %>
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-xs-9 no-padding drink-name-and-info-holder-universal">
+		<%= render 'layouts/drink_name_and_info', drink: drink.beer %>	
+	</div>
+	<div class="drink-info-universal-show-more">
+		<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+	</div>
+	<div class="drink-info-universal-show-less hidden">
+		<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+	</div>
+</div>
+<div class="row no-margin drink-info-universal-second-row hidden">	
+	<hr>
+	<div class="col-xs-6 best-guess-universal">
+		<%= render 'layouts/delivered_drink_user_rating_info', drink: drink %>
+	</div>
+	<div class="col-xs-6 cloud-descriptor-holder-universal">
+		<div class="cloud-descriptors" id="drink_<%= drink.beer.id %>"></div>
+	</div>
+</div>
+<div class="row no-margin next-delivery-tile-third-last-row"></div>

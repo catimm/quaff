@@ -103,19 +103,20 @@ Rails.application.routes.draw do
   post '/connections/process_friend_changes_on_find_page/:id' => 'connections#process_friend_changes_on_find_page'
   
   # routes to drink pages
-  get '/drinks/deliveries/:id' => 'drinks#deliveries', :as => 'user_deliveries'
-  get '/drinks/cellar/:id' => 'drinks#cellar', :as => 'user_cellar'
-  get '/drinks/wishlist/:id' => 'drinks#wishlist', :as => 'user_wishlist'
+  get '/drinks/deliveries' => 'drinks#deliveries', :as => 'user_deliveries'
+  get '/drinks/cellar' => 'drinks#cellar', :as => 'user_cellar'
+  get '/drinks/wishlist' => 'drinks#wishlist', :as => 'user_wishlist'
   get '/drinks/supply/:id' => 'drinks#supply', :as => 'user_supply'
   get '/drinks/load_rating_form_in_supply/:id' => 'drinks#load_rating_form_in_supply'
   get '/drinks/reload_drink_skip_rating/:id' => 'drinks#reload_drink_skip_rating'
   post '/drinks/move_drink_to_cooler/:id' => 'drinks#move_drink_to_cooler', :as => 'move_drink_to_cooler'
   get '/drinks/add_supply_drink/:id' => 'drinks#add_supply_drink', :as => 'add_supply_drink'
   get '/drinks/drink_search/:id(/:query)' => 'drinks#drink_search', :as => 'drink_search'
-  post '/drinks/change_supply_drink/:id' => 'drinks#change_supply_drink', :as => 'change_supply_drink'
+  post '/drinks/add_cellar_drink/:id' => 'drinks#add_cellar_drink', :as => 'add_cellar_drink'
+  post '/drinks/add_wishlist_drink/:id' => 'drinks#add_wishlist_drink', :as => 'add_wishlist_drink'
   post '/drinks/wishlist_removal/:id' => 'drinks#wishlist_removal', :as => 'wishlist_removal'
   get '/drinks/supply_removal/:id' => 'drinks#supply_removal', :as => 'supply_removal'
-  post '/drinks/change_supply_drink_quantity/:id' => 'drinks#change_supply_drink_quantity', :as => 'change_supply_drink_quantity'
+  get '/drinks/change_delivery_drink_quantity/:id' => 'drinks#change_delivery_drink_quantity'
   post '/drinks/set_search_box_id/:id' => 'drinks#set_search_box_id', :as => 'set_search_box_id'
 
   # user ratings routes
@@ -230,6 +231,7 @@ Rails.application.routes.draw do
   get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
   get 'users/:user_id/ratings/new(.:format)/:id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
+  get 'breweries/:brewery_id/beers/beers/data' => 'beers#data', :defaults => { :format => 'json'}
   #get '/users/:user_id/ratings/new(.:format)' => 'ratings#new', :as => 'new_user_rating'
   
   # admin routes

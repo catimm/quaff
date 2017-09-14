@@ -230,39 +230,20 @@ $(function () {
           // ...as many words as you want
       ];
  
-	 // descriptor clouds for drink types
-	 if (gon.drink_type_descriptor_array != undefined) {
-			 // create word cloud and return to view
-		     for (i = 0; i < gon.drink_type_descriptor_array.length; i++) { 
-			    
-			    if ( gon.drink_type_descriptor_array[i][1].length > 0 ) {
-				    $("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(gon.drink_type_descriptor_array[i][1], {
-				  		autoResize: true
-				     });
-				 } else {
-					$("#drink_type_"+gon.drink_type_descriptor_array[i][0]).jQCloud(word_array, {
-				  		autoResize: true
-				     });
-				 }
-			 }
-	 } else if (gon.drink_descriptor_array != undefined) {
-			 
-			 // create word cloud and return to view
-		     for (i = 0; i < gon.drink_descriptor_array.length; i++) { 
-			    if ( gon.drink_descriptor_array[i][1].length > 0 ) {
-				    $("#drink_"+gon.drink_descriptor_array[i][0]).jQCloud(gon.drink_descriptor_array[i][1], {
-				  		
-				  		removeOverflowing: true
-				     });
-				 } else {
-					$("#drink_"+gon.drink_descriptor_array[i][0]).jQCloud(word_array, {
-				  		
-				  		removeOverflowing: true
-				     });
-				 }
-			 }
-	 } else {
-	 	return;
+	 // descriptor clouds for drinks
+	 if (gon.drink_descriptor_array != undefined) {
+		 // create word cloud and return to view
+	     for (i = 0; i < gon.drink_descriptor_array.length; i++) { 
+		    var div_id = "#drink_" + gon.drink_descriptor_array[i][0][0];
+		    if ( gon.drink_descriptor_array[i][1].length > 0 ) {
+			    $(div_id).jQCloud(gon.drink_descriptor_array[i][1], {
+					autoResize: true
+			     });
+			} else {
+				$(div_id).jQCloud(word_array, {
+					autoResize: true
+			     });
+			}
+		 }
 	 }
-	 
 });

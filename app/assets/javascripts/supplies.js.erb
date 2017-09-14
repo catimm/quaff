@@ -1,19 +1,5 @@
 $(function () {
 
-	// hide spinner
-	$(".spinner").hide();
-	
-	
-  	// show spinner on AJAX start
-	$(document).ajaxStart(function(){
-	  $(".spinner").show();
-	});
-	
-	// hide spinner on AJAX stop
-	$(document).ajaxStop(function(){
-	  $(".spinner").hide();
-	});
-	  
 	// set delay function
 	var delay = (function(){
 	  var timer = 0;
@@ -23,16 +9,7 @@ $(function () {
 	  };
 	})();
 
-	// search for drinks to add to supply
-	$(document).on("keyup", ".supply-drink-search", function() {
-		value = $(this).val();
-		delay(function(){
-			$.ajax({
-			  type: "GET",
-			  url: "/supplies/drink_search/1/" + value
-			});
-	    }, 500 );
-	});
+	
 	
 	// change drink cooler status
 	$(document).on("click", ".change-cooler-button", function() {
@@ -51,39 +28,7 @@ $(function () {
 		return false;
 	});
 	
-	// change drink cellar status
-	$(document).on("click", ".change-cellar-button", function() {
-		// hide this button
-		$(this).addClass('hidden');
-		//show the remove version of button
-		$(this).siblings('*[id*=cellar]').removeClass('hidden');
-		// get id of button
-		var this_id = $(this).attr('id');
-		// send info to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/supplies/change_supply_drink/" + this_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
 	
-	// change drink wishlist status
-	$(document).on("click", ".change-wishlist-button", function() {
-		// hide this button
-		$(this).addClass('hidden');
-		//show the remove version of button
-		$(this).siblings('*[id*=wishlist]').removeClass('hidden');
-		// get id of button
-		var this_id = $(this).attr('id');
-		// send info to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/supplies/change_supply_drink/" + this_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	});
 	
 	$(document).on("click", ".fridge-icon", function() {
 		var supply_id = $(this).attr('id');
@@ -171,60 +116,6 @@ $(function () {
 		return false;
 	});
 	
-	// allow customers to add or subtract drinks from supply
-	$(document).on("click", ".supply-quantity-change-minus", function() {
-		// get drink id
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		
-		// get drink quantity
-		var original_quantity = $("#drink-quantity-" + drink_id).html();
-		
-		// create new id
-		var new_id = drink_id + "-" + original_quantity
-		
-		// attach new id
-		$('#remove_drink_confirmation').children('.modal-body').children('.remove-button-holder').children('a').attr('id', new_id);
-
-		// show modal
-	    $('#remove_drink_confirmation').modal('show');
-
-	});
-	$(document).on("click", ".subtract-drink-confirmation", function() {
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[0];
-		var drink_quantity = split_id[1];
-		
-		// remove modal
-	    $('#remove_drink_confirmation').modal('hide');
-	    
-		// change quantity shown on screen
-		var new_quantity = drink_quantity - 1;
-		$("#drink-quantity-" + drink_id).html(new_quantity);
-			
-		// send to controller to change database 
-		$.ajax({
-		  type: "POST",
-		  url: "/supplies/change_supply_drink_quantity/subtract-" + drink_id
-		});
-	});
-	$(document).on("click", ".supply-quantity-change-add", function() {
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		
-		// change quantity shown on screen
-		var original_quantity = +($("#drink-quantity-" + drink_id).html());
-		var new_quantity = original_quantity + 1;
-		$("#drink-quantity-" + drink_id).html(new_quantity);
-		
-		// send to controller to change database
-		$.ajax({
-		  type: "POST",
-		  url: "/supplies/change_supply_drink_quantity/add-" + drink_id
-		});
-	});
+	
 	 
 });

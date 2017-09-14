@@ -10,7 +10,7 @@
 		<%= link_to @title_header, brewery_beer_path(drink.brewery.id, drink.id), :class => 'tile-header beer-tile-header' %>
 	<% end %>
 </div>
-<div class="col-xs-12 no-padding-right">
+<div class="col-xs-12 drink-style-col">
 	<% if !drink.beer_type_id.nil? %>
 		<h5 class="tile-subheader beer-info no-overflow beer-type-info"><%= drink.beer_type.beer_type_name %></h5>
 		<% if drink.beer_type.cellarable == true %>
@@ -24,7 +24,7 @@
 		<h5 class="tile-subheader beer-info">Style unknown</h5>
 	<% end %>
 </div>
-<div class="col-xs-6 no-padding-right">
+<div class="col-xs-6 col-sm-5 drink-stats-col">
 	<% if !drink.beer_abv.nil? %>
 		<h6 class="tile-subheader beer-info"><%= drink.beer_abv %>% ABV</h6>
 	<% else %>
@@ -32,9 +32,9 @@
 	<% end %>
 </div>
 <% if !drink.beer_ibu.nil? %>
-	<div class="col-xs-6 no-padding-left text-center ibu-div">
+	<div class="col-xs-6 col-sm-5 no-padding-left text-center ibu-div">
 		<h6 class="tile-subheader beer-info"><%= drink.beer_ibu %> IBUs</h6>
 	</div>
 <% else %>
-	<div class="col-xs-6"></div>
+	<div class="col-xs-6 col-sm-5"></div>
 <% end %>

@@ -1,6 +1,7 @@
 class DrinksController < ApplicationController
   before_filter :authenticate_user!
   include DrinkTypeDescriptorCloud
+  include DeliveredDrinkDescriptorCloud
   include DrinkDescriptorCloud
   include DrinkDescriptors
   include CreateNewDrink
@@ -14,72 +15,81 @@ class DrinksController < ApplicationController
     
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
-    @delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
-      
+    
     # determine if account has multiple users
     @number_of_users = User.where(account_id: current_user.account_id).count
-    Rails.logger.debug("Number of users: #{@number_of_users.inspect}")
+    #Rails.logger.debug("Number of users: #{@number_of_users.inspect}")
     
+    # get delivery info
+    @upcoming_delivery = Delivery.where(account_id: @user.account_id).where(status: ["user review", "in progress"]).first
+    if !@upcoming_delivery.blank?
+      # set next delivery variables
+      @first_delivery = @upcoming_delivery
       
+      # set delivery history variables
+      @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6)
+    else
+      # set delivery history variables
+      @first_delivery = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).first
       
-      # get delivery date info
-      if !@delivery.blank?
+      # set delivery history variables
+      @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6).offset(1)
+    end
+    
+    # get delivery drinks
+    @first_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
+    
+    # combine drinks from old deliveries into one array to get descriptor info
+    @drink_history_descriptors = Array.new
+    
+    # get delivery info from delivery history
+    @delivery_history_array = Array.new
+    
+    @remaining_deliveries.each do |delivery|
+      @this_delivery_array = Array.new
+      @this_delivery_array << delivery
+      @this_delivery_drinks = AccountDelivery.where(delivery_id: delivery.id)
+      @this_delivery_array << @this_delivery_drinks
+      @drink_history_descriptors << @this_delivery_drinks
+      @delivery_history_array << @this_delivery_array
+    end
+    #Rails.logger.debug("Drink Descriptor Array: #{@drink_history_descriptors.inspect}")
+      
         @time_now = Time.now
-        @next_delivery_date = @delivery.delivery_date
-        @next_delivery_review_start_date = @next_delivery_date - 3.days
+        @next_delivery_date = @first_delivery.delivery_date
         @next_delivery_review_end_date = @next_delivery_date - 1.day
-        if @time_now > @next_delivery_review_start_date && @time_now < @next_delivery_review_end_date
-          @current_review_time = true
-        end
-        @time_left = @next_delivery_review_end_date.to_i - Time.now.to_i
-        Rails.logger.debug("Delivery status: #{@delivery.status.inspect}")
+        #Rails.logger.debug("Delivery status: #{@delivery.status.inspect}")
         gon.review_period_ends = @time_left
-
-          # get next delivery drink info
-          @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
-  
-          # count number of drinks in delivery
-          @drink_count = @next_delivery.sum(:quantity)
-          # count number of drinks that are new to user
-          @next_delivery_cooler = 0
-          @next_delivery_cellar = 0
-          @next_delivery_small = 0
-          @next_delivery_large = 0
-          # cycle through next delivery drinks to get delivery counts
-          @next_delivery.each do |drink|
-            @quantity = drink.quantity
-            if drink.account_delivery.cellar == true
-              @next_delivery_cellar += (1 * @quantity)
-            else
-              @next_delivery_cooler += (1 * @quantity)
-            end
-            if drink.account_delivery.large_format == true
-              @next_delivery_large += (1 * @quantity) 
-            else
-              @next_delivery_small += (1 * @quantity)
-            end
-          end     
+   
         
           # create array to hold descriptors cloud
           @final_descriptors_cloud = Array.new
           
-          # get top descriptors for drink types the user likes
-          @next_delivery.each do |drink|
+          # get top descriptors for drinks in most recent delivery
+          @first_delivery_drinks.each do |drink|
             @drink_id_array = Array.new
-            @drink_type_descriptors = drink_descriptor_cloud(drink.account_delivery.beer)
+            @drink_type_descriptors = delivered_drink_descriptor_cloud(drink)
             @final_descriptors_cloud << @drink_type_descriptors
           end
+          # get top descriptors for drinks from old deliveries
+          @drink_history_descriptors.each do |array|
+             array.each do |drink|
+              @drink_id_array = Array.new
+              @drink_type_descriptors = delivered_drink_descriptor_cloud(drink)
+              @final_descriptors_cloud << @drink_type_descriptors
+             end
+          end
+          
           # send full array to JQCloud
-          gon.drink_descriptor_array = @final_descriptors_cloud
+          gon.delivered_drink_descriptor_array = @final_descriptors_cloud
+          #Rails.logger.debug("Descriptors array: #{gon.drink_descriptor_array.inspect}")
           
           # allow customer to send message
-          @user_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: @delivery.id).first
+          @user_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: @first_delivery.id).first
           #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
           if @user_delivery_message.blank?
             @user_delivery_message = CustomerDeliveryMessage.new
-          end
-        
-        end # end of check whether @delivery has data   
+          end 
     
   end # end deliveries method
 
@@ -87,6 +97,26 @@ class DrinksController < ApplicationController
     # set view chosen
     @cellar_chosen = "current"
     
+    # get user's delivery info
+    @user = User.find_by_id(current_user.id)
+    @user_id = @user.id
+    
+    # get cellar drinks
+    @cellar_drinks = UserCellarSupply.where(account_id: current_user.account_id)
+    
+    # create array to hold descriptors cloud
+    @final_descriptors_cloud = Array.new
+    
+    # get top descriptors for drinks in most recent delivery
+    @cellar_drinks.each do |drink|
+      @drink_id_array = Array.new
+      @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+      @final_descriptors_cloud << @drink_type_descriptors
+    end
+    
+    # send full array to JQCloud
+    gon.universal_drink_descriptor_array = @final_descriptors_cloud
+    #Rails.logger.debug("Descriptors array: #{gon.cellar_drink_descriptor_array.inspect}")
     
   end # end cellar method
   
@@ -94,6 +124,11 @@ class DrinksController < ApplicationController
     # set view chosen
     @wishlist_chosen = "current"
     
+    # get user's delivery info
+    @user = User.find_by_id(current_user.id)
+    
+    # get cellar drinks
+    @wishlist_drinks = Wishlist.where(user_id: current_user.id)
     
   end # end wishlist method
   
@@ -109,7 +144,7 @@ class DrinksController < ApplicationController
       @new_customer_delivery_message.save!
     end
     
-    redirect_to user_deliveries_path('next')
+    redirect_to user_deliveries_path
   end #send_delivery_message method
 
   def supply
@@ -274,21 +309,23 @@ class DrinksController < ApplicationController
       @search_drink_ids << drink.id
     end
     @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
+    #Rails.logger.debug("Drink results: #{@final_search_results.inspect}")
+        
+    #  get user info
+    @user = User.find_by_id(current_user.id)
     
     # create array to hold descriptors cloud
-    #@final_descriptors_cloud = Array.new
-    
+    @final_descriptors_cloud = Array.new
     # get top descriptors for drink types the user likes
-    #@final_search_results.each do |drink|
-    #  @drink_id_array = Array.new
-    #  @drink_type_descriptors = drink_descriptor_cloud(drink)
-    #  @final_descriptors_cloud << @drink_type_descriptors
-    #  #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
-    #end
+    @final_search_results.each do |drink|
+      @drink_id_array = Array.new
+      @drink_type_descriptors = drink_descriptor_cloud(drink)
+      @final_descriptors_cloud << @drink_type_descriptors
+    end
+    #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
     # send full array to JQCloud
-    #gon.drink_search_descriptor_array = @final_descriptors_cloud
-    
-    #Rails.logger.debug("Final Search results in method: #{@final_search_results.inspect}")
+    gon.universal_drink_descriptor_array = @final_descriptors_cloud
+    #Rails.logger.debug("Final Search results in method: #{@final_descriptors_cloud.inspect}")
 
     respond_to do |format|
       format.js
@@ -297,68 +334,52 @@ class DrinksController < ApplicationController
     
   end # end of drink_search method
   
-  def change_supply_drink
+  def add_cellar_drink
     # get drink info
-    @this_info = params[:id]
-    @this_info_split = @this_info.split("-");
-    @this_supply_type_designation = @this_info_split[0]
-    @this_action = @this_info_split[1]
-    @this_drink_id = @this_info_split[2]
-    
-    if @this_supply_type_designation != "wishlist"
-      # get supply type id
-      @this_supply_type = SupplyType.where(designation: @this_supply_type_designation).first
-      
-      # update User Supply table
-      if @this_action == "remove"
-        @user_supply = UserSupply.where(user_id: current_user.id, beer_id: @this_drink_id, supply_type_id: @this_supply_type.id).first
-        @user_supply.destroy!
-      else
-        # get drink best guess info
-        @best_guess = best_guess(@this_drink_id, current_user.id)
-        @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
-        if @projected_rating > 10
-          @projected_rating = 10
-        end
-        @user_supply = UserSupply.new(user_id: current_user.id, 
-                                      beer_id: @this_drink_id, 
-                                      supply_type_id: @this_supply_type.id, 
-                                      quantity: 1,
-                                      projected_rating: @projected_rating,
-                                      likes_style: @best_guess[0].likes_style,
-                                      this_beer_descriptors: @best_guess[0].this_beer_descriptors,
-                                      beer_style_name_one: @best_guess[0].beer_style_name_one,
-                                      beer_style_name_two: @best_guess[0].beer_style_name_two,
-                                      recommendation_rationale: @best_guess[0].recommendation_rationale,
-                                      is_hybrid: @best_guess[0].is_hybrid)
-        @user_supply.save!
-      end
-    
-    else # do this if this drink is being added to the wishlist
-     
-      # update Wishlist table
-      if @this_action == "remove"
-        @user_wishlist = Wishlist.where(user_id: current_user.id, beer_id: @this_drink_id).first
-        @user_wishlist.destroy!
-      else
-        # get drink best guess info
-        @best_guess = best_guess(@this_drink_id, current_user.id)
-        @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
-        if @projected_rating > 10
-          @projected_rating = 10
-        end
-        @user_wishlist = Wishlist.new(user_id: current_user.id, 
-                                      beer_id: @this_drink_id)
-        @user_wishlist.save!
-      end
-   
+    @this_drink_id = params[:id]
+
+    # get drink best guess info
+    @best_guess = best_guess(@this_drink_id, current_user.id)
+    @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
+    if @projected_rating > 10
+      @projected_rating = 10
     end
     
+    # create new user cellar supply entry
+    UserCellarSupply.create(user_id: current_user.id,
+                            account_id: current_user.account_id, 
+                            beer_id: @this_drink_id,
+                            quantity: 1,
+                            projected_rating: @projected_rating,
+                            purchased_from_knird: false)
+                            
     # don't update view
     render nothing: true
     
-  end # end of change_supply_drink method
+  end # end of add_cellar_drink method
+  
+  def add_wishlist_drink
+    # get drink info
+    @this_drink_id = params[:id]
+
+    # get drink best guess info
+    @best_guess = best_guess(@this_drink_id, current_user.id)
+    @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
+    if @projected_rating > 10
+      @projected_rating = 10
+    end
     
+    # create new user cellar supply entry
+    Wishlist.create(user_id: current_user.id,
+                    account_id: current_user.account_id, 
+                    beer_id: @this_drink_id,
+                    projected_rating: @projected_rating)
+                            
+    # don't update view
+    render nothing: true
+    
+  end # end of add_wishlist_drink method
+   
   def wishlist_removal
     @drink_to_remove = Wishlist.where(user_id: current_user.id, beer_id: params[:id]).where("removed_at IS NULL").first
     @drink_to_remove.update(removed_at: Time.now)
@@ -378,43 +399,118 @@ class DrinksController < ApplicationController
 
   end # end supply removal
   
-  def change_supply_drink_quantity
+  def change_delivery_drink_quantity
     # get data to add/update
     @data = params[:id]
     @data_split = @data.split("-")
     @add_or_subtract = @data_split[0]
-    @user_supply_id = @data_split[1]
+    @account_delivery_id = @data_split[1]
     
-    # get User Supply info
-    @user_supply_info = UserSupply.find(@user_supply_id)
+    # get Account Delivery info
+    @account_delivery_info = AccountDelivery.find_by_id(@account_delivery_id)
+    
+    # get User Delivery Info
+    @user_delivery_info = UserDelivery.where(account_delivery: @account_delivery_id, delivery_id: @account_delivery_info.delivery_id, user_id: current_user.id)[0]
+    
+    # get Delivery Info
+    @delivery = Delivery.find_by_id(@account_delivery_info.delivery_id)
+    
+    # get Inventory info
+    @drink_inventory = Inventory.find_by_id(@account_delivery_info.inventory_id)
     
     # adjust drink quantity
-    @original_quantity = @user_supply_info.quantity
-
+    @original_account_quantity = @account_delivery_info.quantity
+    @original_user_quantity = @user_delivery_info.quantity
+    
+    # get related delivery costs
+    @originl_unit_subtotal_cost = @account_delivery_info.inventory.drink_cost
+    @originl_unit_subtotal_price = @account_delivery_info.inventory.drink_price
+    @originl_unit_tax = @originl_unit_subtotal_price * 0.096
+    @originl_unit_total = @originl_unit_subtotal_price + @originl_unit_tax
+    @original_delivery_subtotal = @delivery.subtotal
+    @original_delivery_tax = @delivery.sales_tax
+    @original_delivery_total = @delivery.total_price
+    
+    # add customer change to Customer Delivery Change Table
+    # first find if the customer has already changed this drink in this delivery
+    @customer_delivery_change = CustomerDeliveryChange.where(account_delivery_id: @account_delivery_id, 
+                                                              delivery_id: @delivery.id,
+                                                              beer_id: @account_delivery_info.beer_id)[0]
+    # if no changes already exist, create a new change log
+    if @customer_delivery_change.blank?
+      @customer_delivery_change =  CustomerDeliveryChange.create(user_id: current_user.id, 
+                                                                  delivery_id: @delivery.id, 
+                                                                  user_delivery_id: @user_delivery_info.id,
+                                                                  original_quantity: @original_account_quantity,
+                                                                  beer_id: @account_delivery_info.beer_id,
+                                                                  change_noted: false,
+                                                                  account_delivery_id: @account_delivery_id)
+    end
+                                   
+    # make DB changes
     if @add_or_subtract == "add"
       # set new quantity
-      @new_quantity = @original_quantity + 1
+      @new_account_quantity = @original_account_quantity + 1
+      
+      # set new delivery costs
+      @new_account_drink_cost = @account_delivery_info.drink_cost + @originl_unit_subtotal_cost
+      @new_account_drink_price = @account_delivery_info.drink_price + @originl_unit_subtotal_price
+      @new_delivery_subtotal = @original_delivery_subtotal + @originl_unit_subtotal_price
+      @new_delivery_sales_tax = @originl_unit_tax + @original_delivery_tax
+      @new_delivery_total_price = @originl_unit_total + @original_delivery_total
+      
+      # update DB
+      @drink_inventory.decrement!(:stock)
+      @drink_inventory.increment!(:reserved)
+      @user_delivery_info.increment!(:quantity)
+      @account_delivery_info.update(quantity: @new_account_quantity, drink_cost: @new_account_drink_cost, drink_price: @new_account_drink_price)
+      @delivery.update(subtotal: @new_delivery_subtotal, sales_tax: @new_delivery_sales_tax, total_price: @new_delivery_total_price)
+    
+      # update customer change to Customer Delivery Change Table
+      @customer_delivery_change.update(new_quantity: @new_account_quantity)
+      
     else
       # set new quantity
-      @new_quantity = @original_quantity - 1
+      @new_account_quantity = @original_account_quantity - 1
+      @new_user_quantity = @original_user_quantity - 1
+     
+      # update User Delivery table in DB
+      if @new_user_quantity == 0
+        # update quantity info
+        @user_delivery_info.destroy
+      else
+        # update quantity info
+        @user_delivery_info.decrement!(:quantity)
+      end
+      # update Account Delivery table in DB
+      if @new_account_quantity == 0
+        # update quantity info
+        @account_delivery_info.destroy
+      else
+        # set new user account costs
+        @new_account_drink_cost = @account_delivery_info.drink_cost - @originl_unit_subtotal_cost
+        @new_account_drink_price = @account_delivery_info.drink_price - @originl_unit_subtotal_price
+        # update quantity info
+        @account_delivery_info.update(quantity: @new_account_quantity, drink_cost: @new_account_drink_cost, drink_price: @new_account_drink_price)
+      end
+      
+      # set new delivery costs
+      @new_delivery_subtotal = @original_delivery_subtotal - @originl_unit_subtotal_price
+      @new_delivery_sales_tax = @original_delivery_tax - @originl_unit_tax
+      @new_delivery_total_price = @original_delivery_total - @originl_unit_total 
+      
+      # update Delivery table in DB
+      @delivery.update(subtotal: @new_delivery_subtotal, sales_tax: @new_delivery_sales_tax, total_price: @new_delivery_total_price)
+      
+      # update Inventory table in DB
+      @drink_inventory.increment!(:stock)
+      @drink_inventory.decrement!(:reserved)
+      
+      # update customer change to Customer Delivery Change Table
+      @customer_delivery_change.update(new_quantity: @new_account_quantity)
     end
 
-    if @new_quantity == 0
-      # update user quantity info
-      @user_supply_info.destroy
-    else
-      # update user quantity info
-      @user_supply_info.update(quantity: @new_quantity)
-    end
-    
-    # set view
-    if @user_supply_info.supply_type_id == 1
-      @view = 'cooler'
-    else
-      @view = 'cellar'
-    end
-
-    render js: "window.location = '#{user_supply_path(current_user.id, @view)}'"
+    render js: "window.location.pathname = '#{user_deliveries_path(current_user.id, 'next')}'"
   end # end change_supply_drink_quantity method
   
   def set_search_box_id

@@ -1,0 +1,48 @@
+<%= include_gon %>
+<script type="text/javascript">
+	// close delivery history views after descriptor clouds load/DOM loads
+	function hide_extra_drink_info() {
+	    $(".drink-info-universal-show-less").removeClass("show").addClass("hidden");
+		$(".drink-info-universal-show-more").removeClass("hidden").addClass("show");
+		$(".drink-info-universal-second-row").removeClass("show").addClass("hidden");
+	}
+	// default word cloud if no descriptors exist 
+	var word_array = [
+          {text: "descriptors", weight: 15},
+          {text: "no", weight: 7},
+          {text: "yet", weight: 4},
+          // ...as many words as you want
+      ];
+	// descriptor clouds for cellar, wishlist and searched drinks
+	 if (gon.universal_drink_descriptor_array != undefined) {
+		 // count drinks
+		 var drink_count = 0;
+		 // create word cloud and return to view
+	     for (i = 0; i < gon.universal_drink_descriptor_array.length; i++) { 
+		    var div_id = "#drink_" + gon.universal_drink_descriptor_array[i][0][0];
+		    if ( gon.universal_drink_descriptor_array[i][1].length > 0 ) {
+			    $(div_id).jQCloud(gon.universal_drink_descriptor_array[i][1], {
+					autoResize: true
+			     });
+			} else {
+				$(div_id).jQCloud(word_array, {
+					autoResize: true
+			     });
+			}
+			drink_count++;
+			 if(drink_count == gon.universal_drink_descriptor_array.length) {
+				setTimeout(hide_extra_drink_info, 50);
+			}
+		 }
+	 }
+</script>
+<% drinks.each do |drink| %>
+	<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="drink-tile-<%= drink.id %>">
+		<div class="drink-delivery-tile">
+			<%= render 'layouts/search_drink_info_common', drink: drink %>
+		</div>
+	</div>	
+<% end %>
+<div class="col-xs-12">
+	<%= js_will_paginate @final_search_results %>
+</div>

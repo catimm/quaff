@@ -29,7 +29,7 @@ class BeersController < ApplicationController
      # get unique customer ids
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
      #@role_ids = [1, 2, 3, 4] 
-     @customers = UserSubscription.all
+     @customers = UserSubscription.where(currently_active: true)
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
@@ -96,28 +96,28 @@ class BeersController < ApplicationController
    end # end of getting user data for admins
     
     # grab beer info
-    @beer = Beer.where(id: params[:id])[0]    
+    @drink = Beer.find_by_id(params[:id])    
     # find if user is tracking this beer already
-    @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @beer.id).where("removed_at IS NULL").first
+    @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @drink.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
-    #Rails.logger.debug("after admin beer's info: #{@beer.inspect}")
-    @beer = best_guess(@beer.id, current_user.id)[0]
-    #Rails.logger.debug("after best guess beer's info: #{@beer.inspect}")
+    #Rails.logger.debug("after admin beer's info: #{@drink.inspect}")
+    @drink = best_guess(@drink.id, current_user.id)[0]
+    #Rails.logger.debug("after best guess beer's info: #{@drink.likes_style.inspect}")
     
     # get user's ratings for this beer if any exist
-    @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @beer.id).order('created_at DESC')
+    @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @drink.id).order('created_at DESC')
     @number_of_ratings = @user_rating_for_this_beer.count
     
     # get beer readiness info
-    if @beer.vetted == true || @beer.user_addition == false
+    if @drink.vetted == true || @drink.user_addition == false
       @drink_is_ready == true
     else
       @drink_is_ready == false
     end
-    
+
     # send beer ids to javascript file to create jcloud
     beer_descriptor = Array.new
-    @beer_descriptors = Beer.find(@beer.id).descriptors
+    @beer_descriptors = Beer.find_by_id(@drink.id).descriptors
     @beer_descriptors.each do |descriptor|
       @descriptor = descriptor["name"]
       beer_descriptor << @descriptor
@@ -132,7 +132,7 @@ class BeersController < ApplicationController
     end
     #Rails.logger.debug("Each beer descriptors: #{cloud_array.inspect}")
      
-    gon.beer_array = cloud_array.first(7)
+    gon.beer_array = cloud_array.first(5)
   end
   
   def create

@@ -1,23 +1,238 @@
 $(function () {
 	
+	// set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	// hide spinner
+	$(".spinner-text").hide();
+	
+  	// show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner-text").show();
+	});
+	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner-text").hide();
+	});
+	
+	// search for drinks to add to Cellar or Wishlist
+	$(document).on("keyup", ".supply-drink-search", function() {
+		value = $(this).val();
+		delay(function(){
+			$.ajax({
+			  type: "GET",
+			  url: "/drinks/drink_search/1/" + value
+			});
+	    }, 500 );
+	});
+	
+	// close delivery history views after descriptor clouds load/DOM loads
+	function hide_extra_drink_info() {
+	    $(".drink-info-universal-show-less").removeClass("show").addClass("hidden");
+		$(".drink-info-universal-show-more").removeClass("hidden").addClass("show");
+		$(".drink-info-universal-second-row").removeClass("show").addClass("hidden");
+	}
+	function hide_delivery_history() {
+		$(".delivery-second-row.history-rows").removeClass("show").addClass("hidden");
+	}
+	
+	// default word cloud if no descriptors exist 
+	var word_array = [
+          {text: "descriptors", weight: 15},
+          {text: "no", weight: 7},
+          {text: "yet", weight: 4},
+          // ...as many words as you want
+      ];
+ 
+	 // descriptor clouds for delivered drinks
+	 if (gon.delivered_drink_descriptor_array != undefined) {
+		 // count drinks
+		 var array_count = 0;
+		 // create word cloud and return to view
+	     for (i = 0; i < gon.delivered_drink_descriptor_array.length; i++) { 
+		    var div_id = "#account_drink_" + gon.delivered_drink_descriptor_array[i][0][0];
+		    if ( gon.delivered_drink_descriptor_array[i][1].length > 0 ) {
+			    $(div_id).jQCloud(gon.delivered_drink_descriptor_array[i][1], {
+					autoResize: true
+			     });
+			} else {
+				$(div_id).jQCloud(word_array, {
+					autoResize: true
+			     });
+			}
+			 array_count++;
+			 if(array_count == gon.delivered_drink_descriptor_array.length) {
+				setTimeout(hide_extra_drink_info, 10);
+				setTimeout(hide_delivery_history, 20);
+			}
+		 }
+	 }
+	
+	// descriptor clouds for cellar, wishlist and searched drinks
+	 if (gon.universal_drink_descriptor_array != undefined) {
+		 //console.log(gon.universal_drink_descriptor_array);
+		 // count drinks
+		 var drink_count = 0;
+		 // create word cloud and return to view
+	     for (i = 0; i < gon.universal_drink_descriptor_array.length; i++) { 
+		    var div_id = "#drink_" + gon.universal_drink_descriptor_array[i][0][0];
+		    if ( gon.universal_drink_descriptor_array[i][1].length > 0 ) {
+			    $(div_id).jQCloud(gon.universal_drink_descriptor_array[i][1], {
+					autoResize: true
+			     });
+			} else {
+				$(div_id).jQCloud(word_array, {
+					autoResize: true
+			     });
+			}
+			drink_count++;
+			 if(drink_count == gon.universal_drink_descriptor_array.length) {
+				setTimeout(hide_extra_drink_info, 10);
+			}
+		 }
+	 }
+	
+	 
 	// set height of first row of drink information
 	drink_info_row_height = $(".drink-name-and-info-holder-universal").height();
-	$(".cloud-descriptors").height(drink_info_row_height);
 	$(".brewery-image-holder-universal").height(drink_info_row_height - 10);
+	
+	// show first row delivery drink information
+	$(document).on("click", ".delivery-drinks-show-more", function() {
+		var this_id = $(this).attr('id');
+		var delivery_id = this_id.replace('delivery-drinks-more-','');
+		$(this).siblings(".delivery-drinks-show-less").removeClass("hidden").addClass("show");
+		$(this).parent("#delivery-toggle-holder-"+delivery_id).parent("#delivery-first-row-"+delivery_id).siblings("#delivery-second-row-"+delivery_id).removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
+	// hide first row delivery drink information
+	$(document).on("click", ".delivery-drinks-show-less", function() {
+		var this_id = $(this).attr('id');
+		var delivery_id = this_id.replace('delivery-drinks-less-','');
+		$(this).siblings(".delivery-drinks-show-more").removeClass("hidden").addClass("show");
+		$(this).parent("#delivery-toggle-holder-"+delivery_id).parent("#delivery-first-row-"+delivery_id).siblings("#delivery-second-row-"+delivery_id).removeClass("show").addClass("hidden");
+		$(this).removeClass("show").addClass("hidden");
+	});
 		
-	// allow customers to see more drink information
+	// allow customers to see second row of drink information
 	$(document).on("click", ".drink-info-universal-show-more", function() {
 		$(this).siblings(".drink-info-universal-show-less").removeClass("hidden").addClass("show");
 		$(this).parent(".drink-info-universal-first-row").siblings(".drink-info-universal-second-row").removeClass("hidden").addClass("show");
 		$(this).removeClass("show").addClass("hidden");
-
+		if ($(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").hasClass("hidden")) {
+			$(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").removeClass("hidden").addClass("show");
+		}
 	});
 	
-	// allow customers to hide extra drink information
+	// allow customers to hide second row of drink information
 	$(document).on("click", ".drink-info-universal-show-less", function() {
 		$(this).siblings(".drink-info-universal-show-more").removeClass("hidden").addClass("show");
 		$(this).parent(".drink-info-universal-first-row").siblings(".drink-info-universal-second-row").removeClass("show").addClass("hidden");
 		$(this).removeClass("show").addClass("hidden");
+		if ($(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").hasClass("show")) {
+			$(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").removeClass("show").addClass("hidden");
+		}
+	});
+	
+	$(document).on("click", ".delivery-quantity-add", function() {
+		// get drink id
+		var this_id = $(this).attr('id');
+		var split_id = this_id.split("-");
+		var drink_id = split_id[3];
+		// attach new id
+		$('#add_drink_confirmation')
+			.children('.modal-body')
+			.children('.add-button-holder')
+			.children('a')
+			.attr('href', "/drinks/change_delivery_drink_quantity/add-" + drink_id);
+
+		// show modal
+	    $('#add_drink_confirmation').modal('show');
+
+	});
+	
+	$(document).on("click", ".delivery-quantity-subtract", function() {
+		// get drink id
+		var this_id = $(this).attr('id');
+		var split_id = this_id.split("-");
+		var drink_id = split_id[3];
+		// attach new id
+		$('#remove_drink_confirmation')
+			.children('.modal-body')
+			.children('.remove-button-holder')
+			.children('a')
+			.attr('href', "/drinks/change_delivery_drink_quantity/subtract-" + drink_id);
+
+		// show modal
+	    $('#remove_drink_confirmation').modal('show');
+
+	});
+	
+	// show delivery stats for upcoming delivery
+	$(document).on("click", ".show-delivery-stats-text", function() {
+		var this_id = $(this).attr('id');
+		var delivery_id = this_id.replace('show-delivery-stats-','');
+		$(this).siblings(".hide-delivery-stats-text").removeClass("hidden").addClass("show");
+		$(this).parent("#delivery-toggle-holder-"+delivery_id).siblings("#delivery-stats-holder-"+delivery_id).removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
+	// hide delivery stats for upcoming delivery
+	$(document).on("click", ".hide-delivery-stats-text", function() {
+		var this_id = $(this).attr('id');
+		var delivery_id = this_id.replace('hide-delivery-stats-','');
+		$(this).siblings(".show-delivery-stats-text").removeClass("hidden").addClass("show");
+		$(this).parent("#delivery-toggle-holder-"+delivery_id).siblings("#delivery-stats-holder-"+delivery_id).removeClass("show").addClass("hidden");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
+	// change drink cellar status
+	$(document).on("click", ".change-cellar-button", function() {
+		// get id of button
+		var this_id = $(this).attr('id');
+		var drink_id = this_id.replace('cellar-add-','');
+		
+		// hide this button
+		$(this).removeClass('show').addClass('hidden');
+		//show the 'in cellar' version of button
+		$(this).siblings('#in-cellar-'+drink_id).removeClass('hidden').addClass('show');
+		
+		// send info to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/drinks/add_cellar_drink/" + drink_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	});
+	
+	// change drink wishlist status
+	$(document).on("click", ".change-wishlist-button", function() {
+		// get id of button
+		var this_id = $(this).attr('id');
+		var drink_id = this_id.replace('wishlist-add-','');
+		
+		// hide this button
+		$(this).removeClass('show').addClass('hidden');
+		//show the 'in cellar' version of button
+		$(this).siblings('#in-wishlist-'+drink_id).removeClass('hidden').addClass('show');
+		
+		// send info to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/drinks/add_wishlist_drink/" + drink_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
 	});
 	
 });
+	

@@ -1,6 +1,6 @@
 <% if !wishlist.nil? %>
 	<%= link_to "#", class: 'btn btn-danger btn-primary formButton-track-beer-stop wishlist-remove-drink the-wishlist-button' do %>
-		<i class="fa fa-minus"> remove drink from your wishlist</i>
+		<i class="fa fa-minus"> remove from wishlist</i>
 	<% end %>
 	<p class="wishlist-added-info">added to wishlist on <%= (wishlist.created_at).strftime("%b %e, %Y") %></p>
 <% else %>
