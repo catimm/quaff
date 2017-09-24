@@ -8,7 +8,7 @@ class Admin::RecommendationsController < ApplicationController
     @id_info = params[:id]
     @split_info = @id_info.split('-')
     @chosen_account_id = @split_info[0]
-    Rails.logger.debug("Chosen ID: #{@chosen_account_id.inspect}")
+    #Rails.logger.debug("Chosen ID: #{@chosen_account_id.inspect}")
     @view = @split_info[1]
     #Rails.logger.debug("Chosen View: #{@view.inspect}")
     
@@ -20,16 +20,16 @@ class Admin::RecommendationsController < ApplicationController
     
     # get chosen user info
     @chosen_user = User.find_by_id(@chosen_account_owner_user_id)
-    Rails.logger.debug("Chosen user: #{@chosen_user.inspect}")
+    #Rails.logger.debug("Chosen user: #{@chosen_user.inspect}")
     
     # get user's delivery info
     @delivery_preferences = DeliveryPreference.where(user_id: @chosen_account_owner_user_id).first
     @customer_next_delivery = Delivery.where(account_id: @chosen_account_id).where.not(status: "delivered").first
-    Rails.logger.debug("Next Delivery info: #{@customer_next_delivery.inspect}")
+    #Rails.logger.debug("Next Delivery info: #{@customer_next_delivery.inspect}")
       
     # get recommended drinks by user
     @drink_recommendations = UserDrinkRecommendation.where(user_id: @chosen_account_owner_user_id)
-    Rails.logger.debug("Drink Reccos: #{@drink_recommendations.inspect}")
+    #Rails.logger.debug("Drink Reccos: #{@drink_recommendations.inspect}")
     
     if @view == "in_stock"
       # set view in CSS

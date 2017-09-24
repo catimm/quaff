@@ -882,7 +882,7 @@ desc "update customers subscriptions"
 task :update_customer_subscriptions => :environment do
   # find customers whose subscription expires today  
     @expiring_subscriptions = UserSubscription.where(active_until: DateTime.now.beginning_of_day.. DateTime.now.end_of_day)
-    Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
+    #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
     
     # loop through each customer and update 
     @expiring_subscriptions.each do |customer|

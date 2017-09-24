@@ -804,7 +804,7 @@ class DeliverySettingsController < ApplicationController
       # get price estimate
       @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
       @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
-      Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
+      #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
       end
     
     # completing total cost estimate
