@@ -15,7 +15,7 @@ class InvitationsController < Devise::InvitationsController
     # Set the value for :invitation_sent_at because we skip calling the Devise Invitable method deliver_invitation which normally sets this value
     @invited_user.update_attribute :invitation_sent_at, Time.now.utc unless @invited_user.invitation_sent_at
     # show raw token for dev purposes
-    Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
+    #Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
     
     # send original email invitation
     UserMailer.select_invite_email(@invited_user, current_user).deliver_now  
@@ -62,6 +62,15 @@ class InvitationsController < Devise::InvitationsController
     
   end # end of invite_guest action
   
+  # method to allow account owner to invite a guest
+  def invite_friend
+    @invitor_id = params[:id]
+    @invitation_code = SpecialCode.where(user_id: current_user.id)[0]
+    # create new user object
+    @new_mate = User.new
+    
+  end # end of invite_guest action
+  
   def process_mate_invite
     # add invited person to User model
     @invited_user = User.invite!(invite_params, current_inviter) do |u|
@@ -82,8 +91,80 @@ class InvitationsController < Devise::InvitationsController
     # send original email invitation
     UserMailer.guest_invite_email(@invited_user, current_user).deliver_now  
     
+    # redirect to mates page
     redirect_to account_settings_mates_path(@invitor.id)
+         
   end # end of process_invite_guest action
+  
+  def process_friend_invite
+    # add invited person to User model
+    @invited_user = User.invite!(invite_params, current_inviter) do |u|
+      # Skip sending the default Devise Invitable e-mail
+      u.skip_invitation = true
+    end
+    # show raw token for dev purposes
+    #Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
+    # get info on invitor
+    @invitor = User.find_by_id(params[:user][:invited_by_id])
+    # get invitor invitation code
+    @invitation_code = SpecialCode.where(user_id: @invitor.id)[0]
+    # get a random color for the user
+    @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+    # Set the value for :invitation_sent_at because we skip calling the Devise Invitable method deliver_invitation which normally sets this value
+    @invited_user.attributes = {invitation_sent_at: Time.now.utc, role_id: 4, getting_started_step: 0, 
+                                    cohort: "guest", user_color: @user_color, special_code: @invitation_code.special_code}
+    @invited_user.save(validate: false)                         
+    
+    # connect friend in friend table 
+    Friend.create(user_id: @invitor.id, friend_id: @invited_user.id, confirmed: false, mate: false)
+    
+    # send original email invitation
+    UserMailer.friend_invite_email(@invited_user, current_user).deliver_now 
+    
+    # redirect to mates page
+    redirect_to manage_friends_path
+         
+  end # end of process_invite_guest action
+  
+  def check_invited_mate_status
+    # find if invited user already has a paid account
+    @invited_user = User.find_by_email(params[:id])
+    
+    if !@invited_user.blank?
+      if @invited_user.account_id.nil?
+        @status = "good"
+      else
+        @status = "bad"
+      end
+    else
+      @status = "good"
+    end
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+      
+  end # end check_invited_status
+  
+  def check_invited_friend_status
+    # find if invited user already has an account
+    @invited_user = User.find_by_email(params[:id])
+    
+    if !@invited_user.blank?
+      if @invited_user.role_id == 6
+        @status = "good"
+      else
+        @status = "bad"
+      end
+    else
+      @status = "good"
+    end
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+      
+  end # end check_invited_status
   
   private
   

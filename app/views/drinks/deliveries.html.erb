@@ -81,8 +81,8 @@
 						<div class="delivery-drinks-show-less hidden" id="delivery-drinks-less-<%= delivery[0].id %>">
 							<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
 						</div>
-						<h4 class="delivered-on-date visible-xs hidden-sm hidden-md hidden-lg hidden-xl">Delivered on <%= (delivery[0].delivery_date).strftime("%a, %b %u %Y") %></h4>
-						<h4 class="delivered-on-date hidden-xs visible-sm visible-md visible-lg visible-xl">Delivered on <%= (delivery[0].delivery_date).strftime("%A, %B %u %Y") %></h4>
+						<h4 class="delivered-on-date visible-xs hidden-sm hidden-md hidden-lg hidden-xl">Delivered on <%= (delivery[0].delivery_date).strftime("%a, %b %-d %Y") %></h4>
+						<h4 class="delivered-on-date hidden-xs visible-sm visible-md visible-lg visible-xl">Delivered on <%= (delivery[0].delivery_date).strftime("%A, %B %-d %Y") %></h4>
 						<h6 class="show-delivery-stats-text show" id="show-delivery-stats-<%= delivery[0].id %>">&nbsp;  (<span>show</span> stats)</h6>
 						<h6 class="hide-delivery-stats-text hidden" id="hide-delivery-stats-<%= delivery[0].id %>">&nbsp;  (<span>hide</span> stats)</h6>
 					</div>
@@ -166,6 +166,55 @@
 				</div>
 			</div>
 		<% end %>
+	</div>
+</div>
+<div id="confirm_cellar_move_single" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm cellar move</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-8">
+				<h4>Move this drink to your cellar?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "#", :class => 'text-center btn btn-success add-drink-button', :id => 'move-to-cellar-button-single', remote: true do %>
+				<i class="fa fa-chevron-circle-right"></i>
+				Move it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
+<div id="confirm_cellar_move_multiple" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm cellar move</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-8">
+				<h4>Move how many to your cellar?</h4>
+			</div>
+			<div class="col-xs-12 col-sm-4 quantity-selector">
+				<%= select_tag('cellar_drink_number', options_for_select([]), class:"btn btn-success dropdown-toggle", prompt: "Choose" ) %>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "#", disabled: true, :class => 'text-center btn btn-success add-drink-button', :id => 'move-to-cellar-button-multiple', remote: true do %>
+				<i class="fa fa-chevron-circle-right"></i>
+				Move it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+		</div>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

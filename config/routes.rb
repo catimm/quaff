@@ -5,7 +5,11 @@ Rails.application.routes.draw do
                                     passwords: "passwords" }
   devise_scope :user do
     get 'users/invitation/invite_mate/:id' => 'invitations#invite_mate', :as => 'invite_mate'
+    get '/users/invitation/invite_mate/users/invitation/check_invited_mate_status/:id' => 'invitations#check_invited_mate_status', :constraints => { :id => /[^\/]+/ }
     post 'users/invitation/process_mate_invite' => 'invitations#process_mate_invite', :as => 'process_mate_invite'
+    get 'users/invitation/invite_friend/:id' => 'invitations#invite_friend', :as => 'invite_friend'
+    get '/users/invitation/invite_friend/users/invitation/check_invited_mate_status/:id' => 'invitations#check_invited_friend_status', :constraints => { :id => /[^\/]+/ }
+    post 'users/invitation/process_friend_invite' => 'invitations#process_friend_invite', :as => 'process_friend_invite'
   end
   
   resources :users do
@@ -62,6 +66,8 @@ Rails.application.routes.draw do
   get '/users/account_settings_membership/:id' => 'users#account_settings_membership', :as => 'account_settings_membership'  
   get '/users/account_settings_profile/:id' => 'users#account_settings_profile', :as => 'account_settings_profile' 
   get '/users/account_settings_mates/:id' => 'users#account_settings_mates', :as => 'account_settings_mates'
+  get '/users/send_mate_invite_reminder/:id' => 'users#send_mate_invite_reminder', :as => 'send_mate_invite_reminder'
+  get '/users/drop_mate/:id' => 'users#drop_mate'
   get '/users/account_settings_cc/:id' => 'users#account_settings_cc', :as => 'account_settings_cc'
   get '/users/plan_rewewal_update/:id' => 'users#plan_rewewal_update', :as => 'plan_rewewal_update' 
   post '/users/process_user_plan_change/:id' => 'users#process_user_plan_change', :as => 'process_user_plan_change'
@@ -96,10 +102,12 @@ Rails.application.routes.draw do
   post '/style_settings/update_styles_preferences/:id' => 'style_settings#update_styles_preferences', :as => 'user_style_preference'
   
   # routes to connections pages
-  get '/connections/manage_friends/:id' => 'connections#manage_friends', :as => 'manage_friends'
+  get '/connections/manage_friends' => 'connections#manage_friends', :as => 'manage_friends'
   get '/connections/find_friends/:id' => 'connections#find_friends', :as => 'find_friends'
   get '/connections/friend_search/:id(/:query)' => 'connections#process_friend_search', :as => 'friend_search'
-  post '/connections/process_friend_changes/:id' => 'connections#process_friend_changes'
+  get '/connections/add_connection/:id' => 'connections#add_connection'
+  get '/connections/remove_connection/:id' => 'connections#remove_connection'
+  get '/connections/invite_connection_reminder/:id' => 'connections#invite_connection_reminder', :as => 'invite_connection_reminder'
   post '/connections/process_friend_changes_on_find_page/:id' => 'connections#process_friend_changes_on_find_page'
   
   # routes to drink pages
@@ -109,12 +117,13 @@ Rails.application.routes.draw do
   get '/drinks/supply/:id' => 'drinks#supply', :as => 'user_supply'
   get '/drinks/load_rating_form_in_supply/:id' => 'drinks#load_rating_form_in_supply'
   get '/drinks/reload_drink_skip_rating/:id' => 'drinks#reload_drink_skip_rating'
-  post '/drinks/move_drink_to_cooler/:id' => 'drinks#move_drink_to_cooler', :as => 'move_drink_to_cooler'
+  get '/drinks/move_drink_to_cellar/:id' => 'drinks#move_drink_to_cellar', :as => 'move_drink_to_cellar'
   get '/drinks/add_supply_drink/:id' => 'drinks#add_supply_drink', :as => 'add_supply_drink'
   get '/drinks/drink_search/:id(/:query)' => 'drinks#drink_search', :as => 'drink_search'
   post '/drinks/add_cellar_drink/:id' => 'drinks#add_cellar_drink', :as => 'add_cellar_drink'
+  get '/drinks/change_cellar_drink_quantity/:id' => 'drinks#change_cellar_drink_quantity'
   post '/drinks/add_wishlist_drink/:id' => 'drinks#add_wishlist_drink', :as => 'add_wishlist_drink'
-  post '/drinks/wishlist_removal/:id' => 'drinks#wishlist_removal', :as => 'wishlist_removal'
+  get '/drinks/wishlist_removal/:id' => 'drinks#wishlist_removal', :as => 'wishlist_removal'
   get '/drinks/supply_removal/:id' => 'drinks#supply_removal', :as => 'supply_removal'
   get '/drinks/change_delivery_drink_quantity/:id' => 'drinks#change_delivery_drink_quantity'
   post '/drinks/set_search_box_id/:id' => 'drinks#set_search_box_id', :as => 'set_search_box_id'
@@ -231,6 +240,7 @@ Rails.application.routes.draw do
   get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
   get 'users/:user_id/ratings/new(.:format)/:id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
+  post 'beers/change_cellar_setting/:id' => 'beers#change_cellar_setting', :as => 'change_cellar_setting'
   get 'breweries/:brewery_id/beers/beers/data' => 'beers#data', :defaults => { :format => 'json'}
   #get '/users/:user_id/ratings/new(.:format)' => 'ratings#new', :as => 'new_user_rating'
   

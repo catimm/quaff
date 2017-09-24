@@ -1,0 +1,33 @@
+$(function () {
+	// set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	// search for already registered  user
+	$(document).on("keyup", ".invited-mates-email", function() {
+		invited_email = $(this).val();
+		delay(function(){
+			$.ajax({
+			  type: "GET",
+			  url: "users/invitation/check_invited_mate_status/" + invited_email
+			});
+	    }, 500 );
+	});
+	
+	// search for already registered user
+	$(document).on("keyup", ".invited-friends-email", function() {
+		invited_email = $(this).val();
+		delay(function(){
+			$.ajax({
+			  type: "GET",
+			  url: "users/invitation/check_invited_friend_status/" + invited_email
+			});
+	    }, 500 );
+	});
+	
+});

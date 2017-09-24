@@ -1,0 +1,23 @@
+<% if !@friend_search_results.blank? %>
+	<% @friend_search_results.each do |friend| %>
+		<% if friend.id != current_user.id %>
+			<div class="col-sm-4 col-xs-12 friend-tile-container" id="friend-id-<%= friend.id %>">
+				<%= render 'layouts/connection_tile_search', friend: friend %>	
+			</div>	
+		<% end %>		
+	<% end %>
+	<div class="row no-margin">
+		<h3 class="recent-ratings-header">Don't see the friend you're looking for? Invite them now!</h3>
+		<div class="col-xs-12 col-sm-4">
+	    	<%= link_to "Invite a friend", invite_friend_path(current_user.id), class: "btn btn-default btn-success thank-you-next-button" %>
+	    </div>
+	</div>
+	<div class="col-sm-12">
+		<%= js_will_paginate @friend_search_results %>
+	</div>
+<% else %>
+	<h3 class="recent-ratings-header">Looks like your friend hasn't joined Knird yet.  Invite them now!</h3>
+	<div class="col-xs-12 col-sm-4">
+    	<%= link_to "Invite a friend", invite_friend_path(current_user.id), class: "btn btn-default btn-success thank-you-next-button" %>
+    </div>
+<% end %>

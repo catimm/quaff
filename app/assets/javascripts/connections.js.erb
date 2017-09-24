@@ -33,92 +33,35 @@ $(function () {
 			});
 	    }, 500 );
 	});
-
-	// change friend status
-	$(document).on("click", ".friend-response.add", function() {
-		var value = $(this).parent(".col-xs-2.no-padding").parent(".row.no-margin").parent(".friend-search-tile").parent(".friend-tile-container").attr('id');
-		var value_split = value.split("-");
-		var friend_id = value_split[2];
-		
-		if(window.location.href.indexOf("manage_friends") > -1) {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes/invitor-add-" + friend_id
-				});
-		} else {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes_on_find_page/invitor-add-" + friend_id
-				});
-		}
-	});
-	$(document).on("click", ".friend-response.drop", function() {
-		var value = $(this).parent(".col-xs-2.no-padding").parent(".row.no-margin").parent(".friend-search-tile").parent(".friend-tile-container").attr('id');
-		var value_split = value.split("-");
-		var friend_id = value_split[2];
-		
-		if(window.location.href.indexOf("manage_friends") > -1) {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes/invited-drop-" + friend_id
-				});
-		} else {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes_on_find_page/invited-drop-" + friend_id
-				});
-		}
-	});
-	$(document).on("click", ".friend-response.pending.drop", function() {
-		var value = $(this).parent(".col-xs-2.no-padding").parent(".row.no-margin").parent(".friend-search-tile").parent(".friend-tile-container").attr('id');
-		var value_split = value.split("-");
-		var friend_id = value_split[2];
-		
-		if(window.location.href.indexOf("manage_friends") > -1) {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes/invited-drop-" + friend_id
-				});
-		} else {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes_on_find_page/invited-drop-" + friend_id
-				});
-		}
-	});
+	
+	// add friend confirmation
 	$(document).on("click", ".add-friend", function() {
-		var value = $(this).parent(".friend-response.pending.invite").parent(".col-xs-2.no-padding").parent(".row.no-margin").parent(".friend-search-tile").parent(".friend-tile-container").attr('id');
-		var value_split = value.split("-");
-		var friend_id = value_split[2];
+		// get friend id
+		var this_id = $(this).attr('id');
+		var friend_id = this_id.replace('add-friend-id-','');
 		
-		if(window.location.href.indexOf("manage_friends") > -1) {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes/invited-add-" + friend_id
-				});
-		} else {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes_on_find_page/invited-add-" + friend_id
-				});
-		}
+		// attach new id
+		$('#add-connection-button')
+			.attr('href', "/connections/add_connection/" + friend_id);
+
+		// show modal
+	    $('#accept_connection_confirmation').modal('show');
+
 	});
-	$(document).on("click", ".decline-friend", function() {
-		var value = $(this).parent(".friend-response.pending.invite").parent(".col-xs-2.no-padding").parent(".row.no-margin").parent(".friend-search-tile").parent(".friend-tile-container").attr('id');
-		var value_split = value.split("-");
-		var friend_id = value_split[2];
+	
+	// remove friend confirmation
+	$(document).on("click", ".remove-friend", function() {
+		// get friend id
+		var this_id = $(this).attr('id');
+		var friend_id = this_id.replace('remove-friend-id-','');
 		
-		if(window.location.href.indexOf("manage_friends") > -1) {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes/invited-drop-" + friend_id
-				});
-		} else {
-			$.ajax({
-				  type: "POST",
-				  url: "/connections/process_friend_changes_on_find_page/invited-drop-" + friend_id
-				});
-		}
+		// attach new id
+		$('#remove-connection-button')
+			.attr('href', "/connections/remove_connection/" + friend_id);
+
+		// show modal
+	    $('#remove_connection_confirmation').modal('show');
+
 	});
 	
 });

@@ -68,6 +68,7 @@ class Beer < ActiveRecord::Base
   has_many :user_supplies
   has_many :account_deliveries
   has_many :admin_account_deliveries
+  has_many :projected_ratings
   
   # the first 8 are for the suggested beer rating formula
   attr_accessor :best_guess
@@ -85,6 +86,8 @@ class Beer < ActiveRecord::Base
   attr_accessor :associated_brewery
   attr_accessor :rate_beer_now
   attr_accessor :track_beer_now
+  attr_accessor :in_wishlist # temporarily holds if drink is in user's wishlist
+  attr_accessor :in_cellar # temporarily holds if drink is in user's cellar
 
   #pg_search_scope :beer_search, :against => :beer_name,
   #                :associated_against => { :brewery => :brewery_name },

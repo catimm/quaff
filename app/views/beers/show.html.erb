@@ -8,21 +8,46 @@
 					<%= render 'layouts/drink_info', drink: @drink %>
 				</div>
 				<div class="col-xs-12 col-sm-4">
-					<%= link_to new_user_rating_path(@user_id, @drink.id), class: 'btn btn-default btn-success formButton' do %>
+					<%= link_to new_user_rating_path(@user.id, @drink.id), class: 'btn btn-default btn-success formButton' do %>
 						<i class="fa fa-thumbs-up"></i>
 						<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
 						rate drink
 					<% end %>
-					<%= render 'wishlist_button', wishlist: @wishlist %>
+					<div id="<%=@drink.id %>">
+						<%= render 'wishlist_button', wishlist: @wishlist %>
+						<%= render 'cellar_button', cellar: @cellar %>
+					</div>
 				</div>
 			</div>
 			<hr class="visible-sm visible-md visible-lg" />
 			<div class="row no-margin">
 				<div class="col-xs-12 col-sm-6">
-					<%= render 'user_history' %>
+					<% if !@user_rating_for_this_drink.blank? %>
+						<div class="col-xs-12">
+							<h5 class="tile-header user-rating-section">Your ratings</h5>
+						</div>
+						<% @user_rating_for_this_drink.each do |rating| %>
+							<%= render 'drink_page_user_card', rating: rating %>
+						<% end %>
+					<% else %>
+						<div class="col-xs-12">
+							<h5>You haven't rated this drink yet. Let us know what you think!</h5>
+						</div>
+					<% end %>
 				</div>
 				<div class="col-xs-12 col-sm-6">
+					<h5 class="tile-header user-rating-section">Friend ratings</h5>
+					<% if !@user_friend_ratings.blank? %>
+						<% @user_friend_ratings.each do |rating| %>
+							<%= render 'drink_page_user_card', rating: rating %>
+						<% end %>
+					<% else %>
+						<div class="col-xs-12">
+							<h5>You don't have any friends who have rated this drink yet. Next round is on you!</h5>
+						</div>
+					<% end %>
 					<% if current_user.role_id == 1 %>
+						<hr>
 						<%= render 'admin_user_data' %>
 					<% end %>
 				</div>

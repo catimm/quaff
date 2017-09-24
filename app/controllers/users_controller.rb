@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   def new
     @user = User.new
     @code = params[:format]
-    Rails.logger.debug("Code: #{@code.inspect}")
+    #Rails.logger.debug("Code: #{@code.inspect}")
     
     # set sub-guide view
     @user_chosen = "current"
@@ -208,6 +208,38 @@ class UsersController < ApplicationController
     @user_guests = User.where(account_id: @user.account_id, role_id: 5)
     
   end # end of account_settings_mates action
+  
+  def send_mate_invite_reminder
+    # find mate
+    @mate = User.find_by_id(params[:id])
+    
+    # resend email invitation
+    UserMailer.guest_invite_email(@mate, current_user).deliver_now
+    
+    # update invitation date
+    @mate.update(invitation_sent_at: Time.now)
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end of send_mate_invite_reminder method
+  
+  def drop_mate
+    # find mate
+    @mate = User.find_by_id(params[:id])
+    
+    # change mate status
+    @mate.update(role_id: 6, account_id: nil)
+    
+    #change friend status
+    @friend = Friend.where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)", current_user.id, params[:id], params[:id], current_user.id)[0]
+    @friend.destroy!
+    
+    # direct back to mates page
+    render js: "window.location = '#{account_settings_mates_path(current_user.id)}'"
+    
+  end # end of drop_mate method
   
   def account_settings_cc
     # get user info

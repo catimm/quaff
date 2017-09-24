@@ -8,6 +8,7 @@
 #  confirmed  :boolean
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  mate       :boolean
 #
 
 class Friend < ActiveRecord::Base

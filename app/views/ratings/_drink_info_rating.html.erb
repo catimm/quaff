@@ -1,0 +1,54 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<div class="col-xs-2 col-sm-2 brewery-image-holder-universal">
+		<% if !drink.beer.brewery.image.blank? %>
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+		<% else %>
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-xs-7 col-sm-7 no-padding drink-name-and-info-holder-universal">
+		<%= render 'drink_name_and_info_rating', drink: drink.beer %>	
+	</div>
+	<div class="col-xs-3 col-sm-3 rating-card-user-rating-holder">
+		<% if drink.user_beer_rating == 10.0 %>
+			<% @drink_rating = (drink.user_beer_rating).floor %>
+		<% else %>
+			<% @drink_rating = drink.user_beer_rating %>
+		<% end %>
+		<%= render 'layouts/user_initials_xsmall', friend: drink.user %>
+		<p class="rating-user-rating-acknowledged">rated this:</p>
+		<h1 class="rating-view-user-rating"> <%= @drink_rating %><span class="recent-user-rating-context">/10</span></h1>
+	</div>
+	<div class="drink-info-universal-show-more show">
+		<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+	</div>
+	<div class="drink-info-universal-show-less hidden">
+		<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+	</div>
+</div>
+<div class="row no-margin drink-info-universal-second-row hidden">	
+	<hr class="drink-info-separater">
+	<div class="col-xs-5 col-sm-6 no-padding">
+		<p class="rating-subtitle">comment</p>
+		<% if !drink.comment.blank? %>
+			<h5 class="tile-subheader beer-info">"<%= drink.comment %>"</h5>
+		<% else %>
+			<h5 class="tile-subheader beer-info">none provided</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-7 col-sm-6 cloud-descriptor-holder-rating no-padding">
+		<p class="rating-subtitle">descriptors</p>
+		<% if !drink.current_descriptors.blank? %>
+			<% @descriptor_list_initial = drink.current_descriptors.split(',') %>
+			<% @descriptor_list_final = @descriptor_list_initial.to_sentence %>
+			<h5 class="recent-user-rating-descriptions"><%= @descriptor_list_final %></h5>
+		<% else %>
+			<h6 class="recent-user-rating-descriptions-none">none provided</h6>
+		<% end %>
+	</div>
+</div>
+<div class="row no-margin size-price-row">
+	<h6 class="rated-on-date">Rated on <%= (drink.created_at).strftime("%b %e, %Y") %></h6>
+</div>

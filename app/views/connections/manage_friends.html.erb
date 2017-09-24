@@ -1,30 +1,138 @@
 <%= render 'layouts/header' %> 
-	<div class="row no-margin first-row">
-		<div class="container first-row-container">
-			<div class="col-xs-12 col-sm-5 no-padding">
-				<h1 class="section-header">Connections</h1>
-			</div>
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12 col-sm-5 no-padding">
+			<h1 class="section-header">Connections</h1>
 		</div>
 	</div>
-	<div class="row no-margin spinner text-center">
-		<div class="spinner-text">
-			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
-			<h4>Processing...</h4>
-		</div>
+</div>
+<div class="row no-margin spinner text-center">
+	<div class="spinner-text">
+		<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+		<h4>Processing...</h4>
 	</div>
+</div>
+<div class="container">
 	<div class="row first-row-manage-friends">
-		<div class="container">
-			<div class="col-xs-12 col-sm-9">
-				<h3 class="recent-ratings-header">Your Knirdy friends</h3>
+		<div class="col-xs-12 col-sm-8">
+			<h3 class="recent-ratings-header">Your Knirdy friends</h3>
+		</div>
+		<% if !@user_friends.blank? %>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-3">
+				<%= link_to "Find Connections", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
 			</div>
-			<% if !@user_friends.blank? %>
-				<div class="col-xs-12 col-sm-3">
-					<%= link_to "Connect with more friends", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+		<% end %>
+	</div>
+	<div class="row no-margin col-xs-12 col-sm-8" id="friend-activity-holder">
+		<% if !@user_friends.blank? %>
+			<% @user_friends.each do |friend| %>
+				<div class="col-xs-12 col-sm-6 friend-tile-container">
+					<%= render 'layouts/connection_tile_confirmed', friend: friend %>
+				</div>
+			<% end%>
+		<% else %>	
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<h4 class="no-results-empty-message">You haven't connected with any friends yet. Find some now!</h4>
+				</div>
+			</div>
+		<% end %>
+	</div>
+	<div class="row no-margin col-xs-12 col-sm-4" id="pending-friend-request-holder">
+		<% if !@pending_friend_ids.blank? %>
+			<h4 class="pending-friend-request-header">Pending requests</h4>
+			<% @pending_friends.each do |friend| %>
+				<div class="col-xs-12 friend-tile-container padding-5" id="friend-id-<%= friend.id %>">
+					<%= render 'layouts/connection_tile_pending', friend: friend %>
 				</div>
 			<% end %>
+		<% end %>
+	</div>
+</div>
+<div id="remove_connection_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Remove connection confirmation</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Remove this Connection from your list?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "#", :id => 'remove-connection-button', :class => 'text-center btn btn-danger remove-connection-button', remote: true do %>
+				<i class="fa fa-minus"></i>
+				Yup, do it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
 		</div>
 	</div>
-	<div class="row" id="friend-activity-holder">
-		<%= render 'friend_activity' %>
+</div>
+<div id="decline_connection_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Decline connection confirmation</h3>
 	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Decline this invitation?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "#", :id => 'remove-connection-button', :class => 'text-center btn btn-danger remove-connection-button', remote: true do %>
+				<i class="fa fa-minus"></i>
+				Yup, do it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
+<div id="accept_connection_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Accept connection confirmation</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Accept this invitation?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "#", :id => 'add-connection-button', :class => 'text-center btn btn-success add-connection-button', remote: true do %>
+				<i class="fa fa-plus"></i>
+				Accept!
+			<% end %>
+		</div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
+<div id="resend_invitation_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Resend invitation confirmation</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Your invitation reminder has been sent!</h4>
+			</div>
+		</div>
+		<div class="col-sm-4"></div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "Thanks!", "#", :class => 'btn btn-success wait-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
 <%= render 'layouts/footer' %>

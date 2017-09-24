@@ -1,77 +1,12 @@
-<div class="col-xs-6 col-sm-3" id="recent-activity-<%= drink.id %>">
-	<%= link_to edit_user_rating_path(current_user.id, drink.id), :class => 'text-center edit-drink-rating' do %>
-		<i class="fa fa-thumbs-up"></i>
-		<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
-		<p>edit</p>
+<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="recent-activity-<%= drink.id %>">
+	<% if drink.user_id == current_user.id %>
+		<%= link_to edit_user_rating_path(current_user.id, drink.id), :class => 'text-center edit-drink-rating' do %>
+			<i class="fa fa-thumbs-up"></i>
+			<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
+			<p>edit</p>
+		<% end %>
 	<% end %>
-	<div class="recent-rating-tile">
-		<div class="row no-margin ratings-image-holder-row">
-			<div class="col-xs-6 no-padding ratings-image-holder-column">
-				<% if !drink.beer.brewery.image.blank? %>
-					<img class="img-responsive ratings-image center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
-				<% else %>
-					<div class="brewery-image-holder-empty-ratings-page text-center">
-						<h2><i class="fa fa-beer"></i></h2>
-					</div>
-				<% end %>
-			</div>
-			<div class="col-xs-6 no-padding user-ratings-col">
-				<% if drink.user_beer_rating == 10.0 %>
-					<% @drink_rating = (drink.user_beer_rating).floor %>
-				<% else %>
-					<% @drink_rating = drink.user_beer_rating %>
-				<% end %>
-				<p><span class="user-rating-acknowledged-history">Your rating:</span></p>
-				<h1 class="recent-user-rating"><%= @drink_rating %><span class="recent-user-rating-context">/10</span></h1>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<% if drink.beer.collab == true %>
-					<% @title_header = (drink.beer.collab_brewery_name(beer.id) + " " + "<span class=combined-drink-text>"+ drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header-rating-history' %>
-				<% elsif drink.beer.brewery.short_brewery_name.nil? %>
-					<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+ drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header-rating-history' %>
-				<% else %>
-					<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+ drink.beer.beer_name+"</span>").html_safe %>
-					<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header-rating-history' %>
-				<% end %>
-			</div>
-			<div class="col-xs-12">
-				<% if !drink.beer.beer_type_id.nil? %>
-					<h5 class="tile-subheader beer-info no-overflow"><%= drink.beer.beer_type.beer_type_name %></h5>
-				<% else %>
-					<h5 class="tile-subheader beer-info">Style unknown</h5>
-				<% end %>
-			</div>	
-		</div>
-		<div class="row no-margin ratings-tile-rows-descriptors">
-			<div class="col-sm-12 recent-user-ratings-tile-subtitle-headers">
-				<p>descriptors</p>
-					<% if !drink.current_descriptors.nil? %>
-						<% @descriptor_list_initial = drink.current_descriptors.split(',') %>
-						<% @descriptor_list_final = @descriptor_list_initial.to_sentence %>
-						<h5 class="recent-user-rating-descriptions"><%= @descriptor_list_final %></h5>
-					<% else %>
-						<h6 class="recent-user-rating-descriptions-none">none provided</h6>
-					<% end %>
-			</div>		
-		</div>
-		<div class="row no-margin bottom-ratings-tile-rows">
-			<div class="col-xs-12 recent-user-ratings-tile-subtitle-headers">
-				<p>comment</p>
-				<% if !drink.comment.blank? %>
-					<h5 class="tile-subheader beer-info">"<%= drink.comment %>"</h5>
-				<% else %>
-					<h5 class="tile-subheader beer-info">none provided</h5>
-				<% end %>
-			</div>
-		</div>
-		<div class="row no-margin recent-rating-tile-second-last-row">
-		</div>
-		<div class="row no-margin recent-rating-tile-last-row">
-			<h6 class="rated-on-date">Rated on <%= (drink.created_at).strftime("%b %e, %Y") %></h6>
-		</div>
+	<div class="drink-delivery-tile">
+		<%= render 'drink_info_rating', drink: drink %>
 	</div>
 </div>

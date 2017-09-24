@@ -98,24 +98,5 @@ $(function () {
 	    $('#remove_drink_from_wishlist_confirmation').modal('show');
 
 	}); 
-	$(document).on("click", ".subtract-drink-from-wishlist-confirmation", function() {
-		var drink_id = $(this).attr('id');
-		
-		// remove drink tile
-		$('#wishlist-drink-' + drink_id).remove();
-		
-		// remove modal
-	    $('#remove_drink_from_wishlist_confirmation').modal('hide');
-		
-		// send to controller to change database 
-		$.ajax({
-		  type: "POST",
-		  url: "/supplies/wishlist_removal/" + drink_id
-		});
-		// make page not jump to top
-		return false;
-	});
-	
-	
-	 
+
 });

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170914053242) do
+ActiveRecord::Schema.define(version: 20170924212313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,10 +21,7 @@ ActiveRecord::Schema.define(version: 20170914053242) do
     t.integer  "inventory_id"
     t.datetime "created_at",                                       null: false
     t.datetime "updated_at",                                       null: false
-    t.boolean  "new_drink"
     t.integer  "beer_id"
-    t.float    "projected_rating"
-    t.string   "likes_style"
     t.integer  "quantity"
     t.integer  "delivery_id"
     t.boolean  "cellar"
@@ -54,7 +51,6 @@ ActiveRecord::Schema.define(version: 20170914053242) do
     t.integer  "beer_id"
     t.integer  "inventory_id"
     t.boolean  "new_drink"
-    t.float    "projected_rating"
     t.string   "likes_style"
     t.integer  "quantity"
     t.datetime "created_at",               null: false
@@ -241,7 +237,7 @@ ActiveRecord::Schema.define(version: 20170914053242) do
 
   create_table "deliveries", force: :cascade do |t|
     t.integer  "account_id"
-    t.datetime "delivery_date"
+    t.date     "delivery_date"
     t.decimal  "subtotal",                         precision: 6, scale: 2
     t.decimal  "sales_tax",                        precision: 6, scale: 2
     t.decimal  "total_price",                      precision: 6, scale: 2
@@ -310,6 +306,7 @@ ActiveRecord::Schema.define(version: 20170914053242) do
     t.boolean  "confirmed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean  "mate"
   end
 
   create_table "inventories", force: :cascade do |t|
@@ -377,6 +374,14 @@ ActiveRecord::Schema.define(version: 20170914053242) do
 
   add_index "pg_search_documents", ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id", using: :btree
 
+  create_table "projected_ratings", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "beer_id"
+    t.float    "projected_rating"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
   create_table "removed_beer_locations", force: :cascade do |t|
     t.integer  "beer_id"
     t.integer  "location_id"
@@ -390,7 +395,7 @@ ActiveRecord::Schema.define(version: 20170914053242) do
     t.float    "total_points"
     t.float    "transaction_points"
     t.integer  "reward_transaction_type_id"
-    t.integer  "user_delivery_id"
+    t.integer  "account_delivery_id"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.integer  "friend_user_id"
@@ -586,12 +591,11 @@ ActiveRecord::Schema.define(version: 20170914053242) do
   create_table "user_cellar_supplies", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "beer_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "quantity"
-    t.float    "projected_rating"
-    t.boolean  "purchased_from_knird"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "total_quantity"
     t.integer  "account_id"
+    t.integer  "remaining_quantity"
   end
 
   create_table "user_deliveries", force: :cascade do |t|
@@ -601,6 +605,8 @@ ActiveRecord::Schema.define(version: 20170914053242) do
     t.float    "quantity"
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
+    t.boolean  "new_drink"
+    t.string   "likes_style"
   end
 
   create_table "user_drink_recommendations", force: :cascade do |t|
@@ -718,10 +724,9 @@ ActiveRecord::Schema.define(version: 20170914053242) do
     t.integer  "user_id"
     t.integer  "beer_id"
     t.datetime "removed_at"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer  "account_id"
-    t.float    "projected_rating"
   end
 
   create_table "zip_codes", force: :cascade do |t|

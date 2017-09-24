@@ -122,7 +122,7 @@ class RatingsController < ApplicationController
   
   def user_ratings
     # get user info
-    @user = User.find(params[:id])
+    @user = User.find_by_id(params[:id])
     
     # get user ratings history
     @user_ratings = UserBeerRating.where(user_id: params[:id])

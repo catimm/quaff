@@ -53,6 +53,31 @@ class UserMailer < ActionMailer::Base
     
   end # end of guest_invite_email method
   
+  def friend_invite_email(invited, invitor)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+     
+    payload  = {
+      recipients: [
+        {
+          address: { email: invited.email },
+        }
+      ],
+      content: {
+        template_id: 'friend-invite-email'
+      },
+      substitution_data: {
+        invited: invited.first_name,
+        invitor: invitor.first_name,
+        invitor_email: invitor.email,
+        token: invited.raw_invitation_token
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of guest_invite_email method
+  
   def set_first_password_email(early_user)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
      

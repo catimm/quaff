@@ -346,10 +346,17 @@ label {
   border-radius: 4px;
   display: block;
   float: left;
-  padding: 2px 2.5px 2.5px 2.5px;
-  font-size: 9px;
+  padding: 1px 2.5px 1.5px 2.5px;
+  font-size: 10px;
   margin: -6px 0 0 5px;
-  
+  i {
+    font-size: 11px;
+    margin: 0 0 -5px 3.5px;
+  }
+}
+.cellar_drink_number {
+  margin: 5px 0 0 -25px;
+  height: 32px !important;
 }
 .short-beer-type {
   font-style: italic;
@@ -925,12 +932,18 @@ hr {
 .drink-info-container {
   margin-top: 25px;
 }
-
+.for-account-users-header{
+  color: $normal-text;
+  margin: 5px 0;
+}
 .brewery-image-holder-universal {
   padding: 5px 0 0 1px;
 }
 .cloud-descriptor-holder-universal {
   height: 70px;
+}
+.cloud-descriptor-holder-rating {
+   height: 65px;
 }
 .drink-info-drink-page-second-row {
   margin: 20px 0 0 0;
@@ -945,7 +958,7 @@ hr {
     color: $action-background;
   }
 }
-.drink-info-universal-show-more, .drink-info-universal-show-less {
+.drink-info-universal-show-more, .drink-info-universal-show-less, .drink-info-rating-show-more, .drink-info-rating-show-less {
   position: absolute;
   left: 0.55px; 
   top: 67px;
@@ -1053,21 +1066,20 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 16px;
   line-height: 1.2;
 }
-.wishlist-added-info {
+.wishlist-added-info, .cellar-added-info {
   font-size: 12px;
   color: $less-emphasized-text;
   text-align: center;
-  margin-top: -12.5px;
+  margin: -12.5px 0 0 0;
 }
 .beer-tracking-status {
   margin-top: 30px;
   font-size: 16px;
   line-height: 1.2;
 }
-.formButton-track-beer {
+.cellar-add-drink, .cellar-remove-drink, .wishlist-add-drink {
   width: 100%;
   margin: 15px 0 20px 0;
-  background: $action-background;
 }
 
 .formButton-track-beer-stop {
@@ -1917,6 +1929,9 @@ $beer-header-lines-to-show-fp: 1;
     margin-bottom: 20px;
   }
 }
+.invite-friend-box {
+  margin-top: 20px !important;
+}
 .box-with-message {
   background: #fff;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -2052,10 +2067,23 @@ $beer-header-lines-to-show-fp: 1;
     margin: 10px 0;
   }
 }
+.user-ratings-row-holder {
+  margin: 0;
+}
+.user-ratings-row-holder-two, .user-ratings-row-holder-multiple {
+  margin: 0 0 0 -5px;
+  width: 125%;
+}
 .delivery-best-guess-minimized {
   color: $best-guess-text;
   font-size: 13px;
   margin: 5px 0;
+}
+.delivery-best-guess-minimized-two, .delivery-best-guess-minimized-multiple {
+  color: $best-guess-text;
+  font-size: 13px;
+  margin: 5px 0;
+  float: left;
 }
 .best-guess {
   color: $best-guess-text;
@@ -2067,6 +2095,16 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 42px;
   margin: 0 0 0 20px;
 }
+.delivery-best-guess-two {
+  color: $best-guess-text;
+  font-size: 28px;
+  margin: -4px 0 0 0;
+}
+.delivery-best-guess-multiple {
+  color: $best-guess-text;
+  font-size: 20px;
+  margin: 0;
+}
 .user-rating {
   color: $user-rating-text;
   margin: 0;
@@ -2077,7 +2115,29 @@ $beer-header-lines-to-show-fp: 1;
   margin: 0 0 0 20px;
   font-size: 42px;
 }
+.delivery-user-rating-two {
+  color: $user-rating-text;
+  margin: -4px 0 0 0;
+  font-size: 28px;
+}
+.delivery-user-rating-multiple {
+  color: $user-rating-text;
+  margin: 5px 0;
+  font-size: 20px;
+}
 .user-rating-acknowledged {
+  color: $user-rating-text;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.user-rating-acknowledged-two {
+  color: $user-rating-text;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.user-rating-acknowledged-multiple {
   color: $user-rating-text;
   font-size: 12px;
   font-weight: 500;
@@ -2088,6 +2148,30 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 12px;
   font-weight: 500;
   margin: 5px;
+}
+.delivery-user-rating-acknowledged-two, .delivery-user-rating-acknowledged-multiple {
+  color: $user-rating-text;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 5px 0;
+  float: left;
+}
+.rating-card-user-rating-holder {
+  padding: 10px 0 0 0;
+}
+.rating-user-rating-acknowledged {
+  color: $user-rating-text;
+  font-size: 11px;
+  font-weight: 500;
+  margin: 5px 0 5px 5px;
+}
+.rating-view-user-rating {
+  color: $user-rating-text;
+  margin: 3px 0 0 5px;
+  font-size: 42px;
+}
+.tile-subheader.drink-rating-comment {
+  margin: 5px 0 !important;
 }
 .best-guess-universal {
   p {
@@ -3611,7 +3695,15 @@ $beer-header-lines-to-show-fp: 1;
 .rate-beer:hover, .rate-drink-from-delivery:hover {
     text-decoration: none !important;
   }
-.remove-drink-button, .add-drink-button, .wait-button, .remove-location-button, .change-delivery-time-button, .choose-delivery-time-button {
+.remove-drink-button, 
+.add-drink-button, 
+.wait-button, 
+.remove-location-button, 
+.change-delivery-time-button, 
+.choose-delivery-time-button, 
+.remove-connection-button, 
+.add-connection-button,
+.resend-invitation-button {
   width: 100%;
   margin: 10px 0;
 } 
@@ -3877,7 +3969,7 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 18px;
   float: left;
   line-height: 0.65;
-  margin: 3px -10px 0 15px;
+  margin: 0 -10px 0 15px;
 }
 .delivery-date-choice {
   color: $normal-text;
@@ -4180,9 +4272,14 @@ $descriptor-lines-to-show: 2;
   height: 30px; 
   background: $special-designated-green;
 }
+.rating-subtitle {
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: $normal-text;
+}
 .rated-on-date {
-  color: #fff;
-  text-align: center;
+  color: $normal-text;
+  margin: 5px 10px !important;
 }
 .drink-name-and-info-row {
   background: $white;
@@ -4190,7 +4287,7 @@ $descriptor-lines-to-show: 2;
 }
 // Activity CSS
 .first-row-manage-friends {
-  margin-bottom: 20px;
+  margin: 0 0 20px 0;
 }
 .connect-with-friends-button {
   width: 100%;
@@ -4198,13 +4295,6 @@ $descriptor-lines-to-show: 2;
 }
 .friend-search-holder {
   margin: 15px 0 0 0 !important;
-}
-#pending-friend-request-holder {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  border-radius: 6px;
-  overflow: hidden;
-  background: #fff;
 }
 .pending-friend-request-header {
   color: $normal-text;
@@ -4224,7 +4314,7 @@ $descriptor-lines-to-show: 2;
 .friend-tile-container {
   margin-bottom: 10px;
 }
-.friend-search-tile {
+.friend-search-tile, .mate-tile {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
@@ -4232,6 +4322,15 @@ $descriptor-lines-to-show: 2;
   background: #fff;
   height: 60px;
   width: 97.5%;
+  position: relative;
+}
+.drink-page-user-tile {
+  margin: 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
   position: relative;
 }
 .user-initial-holder-div {
@@ -4308,63 +4407,66 @@ $descriptor-lines-to-show: 2;
 .friend-name {
   color: $normal-text;
   font-weight: 500;
-  margin-bottom: 5px;
+  margin: 5px 0;
 }
 .friend-username {
   color: $less-emphasized-text;
+  margin: 0;
+}
+.invitation-date {
+  color: $less-emphasized-text;
   margin-top: 5px;
 }
-.friend-response {
-  margin-top: 16px;
+.invitation-instruction-row {
+  margin: 20px 0 0 0;
+  h4 {
+    line-height: 1.2;
+  }
 }
-.friend-response.add {
-  color: $user-action;
-  padding: 0 0 0 0;
+.invite-failure-message {
+  color:$current-beer-attention-needed-background; 
 }
-.friend-response.drop {
+.mate-in-friend-view {
+  color: $action-background;
+  padding: 15px 0 0 0;
+}
+.friend-response, .mate-response {
+  p {
+    color: $less-emphasized-text;
+    margin: 5px 0 0 -10px;
+    font-size: 12px;
+  }
+}
+.remove-friend {
   color: $warning-red;
-  padding: 0 0 0 0;
+  padding: 15px 0 0 0;
 }
-.friend-response.pending {
-  color: $less-emphasized-text;
-  p {
-    margin: 20px 0 0 -20px;
-  }
+.add-friend, .send-connection-invite {
+  color: $user-action;
+  padding: 15px 0 0 0;
 }
-.friend-response.pending.drop {
-  margin-left: -10px;
-  p {
-    color: $less-emphasized-text;
-    margin: -10px 0 0 -10px;
-    font-size: 12px;
-  }
-  i {
-    color: $warning-red;
-    padding: 0 0 0 0;
-  }
-}
-.friend-response.pending.invite {
-  margin-left: -10px;
+.add-friend.pending-connection {
   padding: 0 !important;
-  p {
-    color: $less-emphasized-text;
-    margin: -10px 0 0 3px;
-    font-size: 12px;
+}
+.send-connection-invite { 
+  i {
+    font-size: 1.85em !important;
   }
-  i.fa.fa-plus-square-o.fa-2x.add-friend {
-    color: $user-action;
-    padding: 0 0 0 0;
-    float: left;
-    display: block;
-    margin: 3px 5px 0 0;
-  }
-  i.fa.fa-times-circle.fa-2x.decline-friend {
-    color: $warning-red;
-    padding: 0 0 0 0;
-    float: left;
-    display: block;
-    margin: 3px 0 0 0;
-  }
+}
+.mate-response-resend {
+  color: $user-action;
+  padding: 0;
+  float: left;
+  margin: 0 3px 0 -13px;
+}
+.mate-response-drop {
+  color: $warning-red;
+  padding: 0;
+  float: left;
+}
+.friend-response.drop, .mate-response-drop.after-add {
+  color: $warning-red;
+  padding: 15px 0 0 0;
 }
 
 // Supply CSS
@@ -4382,8 +4484,8 @@ $descriptor-lines-to-show: 2;
 // Wishlist css style
 .remove-drink-from-wishlist {
   position: absolute;
-  left: 14px;
-  top: 22px;
+  right: 5px;
+  top: 2px;
   background: $current-beer-attention-needed-background;
   color: $white;
   font-size: 12px;
@@ -4393,9 +4495,14 @@ $descriptor-lines-to-show: 2;
   height: 20px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  border-radius: 6px;
+  border-radius: 10px;
   vertical-align: middle;
   z-index: 1000;
+}
+.remove-drink-from-wishlist:hover {
+  background: $bootstrap-red-button-hover-background !important;
+  border-color: $bootstrap-red-button-hover-border !important;
+  color: $white !important;
 }
 .wishlist-image-holder-column {
   height: 125px;
@@ -4928,55 +5035,83 @@ input[type="checkbox"] {
     font-size: 16px;
   }
 }
-.delivery-info-box.monthly-estimate {
+.delivery-settings-info-box {
+  text-align: center;
+  width: 100%;
+  height: 45px;
+  padding: 4px;
+  border-radius: 6px;
+  float: left;
+  margin: 0 2px;
+  p {
+    font-size: 12px;
+    margin-bottom: 0;
+    color: $less-emphasized-text;
+    sup {
+      top: -0.3em;
+      font-size: 90%;
+      color: $header-text;
+      border: 1px solid $normal-text;
+      border-radius: 4px;
+      width: 12px;
+      height: 12px;
+      padding: 1px 3px;
+      margin-left: 2.5px;
+    }
+  }
+  h4 {
+    font-size: 18px;
+  }
+}
+.delivery-info-box.monthly-estimate, .delivery-settings-info-box.monthly-estimate {
   border: 1px solid $less-emphasized-text;
   h4 {
     color: $less-emphasized-text;
   }
 }
-.delivery-info-box.drinks {
+.delivery-info-box.drinks, .delivery-settings-info-box.drinks {
   border: 1px solid $drink-color;
   h4 {
     color: $drink-color;
   }
 }
-.delivery-info-box.new {
+.delivery-info-box.new, .delivery-settings-info-box.new {
   border: 1px solid $new-drink-color;
   h4 {
     color: $new-drink-color;
   }
 }
-.delivery-info-box.repeat {
+.delivery-info-box.repeat, .delivery-settings-info-box.repeat {
   border: 1px solid $repeat-drink-color;
   h4 {
     color: $repeat-drink-color;
   }
 }
-.delivery-info-box.cooler {
+.delivery-info-box.cooler, .delivery-settings-info-box.cooler {
   border: 1px solid $cooler-color;
   h4 {
     color: $cooler-color;
   }
 }
-.delivery-info-box.cellar {
+.delivery-info-box.cellar, .delivery-settings-info-box.cellar {
   border: 1px solid $cellar-color;
   h4 {
     color: $cellar-color;
   }
 }
-.delivery-info-box.small {
+.delivery-info-box.small, .delivery-settings-info-box.small {
   border: 1px solid $small-format-color;
   h4 {
     color: $small-format-color;
   }
 }
-.delivery-info-box.large {
+.delivery-info-box.large, .delivery-settings-info-box.large {
   border: 1px solid $large-format-color;
   h4 {
     color: $large-format-color;
   }
 }
-.delivery-info-box.subtotal {
+.delivery-info-box.subtotal, .delivery-setgings-info-box.subtotal {
   float: left;
   margin-right: 16px;
   border: 1px solid $normal-text;
@@ -4984,7 +5119,7 @@ input[type="checkbox"] {
     color: $normal-text;
   }
 }
-.delivery-info-box.sales-tax {
+.delivery-info-box.sales-tax, .delivery-settings-info-box.sales-tax {
   float: left;
   margin-right: 16px;
   border: 1px solid $less-emphasized-text;
@@ -4992,7 +5127,7 @@ input[type="checkbox"] {
     color: $less-emphasized-text;
   }
 }
-.delivery-info-box.total-price {
+.delivery-info-box.total-price, .delivery-settings-info-box.total-price {
   border: 1px solid $money-color;
   min-width: 80px;
   h4 {
@@ -5098,7 +5233,7 @@ $delivery-beer-header-lines-to-show: 2;
     background: $soft-gray-background;
 
   }
-.delivery-quantity-subtract {
+.delivery-quantity-subtract, .cellar-quantity-subtract {
     padding-left: 10px;
     i {
       margin: 8px 0 0 0;
@@ -5106,12 +5241,12 @@ $delivery-beer-header-lines-to-show: 2;
       font-size: 20px;
     }
   }
-.delivery-quantity-subtract:hover {
+.delivery-quantity-subtract:hover, .cellar-quantity-subtract:hover {
     i {
       color: $normal-text;
     }
   }
-.delivery-quantity-add {
+.delivery-quantity-add, .cellar-quantity-add {
     border-right: 1px solid $soft-border;
     padding-right: 25px;
     i {
@@ -5120,7 +5255,7 @@ $delivery-beer-header-lines-to-show: 2;
       font-size: 20px;
     }
   }
-.delivery-quantity-add:hover {
+.delivery-quantity-add:hover, .cellar-quantity-add:hover {
     i {
       color: $bootstrap-success-green-hover;
     }

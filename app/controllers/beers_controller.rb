@@ -19,7 +19,7 @@ class BeersController < ApplicationController
   end
   
   def show
-    @user_id = current_user.id
+    @user = User.find_by_id(current_user.id)
     # grab beer info
     #@beer = Beer.where(id: params[:id])[0]
     #Rails.logger.debug("Beer info #{@beer.inspect}")
@@ -100,20 +100,22 @@ class BeersController < ApplicationController
     # find if user is tracking this beer already
     @wishlist = Wishlist.where(user_id: current_user.id, beer_id: @drink.id).where("removed_at IS NULL").first
     #Rails.logger.debug("User Tracking info #{@wishlist.inspect}")
+    @cellar = UserCellarSupply.where(user_id: current_user.id, beer_id: @drink.id).where.not(remaining_quantity: 0)[0]
     #Rails.logger.debug("after admin beer's info: #{@drink.inspect}")
     @drink = best_guess(@drink.id, current_user.id)[0]
     #Rails.logger.debug("after best guess beer's info: #{@drink.likes_style.inspect}")
     
     # get user's ratings for this beer if any exist
-    @user_rating_for_this_beer = UserBeerRating.where(user_id: current_user.id, beer_id: @drink.id).order('created_at DESC')
-    @number_of_ratings = @user_rating_for_this_beer.count
+    @user_rating_for_this_drink = UserBeerRating.where(user_id: current_user.id, beer_id: @drink.id).order('created_at DESC')
+    @number_of_ratings = @user_rating_for_this_drink.count
     
-    # get beer readiness info
-    if @drink.vetted == true || @drink.user_addition == false
-      @drink_is_ready == true
-    else
-      @drink_is_ready == false
-    end
+    # get user friend info
+    @user_friend_ids = Friend.where(confirmed: true).where("user_id = :this_user_id OR friend_id = :this_user_id", this_user_id: @user.id)
+          .pluck(:user_id, :friend_id).uniq.flatten(1) - [current_user.id]
+    #Rails.logger.debug("Friends IDs: #{@user_friend_ids.inspect}")
+    
+    # find if any friends have rated this drink
+    @user_friend_ratings = UserBeerRating.where(user_id: @user_friend_ids, beer_id: @drink.id)
 
     # send beer ids to javascript file to create jcloud
     beer_descriptor = Array.new
@@ -179,8 +181,36 @@ class BeersController < ApplicationController
       @remove_wishlist.update(removed_at: Time.now)
       @wishlist = nil
     else 
-      @wishlist = Wishlist.new(user_id: current_user.id, beer_id: @drink_id)
-      @wishlist.save!
+      @wishlist = Wishlist.create(user_id: current_user.id, beer_id: @drink_id, account_id: current_user.account_id)
+    end
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+  end # end of change_wishlist_setting
+  
+  def change_cellar_setting
+    @data = params[:id]
+    @data_split = @data.split('-')
+    @cellar_action = @data_split[0]
+    @drink_id = @data_split[1]
+    
+    @cellar_info = UserCellarSupply.where(user_id: current_user.id, beer_id: @drink_id)[0]
+    
+    if @cellar_action == "remove"
+      @cellar_info.update(remaining_quantity: 0)
+    else 
+      if !@cellar_info.blank?
+        @cellar_info.increment!(:remaining_quantity)
+        @cellar_info.increment!(:total_quantity)
+        @final_cellar = @cellar_info
+      else
+        @final_cellar = UserCellarSupply.create(user_id: current_user.id, 
+                                                beer_id: @drink_id, 
+                                                total_quantity: 1, 
+                                                remaining_quantity: 1, 
+                                                account_id: current_user.account_id)
+      end
     end
     
     respond_to do |format|

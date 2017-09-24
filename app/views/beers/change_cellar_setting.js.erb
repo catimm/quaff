@@ -1,0 +1,6 @@
+// insert proper button after cellar change
+$(function() {
+	$("#<%= @drink_id %>").children(".the-cellar-button").remove();
+	$("#<%= @drink_id %>").children(".cellar-added-info").remove();
+	$("#<%= @drink_id %>").append("<%= escape_javascript(render 'cellar_button', cellar: @final_cellar ) %>");
+});

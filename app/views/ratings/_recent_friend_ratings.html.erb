@@ -9,7 +9,7 @@
 			<% if !@recent_friend_ratings.blank? %>
 				<div class="row no-margin recent-rating-holder">
 					<% @recent_friend_ratings.each do |rating| %>
-						<%= render(partial: 'friend_rating_drink_card_history', locals: { drink: rating }) %>
+						<%= render(partial: 'rating_drink_card_history', locals: { drink: rating }) %>
 					<% end%>
 				</div>
 				<div class="col-sm-12" id="fav-drink-types-container">

@@ -1,0 +1,8 @@
+<% if @status == "good" %>
+	$("#invite-mate-submit-button").prop('disabled', false);
+	if ($("#invite-mate-failure-notice").hasClass("show")) {
+		$("#invite-mate-failure-notice").removeClass('show').addClass('hidden');
+	}
+<% else %>
+	$("#invite-mate-failure-notice").removeClass('hidden').addClass('show');
+<% end %>

@@ -74,4 +74,26 @@ $(function() {
 		// prevent page from jumping to the top after click event
 		return false;
 	  });
+	  
+	  // add drink to cellar
+	 $(document).on("click", ".cellar-add-drink", function() {
+		var this_drink_id = $(this).parent().attr('id');
+		$.ajax({
+		  type: "POST",
+		  url: "/beers/change_cellar_setting/add-" + this_drink_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	  });
+	 
+	 // remove drink from cellar
+	 $(document).on("click", ".cellar-remove-drink", function() {
+		var this_drink_id = $(this).parent().attr('id');
+		$.ajax({
+		  type: "POST",
+		  url: "/beers/change_cellar_setting/remove-" + this_drink_id
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	  });
 });

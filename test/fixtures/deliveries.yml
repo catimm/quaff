@@ -4,7 +4,7 @@
 #
 #  id                               :integer          not null, primary key
 #  account_id                       :integer
-#  delivery_date                    :datetime
+#  delivery_date                    :date
 #  subtotal                         :decimal(6, 2)
 #  sales_tax                        :decimal(6, 2)
 #  total_price                      :decimal(6, 2)

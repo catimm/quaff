@@ -1,0 +1,11 @@
+<% if !cellar.nil? %>
+	<%= link_to "#", class: 'btn change-wishlist-button-inverse cellar-remove-drink the-cellar-button' do %>
+		<i class="fa fa-minus"> remove from cellar</i>
+	<% end %>
+	<p class="cellar-added-info">added to cellar on <%= (cellar.updated_at).strftime("%b %e, %Y") %></p>
+<% else %>
+	<%= link_to "#", class: 'btn btn-default btn-success cellar-add-drink the-cellar-button' do %>
+		<i class="fa fa-plus"> add drink to cellar</i>
+	<% end %>
+	<p class="cellar-added-info"></p>
+<% end %>

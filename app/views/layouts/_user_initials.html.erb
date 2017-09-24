@@ -11,6 +11,6 @@
 	<% @last_name_initial = "" %>
 <% end %>
 <% @friend_initials = @first_name_initial + @last_name_initial %>
-<div class="user-initial-holder-div <%= friend.user_color %>">
+<div class="user-initial-holder-div <%= friend.user_color %> data-toggle="tooltip" title="<%= friend.first_name %> <%= friend.last_name %> (<%= friend.username %>)">
 	<h3 class="user-initial-text"><%= @friend_initials %></h3>
 </div>

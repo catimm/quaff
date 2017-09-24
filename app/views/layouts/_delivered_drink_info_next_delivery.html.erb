@@ -9,10 +9,17 @@
 		<% end %>
 	</div>
 	<div class="col-xs-8 col-sm-8 no-padding drink-name-and-info-holder-universal">
-		<%= render 'layouts/drink_name_and_info', drink: drink.beer %>	
+		<%= render 'layouts/delivered_drink_name_and_info', drink: drink %>	
 	</div>
 	<div class="col-xs-2 col-sm-2 no-padding">
-		
+		<% if @account_users_count > 1 %>
+			<% @account_users = UserDelivery.where(account_delivery_id: drink.id)%>
+			<h6 class="for-account-users-header">for:</h6>
+			<% @account_users.each do |account_user| %>
+				<% @user = User.find_by_id(account_user.user_id)%>
+				<%= render 'layouts/user_initials_xsmall', friend: @user %>
+			<% end %>
+		<% end %>
 	</div>
 	<div class="drink-info-universal-show-more hidden">
 		<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>

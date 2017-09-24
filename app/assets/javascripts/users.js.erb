@@ -246,4 +246,30 @@ $(function () {
 			}
 		 }
 	 }
+
+	 // change mate status
+	$(document).on("click", ".mate-response.add", function() {
+		// get friend id
+		var this_id = $(this).attr('id');
+		var friend_id = this_id.replace('user-id-','');
+		
+		$.ajax({
+			  type: "GET",
+			  url: "/users/send_mate_invite_reminder/" + friend_id
+			});
+	});
+	
+	$(document).on("click", ".mate-response-drop", function() {
+		// get friend id
+		var this_id = $(this).attr('id');
+		var friend_id = this_id.replace('user-id-','');
+
+		// attach new id
+		$('#remove-mate')
+			.attr('href', "/users/drop_mate/" + friend_id);
+
+		// show modal
+	    $('#remove_mate_confirmation').modal('show');
+	});
+	
 });

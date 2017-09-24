@@ -31,16 +31,30 @@
 	</div>
 </div>
 <div class="row no-margin drink-search-tile-last-row">
-	<div class="col-xs-6 change-cellar-button btn btn-success show" id="cellar-add-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="Click to add drink to your cellar.">
-		<i class="fa fa-plus"> add to Cellar</i>
-	</div>
-	<div class="col-xs-6 change-cellar-button change-cellar-button-inverse hidden" id="in-cellar-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="This drink is in your cellar.">
-		<i class="fa fa-thumbs-up"> In Cellar</i>
-	</div>
-	<div class="col-xs-6 change-wishlist-button btn btn-success" id="wishlist-add-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="Click to add drink to your wishlist.">
-		<i class="fa fa-plus"> Wishlist</i>
-	</div>
-	<div class="col-xs-6 change-wishlist-button change-wishlist-button-inverse hidden" id="in-wishlist-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="This drink is in your wishlist.">
-		<i class="fa fa-thumbs-up"> In Wishlist</i>
-	</div>
+	<% @cellar_drink = UserCellarSupply.where(user_id: current_user.id, beer_id: drink.id).where.not(remaining_quantity: 0)[0] %>
+	<% if !@cellar_drink.nil? %>
+		<div class="col-xs-6 change-cellar-button change-cellar-button-inverse" id="in-cellar-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="This drink is in your cellar.">
+			<i class="fa fa-thumbs-up"> In Cellar</i>
+		</div>
+	<% else %>
+		<div class="col-xs-6 change-cellar-button btn btn-success show" id="cellar-add-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="Click to add drink to your cellar.">
+			<i class="fa fa-plus"> add to Cellar</i>
+		</div>
+		<div class="col-xs-6 change-cellar-button change-cellar-button-inverse hidden" id="in-cellar-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="This drink is in your cellar.">
+			<i class="fa fa-thumbs-up"> In Cellar</i>
+		</div>
+	<% end %>
+	<% @wishlist_drink = Wishlist.where(user_id: current_user.id, beer_id: drink.id, removed_at: nil)[0] %>
+	<% if !@wishlist_drink.nil? %>
+		<div class="col-xs-6 change-wishlist-button change-wishlist-button-inverse" id="in-wishlist-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="This drink is in your wishlist.">
+			<i class="fa fa-thumbs-up"> In Wishlist</i>
+		</div>
+	<% else %>
+		<div class="col-xs-6 change-wishlist-button btn btn-success" id="wishlist-add-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="Click to add drink to your wishlist.">
+			<i class="fa fa-plus"> Wishlist</i>
+		</div>
+		<div class="col-xs-6 change-wishlist-button change-wishlist-button-inverse hidden" id="in-wishlist-<%= drink.id %>" data-toggle="tooltip" data-placement="top" title="This drink is in your wishlist.">
+			<i class="fa fa-thumbs-up"> In Wishlist</i>
+		</div>
+	<% end %>
 </div>

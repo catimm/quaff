@@ -1,0 +1,31 @@
+<div class="mate-tile">
+	<div class="row no-margin">
+		<div class="col-xs-3 mobile-no-padding">
+			<% if mate.user_graphic.nil? %>
+				<%= render 'layouts/user_initials', friend: mate %>
+			<% else %>
+				<%= render 'layouts/user_graphic', friend: mate %>
+			<% end %>
+		</div>
+		<div class="col-xs-7 no-padding">
+			<h4 class="friend-name"><%= mate.first_name %> <%= mate.last_name %></h4>
+			<h5 class="friend-username">(<%= mate.username %>)</h5>
+			<h6 class="invitation-date">invited: <%= (mate.invitation_sent_at).strftime("%-m/%-d/%Y") %></h6>
+		</div>
+		<div class="col-xs-2 no-padding">
+			<% if mate.getting_started_step != 11 %>
+				<div class="mate-response" >
+					<p>pending</p>
+					<%= link_to send_mate_invite_reminder_path(mate.id), :remote => true, class:"send-connection-invite pending-connection" do %>
+							<i class="fa fa-envelope-o fa-2x mate-response-resend" id="user-id-<%= mate.id %>" data-toggle="tooltip" title="Resend mate request"></i>
+						<% end %>
+					<i class="fa fa-times-circle fa-2x mate-response-drop" id="user-id-<%= mate.id %>" data-toggle="tooltip" title="Remove mate request"></i>
+				</div>
+			<% else %>
+				<div class="mate-response">
+					<i class="fa fa-times-circle fa-2x mate-response-drop after-add" id="user-id-<%= mate.id %>" data-toggle="tooltip" title="Remove mate request"></i>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

@@ -7,10 +7,7 @@
 #  inventory_id             :integer
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
-#  new_drink                :boolean
 #  beer_id                  :integer
-#  projected_rating         :float
-#  likes_style              :string
 #  quantity                 :integer
 #  delivery_id              :integer
 #  cellar                   :boolean

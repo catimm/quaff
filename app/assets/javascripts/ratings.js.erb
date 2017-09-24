@@ -71,4 +71,24 @@ $(function() {
 		$(this).parent('.show-more-descriptors').siblings('.token-input-token-facebook_rating').removeClass('hidden').addClass('show');
 		$(this).parent('.show-more-descriptors').removeClass("show").addClass("hidden");
 	});
+	
+	// allow customers to see second row of drink rating information
+	$(document).on("click", ".drink-info-rating-show-more", function() {
+		$(this).siblings(".drink-info-universal-show-less").removeClass("hidden").addClass("show");
+		$(this).parent(".drink-info-universal-first-row").siblings(".drink-info-universal-second-row").removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+		if ($(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").hasClass("hidden")) {
+			$(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").removeClass("hidden").addClass("show");
+		}
+	});
+	
+	// allow customers to hide second row of drink rating information
+	$(document).on("click", ".drink-info-rating-show-less", function() {
+		$(this).siblings(".drink-info-universal-show-more").removeClass("hidden").addClass("show");
+		$(this).parent(".drink-info-universal-first-row").siblings(".drink-info-universal-second-row").removeClass("show").addClass("hidden");
+		$(this).removeClass("show").addClass("hidden");
+		if ($(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").hasClass("show")) {
+			$(this).parent(".drink-info-universal-first-row").siblings(".size-price-row").removeClass("show").addClass("hidden");
+		}
+	});
 });

@@ -6,6 +6,7 @@ class DrinksController < ApplicationController
   include DrinkDescriptors
   include CreateNewDrink
   include BestGuess
+  include BestGuessCellar
   include QuerySearch
   require 'json'
   
@@ -16,9 +17,8 @@ class DrinksController < ApplicationController
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
     
-    # determine if account has multiple users
-    @number_of_users = User.where(account_id: current_user.account_id).count
-    #Rails.logger.debug("Number of users: #{@number_of_users.inspect}")
+    # determine if account has multiple users and add appropriate CSS class tags
+    @account_users_count = User.where(account_id: current_user.account_id, getting_started_step: 11).count
     
     # get delivery info
     @upcoming_delivery = Delivery.where(account_id: @user.account_id).where(status: ["user review", "in progress"]).first
@@ -35,7 +35,8 @@ class DrinksController < ApplicationController
       # set delivery history variables
       @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6).offset(1)
     end
-    
+    Rails.logger.debug("First Delivery info: #{@first_delivery.inspect}")
+    Rails.logger.debug("Remaining Deliveries info: #{@remaining_deliveries.inspect}")  
     # get delivery drinks
     @first_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
     
@@ -101,8 +102,20 @@ class DrinksController < ApplicationController
     @user = User.find_by_id(current_user.id)
     @user_id = @user.id
     
+    # determine if account has multiple users and add appropriate CSS class tags
+    @account_users = User.where(account_id: current_user.account_id, getting_started_step: 11)
+    @account_users_count = @account_users.count
+    
+    if @account_users_count == 1
+      @number_of_users = ""
+    elsif @account_users_count == 2
+      @number_of_users = "-two"
+    else
+      @number_of_users = "-multiple"
+    end
+
     # get cellar drinks
-    @cellar_drinks = UserCellarSupply.where(account_id: current_user.account_id)
+    @cellar_drinks = UserCellarSupply.where(account_id: current_user.account_id).where.not(remaining_quantity: 0)
     
     # create array to hold descriptors cloud
     @final_descriptors_cloud = Array.new
@@ -127,8 +140,25 @@ class DrinksController < ApplicationController
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
     
-    # get cellar drinks
-    @wishlist_drinks = Wishlist.where(user_id: current_user.id)
+    # set variable for user drink rating info
+    @account_users = @user
+    
+    # get wishlist drinks
+    @wishlist_drinks = Wishlist.where(user_id: current_user.id, removed_at: nil)
+    
+    # create array to hold descriptors cloud
+    @final_descriptors_cloud = Array.new
+    
+    # get top descriptors for drinks in most recent delivery
+    @wishlist_drinks.each do |drink|
+      @drink_id_array = Array.new
+      @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
+      @final_descriptors_cloud << @drink_type_descriptors
+    end
+    
+    # send full array to JQCloud
+    gon.universal_drink_descriptor_array = @final_descriptors_cloud
+    #Rails.logger.debug("Descriptors array: #{gon.cellar_drink_descriptor_array.inspect}")
     
   end # end wishlist method
   
@@ -146,168 +176,62 @@ class DrinksController < ApplicationController
     
     redirect_to user_deliveries_path
   end #send_delivery_message method
-
-  def supply
-    # get correct view
-    @view = params[:format]
-    # get user supply data
-    @user_supply = UserSupply.where(user_id: params[:id]).order(:id)
-    #Rails.logger.debug("View is: #{@view.inspect}")
+  
+  def move_drink_to_cellar
+    # get data to add/update
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @account_delivery_id = @data_split[0]
+    @drink_quantity = @data_split[1].to_i
     
-    @user_supply.each do |supply|
-      if supply.projected_rating.nil?
-        best_guess(supply.beer_id, current_user.id)
+    # get account delivery info
+    @new_cellar_drink = AccountDelivery.find_by_id(@account_delivery_id)
+    
+    # get user info
+    @user = User.find_by_id(current_user.id)
+    
+    # determine if account has multiple users and each user has a rating for the cellar drink
+    @account_users = User.where(account_id: @user.account_id, getting_started_step: 11)
+    @account_users_count = @account_users.count
+    
+    if @account_users_count > 1
+      @account_users.each do |user|
+        if user.user_drink_rating(@new_cellar_drink.beer_id).nil?
+          if user.user_drink_projected_rating(@new_cellar_drink.beer_id).nil?
+            best_guess_cellar(@new_cellar_drink.beer_id, user.id)
+          end
+        end
       end
     end
     
-    # get data for view
-    if @view == "cooler"
-      @user_cooler = @user_supply.where(supply_type_id: 1)
-      
-      # create array to hold descriptors cloud
-      @final_descriptors_cloud = Array.new
-      
-      # get top descriptors for drink types the user likes
-      @user_cooler.each do |drink|
-        @drink_id_array = Array.new
-        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
-        @final_descriptors_cloud << @drink_type_descriptors
-      end
-      # send full array to JQCloud
-      gon.drink_descriptor_array = @final_descriptors_cloud
-
-      @user_cooler_final = @user_cooler.paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("User cooler: #{@user_cooler.inspect}")
-      @cooler_chosen = "chosen"
-    elsif @view == "cellar"
-      @user_cellar = @user_supply.where(supply_type_id: 2)
-      
-      # create array to hold descriptors cloud
-      @final_descriptors_cloud = Array.new
-      
-      # get top descriptors for drink types the user likes
-      @user_cellar.each do |drink|
-        @drink_id_array = Array.new
-        @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
-        @final_descriptors_cloud << @drink_type_descriptors
-      end
-      # send full array to JQCloud
-      gon.drink_descriptor_array = @final_descriptors_cloud
-      
-      @user_cellar_final = @user_cellar.paginate(:page => params[:page], :per_page => 12)
-      
-      @cellar_chosen = "chosen"
+    # find if this drink already exists in the account's cellar
+    @existing_cellar_drink = UserCellarSupply.where(account_id: @user.account_id, beer_id: @new_cellar_drink.beer_id)
+    
+    # create/update accordingly
+    if @existing_cellar_drink.blank?
+      # add drink to User Cellar Supply
+      UserCellarSupply.create(user_id: @user.id,
+                                beer_id: @new_cellar_drink.beer_id,
+                                total_quantity: @drink_quantity,
+                                account_id: @user.account_id,
+                                remaining_quantity: @drink_quantity)
     else
-      @wishlist_drink_ids = Wishlist.where(user_id: current_user.id).where("removed_at IS NULL").pluck(:beer_id)
-      #Rails.logger.debug("Wishlist drink ids: #{@wishlist_drink_ids.inspect}")
-      @wishlist = best_guess(@wishlist_drink_ids, current_user.id).sort_by(&:ultimate_rating).reverse.paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("Wishlist drinks: #{@wishlist.inspect}")
-      
-      # create array to hold descriptors cloud
-      @final_descriptors_cloud = Array.new
-      
-      # get top descriptors for drink types the user likes
-      @wishlist.each do |drink|
-        @drink_id_array = Array.new
-        @drink_type_descriptors = drink_descriptor_cloud(drink)
-        @final_descriptors_cloud << @drink_type_descriptors
-        #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
-      end
-      # send full array to JQCloud
-      gon.drink_descriptor_array = @final_descriptors_cloud
-      #Rails.logger.debug("Gon Drink descriptors: #{gon.drink_descriptor_array.inspect}")
-      
-      @wishlist_chosen = "chosen"
-    end # end choice between cooler, cellar and wishlist views
-    
-  end # end of supply method
-  
-  def load_rating_form_in_supply
-    # set id for container to hold rating form
-    @this_supply_id = params[:id]
-    #get user supply info for the drink to be rated
-    @user_supply = UserSupply.find_by_id(params[:id])
-    
-    if @user_supply.supply_type_id == 1
-      @view = "cooler"
-    elsif @user_supply.supply_type_id == 2
-      @view = "cellar"
-    end
-     # to prepare for new ratings
-    @user_drink_rating = UserBeerRating.new
-    @user_drink_rating.build_beer
-    @this_descriptors = drink_descriptors(@user_supply.beer, 10)
-    
-    respond_to do |format|
-      format.js
-      format.html
-    end # end of redirect to jquery
-    
-  end # end of load_rating_form_in_supply method
-  
-  def reload_drink_skip_rating
-    # set id for container to hold rating form
-    @this_supply_id = params[:id]
-    #get user supply info for the drink to be rated
-    @user_supply = UserSupply.find_by_id(params[:id])
-    
-    # get word cloud descriptors
-    @drink_type_descriptors = drink_descriptor_cloud(@user_supply.beer)
-    @drink_type_descriptors_final = @drink_type_descriptors[1]
-    
-    respond_to do |format|
-      format.js
-      format.html
-    end # end of redirect to jquery
-    
-  end # end of reload_drink_after_rating method
-  
-  def move_drink_to_cooler
-    @cellar_drink = UserSupply.find_by_id(params[:id])
-    #Rails.logger.debug("Cellar drink: #{@cellar_drink.inspect}")
-    if @cellar_drink.quantity == "1"
-      # just change supply type from cellar to cooler
-      @cellar_drink.update(supply_type_id: 1)
-    else
-      # find if this drink also already exists in the cooler
-      @cooler_drink = UserSupply.where(user_id: current_user.id, beer_id: @cellar_drink.beer_id, supply_type_id: 1).first
-      #Rails.logger.debug("Cooler drink: #{@cooler_drink.inspect}")
-      # get new cellar quantity
-      @new_cellar_quantity = (@cellar_drink.quantity - 1)
-      # update cellar supply
-      @cellar_drink.update(quantity: @new_cellar_quantity)
-        
-      if @cooler_drink.blank?
-        # create a cooler supply
-        UserSupply.create(user_id: current_user.id, 
-                          beer_id: @cellar_drink.beer_id, 
-                          supply_type_id: 1, 
-                          quantity: 1,
-                          cellar_note: @cellar_drink.cellar_note,
-                          projected_rating: @cellar_drink.projected_rating)
-      else # just add to the current cooler quantity
-        @new_cooler_quantity = (@cooler_drink.quantity + 1)
-        @cooler_drink.update(quantity: @new_cooler_quantity)
-      end
+      @existing_cellar_drink[0].increment!(:total_quantity, @drink_quantity)
+      @existing_cellar_drink[0].increment!(:remaining_quantity, @drink_quantity)
     end
     
-    render js: "window.location = '#{user_supply_path(current_user.id, 'cellar')}'"
+    # update Account Delivery
+    @new_cellar_drink.update(moved_to_cellar_supply: true)
     
-  end # end of move_drink_to_cooler method
-  
-  def add_supply_drink
+    # redirect to cellar page
+    render js: "window.location = '#{user_cellar_path}'"
     
-  end # end add_supply_drink method
+  end # end of move_drink_to_cellar method
   
   def drink_search
     # conduct search
     query_search(params[:query])
     
-    # get best guess for each drink found
-    @search_drink_ids = Array.new
-    @final_search_results.each do |drink|
-      @search_drink_ids << drink.id
-    end
     @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
     #Rails.logger.debug("Drink results: #{@final_search_results.inspect}")
         
@@ -337,67 +261,105 @@ class DrinksController < ApplicationController
   def add_cellar_drink
     # get drink info
     @this_drink_id = params[:id]
+    
+    # get user info
+    @user = User.find_by_id(current_user.id)
 
-    # get drink best guess info
-    @best_guess = best_guess(@this_drink_id, current_user.id)
-    @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
-    if @projected_rating > 10
-      @projected_rating = 10
+    # create new user cellar supply entry
+    UserCellarSupply.create(user_id: @user.id,
+                            account_id: @user.account_id, 
+                            beer_id: @this_drink_id,
+                            total_quantity: 1,
+                            purchased_from_knird: false,
+                            remaining_quantity: 1)
+    
+    # find projected rating if necessary
+    @user_rating = @user.user_drink_rating(@this_drink_id)
+    if @user_rating.nil?
+      @projected_rating = @user.user_drink_projected_rating(@this_drink_id)
     end
     
-    # create new user cellar supply entry
-    UserCellarSupply.create(user_id: current_user.id,
-                            account_id: current_user.account_id, 
-                            beer_id: @this_drink_id,
-                            quantity: 1,
-                            projected_rating: @projected_rating,
-                            purchased_from_knird: false)
-                            
+    # create new projected rating entry if necessary
+    if @user_rating.nil? && @projected_rating.nil?
+      # get drink best guess info
+      @best_guess = best_guess(@this_drink_id, current_user.id)
+      @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
+      if @projected_rating > 10
+        @projected_rating = 10
+      end
+      # create new project rating DB entry
+      ProjectedRating.create(user_id: @user.id, beer_id: @this_drink_id, projected_rating: @projected_rating)
+    end
+                           
     # don't update view
     render nothing: true
     
   end # end of add_cellar_drink method
   
+  def change_cellar_drink_quantity
+    # get data to add/update
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @add_or_subtract = @data_split[0]
+    @drink_id = @data_split[1]
+    
+    # get current cellar drink info
+    @cellar_drink = UserCellarSupply.find_by_id(@drink_id)
+    
+    if @add_or_subtract == "add"
+      @cellar_drink.increment!(:total_quantity)
+      @cellar_drink.increment!(:remaining_quantity)
+    else
+      @cellar_drink.decrement!(:remaining_quantity)
+    end
+    
+    # redirect back to cellar page
+    render js: "window.location.pathname = '#{user_cellar_path}'"
+    
+  end # end of remove_cellar_drink method
+  
   def add_wishlist_drink
     # get drink info
     @this_drink_id = params[:id]
-
-    # get drink best guess info
-    @best_guess = best_guess(@this_drink_id, current_user.id)
-    @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
-    if @projected_rating > 10
-      @projected_rating = 10
-    end
+    
+    # get user info
+    @user = User.find_by_id(current_user.id)
     
     # create new user cellar supply entry
-    Wishlist.create(user_id: current_user.id,
-                    account_id: current_user.account_id, 
-                    beer_id: @this_drink_id,
-                    projected_rating: @projected_rating)
-                            
+    Wishlist.create(user_id: @user.id,
+                    account_id: @user.account_id, 
+                    beer_id: @this_drink_id)
+    
+    # find projected rating if necessary
+    @user_rating = @user.user_drink_rating(@this_drink_id)
+    if @user_rating.nil?
+      @projected_rating = @user.user_drink_projected_rating(@this_drink_id)
+    end
+    
+    # create new projected rating entry if necessary
+    if @user_rating.nil? && @projected_rating.nil?
+      # get drink best guess info
+      @best_guess = best_guess(@this_drink_id, current_user.id)
+      @projected_rating = ((((@best_guess[0].best_guess)*2).round)/2.0)
+      if @projected_rating > 10
+        @projected_rating = 10
+      end
+      # create new project rating DB entry
+      ProjectedRating.create(user_id: @user.id, beer_id: @this_drink_id, projected_rating: @projected_rating)
+    end
+                          
     # don't update view
     render nothing: true
     
   end # end of add_wishlist_drink method
    
   def wishlist_removal
-    @drink_to_remove = Wishlist.where(user_id: current_user.id, beer_id: params[:id]).where("removed_at IS NULL").first
+    @drink_to_remove = Wishlist.find_by_id(params[:id])
     @drink_to_remove.update(removed_at: Time.now)
     
-    render :nothing => true
+    render js: "window.location = '#{user_wishlist_path}'"
 
   end # end wishlist removal
-  
-  def supply_removal
-    # get correct supply type
-    @supply_type_id = SupplyType.where(designation: params[:format])
-    # remove drink
-    @drink_to_remove = UserSupply.where(user_id: current_user.id, beer_id: params[:id], supply_type_id: @supply_type_id).first
-    @drink_to_remove.destroy!
-    
-    redirect_to :action => 'supply', :id => current_user.id, :format => params[:format]
-
-  end # end supply removal
   
   def change_delivery_drink_quantity
     # get data to add/update

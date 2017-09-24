@@ -33,13 +33,13 @@
 <div class="row no-margin size-price-row">
 	<div class="col-xs-9 no-padding text-right">
 		<h5 class="order-quantity">Qty: 
-			<span id="user-delivery-<%= drink.id %>"><%= drink.quantity.round %></span>
+			<span id="user-delivery-<%= drink.id %>"><%= drink.remaining_quantity.round %></span>
 		</h5>
 	</div>
-	<div class="col-xs-1 delivery-quantity-add disabled" data-toggle="tooltip" title="Sorry, there are currently no more of this item available. Please let us know if you'd like more!">
+	<div class="col-xs-1 cellar-quantity-add" id="user-cellar-add-<%= drink.id %>" data-toggle="tooltip" title="Add to quantity">
 		<i class="fa fa-plus-circle"></i>
 	</div>
-	<div class="col-xs-1 delivery-quantity-subtract" id="user-delivery-minus-<%= drink.id %>" data-toggle="tooltip" title="Subtract quantity">
+	<div class="col-xs-1 cellar-quantity-subtract" id="user-cellar-minus-<%= drink.id %>" data-toggle="tooltip" title="Subtract quantity">
 		<i class="fa fa-minus-circle"></i>
 	</div>
 </div>

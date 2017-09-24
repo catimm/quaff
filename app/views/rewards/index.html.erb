@@ -34,7 +34,7 @@
 						    	</h5>
 						    </div>
 						    <div class="col-sm-4">
-						    	<%= link_to "Rate drinks", account_settings_mates_path(current_user.id), class: "btn btn-default btn-success thank-you-next-button" %>
+						    	<%= link_to "Rate drinks", user_deliveries_path, class: "btn btn-default btn-success thank-you-next-button" %>
 						    </div>
 						</div>	
 					<% end %>
@@ -43,7 +43,7 @@
 					    	<h5 class="signup-next-step-text">Earn 30 bottle caps for each friend that joins with at least a 3-month membership</h5>
 					    </div>
 					    <div class="col-sm-4">
-					    	<%= link_to "Invite a friend", account_settings_mates_path(current_user.id), class: "btn btn-default btn-success thank-you-next-button" %>
+					    	<%= link_to "Invite a friend", invite_friend_path(current_user.id), class: "btn btn-default btn-success thank-you-next-button" %>
 					    </div>
 					</div>			
 				</div>
@@ -74,7 +74,7 @@
 				    					<%= reward.reward_transaction_type.reward_description %>
 				    				</h5>
 				    			<% elsif reward.reward_transaction_type_id == 2 || reward.reward_transaction_type_id == 3 %>
-				    				<% @drink_rated = AccountDelivery.find_by_id(reward.user_delivery_id) %>
+				    				<% @drink_rated = AccountDelivery.find_by_id(reward.account_delivery_id) %>
 				    				<h5>
 				    					You bought and rated <%= @drink_rated.beer.brewery.short_brewery_name %> 
 				    					<%= @drink_rated.beer.beer_name %>

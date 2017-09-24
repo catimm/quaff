@@ -44,9 +44,32 @@
 				</div>
 			<% else %>
 				<% @wishlist_drinks.each do |drink| %>
-					
+					<%= render(partial: 'drink_card_wishlist', locals: { drink: drink }) %>
 				<% end %>
 			<% end %>	
+		</div>
+	</div>
+</div>
+<div id="remove_drink_from_wishlist_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Remove drink confirmation</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<h4>Remove this drink from your wishlist?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 remove-button-holder" id="remove_drink_from_wishlist_holder">
+			<%= link_to "#", :class => 'subtract-drink-confirmation text-center btn btn-danger remove-drink-button', remote: true do %>
+				<i class="fa fa-minus"></i>
+				Remove it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 remove-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
 		</div>
 	</div>
 </div>

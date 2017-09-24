@@ -1,0 +1,52 @@
+<div class="drink-delivery-tile">
+	<div class="row no-margin">
+		<div class="col-xs-2 mobile-no-padding">
+			<% if rating.user.user_graphic.nil? %>
+				<%= render 'layouts/user_initials', friend: rating.user %>
+			<% else %>
+				<%= render 'layouts/user_graphic', friend: rating.user %>
+			<% end %>
+		</div>
+		<div class="col-xs-3 no-padding">
+			<h1 class="rating-view-user-rating"> <%= rating.user_beer_rating %><span class="recent-user-rating-context">/10</span></h1>
+		</div>
+		<div class="col-xs-7 no-padding">
+			<% if !rating.comment.blank? %>
+				<h5 class="tile-subheader drink-rating-comment">"<%= rating.comment %>"</h5>
+			<% else %>
+				<h5 class="tile-subheader drink-rating-comment">no comment</h5>
+			<% end %>
+			<% if !rating.current_descriptors.blank? %>
+				<% @descriptor_list_initial = rating.current_descriptors.split(',') %>
+				<% @descriptor_list_final = @descriptor_list_initial.to_sentence %>
+				<h5 class="recent-user-rating-descriptions"><%= @descriptor_list_final %></h5>
+			<% else %>
+				<h6 class="recent-user-rating-descriptions-none">no descriptors</h6>
+			<% end %>	
+		</div>
+	</div>
+	<div class="row no-margin drink-info-universal-second-row hidden">	
+		<hr class="drink-info-separater">
+		<div class="col-xs-5 col-sm-6 no-padding">
+			<p class="rating-subtitle">comment</p>
+			<% if !rating.comment.blank? %>
+				<h5 class="tile-subheader beer-info">"<%= rating.comment %>"</h5>
+			<% else %>
+				<h5 class="tile-subheader beer-info">no comment</h5>
+			<% end %>
+		</div>
+		<div class="col-xs-7 col-sm-6 cloud-descriptor-holder-rating no-padding">
+			<p class="rating-subtitle">descriptors</p>
+			<% if !rating.current_descriptors.blank? %>
+				<% @descriptor_list_initial = rating.current_descriptors.split(',') %>
+				<% @descriptor_list_final = @descriptor_list_initial.to_sentence %>
+				<h5 class="recent-user-rating-descriptions"><%= @descriptor_list_final %></h5>
+			<% else %>
+				<h6 class="recent-user-rating-descriptions-none">none provided</h6>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin size-price-row">
+		<h6 class="rated-on-date"><%= (rating.rated_on).strftime("%b %e, %Y") %></h6>
+	</div>
+</div>

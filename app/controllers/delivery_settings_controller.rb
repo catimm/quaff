@@ -103,8 +103,8 @@ class DeliverySettingsController < ApplicationController
     # set current page for jquery routing--preferences vs singup settings
     @current_page = "preferences"
     
-    # find if the account has any other users
-    @mates = User.where(account_id: @user.account_id).where.not(id: @user.id)
+    # find if the account has any other users who have completed their profile
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 11).where.not(id: @user.id)
     
     # get drink options
     @drink_options = DrinkOption.all
@@ -676,7 +676,7 @@ class DeliverySettingsController < ApplicationController
     end
     
     # find if the account has any other users (for menu links)
-    @mates = User.where(account_id: @user.account_id).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 11).where.not(id: @user.id)
     
   end # end of delivery_location method
   
@@ -777,7 +777,7 @@ class DeliverySettingsController < ApplicationController
     @user = User.find(current_user.id)
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user.account_id).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 11).where.not(id: @user.id)
     
     # get all users on account
     @users = User.where(account_id: @user.account_id)

@@ -1,0 +1,26 @@
+<div class="friend-search-tile">
+	<div class="row no-margin">
+		<div class="col-xs-3 mobile-no-padding">
+			<% if friend.user_graphic.nil? %>
+				<%= render 'layouts/user_initials', friend: friend %>
+			<% else %>
+				<%= render 'layouts/user_graphic', friend: friend %>
+			<% end %>
+		</div>
+		<div class="col-xs-7 no-padding">
+			<h4 class="friend-name"><%= friend.first_name %> <%= friend.last_name %></h4>
+			<h5 class="friend-username"><%= friend.username %></h5>
+		</div>
+		<div class="col-xs-2 no-padding holding-friend-id" id="friend-id-<%= friend.id %>">
+			<% if friend.friend_status(current_user.id).mate == true %>
+				<div class="friend-response">
+					<i class="fa fa-user fa-2x mate-in-friend-view" data-toggle="tooltip" title="This person is your mate!"></i>
+				</div>
+			<% else %>
+				<div class="friend-response">
+					<i id="remove-friend-id-<%= friend.id %>" class="fa fa-times-circle-o fa-2x remove-friend" data-toggle="tooltip" title="Remove friend"></i>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

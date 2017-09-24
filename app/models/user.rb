@@ -71,6 +71,7 @@ class User < ActiveRecord::Base
   has_many :user_supplies
   has_many :craft_stages
   has_many :reward_points
+  has_many :projected_ratings
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   attr_accessor :valid_special_code # to hold special code
@@ -110,12 +111,50 @@ class User < ActiveRecord::Base
     where(role_id: [1,4]) 
   }
   
-  # get recepient emails for Mandrill
+  # create Instance Method for user drink rating
+  def user_drink_rating(drink_id)
+    @user_drink_rating = UserBeerRating.where(user_id: self.id, beer_id: drink_id)
+    if !@user_drink_rating.blank?
+      @user_average_rating = (@user_drink_rating.average(:user_beer_rating).to_f).round(1)
+      if @user_average_rating >= 10.0
+        @final_rating = 10
+      else
+        @final_rating = @user_average_rating
+      end
+    else
+      @final_rating = nil
+    end
+    @final_rating
+  end
+  
+  # create Instance Method for drink projected rating
+  def user_drink_projected_rating(drink_id)
+    @projected_rating = ProjectedRating.where(user_id: self.id, beer_id: drink_id)[0]
+    if !@projected_rating.blank?
+      if @projected_rating.projected_rating >= 10.0
+        @final_projection = 10
+      else
+        @final_projection = @projected_rating.projected_rating
+      end
+    else
+      @final_projection = nil
+    end
+    @final_projection
+  end
+  
+  # create Instance Method for a user's friend
+  def friend_status(friend_id)
+    @friend_status = Friend.where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)", self.id, friend_id, friend_id, self.id)[0]
+
+    @friend_status
+  end
+  
+  # create Class Method for recepient emails for Mandrill
   def self.mandrill_emails(users)
    users.map{|user| {:email => user.email}}
   end
   
-  # connect recepient names to emails for Mandrill
+  # create Class Method recepient names to emails for Mandrill
   def self.mandrill_names_and_emails(users)
     users.map{|user| {:rcpt => user.email, :vars => [{:name => 'first_name', :content => user.first_name}]}}
   end

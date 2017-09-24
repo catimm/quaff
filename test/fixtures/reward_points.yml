@@ -7,7 +7,7 @@
 #  total_points               :float
 #  transaction_points         :float
 #  reward_transaction_type_id :integer
-#  user_delivery_id           :integer
+#  account_delivery_id        :integer
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #  friend_user_id             :integer

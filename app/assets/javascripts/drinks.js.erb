@@ -176,6 +176,33 @@ $(function () {
 
 	});
 	
+	// change cellar drink quantity
+	$(document).on("click", ".cellar-quantity-add", function() {
+		// get drink id
+		var this_id = $(this).attr('id');
+		var drink_id = this_id.replace('user-cellar-add-','');
+		// attach new id
+		$('#add-cellar-drink')
+			.attr('href', "/drinks/change_cellar_drink_quantity/add-" + drink_id);
+
+		// show modal
+	    $('#add_cellar_drink_confirmation').modal('show');
+
+	});
+	
+	$(document).on("click", ".cellar-quantity-subtract", function() {
+		// get drink id
+		var this_id = $(this).attr('id');
+		var drink_id = this_id.replace('user-cellar-minus-','');
+		// attach new id
+		$('#remove-cellar-drink')
+			.attr('href', "/drinks/change_cellar_drink_quantity/subtract-" + drink_id);
+
+		// show modal
+	    $('#remove_cellar_drink_confirmation').modal('show');
+
+	});
+	
 	// show delivery stats for upcoming delivery
 	$(document).on("click", ".show-delivery-stats-text", function() {
 		var this_id = $(this).attr('id');
@@ -234,5 +261,65 @@ $(function () {
 		return false;
 	});
 	
+	// remove drink from wishlist
+	$(document).on("click", ".remove-drink-from-wishlist", function() {
+		// get id of button
+		var this_id = $(this).attr('id');
+		var drink_id = this_id.replace('remove-drink-from-wishlist-','');
+		
+		// attach href
+		$("#remove_drink_from_wishlist_holder").children(".subtract-drink-confirmation").attr('href', '/drinks/wishlist_removal/'+drink_id)
+		
+		// show modal
+	    $('#remove_drink_from_wishlist_confirmation').modal('show');
+	});
+
+	// move drink to cellar
+	$(document).on("click", ".cellarable", function() {
+		// get id of button
+		var this_id = $(this).children('.cellar-this-drink').attr('id');
+		var drink_info = this_id.replace('cellar-drink-','');
+		var drink_info_split = drink_info.split("-");
+		var drink_id = drink_info_split[0];
+		var drink_number = drink_info_split[1];
+		
+		if (drink_number > 1) {	
+			// create array with drink number options
+			var numberOptions = {};
+			for (i = 0; i < drink_number; i++) {
+				number = i + 1;
+				numberOptions[number] = drink_id+"-"+number;
+			}
+			// insert drink number options into DOM
+			var $el = $("#cellar_drink_number");
+			$el.empty();
+			$el.append('<option value="">Choose</option>');
+			$.each(numberOptions, function(key,value) {
+			  $el.append($("<option></option>")
+			     .attr("value", value).text(key));
+			});
+
+			// show modal
+		    $('#confirm_cellar_move_multiple').modal('show');
+		} else {
+			// attach href
+			$("#move-to-cellar-button-single").attr('href', '/drinks/move_drink_to_cellar/'+drink_id+'-1')
+			
+			// show modal
+		    $('#confirm_cellar_move_single').modal('show');
+		}
+		
+	});
+	
+	// update href when multiple cellar drinks are chosen
+	$(document).on("change", "#cellar_drink_number", function() {
+		var drink_id_and_number = $(this).val();
+		
+		// attach href
+		$("#move-to-cellar-button-multiple").attr('href', '/drinks/move_drink_to_cellar/'+drink_id_and_number);
+		
+		// enable submit button
+		$("#move-to-cellar-button-multiple").removeAttr("disabled");
+	});
 });
 	
