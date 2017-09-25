@@ -71,15 +71,14 @@ class ApplicationController < ActionController::Base
     # set a different first view based on the user type
     if !session[:user_return_to].nil?
       @first_view = session[:user_return_to]
-    elsif current_user.role_id == 1
-      @first_view = admin_breweries_path
+    elsif  @user.getting_started_step < 11
+      @first_view = edit_user_path(@user.id)
     else
-      if @user.getting_started_step < 8
-        @first_view = edit_user_path(@user.id)
+      if current_user.role_id == 1
+        @first_view = admin_breweries_path
       else
-        @first_view = user_supply_path(current_user.id, 'cooler')
+        @first_view = user_deliveries_path
       end
-      
     end
     return @first_view
   end
