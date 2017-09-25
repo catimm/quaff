@@ -81,12 +81,17 @@ class InvitationsController < Devise::InvitationsController
     #Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
     # get info on invitor
     @invitor = User.find_by_id(params[:user][:invited_by_id])
+    # get invitor invitation code
+    @invitation_code = SpecialCode.where(user_id: @invitor.id)[0]
     # get a random color for the user
     @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
     # Set the value for :invitation_sent_at because we skip calling the Devise Invitable method deliver_invitation which normally sets this value
     @invited_user.attributes = {invitation_sent_at: Time.now.utc, role_id: 5, getting_started_step: 0, 
-                                    cohort: "guest", user_color: @user_color, account_id: @invitor.account_id}
+                                    cohort: "guest", user_color: @user_color, account_id: @invitor.account_id, special_code: @invitation_code.special_code}
     @invited_user.save(validate: false)                         
+    
+    # connect mate in friend table 
+    Friend.create(user_id: @invitor.id, friend_id: @invited_user.id, confirmed: false, mate: true)
     
     # send original email invitation
     UserMailer.guest_invite_email(@invited_user, current_user).deliver_now  
