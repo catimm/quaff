@@ -207,7 +207,7 @@ class DeliverySettingsController < ApplicationController
     else
       @first_change_date_option = @second_delivery_date_option
     end
-    
+    @first_change_date_option_id = @first_change_date_option.strftime("%Y-%m-%d")
     # set drink category choice
     if @delivery_preferences.drink_option_id == 1
       @drink_type_preference = "beers"

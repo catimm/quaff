@@ -1,6 +1,6 @@
 <% if @delivery.delivery_date == @days_notice_required %>
 	<div class="col-sm-2 no-padding delivery-date-change-row-holder">
-		<div class="row no-margin delivery-date-change-row text-center chosen" id="<%= @first_change_date_option %>">
+		<div class="row no-margin delivery-date-change-row text-center chosen" id="<%= @first_change_date_option_id %>">
 			<div class="col-xs-12 delivery-change-month-holder">
 				<h1 class="delivery-change-month"><%= (@first_change_date_option).strftime("%^b") %></h1>
 			</div>
@@ -14,7 +14,7 @@
 	</div>
 <% else %>
 	<div class="col-sm-2 no-padding delivery-date-change-row-holder">
-		<div class="row no-margin delivery-date-change-row text-center" id="<%= @first_change_date_option %>">
+		<div class="row no-margin delivery-date-change-row text-center" id="<%= @first_change_date_option_id %>">
 			<div class="col-xs-12 delivery-change-month-holder">
 				<h1 class="delivery-change-month"><%= (@first_change_date_option).strftime("%^b") %></h1>
 			</div>
