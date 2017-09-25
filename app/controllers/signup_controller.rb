@@ -449,10 +449,10 @@ class SignupController < ApplicationController
       @styles_for_dislike = @styles_for_like.where.not(id: @user_likes).order('style_order ASC')
       
       # determine path for 'Next' button
-      if @user.role_id == 4 || @user.role_id == 5
-        @next_step = drinks_weekly_getting_started_path(@user.id)
-      else
+      if @user.role_id == 6
         @next_step = signup_thank_you_path(@user.id)
+      else
+        @next_step = drinks_weekly_getting_started_path(@user.id)
       end
     
   end # end drink_style_likes_getting_started action
@@ -592,10 +592,10 @@ class SignupController < ApplicationController
     end
     
     # determine path for 'Next' button
-    if @user.role_id == 4
-      @next_step = account_address_getting_started_path(@user.id)
-    else
+    if @user.role_id == 5 || @user.role_id == 6
       @next_step = signup_thank_you_path(@user.id)
+    else
+      @next_step = account_address_getting_started_path(@user.id)
     end
     
   end # end of drinks_weekly_getting_started action
@@ -811,7 +811,7 @@ class SignupController < ApplicationController
     
     #get user info
     @user = User.find_by_account_id(params[:format])
-    Rails.logger.debug("User info: #{@user.inspect}")
+    #Rails.logger.debug("User info: #{@user.inspect}")
     
     # get delivery info
     @delivery_info = Delivery.find_by_account_id(params[:format])
