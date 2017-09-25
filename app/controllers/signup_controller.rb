@@ -810,7 +810,7 @@ class SignupController < ApplicationController
     @subscription_info = Subscription.find_by_subscription_level(@plan_name)
     
     #get user info
-    @user = User.find_by_account_id(params[:format])
+    @user = User.find_by_id(current_user.id)
     #Rails.logger.debug("User info: #{@user.inspect}")
     
     # get delivery info
