@@ -344,7 +344,7 @@ class DeliverySettingsController < ApplicationController
     @total_remaining_weeks_needed = ((@customer_remaining_deliveries * 2) - 2)
     #Rails.logger.debug("Total weeks needed: #{@total_remaining_weeks_needed.inspect}")
     @possible_new_active_until_date = @new_delivery_date + (@total_remaining_weeks_needed * 7).days
-    #Rails.logger.debug("Possible new date: #{@possible_new_active_until_date.inspect}")
+
     
     #update membership end date in our DB
     @user_subscription.update(active_until: @possible_new_active_until_date)
@@ -352,7 +352,7 @@ class DeliverySettingsController < ApplicationController
     # update membership end date with Stripe
     customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
     subscription = customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
-    subscription.trial_end = Time.parse(@possible_new_active_until_date.to_s).to_i
+    subscription.trial_end = @possible_new_active_until_date.to_i
     subscription.prorate = false
     subscription.save
       
