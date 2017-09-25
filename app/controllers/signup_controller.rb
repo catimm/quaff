@@ -764,7 +764,7 @@ class SignupController < ApplicationController
       # create first line in delivery table, but without status until customer pays membership fee
       @next_delivery = Delivery.create(account_id: current_user.account_id, 
                                       delivery_date: @final_delivery_date,
-                                      status: "admin prep",
+                                      status: nil,
                                       delivery_change_confirmation: false)
     end
     
