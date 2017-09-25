@@ -811,7 +811,7 @@ class SignupController < ApplicationController
     
     #get user info
     @user = User.find_by_account_id(params[:format])
-    #Rails.logger.debug("Early user info: #{@early_user.inspect}")
+    Rails.logger.debug("User info: #{@user.inspect}")
     
     # get delivery info
     @delivery_info = Delivery.find_by_account_id(params[:format])
@@ -832,7 +832,7 @@ class SignupController < ApplicationController
         @invitor_reward_points.update(total_points: @new_total_points, transaction_points: @bottle_caps,
                             reward_transaction_type_id: @reward_transaction_type_id)
       end
-    else
+    elsif @subscription_info.id == 3
       @active_until = Date.today + 1.year
       if !@user.special_code.blank?
         @bottle_caps = 30
@@ -845,6 +845,8 @@ class SignupController < ApplicationController
         @invitor_reward_points.update(total_points: @new_total_points, transaction_points: @bottle_caps,
                             reward_transaction_type_id: @reward_transaction_type_id)
       end
+    else
+      @active_until = Date.today + 1.year
     end
     
     # check if user already has a subscription row
