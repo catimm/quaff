@@ -352,7 +352,7 @@ class DeliverySettingsController < ApplicationController
     # update membership end date with Stripe
     customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
     subscription = customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
-    subscription.trial_end = (@possible_new_active_until_date.to_time.to_i)
+    subscription.trial_end = Time.parse(@possible_new_active_until_date.to_s).to_i
     subscription.prorate = false
     subscription.save
       
