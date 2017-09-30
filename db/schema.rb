@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170924212313) do
+ActiveRecord::Schema.define(version: 20170929211903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,14 +47,14 @@ ActiveRecord::Schema.define(version: 20170924212313) do
   end
 
   create_table "admin_account_deliveries", force: :cascade do |t|
-    t.integer  "user_id"
+    t.integer  "account_id"
     t.integer  "beer_id"
     t.integer  "inventory_id"
     t.boolean  "new_drink"
     t.string   "likes_style"
     t.integer  "quantity"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
     t.boolean  "cellar"
     t.boolean  "large_format"
     t.integer  "delivery_id"
@@ -63,6 +63,8 @@ ActiveRecord::Schema.define(version: 20170924212313) do
     t.string   "beer_style_name_two"
     t.string   "recommendation_rationale"
     t.boolean  "is_hybrid"
+    t.decimal  "drink_price",              precision: 5, scale: 2
+    t.decimal  "drink_cost",               precision: 5, scale: 2
   end
 
   create_table "admin_user_deliveries", force: :cascade do |t|
@@ -72,6 +74,8 @@ ActiveRecord::Schema.define(version: 20170924212313) do
     t.float    "quantity"
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+    t.boolean  "new_drink"
+    t.string   "likes_style"
   end
 
   create_table "alt_beer_names", force: :cascade do |t|

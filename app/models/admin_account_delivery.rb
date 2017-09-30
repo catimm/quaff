@@ -3,7 +3,7 @@
 # Table name: admin_account_deliveries
 #
 #  id                       :integer          not null, primary key
-#  user_id                  :integer
+#  account_id               :integer
 #  beer_id                  :integer
 #  inventory_id             :integer
 #  new_drink                :boolean
@@ -19,10 +19,12 @@
 #  beer_style_name_two      :string
 #  recommendation_rationale :string
 #  is_hybrid                :boolean
+#  drink_price              :decimal(5, 2)
+#  drink_cost               :decimal(5, 2)
 #
 
 class AdminAccountDelivery < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :account
   belongs_to :inventory
   belongs_to :beer
   belongs_to :delivery   

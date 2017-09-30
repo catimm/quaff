@@ -9,6 +9,8 @@
 #  quantity                  :float
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
+#  new_drink                 :boolean
+#  likes_style               :string
 #
 
 class AdminUserDelivery < ActiveRecord::Base
