@@ -17,8 +17,8 @@
 		</div>
 		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @account_chosen %>">
 			<% if @user.getting_started_step >= 9 %>
-				<%= link_to "account settings", account_address_getting_started_path(@user.id), class: "guide-header #{@account_chosen} hidden-xs" %>
-				<%= link_to "account", account_address_getting_started_path(@user.id), class: "guide-header #{@account_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
+				<%= link_to "account settings", account_membership_getting_started_path(@user.id), class: "guide-header #{@account_chosen} hidden-xs" %>
+				<%= link_to "account", account_membership_getting_started_path(@user.id), class: "guide-header #{@account_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 			<% else %>
 				<h5 class="guide-header hidden-xs">account settings</h5>
 				<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">account</h5>
