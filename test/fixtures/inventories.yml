@@ -5,7 +5,7 @@
 #  id                  :integer          not null, primary key
 #  stock               :integer
 #  reserved            :integer
-#  order_queue         :integer
+#  order_request       :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  size_format_id      :integer
@@ -15,6 +15,7 @@
 #  limit_per           :integer
 #  total_batch         :integer
 #  currently_available :boolean
+#  distributor_id      :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

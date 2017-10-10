@@ -1,17 +1,8 @@
-<div class="row header-row">
-	<div class="page-header">
-		<div class="row">
-			<div class="col-xs-12">
-				<h2>Recommendations--currently in stock</h2>
-			</div>
-		</div>
-	</div>
-</div>
 <div class="row no-margin" id="user-delivery-info-container">
 	<%= render 'user_delivery_info' %>
 </div>
 <div class="row" id="inventory-list-holder">
-	<%= render(partial: 'in_stock_list', locals: { drinks: @drink_recommendations_in_stock }) %>
+	<%= render 'in_stock_list', drinks: @drink_recommendations_in_stock %>
 </div>
 <div id="admin_user_delivery" class="modal">
 	<%= render 'admin_check_delivery_modal' %>

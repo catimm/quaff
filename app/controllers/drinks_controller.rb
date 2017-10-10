@@ -21,10 +21,11 @@ class DrinksController < ApplicationController
     @account_users_count = User.where(account_id: current_user.account_id, getting_started_step: 11).count
     
     # get delivery info
+    @all_deliveries = Delivery.where(account_id: @user.account_id)
     @upcoming_delivery = Delivery.where(account_id: @user.account_id).where(status: ["user review", "in progress"]).first
     
     # check if deliveries exist before executing rest of code
-    if !@upcoming_delivery.blank?
+    if !@all_deliveries.blank?
       
       if !@upcoming_delivery.blank?
         # set next delivery variables
@@ -107,6 +108,7 @@ class DrinksController < ApplicationController
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
     @user_id = @user.id
+    #Rails.logger.debug("Current User Info: #{@user.inspect}")
     
     # determine if account has multiple users and add appropriate CSS class tags
     @account_users = User.where(account_id: current_user.account_id, getting_started_step: 11)
@@ -122,6 +124,7 @@ class DrinksController < ApplicationController
 
     # get cellar drinks
     @cellar_drinks = UserCellarSupply.where(account_id: current_user.account_id).where.not(remaining_quantity: 0)
+    #Rails.logger.debug("Cellar Drinks: #{@cellar_drinks.inspect}")
     
     # create array to hold descriptors cloud
     @final_descriptors_cloud = Array.new

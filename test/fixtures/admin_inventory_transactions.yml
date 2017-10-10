@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: admin_inventory_transactions
+#
+#  id                        :integer          not null, primary key
+#  admin_account_delivery_id :integer
+#  inventory_id              :integer
+#  quantity                  :integer
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  admin_account_delivery_id: 1
+  inventory_id: 1
+  quantity: 1
+
+two:
+  admin_account_delivery_id: 1
+  inventory_id: 1
+  quantity: 1

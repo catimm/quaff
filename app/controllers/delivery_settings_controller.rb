@@ -780,7 +780,7 @@ class DeliverySettingsController < ApplicationController
     @mates = User.where(account_id: @user.account_id, getting_started_step: 11).where.not(id: @user.id)
     
     # get all users on account
-    @users = User.where(account_id: @user.account_id)
+    @users = User.where(account_id: @user.account_id, getting_started_step: 11)
     @drink_per_delivery_calculation = 0
     @large_delivery_estimate = 0
     @small_delivery_estimate = 0
@@ -790,26 +790,28 @@ class DeliverySettingsController < ApplicationController
     @users.each do |user|
       # get delivery preferences info
       @delivery_preferences = DeliveryPreference.where(user_id: user.id).first
-    
-      # set estimate values
-      @individual_drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-      @drink_per_delivery_calculation = @drink_per_delivery_calculation + @individual_drink_per_delivery_calculation
       
-      # set small/large format drink estimates
-      @individual_large_delivery_estimate = @delivery_preferences.max_large_format
-      @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
-      @individual_small_delivery_estimate = @individual_drink_per_delivery_calculation - (@individual_large_delivery_estimate * 2)
-      @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
+      if !@delivery_preferences.blank?
+        # set estimate values
+        @individual_drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
+        @drink_per_delivery_calculation = @drink_per_delivery_calculation + @individual_drink_per_delivery_calculation
+        
+        # set small/large format drink estimates
+        @individual_large_delivery_estimate = @delivery_preferences.max_large_format
+        @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
+        @individual_small_delivery_estimate = @individual_drink_per_delivery_calculation - (@individual_large_delivery_estimate * 2)
+        @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
+        
+        # get price estimate
+        @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
+        @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
+        #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
+        end
       
-      # get price estimate
-      @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
-      @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
-      #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
-      end
-    
-    # completing total cost estimate
-    @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-    @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      # completing total cost estimate
+      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+    end
     
   end # end of total_estimate method
   

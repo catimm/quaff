@@ -11,13 +11,39 @@ $(function() {
 		});
 	});
 	
-	// earmark drink as part of next delivery
-	$(document).on('change', '.add_to_delivery', function () {
+	// send number of drinks to admin account delivery table
+	$(document).on('change', '.dropdown-toggle-admin-add-quantity', function () {
 		var this_id = $(this).attr('id');
+		var order_quantity = $(this).val();
+		var split_id = this_id.split("-");
+		var user_recommendation_id = split_id[0];
+		var number_of_users = split_id[1];
+		var first_user_id = split_id[2];
+		var drink_id = split_id[3];
+		
+		// enable checkboxes for each user if more than one user
+		if (number_of_users > 1) {
+			$('.add_to_delivery-' + drink_id).removeAttr("disabled");
+		}
 		
 		$.ajax({
 		  type: "GET",
-		  url: "/admin/recommendations/next_delivery_drink/" + this_id
+		  url: "/admin/recommendations/admin_account_delivery/" + order_quantity + "-" + user_recommendation_id + "-" + number_of_users + "-" + first_user_id
+		});
+	});
+	
+	// send drink to admin user delivery table
+	$(document).on('change', '.add_to_delivery', function () {
+		var this_id = $(this).attr('id');
+		if($(this).is(":checked")) {
+		      var this_action = "add"
+		   } else {
+			var this_action = "remove"
+		}
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/admin_user_delivery/" + this_action + "-" + this_id
 		});
 	});
 	
@@ -37,26 +63,4 @@ $(function() {
 		});
 	});
 	
-	// enable admin to reduce drink quantity in next delivery
-	$(document).on('click', '.subtract-drink-quantity', function () {
-		var this_id = $(this).attr('id');
-		
-		$.ajax({
-		  type: "GET",
-		  url: "/admin/recommendations/change_delivery_drink_quantity/" + this_id
-		});
-		// stop jumping to top
-		return false;
-	});
-	// enable admin to add drink quantity in next delivery
-	$(document).on('click', '.add-drink-quantity', function () {
-		var this_id = $(this).attr('id');
-		
-		$.ajax({
-		  type: "GET",
-		  url: "/admin/recommendations/change_delivery_drink_quantity/" + this_id
-		});
-		// stop jumping to top
-		return false;
-	});
 });

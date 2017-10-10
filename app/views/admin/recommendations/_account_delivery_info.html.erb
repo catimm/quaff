@@ -1,0 +1,40 @@
+<div class="col-xs-4 col-sm-2 no-padding">
+	<h5>Next: <b><%= @customer_next_delivery.delivery_date.strftime("%m/%d/%y") %></b></h5>
+	<h5>Status: <%= @customer_next_delivery.status %></h5>
+</div>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<%= link_to "Acct requests", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#account_requests"} %>
+</div>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<%= link_to "Acct comments", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#account_comments"} %>
+</div>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<%= link_to "Review delivery", admin_review_delivery_path(@account_id), :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#admin_review_delivery"} %>
+</div>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<% if @customer_next_delivery.admin_delivery_review_note.nil? %>
+		<%= link_to "Add note", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#admin_delivery_note"} %>
+	<% else %>
+		<%= link_to "Update note", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#admin_delivery_note"} %>
+	<% end %>
+</div>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<% if @customer_next_delivery.status == "admin prep" %>
+		<%= link_to "Share delivery", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#confirm_sharing_delivery"} %>
+	<% else %>
+		<% if @delivery_preferences.additional.nil? %>
+			<%= link_to "Check feedback", admin_user_feedback_path(@account_id, @customer_next_delivery.id), :class => "btn btn-primary admin-check-button",
+					data: {toggle: "modal", target: "#admin_user_feedback"} %>
+		<% else %>
+			<%= link_to "Check feedback", admin_user_feedback_path(@account_id, @customer_next_delivery.id), 
+					:class => "btn btn-primary admin-check-button", disabled: disabled,
+					data: {toggle: "modal", target: "#admin_user_feedback"} %>
+		<% end %>
+	<% end %>
+</div>

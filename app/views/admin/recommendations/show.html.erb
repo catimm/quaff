@@ -6,16 +6,6 @@
 		</div>
 		<div class="col-sm-10">
 			<div class="row no-margin">
-				<div class="col-sm-1"></div>
-				<div class="col-sm-3 no-padding-left">
-					<%= link_to "In stock", admin_recommendation_path("#{@drink_recommendations[0].user.id}-in_stock"), class: "drink-preference-view-option #{@stock_chosen}" %>
-				</div>
-				<div class="col-sm-3 no-padding">
-					<%= link_to "Not in stock", admin_recommendation_path("#{@drink_recommendations[0].user.id}-not_in_stock"), class: "drink-preference-view-option #{@not_in_stock_chosen}" %>
-				</div>
-				<div class="col-sm-3 no-padding">
-					<%= link_to "Not in inventory", admin_recommendation_path("#{@drink_recommendations[0].user.id}-not_in_inventory"), class: "drink-preference-view-option #{@not_in_inventory_chosen}" %>
-				</div>
 			</div>
 			<div class="row first-row-admin-recommendation-decisions" id="chosen-customer-info">
 				<%= render 'chosen_customer_info' %>
@@ -25,16 +15,182 @@
 </div>
 <div class="row no-margin">
 	<div class="container" id="chosen-view-info">
-		<% if @view == "in_stock" %>
-			<%= render 'in_stock' %>
-		<% elsif @view == "not_in_stock"%>
-			<%= render 'not_in_stock' %>
-		<% else %>
-			<%= render 'not_in_inventory' %>
+		<div class="row no-margin">
+			<%= render 'account_delivery_info' %>
+		</div>
+		<div class="row no-margin" id="account-delivery-estimates-row">
+			<%= render 'account_delivery_estimates' %>
+		</div>
+		<hr>
+		<% @drink_recommendations.each do |drink| %>
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="drink-tile-<%= drink[1][0].id %>">
+					<div class="drink-delivery-tile">
+						<%= render 'layouts/drink_info_recommendations', drink: drink[1][0] %>
+					</div>
+				</div>
+				<div class="col-xs-10 col-sm-5 col-md-7">
+					<table class="table table-striped admin-recommendation-table">
+					    <tr>
+					    	<th>User</th>
+						    <th>New</th>
+						    <th>#</th>
+						    <th>Rating</th>
+						    <th>Delivered?</th>
+						    <th>Drank?</th>
+						   	<% if drink[1].count > 1 %>
+						    	<th class="text-center">Designate</th>
+						    <% end %>
+					    </tr>
+					    <% drink[1].each do |user| %>
+					    	<%= render 'recommended_drinks_list', 
+					    				{ drink: user, count: drink[1].count, drink_id: drink[0] }  %>
+					    <% end %>
+					  </table>
+				</div>
+				<div class="col-xs-2 col-sm-1 col-md-1 no-padding">
+					<h5 class="admin-add-quantity-header">Quantity</h5>
+					<% if @next_account_delivery.exists?(beer_id: drink[1][0].beer_id) %>
+						<% @this_current_quantity = AdminAccountDelivery.where(account_id: @account_id, delivery_id: @customer_next_delivery.id, beer_id: drink[1][0].beer_id )[0] %>
+						<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
+							<% @end_quantity = drink[1][0].inventory.limit_per %>
+						<% else %>
+							<% if drink[1][0].disti_inventory_available == true %>
+								<% @end_quantity = 24 %>
+							<% else %>
+								<% @end_quantity = (drink[1][0].inventory.stock + @this_current_quantity.quantity) %>
+							<% end %>
+						<% end %>
+						<% @quantity_available = [*0..@end_quantity] %>
+						<%= select_tag('curator_quantity_add', 
+										options_for_select(@quantity_available.map { |num| [num, num] }, @this_current_quantity.quantity),
+										class:"btn btn-success dropdown-toggle-admin-add-quantity", 
+										id: "#{drink[1][0].id}-#{drink[1].count}-#{drink[1][0].user_id}-#{drink[0]}", 
+										prompt: "Edit" ) %>
+					<% else %>
+						<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
+							<% @end_quantity = drink[1][0].inventory.limit_per %>
+						<% else %>
+							<% if drink[1][0].disti_inventory_available == true %>
+								<% @end_quantity = 24 %>
+							<% else %>
+								<% @end_quantity = drink[1][0].inventory.stock %>
+							<% end %>
+						<% end %>
+						<% @quantity_available = [*1..@end_quantity] %>
+						<%= select_tag('curator_quantity_add', 
+										options_for_select(@quantity_available.map { |num| [num, num] }), 
+										class:"btn btn-success dropdown-toggle-admin-add-quantity", 
+										id: "#{drink[1][0].id}-#{drink[1].count}-#{drink[1][0].user_id}-#{drink[0]}", 
+										prompt: "Add" ) %>
+					<% end %>
+				</div>
+			</div>
+			<hr>
 		<% end %>
 	</div>
 </div>
-<div class="container">
-
+<div id="admin_user_delivery" class="modal">
+	<%= render 'admin_check_delivery_modal' %>
+</div>
+<div id="admin_user_feedback" class="modal">
+	<%= render 'admin_user_feedback_modal' %>
+</div>
+<div id="admin_review_delivery" class="modal">
+	<%= render 'admin_review_delivery_modal' %>
+</div>
+<div id="admin_delivery_note" class="modal">
+	<%= render 'admin_delivery_note_modal' %>
+</div>
+<div id="account_requests" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Account requests</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<% @users.each do |user| %>
+					<% @user_delivery_preference = DeliveryPreference.find_by_user_id(user.id) %>
+					<% if !@user_delivery_preference.additional.blank? %>
+						<h5>
+							<% if user.user_graphic.nil? %>
+								<%= render 'layouts/user_initials_xsmall', friend: user %>
+							<% else %>
+								<%= render 'layouts/user_graphic_small', friend: user %>
+							<% end %> 
+							says "<% @user_delivery_preference.additional %>"
+						</h5>
+					<% else %>
+						<h5>
+							<% if user.user_graphic.nil? %>
+								<%= render 'layouts/user_initials_xsmall', friend: user %>
+							<% else %>
+								<%= render 'layouts/user_graphic_small', friend: user %>
+							<% end %>
+							 has made no additional requests/comments.
+						</h5>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="account_comments" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Curator comments about Account Users</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-sm-12">
+				<% @users.each do |user| %>
+					<% @user_delivery_preference = DeliveryPreference.find_by_user_id(user.id) %>
+					<% if !@user_delivery_preference.admin_comments.blank? %>
+						<h5> 
+							<% if user.user_graphic.nil? %>
+								<%= render 'layouts/user_initials_xsmall', friend: user %>
+							<% else %>
+								<%= render 'layouts/user_graphic_small', friend: user %>
+							<% end %> 
+							 Curator says, "<% @user_delivery_preference.admin_comments %>"
+						</h5>
+					<% else %>
+						<h5> 
+							<% if user.user_graphic.nil? %>
+								<%= render 'layouts/user_initials_xsmall', friend: user %>
+							<% else %>
+								<%= render 'layouts/user_graphic_small', friend: user %>
+							<% end %>
+							 Curator has made no additional comments.
+						</h5>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="confirm_sharing_delivery" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm sharing delivery</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4>Share these curated drinks with customers?</h4>
+			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to admin_share_delivery_with_customer_path(@customer_next_delivery.id), :class => 'text-center btn btn-success add-drink-button' do %>
+				<i class="fa fa-thumbs-up"></i>
+				Yup!
+			<% end %>
+		</div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
 </div>
 <%= render 'layouts/footer' %>

@@ -1,0 +1,46 @@
+<tr>
+	<td>
+		<% if drink.user.user_graphic.nil? %>
+			<%= render 'layouts/user_initials_xsmall', friend: drink.user %>
+		<% else %>
+			<%= render 'layouts/user_graphic_small', friend: drink.user %>
+		<% end %>
+	</td>
+	<td><%= drink.new_drink.humanize %></td>
+	<% if drink.new_drink == true %>
+		<td>0</td>
+		<td><%= drink.projected_rating %></td>
+	<% else %>
+		<% @number_of_ratings = UserBeerRating.where(user_id: drink.user_id, beer: drink.beer.id).count %>
+		<td><%= @number_of_ratings %></td>
+		<% @user_rating = drink.user.user_drink_rating(drink.beer.id) %>
+		<td><%= @user_rating %></td>
+	<% end %>
+	<% @delivered_recently = AccountDelivery.delivered_recently(@user.id, @account_id, drink.beer_id)[0] %>
+	<% if !@delivered_recently.blank? %>
+		<td><%= (@delivered_recently.delivery.delivery_date).strftime("%-m/%-d/%y") %></td>
+	<% else %>
+		<td>No</td>
+	<% end %>
+	<% @drank_recently = UserBeerRating.where(user_id: @user.id, beer_id: drink.beer_id).where('rated_on > ?', 1.month.ago).last %>
+	<% if !@drank_recently.blank? %>
+		<td><%= (@drank_recently.rated_on).strftime("%-m/%-d/%y") %></td>
+	<% else %>
+		<td>N/A</td>
+	<% end %>
+	<% if count > 1 %>
+		<% @next_account_delivery_drink = @next_account_delivery.where(beer_id: drink.beer_id)[0] %>
+		<% if !@next_account_delivery_drink.nil? %>
+			<% @user_delivery_drink = AdminUserDelivery.where(admin_account_delivery_id: @next_account_delivery_drink.id, user_id: drink.user_id) %>
+			<% if @user_delivery_drink.blank? %>
+				<td class="text-center"><%= check_box_tag "inventory_ids[]", drink.id, false, :id => "#{drink.id}-#{@next_account_delivery_drink.id}", :class => "add_to_delivery" %></td>
+			<% else %>
+				<td class="text-center"><%= check_box_tag "inventory_ids[]", drink.id, {checked: true}, :id => "#{drink.id}-#{@next_account_delivery_drink.id}", :class => "add_to_delivery" %></td>
+			<% end %>
+		<% else %>
+			<td class="text-center"><%= check_box_tag "inventory_ids[]", drink.id, false, disabled: true, :id => "#{drink.id}", :class => "add_to_delivery-#{drink_id}" %></td>
+		<% end %>
+	<% end %>
+</tr>
+
+

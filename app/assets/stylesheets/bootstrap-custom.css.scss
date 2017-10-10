@@ -4132,6 +4132,9 @@ $beer-header-lines-to-show-fp: 1;
 .preference-estimate-holder {
   margin-bottom: 10px;
 }
+.preference-estimate-holder-admin {
+  padding: 0 5px !important;
+}
 .estimated-delivery-price-header {
   color: $normal-text;
   margin: 10px 0;
@@ -5364,8 +5367,11 @@ $delivery-beer-header-lines-to-show: 2;
   width: 25%;
   float: left;
 }
-.admin-recommendation-table > tbody > tr > th {
-  padding: 8px 4px !important;
+.admin-recommendation-table {
+  margin-bottom: 0 !important;
+  > tbody > tr > td {
+    padding: 3px 0 !important;
+  }
 }
 .current-drink-quantity {
   width: 25px !important;
@@ -5387,10 +5393,24 @@ $delivery-beer-header-lines-to-show: 2;
     color: $white;
   }
 }
+.admin-user-identity {
+  padding: 0;
+  div {
+    float: left;
+  }
+  h5 {
+    float: left;
+    width: 40%;
+    margin-left: 3px;
+  }
+}
 .admin-check-button {
-    width: 45%;
+    width: 80%;
     float: left;
     margin: 5px 5px 0 0;
+}
+.admin-add-quantity-header {
+  font-weight: 500;
 }
 .delivery-confirm-button {
   width: 100%;
@@ -5980,6 +6000,10 @@ $delivery-beer-header-lines-to-show: 2;
 .dropdown-toggle.drink-size {
   height: 34px !important;
 }
+.dropdown-toggle-admin-add-quantity {
+  height: 34px !important;
+}
+
 .formButton-add-details {
   margin: 10px 0 0 25px;
   padding: 4px 8px;

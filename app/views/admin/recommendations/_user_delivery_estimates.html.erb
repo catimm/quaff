@@ -1,0 +1,85 @@
+<div class="row no-margin">
+	<% @user_preferences = DeliveryPreference.where(user_id: user.id)[0] %>
+	<% @user_drinks_per_week = (@user_preferences.drinks_per_week * 2.2).round %>
+	<% @delivery_cost_estimate_low = (((@user_preferences.price_estimate.to_f) *0.9).floor / 5).round * 5 %>
+    <% @delivery_cost_estimate_high = ((((@user_preferences.price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5 %>
+	<% @user_drinks = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id, user_id: user.id) %>
+	<% @next_user_delivery_cellar_drinks = 0 %>
+	<% @next_user_delivery_small_drinks = 0 %>
+	<% @next_user_delivery_large_drinks = 0 %>
+	<% @next_user_delivery_drink_price = 0 %>
+	<% @user_drinks.each do |drink| %>
+		<% if drink.admin_account_delivery.cellar == true %>
+	 		<% @this_cellar = 1 * drink.quantity %>
+	 		<% @next_user_delivery_cellar_drinks = @next_user_delivery_cellar_drinks + @this_cellar %>
+	 	<% end %>
+	 	<% if drink.admin_account_delivery.large_format == false %>
+	 		<% @this_small_format = 1 * drink.quantity %>
+	 		<% @next_user_delivery_small_drinks = @next_user_delivery_small_drinks + @this_small_format %>
+	 	<% end %>
+	 	<% if drink.admin_account_delivery.large_format == true %>
+	 		<% @this_large_format = drink.quantity %>
+	 		<% @next_user_delivery_large_drinks = @next_user_delivery_large_drinks + @this_large_format %>
+	 	<% end %>
+	 	<% @this_drink_price = drink.admin_account_delivery.drink_price * drink.quantity %>
+	 	<% @next_user_delivery_drink_price = @next_user_delivery_drink_price + @this_drink_price %>
+	<% end %>
+	<div class="col-xs-2 col-sm-1 admin-user-identity">
+		<% if user.user_graphic.nil? %>
+			<%= render 'layouts/user_initials_small', friend: user %>
+		<% else %>
+			<%= render 'layouts/user_graphic_small', friend: user %>
+		<% end %>
+		<h5>
+			<b>
+				<% @user_identification_array.each do |identity| %>
+					<% if identity["id"] == user.id %>
+						<%= identity["identity"] %> 
+					<% end %>
+				<% end %>
+			</b>
+		</h5>
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box drinks">
+			<p>total</p>
+			<h4 class="delivery-preference-prompt"><%= (@next_user_delivery_small_drinks + (@next_user_delivery_large_drinks * 2)) %><span>/<%= @user_drinks_per_week %></span></h4>
+		</div>	
+	</div>
+	<div class="col-xs-1 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box new">
+			<p>new</p>
+			<h4 class="delivery-preference-prompt"><%= @user_drinks.count(:conditions => { :new_drink => true }) %></h4>
+		</div>	
+	</div>
+	<div class="col-xs-1 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box new">
+			<p>cellar</p>
+			<h4 class="delivery-preference-prompt"><%= @next_user_delivery_cellar_drinks %></h4>
+		</div>	
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box small">
+			<p>small</p>
+			<h4 class="delivery-preference-prompt"><span><%= @next_user_delivery_small_drinks %>/<%= (@user_drinks_per_week - (@user_preferences.max_large_format * 2)) %></span></h4>
+		</div>	
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box large">
+			<p>large</p>
+			<h4 class="delivery-preference-prompt"><%= @next_user_delivery_large_drinks %>/<%= (@user_preferences.max_large_format * 2) %></span></h4>
+		</div>	
+	</div>
+	<div class="col-xs-3 col-sm-2 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box total-price">
+			<p>price estimate</p>
+			<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery_cost_estimate_low, precision: 0) %> - <%= number_to_currency(@delivery_cost_estimate_high, precision: 0) %></h4>
+		</div>
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box total-price">
+			<p>current price</p>
+			<h4 class="delivery-preference-prompt">$<%= (@next_user_delivery_drink_price * 1.096).round(2) %></h4>
+		</div>
+	</div>
+</div>

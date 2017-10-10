@@ -1,46 +1,52 @@
-<div class="row">
-	<%= render 'user_delivery_info' %>
-</div>
-<% if !@customer_message.nil? %>
-	<div class="row">
-		<div class="col-sm-12">
-			<h5><b>Delivery message:</b> "<%= @customer_message.message %>"</h5>
-		</div>
-	</div>
+<% if !@next_delivery_plans.blank? %>
+	<table class="table table-striped admin-recommendation-table">
+		<tr>
+		  <th>Drink</th>
+		  <th>Drink Type</th>
+		  <th>Cellarable</th>
+		  <th>Format</th>
+		  <th>User &nbsp;
+		  		New &nbsp;
+		  		Rating &nbsp;
+		  		Quantity
+		  </th>
+		</tr>
+		<% @next_delivery_plans.each_with_index do |drink, index| %>
+			<% drink.beer.inventories.each do |inventory| %>
+		      <tr>
+		        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+		        <td><%= drink.beer.beer_type.beer_type_name %></td>
+		        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
+		        <td><%= inventory.size_format.format_name %></td>
+		        <% @designated_users = AdminUserDelivery.where(admin_account_delivery_id: drink.id) %>
+		        <td>
+			        <table>
+				        <% @designated_users.each do |user| %>
+			        		<tr>
+			        			<td>
+					        		<% if user.user.user_graphic.nil? %>
+										<%= render 'layouts/user_initials_xsmall', friend: user.user %>
+									<% else %>
+										<%= render 'layouts/user_graphic_small', friend: user.user %>
+									<% end %>
+									&nbsp;
+								</td>
+								<td><%= user.new_drink.humanize %> &nbsp;</td>
+				        	 	<% if user.new_drink == true %>
+						        	<td><%= user.projected_rating %> &nbsp;</td>
+						        <% else %>
+						        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
+						        	<td><%= @avg_rating.round(2) %> &nbsp;</td>
+						        <% end %>
+						        <td><%= user.quantity %> &nbsp;</td>
+			        		</tr>
+			        	 <% end %>
+			    	</table>
+		        </td>
+		      </tr>
+		    <% end %>
+		<% end %>
+	</table>
+<% else %>
+<h4>Um, there's nothing to review yet....Get crackin'!</h4>
 <% end %>
-  <table class="table table-striped admin-recommendation-table">
-    <tr>
-      <th>#</th>
-      <th>Drink</th>
-      <th>Drink Type</th>
-      <th>Rating</th>
-      <th>New</th>
-      <th>Cellarable</th>
-      <th>Format</th>
-      <th>Quantity</th>
-    </tr>
-    <% @next_delivery_plans.each_with_index do |drink, index| %>
-    	<% drink.beer.inventories.each do |inventory| %>
-	      <tr>
-	        <td><%= (index + 1) %></td>
-	        <% if drink.beer.beer_type.cellarable == true %>
-	        	<% @cellarable = "C" %>
-	        <% else %>
-	        	<% @cellarable = "" %>
-	        <% end %>
-	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
-	        <td><%= drink.beer.beer_type.beer_type_name %></td>
-	        <% if drink.new_drink == true %>
-	        	<td><%= drink.projected_rating %></td>
-	        <% else %>
-	        	<% @avg_rating = UserBeerRating.where(user_id: current_user.id, beer_id: drink.beer.id).average(:user_beer_rating) %>
-	        	<td><%= @avg_rating.round(2) %></td>
-	        <% end %>
-	        <td><%= drink.new_drink.humanize %></td>
-	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
-	        <td><%= inventory.size_format.format_name %></td>
-	        <td><%= drink.quantity %></td>
-	      </tr>
-	    <% end %>
-    <% end %>
-  </table>

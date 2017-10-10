@@ -11,6 +11,7 @@
 #  updated_at                :datetime         not null
 #  new_drink                 :boolean
 #  likes_style               :string
+#  projected_rating          :float
 #
 
 class AdminUserDelivery < ActiveRecord::Base

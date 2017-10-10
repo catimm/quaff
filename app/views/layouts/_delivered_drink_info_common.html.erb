@@ -40,12 +40,12 @@
 <div class="row no-margin size-price-row hidden">
 	<div class="col-xs-2">
 		<h5 class="svg-holder">
-			<%= svg drink.inventory.size_format.image %>
+			<%= svg drink.size_format.image %>
 		</h5>
 	</div>
 	<div class="col-xs-4 no-padding">
 		<h5 class="item-price" data-toggle="tooltip" title="Price includes tax">
-			<% @total_price = (drink.inventory.drink_price * 1.096) %>
+			<% @total_price = (drink.drink_price * 1.096) %>
 			<%= number_to_currency(@total_price, precision: 2) %> each
 		</h5>		
 	</div>
