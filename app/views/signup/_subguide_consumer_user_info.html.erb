@@ -4,8 +4,12 @@
 </div>
 <div class="col-xs-6 col-sm-4 col-md-3 no-padding signup-guide-column-holder <%= @user_home_address_chosen %>">
 	<% if @user.getting_started_step >= 2 %>
-		<%= link_to "home address", home_address_getting_started_path(@user.id), class: "guide-header #{@user_home_address_chosen}" %>
+		<%= link_to "home address", home_address_getting_started_path(), class: "guide-header #{@user_home_address_chosen}" %>
 	<% else %>
 		<h5 class="guide-header">home address</h5>
 	<% end %>
+	<h5 class="pipe-separator">&#124;</h5>
+</div>
+<div class="col-xs-6 col-sm-4 col-md-3 no-padding signup-guide-column-holder <%= @account_address_chosen %>">
+	<%= link_to "delivery preferences", delivery_preferences_getting_started_path(), class: "guide-header #{@account_address_chosen}" %>
 </div>

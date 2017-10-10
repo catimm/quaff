@@ -23,7 +23,7 @@ class UserAddressesController < ApplicationController
       redirect_to session.delete(:return_to)
     else # assume this is  coming from the signup process
       # redirect to next step in signup process
-      redirect_to drink_choice_getting_started_path(current_user.id)
+      redirect_to delivery_preferences_getting_started_path(current_user.id)
     end
       
   end # end of create method
@@ -59,7 +59,7 @@ class UserAddressesController < ApplicationController
       redirect_to session.delete(:return_to)
     else # assume this is  coming from the signup process
       # redirect to next step in signup process
-      redirect_to drink_choice_getting_started_path(current_user.id)
+      redirect_to delivery_preferences_getting_started_path(current_user.id)
     end
     
   end # end of update method

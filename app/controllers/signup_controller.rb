@@ -5,13 +5,13 @@ class SignupController < ApplicationController
   
   def home_address_getting_started
     # get user info
-    @user = User.find_by_id(params[:id])
+    @user = current_user
+
     #Rails.logger.debug("User info: #{@user.inspect}")
     # update getting started step
     if @user.getting_started_step < 2
       @user.update(getting_started_step: 2)
     end
-    
     
     # set sub-guide view
     @subguide = "user_info"
@@ -33,7 +33,6 @@ class SignupController < ApplicationController
   def process_home_address_getting_started
     # find if user already has a home address in the DB
     @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
-    
     if @home_address.blank?
       # create new address
       @new_address = UserAddress.create(address_params)
@@ -43,13 +42,13 @@ class SignupController < ApplicationController
     end
     
     # set redirect link
-    redirect_to drink_choice_getting_started_path(current_user.id)
+    redirect_to delivery_preferences_getting_started_path(current_user.id)
     
   end # end of process_home_address_getting_started method
   
   def drink_choice_getting_started
     # get User info 
-    @user = User.find_by_id(params[:id])
+    @user = current_user
     # update getting started step
     if @user.getting_started_step < 3
       @user.update(getting_started_step: 3)
@@ -118,7 +117,7 @@ class SignupController < ApplicationController
   
   def drink_journey_getting_started
     # get User info 
-    @user = User.find(params[:id])
+    @user = current_user
     # update getting started step
     if @user.getting_started_step < 4
       @user.update(getting_started_step: 4)
@@ -190,7 +189,7 @@ class SignupController < ApplicationController
   
   def drink_style_likes_getting_started
     # get User info 
-    @user = User.find(params[:id])
+    @user = current_user
     # update getting started step
     if @user.getting_started_step < 5
       @user.update(getting_started_step: 5)
@@ -330,7 +329,7 @@ class SignupController < ApplicationController
   
   def drink_style_dislikes_getting_started
     # get User info 
-    @user = User.find(params[:id])
+    @user = current_user
     # update getting started step
     if @user.getting_started_step < 6
       @user.update(getting_started_step: 6)
@@ -459,7 +458,7 @@ class SignupController < ApplicationController
   
   def drinks_weekly_getting_started
     # get User info 
-    @user = User.find(params[:id])
+    @user = current_user
     # update getting started step
     if @user.getting_started_step < 7
       @user.update(getting_started_step: 7)
@@ -503,7 +502,7 @@ class SignupController < ApplicationController
   
   def process_drinks_weekly_getting_started
     # get User info 
-    @user = User.find_by_id(current_user.id)
+    @user = current_user
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
@@ -531,7 +530,7 @@ class SignupController < ApplicationController
   
   def drinks_large_getting_started
     # get User info 
-    @user = User.find(params[:id])
+    @user = User.find_by_id(current_user.id)
     # update getting started step
     if @user.getting_started_step < 8
       @user.update(getting_started_step: 8)
@@ -595,7 +594,7 @@ class SignupController < ApplicationController
     if @user.role_id == 5 || @user.role_id == 6
       @next_step = signup_thank_you_path(@user.id)
     else
-      @next_step = account_address_getting_started_path(@user.id)
+      @next_step = account_membership_getting_started_path(@user.id)
     end
     
   end # end of drinks_weekly_getting_started action
@@ -605,7 +604,7 @@ class SignupController < ApplicationController
     @input = params[:id]
     
     # get User info 
-    @user = User.find_by_id(current_user.id)
+    @user = current_user
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
@@ -635,9 +634,9 @@ class SignupController < ApplicationController
     
   end # end of drinks_weekly_getting_started action
   
-  def account_address_getting_started
+  def delivery_preferences_getting_started
     # get User info 
-    @user = User.find_by_id(params[:id])
+    @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
     # update getting started step
     if @user.getting_started_step < 9
@@ -645,7 +644,7 @@ class SignupController < ApplicationController
     end
     
     # set sub-guide view
-    @subguide = "account_settings" 
+    @subguide = "user_info" 
     
     # get Account info
     @account = Account.find_by_id(@user.account_id)
@@ -707,13 +706,15 @@ class SignupController < ApplicationController
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     
-    # set drink category choice
-    if @delivery_preferences.drink_option_id == 1
-      @drink_preference = "beers"
-    elsif @delivery_preferences.drink_option_id == 2
-      @drink_preference = "ciders"
-    else
-      @drink_preference = "beers/ciders"
+    if !@delivery_preferences.blank?
+      # set drink category choice
+      if @delivery_preferences.drink_option_id == 1
+        @drink_preference = "beers"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_preference = "ciders"
+      else
+        @drink_preference = "beers/ciders"
+      end
     end
     
     #set guide view
@@ -776,14 +777,14 @@ class SignupController < ApplicationController
       redirect_to signup_thank_you_path(current_user.id)
     else # user needs to choose a subscription 
       # redirect back to the delivery location page
-      redirect_to account_membership_getting_started_path(current_user.id)
+      redirect_to drink_choice_getting_started_path()
     end
     
   end # end of choose_delivery_time method
   
   def account_membership_getting_started
     # get User info 
-    @user = User.find_by_id(params[:id])
+    @user = current_user
     # update getting started step
     if @user.getting_started_step < 10
       @user.update(getting_started_step: 10)

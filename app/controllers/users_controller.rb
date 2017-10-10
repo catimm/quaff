@@ -53,10 +53,10 @@ class UsersController < ApplicationController
         Friend.create(user_id: @account_owner.id, friend_id: @user.id, confirmed: true)
         
         # set redirect link
-        @redirect_link = drink_choice_getting_started_path(@user.id)
+        @redirect_link = drink_choice_getting_started_path()
       else
         # set redirect link
-        @redirect_link = home_address_getting_started_path(@user.id)
+        @redirect_link = home_address_getting_started_path()
       end
       
       # redirect to next step in signup process
@@ -70,6 +70,10 @@ class UsersController < ApplicationController
   
   def edit
     @user = User.find_by_id(params[:id])
+
+    if @user.id != current_user.id
+      return head :forbidden
+    end
     #Rails.logger.debug("User info: #{@user.inspect}")
 
     # set sub-guide view
@@ -91,6 +95,9 @@ class UsersController < ApplicationController
   
   def update 
     @user = User.find_by_id(current_user.id)
+    if @user.id != current_user.id
+      return head :forbidden
+    end
     
     if @user.update(user_params)
       # Sign in the user by passing validation in case their password changed
@@ -108,7 +115,7 @@ class UsersController < ApplicationController
         @redirect_link = drink_choice_getting_started_path(@user.id)
       else
         # set redirect link
-        @redirect_link = home_address_getting_started_path(@user.id)
+        @redirect_link = home_address_getting_started_path()
       end
       
       # redirect to next step in signup process
