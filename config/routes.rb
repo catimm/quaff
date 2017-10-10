@@ -141,29 +141,29 @@ Rails.application.routes.draw do
   patch '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'reset_customer_delivery_date'
   
   # user signup process
-  get '/signup/home_address_getting_started/:id' => 'signup#home_address_getting_started', :as => 'home_address_getting_started'
-  post '/signup/process_home_address_getting_started/:id' => 'signup#process_home_address_getting_started', :as => 'process_home_address_getting_started'
+  get '/signup/home_address_getting_started' => 'signup#home_address_getting_started', :as => 'home_address_getting_started'
+  post '/signup/process_home_address_getting_started' => 'signup#process_home_address_getting_started', :as => 'process_home_address_getting_started'
    
-  get '/signup/drink_choice_getting_started/:id' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
+  get '/signup/drink_choice_getting_started' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
   post '/signup/process_drink_choice_getting_started/:id' => 'signup#process_drink_choice_getting_started', :as => 'process_drink_choice_getting_started'
   
-  get '/signup/drink_journey_getting_started/:id' => 'signup#drink_journey_getting_started', :as => 'drink_journey_getting_started'
-  post '/signup/process_drink_journey_getting_started/:id' => 'signup#process_drink_journey_getting_started', :as => 'process_drink_journey_getting_started'
+  get '/signup/drink_journey_getting_started' => 'signup#drink_journey_getting_started', :as => 'drink_journey_getting_started'
+  post '/signup/process_drink_journey_getting_started' => 'signup#process_drink_journey_getting_started', :as => 'process_drink_journey_getting_started'
   
-  get '/signup/drink_style_likes_getting_started/:id' => 'signup#drink_style_likes_getting_started', :as => 'drink_style_likes_getting_started'
-  post '/signup/process_drink_style_likes_getting_started/:id' => 'signup#process_drink_style_likes_getting_started', :as => 'process_drink_style_likes_getting_started'
-  get '/signup/drink_style_dislikes_getting_started/:id' => 'signup#drink_style_dislikes_getting_started', :as => 'drink_style_dislikes_getting_started'
+  get '/signup/drink_style_likes_getting_started' => 'signup#drink_style_likes_getting_started', :as => 'drink_style_likes_getting_started'
+  post '/signup/process_drink_style_likes_getting_started' => 'signup#process_drink_style_likes_getting_started', :as => 'process_drink_style_likes_getting_started'
+  get '/signup/drink_style_dislikes_getting_started' => 'signup#drink_style_dislikes_getting_started', :as => 'drink_style_dislikes_getting_started'
 
-  get '/signup/drinks_weekly_getting_started/:id' => 'signup#drinks_weekly_getting_started', :as => 'drinks_weekly_getting_started'
+  get '/signup/drinks_weekly_getting_started' => 'signup#drinks_weekly_getting_started', :as => 'drinks_weekly_getting_started'
   post '/signup/process_drinks_weekly_getting_started/:id' => 'signup#process_drinks_weekly_getting_started', :as => 'process_drinks_weekly_getting_started'
 
-  get '/signup/drinks_large_getting_started/:id' => 'signup#drinks_large_getting_started', :as => 'drinks_large_getting_started'
+  get '/signup/drinks_large_getting_started' => 'signup#drinks_large_getting_started', :as => 'drinks_large_getting_started'
   post '/signup/process_drinks_large_getting_started/:id' => 'signup#process_drinks_large_getting_started', :as => 'process_drinks_large_getting_started'
     
-  get '/signup/account_address_getting_started/:id' => 'signup#account_address_getting_started', :as => 'account_address_getting_started'
+  get '/signup/delivery_preferences_getting_started' => 'signup#delivery_preferences_getting_started', :as => 'delivery_preferences_getting_started'
   get '/signup/choose_delivery_time' => 'signup#choose_delivery_time', :as => 'choose_delivery_time'
   
-  get '/signup/account_membership_getting_started/:id' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
+  get '/signup/account_membership_getting_started' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
   post '/signup/process_account_membership_getting_started/:id' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
   
   get '/signup/signup_thank_you/:id' => 'signup#signup_thank_you', :as => 'signup_thank_you'
