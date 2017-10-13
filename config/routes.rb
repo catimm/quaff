@@ -244,10 +244,12 @@ Rails.application.routes.draw do
   get 'breweries/:brewery_id/beers/beers/data' => 'beers#data', :defaults => { :format => 'json'}
   #get '/users/:user_id/ratings/new(.:format)' => 'ratings#new', :as => 'new_user_rating'
   
-  # admin routes
+  # admin testing routes
   get 'porting' => 'porting#index'
   get 'reloads' => 'reloads#index'
   get 'reloads/data', :defaults => { :format => 'json' }
+  
+  # admin recommendation routes
   get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
   get 'admin/recommendations/change_user_view/:id' => 'admin/recommendations#change_user_view'
   get 'admin/recommendations/change_delivery_drink_quantity/:id' => 'admin/recommendations#change_delivery_drink_quantity', :as => 'admin_change_delivery_drink_quantity'
@@ -257,6 +259,15 @@ Rails.application.routes.draw do
   get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
   post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
   post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
+  
+  # admin inventory routes
+  namespace :admin do
+      get 'order_requests' => 'inventories#order_requests'
+      get 'disti_orders' => 'inventories#disti_orders'
+  end
+  get 'admin/inventories/import_disti_inventory' => 'admin/inventories#import_disti_inventory', :as =>'import_disti_inventory'
+  
+  # admin drink DB management routes
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
   post 'admin/beers/remove_multiple_drinks/:id' => 'admin/beers#remove_multiple_drinks'
   put 'admin/breweries/update' => 'admin/breweries#update'

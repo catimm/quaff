@@ -2,11 +2,8 @@ class Admin::InventoriesController < ApplicationController
   before_filter :verify_admin
   
   def index
-    @view = params[:format]
-    
-    if @view == "stock"
-      # set view for CSS
-      @stock_chosen = "chosen"
+      # set css view
+      @stock_chosen = "current"
       
       # grab all Breweries
       @inventory = Inventory.all
@@ -22,14 +19,6 @@ class Admin::InventoriesController < ApplicationController
       @maker_count = @inventory_makers.count('id')
       #@inventory_count = @inventory.inventories.count('id')
     
-    else
-      # set view for CSS
-      @order_chosen = "chosen"
-      
-      # get inventory to order info
-      @inventory_to_order = Inventory.where('order_queue >= ?', 1)
-      @inventory_to_order_total = @inventory_to_order.count
-    end
   end # end index method
   
   def new
@@ -57,6 +46,23 @@ class Admin::InventoriesController < ApplicationController
     @update_inventory = @inventory.update(inventory_params)
     redirect_to admin_inventories_path("stock")
   end # end update method
+  
+  def order_requests
+    # set css view
+    @order_chosen = "current"
+    
+    
+  end # end order_requests method
+  
+  def disti_orders
+    # set css view
+    @distis_chosen = "current"
+      
+  end # end disti_orders method
+  
+  def import_disti_inventory
+  
+  end # end import_disti_inventory method
   
   private
   def inventory_params

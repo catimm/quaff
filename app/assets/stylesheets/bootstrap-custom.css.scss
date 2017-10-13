@@ -4977,7 +4977,11 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 .order-inventory {
-  margin-top: 25px;
+  margin-top: -10px;
+}
+.disti-inventory-collection {
+  width: 50%;
+  float: left;
 }
 .odd-background {
   background: $soft-gray-background;

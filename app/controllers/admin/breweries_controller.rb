@@ -161,21 +161,21 @@ class Admin::BreweriesController < ApplicationController
       @perm_drink = Beer.create(@temp_drink.attributes.merge({:brewery_id => @perm_brewery.id, :vetted => nil}))
       
       # change associations in user_beer_ratings table
-      @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id, admin_vetted: false)
+      @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id)
       if !@user_beer_ratings_to_change.empty?
         @user_beer_ratings_to_change.each do |beers|
           UserBeerRating.update(beers.id, beer_id: @perm_drink.id)
         end
       end
       # change associations in user_beer_trackings table
-      @user_wishlist_to_change = Wishlist.where(beer_id: @temp_drink.id, admin_vetted: false)
+      @user_wishlist_to_change = Wishlist.where(beer_id: @temp_drink.id)
       if !@user_wishlist_to_change.empty?
         @user_wishlist_to_change.each do |beers|
           Wishlist.update(beers.id, beer_id: @perm_drink.id)
         end
       end
       # change associations in user_supplies table
-      @user_supplies_to_change = UserSupply.where(beer_id: @temp_drink.id, admin_vetted: false)
+      @user_supplies_to_change = UserSupply.where(beer_id: @temp_drink.id)
       if !@user_supplies_to_change.empty?
         @user_supplies_to_change.each do |beers|
           UserSupply.update(beers.id, beer_id: @perm_drink.id)
@@ -211,21 +211,21 @@ class Admin::BreweriesController < ApplicationController
       @perm_drink = Beer.create(@temp_drink.attributes.merge({:brewery_id => params[:brewery][:id], :vetted => nil}))
   
       # change associations in user_beer_ratings table
-      @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id, admin_vetted: false)
+      @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id)
       if !@user_beer_ratings_to_change.empty?
         @user_beer_ratings_to_change.each do |beers|
           UserBeerRating.update(beers.id, beer_id: @perm_drink.id)
         end
       end
       # change associations in user_beer_trackings table
-      @user_wishlist_to_change = Wishlist.where(beer_id: @temp_drink.id, admin_vetted: false)
+      @user_wishlist_to_change = Wishlist.where(beer_id: @temp_drink.id)
       if !@user_wishlist_to_change.empty?
         @user_wishlist_to_change.each do |beers|
           Wishlist.update(beers.id, beer_id: @perm_drink.id)
         end
       end
       # change associations in user_supplies table
-      @user_supplies_to_change = UserSupply.where(beer_id: @temp_drink.id, admin_vetted: false)
+      @user_supplies_to_change = UserSupply.where(beer_id: @temp_drink.id)
       if !@user_supplies_to_change.empty?
         @user_supplies_to_change.each do |beers|
           UserSupply.update(beers.id, beer_id: @perm_drink.id)

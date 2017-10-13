@@ -17,11 +17,17 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-xs-8 col-sm-6">
+			<%= form_tag import_disti_inventory_path, multipart: true do %>
+				<%= file_field_tag :file, :class => "disti-inventory-collection" %>
+				<%= submit_tag "Import Inventory", :class => "btn btn-success inputButton2 disti-inventory" %>
+			<% end %>
+		</div>
 	</div>
 </div>
 <div class="row no-margin">
 	<div class="container">
-		<%= render 'in_stock' %>
+		Disti orders here
 	</div>
 </div>
 <%= render 'layouts/footer' %>
