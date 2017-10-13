@@ -175,10 +175,10 @@ class Admin::BreweriesController < ApplicationController
         end
       end
       # change associations in user_supplies table
-      @user_supplies_to_change = UserSupply.where(beer_id: @temp_drink.id)
+      @user_supplies_to_change = UserCellarSupply.where(beer_id: @temp_drink.id)
       if !@user_supplies_to_change.empty?
         @user_supplies_to_change.each do |beers|
-          UserSupply.update(beers.id, beer_id: @perm_drink.id)
+          UserCellarSupply.update(beers.id, beer_id: @perm_drink.id)
         end
       end
       
@@ -225,10 +225,10 @@ class Admin::BreweriesController < ApplicationController
         end
       end
       # change associations in user_supplies table
-      @user_supplies_to_change = UserSupply.where(beer_id: @temp_drink.id)
+      @user_supplies_to_change = UserCellarSupply.where(beer_id: @temp_drink.id)
       if !@user_supplies_to_change.empty?
         @user_supplies_to_change.each do |beers|
-          UserSupply.update(beers.id, beer_id: @perm_drink.id)
+          UserCellarSupply.update(beers.id, beer_id: @perm_drink.id)
         end
       end
       
