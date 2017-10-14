@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009182201) do
+ActiveRecord::Schema.define(version: 20171014001831) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -186,6 +186,7 @@ ActiveRecord::Schema.define(version: 20171009182201) do
     t.boolean  "vetted"
     t.integer  "touched_by_location"
     t.text     "cellar_note"
+    t.boolean  "gluten_free"
   end
 
   create_table "breweries", force: :cascade do |t|
@@ -288,6 +289,18 @@ ActiveRecord::Schema.define(version: 20171009182201) do
     t.string   "disti_upc"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
+    t.integer  "min_quantity"
+    t.decimal  "regular_case_cost", precision: 5, scale: 2
+    t.decimal  "current_case_cost", precision: 5, scale: 2
+  end
+
+  create_table "distributors", force: :cascade do |t|
+    t.string   "disti_name"
+    t.string   "contact_name"
+    t.string   "contact_email"
+    t.string   "contact_phone"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "draft_boards", force: :cascade do |t|
@@ -333,6 +346,9 @@ ActiveRecord::Schema.define(version: 20171009182201) do
     t.integer  "total_batch"
     t.boolean  "currently_available"
     t.integer  "distributor_id"
+    t.integer  "min_quantity"
+    t.decimal  "regular_case_cost",   precision: 5, scale: 2
+    t.decimal  "sale_case_cost",      precision: 5, scale: 2
   end
 
   create_table "inventory_transactions", force: :cascade do |t|

@@ -54,19 +54,9 @@ class Admin::InventoriesController < ApplicationController
     
   end # end order_requests method
   
-  def disti_orders
-    # set css view
-    @distis_chosen = "current"
-      
-  end # end disti_orders method
-  
-  def import_disti_inventory
-  
-  end # end import_disti_inventory method
-  
   private
   def inventory_params
-      params.require(:inventory).permit(:stock, :reserved, :order_queue, :size_format_id, :beer_id, 
+      params.require(:inventory).permit(:stock, :reserved, :order_request, :size_format_id, :beer_id, 
       :drink_price, :drink_cost, :limit_per)
    end
     

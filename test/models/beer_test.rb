@@ -33,6 +33,7 @@
 #  vetted               :boolean
 #  touched_by_location  :integer
 #  cellar_note          :text
+#  gluten_free          :boolean
 #
 
 require 'test_helper'

@@ -12,6 +12,6 @@
 		<% else %>
 			<h1 class="delivery-best-guess"><%= drink.best_guess %><span class="recent-user-rating-context">/10</span></h1>
 		<% end %>
-		<%= render 'layouts/user_initials_xsmall', @user %>
+		<%= render 'layouts/user_initials_xsmall', friend: @user %>
 	<% end %>
 </div>

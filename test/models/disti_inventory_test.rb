@@ -12,6 +12,9 @@
 #  disti_upc         :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  min_quantity      :integer
+#  regular_case_cost :decimal(5, 2)
+#  current_case_cost :decimal(5, 2)
 #
 
 require 'test_helper'

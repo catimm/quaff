@@ -16,6 +16,9 @@
 #  total_batch         :integer
 #  currently_available :boolean
 #  distributor_id      :integer
+#  min_quantity        :integer
+#  regular_case_cost   :decimal(5, 2)
+#  sale_case_cost      :decimal(5, 2)
 #
 
 class Inventory < ActiveRecord::Base
@@ -72,7 +75,7 @@ class Inventory < ActiveRecord::Base
   
   # scope inventory stock 
   scope :draft_in_stock, -> { 
-    where("stock >= ? OR order_queue >= ?", 1, 1).
+    where("stock >= ? OR order_request >= ?", 1, 1).
     where("inventories.size_format_id >= ?", 6)
   }
 
@@ -97,8 +100,8 @@ class Inventory < ActiveRecord::Base
   }
   
   # scope inventory in order queue 
-  scope :order_queue, -> { 
-    where("order_queue >= ?", 1)
+  scope :order_request, -> { 
+    where("order_request >= ?", 1)
   }
 
   # scope inventory grouped by maker

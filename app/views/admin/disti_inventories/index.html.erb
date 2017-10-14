@@ -1,0 +1,155 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Inventory</h1>
+		</div>
+		<div class="col-xs-12 col-sm-8">
+			<div class="row">
+				<div class="col-xs-3">
+					<%= link_to "Knird Inventory", admin_inventories_path, class: "drink-preference-view-option #{@stock_chosen}" %>
+				</div>
+				<div class="col-xs-3">
+					<%= link_to "Disti Inventory", admin_disti_inventories_path, class: "drink-preference-view-option #{@disti_inventory_chosen}" %>
+				</div>
+				<div class="col-xs-3">
+					<%= link_to "Order Requests", admin_order_requests_path, class: "drink-preference-view-option #{@order_chosen}" %>
+				</div>
+				<div class="col-xs-3">
+					<%= link_to "Disti Orders", admin_disti_orders_path, class: "drink-preference-view-option #{@distis_chosen}" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6 no-padding-right">
+				<h3 class="recent-ratings-header">Disti Inventory</h3>
+			</div>
+			<div class="col-xs-12 col-sm-6 no-padding-right">
+				<%= form_tag(admin_import_disti_inventory_path, :multipart => true) do %>
+					<%= file_field_tag :file, :class => "disti-inventory-collection" %>
+					<%= submit_tag "Import Inventory", :class => "btn btn-success inputButton2 disti-inventory" %>
+				<% end %>
+			</div>
+		</div>
+		<% @distis.each do |disti| %>
+			<div class="row no-margin">
+				<div class="col-xs-2 col-sm-1">
+					<div class="inventory-view show text-center" id="plus">
+						<h6><i class="fa fa-plus"></i></h6>
+					</div>
+					<div class="inventory-view hidden text-center" id="minus">
+						<h6><i class="fa fa-minus"></i></h4>
+					</div>				
+				</div>
+				<div class="col-xs-10 col-sm-11 no-padding-left">
+					<h4 class="disti-name-header"><%= disti.disti_name %></h4>
+				</div>
+			</div>
+			<div class="row no-margin hidden">
+				<% if !disti.disti_inventories.blank? %>
+					<div class="row no-margin">
+						<div class="col-xs-2 col-sm-offset-1 col-sm-1">
+							<div class="inventory-view show text-center" id="plus">
+								<h6><i class="fa fa-plus"></i></h6>
+							</div>
+							<div class="inventory-view hidden text-center" id="minus">
+								<h6><i class="fa fa-minus"></i></h4>
+							</div>				
+						</div>
+						<div class="col-xs-10 col-sm-10 no-padding-left">
+							<h5 class="disti-name-header">Drinks ready for curation</h5>
+						</div>
+					</div>
+					<div class="row no-margin hidden">
+						<div class="col-xs-12">
+							<table class="table table-striped admin-recommendation-table">
+							    <tr>
+							    	<th>Item #</th>
+								    <th>Drink</th>
+								    <th>Size</th>
+								    <th>Drink Cost</th>
+								    <th>Drink Price</th>
+								    <th>Regular Case</th>
+								    <th>Current Case</th>
+								    <th></th>
+								    <th></th>
+							    </tr>
+								<% disti.disti_inventories.each do |inventory| %>
+									<% if inventory.beer.ready_for_curation == true %>
+										<tr>
+											<td><%= inventory.disti_item_number %></td>
+											<td><%= inventory.beer.brewery.brewery_name %>  <%= inventory.beer.beer_name %></td>
+											<td><%= inventory.size_format.format_name %></td>
+											<td><%= inventory.drink_cost %></td>
+											<td><%= inventory.drink_price %></td>
+											<td><%= inventory.regular_case_cost %></td>
+											<td><%= inventory.current_case_cost %></td>
+											<td>Edit</td>
+											<td>Remove</td>
+										</tr>
+									<% end %>
+								<% end %>
+							</table>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-2 col-sm-offset-1 col-sm-1">
+							<div class="inventory-view show text-center" id="plus">
+								<h6><i class="fa fa-plus"></i></h6>
+							</div>
+							<div class="inventory-view hidden text-center" id="minus">
+								<h6><i class="fa fa-minus"></i></h4>
+							</div>				
+						</div>
+						<div class="col-xs-10 col-sm-10 no-padding-left">
+							<h5 class="disti-name-header">Drinks that need work before curation</h5>
+						</div>
+					</div>
+					<div class="row no-margin hidden">
+						<div class="col-xs-12">
+							<table class="table table-striped admin-recommendation-table">
+							    <tr>
+							    	<th>Item #</th>
+								    <th>Drink</th>
+								    <th>Size</th>
+								    <th>Drink Cost</th>
+								    <th>Drink Price</th>
+								    <th>Regular Case</th>
+								    <th>Current Case</th>
+								    <th></th>
+								    <th></th>
+								    <th></th>
+							    </tr>
+								<% disti.disti_inventories.each do |inventory| %>
+									<% if inventory.beer.ready_for_curation == false %>
+										<tr>
+											<td><%= inventory.disti_item_number %></td>
+											<td><%= inventory.beer.brewery.brewery_name %>  <%= inventory.beer.beer_name %></td>
+											<td><%= inventory.size_format.format_name %></td>
+											<td><%= inventory.drink_cost %></td>
+											<td><%= inventory.drink_price %></td>
+											<td><%= inventory.regular_case_cost %></td>
+											<td><%= inventory.current_case_cost %></td>
+											<td>Update Drink</td>
+											<td>Edit</td>
+											<td>Remove</td>
+										</tr>
+									<% end %>
+								<% end %>
+							</table>
+						</div>
+					</div>
+				<% else %>
+					<div class="col-xs-12">
+						<h6>Nothing to see here, folks</h6>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

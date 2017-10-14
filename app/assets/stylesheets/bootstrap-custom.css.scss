@@ -4976,10 +4976,17 @@ input[type="checkbox"] {
 .inventory-list-holder {
   margin-top: 10px;
 }
+.second-header {
+  margin: 0;
+}
 .order-inventory {
   margin-top: -10px;
 }
+.disti-inventory {
+  margin-top: 5px;
+}
 .disti-inventory-collection {
+  margin-top: 10px;
   width: 50%;
   float: left;
 }
@@ -4995,6 +5002,9 @@ input[type="checkbox"] {
   h6 {
     margin-top: 5px;
   }
+}
+.disti-name-header {
+  margin: 0 0 10px -20px;
 }
 // User Next Delivery View
 .show-delivery-stats-text, .hide-delivery-stats-text {

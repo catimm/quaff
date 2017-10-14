@@ -16,6 +16,9 @@
 #  total_batch         :integer
 #  currently_available :boolean
 #  distributor_id      :integer
+#  min_quantity        :integer
+#  regular_case_cost   :decimal(5, 2)
+#  sale_case_cost      :decimal(5, 2)
 #
 
 require 'test_helper'

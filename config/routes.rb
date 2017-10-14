@@ -48,7 +48,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, :user_beer_ratings, :recommendations, :inventories, :fulfillment
+    resources :users, :user_beer_ratings, :recommendations, :inventories, :disti_inventories, :fulfillment
   end
   
   namespace :admin do
@@ -263,9 +263,10 @@ Rails.application.routes.draw do
   # admin inventory routes
   namespace :admin do
       get 'order_requests' => 'inventories#order_requests'
-      get 'disti_orders' => 'inventories#disti_orders'
+      get 'disti_orders' => 'disti_inventories#disti_orders'
+      get 'disti_inventories' => 'disti_inventories#import_disti_inventory', :as => 'import_disti_inventory'
   end
-  get 'admin/inventories/import_disti_inventory' => 'admin/inventories#import_disti_inventory', :as =>'import_disti_inventory'
+  
   
   # admin drink DB management routes
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"

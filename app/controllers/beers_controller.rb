@@ -19,7 +19,7 @@ class BeersController < ApplicationController
   end
   
   def show
-    @user = User.find_by_id(current_user.id)
+    @user = current_user
     # grab beer info
     #@beer = Beer.where(id: params[:id])[0]
     #Rails.logger.debug("Beer info #{@beer.inspect}")
@@ -78,12 +78,12 @@ class BeersController < ApplicationController
         else
           @reserved_drinks = 0
         end
-        if !@inventory.order_queue.nil?
-          @set_to_order_drinks = @inventory.order_queue
+        if !@inventory.order_request.nil?
+          @set_to_order_drinks = @inventory.order_request
         else
           @set_to_order_drinks = 0
         end
-        @available_drinks = @inventory_count.to_i - (@inventory.reserved.to_i + @inventory.order_queue.to_i)
+        @available_drinks = @inventory_count.to_i - (@inventory.reserved.to_i + @inventory.order_request.to_i)
         if @available_drinks < 0
           @available_drinks = 0
         end

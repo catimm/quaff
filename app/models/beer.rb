@@ -33,6 +33,7 @@
 #  vetted               :boolean
 #  touched_by_location  :integer
 #  cellar_note          :text
+#  gluten_free          :boolean
 #
 
 class Beer < ActiveRecord::Base
@@ -238,7 +239,66 @@ class Beer < ActiveRecord::Base
     where.not(beer_type_id: nil).
     joins(:beer_formats).
     where('beer_formats.beer_id IS NOT NULL') }
-    
+  
+  def ready_for_curation
+    # check first rating
+    if rating_one_na == true || !beer_rating_one.nil?
+      @ready = true
+    else
+      @ready = false
+    end
+    # if still true, check second rating
+    if @ready == true
+      if rating_two_na == true || !beer_rating_two.nil?
+        @ready = true
+      else
+        @ready = false
+      end
+    end
+    # if still true, check third rating
+    if @ready == true
+      if rating_three_na == true || !beer_rating_three.nil?
+        @ready = true
+      else
+        @ready = false
+      end
+    end
+    # if still true, check ABV
+    if @ready == true
+      if !beer_abv.nil?
+        @ready = true
+      else
+        @ready = false
+      end
+    end
+    # if still true, check Beer Type ID
+    if @ready == true
+      if !beer_type_id.nil?
+        @ready = true
+      else
+        @ready = false
+      end
+    end
+    # if still true, check Drink Formats
+    if @ready == true
+      if !self.beer_formats.blank?
+        @ready = true
+      else
+        @ready = false
+      end
+    end
+    # if still true, check Drink Descriptors
+    if @ready == true
+      if !self.descriptors.blank?
+        @ready = true
+      else
+        @ready = false
+      end
+    end
+    # provide final result
+    @ready
+  end
+  
   # scope beers that have partial related info in the DB
   scope :usable_incomplete_beers, -> {
     where("rating_one_na = ? OR beer_rating_one IS NOT NULL OR beer_type_id IS NOT NULL", true)
