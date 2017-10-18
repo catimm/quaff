@@ -1,4 +1,6 @@
 require "#{Rails.root}/lib/assets/scrape_helper"
+require "#{Rails.root}/lib/import_inventory/disti.csv"
+require "#{Rails.root}/lib/change_inventory/disti.csv"
 
 desc "Process Disti Inventory Import"
 task :disti_import_inventory => :environment do
