@@ -43,12 +43,12 @@ class Admin::DistiInventoriesController < ApplicationController
   
   def disti_inventories_change
     # check if import file is currently being processed
-    if File.exist?("#{Rails.root}/lib/import_inventory/disti.csv")
+    if File.exist?("#{Rails.root}/lib/assets/disti_import.csv")
       @import_file_already_exists = true
     end
       
     # check if change file is currently being processed
-    if File.exist?("#{Rails.root}/lib/change_inventory/disti.csv")
+    if File.exist?("#{Rails.root}/lib/assets/disti_change.csv")
       @change_file_already_exists = true
     end
       
@@ -58,9 +58,9 @@ class Admin::DistiInventoriesController < ApplicationController
     # get file
     @disti_inventory = params[:file]
     # change file name
-    @disti_inventory.original_filename = 'disti.csv'
+    @disti_inventory.original_filename = 'disti_import.csv'
     # now upload it
-    File.open(Rails.root.join('lib', 'import_inventory', @disti_inventory.original_filename), 'wb') do |file|
+    File.open(Rails.root.join('lib', 'assets', @disti_inventory.original_filename), 'wb') do |file|
       @file_upload = file.write(@disti_inventory.read)
     end
     
@@ -73,9 +73,9 @@ class Admin::DistiInventoriesController < ApplicationController
     # get file
     @disti_inventory = params[:file]
     # change file name
-    @disti_inventory.original_filename = 'disti.csv'
+    @disti_inventory.original_filename = 'disti_change.csv'
     # now upload it
-    File.open(Rails.root.join('lib', 'change_inventory', @disti_inventory.original_filename), 'wb') do |file|
+    File.open(Rails.root.join('lib', 'assets', @disti_inventory.original_filename), 'wb') do |file|
       file.write(@disti_inventory.read)
     end
     

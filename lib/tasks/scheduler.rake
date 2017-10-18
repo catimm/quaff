@@ -1,17 +1,17 @@
 require "#{Rails.root}/lib/assets/scrape_helper"
-require "#{Rails.root}/lib/import_inventory/disti.csv"
-require "#{Rails.root}/lib/change_inventory/disti.csv"
+require "#{Rails.root}/lib/assets/disti_import.csv"
+require "#{Rails.root}/lib/assets/disti_change.csv"
 
 desc "Process Disti Inventory Import"
 task :disti_import_inventory => :environment do
   
     # if file exists, run import method
-    if File.exist?("#{Rails.root}/lib/import_inventory/disti.csv")
+    if File.exist?("#{Rails.root}/lib/assets/disti_import.csv")
       # run import method
-      DistiInventory.import("#{Rails.root}/lib/import_inventory/disti.csv")
+      DistiInventory.import("#{Rails.root}/lib/assets/disti_import.csv")
        
       # when import method is finished, remove file
-      File.delete("#{Rails.root}/lib/import_inventory/disti.csv")
+      File.delete("#{Rails.root}/lib/assets/disti_import.csv")
     
       # set admin emails to receive updates
       @admin_emails = ["carl@drinkknird.com"]
@@ -29,12 +29,12 @@ desc "Process Disti Inventory Change"
 task :disti_change_inventory => :environment do
 
     # if file exists, run import method
-    if File.exist?("#{Rails.root}/lib/change_inventory/disti.csv")
+    if File.exist?("#{Rails.root}/lib/assets/disti_change.csv")
       # run import method
-      DistiInventory.change("#{Rails.root}/lib/change_inventory/disti.csv")
+      DistiInventory.change("#{Rails.root}/lib/assets/disti_change.csv")
        
       # when import method is finished, remove file
-      File.delete("#{Rails.root}/lib/change_inventory/disti.csv")
+      File.delete("#{Rails.root}/lib/assets/disti_change.csv")
     
       # set admin emails to receive updates
       @admin_emails = ["carl@drinkknird.com"]
