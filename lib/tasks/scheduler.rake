@@ -1,10 +1,7 @@
-require "#{Rails.root}/lib/assets/scrape_helper"
-require "#{Rails.root}/lib/assets/disti_import.csv"
-require "#{Rails.root}/lib/assets/disti_change.csv"
-
 desc "Process Disti Inventory Import"
 task :disti_import_inventory => :environment do
-  
+    require "#{Rails.root}/lib/assets/disti_import.csv"
+    
     # if file exists, run import method
     if File.exist?("#{Rails.root}/lib/assets/disti_import.csv")
       # run import method
@@ -27,7 +24,8 @@ end # end Process Disti Inventory Import
 
 desc "Process Disti Inventory Change"
 task :disti_change_inventory => :environment do
-
+    require "#{Rails.root}/lib/assets/disti_change.csv"
+    
     # if file exists, run import method
     if File.exist?("#{Rails.root}/lib/assets/disti_change.csv")
       # run import method
@@ -51,6 +49,7 @@ end # end Process Disti Inventory Change
 
 desc "Check Beer Junction"
 task :check_beer_junction => :environment do
+    require "#{Rails.root}/lib/assets/scrape_helper"
     require 'nokogiri'
     require 'open-uri'
 
@@ -105,6 +104,7 @@ end # end Beer Junction scrape
 
 desc "Check Pine Box"
 task :check_pine_box => :environment do
+  require "#{Rails.root}/lib/assets/scrape_helper"
   require 'nokogiri'
   require 'open-uri'
 
@@ -158,6 +158,7 @@ end # end Pine Box scrape
 
 desc "Check Chuck's 85"
 task :check_chucks_85 => :environment do
+    require "#{Rails.root}/lib/assets/scrape_helper"
     require 'nokogiri'
     require 'open-uri'
     
@@ -210,6 +211,7 @@ end # end Chuck's 85 scrape
 
 desc "Check Chuck's CD"
 task :check_chucks_cd => :environment do
+    require "#{Rails.root}/lib/assets/scrape_helper"
     require 'nokogiri'
     require 'open-uri'
 
@@ -262,6 +264,7 @@ end # end Chuck's CD scrape
 
 desc "Check Beveridge Place"
 task :check_beveridge_place => :environment do
+    require "#{Rails.root}/lib/assets/scrape_helper"
     require 'nokogiri'
     require 'open-uri'
 
