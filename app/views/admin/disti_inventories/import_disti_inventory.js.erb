@@ -1,0 +1,9 @@
+$(function() {	
+	<% if @upload_successful == true %>
+		// render modal to confirm file upload
+		$('#upload_confirmation').modal('show');
+	<% else %>
+		// render modal to inform of file upload failure
+		$('#upload_failure').modal('show');
+	<% end %>
+});

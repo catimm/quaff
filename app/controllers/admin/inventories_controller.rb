@@ -57,9 +57,10 @@ class Admin::InventoriesController < ApplicationController
   private
   def inventory_params
       params.require(:inventory).permit(:stock, :reserved, :order_request, :size_format_id, :beer_id, 
-      :drink_price, :drink_cost, :limit_per)
-   end
-    
+      :drink_price, :drink_cost, :limit_per, :total_batch, :currently_available, :distributor_id, :min_quantity,
+      :regular_case_cost, :sale_case_cost)
+  end
+ 
   def verify_admin
       redirect_to root_url unless current_user.role_id == 1
   end

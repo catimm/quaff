@@ -1,0 +1,25 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Disti Inventory</h1>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<div class="row">
+				<div class="col-xs-12 no-padding-right">
+					<%= link_to "Back to Previous", request.referer.present? ? request.referer : default_path, class: "drink-preference-view-option current" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<%= render 'disti_inventory_form.html' %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

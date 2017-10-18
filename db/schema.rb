@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171014001831) do
+ActiveRecord::Schema.define(version: 20171016174208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -282,16 +282,17 @@ ActiveRecord::Schema.define(version: 20171014001831) do
   create_table "disti_inventories", force: :cascade do |t|
     t.integer  "beer_id"
     t.integer  "size_format_id"
-    t.decimal  "drink_cost",        precision: 5, scale: 2
-    t.decimal  "drink_price",       precision: 5, scale: 2
+    t.decimal  "drink_cost",          precision: 5, scale: 2
+    t.decimal  "drink_price",         precision: 5, scale: 2
     t.integer  "distributor_id"
     t.integer  "disti_item_number"
     t.string   "disti_upc"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.integer  "min_quantity"
-    t.decimal  "regular_case_cost", precision: 5, scale: 2
-    t.decimal  "current_case_cost", precision: 5, scale: 2
+    t.decimal  "regular_case_cost",   precision: 5, scale: 2
+    t.decimal  "current_case_cost",   precision: 5, scale: 2
+    t.boolean  "currently_available"
   end
 
   create_table "distributors", force: :cascade do |t|

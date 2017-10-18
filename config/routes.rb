@@ -264,7 +264,9 @@ Rails.application.routes.draw do
   namespace :admin do
       get 'order_requests' => 'inventories#order_requests'
       get 'disti_orders' => 'disti_inventories#disti_orders'
-      get 'disti_inventories' => 'disti_inventories#import_disti_inventory', :as => 'import_disti_inventory'
+      get 'disti_inventories_change' => 'disti_inventories#disti_inventories_change', :as => 'disti_inventories_change'
+      post 'disti_inventories_import' => 'disti_inventories#import_disti_inventory', :as => 'import_disti_inventory'
+      post 'disti_inventories_update' => 'disti_inventories#update_disti_inventory', :as => 'update_disti_inventory'
   end
   
   

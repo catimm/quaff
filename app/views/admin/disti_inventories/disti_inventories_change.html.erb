@@ -1,0 +1,60 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Disti Inventory</h1>
+		</div>
+		<div class="col-xs-12 col-sm-8">
+			<div class="row">
+				<div class="col-xs-4">
+					<%= link_to "Current Inventory", admin_disti_inventories_path, class: "drink-preference-view-option" %>
+				</div>
+				<div class="col-xs-4">
+					<%= link_to "Change Inventory", admin_disti_inventories_change_path, class: "drink-preference-view-option current" %>
+				</div>
+				<div class="col-xs-4">
+					<%= link_to "Orders in Process", admin_disti_orders_path, class: "drink-preference-view-option" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h3 class="recent-ratings-header">Monthly Price Sheet Imports</h3>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<% if @import_file_already_exists == true %>
+					<h5>File is currently being processed. You'll receive an email when it is complete; please wait to upload another file.</h5>
+				<% else %>
+					<%= form_tag({action: :import_disti_inventory}, multipart: true ) do %>
+						<%= file_field_tag :file, :class => "disti-inventory-collection" %>
+						<%= submit_tag "Monthly Import", :class => "btn btn-success inputButton2 disti-inventory" %>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+		<div class="row change-disti-inventory-second-row">
+			<div class="col-xs-12">
+				<h3 class="recent-ratings-header">Weekly Price Sheet Imports</h3>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<% if @change_file_already_exists == true %>
+					<h5>File is currently being processed. You'll receive an email when it is complete; please wait to upload another file.</h5>
+				<% else %>
+					<%= form_tag({action: :update_disti_inventory}, multipart: true) do %>
+						<%= file_field_tag :file, :class => "disti-inventory-collection" %>
+						<%= submit_tag "Weekly Import", :class => "btn btn-success inputButton2 disti-inventory" %>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

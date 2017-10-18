@@ -1,5 +1,52 @@
 require "#{Rails.root}/lib/assets/scrape_helper"
 
+desc "Process Disti Inventory Import"
+task :disti_import_inventory => :environment do
+  
+    # if file exists, run import method
+    if File.exist?("#{Rails.root}/lib/import_inventory/disti.csv")
+      # run import method
+      DistiInventory.import("#{Rails.root}/lib/import_inventory/disti.csv")
+       
+      # when import method is finished, remove file
+      File.delete("#{Rails.root}/lib/import_inventory/disti.csv")
+    
+      # set admin emails to receive updates
+      @admin_emails = ["carl@drinkknird.com"]
+      
+      # send admin email
+      @admin_emails.each do |admin_email|
+        AdminMailer.disti_inventory_import_email(admin_email).deliver_now
+      end
+          
+    end # end of check if file exists
+    
+end # end Process Disti Inventory Import
+
+desc "Process Disti Inventory Change"
+task :disti_change_inventory => :environment do
+
+    # if file exists, run import method
+    if File.exist?("#{Rails.root}/lib/change_inventory/disti.csv")
+      # run import method
+      DistiInventory.change("#{Rails.root}/lib/change_inventory/disti.csv")
+       
+      # when import method is finished, remove file
+      File.delete("#{Rails.root}/lib/change_inventory/disti.csv")
+    
+      # set admin emails to receive updates
+      @admin_emails = ["carl@drinkknird.com"]
+      
+      # send admin email
+      @admin_emails.each do |admin_email|
+        AdminMailer.disti_inventory_import_email(admin_email).deliver_now
+      end
+    
+    end # end of check if file exists
+    
+end # end Process Disti Inventory Change
+
+
 desc "Check Beer Junction"
 task :check_beer_junction => :environment do
     require 'nokogiri'
@@ -109,7 +156,7 @@ end # end Pine Box scrape
 
 desc "Check Chuck's 85"
 task :check_chucks_85 => :environment do
-        require 'nokogiri'
+    require 'nokogiri'
     require 'open-uri'
     
     @this_location_id = 3
@@ -213,7 +260,7 @@ end # end Chuck's CD scrape
 
 desc "Check Beveridge Place"
 task :check_beveridge_place => :environment do
-        require 'nokogiri'
+    require 'nokogiri'
     require 'open-uri'
 
     @this_location_id = 5

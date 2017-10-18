@@ -302,4 +302,23 @@ class AdminMailer < ActionMailer::Base
     
   end # end of admin_failed_charge_notice email
   
+  
+  def disti_inventory_import_email(admin)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin },
+        }
+      ],
+      content: {
+        template_id: 'disti-inventory-import-email'
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of disti_inventory_import_email
 end

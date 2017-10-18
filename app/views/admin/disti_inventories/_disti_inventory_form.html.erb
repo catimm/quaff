@@ -1,0 +1,92 @@
+<%= form_for [:admin, @disti_inventory] do |f| %>
+	<div class="row disti-inventory-form-row">
+		<h2>Disti Inventory form</h2>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :beer_id, 'Drink ID' %>
+		</div>
+		<div class="col-xs-9">
+			<% if !@drink_id.nil? %>
+				<%= f.text_field :beer_id, value: @drink_id, :class => "form-control", placeholder: "Beer ID" %>
+			<% else %>
+				<%= f.text_field :beer_id, :class => "form-control", placeholder: "Beer ID" %>
+			<% end %>
+		</div>
+	</div>	
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :size_format_id, 'size format id' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.collection_select(:size_format_id, SizeFormat.all, :id, :format_name, {prompt: "Select a format"}, {class: "form-control"}) %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :drink_cost, 'drink cost' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.text_field :drink_cost, :class => "form-control", placeholder: "drink cost" %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :drink_price, 'drink price' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.text_field :drink_price, :class => "form-control", placeholder: "drink price" %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :distributor_id, 'Distributor Id' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.collection_select(:distributor_id, Distributor.all, :id, :disti_name, {prompt: "Select a Disti"}, {class: "form-control"}) %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :disti_item_number, 'Disti Item #' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.text_field :disti_item_number, :class => "form-control", placeholder: "Disti Item #" %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :disti_upc, 'Disti UPC' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.text_field :disti_upc, :class => "form-control", placeholder: "Disti UPC" %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :min_quantity, 'Min Order Quantity' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.text_field :min_quantity, :class => "form-control", placeholder: "Min Order Quantity" %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :regular_case_cost, 'Reg Case Cost ($)' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.text_field :regular_case_cost, :class => "form-control", placeholder: "Reg Case Cost ($)" %>
+		</div>
+	</div>
+	<div class="row disti-inventory-form-row">
+		<div class="col-xs-3 no-padding">
+			<%= label :current_case_cost, 'Current Case Cost ($)' %>
+		</div>
+		<div class="col-xs-9">
+			<%= f.text_field :current_case_cost, :class => "form-control", placeholder: "Current Case Cost ($)" %>
+		</div>
+	</div>
+	<div class="col-sm-offset-3 col-sm-9 col-xs-offset-1 col-xs-10 text-center">
+		<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %>
+	</div>					
+<% end %>
