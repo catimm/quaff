@@ -38,8 +38,8 @@ class DistiInventory < ActiveRecord::Base
         # update Disti Inventory row, NOTE: Assumption here is that Distis never change an item # and so the 
         # drink associated with that item # remains constant. IF they do, we'll have dirty data and will need to 
         # update this logic
-        @disti_item.update(size_format_id: row[5], drink_cost: row[6], drink_price: row[7], disti_upc: row[10], 
-                              min_quantity: row[11], regular_case_cost: row[12], current_case_cost: row[13],
+        @disti_item.update(size_format_id: row[5], drink_cost: row[6], drink_price: row[7], disti_upc: row[9], 
+                              min_quantity: row[10], regular_case_cost: row[11], current_case_cost: row[12],
                               currently_available: true)
       else # this is a new disti item, so create it
         # first find if the drink is already loaded in our DB
@@ -81,8 +81,8 @@ class DistiInventory < ActiveRecord::Base
         end
         # now create new Disti Inventory row
         DistiInventory.create(beer_id: @drink_id, size_format_id: row[5], drink_cost: row[6], drink_price: row[7], 
-                              distributor_id: row[8], disti_item_number: row[0], disti_upc: row[10], 
-                              min_quantity: row[11], regular_case_cost: row[12], current_case_cost: row[13],
+                              distributor_id: row[8], disti_item_number: row[0], disti_upc: row[9], 
+                              min_quantity: row[10], regular_case_cost: row[11], current_case_cost: row[12],
                               currently_available: true)                   
     
       end # end of check on whether it is a new disti item
@@ -111,8 +111,8 @@ class DistiInventory < ActiveRecord::Base
         # update Disti Inventory row, NOTE: Assumption here is that Distis never change an item # and so the 
         # drink associated with that item # remains constant. IF they do, we'll have dirty data and will need to 
         # update this logic
-        @disti_item.update(size_format_id: row[5], drink_cost: row[6], drink_price: row[7], disti_upc: row[10], 
-                              min_quantity: row[11], regular_case_cost: row[12], current_case_cost: row[13],
+        @disti_item.update(size_format_id: row[5], drink_cost: row[6], drink_price: row[7], disti_upc: row[9], 
+                              min_quantity: row[10], regular_case_cost: row[11], current_case_cost: row[12],
                               currently_available: true)
       else # this is a new disti item, so create it
         # first find if the drink is already loaded in our DB
@@ -154,8 +154,8 @@ class DistiInventory < ActiveRecord::Base
         end
         # now create new Disti Inventory row
         DistiInventory.create(beer_id: @drink_id, size_format_id: row[5], drink_cost: row[6], drink_price: row[7], 
-                              distributor_id: row[8], disti_item_number: row[0], disti_upc: row[10], 
-                              min_quantity: row[11], regular_case_cost: row[12], current_case_cost: row[13],
+                              distributor_id: row[8], disti_item_number: row[0], disti_upc: row[9], 
+                              min_quantity: row[10], regular_case_cost: row[11], current_case_cost: row[12],
                               currently_available: true)                   
     
       end # end of check on whether it is a new disti item
