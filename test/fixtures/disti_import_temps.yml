@@ -1,0 +1,53 @@
+# == Schema Information
+#
+# Table name: disti_import_temps
+#
+#  id                :integer          not null, primary key
+#  disti_item_number :integer
+#  maker_name        :string
+#  maker_knird_id    :integer
+#  drink_name        :string
+#  format            :string
+#  size_format_id    :integer
+#  drink_cost        :decimal(, )
+#  drink_price       :decimal(, )
+#  distributor_id    :integer
+#  disti_upc         :string
+#  min_quantity      :integer
+#  regular_case_cost :decimal(, )
+#  current_case_cost :decimal(, )
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  disti_item_number: 1
+  maker_name: MyString
+  maker_knird_id: 1
+  drink_name: MyString
+  format: MyString
+  size_format_id: 1
+  drink_cost: 9.99
+  drink_price: 9.99
+  distributor_id: 1
+  disti_upc: MyString
+  min_quantity: 1
+  regular_case_cost: 9.99
+  current_case_cost: 9.99
+
+two:
+  disti_item_number: 1
+  maker_name: MyString
+  maker_knird_id: 1
+  drink_name: MyString
+  format: MyString
+  size_format_id: 1
+  drink_cost: 9.99
+  drink_price: 9.99
+  distributor_id: 1
+  disti_upc: MyString
+  min_quantity: 1
+  regular_case_cost: 9.99
+  current_case_cost: 9.99

@@ -55,14 +55,16 @@ class Admin::DistiInventoriesController < ApplicationController
   end # end of disti_inventories_change
   
   def import_disti_inventory
-    # get file
-    @disti_inventory = params[:file]
+    # upload file to temp DB
+    DistiImportTemp.import(params[:file])
+    
+    
     # change file name
-    @disti_inventory.original_filename = 'disti_import.csv'
+    #@disti_inventory.original_filename = 'disti_import.csv'
     # now upload it
-    File.open(Rails.root.join('lib', 'assets', @disti_inventory.original_filename), 'wb') do |file|
-      @file_upload = file.write(@disti_inventory.read)
-    end
+    #File.open(Rails.root.join('lib', 'assets', @disti_inventory.original_filename), 'wb') do |file|
+    #  @file_upload = file.write(@disti_inventory.read)
+    #end
     
     # redirect back to same page
     redirect_to admin_disti_inventories_change_path

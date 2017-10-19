@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171016174208) do
+ActiveRecord::Schema.define(version: 20171019001213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -277,6 +277,24 @@ ActiveRecord::Schema.define(version: 20171016174208) do
     t.integer  "max_account_number"
     t.integer  "current_account_number"
     t.datetime "beginning_at"
+  end
+
+  create_table "disti_import_temps", force: :cascade do |t|
+    t.integer  "disti_item_number"
+    t.string   "maker_name"
+    t.integer  "maker_knird_id"
+    t.string   "drink_name"
+    t.string   "format"
+    t.integer  "size_format_id"
+    t.decimal  "drink_cost"
+    t.decimal  "drink_price"
+    t.integer  "distributor_id"
+    t.string   "disti_upc"
+    t.integer  "min_quantity"
+    t.decimal  "regular_case_cost"
+    t.decimal  "current_case_cost"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "disti_inventories", force: :cascade do |t|
