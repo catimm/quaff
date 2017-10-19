@@ -3,11 +3,12 @@ task :disti_import_inventory => :environment do
     # get all Disti Import Temp records
     @disti_import_temp = DistiImportTemp.all
     
-    # get the Disti ID for this batch
-    @distributor_id = @disti_import_temp.first.distributor_id
-    
     # if file exists, run import method
     if !@disti_import_temp.blank?
+    
+      # get the Disti ID for this batch
+      @distributor_id = @disti_import_temp.uniq.pluck(:rating)
+    
       # process each record
       @disti_import_temp.each do |inventory|
           # first find if this drink already exists in table
@@ -48,7 +49,15 @@ task :disti_import_inventory => :environment do
             end # end loop of checking drink names
             # indicate drink_id or create a new drink_id
             if !@recognized_drink.nil?
+              # make drink id 
               @drink_id = @recognized_drink.id
+              # determine if drink is ready for curation (e.g. has all necessary data)
+              if @recognized_drink.ready_for_curation == true
+                @curation_ready = true
+              else
+                @curation_ready = false
+              end
+              # find or create drink format ids
               @drink_formats = BeerFormat.where(beer_id: @recognized_drink.id)
               if !@drink_formats.blank?
                 if @drink_formats.map{|a| a.size_format_id}.exclude? inventory.size_format_id
@@ -58,8 +67,12 @@ task :disti_import_inventory => :environment do
                 BeerFormat.create(beer_id: @recognized_drink.id, size_format_id: inventory.size_format_id)
               end
             else
+              # add new drink to DB
               @new_drink = Beer.create(beer_name: inventory.drink_name, brewery_id: inventory.maker_knird_id, vetted: true)
+              # make drink id
               @drink_id = @new_drink.id
+              # because drink was just added, it is not curation ready
+              @curation_ready = false
             end
             # now create new Disti Inventory row
             DistiInventory.create(beer_id: @drink_id, size_format_id: inventory.size_format_id, 
@@ -67,7 +80,8 @@ task :disti_import_inventory => :environment do
                                   distributor_id: inventory.distributor_id, 
                                   disti_item_number: inventory.disti_item_number, disti_upc: inventory.disti_upc, 
                                   min_quantity: inventory.min_quantity, regular_case_cost: inventory.regular_case_cost, 
-                                  current_case_cost: inventory.current_case_cost, currently_available: true)                   
+                                  current_case_cost: inventory.current_case_cost, currently_available: true,
+                                  curation_ready: @curation_ready)                   
         
           end # end of check on whether it is a new disti item
           
@@ -96,16 +110,92 @@ end # end Process Disti Inventory Import
 
 desc "Process Disti Inventory Change"
 task :disti_change_inventory => :environment do
-    require "#{Rails.root}/lib/assets/disti_change.csv"
+    # get all Disti Import Temp records
+    @disti_change_temp = DistiChangeTemp.all
     
     # if file exists, run import method
-    if File.exist?("#{Rails.root}/lib/assets/disti_change.csv")
-      # run import method
-      DistiInventory.change("#{Rails.root}/lib/assets/disti_change.csv")
-       
-      # when import method is finished, remove file
-      File.delete("#{Rails.root}/lib/assets/disti_change.csv")
+    if !@disti_change_temp.blank?
     
+      # process each record
+      @disti_change_temp.each do |inventory|
+          # first find if this drink already exists in table
+          @disti_item = DistiInventory.where(distributor_id: inventory.distributor_id, 
+                                              disti_item_number: inventory.disti_item_number)[0]
+          
+          # if it is not a new disti item, update it
+          if !@disti_item.blank?
+            # update Disti Inventory row, NOTE: Assumption here is that Distis never change an item # and so the 
+            # drink associated with that item # remains constant. IF they do, we'll have dirty data and will need to 
+            # update this logic
+            @disti_item.update(size_format_id: inventory.size_format_id, drink_cost: inventory.drink_cost, 
+                                drink_price: inventory.drink_price, disti_upc: inventory.disti_upc, 
+                                min_quantity: inventory.min_quantity, regular_case_cost: inventory.regular_case_cost, 
+                                current_case_cost: inventory.current_case_cost, currently_available: true)
+          else # this is a new disti item, so create it
+            # first find if the drink is already loaded in our DB
+            # get all drinks from this maker
+            @maker_drinks = Beer.where(brewery_id: inventory.maker_knird_id)
+            # loop through each drink to see if it matches this one
+            @recognized_drink = nil
+            @drink_name_match = false
+            @maker_drinks.each do |drink|
+              # check if beer name matches 
+              if drink.beer_name == inventory.drink_name
+                 @drink_name_match = true
+              else
+                @alt_drink_name = AltBeerName.where(beer_id: drink.id, name: inventory.drink_name)[0]
+                if !@alt_drink_name.nil?
+                  @drink_name_match = true
+                end
+              end
+              if @drink_name_match == true
+                @recognized_drink = drink
+              end
+              # break this loop as soon as there is a match on this current beer's name
+              break if !@recognized_drink.nil?
+            end # end loop of checking drink names
+            # indicate drink_id or create a new drink_id
+            if !@recognized_drink.nil?
+              # make drink id 
+              @drink_id = @recognized_drink.id
+              # determine if drink is ready for curation (e.g. has all necessary data)
+              if @recognized_drink.ready_for_curation == true
+                @curation_ready = true
+              else
+                @curation_ready = false
+              end
+              # find or create drink format ids
+              @drink_formats = BeerFormat.where(beer_id: @recognized_drink.id)
+              if !@drink_formats.blank?
+                if @drink_formats.map{|a| a.size_format_id}.exclude? inventory.size_format_id
+                  BeerFormat.create(beer_id: @recognized_drink.id, size_format_id: inventory.size_format_id)
+                end
+              else
+                BeerFormat.create(beer_id: @recognized_drink.id, size_format_id: inventory.size_format_id)
+              end
+            else
+              # add new drink to DB
+              @new_drink = Beer.create(beer_name: inventory.drink_name, brewery_id: inventory.maker_knird_id, vetted: true)
+              # make drink id
+              @drink_id = @new_drink.id
+              # because drink was just added, it is not curation ready
+              @curation_ready = false
+            end
+            # now create new Disti Inventory row
+            DistiInventory.create(beer_id: @drink_id, size_format_id: inventory.size_format_id, 
+                                  drink_cost: inventory.drink_cost, drink_price: inventory.drink_price, 
+                                  distributor_id: inventory.distributor_id, 
+                                  disti_item_number: inventory.disti_item_number, disti_upc: inventory.disti_upc, 
+                                  min_quantity: inventory.min_quantity, regular_case_cost: inventory.regular_case_cost, 
+                                  current_case_cost: inventory.current_case_cost, currently_available: true,
+                                  curation_ready: @curation_ready)                   
+        
+          end # end of check on whether it is a new disti item
+          
+      end # end of loop through each record
+      # now delete all temp item
+      @disti_change_temp.destroy_all
+      
       # set admin emails to receive updates
       @admin_emails = ["carl@drinkknird.com"]
       
@@ -113,8 +203,8 @@ task :disti_change_inventory => :environment do
       @admin_emails.each do |admin_email|
         AdminMailer.disti_inventory_import_email(admin_email).deliver_now
       end
-    
-    end # end of check if file exists
+          
+    end # end of check if records exists
     
 end # end Process Disti Inventory Change
 

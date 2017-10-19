@@ -98,6 +98,8 @@ class Admin::BeersController < ApplicationController
     @this_brewery = Brewery.find_by_id(params[:brewery_id])
     # grab beer type list for editing
     @beer_types = BeerType.all.order(:beer_type_name)
+    # store this session to redirect to previous page after update
+    session[:return_to] ||= request.referer
   end
   
   def update
@@ -127,8 +129,17 @@ class Admin::BeersController < ApplicationController
           @new_drink_format.save!
         end
       end
-
-    redirect_to admin_brewery_beers_path(params[:beer][:brewery_id])
+      
+      # if drink exists in the Disti Inventory table, update it if this drink is now curation ready
+      if @beer.ready_for_curation == true
+        @disti_drink = DistiInventory.where(beer_id: @beer.id)
+        @disti_drink.each do |inventory|
+          inventory.update(curation_ready: true)
+        end
+      end
+    
+    # now redirect back to previous page  
+    redirect_to session.delete(:return_to)
   end 
 
   def current_beers

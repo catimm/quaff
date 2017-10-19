@@ -27,6 +27,9 @@
 			</div>
 		</div>
 		<% @distis.each do |disti| %>
+			<% @all_disti_inventory = DistiInventory.where(distributor_id: disti.id).select('distinct on (beer_id) *') %>
+			<% @inventory_ready_for_curation = @all_disti_inventory.where(curation_ready: true) %>
+			<% @inventory_not_ready_for_curation = @all_disti_inventory.where(curation_ready: false) %>
 			<div class="row no-margin">
 				<div class="col-xs-2 col-sm-1">
 					<div class="inventory-view show text-center" id="plus">
@@ -41,7 +44,7 @@
 				</div>
 			</div>
 			<div class="row no-margin hidden">
-				<% if !disti.disti_inventories.blank? %>
+				<% if !@inventory_ready_for_curation.blank? %>
 					<div class="row no-margin">
 						<div class="col-xs-2 col-sm-1">
 							<div class="inventory-view show text-center" id="plus">
@@ -52,7 +55,7 @@
 							</div>				
 						</div>
 						<div class="col-xs-10 col-sm-11 no-padding-left">
-							<h5 class="disti-drink-section">Drinks ready for curation</h5>
+							<h5 class="disti-drink-section">Drinks ready for curation (<%= @inventory_ready_for_curation.size %>)</h5>
 						</div>
 					</div>
 					<div class="row no-margin hidden">
@@ -68,23 +71,23 @@
 								    <th></th>
 								    <th></th>
 							    </tr>
-								<% disti.disti_inventories.each do |inventory| %>
-									<% if inventory.beer.ready_for_curation == true %>
-										<tr>
-											<td><%= inventory.disti_item_number %></td>
-											<td><%= inventory.beer.brewery.short_brewery_name %></td>
-											<td><%= inventory.beer.beer_name %></td>
-											<td><%= inventory.size_format.format_name %></td>
-											<td><%= inventory.regular_case_cost %></td>
-											<td><%= inventory.current_case_cost %></td>
-											<td><%= link_to "Edit", edit_admin_disti_inventory_path(inventory.id), :class => "btn btn-success editButton" %></td>
-											<td><%= link_to "Remove", admin_disti_inventory_path(inventory.id), :method => :delete, :class => "btn btn-danger editButton" %></td>
-										</tr>
-									<% end %>
+								<% @inventory_ready_for_curation.each do |inventory| %>
+									<tr>
+										<td><%= inventory.disti_item_number %></td>
+										<td><%= inventory.beer.brewery.short_brewery_name %></td>
+										<td><%= inventory.beer.beer_name %></td>
+										<td><%= inventory.size_format.format_name %></td>
+										<td><%= inventory.regular_case_cost %></td>
+										<td><%= inventory.current_case_cost %></td>
+										<td><%= link_to "Edit", edit_admin_disti_inventory_path(inventory.id), :class => "btn btn-success editButton" %></td>
+										<td><%= link_to "Remove", admin_disti_inventory_path(inventory.id), :method => :delete, :class => "btn btn-danger editButton" %></td>
+									</tr>
 								<% end %>
 							</table>
 						</div>
 					</div>
+				<% end %>
+				<% if !@inventory_not_ready_for_curation.blank? %>
 					<div class="row no-margin">
 						<div class="col-xs-2 col-sm-1">
 							<div class="inventory-view show text-center" id="plus">
@@ -95,7 +98,7 @@
 							</div>				
 						</div>
 						<div class="col-xs-10 col-sm-11 no-padding-left">
-							<h5 class="disti-drink-section">Drinks that need work before curation</h5>
+							<h5 class="disti-drink-section">Drinks that need work before curation (<%= @inventory_not_ready_for_curation.size %>)</h5>
 						</div>
 					</div>
 					<div class="row no-margin hidden">
@@ -111,26 +114,27 @@
 								    <th></th>
 								    <th></th>
 							    </tr>
-								<% disti.disti_inventories.each do |inventory| %>
-									<% if inventory.beer.ready_for_curation == false %>
-										<tr>
-											<td><%= inventory.disti_item_number %></td>
-											<td><%= inventory.beer.brewery.short_brewery_name %></td>
-											<td><%= inventory.beer.beer_name %></td>
-											<td><%= inventory.size_format.format_name %></td>
-											<td><%= inventory.regular_case_cost %></td>
-											<td><%= inventory.current_case_cost %></td>
-											<td><%= link_to "Update Drink", edit_admin_brewery_beer_path(inventory.beer.brewery_id, inventory.beer_id), :class => "btn btn-success editButton" %></td>
-											<td><%= link_to "Remove", admin_disti_inventory_path(inventory.id), :method => :delete, :class => "btn btn-danger editButton" %></td>
-										</tr>
-									<% end %>
+								<% @inventory_not_ready_for_curation.each do |inventory| %>
+									<tr>
+										<td><%= inventory.disti_item_number %></td>
+										<td><%= inventory.beer.brewery.short_brewery_name %></td>
+										<td><%= inventory.beer.beer_name %></td>
+										<td><%= inventory.size_format.format_name %></td>
+										<td><%= inventory.regular_case_cost %></td>
+										<td><%= inventory.current_case_cost %></td>
+										<td><%= link_to "Update Drink", edit_admin_brewery_beer_path(inventory.beer.brewery_id, inventory.beer_id), :class => "btn btn-success editButton" %></td>
+										<td><%= link_to "Remove", admin_disti_inventory_path(inventory.id), :method => :delete, :class => "btn btn-danger editButton" %></td>
+									</tr>
 								<% end %>
 							</table>
 						</div>
 					</div>
-				<% else %>
-					<div class="col-xs-12">
-						<h6>Nothing to see here, folks</h6>
+				<% end %>
+				<% if @inventory_ready_for_curation.blank? && @inventory_not_ready_for_curation.blank? %>
+					<div class="row no-margin">
+						<div class="col-xs-12">
+							<h6>Nothing to see here, folks</h6>
+						</div>
 					</div>
 				<% end %>
 			</div>

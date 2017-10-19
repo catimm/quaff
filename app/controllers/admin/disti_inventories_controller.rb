@@ -3,9 +3,9 @@ class Admin::DistiInventoriesController < ApplicationController
   require 'csv'
   
   def index 
-    # get list of Distis
+    # get all Distis
     @distis = Distributor.all
-    
+
   end # end index method
 
   def new
@@ -42,13 +42,17 @@ class Admin::DistiInventoriesController < ApplicationController
   end # end of destroy method
   
   def disti_inventories_change
-    # check if import file is currently being processed
-    if File.exist?("#{Rails.root}/lib/assets/disti_import.csv")
+    # get all Disti Import Temp records
+    @disti_import_temp = DistiImportTemp.all
+    # check if temp disti import records currently exist
+    if !@disti_import_temp.blank?
       @import_file_already_exists = true
     end
-      
-    # check if change file is currently being processed
-    if File.exist?("#{Rails.root}/lib/assets/disti_change.csv")
+    
+    # get all Disti Import Temp records
+    @disti_import_temp = DistiImportTemp.all
+    # check if temp disti import records currently exist
+    if !@disti_import_temp.blank?
       @change_file_already_exists = true
     end
       
@@ -58,28 +62,14 @@ class Admin::DistiInventoriesController < ApplicationController
     # upload file to temp DB
     DistiImportTemp.import(params[:file])
     
-    
-    # change file name
-    #@disti_inventory.original_filename = 'disti_import.csv'
-    # now upload it
-    #File.open(Rails.root.join('lib', 'assets', @disti_inventory.original_filename), 'wb') do |file|
-    #  @file_upload = file.write(@disti_inventory.read)
-    #end
-    
     # redirect back to same page
     redirect_to admin_disti_inventories_change_path
     
   end # end import_disti_inventory method
   
   def update_disti_inventory
-    # get file
-    @disti_inventory = params[:file]
-    # change file name
-    @disti_inventory.original_filename = 'disti_change.csv'
-    # now upload it
-    File.open(Rails.root.join('lib', 'assets', @disti_inventory.original_filename), 'wb') do |file|
-      file.write(@disti_inventory.read)
-    end
+    # upload file to temp DB
+    DistiChangeTemp.import(params[:file])
     
     # redirect back to same page
     redirect_to admin_disti_inventories_change_path

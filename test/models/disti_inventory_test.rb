@@ -16,6 +16,7 @@
 #  regular_case_cost   :decimal(5, 2)
 #  current_case_cost   :decimal(5, 2)
 #  currently_available :boolean
+#  curation_ready      :boolean
 #
 
 require 'test_helper'
