@@ -7,7 +7,7 @@ task :disti_import_inventory => :environment do
     if !@disti_import_temp.blank?
     
       # get the Disti ID for this batch
-      @distributor_id = @disti_import_temp.uniq.pluck(:rating)
+      @distributor_id = @disti_import_temp.first.distributor_id
     
       # process each record
       @disti_import_temp.each do |inventory|

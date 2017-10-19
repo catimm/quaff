@@ -49,10 +49,10 @@ class Admin::DistiInventoriesController < ApplicationController
       @import_file_already_exists = true
     end
     
-    # get all Disti Import Temp records
-    @disti_import_temp = DistiImportTemp.all
+    # get all Disti Change Temp records
+    @disti_change_temp = DistiChangeTemp.all
     # check if temp disti import records currently exist
-    if !@disti_import_temp.blank?
+    if !@disti_change_temp.blank?
       @change_file_already_exists = true
     end
       
