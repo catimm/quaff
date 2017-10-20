@@ -28,8 +28,10 @@
 		</div>
 		<% @distis.each do |disti| %>
 			<% @all_disti_inventory = DistiInventory.where(distributor_id: disti.id).select('distinct on (beer_id) *') %>
-			<% @inventory_ready_for_curation = @all_disti_inventory.where(curation_ready: true) %>
-			<% @inventory_not_ready_for_curation = @all_disti_inventory.where(curation_ready: false) %>
+			<% if !@all_disti_inventory.blank? %>
+				<% @inventory_ready_for_curation = @all_disti_inventory.where(curation_ready: true) %>
+				<% @inventory_not_ready_for_curation = @all_disti_inventory.where(curation_ready: false) %>
+			<% end %>
 			<div class="row no-margin">
 				<div class="col-xs-2 col-sm-1">
 					<div class="inventory-view show text-center" id="plus">
