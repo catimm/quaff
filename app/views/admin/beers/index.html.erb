@@ -8,6 +8,7 @@
 				<% else %>
 					<h3><%= @this_brewery.brewery_name %></h3>
 				<% end %>
+				<h5><span class="light-green-background"> Green highlight </span> indicates duplicates should align to this drink.</h5>
 			</div>
 			<div class="col-sm-3 text-right">
 				<%= link_to "Delete multiple drinks", "#", class: "btn btn-danger inputButton2", id: "delete-multiple-drinks" %>

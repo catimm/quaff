@@ -4859,6 +4859,9 @@ ul.pagination.pagination-centered.alpha {
 .brewery-name-with-id {
   display: inline-block;
 }
+.light-green-background {
+  background: $special-designated-green;
+}
 .admin-brewery-image-holder {
   width: 50%;
   margin: 0 auto !important;
@@ -5002,6 +5005,11 @@ input[type="checkbox"] {
   h6 {
     margin-top: 5px;
   }
+}
+.inventory-view.for-disti-inventory {
+  color: $user-action;
+  border-color: $user-action;
+  margin-left: 5px;
 }
 .disti-name-header {
   margin: 0 0 10px -20px;

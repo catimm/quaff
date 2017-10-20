@@ -49,10 +49,10 @@
 				<% if !@inventory_ready_for_curation.blank? %>
 					<div class="row no-margin">
 						<div class="col-xs-2 col-sm-1">
-							<div class="inventory-view show text-center" id="plus">
+							<div class="inventory-view for-disti-inventory show text-center" id="plus">
 								<h6><i class="fa fa-plus"></i></h6>
 							</div>
-							<div class="inventory-view hidden text-center" id="minus">
+							<div class="inventory-view for-disti-inventory hidden text-center" id="minus">
 								<h6><i class="fa fa-minus"></i></h4>
 							</div>				
 						</div>
@@ -92,10 +92,10 @@
 				<% if !@inventory_not_ready_for_curation.blank? %>
 					<div class="row no-margin">
 						<div class="col-xs-2 col-sm-1">
-							<div class="inventory-view show text-center" id="plus">
+							<div class="inventory-view for-disti-inventory show text-center" id="plus">
 								<h6><i class="fa fa-plus"></i></h6>
 							</div>
-							<div class="inventory-view hidden text-center" id="minus">
+							<div class="inventory-view for-disti-inventory hidden text-center" id="minus">
 								<h6><i class="fa fa-minus"></i></h4>
 							</div>				
 						</div>
@@ -124,7 +124,7 @@
 										<td><%= inventory.size_format.format_name %></td>
 										<td><%= inventory.regular_case_cost %></td>
 										<td><%= inventory.current_case_cost %></td>
-										<td><%= link_to "Update Drink", edit_admin_brewery_beer_path(inventory.beer.brewery_id, inventory.beer_id), :class => "btn btn-success editButton" %></td>
+										<td><%= link_to "Update Drink", admin_brewery_beers_path(inventory.beer.brewery_id), :class => "btn btn-success editButton" %></td>
 										<td><%= link_to "Remove", admin_disti_inventory_path(inventory.id), :method => :delete, :class => "btn btn-danger editButton" %></td>
 									</tr>
 								<% end %>

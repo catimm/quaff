@@ -1,9 +1,15 @@
 <% @brewery_beers.each do |d| %>
+	<% @disti_inventory = DistiInventory.find_by_beer_id(d.id) %>
 	<hr/>
 	<% if d.vetted == false %>
 			<div class="row small-padding">
 			<div class="col-sm-2">
-				<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
+				<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5>
+				<% if !@disti_inventory.blank? %>
+					<h6 class="light-green-background brewery-name-with-id">[id: <%= d.id %> ]</h6>
+				<% else %>
+					<h6 class="brewery-name-with-id">[id: <%= d.id %> ]</h6>
+				<% end %>
 			</div>
 			<div class="col-sm-1">
 				<h5><%= (d.updated_at).strftime("%-m/%d/%y")  %></h5>
@@ -14,22 +20,23 @@
 				<% end %>
 				<%= link_to "Add", admin_add_drink_to_brewery_path(d.id), class: "btn btn-success" %>
 			</div>
-			<% if !d.touched_by_user.nil? %>
+			<% if @disti_inventory.blank? %>
+				<% if !d.touched_by_user.nil? %>
+					<div class="col-sm-2">
+						<%= link_to "Delete & Connect", admin_delete_drink_from_brewery_prep_path(d.id), class: "btn btn-danger editButton",
+						data: {toggle: "modal", target: "#delete_temp_beer"} %>
+					</div>
+				<% else %>
+					<div class="col-sm-1">
+						<%= link_to "Fully Delete", admin_delete_temp_beer_path(d.brewery_id, d.id), class: "btn btn-danger editButton" %>
+					</div>
+				<% end %>
 				<div class="col-sm-2">
-					<%= link_to "Delete & Connect", admin_delete_drink_from_brewery_prep_path(d.id), class: "btn btn-danger editButton",
-					data: {toggle: "modal", target: "#delete_temp_beer"} %>
-				</div>
-			<% else %>
-				<div class="col-sm-1">
-					<%= link_to "Fully Delete", admin_delete_temp_beer_path(d.brewery_id, d.id), class: "btn btn-danger editButton" %>
+					<label class="checkbox">
+					  Choose multiple <%= check_box_tag d.id, d.id, false, class: 'admin-multiple-checkboxes' %> 
+					</label>
 				</div>
 			<% end %>
-			<div class="col-sm-2">
-				<label class="checkbox">
-				  Choose multiple <%= check_box_tag d.id, d.id, false, class: 'admin-multiple-checkboxes' %> 
-				</label>
-				
-			</div>
 		</div>
 	<% else %>
 		<div class="row small-padding">
@@ -37,7 +44,12 @@
 				<% if d.beer_name.blank? %>
 					<h5 class="need-text">[need]</h5>
 				<% else %>
-					<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
+					<h5 class="brewery-name-with-id"><%= d.beer_name %>&nbsp;</h5>
+					<% if !@disti_inventory.blank? %>
+						<h6 class="light-green-background brewery-name-with-id">[id: <%= d.id %> ]</h6>
+					<% else %>
+						<h6 class="brewery-name-with-id">[id: <%= d.id %> ]</h6>
+					<% end %>
 				<% end %>
 			</div>
 			<div class="col-sm-1">

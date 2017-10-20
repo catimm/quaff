@@ -2,7 +2,8 @@
 	<% if d.vetted == false %>
 		<div class="row small-padding">
 			<div class="col-xs-6 col-sm-2">
-				<h5 class="brewery-name-with-id"><%= d.brewery_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
+				<h5 class="brewery-name-with-id"><%= d.brewery_name %>&nbsp;</h5>
+				<h6 class="brewery-name-with-id">[id: <%= d.id %> ]</h6>
 			</div>
 			<div class="col-xs-6 col-sm-1">
 				<%= link_to "Add", admin_add_new_brewery_path(d.id), :class => "btn btn-success editButton" %>
@@ -22,7 +23,8 @@
 	<div class="row small-padding">
 		<div class="col-xs-6 col-sm-2" data-toggle="tooltip" title="<%= d.brewery_name %> [id: <%= d.id %> ]">
 			<% if d.image.blank? %>
-				<h5 class="brewery-name-with-id"><%= d.brewery_name %>&nbsp;</h5><h6 class="light-gray-text brewery-name-with-id">[id: <%= d.id %> ]</h6>
+				<h5 class="brewery-name-with-id"><%= d.brewery_name %>&nbsp;</h5>
+				<h6 class="brewery-name-with-id">[id: <%= d.id %> ]</h6>
 			<% else %>
 				<div class="admin-brewery-image-holder">
 					<img class="img-responsive center-block" alt="Responsive image" src="<%= d.image %>">

@@ -213,12 +213,14 @@ class Admin::BeersController < ApplicationController
         UserCellarSupply.update(beers.id, beer_id: params[:beer][:id])
       end
     end
-    # remove formats associated with this drink
+    # align formats associated with this drink
     @drink_formats = BeerFormat.where(beer_id: @beer.id)
-    if !@drink_formats.empty?
-      @drink_formats.delete_all
+    if !@drink_formats.blank?
+      @drink_formats.each do |format| 
+        format.update(beer_id: params[:beer][:id])
+      end
     end
-    
+              
     # then delete associations with this beer in the collab table
     @collab_associations = BeerBreweryCollab.where(beer_id: @beer.id)
     if !@collab_associations.empty?
