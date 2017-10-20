@@ -178,6 +178,13 @@ class Admin::BeersController < ApplicationController
     # add name of beer being deleted to alt beer name table
     AltBeerName.create(name: @beer.beer_name, beer_id: params[:beer][:id])
     
+    # change associations in disti_inventories table
+    @disti_inventory_to_change = DistiInventory.where(beer_id: @beer.id)
+    if !@@disti_inventory_to_change.blank?
+      @disti_inventory_to_change.each do |drink|
+        drink.update(beer_id: params[:beer][:id])
+      end
+    end
     # change associations in beer_locations table
     @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
     if !@beer_locations_to_change.empty?
