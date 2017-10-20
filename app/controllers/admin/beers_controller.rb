@@ -180,7 +180,7 @@ class Admin::BeersController < ApplicationController
     
     # change associations in disti_inventories table
     @disti_inventory_to_change = DistiInventory.where(beer_id: @beer.id)
-    if !@@disti_inventory_to_change.blank?
+    if !@disti_inventory_to_change.blank?
       @disti_inventory_to_change.each do |drink|
         drink.update(beer_id: params[:beer][:id])
       end
