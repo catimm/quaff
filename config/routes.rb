@@ -143,6 +143,8 @@ Rails.application.routes.draw do
   # user signup process
   get '/signup/home_address_getting_started' => 'signup#home_address_getting_started', :as => 'home_address_getting_started'
   post '/signup/process_home_address_getting_started' => 'signup#process_home_address_getting_started', :as => 'process_home_address_getting_started'
+
+  get '/signup/delivery_address_getting_started' => 'signup#delivery_address_getting_started', :as => 'delivery_address_getting_started'
    
   get '/signup/drink_choice_getting_started' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
   post '/signup/process_drink_choice_getting_started/:id' => 'signup#process_drink_choice_getting_started', :as => 'process_drink_choice_getting_started'

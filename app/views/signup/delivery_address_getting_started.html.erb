@@ -1,0 +1,25 @@
+<%= render 'layouts/header_early_signup' %> 
+<div class="container">
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-signup">
+		<%= render 'signup/signup_guide_consumer' %>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Where should we deliver your beers?</h2>
+			<h5 class="signup-question-detail">You can update this info on your account profile page anytime after signup.</h5>
+		</div>
+	</div>
+	<div class="row">
+        <div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-12" id="signup-personal-info-holder">
+            <%= render 'user_addresses/user_address_form' %>
+        </div>	
+	</div>
+</div>
+
+<%= render 'layouts/footer' %>

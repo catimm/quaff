@@ -56,7 +56,7 @@ class UsersController < ApplicationController
         @redirect_link = drink_choice_getting_started_path()
       else
         # set redirect link
-        @redirect_link = home_address_getting_started_path()
+        @redirect_link = delivery_address_getting_started_path()
       end
       
       # redirect to next step in signup process
@@ -115,7 +115,7 @@ class UsersController < ApplicationController
         @redirect_link = drink_choice_getting_started_path(@user.id)
       else
         # set redirect link
-        @redirect_link = home_address_getting_started_path()
+        @redirect_link = delivery_address_getting_started_path()
       end
       
       # redirect to next step in signup process
