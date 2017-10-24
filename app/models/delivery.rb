@@ -33,9 +33,9 @@ class Delivery < ActiveRecord::Base
   
   # create view in admin recommendation drop down
   def recommendation_drop_down_view
-    Rails.logger.debug("This account: #{account.id.inspect}")
+    #Rails.logger.debug("This account: #{account.id.inspect}")
     @account_owner = User.where(account_id: account.id, role_id: [1,4])[0]
-    Rails.logger.debug("account owner info: #{@account_owner.inspect}")
+    #Rails.logger.debug("account owner info: #{@account_owner.inspect}")
     "#{delivery_date.strftime("%m/%d/%y")}: #{@account_owner.first_name} [#{@account_owner.username}]"
   end
   
