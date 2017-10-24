@@ -55,7 +55,7 @@
 						<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
 							<% @end_quantity = drink[1][0].inventory.limit_per %>
 						<% else %>
-							<% if drink[1][0].disti_inventory_available == true %>
+							<% if drink[1][0].disti_inventory_id != nil %>
 								<% @end_quantity = 24 %>
 							<% else %>
 								<% @end_quantity = (drink[1][0].inventory.stock + @this_current_quantity.quantity) %>
@@ -71,7 +71,7 @@
 						<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
 							<% @end_quantity = drink[1][0].inventory.limit_per %>
 						<% else %>
-							<% if drink[1][0].disti_inventory_available == true %>
+							<% if drink[1][0].disti_inventory_id != nil %>
 								<% @end_quantity = 24 %>
 							<% else %>
 								<% @end_quantity = drink[1][0].inventory.stock %>

@@ -3,5 +3,5 @@
 	<h4>Showing: <span class="current-selected-user" id="current-user-recommendations"><%= @user.username %></span></h4>
 </div>
 <div class="col-sm-3">
-	<%= collection_select(@drink_recommendations, :account_id, Delivery.where(account_id: @customer_ids).where.not(status: "delivered").order('delivery_date asc'), :account_id, :recommendation_drop_down_view, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "#{@view}"}) %>
+	<%= collection_select("account_list", :account_id, Delivery.where(account_id: @customer_ids).where.not(status: "delivered").order('delivery_date asc'), :account_id, :recommendation_drop_down_view, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "#{@view}"}) %>
 </div>

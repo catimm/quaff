@@ -33,8 +33,8 @@ class Delivery < ActiveRecord::Base
   
   # create view in admin recommendation drop down
   def recommendation_drop_down_view
-    "#{delivery_date.strftime("%m/%d/%y")}: #{account.id}"
-    #"#{delivery_date.strftime("%m/%d/%y")}: #{account.user.first_name} [#{account.user.username}]"
+    @account_owner = User.where(account_id: account.id, role_id: [1,4])[0]
+    "#{delivery_date.strftime("%m/%d/%y")}: #{@account_owner.first_name} [#{@account_owner.username}]"
   end
   
   # scope account owners

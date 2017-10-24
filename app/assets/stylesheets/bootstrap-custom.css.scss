@@ -5187,6 +5187,16 @@ input[type="checkbox"] {
   width: 99%;
   position: relative;
 }
+.drink-delivery-tile-past-ratings {
+  margin: 5px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  position: relative;
+}
 .next-delivery-tile-no-review {
   margin: 5px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);

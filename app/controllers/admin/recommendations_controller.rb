@@ -120,13 +120,19 @@ class Admin::RecommendationsController < ApplicationController
     
     # find if drink has order limitations and if so what they are
     @drink_recommendations.each do |drink|
+      #Rails.logger.debug("Drink info: #{drink.inspect}")
       if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil?
         drink[1][0].limited_quantity = drink[1][0].inventory.limit_per
       else
-        if drink[1][0].disti_inventory_available == true
+        if drink[1][0].disti_inventory_id != nil
           drink[1][0].limited_quantity = "No"
         else
-          drink[1][0].limited_quantity = drink[1][0].inventory.stock
+          @this_current_quantity = @next_account_delivery.where(beer_id: drink[1][0].beer_id )[0]
+          if !@this_current_quantity.blank?
+            drink[1][0].limited_quantity = drink[1][0].inventory.stock + @this_current_quantity.quantity 
+          else
+            drink[1][0].limited_quantity = drink[1][0].inventory.stock
+          end
         end
       end
     end
@@ -161,7 +167,7 @@ class Admin::RecommendationsController < ApplicationController
                                                             delivery_id: @customer_next_delivery.id,
                                                             beer_id: @drink_recommendation.beer_id).first
     
-    if @order_quantity == 0
+    if @order_quantity == 0 # if curator is changing drink order to 0 to delete drink from this order
       #get inventory info
       @inventory_info = Inventory.find_by_id(@drink_recommendation.inventory_id)
       # update inventory info

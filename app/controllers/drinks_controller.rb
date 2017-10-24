@@ -22,7 +22,7 @@ class DrinksController < ApplicationController
     
     # get delivery info
     @all_deliveries = Delivery.where(account_id: @user.account_id)
-    @upcoming_delivery = Delivery.where(account_id: @user.account_id).where(status: ["user review", "in progress"]).first
+    @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress"]).first
     
     # check if deliveries exist before executing rest of code
     if !@all_deliveries.blank?

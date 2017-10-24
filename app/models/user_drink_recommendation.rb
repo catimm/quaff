@@ -2,17 +2,17 @@
 #
 # Table name: user_drink_recommendations
 #
-#  id                        :integer          not null, primary key
-#  user_id                   :integer
-#  beer_id                   :integer
-#  projected_rating          :float
-#  created_at                :datetime         not null
-#  updated_at                :datetime         not null
-#  new_drink                 :boolean
-#  account_id                :integer
-#  size_format_id            :integer
-#  inventory_id              :integer
-#  disti_inventory_available :boolean
+#  id                 :integer          not null, primary key
+#  user_id            :integer
+#  beer_id            :integer
+#  projected_rating   :float
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  new_drink          :boolean
+#  account_id         :integer
+#  size_format_id     :integer
+#  inventory_id       :integer
+#  disti_inventory_id :integer
 #
 
 class UserDrinkRecommendation < ActiveRecord::Base
@@ -26,9 +26,9 @@ class UserDrinkRecommendation < ActiveRecord::Base
   attr_accessor :limited_quantity # to hold whether a drink has a limited quantity available for ordering
   attr_accessor :quantity_available # to hold the quantity available for the curator to set aside
 
-  def initialize()
-    self.quantity_available = []
-  end
+  #def initialize()
+  #  self.quantity_available = []
+  #end
    
   # all scopes below were part of user-based logic
    
