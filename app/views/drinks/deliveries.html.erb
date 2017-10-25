@@ -27,12 +27,14 @@
 					<h3 class="recent-ratings-header">My deliveries</h3>
 				</div>
 				<div class="col-xs-7 col-sm-5 col-md-6 no-padding">
-					<h5 class="review-until-message visible-xs hidden-sm hidden-md hidden-lg hidden-xl">
-						Review till <span>1pm on <%= (@next_delivery_review_end_date).strftime("%-m/%-d/%Y") %></span>
-					</h5>
-					<h5 class="review-until-message hidden-xs visible-sm visible-md visible-lg visible-xl">
-						Review until <span>1pm PT on <%= (@next_delivery_review_end_date).strftime("%a, %b %e, %Y") %></span>
-					</h5>
+					<% if !@upcoming_delivery.blank? %>
+						<h5 class="review-until-message visible-xs hidden-sm hidden-md hidden-lg hidden-xl">
+							Review till <span>1pm on <%= (@next_delivery_review_end_date).strftime("%-m/%-d/%Y") %></span>
+						</h5>
+						<h5 class="review-until-message hidden-xs visible-sm visible-md visible-lg visible-xl">
+							Review until <span>1pm PT on <%= (@next_delivery_review_end_date).strftime("%a, %b %e, %Y") %></span>
+						</h5>
+					<% end %>
 				</div>
 				<div class="col-xs-10 col-sm-3 no-padding-right">
 					<%= link_to "#", class: 'btn btn-default btn-success formButton-send-note', 

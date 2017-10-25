@@ -392,7 +392,6 @@ class DeliverySettingsController < ApplicationController
     @user_delivery_info = UserDelivery.find_by_id(@user_delivery_id)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
     @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
-    @admin_user_delivery_info = AdminUserDelivery.where(delivery_id: @delivery.id, inventory_id: @inventory.id).first
     
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
@@ -411,9 +410,7 @@ class DeliverySettingsController < ApplicationController
       # update reserved inventory 
       @new_inventory_reserved = @current_inventory_reserved + 1
       @inventory.update(reserved: @new_inventory_reserved)
-      
-      # update admin user delivery info
-      @admin_user_delivery_info.update(quantity: @new_quantity)
+
       # update user delivery info
       @user_delivery_info.update(quantity: @new_quantity)
       
@@ -432,7 +429,6 @@ class DeliverySettingsController < ApplicationController
       @inventory.update(reserved: @new_inventory_reserved)
       
       # update user delivery info
-      @admin_user_delivery_info.update(quantity: @new_quantity)
       @user_delivery_info.update(quantity: @new_quantity)
     end
     
@@ -493,7 +489,6 @@ class DeliverySettingsController < ApplicationController
     @user_delivery_info = UserDelivery.find_by_id(@data)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
     @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
-    @admin_user_delivery_info = AdminUserDelivery.where(delivery_id: @delivery.id, inventory_id: @inventory.id).first
     
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
@@ -529,7 +524,6 @@ class DeliverySettingsController < ApplicationController
     end
     
     # remove delivery drink
-    @admin_user_delivery_info.destroy!
     @user_delivery_info.destroy!
 
     render :nothing => true

@@ -102,7 +102,7 @@ class Admin::FulfillmentController < ApplicationController
     end # end of loop through each delivery drink
     
     # clear admin_user_deliveries table
-    @current_admin_prep_drinks = AdminUserDelivery.where(delivery_id: @delivery.id).destroy_all
+    #@current_admin_prep_drinks = AdminUserDelivery.where(delivery_id: @delivery.id).destroy_all
     
     # get last delivery
     @last_delivery = Delivery.where(user_id: @delivery.user_id, status: 'delivered').order('delivery_date DESC').first

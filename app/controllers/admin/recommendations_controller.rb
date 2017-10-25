@@ -34,7 +34,7 @@ class Admin::RecommendationsController < ApplicationController
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
-    @next_account_delivery = AdminAccountDelivery.where(account_id: @account_id, 
+    @next_account_delivery = AccountDelivery.where(account_id: @account_id, 
                                                         delivery_id: @customer_next_delivery.id)
                                                             
     # get relevant delivery info
@@ -53,7 +53,7 @@ class Admin::RecommendationsController < ApplicationController
       #Rails.logger.debug("User Delivery Preference: #{@delivery_preferences.inspect}")
       if !@delivery_preferences.blank?
         # get all User drinks included in next Account Delivery
-        @next_account_user_drinks = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id) 
+        @next_account_user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id) 
                                                                 
         # set estimate values
         @individual_drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
@@ -114,6 +114,10 @@ class Admin::RecommendationsController < ApplicationController
       
     end
     #Rails.logger.debug("User Identification Array: #{@user_identification_array.inspect}")
+    
+     # check if account has provided feedback on this delivery
+    @customer_drink_changes = CustomerDeliveryChange.where(delivery_id: @customer_next_delivery.id)
+    @customer_messages = CustomerDeliveryMessage.where(delivery_id: @customer_next_delivery.id)
       
     # get recommended drinks by user
     @drink_recommendations = UserDrinkRecommendation.where(account_id: @account_id).group_by(&:beer_id)
@@ -163,7 +167,7 @@ class Admin::RecommendationsController < ApplicationController
     @customer_next_delivery = Delivery.where(account_id: @drink_recommendation.account_id).where.not(status: "delivered").first
     
     # find if this is a new addition or an update to the admin account delivery table
-    @next_delivery_admin_info = AdminAccountDelivery.where(account_id: @drink_recommendation.account_id, 
+    @next_delivery_admin_info = AccountDelivery.where(account_id: @drink_recommendation.account_id, 
                                                             delivery_id: @customer_next_delivery.id,
                                                             beer_id: @drink_recommendation.beer_id).first
     
@@ -186,7 +190,7 @@ class Admin::RecommendationsController < ApplicationController
       @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
     
       # find and destroy user allocations
-      @account_user_drinks = AdminUserDelivery.where(admin_account_delivery_id: @next_delivery_admin_info.id).destroy_all
+      @account_user_drinks = UserDelivery.where(account_delivery_id: @next_delivery_admin_info.id).destroy_all
       
       # destroy account allocations
       @next_delivery_admin_info.destroy!
@@ -242,7 +246,7 @@ class Admin::RecommendationsController < ApplicationController
         end
       end
       
-      # add/update AdminAccountDelivery table
+      # add/update AccountDelivery table
       if !@next_delivery_admin_info.blank? # update
         # update Admin Account Delivery table
         @next_delivery_admin_info.update(quantity: @order_quantity)
@@ -258,7 +262,7 @@ class Admin::RecommendationsController < ApplicationController
         @customer_next_delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price)
       
         # check if user allocations have been made
-        @account_user_drinks = AdminUserDelivery.where(admin_account_delivery_id: @next_delivery_admin_info.id)
+        @account_user_drinks = UserDelivery.where(account_delivery_id: @next_delivery_admin_info.id)
         
         # find if any account users have had this drink allocated
         if !@account_user_drinks.blank?
@@ -284,7 +288,7 @@ class Admin::RecommendationsController < ApplicationController
           @large_format = false
         end
         # create new table entry
-        @next_delivery_admin_info = AdminAccountDelivery.create(account_id: @drink_recommendation.account_id, 
+        @next_delivery_admin_info = AccountDelivery.create(account_id: @drink_recommendation.account_id, 
                                                               beer_id: @drink_recommendation.beer_id,
                                                               quantity: @order_quantity,
                                                               cellar: @cellar,
@@ -309,8 +313,8 @@ class Admin::RecommendationsController < ApplicationController
         # check if this drink could be allocated to multiple users or just one
         @number_of_possible_allocations = UserDrinkRecommendation.where(account_id: @drink_recommendation.account_id, beer_id: @drink_recommendation.beer_id).count
         if @number_of_possible_allocations == 1 # if this is the only person, create a Admin User Delivery entry
-          AdminUserDelivery.create(user_id: @drink_recommendation.user_id,
-                                  admin_account_delivery_id: @next_delivery_admin_info.id,
+          UserDelivery.create(user_id: @drink_recommendation.user_id,
+                                  account_delivery_id: @next_delivery_admin_info.id,
                                   delivery_id: @customer_next_delivery.id,
                                   quantity: @order_quantity,
                                   new_drink: @drink_recommendation.new_drink,
@@ -319,10 +323,10 @@ class Admin::RecommendationsController < ApplicationController
       end
       
       # update admin inventory transaction table
-      @inventory_transaction = AdminInventoryTransaction.where(admin_account_delivery_id: @next_delivery_admin_info.id,
+      @inventory_transaction = InventoryTransaction.where(account_delivery_id: @next_delivery_admin_info.id,
                                                                 inventory_id: @inventory.id)
       if @inventory_transaction.blank?
-        AdminInventoryTransaction.create(admin_account_delivery_id: @next_delivery_admin_info.id,
+        InventoryTransaction.create(account_delivery_id: @next_delivery_admin_info.id,
                                          inventory_id: @inventory.id,
                                          quantity: @order_quantity)
       else
@@ -343,16 +347,16 @@ class Admin::RecommendationsController < ApplicationController
     @data_split = @data.split("-")
     @action = @data_split[0]
     @user_drink_recommendation_id = @data_split[1]
-    @admin_account_delivery_id = @data_split[2]
+    @account_delivery_id = @data_split[2]
     
     # get user recommendation info
     @user_recommendation_info = UserDrinkRecommendation.find_by_id(@user_drink_recommendation_id)
     
     # get admin account delivery info
-    @admin_account_delivery_info = AdminAccountDelivery.find_by_id(@admin_account_delivery_id)
+    @admin_account_delivery_info = AccountDelivery.find_by_id(@account_delivery_id)
     
     # find if account drinks have already been allocated
-    @account_user_drinks = AdminUserDelivery.where(admin_account_delivery_id: @admin_account_delivery_id)
+    @account_user_drinks = UserDelivery.where(account_delivery_id: @account_delivery_id)
     
     # find if any account users have had this drink allocated
     if !@account_user_drinks.blank?
@@ -369,8 +373,8 @@ class Admin::RecommendationsController < ApplicationController
           user.update(quantity: @total_per_user)
         end
         # create user allocation
-        AdminUserDelivery.create(user_id: @user_recommendation_info.user_id,
-                                  admin_account_delivery_id: @admin_account_delivery_id,
+        UserDelivery.create(user_id: @user_recommendation_info.user_id,
+                                  account_delivery_id: @account_delivery_id,
                                   delivery_id: @admin_account_delivery_info.delivery_id,
                                   quantity: @total_per_user,
                                   new_drink: @user_recommendation_info.new_drink,
@@ -389,8 +393,8 @@ class Admin::RecommendationsController < ApplicationController
         end
       end
     else # no user allocation exists yet, so create one
-      AdminUserDelivery.create(user_id: @user_recommendation_info.user_id,
-                                  admin_account_delivery_id: @admin_account_delivery_id,
+      UserDelivery.create(user_id: @user_recommendation_info.user_id,
+                                  account_delivery_id: @account_delivery_id,
                                   delivery_id: @admin_account_delivery_info.delivery_id,
                                   quantity: @admin_account_delivery_info.quantity,
                                   new_drink: @user_recommendation_info.new_drink,
@@ -419,7 +423,7 @@ class Admin::RecommendationsController < ApplicationController
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
-    @next_account_delivery = AdminAccountDelivery.where(account_id: @user_recommendation_info.account_id, 
+    @next_account_delivery = AccountDelivery.where(account_id: @user_recommendation_info.account_id, 
                                                         delivery_id: @customer_next_delivery.id)
                                                             
     # get relevant delivery info
@@ -438,7 +442,7 @@ class Admin::RecommendationsController < ApplicationController
       #Rails.logger.debug("User Delivery Preference: #{@delivery_preferences.inspect}")
       if !@delivery_preferences.blank?
         # get all User drinks included in next Account Delivery
-        @next_account_user_drinks = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id) 
+        @next_account_user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id) 
                                                                 
         # set estimate values
         @individual_drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
@@ -520,7 +524,7 @@ class Admin::RecommendationsController < ApplicationController
     #Rails.logger.debug("Delivery info: #{@customer_next_delivery.inspect}")
     
     # get admin drink info
-    @next_delivery_admin_info = AdminUserDelivery.where(user_id: @drink_recommendation.user_id, 
+    @next_delivery_admin_info = UserDelivery.where(user_id: @drink_recommendation.user_id, 
                                                   beer_id: @drink_recommendation.beer_id, 
                                                   delivery_id: @customer_next_delivery.id).first
     @current_drink_admin_quantity = @next_delivery_admin_info.quantity
@@ -664,28 +668,22 @@ class Admin::RecommendationsController < ApplicationController
   end # end of admin_delivery_note method
   
   def admin_share_delivery_with_customer
-    @data = params[:id]
-    @data_split = @data.split("-")
-    @delivery_id = @data_split[0]
-    @share_with_customer_status = @data_split[1]
-    
-    @next_customer_delivery = Delivery.find_by_id(@delivery_id)
+    # find delivery to share
+    @next_customer_delivery = Delivery.find_by_id(params[:id])
     
     # update status
-    if @share_with_customer_status == "true"
-      @next_customer_delivery.update(share_admin_prep_with_user: true)
-    else
-      @next_customer_delivery.update(share_admin_prep_with_user: false)
-    end
+    @next_customer_delivery.update(share_admin_prep_with_user: true)
     
-    render :nothing => true
+    # redirect back to recommendation page                  
+    redirect_to admin_recommendation_path(@next_customer_delivery.account_id) 
+    
   end # end of share_delivery_with_customer method
   
   def admin_user_feedback
     @chosen_user_id = params[:id]
     # get customer feedback
-    @customer_drink_changes = CustomerDeliveryChange.where(user_id: @chosen_user_id, delivery_id: params[:format])
-    @customer_message = CustomerDeliveryMessage.where(user_id: @chosen_user_id, delivery_id: params[:format]).first
+    @customer_drink_changes = CustomerDeliveryChange.where(delivery_id: params[:format])
+    @customer_messages = CustomerDeliveryMessage.where(delivery_id: params[:format])
 
     render :partial => 'admin/recommendations/admin_user_feedback'
   end # end admin_user_feedback method
@@ -693,7 +691,7 @@ class Admin::RecommendationsController < ApplicationController
   def admin_review_delivery
     # get drinks slated for next delivery 
     @customer_next_delivery = Delivery.where(account_id: params[:id]).where(status: ["admin prep", "user review", "in progress"]).first
-    @next_delivery_plans = AdminAccountDelivery.where(delivery_id: @customer_next_delivery.id)
+    @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
     
     render :partial => 'admin/recommendations/admin_review_delivery'
   end #end of admin_review_delivery method

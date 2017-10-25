@@ -31,6 +31,9 @@
 			<% if !@all_disti_inventory.blank? %>
 				<% @inventory_ready_for_curation = @all_disti_inventory.where(curation_ready: true) %>
 				<% @inventory_not_ready_for_curation = @all_disti_inventory.where(curation_ready: false) %>
+			<% else %>
+				<% @inventory_ready_for_curation = nil %>
+				<% @inventory_not_ready_for_curation = nil %>
 			<% end %>
 			<div class="row no-margin">
 				<div class="col-xs-2 col-sm-1">

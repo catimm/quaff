@@ -18,7 +18,7 @@
 		        <td><%= drink.beer.beer_type.beer_type_name %></td>
 		        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 		        <td><%= inventory.size_format.format_name %></td>
-		        <% @designated_users = AdminUserDelivery.where(admin_account_delivery_id: drink.id) %>
+		        <% @designated_users = UserDelivery.where(account_delivery_id: drink.id) %>
 		        <td>
 			        <table>
 				        <% @designated_users.each do |user| %>

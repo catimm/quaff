@@ -51,7 +51,7 @@
 				<div class="col-xs-2 col-sm-1 col-md-1 no-padding">
 					<h5 class="admin-add-quantity-header">Quantity</h5>
 					<% if @next_account_delivery.exists?(beer_id: drink[1][0].beer_id) %>
-						<% @this_current_quantity = AdminAccountDelivery.where(account_id: @account_id, delivery_id: @customer_next_delivery.id, beer_id: drink[1][0].beer_id )[0] %>
+						<% @this_current_quantity = AccountDelivery.where(account_id: @account_id, delivery_id: @customer_next_delivery.id, beer_id: drink[1][0].beer_id )[0] %>
 						<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
 							<% @end_quantity = drink[1][0].inventory.limit_per %>
 						<% else %>

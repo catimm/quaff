@@ -31,7 +31,7 @@
 	<% if count > 1 %>
 		<% @next_account_delivery_drink = @next_account_delivery.where(beer_id: drink.beer_id)[0] %>
 		<% if !@next_account_delivery_drink.nil? %>
-			<% @user_delivery_drink = AdminUserDelivery.where(admin_account_delivery_id: @next_account_delivery_drink.id, user_id: drink.user_id) %>
+			<% @user_delivery_drink = UserDelivery.where(account_delivery_id: @next_account_delivery_drink.id, user_id: drink.user_id) %>
 			<% if @user_delivery_drink.blank? %>
 				<td class="text-center"><%= check_box_tag "inventory_ids[]", drink.id, false, :id => "#{drink.id}-#{@next_account_delivery_drink.id}", :class => "add_to_delivery" %></td>
 			<% else %>
