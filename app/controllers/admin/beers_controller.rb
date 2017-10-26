@@ -6,7 +6,7 @@ class Admin::BeersController < ApplicationController
     # find non-collab beers produced by brewery
     @perm_beers = Beer.where(brewery_id:params[:brewery_id])
     @temp_beers = TempBeer.where(brewery_id: params[:brewery_id])
-    @brewery_beers = (@perm_beers + @temp_beers).sort_by{|e| e[:beer_name]}
+    @brewery_beers = (@perm_beers + @temp_beers).sort_by{|e| e[:beer_name].to_i}
     @touched_by_user = false
     #@brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     # find collab beers produced by brewery

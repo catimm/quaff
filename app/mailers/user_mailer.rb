@@ -148,10 +148,11 @@ class UserMailer < ActionMailer::Base
     
   end # end of early_user_complete_signup email
   
-  def customer_delivery_review(customer, delivery_info, delivery_drinks, total_quantity)
+  def customer_delivery_review(customer, delivery_info, delivery_drinks, total_quantity, mates)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     @review_date = (delivery_info.delivery_date - 1.day)
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
+    Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
     payload  = {
       recipients: [
         {
@@ -168,13 +169,14 @@ class UserMailer < ActionMailer::Base
         review_date: @review_date,
         drink: delivery_drinks,
         total_quantity: total_quantity,
-        total_price: delivery_info.total_price
+        total_price: delivery_info.total_price,
+        mates: mates
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")
     response = sp.transmission.send_payload(payload)
     p response
-    
+          
   end # end of customer_delivery_review email
 
   def customer_change_confirmation(customer, delivery, change_info)

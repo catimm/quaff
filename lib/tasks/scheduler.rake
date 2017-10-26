@@ -90,7 +90,7 @@ task :disti_import_inventory => :environment do
       @disti_import_temp.destroy_all
       
       # find all drinks not updated within last 30 minutes and change 'currently available' to false
-      @not_currently_available = DistiInventory.where(distributor_id: @distributor_id).where("updated_at > ?", 30.minutes.ago) 
+      @not_currently_available = DistiInventory.where(distributor_id: @distributor_id).where("updated_at < ?", 30.minutes.ago) 
       
       @not_currently_available.each do |disti_item|
         disti_item.update(currently_available: false)
@@ -1031,13 +1031,21 @@ end # end of update_supply_projected_ratings task
 
 desc "share admin drink prep with customers"
 task :share_admin_prep_with_customer => :environment do
-  # only run this code if today is Monday
-    if Date.today.strftime("%A") == "Monday"
-      # get customers who have drinks slated for delivery this week
-      @customers_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true)
-      
-      @customers_with_deliveries.each do |customer_delivery|
-        @next_delivery_plans = AdminUserDelivery.where(delivery_id: customer_delivery.id).order('projected_rating DESC')
+    # get customers who have drinks slated for delivery this week
+    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
+    
+    if !@accounts_with_deliveries.blank?
+      @accounts_with_deliveries.each do |account_delivery|
+        # find if the account has any other users
+        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 11).where.not(role_id: [1,4])
+        
+        if !@mates.blank?
+          @has_mates = true
+        else
+          @has_mates = false
+        end
+        
+        @next_delivery_plans = AccountDelivery.where(delivery_id: account_delivery.id).order('projected_rating DESC')
         
         # get total quantity of next delivery
         @total_quantity = @next_delivery_plans.sum(:quantity)
@@ -1047,56 +1055,58 @@ task :share_admin_prep_with_customer => :environment do
         
         # put drinks in user_delivery table to share with customer
         @next_delivery_plans.each do |drink|
-          @user_delivery = UserDelivery.create(user_id: drink.user_id,
-                                                beer_id: drink.beer_id,
-                                                inventory_id: drink.inventory_id,
-                                                new_drink: drink.new_drink,
-                                                projected_rating: drink.projected_rating,
-                                                likes_style: drink.likes_style,
-                                                quantity: drink.quantity,
-                                                cellar: drink.cellar,
-                                                large_format: drink.large_format,
-                                                delivery_id: drink.delivery_id,
-                                                this_beer_descriptors: drink.this_beer_descriptors,
-                                                beer_style_name_one: drink.beer_style_name_one,
-                                                beer_style_name_two: drink.beer_style_name_two,
-                                                recommendation_rationale: drink.recommendation_rationale,
-                                                is_hybrid: drink.is_hybrid)
-          @user_delivery.save!
-          
-          # attach current drink cost and price to this drink
-          @user_delivery.update(drink_cost: drink.inventory.drink_cost, drink_price: drink.inventory.drink_price)
-          
-          # create array of for individual drink info
-          @subtotal = (drink.quantity * drink.inventory.drink_price)
-          @tax = (@subtotal * 0.096).round(2)
-          @total = (@subtotal + @tax)
-          
-          # add drink data to array for customer review email
-          @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                                      :drink => drink.beer.beer_name,
-                                      :drink_type => drink.beer.beer_type.beer_type_short_name,
-                                      :projected_rating => drink.projected_rating,
-                                      :format => drink.inventory.size_format.format_name,
-                                      :quantity => drink.quantity}).as_json
+          # find if drink is cellarable
+            if drink.cellar == true
+              @cellarable = "Yes"
+            else
+              @cellarable = "No"
+            end
+            
+          if @has_mates == false
+            # add drink data to array for customer review email
+            @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                            :drink => drink.beer.beer_name,
+                            :drink_type => drink.beer.beer_type.beer_type_short_name,
+                            :cellarable => @cellarable,
+                            :format => drink.size_format.format_name,
+                            :projected_rating => drink.user_deliveries.projected_rating,
+                            :quantity => drink.quantity}).as_json
+          else
+            @designated_users = UserDelivery.where(account_delivery_id: drink.id)
+            # add drink data to array for customer review email
+            @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                            :drink => drink.beer.beer_name,
+                            :drink_type => drink.beer.beer_type.beer_type_short_name,
+                            :cellarable => @cellarable,
+                            :format => drink.size_format.format_name,
+                            :users => 
+                            @designated_users.each do |user|
+                              { :name => user.user.first_name,
+                                :projected_rating => user.projected_rating,
+                                :quantity => user.quantity
+                              }
+                            end
+                            }).as_json
+          end
           # push this array into overall email array
           @email_drink_array << @drink_data
+          
         end
         #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
         # change status in delivery table
-        @customer_next_delivery = Delivery.find_by_id(customer_delivery.id)
+        @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
         @customer_next_delivery.update(status: "user review")
         
         # creat customer variable for email to customer
         @customer = User.find_by_id(@customer_next_delivery.user_id)
        
         # send email to customer for review
-        UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array, @total_quantity).deliver_now
+        UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates).deliver_now
       
       end # end of loop through each customer 
-
-    end # end of day of week test
-  
+      
+    end # end of check whether any customers need notice
+      
 end # end of share_admin_prep_with_customer task
 
 desc "update customers subscriptions"

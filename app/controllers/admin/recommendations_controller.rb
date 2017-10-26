@@ -294,7 +294,8 @@ class Admin::RecommendationsController < ApplicationController
                                                               cellar: @cellar,
                                                               large_format: @large_format,
                                                               delivery_id: @customer_next_delivery.id,
-                                                              drink_price: @inventory.drink_price)
+                                                              drink_price: @inventory.drink_price,
+                                                              size_format_id: @drink_recommendation.size_format_id)
         
         # update price in Delivery table
         @current_subtotal = @customer_next_delivery.subtotal
