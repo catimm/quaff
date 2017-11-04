@@ -9,7 +9,7 @@
 		<% end %>
 	</div>
 	<div class="col-xs-8 col-sm-8 no-padding drink-name-and-info-holder-universal">
-		<%= render 'layouts/delivered_drink_name_and_info', drink: drink %>	
+		<%= render 'layouts/delivered_drink_name_and_info_next_delivery', drink: drink %>	
 	</div>
 	<div class="col-xs-2 col-sm-2 no-padding">
 		<% if @account_users_count > 1 %>
@@ -43,27 +43,25 @@
 			<%= svg drink.size_format.image %>
 		</h5>
 	</div>
-	<div class="col-xs-4 no-padding">
+	<div class="col-xs-6 no-padding">
 		<h5 class="item-price" data-toggle="tooltip" title="Price includes tax">
 			<% @total_price = (drink.drink_price * 1.096) %>
 			<%= number_to_currency(@total_price, precision: 2) %> each
 		</h5>		
 	</div>
-	<div class="col-xs-3 no-padding text-right">
-		<h5 class="order-quantity">Qty: 
-			<span id="user-delivery-<%= drink.id %>"><%= drink.quantity.round %></span>
-		</h5>
+	<div class="col-xs-4 no-padding">
+		<h5 class="order-quantity">Qty: <sup data-toggle="tooltip" title="Quantity can be limited by current stock and/or high demand.">?</sup></h5>
+		<% @available_inventory = Inventory.where(beer_id: drink.beer_id).order('created_at desc').first %>
+		<% if !@available_inventory.blank? && !@available_inventory.limit_per.nil? %>
+			<% @end_quantity = @available_inventory.limit_per %>
+		<% else %>
+			<% @end_quantity = (@available_inventory.stock + drink.quantity.round) %>
+		<% end %>
+		<% @quantity_available = [*0..@end_quantity] %>
+		<%= select_tag('user_quantity_add', 
+						options_for_select(@quantity_available.map { |num| [num, num] }, drink.quantity.round),
+						class:"btn btn-success dropdown-toggle-user-change-quantity", 
+						id: "#{drink.id}") %>
 	</div>
-	<% if drink.inventory_limit == true %>
-		<div class="col-xs-1 delivery-quantity-add" id="user-delivery-add-<%= drink.id %>" data-toggle="tooltip" title="Add quantity">
-			<i class="fa fa-plus-circle"></i>
-		</div>
-	<% else %>
-		<div class="col-xs-1 delivery-quantity-add disabled" data-toggle="tooltip" title="Sorry, there are currently no more of this item available. Please let us know if you'd like more!">
-			<i class="fa fa-plus-circle"></i>
-		</div>
-	<% end %>
-	<div class="col-xs-1 delivery-quantity-subtract" id="user-delivery-minus-<%= drink.id %>" data-toggle="tooltip" title="Subtract quantity">
-		<i class="fa fa-minus-circle"></i>
-	</div>
+	
 </div>

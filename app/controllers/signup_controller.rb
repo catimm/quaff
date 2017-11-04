@@ -766,7 +766,11 @@ class SignupController < ApplicationController
       @next_delivery = Delivery.create(account_id: current_user.account_id, 
                                       delivery_date: @final_delivery_date,
                                       status: nil,
-                                      delivery_change_confirmation: false)
+                                      subtotal: 0,
+                                      sales_tax: 0,
+                                      total_price: 0,
+                                      delivery_change_confirmation: false,
+                                      share_admin_prep_with_user: false)
     end
     
     # find if customer already has a subscription (for early sign-up customers)

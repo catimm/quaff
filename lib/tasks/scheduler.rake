@@ -512,7 +512,7 @@ task :check_user_additions => :environment do
       end   
 end # of user addition task
 
-desc "Assess Drink Recommendations For Users"
+desc "Assess Drink Recommendations For Users" # step 1 of curation process
 task :assess_drink_recommendations => :environment do
     include UserLikesDrinkTypes
     include TypeBasedGuess
@@ -692,185 +692,105 @@ task :assess_drink_recommendations => :environment do
 
 end # end of assessing drink recommendations task
 
-desc "update user beer rating table"
-task :update_user_beer_ratings => :environment do
-  @drink_ratings_without_drink_id = UserBeerRating.where("beer_type_id IS ?", nil)
+desc "share admin drink prep with customers" # step 3 of curation process (step #2 is manual curation)
+task :share_admin_prep_with_customer => :environment do
+    # get customers who have drinks slated for delivery this week
+    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
     
-    @drink_ratings_without_drink_id.each do |rating|
-      # get drink type id
-      @drink_id = Beer.where(id: rating.beer_id).first
-      if !@drink_id.nil?
-        UserBeerRating.update(rating.id, beer_type_id: @drink_id.beer_type_id)
-      end
-    end # end of loop through each rating
-  
-end # end of update_user_beer_ratings task
-
-desc "Find Recent DB Additions"
-task :find_recent_additions => :environment do
-    # set admin emails to receive updates
-    @admin_emails = ["carl@drinkknird.com"]
-    
-    # set current Time
-    @now = Time.now
-    # get breweries added by users or locations in last 24 hours
-    @new_breweries = Brewery.where(created_at: (@now - 24.hours)..Time.now)
-    # get drinks added added by users or locations in last 24 hours
-    @new_drinks = Beer.where(created_at: (@now - 24.hours)..Time.now).where('touched_by_user IS NOT NULL OR touched_by_location IS NOT NULL')
-    
-    # create array to hold info new brewery info
-    @new_breweries_for_email = Array.new
-    
-    # prepare new brewery info for email
-    @new_breweries.each do |brewery|
-      this_brewery = brewery.brewery_name + "[id: " + brewery.id.to_s + "]" 
-      @new_breweries_for_email << this_brewery
-    end
-    #Rails.logger.debug("New breweries added: #{@new_breweries_for_email.inspect}")
-    # create array to hold info new drink info
-    @new_drinks_for_email = Array.new
-    
-    # prepare new brewery info for email
-    @new_drinks.each do |drink|
-      # get info about who added it
-      if drink.touched_by_user.nil?
-        @contributor = Location.find(drink.touched_by_location)
-        @contributor_name = @contributor.name
-        @conributor_id = drink.touched_by_location
-      else
-        @contributor = User.find(drink.touched_by_user)
-        @contributor_name = @contributor.username
-        @conributor_id = drink.touched_by_user
-      end
-      this_drink = drink.brewery.brewery_name + "[id: " + drink.brewery.id.to_s + "] " + drink.beer_name + "[id: " + drink.id.to_s + "] (added by: " + @contributor_name + "[id: " + @conributor_id.to_s + "])" 
-      @new_drinks_for_email << this_drink
-    end
-    #Rails.logger.debug("New drinks added: #{@new_drinks_for_email.inspect}")
-    # send admin emails with new drink additions
-    if !@new_breweries_for_email.nil? || !@new_drinks_for_email.nil?
-      @admin_emails.each do |admin_email|
-        AdminMailer.new_db_additions(admin_email, @new_breweries_for_email, @new_drinks_for_email).deliver_now
-      end
-    end
-end # end of assessing drink recommendations task
-
-desc "remind customers of Knird ratings during bi-week"
-task :top_of_mind_reminder => :environment do
-  # only run this code if today is Thursday
-    if Date.today.strftime("%A") == "Thursday"
-      # get all users who received a delivery last week
-      @last_week_deliveries = Delivery.where(delivery_date: 8.days.ago..6.days.ago, status: "delivered") 
-      
-      # make array to hold users who have not made changes
-      @user_with_few_ratings = Array.new
+    if !@accounts_with_deliveries.blank?
+      @accounts_with_deliveries.each do |account_delivery|
+        # find if the account has any other users
+        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 11).where.not(role_id: [1,4])
         
-      # cycle through each delivery still in review
-      @last_week_deliveries.each do |delivery|
-        # find if user has ratings in the last week
-        @customer_ratings = UserBeerRating.where(user_id: delivery.user_id).where('created_at >= ?', 1.week.ago)
-        @customer_ratings_count = @customer_ratings.count
-        
-        # send user an email if there are fewere than 3 ratings in the last week
-        if @customer_ratings_count < 3
-          # get user info
-          @customer = User.find_by_id(delivery.user_id)
-          # send email user
-          UserMailer.top_of_mind_reminder(@customer).deliver_now
+        if !@mates.blank?
+          @has_mates = true
+        else
+          @has_mates = false
         end
         
-      end # end of looping through each delivery in review
-       
-    end # end of day of week test
-  
-end # end of top_of_mind_reminder task
-
-desc "end user review reminder and send email if Wed"
-task :end_user_review_period_reminder => :environment do
-  # only run this code if today is Wednesday
-    if Date.today.strftime("%A") == "Wednesday"
-      # get all users currently reviewing the next delivery
-      @deliveries_in_review = Delivery.where(status: "user review") 
-      
-      # make array to hold users who have not made changes
-      @user_with_no_changes = Array.new
+        @next_delivery_plans = AccountDelivery.where(delivery_id: account_delivery.id)
         
-      # cycle through each delivery still in review
-      @deliveries_in_review.each do |delivery|
-        # find if user has made changes
-        @customer_changes = CustomerDeliveryChange.where(delivery_id: delivery.id)
-
-        if @customer_changes.blank?
-          # add user to array
-          @user_with_no_changes << delivery.user_id
-        end
+        # get total quantity of next delivery
+        @total_quantity = @next_delivery_plans.sum(:quantity)
         
-      end # end of looping through each delivery in review
-      
-      # loop through each user with no changes to send review reminder email
-      @user_with_no_changes.each do |user_id|
-        # get user info
-        @customer = User.find_by_id(user_id)
-        
-        # send email user
-        UserMailer.end_user_review_period_reminder(@customer).deliver_now
-      end
-       
-    end # end of day of week test
-  
-end # end of end_user_review_period_reminder task
-
-desc "end user reviews and send email if Wed"
-task :end_user_review_period => :environment do
-  # only run this code if today is Wednesday
-    if Date.today.strftime("%A") == "Wednesday"
-      # get all users currently reviewing the next delivery
-      @deliveries_in_review = Delivery.where(status: "user review") 
-      
-      # cycle through each delivery still in review
-      @deliveries_in_review.each do |delivery|
-        # get current list of drinks for delivery
-        @drink_list = UserDelivery.where(delivery_id: delivery.id)
-        
-        # get user info
-        @customer = User.find_by_id(delivery.user_id)
-          
         # create array of drinks for email
         @email_drink_array = Array.new
-        # grab change info and send email acknowledging change requests
-        @drink_list.each do |drink|
-          # add drink data to array for customer review email
-          @drink_list_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                                      :drink => drink.beer.beer_name,
-                                      :drink_type => drink.beer.beer_type.beer_type_short_name,
-                                      :quantity => drink.quantity}).as_json
+        
+        # put drinks in user_delivery table to share with customer
+        @next_delivery_plans.each_with_index do |drink, index|
+          # find if drinks is odd/even
+          if index.odd?
+            @odd = false # easier to make this backwards than change sparkpost email logic....
+          else  
+            @odd = true
+          end
+          # find if drink is cellarable
+            if drink.cellar == true
+              @cellarable = "Yes"
+            else
+              @cellarable = "No"
+            end
+            
+          if @has_mates == false
+            # add drink data to array for customer review email
+            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                            :drink => drink.beer.beer_name,
+                            :drink_type => drink.beer.beer_type.beer_type_short_name,
+                            :format => drink.size_format.format_name,
+                            :projected_rating => drink.user_deliveries.projected_rating,
+                            :quantity => drink.quantity,
+                            :odd => @odd}).as_json
+          else
+            @designated_users = UserDelivery.where(account_delivery_id: drink.id)
+            @drink_user_data = Array.new
+            @designated_users.each do |user|
+              @user_data = { :name => user.user.first_name,
+                                :projected_rating => user.projected_rating,
+                                :quantity => user.quantity
+                              }
+              # push array into user drink array
+              @drink_user_data << @user_data
+            end
+            # add drink data to array for customer review email
+            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                            :drink => drink.beer.beer_name,
+                            :drink_type => drink.beer.beer_type.beer_type_short_name,
+                            :format => drink.size_format.format_name,
+                            :users => @drink_user_data,
+                            :odd => @odd}).as_json
+          end
           # push this array into overall email array
-          @email_drink_array << @drink_list_data
-        end # end of loop through change reqeusts
+          @email_drink_array << @drink_account_data
           
-        # find if this user has made any change requests
-        @change_requests = CustomerDeliveryChange.where(delivery_id: delivery.id)
-        
-        # if change requests exist
-        if !@change_requests.blank?
-          
-          # send email to customer
-          UserMailer.customer_delivery_confirmation_with_changes(@customer, delivery, @email_drink_array).deliver_now
-        else
-          # send an email noting no change requests
-          UserMailer.customer_delivery_confirmation_no_changes(@customer, delivery, @email_drink_array).deliver_now
-          
-        end # end of check to see if change requests exist
-        
-        # now change the delivery status for the user
-        Delivery.update(delivery.id, status: "in progress")
-        
-      end # end of looping through each delivery in review
-    
-    end # end of day of week test
-  
-end # end of end_user_review_period task
+        end
+        #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
+        # get next delivery info
+        @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
 
-desc "admin user message check"
+        # creat customer variable for email to customer
+        @customers = User.where(account_id: @customer_next_delivery.account_id, getting_started_step: 11)
+       
+        # send email to each customer for review
+        @customers.each do |customer|
+          UserMailer.customer_delivery_review(customer, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates).deliver_now
+        end
+        
+        # update account status
+        @customer_next_delivery.update(status: "user review")
+        
+      end # end of loop through each account 
+      
+    end # end of check whether any customers need notice
+      
+end # end of share_admin_prep_with_customer task
+
+desc "user change confirmation" # Step 4 of curation is customer feedback; this sends confirmation in case of feedback
+task :user_change_confirmation => :environment do
+    
+  
+end # end of user_change_confirmation task
+
+desc "admin user message check" # Step 5 of curation notifies curator of any user messages/changes
 task :admin_user_message_check => :environment do
     # set run now to false
     @run_now = false
@@ -925,77 +845,169 @@ task :admin_user_message_check => :environment do
   
 end # end of admin_user_message_check task
 
-desc "user change confirmation"
-task :user_change_confirmation => :environment do
-    # set run now to false
-    @run_now = false
-    
-    # check if now is between Mon @1pm and Wed @1pm
-    if Date.today.strftime("%A") == "Monday" || Date.today.strftime("%A") == "Tuesday" || Date.today.strftime("%A") == "Wednesday"
-      # get current time
-      @time = Time.now
-      
-      if Date.today.strftime("%A") == "Monday" && @time.hour > 18      
-        #Rails.logger.debug("It's Mon")
-        @run_now = true
-      end
-      if Date.today.strftime("%A") == "Tuesday"
-        #Rails.logger.debug("It's Tue")
-        @run_now = true
-      end
-      if Date.today.strftime("%A") == "Wednesday" && @time.hour < 19
-        #Rails.logger.debug("It's Wed")
-        @run_now = true
-      end
-    end
-    
-    # run code if it is between Mon @1pm and Wed @1pm
-    if @run_now
-      #Rails.logger.debug("It's Running")
+desc "end user review reminder and send email" # Step 6 of curation sends user reminder that their chance to provide feedback is ending
+task :end_user_review_period_reminder => :environment do
+  # only run this code if today is Wednesday
+    if Date.today.strftime("%A") == "Wednesday"
       # get all users currently reviewing the next delivery
-      @deliveries_in_review = Delivery.where(status: "user review", delivery_change_confirmation: [false, nil])
+      @deliveries_in_review = Delivery.where(status: "user review") 
       
+      # make array to hold users who have not made changes
+      @user_with_no_changes = Array.new
+        
+      # cycle through each delivery still in review
       @deliveries_in_review.each do |delivery|
-        # get all user changes made
-        @delivery_changes = CustomerDeliveryChange.where(user_id: delivery.user_id, change_noted: [false, nil])
+        # find if user has made changes
+        @customer_changes = CustomerDeliveryChange.where(delivery_id: delivery.id)
+
+        if @customer_changes.blank?
+          # add user to array
+          @user_with_no_changes << delivery.user_id
+        end
+        
+      end # end of looping through each delivery in review
       
-        # create array of drinks for email
-        @changes_noted_array = Array.new
-    
-        # if change requests exist
-        if !@delivery_changes.blank?
-          # get customer info
-          @customer = User.find_by_id(delivery.user_id)
+      # loop through each user with no changes to send review reminder email
+      @user_with_no_changes.each do |user_id|
+        # get user info
+        @customer = User.find_by_id(user_id)
+        
+        # send email user
+        UserMailer.end_user_review_period_reminder(@customer).deliver_now
+      end
+       
+    end # end of day of week test
+  
+end # end of end_user_review_period_reminder task
+
+desc "end user reviews and send email if Wed" # Step 7 of curation ends the feedback period so drinks can be prepared for delivery
+task :end_user_review_period => :environment do
+  # only run this code if today is Wednesday
+    if Date.today.strftime("%A") == "Wednesday"
+      # get all users currently reviewing the next delivery
+      @deliveries_in_review = Delivery.where(status: "user review") 
+      
+      # cycle through each delivery still in review
+      @deliveries_in_review.each do |delivery|
+        # get current list of drinks for delivery
+        @drink_list = UserDelivery.where(delivery_id: delivery.id)
+        
+        # get user info
+        @customer = User.find_by_id(delivery.user_id)
           
-          # grab change info and send email acknowledging change requests
-          @delivery_changes.each do |change|
-            # add drink data to array for customer review email
-            @changed_drink_data = ({:maker => change.beer.brewery.short_brewery_name,
-                                        :drink => change.beer.beer_name,
-                                        :drink_type => change.beer.beer_type.beer_type_short_name,
-                                        :original_quantity => change.original_quantity,
-                                        :new_quantity => change.new_quantity}).as_json
-            # push this array into overall email array
-            @changes_noted_array << @changed_drink_data
-            
-            # update change to indicate it has been noted
-            CustomerDeliveryChange.update(change.id, change_noted: true)
-            
-          end # end of loop through change reqeusts
+        # create array of drinks for email
+        @email_drink_array = Array.new
+        # grab change info and send email acknowledging change requests
+        @drink_list.each do |drink|
+          # add drink data to array for customer review email
+          @drink_list_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                                      :drink => drink.beer.beer_name,
+                                      :drink_type => drink.beer.beer_type.beer_type_short_name,
+                                      :quantity => drink.quantity}).as_json
+          # push this array into overall email array
+          @email_drink_array << @drink_list_data
+        end # end of loop through change reqeusts
+          
+        # find if this user has made any change requests
+        @change_requests = CustomerDeliveryChange.where(delivery_id: delivery.id)
+        
+        # if change requests exist
+        if !@change_requests.blank?
           
           # send email to customer
-          UserMailer.customer_change_confirmation(@customer, delivery, @changes_noted_array).deliver_now
+          UserMailer.customer_delivery_confirmation_with_changes(@customer, delivery, @email_drink_array).deliver_now
+        else
+          # send an email noting no change requests
+          UserMailer.customer_delivery_confirmation_no_changes(@customer, delivery, @email_drink_array).deliver_now
           
-          # update delivery to show a change confirmation email was sent
-          Delivery.update(delivery.id, delivery_change_confirmation: true)
-          
-        end # end of check to make sure changes exist
-
-      end # end of loop through each customer delivery info
-
-    end # end of day check
+        end # end of check to see if change requests exist
+        
+        # now change the delivery status for the user
+        Delivery.update(delivery.id, status: "in progress")
+        
+      end # end of looping through each delivery in review
+    
+    end # end of day of week test
   
-end # end of user_change_confirmation task
+end # end of end_user_review_period task
+
+desc "remind customers of Knird ratings during bi-week" # reminds customers to rate drinks so we get feedback
+task :top_of_mind_reminder => :environment do
+  # only run this code if today is Thursday
+    if Date.today.strftime("%A") == "Thursday"
+      # get all users who received a delivery last week
+      @last_week_deliveries = Delivery.where(delivery_date: 8.days.ago..6.days.ago, status: "delivered") 
+      
+      # make array to hold users who have not made changes
+      @user_with_few_ratings = Array.new
+        
+      # cycle through each delivery still in review
+      @last_week_deliveries.each do |delivery|
+        # find if user has ratings in the last week
+        @customer_ratings = UserBeerRating.where(user_id: delivery.user_id).where('created_at >= ?', 1.week.ago)
+        @customer_ratings_count = @customer_ratings.count
+        
+        # send user an email if there are fewere than 3 ratings in the last week
+        if @customer_ratings_count < 3
+          # get user info
+          @customer = User.find_by_id(delivery.user_id)
+          # send email user
+          UserMailer.top_of_mind_reminder(@customer).deliver_now
+        end
+        
+      end # end of looping through each delivery in review
+       
+    end # end of day of week test
+  
+end # end of top_of_mind_reminder task
+
+desc "Find Recent DB Additions" # to let curation admin know what drinks have been added to the DB
+task :find_recent_additions => :environment do
+    # set admin emails to receive updates
+    @admin_emails = ["carl@drinkknird.com"]
+    
+    # set current Time
+    @now = Time.now
+    # get breweries added by users or locations in last 24 hours
+    @new_breweries = Brewery.where(created_at: (@now - 24.hours)..Time.now)
+    # get drinks added added by users or locations in last 24 hours
+    @new_drinks = Beer.where(created_at: (@now - 24.hours)..Time.now).where('touched_by_user IS NOT NULL OR touched_by_location IS NOT NULL')
+    
+    # create array to hold info new brewery info
+    @new_breweries_for_email = Array.new
+    
+    # prepare new brewery info for email
+    @new_breweries.each do |brewery|
+      this_brewery = brewery.brewery_name + "[id: " + brewery.id.to_s + "]" 
+      @new_breweries_for_email << this_brewery
+    end
+    #Rails.logger.debug("New breweries added: #{@new_breweries_for_email.inspect}")
+    # create array to hold info new drink info
+    @new_drinks_for_email = Array.new
+    
+    # prepare new brewery info for email
+    @new_drinks.each do |drink|
+      # get info about who added it
+      if drink.touched_by_user.nil?
+        @contributor = Location.find(drink.touched_by_location)
+        @contributor_name = @contributor.name
+        @conributor_id = drink.touched_by_location
+      else
+        @contributor = User.find(drink.touched_by_user)
+        @contributor_name = @contributor.username
+        @conributor_id = drink.touched_by_user
+      end
+      this_drink = drink.brewery.brewery_name + "[id: " + drink.brewery.id.to_s + "] " + drink.beer_name + "[id: " + drink.id.to_s + "] (added by: " + @contributor_name + "[id: " + @conributor_id.to_s + "])" 
+      @new_drinks_for_email << this_drink
+    end
+    #Rails.logger.debug("New drinks added: #{@new_drinks_for_email.inspect}")
+    # send admin emails with new drink additions
+    if !@new_breweries_for_email.nil? || !@new_drinks_for_email.nil?
+      @admin_emails.each do |admin_email|
+        AdminMailer.new_db_additions(admin_email, @new_breweries_for_email, @new_drinks_for_email).deliver_now
+      end
+    end
+end # end of task to find recent drink addition to DB
 
 desc "update user supply projected ratings"
 task :update_supply_projected_ratings => :environment do
@@ -1028,86 +1040,6 @@ task :update_supply_projected_ratings => :environment do
     end # end of loop through each user to update projected ratings
   
 end # end of update_supply_projected_ratings task
-
-desc "share admin drink prep with customers"
-task :share_admin_prep_with_customer => :environment do
-    # get customers who have drinks slated for delivery this week
-    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
-    
-    if !@accounts_with_deliveries.blank?
-      @accounts_with_deliveries.each do |account_delivery|
-        # find if the account has any other users
-        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 11).where.not(role_id: [1,4])
-        
-        if !@mates.blank?
-          @has_mates = true
-        else
-          @has_mates = false
-        end
-        
-        @next_delivery_plans = AccountDelivery.where(delivery_id: account_delivery.id).order('projected_rating DESC')
-        
-        # get total quantity of next delivery
-        @total_quantity = @next_delivery_plans.sum(:quantity)
-        
-        # create array of drinks for email
-        @email_drink_array = Array.new
-        
-        # put drinks in user_delivery table to share with customer
-        @next_delivery_plans.each do |drink|
-          # find if drink is cellarable
-            if drink.cellar == true
-              @cellarable = "Yes"
-            else
-              @cellarable = "No"
-            end
-            
-          if @has_mates == false
-            # add drink data to array for customer review email
-            @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                            :drink => drink.beer.beer_name,
-                            :drink_type => drink.beer.beer_type.beer_type_short_name,
-                            :cellarable => @cellarable,
-                            :format => drink.size_format.format_name,
-                            :projected_rating => drink.user_deliveries.projected_rating,
-                            :quantity => drink.quantity}).as_json
-          else
-            @designated_users = UserDelivery.where(account_delivery_id: drink.id)
-            # add drink data to array for customer review email
-            @drink_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                            :drink => drink.beer.beer_name,
-                            :drink_type => drink.beer.beer_type.beer_type_short_name,
-                            :cellarable => @cellarable,
-                            :format => drink.size_format.format_name,
-                            :users => 
-                            @designated_users.each do |user|
-                              { :name => user.user.first_name,
-                                :projected_rating => user.projected_rating,
-                                :quantity => user.quantity
-                              }
-                            end
-                            }).as_json
-          end
-          # push this array into overall email array
-          @email_drink_array << @drink_data
-          
-        end
-        #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
-        # change status in delivery table
-        @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
-        @customer_next_delivery.update(status: "user review")
-        
-        # creat customer variable for email to customer
-        @customer = User.find_by_id(@customer_next_delivery.user_id)
-       
-        # send email to customer for review
-        UserMailer.customer_delivery_review(@customer, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates).deliver_now
-      
-      end # end of loop through each customer 
-      
-    end # end of check whether any customers need notice
-      
-end # end of share_admin_prep_with_customer task
 
 desc "update customers subscriptions"
 task :update_customer_subscriptions => :environment do
@@ -1183,3 +1115,18 @@ task :update_customer_subscriptions => :environment do
     end # end loop through expiring customers
   
 end # end of update_customer_subscriptions task
+
+
+desc "update user beer rating table"
+task :update_user_beer_ratings => :environment do
+  @drink_ratings_without_drink_id = UserBeerRating.where("beer_type_id IS ?", nil)
+    
+    @drink_ratings_without_drink_id.each do |rating|
+      # get drink type id
+      @drink_id = Beer.where(id: rating.beer_id).first
+      if !@drink_id.nil?
+        UserBeerRating.update(rating.id, beer_type_id: @drink_id.beer_type_id)
+      end
+    end # end of loop through each rating
+  
+end # end of update_user_beer_ratings task

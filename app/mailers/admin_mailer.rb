@@ -321,4 +321,31 @@ class AdminMailer < ActionMailer::Base
     p response
     
   end # end of disti_inventory_import_email
+  
+  def admin_disti_drink_order(disti, disti_order, admin_email, admin_name)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
+      ],
+      content: {
+        template_id: 'admin-disti-drink-order'
+      },
+      substitution_data: {
+        admin_name: admin_name,
+        disti_name: disti.disti_name,
+        contact_name: disti.contact_name,
+        contact_email: disti.contact_email,
+        contact_phone: disti.contact_phone,
+        order: disti_order
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+          
+  end # end of admin_disti_drink_order email
 end

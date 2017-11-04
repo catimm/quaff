@@ -19,14 +19,18 @@
 #  min_quantity        :integer
 #  regular_case_cost   :decimal(5, 2)
 #  sale_case_cost      :decimal(5, 2)
+#  disti_inventory_id  :integer
 #
 
 class Inventory < ActiveRecord::Base
   belongs_to :beer
   belongs_to :size_format
+  belongs_to :disti_inventory
   
   has_many :account_deliveries
   has_many :admin_account_deliveries
+  has_many :disti_orders
+  has_many :inventory_transactions
   
   #scope small cooler drinks
   scope :small_cooler_drinks, -> { 
@@ -54,12 +58,12 @@ class Inventory < ActiveRecord::Base
   
   # scope all inventory stock 
   scope :in_stock, -> { 
-    where("stock >= ?", 1)
+    where("stock > ?", 0)
   }
   
   # scope inventory stock 
   scope :packaged_in_stock, -> { 
-    where("stock >= ?", 1).
+    where("stock > ?", 0).
     where("inventories.size_format_id <= ?", 5)
   }
   
@@ -109,7 +113,7 @@ class Inventory < ActiveRecord::Base
     in_stock.
     joins(:beer).
     group('beers.brewery_id').
-    select('beers.brewery_id as brewery_id, inventories.count as inventory_number')
+    select('brewery_id as brewery_id, beers.breweries.short_brewery_name as brewery_name')
   }
   
 end

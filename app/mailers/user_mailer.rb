@@ -152,7 +152,7 @@ class UserMailer < ActionMailer::Base
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     @review_date = (delivery_info.delivery_date - 1.day)
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
-    Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
+    #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
     payload  = {
       recipients: [
         {

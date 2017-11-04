@@ -76,7 +76,7 @@ class ReloadsController < ApplicationController
           @email_drink_array << @drink_account_data
           
         end
-        Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
+        #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
         # get next delivery info
         @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
 
@@ -95,6 +95,7 @@ class ReloadsController < ApplicationController
       
     end # end of check whether any customers need notice
     
+      
     #@early_signup_customers = User.where.not(tpw: nil)
     #Rails.logger.debug("Early signup customers: #{@early_signup_customers.inspect}")
     

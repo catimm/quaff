@@ -1,0 +1,59 @@
+<% orders.each do |order| %>
+	<div class="col-xs-12 col-md-3 no-padding">
+		<div class="row process-disti-inventory-form">
+			<% @inventory = Inventory.find_by_id(order.inventory_id) %>
+				<%= simple_form_for(@inventory, :url => process_disti_inventory_path, remote: true) do |inventory| %>
+					<%= inventory.hidden_field :id, :value => order.inventory_id %>
+					<%= inventory.hidden_field :disti_order_id, :value => order.id %>
+					<div class="col-xs-12 disti-process-form-drink-name">
+						<h4><%= @inventory.beer.brewery.short_brewery_name %> <%= @inventory.beer.beer_name %></h4>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="size_format_id_field" class="control-label">Format</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory. collection_select(:size_format_id, SizeFormat.all, :id, :format_name, {:selected => @inventory.size_format_id, prompt: "Change format"}, {class: "form-control", required: true}) %>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="sale_case_cost_field" class="control-label">Case $</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory.input :sale_case_cost, input_html: { class: "form-control", id: "sale_case_cost_field" }, placeholder: "Current Case Cost", label: false, required: true %>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="min_quantity_field" class="control-label">Drink #</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory.input :min_quantity, input_html: { class: "form-control", id: "min_quantity_field" }, placeholder: "Quantity to add", label: false, required: true %>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="drink_cost_field" class="control-label">Drink cost</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory.input :drink_cost, input_html: { class: "form-control", id: "drink_cost_field" }, placeholder: "Drink cost", label: false, required: true %>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="drink_price_field" class="control-label">Drink price</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory.input :drink_price, input_html: { class: "form-control", id: "drink_price_field" }, placeholder: "Drink price", label: false, required: true %>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="limit_per_field" class="control-label">Limits?</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory.input :limit_per, input_html: { class: "form-control", id: "limit_per_field" }, placeholder: "Any limits?", label: false %>
+					</div>
+					<div class="col-xs-6 no-padding-right">
+						<label for="currently_available_field" class="control-label">Make available?</label>
+					</div>
+					<div class="col-xs-6">
+						<%= inventory.check_box :currently_available %>
+					</div>
+					<div class="col-xs-offset-1 col-xs-10">
+						<%= inventory.submit "Update", class: "btn btn-success formButton-draft-edit" %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	<% end %>

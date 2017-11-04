@@ -7,13 +7,13 @@
 		<div class="col-xs-12 col-sm-8">
 			<div class="row">
 				<div class="col-xs-4">
-					<%= link_to "Current Inventory", admin_disti_inventories_path, class: "drink-preference-view-option current" %>
+					<%= link_to "Current Inventory", admin_disti_inventory_path(1), class: "drink-preference-view-option current" %>
 				</div>
 				<div class="col-xs-4">
 					<%= link_to "Change Inventory", admin_disti_inventories_change_path, class: "drink-preference-view-option" %>
 				</div>
 				<div class="col-xs-4">
-					<%= link_to "Orders in Process", admin_disti_orders_path, class: "drink-preference-view-option" %>
+					<%= link_to "Orders in Process", admin_disti_orders_path(1), class: "drink-preference-view-option" %>
 				</div>
 			</div>
 		</div>
@@ -22,33 +22,17 @@
 <div class="row no-margin">
 	<div class="container">
 		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h3 class="recent-ratings-header">Current Inventory</h3>
+			<div class="col-xs-12 no-padding-right">
+				<div class="col-xs-12 col-sm-6 text-left no-padding">
+					<h3>Current Inventory for <%= @distributor.disti_name %></h3>
+				</div>
+				<div class="col-xs-offset-1 col-xs-10 col-sm-3">
+					<%= collection_select("distributor_list", :distributor_id, Distributor.all, :id, :disti_name, {prompt: "Change distributor view"}, {class: "form-control disti-current-inventory"}) %>
+				</div>
 			</div>
 		</div>
-		<% @distis.each do |disti| %>
-			<% @all_disti_inventory = DistiInventory.where(distributor_id: disti.id).select('distinct on (beer_id) *') %>
+		<div class="row no-margin">
 			<% if !@all_disti_inventory.blank? %>
-				<% @inventory_ready_for_curation = @all_disti_inventory.where(curation_ready: true) %>
-				<% @inventory_not_ready_for_curation = @all_disti_inventory.where(curation_ready: false) %>
-			<% else %>
-				<% @inventory_ready_for_curation = nil %>
-				<% @inventory_not_ready_for_curation = nil %>
-			<% end %>
-			<div class="row no-margin">
-				<div class="col-xs-2 col-sm-1">
-					<div class="inventory-view show text-center" id="plus">
-						<h6><i class="fa fa-plus"></i></h6>
-					</div>
-					<div class="inventory-view hidden text-center" id="minus">
-						<h6><i class="fa fa-minus"></i></h4>
-					</div>				
-				</div>
-				<div class="col-xs-10 col-sm-11 no-padding-left">
-					<h4 class="disti-name-header"><%= disti.disti_name %></h4>
-				</div>
-			</div>
-			<div class="row no-margin hidden">
 				<% if !@inventory_ready_for_curation.blank? %>
 					<div class="row no-margin">
 						<div class="col-xs-2 col-sm-1">
@@ -135,15 +119,14 @@
 						</div>
 					</div>
 				<% end %>
-				<% if @inventory_ready_for_curation.blank? && @inventory_not_ready_for_curation.blank? %>
-					<div class="row no-margin">
-						<div class="col-xs-12">
-							<h6>Nothing to see here, folks</h6>
-						</div>
+			<% else %>
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<h4>No drinks available yet.</h4>
 					</div>
-				<% end %>
-			</div>
-		<% end %>
+				</div>
+			<% end %>
+		</div>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

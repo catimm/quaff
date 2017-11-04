@@ -13,5 +13,10 @@
 class InventoryTransaction < ActiveRecord::Base
   belongs_to :account_delivery
   belongs_to :inventory
-
+  
+  # scope order beers by name for inventory management
+  scope :account_delivery_inventory, ->(account_delivery_id) {
+    where(account_delivery_id: account_delivery_id).
+    joins(:inventory).order('created_at desc').first
+  }
 end

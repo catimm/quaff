@@ -142,38 +142,19 @@ $(function () {
 		}
 	});
 	
-	$(document).on("click", ".delivery-quantity-add", function() {
+	$(document).on("change", ".dropdown-toggle-user-change-quantity", function() {
 		// get drink id
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		// attach new id
-		$('#add_drink_confirmation')
-			.children('.modal-body')
-			.children('.add-button-holder')
-			.children('a')
-			.attr('href', "/drinks/change_delivery_drink_quantity/add-" + drink_id);
-
-		// show modal
-	    $('#add_drink_confirmation').modal('show');
-
-	});
-	
-	$(document).on("click", ".delivery-quantity-subtract", function() {
-		// get drink id
-		var this_id = $(this).attr('id');
-		var split_id = this_id.split("-");
-		var drink_id = split_id[3];
-		// attach new id
-		$('#remove_drink_confirmation')
-			.children('.modal-body')
-			.children('.remove-button-holder')
-			.children('a')
-			.attr('href', "/drinks/change_delivery_drink_quantity/subtract-" + drink_id);
-
-		// show modal
-	    $('#remove_drink_confirmation').modal('show');
-
+		var account_delivery_id = $(this).attr('id');
+		// get quantity
+		var drink_quantity = $(this).val();
+		
+		// send to controller
+		$.ajax({
+			type: "GET",
+			url: "/drinks/change_delivery_drink_quantity/" + account_delivery_id + "-" + drink_quantity
+		});
+		
+		
 	});
 	
 	// change cellar drink quantity

@@ -56,7 +56,12 @@
 							<% @end_quantity = drink[1][0].inventory.limit_per %>
 						<% else %>
 							<% if drink[1][0].disti_inventory_id != nil %>
-								<% @end_quantity = 24 %>
+								<% @currently_available = DistiInventory.find_by_id(drink[1][0].disti_inventory_id) %>
+								<% if @currently_available.currently_available == true %>
+									<% @end_quantity = 24 %>
+								<% else %>
+									<% @end_quantity = (drink[1][0].inventory.stock + @this_current_quantity.quantity) %>
+								<% end %>
 							<% else %>
 								<% @end_quantity = (drink[1][0].inventory.stock + @this_current_quantity.quantity) %>
 							<% end %>

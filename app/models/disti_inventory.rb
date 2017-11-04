@@ -23,4 +23,6 @@ class DistiInventory < ActiveRecord::Base
   belongs_to :size_format
   belongs_to :distributor
   
+  has_many :inventories
+  
 end

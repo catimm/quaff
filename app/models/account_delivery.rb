@@ -42,11 +42,12 @@ class AccountDelivery < ActiveRecord::Base
   
   # method for inventory limits
   def inventory_limit
-    if self.inventory.limit_per.nil? && self.inventory.stock > 0
+    @this_inventory = self.inventory_transactions.joins(:inventory).in_stock
+    if @this_inventory.limit_per.nil? && self.inventory.stock > 0
       return true
     else
-      if self.inventory.stock > 0 
-        if self.quantity < self.inventory.limit_per
+      if self.inventory_transactions.inventory.stock > 0 
+        if self.quantity < self.inventory_transactions.inventory.limit_per
           return true
         else
           return false

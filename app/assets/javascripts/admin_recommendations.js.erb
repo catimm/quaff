@@ -3,11 +3,10 @@ $(function() {
 	// add logic to filter in stock table based on admin choice 
 	$(document).on('change', '.user-list-for-recommendation', function () {
 		var user_id = $(this).val();
-		var this_view = $(this).attr('id');
 		
 		$.ajax({
 		  type: "GET",
-		  url: "/admin/recommendations/change_user_view/" + user_id + "-" + this_view
+		  url: "/admin/recommendations/change_user_view/" + user_id
 		});
 	});
 	

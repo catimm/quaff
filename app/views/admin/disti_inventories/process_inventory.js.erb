@@ -1,0 +1,3 @@
+$(function() {
+	$("#disti-order-row-holder").html("<%= escape_javascript(render 'disti_order_processing_form', orders: @current_disti_orders) %>");
+});

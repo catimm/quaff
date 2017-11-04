@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171020231321) do
+ActiveRecord::Schema.define(version: 20171027191038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -332,6 +332,14 @@ ActiveRecord::Schema.define(version: 20171020231321) do
     t.boolean  "curation_ready"
   end
 
+  create_table "disti_orders", force: :cascade do |t|
+    t.integer  "distributor_id"
+    t.integer  "inventory_id"
+    t.integer  "case_quantity_ordered"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "distributors", force: :cascade do |t|
     t.string   "disti_name"
     t.string   "contact_name"
@@ -387,6 +395,7 @@ ActiveRecord::Schema.define(version: 20171020231321) do
     t.integer  "min_quantity"
     t.decimal  "regular_case_cost",   precision: 5, scale: 2
     t.decimal  "sale_case_cost",      precision: 5, scale: 2
+    t.integer  "disti_inventory_id"
   end
 
   create_table "inventory_transactions", force: :cascade do |t|
