@@ -3,6 +3,26 @@ class SignupController < ApplicationController
   include DeliveryEstimator
   require "stripe"
   
+  def delivery_address_getting_started
+    @user = current_user
+    @subguide = "user_info"
+
+    if @user.getting_started_step < 2
+      @user.update(getting_started_step: 2)
+    end
+
+    @user_address = UserAddress.new
+    
+    # set additional data
+    @account_id = params[:format]
+    @header = "Add a new"
+
+    #set guide view
+    @user_chosen = 'current'
+    @user_personal_info_chosen = 'complete'
+    @user_delivery_address_chosen = 'current'
+  end
+
   def home_address_getting_started
     # get user info
     @user = current_user
