@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171027191038) do
+ActiveRecord::Schema.define(version: 20171108225318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -249,6 +249,8 @@ ActiveRecord::Schema.define(version: 20171027191038) do
     t.boolean  "customer_has_previous_packaging"
     t.text     "final_delivery_notes"
     t.boolean  "share_admin_prep_with_user"
+    t.boolean  "recipient_is_21_plus"
+    t.datetime "delivered_at"
   end
 
   create_table "delivery_preferences", force: :cascade do |t|

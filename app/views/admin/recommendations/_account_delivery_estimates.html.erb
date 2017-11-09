@@ -1,10 +1,10 @@
 <div class="row no-margin">
 	<div class="col-xs-2 col-sm-1 admin-user-identity">
 		<% if @mates.blank? %>
-			<% if @user.user_graphic.nil? %>
-				<%= render 'layouts/user_initials_small', friend: @user %>
+			<% if @account_owner[0].user_graphic.nil? %>
+				<%= render 'layouts/user_initials_small', friend: @account_owner[0] %>
 			<% else %>
-				<%= render 'layouts/user_graphic_small', friend: @user %>
+				<%= render 'layouts/user_graphic_small', friend: @account_owner[0] %>
 			<% end %>
 			<h5><b><%= @user_identification_array[0]["identity"] %> </b></h5>
 		<% else %>

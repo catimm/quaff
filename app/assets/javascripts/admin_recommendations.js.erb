@@ -2,11 +2,22 @@ $(function() {
 	
 	// add logic to filter in stock table based on admin choice 
 	$(document).on('change', '.user-list-for-recommendation', function () {
-		var user_id = $(this).val();
+		var account_id = $(this).val();
 		
 		$.ajax({
 		  type: "GET",
-		  url: "/admin/recommendations/change_user_view/" + user_id
+		  url: "/admin/recommendations/change_user_view/" + account_id
+		});
+	});
+	
+	// add logic to filter in stock table based on delivery date choice 
+	$(document).on('change', '.delivery-list-for-recommendation', function () {
+		var account_id = $(".user-list-for-recommendation").val();
+		var delivery_id = $(this).val();
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/change_delivery_view/" + account_id + "-" + delivery_id
 		});
 	});
 	
@@ -15,9 +26,9 @@ $(function() {
 		var this_id = $(this).attr('id');
 		var order_quantity = $(this).val();
 		var split_id = this_id.split("-");
-		var user_recommendation_id = split_id[0];
-		var number_of_users = split_id[1];
-		var first_user_id = split_id[2];
+		var delivery_id = split_id[0];
+		var user_recommendation_id = split_id[1];
+		var number_of_users = split_id[2];
 		var drink_id = split_id[3];
 		
 		// enable checkboxes for each user if more than one user
@@ -27,7 +38,7 @@ $(function() {
 		
 		$.ajax({
 		  type: "GET",
-		  url: "/admin/recommendations/admin_account_delivery/" + order_quantity + "-" + user_recommendation_id + "-" + number_of_users + "-" + first_user_id
+		  url: "/admin/recommendations/admin_account_delivery/" + order_quantity + "-" + delivery_id + "-" + user_recommendation_id
 		});
 	});
 	

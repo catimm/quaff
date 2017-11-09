@@ -19,6 +19,7 @@
 		      <th>Cellarable</th>
 		      <th>Old Quantity</th>
 		      <th>New Quantity</th>
+		      <th>Changed</th>
 			</tr>
 			<% @customer_drink_changes.each do |drink| %>
 		    	<tr>
@@ -32,6 +33,7 @@
 			        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 			        <td><%= drink.original_quantity %></td>
 			        <td><%= drink.new_quantity %></td>
+			        <td><%= (drink.created_at).strftime("%-m/%-d/%Y @ %H:%M") %></td>
         		</tr>
         	<% end %>
 		</table>	      

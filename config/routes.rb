@@ -252,6 +252,7 @@ Rails.application.routes.draw do
   # admin recommendation routes
   get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
   get 'admin/recommendations/change_user_view/:id' => 'admin/recommendations#change_user_view'
+  get 'admin/recommendations/change_delivery_view/:id' => 'admin/recommendations#change_delivery_view'
   get 'admin/recommendations/change_delivery_drink_quantity/:id' => 'admin/recommendations#change_delivery_drink_quantity', :as => 'admin_change_delivery_drink_quantity'
   get 'admin/recommendations/admin_user_delivery/:id' => 'admin/recommendations#admin_user_delivery', :as =>'admin_user_delivery'
   get 'admin/recommendations/admin_user_feedback/:id' => 'admin/recommendations#admin_user_feedback', :as =>'admin_user_feedback'
@@ -259,6 +260,7 @@ Rails.application.routes.draw do
   get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
   post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
   post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
+  get 'admin/fulfillment/fulfillment_review_delivery/:id' => 'admin/fulfillment#fulfillment_review_delivery', :as =>'fulfillment_review_delivery'
   
   # admin inventory routes
   namespace :admin do

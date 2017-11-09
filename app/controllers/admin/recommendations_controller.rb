@@ -2,36 +2,53 @@ class Admin::RecommendationsController < ApplicationController
   before_filter :verify_admin
   helper_method :sort_column, :sort_direction
   require 'json'
+  #require 'date'
 
   def show
-    # get url/id info
-    @account_id = params[:id]
+    # get account and delivery info
+    @account_id = params[:id].to_i
+    @chosen_delivery_id = params[:format]
     
-    # get account owner user id
-    @account_owner_user_id = User.where(account_id: @account_id, role_id: [1,4]).pluck(:id)
-    
-    # get unique customer names for select dropdown
-    @customer_ids = Delivery.uniq.pluck(:account_id)
-    
+    # get all account ids where account is currently active
+    @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
+
+    #set current account
+    if @account_id == 0
+      @current_account_id = @active_account_ids.first
+    else
+      @current_account_id = @account_id
+    end
+
     # get account owner info
-    @user = User.find_by_id(@account_owner_user_id)
+    @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
     
-    # get next delivery date
-    @customer_next_delivery = Delivery.where(account_id: @account_id).where.not(status: "delivered").first
+    # get all delivery dates for chosen account for last few months and next month
+    @customer_delivery_dates = Delivery.where(account_id: @current_account_id, delivery_date: (3.months.ago)..(5.weeks.from_now)).pluck(:delivery_date)
     
+    # get chosen delivery date
+    if @chosen_delivery_id.nil?
+      @customer_next_delivery = Delivery.where(account_id: @current_account_id).where("delivery_date > ?", Date.today).order("delivery_date").first
+    else
+      @customer_next_delivery = Delivery.find_by_id(@chosen_delivery_id)
+    end
+    
+    # show correct view if delivery is past point of adjustments
+    if @customer_next_delivery.status == "in progress" || @customer_next_delivery.status == "delivered"
+      @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
+    end
     # find if the account has any other users
-    @mates = User.where(account_id: @account_id, getting_started_step: 11).where.not(id: @user.id)
+    @mates = User.where(account_id: @current_account_id, getting_started_step: 11).where.not(id: @account_owner[0].id)
     
     # set users to get relevant delivery info
     if !@mates.blank?
-      @users = User.where(account_id: @account_id, getting_started_step: 11)
+      @users = User.where(account_id: @current_account_id, getting_started_step: 11)
     else
-      @users = User.where(id: @account_owner_user_id)
+      @users = @account_owner
     end
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
-    @next_account_delivery = AccountDelivery.where(account_id: @account_id, 
+    @next_account_delivery = AccountDelivery.where(account_id: @current_account_id, 
                                                         delivery_id: @customer_next_delivery.id)
                                                             
     # get relevant delivery info
@@ -117,7 +134,7 @@ class Admin::RecommendationsController < ApplicationController
     @customer_messages = CustomerDeliveryMessage.where(delivery_id: @customer_next_delivery.id)
       
     # get recommended drinks by user
-    @drink_recommendations = UserDrinkRecommendation.where(account_id: @account_id).group_by(&:beer_id)
+    @drink_recommendations = UserDrinkRecommendation.where(account_id: @current_account_id).group_by(&:beer_id)
     
     # find if drink has order limitations and if so what they are
     @drink_recommendations.each do |drink|
@@ -143,17 +160,26 @@ class Admin::RecommendationsController < ApplicationController
   def change_user_view
     # redirect back to recommendation page                                             
     render js: "window.location = '#{admin_recommendation_path(params[:id])}'"
-
   end # end of change_user_view
+  
+  def change_delivery_view
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @account_id = @data_split[0].to_i
+    @delivery_id = @data_split[1].to_i
+    
+    # redirect back to recommendation page                                             
+    render js: "window.location = '#{admin_recommendation_path(@account_id, @delivery_id)}'"
+
+  end # end of change_delivery_view
   
   def admin_account_delivery
     @data = params[:id]
     @data_split = @data.split("-")
     @order_quantity = @data_split[0].to_i
-    @user_recommendation_id = @data_split[1].to_i
-    @number_of_users = @data_split[2].to_i
-    @first_user_id = @data_split[3].to_i
-    
+    @delivery_id = @data_split[1].to_i
+    @user_recommendation_id = @data_split[2].to_i
+        
     # get drink recommendation info
     @drink_recommendation = UserDrinkRecommendation.find_by_id(@user_recommendation_id)
     
@@ -165,7 +191,7 @@ class Admin::RecommendationsController < ApplicationController
                                           size_format_id: @drink_recommendation.size_format_id)[0]
                                                 
     # get delivery info
-    @customer_next_delivery = Delivery.where(account_id: @drink_recommendation.account_id).where.not(status: "delivered").first
+    @customer_next_delivery = Delivery.find_by_id(@delivery_id)
     
     # find if this is a new addition or an update to the admin account delivery table
     @next_delivery_admin_info = AccountDelivery.where(account_id: @drink_recommendation.account_id, 
@@ -328,6 +354,7 @@ class Admin::RecommendationsController < ApplicationController
                                                               large_format: @large_format,
                                                               delivery_id: @customer_next_delivery.id,
                                                               drink_price: @inventory.drink_price,
+                                                              times_rated: 0,
                                                               size_format_id: @drink_recommendation.size_format_id)
         
         
@@ -370,12 +397,14 @@ class Admin::RecommendationsController < ApplicationController
     @current_sales_tax = @current_subtotal * 0.096
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
-      
-    # update price info in Delivery table
-    @customer_next_delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, total_price: @current_total_price)
+    
+    # update price info in Delivery table and set change confirmation to false so user gets notice
+    @customer_next_delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 
+                                    total_price: @current_total_price, 
+                                    delivery_change_confirmation: false)
     
     # redirect back to recommendation page                                             
-    render js: "window.location = '#{admin_recommendation_path(@user.account_id)}'"
+    render js: "window.location = '#{admin_recommendation_path(@user.account_id, @delivery_id.id)}'"
     
   end # end admin_account_delivery method
   

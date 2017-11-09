@@ -531,18 +531,26 @@ class DeliverySettingsController < ApplicationController
   end # end of remove_delivery_drink_quantity method
   
   def customer_delivery_messages
-    @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: params[:customer_delivery_message][:delivery_id]).first
+    # get data
+    @delivery_id = params[:customer_delivery_message][:delivery_id]
+    @message = params[:customer_delivery_message][:message]
+    
+    @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: @delivery_id).first
     if !@customer_delivery_message.blank?
-      @customer_delivery_message.update(message: params[:customer_delivery_message][:message], admin_notified: false)
+      @customer_delivery_message.update(message: @message, admin_notified: false)
     else
-      @new_customer_delivery_message = CustomerDeliveryMessage.create(user_id: current_user.id, 
-                                                                  delivery_id: params[:customer_delivery_message][:delivery_id],
-                                                                  message: params[:customer_delivery_message][:message],
+      @customer_delivery_message = CustomerDeliveryMessage.create(user_id: current_user.id, 
+                                                                  delivery_id: @delivery_id,
+                                                                  message: @message,
                                                                   admin_notified: false)
-      @new_customer_delivery_message.save!
     end
     
-    redirect_to user_deliveries_path('next')
+    # now send an email to the Admin to notify of the message
+    AdminMailer.admin_message_review(current_user, @message, @delivery_id).deliver_now
+    # and update admin_notified field
+    @customer_delivery_message.update(admin_notified: true)
+    
+    redirect_to user_deliveries_path
   end #send_delivery_message method
   
   def delivery_location

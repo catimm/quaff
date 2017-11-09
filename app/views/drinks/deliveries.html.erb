@@ -32,22 +32,22 @@
 				<div class="col-xs-5 col-sm-3 no-padding-right">
 					<h3 class="recent-ratings-header">My deliveries</h3>
 				</div>
-				<div class="col-xs-7 col-sm-5 col-md-6 no-padding">
-					<% if !@upcoming_delivery.blank? %>
-						<h5 class="review-until-message visible-xs hidden-sm hidden-md hidden-lg hidden-xl">
-							Review till <span>1pm on <%= (@next_delivery_review_end_date).strftime("%-m/%-d/%Y") %></span>
-						</h5>
-						<h5 class="review-until-message hidden-xs visible-sm visible-md visible-lg visible-xl">
-							Review until <span>1pm PT on <%= (@next_delivery_review_end_date).strftime("%a, %b %e, %Y") %></span>
-						</h5>
-					<% end %>
-				</div>
-				<div class="col-xs-10 col-sm-3 no-padding-right">
-					<%= link_to "#", class: 'btn btn-default btn-success formButton-send-note', 
-							data: {toggle: "modal", target: "#customer_delivery_message"} do %>
-						<i class="fa fa-envelope"> make delivery request</i>
-					<% end %>
-				</div>
+				<% if !@upcoming_delivery.blank? %>
+					<div class="col-xs-7 col-sm-5 col-md-6 no-padding">	
+							<h5 class="review-until-message visible-xs hidden-sm hidden-md hidden-lg hidden-xl">
+								Review till <span>1pm on <%= (@next_delivery_review_end_date).strftime("%-m/%-d/%Y") %></span>
+							</h5>
+							<h5 class="review-until-message hidden-xs visible-sm visible-md visible-lg visible-xl">
+								Review until <span>1pm PT on <%= (@next_delivery_review_end_date).strftime("%a, %b %e, %Y") %></span>
+							</h5>
+					</div>
+					<div class="col-xs-10 col-sm-3 no-padding-right">
+						<%= link_to "#", class: 'btn btn-default btn-success formButton-send-note', 
+								data: {toggle: "modal", target: "#customer_delivery_message"} do %>
+							<i class="fa fa-envelope"> make delivery request</i>
+						<% end %>
+					</div>
+				<% end %>
 			</div>
 			<div class="row no-margin">
 				<div class="row no-margin delivery-first-row" id="delivery-first-row-<%= @first_delivery.id %>">
@@ -58,8 +58,8 @@
 						<div class="delivery-drinks-show-less" id="delivery-drinks-less-<%= @first_delivery.id %>">
 							<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
 						</div>
-						<h4 class="delivered-on-date visible-xs hidden-sm hidden-md hidden-lg hidden-xl">Delivered on <%= (@first_delivery.delivery_date).strftime("%a, %b %u %Y") %></h4>
-						<h4 class="delivered-on-date hidden-xs visible-sm visible-md visible-lg visible-xl">Delivered on <%= (@first_delivery.delivery_date).strftime("%A, %B %u %Y") %></h4>
+						<h4 class="delivered-on-date visible-xs hidden-sm hidden-md hidden-lg hidden-xl">Delivered on <%= (@first_delivery.delivery_date).strftime("%a, %b %-d %Y") %></h4>
+						<h4 class="delivered-on-date hidden-xs visible-sm visible-md visible-lg visible-xl">Delivered on <%= (@first_delivery.delivery_date).strftime("%A, %B %-d %Y") %></h4>
 						<h6 class="show-delivery-stats-text show" id="show-delivery-stats-<%= @first_delivery.id %>">&nbsp;  (<span>show</span> stats)</h6>
 						<h6 class="hide-delivery-stats-text hidden" id="hide-delivery-stats-<%= @first_delivery.id %>">&nbsp;  (<span>hide</span> stats)</h6>
 					</div>

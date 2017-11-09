@@ -5470,10 +5470,6 @@ $delivery-beer-header-lines-to-show: 2;
 .admin-add-quantity-header {
   font-weight: 500;
 }
-.delivery-confirm-button {
-  width: 100%;
-  margin-right: 10px;
-}
 .next-delivery-status-indicator-holder {
   padding: 0 !important;
 }
@@ -5510,7 +5506,7 @@ $delivery-beer-header-lines-to-show: 2;
   height: 32px;
   width: 80%;
 }
-.user-list-for-recommendation {
+.user-list-for-recommendation, .delivery-list-for-recommendation {
   margin-top: 10px;
 }
 .inventory-overview {
@@ -5587,6 +5583,41 @@ $delivery-beer-header-lines-to-show: 2;
   left:-5px;
   position:absolute;
   top:0;
+}
+// Fulfillment page
+.fulfillment-delivery-tile {
+  margin: 0 0 10px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  background: #fff;
+  width: 99%;
+  .row {
+    margin: 0 5px;
+  }
+}
+.fulfillment-address {
+  margin-bottom: 5px;
+}
+.fulfillment-delivery-date-row {
+  background: $extra-light-gray;
+  margin: 0 !important;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  h5 {
+    text-align: center;
+    margin: 5px 0;
+  }
+}
+.delivery-confirm-button {
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+.fulfillment-check-button {
+    width: 100%;
+}
+.fulfillment-drink-review {
+  font-weight: 500;
 }
 // Retail account page
 .account-details-header-holder {

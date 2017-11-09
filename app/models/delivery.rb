@@ -17,6 +17,8 @@
 #  customer_has_previous_packaging  :boolean
 #  final_delivery_notes             :text
 #  share_admin_prep_with_user       :boolean
+#  recipient_is_21_plus             :boolean
+#  delivered_at                     :datetime
 #
 
 class Delivery < ActiveRecord::Base
@@ -32,11 +34,8 @@ class Delivery < ActiveRecord::Base
   attr_accessor :delivery_quantity # hold number of drinks to be in the delivery
   
   # create view in admin recommendation drop down
-  def recommendation_drop_down_view
-    #Rails.logger.debug("This account: #{account.id.inspect}")
-    @account_owner = User.where(account_id: account.id, role_id: [1,4])[0]
-    #Rails.logger.debug("account owner info: #{@account_owner.inspect}")
-    "#{delivery_date.strftime("%m/%d/%y")}: #{@account_owner.first_name} [#{@account_owner.username}]"
+  def recommendation_delivery_drop_down_view
+    "#{self.delivery_date} [#{self.status}]"
   end
   
   # scope account owners

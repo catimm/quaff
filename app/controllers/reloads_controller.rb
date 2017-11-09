@@ -7,94 +7,20 @@ class ReloadsController < ApplicationController
   
   
   def index
-    # get customers who have drinks slated for delivery this week
-    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
+    # get all users currently with a delivery the next day
+    @tomorrow_deliveries = Delivery.
+                                where(status: "user review").
+                                where(delivery_date: (1.day.from_now.beginning_of_day)..(1.day.from_now.end_of_day))
     
-    if !@accounts_with_deliveries.blank?
-      @accounts_with_deliveries.each do |account_delivery|
-        # find if the account has any other users
-        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 11).where.not(role_id: [1,4])
-        
-        if !@mates.blank?
-          @has_mates = true
-        else
-          @has_mates = false
-        end
-        
-        @next_delivery_plans = AccountDelivery.where(delivery_id: account_delivery.id)
-        
-        # get total quantity of next delivery
-        @total_quantity = @next_delivery_plans.sum(:quantity)
-        
-        # create array of drinks for email
-        @email_drink_array = Array.new
-        
-        # put drinks in user_delivery table to share with customer
-        @next_delivery_plans.each_with_index do |drink, index|
-          # find if drinks is odd/even
-          if index.odd?
-            @odd = false # easier to make this backwards than change sparkpost email logic....
-          else  
-            @odd = true
-          end
-          # find if drink is cellarable
-            if drink.cellar == true
-              @cellarable = "Yes"
-            else
-              @cellarable = "No"
-            end
-            
-          if @has_mates == false
-            # add drink data to array for customer review email
-            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                            :drink => drink.beer.beer_name,
-                            :drink_type => drink.beer.beer_type.beer_type_short_name,
-                            :format => drink.size_format.format_name,
-                            :projected_rating => drink.user_deliveries.projected_rating,
-                            :quantity => drink.quantity,
-                            :odd => @odd}).as_json
-          else
-            @designated_users = UserDelivery.where(account_delivery_id: drink.id)
-            @drink_user_data = Array.new
-            @designated_users.each do |user|
-              @user_data = { :name => user.user.first_name,
-                                :projected_rating => user.projected_rating,
-                                :quantity => user.quantity
-                              }
-              # push array into user drink array
-              @drink_user_data << @user_data
-            end
-            # add drink data to array for customer review email
-            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                            :drink => drink.beer.beer_name,
-                            :drink_type => drink.beer.beer_type.beer_type_short_name,
-                            :format => drink.size_format.format_name,
-                            :users => @drink_user_data,
-                            :odd => @odd}).as_json
-          end
-          # push this array into overall email array
-          @email_drink_array << @drink_account_data
-          
-        end
-        #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
-        # get next delivery info
-        @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
-
-        # creat customer variable for email to customer
-        @customers = User.where(account_id: @customer_next_delivery.account_id, getting_started_step: 11)
-       
-        # send email to each customer for review
-        @customers.each do |customer|
-          UserMailer.customer_delivery_review(customer, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates).deliver_now
-        end
-        
-        # update account status
-        @customer_next_delivery.update(status: "user review")
-        
-      end # end of loop through each account 
+    if !@tomorrow_deliveries.blank?
       
-    end # end of check whether any customers need notice
-    
+      # cycle through each delivery
+      @tomorrow_deliveries.each do |delivery|
+        # now change the delivery status for the user
+        delivery.update(status: "in progress")
+      end
+      
+    end # end of looping through each delivery in review
       
     #@early_signup_customers = User.where.not(tpw: nil)
     #Rails.logger.debug("Early signup customers: #{@early_signup_customers.inspect}")

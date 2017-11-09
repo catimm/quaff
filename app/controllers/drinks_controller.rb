@@ -407,7 +407,7 @@ class DrinksController < ApplicationController
     # adjust drink quantity in User Delivery table
     if @user_delivery_count > 1
       # determine number per allocated user
-      @drinks_per_user = (@new_drink_quantity / @user_delivery_count)
+      @drinks_per_user = (@new_drink_quantity / @user_delivery_count.to_f)
       # run through each user and update quantity
       @user_delivery_info.each do |user_drink|
         user_drink.update(quantity: @drinks_per_user)
@@ -415,7 +415,7 @@ class DrinksController < ApplicationController
       @user_delivery_id = @user_delivery_info.first.id
     else
       # just update the single user
-      @user_delivery_info.first.update(quantity: @drinks_per_user)
+      @user_delivery_info.first.update(quantity: @new_drink_quantity)
       @user_delivery_id = @user_delivery_info.first.id
     end
     

@@ -22,6 +22,12 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :users, :allow_destroy => true
   
   attr_accessor :user_id # to hold current user id
+    
+  # create view in admin recommendation drop down
+  def recommendation_account_drop_down_view
+    @account_owner = User.where(account_id: self.id, role_id: [1,4])[0]
+    "#{@account_owner.first_name} [#{@account_owner.username}]"
+  end
   
   # scope not yet delivered to account owners
   scope :not_delivered_owner, -> {

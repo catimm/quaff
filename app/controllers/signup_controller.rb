@@ -885,6 +885,17 @@ class SignupController < ApplicationController
     # update Delivery info with admin prep status
     @delivery_info.update(status: "admin prep")
     
+    # and create second line in delivery table so curator has option to plan ahead
+    @next_delivery_date = @delivery_info.delivery_date + 2.weeks
+    Delivery.create(account_id: @delivery_info.account_id, 
+                    delivery_date: @next_delivery_date,
+                    status: "admin prep",
+                    subtotal: 0,
+                    sales_tax: 0,
+                    total_price: 0,
+                    delivery_change_confirmation: false,
+                    share_admin_prep_with_user: false)
+                                    
     # assign invitation code for user to share
     @next_available_code = SpecialCode.where(user_id: nil).first
     @next_available_code.update(user_id: @user.id)
