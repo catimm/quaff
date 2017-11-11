@@ -147,7 +147,9 @@ Rails.application.routes.draw do
   post '/signup/process_home_address_getting_started' => 'signup#process_home_address_getting_started', :as => 'process_home_address_getting_started'
 
   get '/signup/delivery_address_getting_started' => 'signup#delivery_address_getting_started', :as => 'delivery_address_getting_started'
-   
+  post '/signup/process_delivery_address_getting_started' => 'signup#process_delivery_address_getting_started', :as => 'process_delivery_address_getting_started'
+  patch '/signup/process_delivery_address_getting_started' => 'signup#process_delivery_address_getting_started', :as => 'update_delivery_address_getting_started'
+     
   get '/signup/drink_choice_getting_started' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
   post '/signup/process_drink_choice_getting_started/:id' => 'signup#process_drink_choice_getting_started', :as => 'process_drink_choice_getting_started'
   

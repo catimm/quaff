@@ -20,6 +20,7 @@ class SignupController < ApplicationController
     if @user.getting_started_step < 2
       @user.update(getting_started_step: 2)
     end
+<<<<<<< HEAD
     
     # create new user address instance
     @user_address = UserAddress.new
@@ -28,6 +29,18 @@ class SignupController < ApplicationController
     #@account_id = params[:format]
     
   end # end delivery_address_getting_started method
+=======
+
+    @user_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
+
+    if @user_address.blank?
+      @user_address = UserAddress.new
+    end
+    
+    # set additional data
+    @account_id = @user.account_id
+    @header = "Add a new"
+>>>>>>> signup_flow_changes
 
   def delivery_preferences_getting_started
     # check if format exists and show message confirmation if so
@@ -128,6 +141,7 @@ class SignupController < ApplicationController
       end
     end
     
+<<<<<<< HEAD
     # create new CustomerDeliveryRequest instance
     @customer_delivery_request = CustomerDeliveryRequest.new
     # and set correct path for form
@@ -191,6 +205,34 @@ class SignupController < ApplicationController
     else # user needs to choose a subscription 
       # redirect back to the delivery location page
       redirect_to drink_choice_getting_started_path()
+=======
+  end # end of home_address_getting_started method
+
+  def process_delivery_address_getting_started
+    @user = current_user
+    @existing_address = UserAddress.where(account_id: @user.account_id, location_type: address_params[:location_type])[0]
+
+    if @existing_address.blank?
+      # create new address
+      @new_address = UserAddress.create(address_params)
+    else
+      # update user address
+      @existing_address.update(address_params)
+    end
+
+    redirect_to delivery_preferences_getting_started_path(current_user.id)
+  end
+    
+  def process_home_address_getting_started
+    # find if user already has a home address in the DB
+    @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
+    if @home_address.blank?
+      # create new address
+      @new_address = UserAddress.create(address_params)
+    else
+      # update user address
+      @home_address.update(address_params)
+>>>>>>> signup_flow_changes
     end
     
   end # end of choose_delivery_time method
@@ -802,6 +844,99 @@ class SignupController < ApplicationController
     
   end # end of drinks_weekly_getting_started action
   
+<<<<<<< HEAD
+=======
+  def delivery_preferences_getting_started
+    # get User info 
+    @user = current_user
+
+    #Rails.logger.debug("User info: #{@user.inspect}")
+    # update getting started step
+    if @user.getting_started_step < 3
+      @user.update(getting_started_step: 3)
+    end
+    
+    # set sub-guide view
+    @subguide = "user_info" 
+    
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    #Rails.logger.debug("Account info: #{@account.inspect}")
+    
+    # get delivery location options
+    @additional_delivery_locations = UserAddress.where(account_id: @user.account_id)
+    
+    # determine number of days needed before allowing change in delivery date
+    @days_notice_required = 3
+
+    #Rails.logger.debug("Days notice required: #{@days_notice_required.inspect}")
+    # determine current week status
+    @current_week_number = Date.today.strftime("%U").to_i
+    if @current_week_number.even?
+      @current_week_status = "even"
+    else
+      @current_week_status = "odd"
+    end
+    
+    # create hash to store additional delivery time options
+    @delivery_time_options_hash = {}
+    
+    # find delivery time options for additional delivery locations
+    @additional_delivery_locations.each do |location|
+      @delivery_time_options = DeliveryZone.where(zip_code: location.zip)
+      if !@delivery_time_options.blank?
+        @delivery_time_options.each do |option| 
+          # first determine next two options based on week alignment
+          if option.weeks_of_year == "every"
+            @first_delivery_date_option = Date.parse(option.day_of_week)
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+          elsif option.weeks_of_year == @current_week_status
+            @first_delivery_date_option = Date.parse(option.day_of_week)
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
+          else
+            @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
+          end
+            # next determine which of two options is best based on days noticed required
+            @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+            if @days_between_today_and_first_option >= @days_notice_required
+              if @first_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @first_delivery_date_option
+              end
+            else
+              if @second_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @second_delivery_date_option
+              end
+            end
+        end
+      end
+    end
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    if !@delivery_preferences.blank?
+      # set drink category choice
+      if @delivery_preferences.drink_option_id == 1
+        @drink_preference = "beers"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_preference = "ciders"
+      else
+        @drink_preference = "beers/ciders"
+      end
+    end
+    
+    #set guide view
+    @user_chosen = 'current'
+    @account_address_chosen = 'current'
+    @current_page = 'signup'
+    
+  end # end account_getting_started action
+>>>>>>> signup_flow_changes
   
   
   def account_membership_getting_started

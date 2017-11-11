@@ -15,12 +15,12 @@
 </div>
 <div class="row">
 	<div class="container">
-		<div class="row no-margin">
-			<div class="col-xs-12 col-sm-8">
-				<h3 class="user-settings-header">Edit this delivery address</h3>
+		<%= simple_form_for @user_address do |f| %>
+			<%= render 'user_address_form', f: f %>
+			<div class="col-xs-8 col-sm-9 no-padding-right">
+				<%= f.submit "Submit", :class => "btn btn-success submit-address-button" %>
 			</div>
-		</div>
-		<%= render 'user_address_form' %>
+		<% end %>
 	</div>
 </div>
 <%= render 'layouts/footer' %>
