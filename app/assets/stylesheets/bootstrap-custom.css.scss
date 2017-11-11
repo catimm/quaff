@@ -340,7 +340,7 @@ label {
 .beer-type-info {
   float: left;
 }
-.cellarable {
+.cellarable, .cellarable-next-delivery {
   color: $cellar-color;
   border: 1px solid $cellar-color;
   border-radius: 4px;
@@ -420,7 +420,7 @@ label {
         margin-left: 2px;
       }
 }
-#signup_birthdate_note {
+#signup_birthdate_note, #signup_phone_note {
   top: -0.7em;
   font-size: 70%;
   color: $normal-text;
@@ -2839,9 +2839,24 @@ $beer-header-lines-to-show-fp: 1;
 }
 
 // User Delivery Location Options
-.location-settings-header {
-    margin: 10px 0 20px 0;
+.delivery-location-help {
+  float: left;
+  margin: 20px 10px 20px 0;
+}
+.delivery-location-option-tile {
+  min-height: 150px;
+  border: 1.75px dashed $less-emphasized-text;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.delivery-info-row {
+  margin: 5px 10px;
+  .delivery-options-header {
+    span {
+      color: $action-background;
+    }
   }
+}
 .location-address-holder {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -2861,6 +2876,15 @@ $beer-header-lines-to-show-fp: 1;
 }
 .add-location {
   padding: 3px 12px;
+}
+.better-option-request-text {
+  color: $normal-text;
+  font-size: 16px;
+  width: 110%;
+}
+.formButton-make-delivery-request {
+  width: 80%;
+  margin-left: 5%;
 }
 .edit-delivery-location-button {
     color: $action-background;
@@ -2930,7 +2954,7 @@ $beer-header-lines-to-show-fp: 1;
   margin: 0 -10px 0 0 !important;
 }
 .add-delivery-location-row {
-  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .no-delivery {
   color: $normal-text;
@@ -3350,11 +3374,24 @@ $beer-header-lines-to-show-fp: 1;
   border: 1px solid $inverse-primary;
   border-radius: 6px;
 }
+.delivery-helpful-hints-text {
+  color: $normal-text;
+}
 .delivery-thoughts-text {
   color: $inverse-primary;
   background-color: $white;
   border-color: $inverse-primary;
-  margin: 10px 0;
+  margin: 0 10px 10px 0;
+  float: left;
+}
+.delivery-neighborhoods {
+  color: $normal-text;
+  margin-top: 10px;
+  line-height: 1.2;
+}
+.delivery-confirmation-text {
+  color: $normal-text;
+  line-height: 1.2;
 }
 .delivery-area-header {
   font-weight: 500;
@@ -5187,6 +5224,16 @@ input[type="checkbox"] {
   width: 99%;
   position: relative;
 }
+.drink-delivery-tile-past-ratings {
+  margin: 5px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  position: relative;
+}
 .next-delivery-tile-no-review {
   margin: 5px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -5231,14 +5278,27 @@ $delivery-beer-header-lines-to-show: 2;
     height: 30px;
   }
 }
-.item-price, .order-quantity {
+.item-price {
   color: $normal-text;
   font-weight: 500;
   margin: 10px 0 0 0;
   font-size: 15px;
-  span {
-    font-size: 13px;
+}
+.order-quantity {
+  color: $normal-text;
+  font-weight: 500;
+  margin: 10px 10px 0 0;
+  font-size: 15px;
+  float: left;
+  sup {
+    border: 1px solid $less-emphasized-text;
+    border-radius: 4px;
+    padding: 1px 2px;
   }
+}
+.dropdown-toggle-user-change-quantity {
+  margin-top: 2.5px;
+  height: 28px;
 }
 .delivery-quantity-text {
   padding-top: 7.5px;
@@ -5405,6 +5465,9 @@ $delivery-beer-header-lines-to-show: 2;
     padding: 3px 0 !important;
   }
 }
+.second-table-column {
+  width: 50px;
+}
 .current-drink-quantity {
   width: 25px !important;
 }
@@ -5444,10 +5507,6 @@ $delivery-beer-header-lines-to-show: 2;
 .admin-add-quantity-header {
   font-weight: 500;
 }
-.delivery-confirm-button {
-  width: 100%;
-  margin-right: 10px;
-}
 .next-delivery-status-indicator-holder {
   padding: 0 !important;
 }
@@ -5484,8 +5543,44 @@ $delivery-beer-header-lines-to-show: 2;
   height: 32px;
   width: 80%;
 }
-.user-list-for-recommendation {
+.user-list-for-recommendation, .delivery-list-for-recommendation {
   margin-top: 10px;
+}
+.inventory-overview {
+  color: $normal-text;
+  margin-top: 25px;
+}
+.inventory-in-stock-title-row {
+  margin: 20px 0 0 10px;
+}
+.inventory-maker-title {
+  span {
+    font-size: 16px;
+    color: $normal-text;
+  }
+}
+.maker-list-for-inventory {
+  margin-top: 15px;
+}
+.disti-list-for-order-requests, .disti-current-orders, .disti-current-inventory {
+  margin-top: 10px;
+}
+
+.process-disti-inventory-form {
+  border: 1px solid $less-emphasized-text;
+  border-radius: 4px;
+  margin: 0 0 10px 0;
+  width: 99%;
+}
+.disti-process-form-drink-name {
+  height: 50px;
+  h4 {
+    font-size: 16px !important;  
+    text-overflow: ellipsis;
+  }
+}
+#process-disti-order-requests {
+  margin-bottom: 10px;
 }
 .all-set {
   color: $money-color;
@@ -5525,6 +5620,41 @@ $delivery-beer-header-lines-to-show: 2;
   left:-5px;
   position:absolute;
   top:0;
+}
+// Fulfillment page
+.fulfillment-delivery-tile {
+  margin: 0 0 10px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  background: #fff;
+  width: 99%;
+  .row {
+    margin: 0 5px;
+  }
+}
+.fulfillment-address {
+  margin-bottom: 5px;
+}
+.fulfillment-delivery-date-row {
+  background: $extra-light-gray;
+  margin: 0 !important;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  h5 {
+    text-align: center;
+    margin: 5px 0;
+  }
+}
+.delivery-confirm-button {
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+.fulfillment-check-button {
+    width: 100%;
+}
+.fulfillment-drink-review {
+  font-weight: 500;
 }
 // Retail account page
 .account-details-header-holder {

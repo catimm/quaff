@@ -36,6 +36,7 @@
 #  special_code           :string
 #  tpw                    :string
 #  account_id             :integer
+#  phone                  :string
 #
 
 require 'test_helper'

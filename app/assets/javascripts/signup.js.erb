@@ -7,6 +7,13 @@ $(function() {
 	    });
 	}
 	
+	// show modal to confirm delivery request was made 
+	if (gon.request == true) {
+		$(window).load(function(){
+	        $('#delivery_request_signup_confirmation').modal('show');
+	    });
+	}
+	
 	// use Modernizr to add datepicker view to browsers that don't support date
 	if (!Modernizr.inputtypes.date) {
 	  $("input[type='date']").datepicker();
@@ -111,20 +118,6 @@ $(function() {
 		}
 	});
 	
-	// show extra thoughts for mobile 
-	$(document).on("click", "#mobile-extra-thoughts-link", function() {
-		$(this).removeClass("show").addClass("hidden");
-		$('#mobile-extra-thoughts-link-to-hide').removeClass("hidden").addClass("show");
-		$('#mobile-delivery-thoughts-container').removeClass("hidden").addClass("show");
-	});
-	
-	// hide extra thoughts for mobile
-	$(document).on("click", "#mobile-extra-thoughts-link-to-hide", function() {
-		$(this).removeClass("show").addClass("hidden");
-		$('#mobile-extra-thoughts-link').removeClass("hidden").addClass("show");
-		$('#mobile-delivery-thoughts-container').removeClass("show").addClass("hidden");
-	});
-	
 	// change unsaved back to true if save button is clicked
 	$(document).on('click', '#update_delivery_preferences_button', function () {
 	    unsaved = false;
@@ -197,7 +190,7 @@ $(function() {
 		}
 		
 		if(current_page == "signup") {
-			var controller_url = "/signup/process_drink_journey_getting_started/" + new_value
+			var controller_url = "/signup/process_drink_journey_getting_started." + new_value
 			
 			$('#drink_journey_next_step_button').removeAttr('disabled');
 			$("#drink_journey_next_step_button").removeClass('btn-default').addClass('btn-success');
@@ -219,7 +212,7 @@ $(function() {
 		// send data to controller
 		$.ajax({
 		  type: "POST",
-		  url: "/signup/process_drink_style_likes_getting_started/" + new_value
+		  url: "/signup/process_drink_style_likes_getting_started." + new_value
 		});
 	});
 	

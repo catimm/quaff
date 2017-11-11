@@ -17,6 +17,8 @@
 #  customer_has_previous_packaging  :boolean
 #  final_delivery_notes             :text
 #  share_admin_prep_with_user       :boolean
+#  recipient_is_21_plus             :boolean
+#  delivered_at                     :datetime
 #
 
 require 'test_helper'

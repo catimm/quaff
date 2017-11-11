@@ -1,0 +1,18 @@
+<table class="table table-striped admin-recommendation-table">
+	<tr>
+	  <th>Delivery info</th>
+	</tr>
+	<% @delivery_drinks.each do |drink| %>
+	  <% @inventory_transaction = InventoryTransaction.where(account_delivery_id: drink.id).first %>
+      <tr>
+        <td>
+        	<span class="fulfillment-drink-review">Drink:</span> <%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %>
+        	<br>
+        	<span class="fulfillment-drink-review">Format:</span> <%= @inventory_transaction.inventory.size_format.format_name %>
+        	<br>
+        	<span class="fulfillment-drink-review">Quantity:</span> <%= drink. quantity %>
+        </td>
+      </tr>
+	<% end %>
+</table>
+

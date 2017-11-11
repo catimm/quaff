@@ -1,15 +1,35 @@
 class SignupController < ApplicationController
-  before_filter :authenticate_user!, :except => ["username_verification"]
   include DeliveryEstimator
   require "stripe"
   
   def delivery_address_getting_started
-    @user = current_user
+    #set guide view
+    @user_chosen = 'current'
+    @user_personal_info_chosen = 'complete'
+    @user_delivery_address_chosen = 'current'
+    # for address form
+    @location_type = "Office"
+    @row_status = "hidden"
+    
+    # set subguide view
     @subguide = "user_info"
-
+    
+    # set user info
+    @user = current_user
+    
     if @user.getting_started_step < 2
       @user.update(getting_started_step: 2)
     end
+<<<<<<< HEAD
+    
+    # create new user address instance
+    @user_address = UserAddress.new
+    
+    # set additional data
+    #@account_id = params[:format]
+    
+  end # end delivery_address_getting_started method
+=======
 
     @user_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
 
@@ -20,38 +40,172 @@ class SignupController < ApplicationController
     # set additional data
     @account_id = @user.account_id
     @header = "Add a new"
+>>>>>>> signup_flow_changes
 
+  def delivery_preferences_getting_started
+    # check if format exists and show message confirmation if so
+    if params.has_key?(:format)
+      if params[:format] == "confirm"
+        gon.request = true
+      end
+    end
+    
+    # set current page to distinguish from delivery preference page in account settings
+    @current_page = 'signup'
+    
     #set guide view
     @user_chosen = 'current'
     @user_personal_info_chosen = 'complete'
-    @user_delivery_address_chosen = 'current'
-  end
-
-  def home_address_getting_started
-    # get user info
-    @user = current_user
-
-    #Rails.logger.debug("User info: #{@user.inspect}")
-    # update getting started step
-    if @user.getting_started_step < 2
-      @user.update(getting_started_step: 2)
-    end
+    @user_delivery_address_chosen = 'complete'
+    @account_address_chosen = 'current'
     
     # set sub-guide view
-    @subguide = "user_info"
+    @subguide = "user_info" 
     
-    # get user home address info
-    @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
-    
-    if @home_address.blank?
-      @home_address = UserAddress.new
+    # get User info 
+    @user = current_user
+    #Rails.logger.debug("User info: #{@user.inspect}")
+    # update getting started step
+    if @user.getting_started_step < 3
+      @user.update(getting_started_step: 3)
     end
     
-    #set guide view
-    @user_chosen = 'current'
-    @user_personal_info_chosen = 'complete'
-    @user_home_address_chosen = 'current'
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    #Rails.logger.debug("Account info: #{@account.inspect}")
     
+    # get delivery location options
+    @additional_delivery_locations = UserAddress.where(account_id: @user.account_id)
+    
+    # determine number of days needed before allowing change in delivery date
+    @days_notice_required = 3
+
+    #Rails.logger.debug("Days notice required: #{@days_notice_required.inspect}")
+    # determine current week status
+    @current_week_number = Date.today.strftime("%U").to_i
+    if @current_week_number.even?
+      @current_week_status = "even"
+    else
+      @current_week_status = "odd"
+    end
+    
+    # create hash to store additional delivery time options
+    @delivery_time_options_hash = {}
+    
+    # find delivery time options for additional delivery locations
+    @additional_delivery_locations.each do |location|
+      @delivery_time_options = DeliveryZone.where(zip_code: location.zip)
+      if !@delivery_time_options.blank?
+        @delivery_time_options.each do |option| 
+          # first determine next two options based on week alignment
+          if option.weeks_of_year == "every"
+            @first_delivery_date_option = Date.parse(option.day_of_week)
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+          elsif option.weeks_of_year == @current_week_status
+            @first_delivery_date_option = Date.parse(option.day_of_week)
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
+          else
+            @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+            @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
+          end
+            # next determine which of two options is best based on days noticed required
+            @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+            if @days_between_today_and_first_option >= @days_notice_required
+              if @first_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @first_delivery_date_option
+              end
+            else
+              if @second_delivery_date_option < option.beginning_at
+                @delivery_time_options_hash[option.id] = option.beginning_at
+              else
+                @delivery_time_options_hash[option.id] = @second_delivery_date_option
+              end
+            end
+        end
+      end
+    end
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    if !@delivery_preferences.blank?
+      # set drink category choice
+      if @delivery_preferences.drink_option_id == 1
+        @drink_preference = "beers"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_preference = "ciders"
+      else
+        @drink_preference = "beers/ciders"
+      end
+    end
+    
+<<<<<<< HEAD
+    # create new CustomerDeliveryRequest instance
+    @customer_delivery_request = CustomerDeliveryRequest.new
+    # and set correct path for form
+    @customer_delivery_request_path = customer_delivery_requests_signup_path
+    
+  end # end delivery_preferences_getting_started action
+  
+  def choose_delivery_time
+    # first get correct address and delivery zone
+    @data = params[:format]
+    @data_split = @data.split("-")
+    @address = @data_split[0].to_i
+    #Rails.logger.debug("address: #{@address.inspect}")
+    @delivery_zone = @data_split[1].to_i
+    @delivery_date = @data_split[2]
+    @date_adjustment = @delivery_date.split("_") 
+    @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1] + " 13:00:00"
+    #Rails.logger.debug("date: #{@final_delivery_date.inspect}")
+    @final_delivery_date = DateTime.parse(@final_delivery_date)
+    #Rails.logger.debug("Parsed date: #{@final_delivery_date.inspect}")
+    
+    # get user info for confirmation email
+    @customer = User.find_by_id(current_user.id)
+    
+    # update the Account info
+    Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
+    
+    # find if user already has chosen a delivery address
+    @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
+    #Rails.logger.debug("Delivery address: #{@current_delivery_address.inspect}")
+
+    if !@current_delivery_address.blank? && @current_delivery_address.id == @address # address is chosen and not changing, just the delivery time/zone
+      # update the current delivery time/zone
+      UserAddress.update(@current_delivery_address.id, delivery_zone_id: @delivery_zone)
+      # change next delivery date in deliveries table
+      @user_next_delivery_info = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")[0]
+      # update record
+      if !@user_next_delivery_info.blank?
+        @user_next_delivery_info.update(delivery_date: @final_delivery_date)
+      end
+    else # both address and delivery time/zone need to be updated
+      # update the chosen address to be the delivery address
+      UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
+      # create first line in delivery table, but without status until customer pays membership fee
+      @next_delivery = Delivery.create(account_id: current_user.account_id, 
+                                      delivery_date: @final_delivery_date,
+                                      status: nil,
+                                      subtotal: 0,
+                                      sales_tax: 0,
+                                      total_price: 0,
+                                      delivery_change_confirmation: false,
+                                      share_admin_prep_with_user: false)
+    end
+    
+    # find if customer already has a subscription (for early sign-up customers)
+    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    
+    if !@user_subscription.blank? && !@user_subscription.stripe_subscription_number.nil?
+      # redirect to thank you page because user already has a subscription
+      redirect_to signup_thank_you_path(current_user.id)
+    else # user needs to choose a subscription 
+      # redirect back to the delivery location page
+      redirect_to drink_choice_getting_started_path()
+=======
   end # end of home_address_getting_started method
 
   def process_delivery_address_getting_started
@@ -78,12 +232,26 @@ class SignupController < ApplicationController
     else
       # update user address
       @home_address.update(address_params)
+>>>>>>> signup_flow_changes
     end
     
-    # set redirect link
-    redirect_to delivery_preferences_getting_started_path(current_user.id)
+  end # end of choose_delivery_time method
+  
+  def customer_delivery_requests
+    # get data
+    @message = params[:customer_delivery_request][:message]
     
-  end # end of process_home_address_getting_started method
+    # add message to DB
+    CustomerDeliveryRequest.create(user_id: current_user.id, message: @message)
+    
+    @admins = ["carl@drinkknird.com", "vince@drinkknird.com"]
+    # now send an email to each Admin to notify of the message
+    @admins.each do |admin_email|
+      #AdminMailer.admin_customer_delivery_request(admin_email, current_user, @message).deliver_now
+    end
+    
+    redirect_to delivery_preferences_getting_started_path("confirm")
+  end #end of customer_delivery_requests method
   
   def drink_choice_getting_started
     # get User info 
@@ -107,7 +275,7 @@ class SignupController < ApplicationController
     @current_page = 'signup'
     
     # get Delivery Preference info if it exists
-    @delivery_preferences = DeliveryPreference.find_by_user_id(params[:id])
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     
     # get Delivery Preference info if it exists
       if !@delivery_preferences.blank?
@@ -130,14 +298,14 @@ class SignupController < ApplicationController
         @beer_and_cider_chosen = "hidden"
       end
       
-  end # end getting_started_user action
+  end # end drink_choice_getting_started action
   
   def process_drink_choice_getting_started
     # get data
     @data = params[:id]
     
     # get User info 
-    @user = User.find(current_user.id)
+    @user = current_user
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
@@ -177,8 +345,8 @@ class SignupController < ApplicationController
     @current_page = 'signup'
     
     # get Delivery Preference info if it exists
-    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+
     # set drink category choice
       if @delivery_preferences.drink_option_id == 1
         @drink_preference = "beer"
@@ -211,7 +379,7 @@ class SignupController < ApplicationController
   
   def process_drink_journey_getting_started
     # get data
-    @data = params[:id]
+    @data = params[:format]
     
     # get User info 
     @user = User.find(current_user.id)
@@ -221,6 +389,9 @@ class SignupController < ApplicationController
     
     # save the user craft stage data
     @user.update(craft_stage_id: @data)
+    
+    # clear params :format
+    params[:format].delete if params.has_key?(:format)
     
     # don't change the view
     render :nothing => true
@@ -349,17 +520,17 @@ class SignupController < ApplicationController
   
   def process_drink_style_likes_getting_started
     # get new value
-    if params[:id] == "true"
-      @value = true
-    else
-      @value = false
-    end
+    @value = params[:format]
+    
     # get User info 
     @user = User.find(current_user.id)
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     @delivery_preferences.update(gluten_free: @value)
+    
+    # clear params :format
+    params[:format].delete if params.has_key?(:format)
     
     # don't change the view
     render :nothing => true
@@ -673,6 +844,8 @@ class SignupController < ApplicationController
     
   end # end of drinks_weekly_getting_started action
   
+<<<<<<< HEAD
+=======
   def delivery_preferences_getting_started
     # get User info 
     @user = current_user
@@ -763,62 +936,8 @@ class SignupController < ApplicationController
     @current_page = 'signup'
     
   end # end account_getting_started action
+>>>>>>> signup_flow_changes
   
-  def choose_delivery_time
-    # first get correct address and delivery zone
-    @data = params[:format]
-    @data_split = @data.split("-")
-    @address = @data_split[0].to_i
-    #Rails.logger.debug("address: #{@address.inspect}")
-    @delivery_zone = @data_split[1].to_i
-    @delivery_date = @data_split[2]
-    @date_adjustment = @delivery_date.split("_") 
-    @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1] + " 13:00:00"
-    #Rails.logger.debug("date: #{@final_delivery_date.inspect}")
-    @final_delivery_date = DateTime.parse(@final_delivery_date)
-    #Rails.logger.debug("Parsed date: #{@final_delivery_date.inspect}")
-    
-    # get user info for confirmation email
-    @customer = User.find_by_id(current_user.id)
-    
-    # update the Account info
-    Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
-    
-    # find if user already has chosen a delivery address
-    @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
-    #Rails.logger.debug("Delivery address: #{@current_delivery_address.inspect}")
-
-    if !@current_delivery_address.blank? && @current_delivery_address.id == @address # address is chosen and not changing, just the delivery time/zone
-      # update the current delivery time/zone
-      UserAddress.update(@current_delivery_address.id, delivery_zone_id: @delivery_zone)
-      # change next delivery date in deliveries table
-      @user_next_delivery_info = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")[0]
-      # update record
-      if !@user_next_delivery_info.blank?
-        @user_next_delivery_info.update(delivery_date: @final_delivery_date)
-      end
-    else # both address and delivery time/zone need to be updated
-      # update the chosen address to be the delivery address
-      UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
-      # create first line in delivery table, but without status until customer pays membership fee
-      @next_delivery = Delivery.create(account_id: current_user.account_id, 
-                                      delivery_date: @final_delivery_date,
-                                      status: nil,
-                                      delivery_change_confirmation: false)
-    end
-    
-    # find if customer already has a subscription (for early sign-up customers)
-    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
-    
-    if !@user_subscription.blank? && !@user_subscription.stripe_subscription_number.nil?
-      # redirect to thank you page because user already has a subscription
-      redirect_to signup_thank_you_path(current_user.id)
-    else # user needs to choose a subscription 
-      # redirect back to the delivery location page
-      redirect_to drink_choice_getting_started_path()
-    end
-    
-  end # end of choose_delivery_time method
   
   def account_membership_getting_started
     # get User info 
@@ -827,9 +946,6 @@ class SignupController < ApplicationController
     if @user.getting_started_step < 10
       @user.update(getting_started_step: 10)
     end
-    
-    # set sub-guide view
-    @subguide = "account_settings"
     
     #set guide view
     @user_chosen = 'complete'
@@ -849,11 +965,11 @@ class SignupController < ApplicationController
     @subscription_info = Subscription.find_by_subscription_level(@plan_name)
     
     #get user info
-    @user = User.find_by_id(current_user.id)
+    @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
     
     # get delivery info
-    @delivery_info = Delivery.find_by_account_id(params[:format])
+    @delivery_info = Delivery.find_by_account_id(@user.account_id)
     
     # set active_until date and reward point info
     if @subscription_info.id == 1
@@ -865,11 +981,9 @@ class SignupController < ApplicationController
         @reward_transaction_type_id = 1
         # find user who invited the new user
         @invitor = SpecialCode.find_by_special_code(@user.special_code)
-        # reward points to invitor
-        @invitor_reward_points = RewardPoint.find_by_user_id(@invitor.user_id)
+        # get invitor current reward points infon
+        @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
         @new_total_points = @invitor_reward_points.total_points + @bottle_caps
-        @invitor_reward_points.update(total_points: @new_total_points, transaction_points: @bottle_caps,
-                            reward_transaction_type_id: @reward_transaction_type_id)
       end
     elsif @subscription_info.id == 3
       @active_until = Date.today + 1.year
@@ -878,16 +992,18 @@ class SignupController < ApplicationController
         @reward_transaction_type_id = 1
         # find user who invited the new user
         @invitor = SpecialCode.find_by_special_code(@user.special_code)
-        # reward points to invitor
-        @invitor_reward_points = RewardPoint.find_by_user_id(@invitor.user_id)
-        @new_total_points = @invitor_reward_points.total_points + @bottle_caps
-        @invitor_reward_points.update(total_points: @new_total_points, transaction_points: @bottle_caps,
-                            reward_transaction_type_id: @reward_transaction_type_id)
+        # get invitor current reward points info
+        @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
+        @new_total_points = @invitor_reward_pnoints.total_points + @bottle_caps
       end
     else
       @active_until = Date.today + 1.year
     end
     
+    # now award Reward Points to invitor
+    RewardPoint.create(account_id: @invitor.user.account_id, total_points: @new_total_points, transaction_points: @bottle_caps,
+                            reward_transaction_type_id: @reward_transaction_type_id, friend_user_id: @user.id)
+                            
     # check if user already has a subscription row
     @user_subscription = UserSubscription.find_by_user_id(@user.id)
     
@@ -919,6 +1035,17 @@ class SignupController < ApplicationController
     # update Delivery info with admin prep status
     @delivery_info.update(status: "admin prep")
     
+    # and create second line in delivery table so curator has option to plan ahead
+    @next_delivery_date = @delivery_info.delivery_date + 2.weeks
+    Delivery.create(account_id: @delivery_info.account_id, 
+                    delivery_date: @next_delivery_date,
+                    status: "admin prep",
+                    subtotal: 0,
+                    sales_tax: 0,
+                    total_price: 0,
+                    delivery_change_confirmation: false,
+                    share_admin_prep_with_user: false)
+                                    
     # assign invitation code for user to share
     @next_available_code = SpecialCode.where(user_id: nil).first
     @next_available_code.update(user_id: @user.id)

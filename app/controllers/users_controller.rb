@@ -15,6 +15,9 @@ class UsersController < ApplicationController
     @code = params[:format]
     #Rails.logger.debug("Code: #{@code.inspect}")
     
+    # show phone row for new users (assuming they will be the account owner)
+    @show_phone = true
+    
     # set sub-guide view
     @user_chosen = "current"
     @subguide = "user_info"
@@ -53,10 +56,10 @@ class UsersController < ApplicationController
         Friend.create(user_id: @account_owner.id, friend_id: @user.id, confirmed: true)
         
         # set redirect link
-        @redirect_link = drink_choice_getting_started_path()
+        @redirect_link = drink_choice_getting_started_path
       else
         # set redirect link
-        @redirect_link = delivery_address_getting_started_path()
+        @redirect_link = delivery_address_getting_started_path
       end
       
       # redirect to next step in signup process
@@ -75,7 +78,14 @@ class UsersController < ApplicationController
       return head :forbidden
     end
     #Rails.logger.debug("User info: #{@user.inspect}")
-
+    
+    # show phone if user is account owner
+    if @user.role_id == 1 || @user.role_id == 4
+      @show_phone = true
+    else
+      @show_phone = false
+    end
+    
     # set sub-guide view
     @subguide = "user_info"
     
@@ -114,8 +124,17 @@ class UsersController < ApplicationController
         # set redirect link
         @redirect_link = drink_choice_getting_started_path(@user.id)
       else
+        # first check if user already has a delivery address on file
+        @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true)
+        
         # set redirect link
-        @redirect_link = delivery_address_getting_started_path()
+        if !@account_delivery_address.blank?
+          # send user to delivery preferences page to choose location/time
+          @redirect_link = delivery_preferences_getting_started_path
+        else
+          # if user doesn't yet have a delivery address, send to delivery address getting started page
+          @redirect_link = delivery_address_getting_started_path
+        end
       end
       
       # redirect to next step in signup process
@@ -197,9 +216,14 @@ class UsersController < ApplicationController
     # set birthday to Date
     @birthday =(@user.birthday).strftime("%Y-%m-%d")
    
-    # get last updated info
+    # get additional info for page
     @user_updated = @user.updated_at
-    @preference_updated = latest_date = [@user.updated_at, @home_address.updated_at].max
+    if !@home_address.blank?
+      @preference_updated = latest_date = [@user.updated_at, @home_address.updated_at].max
+    else
+      @preference_updated = @user.updated_at
+      @home_address = UserAddress.new
+    end
     
     # set session to remember page arrived from 
     session[:return_to] ||= request.referer

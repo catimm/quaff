@@ -17,11 +17,9 @@
 		<div class="col-xs-12 col-sm-8">
 			<h3 class="recent-ratings-header">Your Knirdy friends</h3>
 		</div>
-		<% if !@user_friends.blank? %>
-			<div class="col-xs-offset-1 col-xs-10 col-sm-3">
-				<%= link_to "Find Connections", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
-			</div>
-		<% end %>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-3">
+			<%= link_to "Find Connections", find_friends_path(current_user.id), :class => "btn btn-success connect-with-friends-button"%>
+		</div>
 	</div>
 	<div class="row no-margin col-xs-12 col-sm-8" id="friend-activity-holder">
 		<% if !@user_friends.blank? %>

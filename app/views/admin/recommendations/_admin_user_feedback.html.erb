@@ -1,7 +1,10 @@
 <div class="row no-margin">
 	<h4>Customer message</h4>
-	<% if !@customer_message.nil? %>
-		<h5>"<%= @customer_message.message %>"</h5>
+	<% if !@customer_messages.blank? %>
+		<% @customer_messages.each do |message| %>
+			<%= render 'layouts/user_initials_xsmall', friend: message.user %>
+			<h5>says "<%= message.message %>"</h5>
+		<% end %>
 	<% else %>
 		<h5>The customer hasn't left a message pertaining to this delivery.</h5>
 	<% end %>
@@ -16,6 +19,7 @@
 		      <th>Cellarable</th>
 		      <th>Old Quantity</th>
 		      <th>New Quantity</th>
+		      <th>Changed</th>
 			</tr>
 			<% @customer_drink_changes.each do |drink| %>
 		    	<tr>
@@ -29,6 +33,7 @@
 			        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
 			        <td><%= drink.original_quantity %></td>
 			        <td><%= drink.new_quantity %></td>
+			        <td><%= (drink.created_at).strftime("%-m/%-d/%Y @ %H:%M") %></td>
         		</tr>
         	<% end %>
 		</table>	      

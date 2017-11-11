@@ -392,7 +392,6 @@ class DeliverySettingsController < ApplicationController
     @user_delivery_info = UserDelivery.find_by_id(@user_delivery_id)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
     @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
-    @admin_user_delivery_info = AdminUserDelivery.where(delivery_id: @delivery.id, inventory_id: @inventory.id).first
     
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
@@ -411,9 +410,7 @@ class DeliverySettingsController < ApplicationController
       # update reserved inventory 
       @new_inventory_reserved = @current_inventory_reserved + 1
       @inventory.update(reserved: @new_inventory_reserved)
-      
-      # update admin user delivery info
-      @admin_user_delivery_info.update(quantity: @new_quantity)
+
       # update user delivery info
       @user_delivery_info.update(quantity: @new_quantity)
       
@@ -432,7 +429,6 @@ class DeliverySettingsController < ApplicationController
       @inventory.update(reserved: @new_inventory_reserved)
       
       # update user delivery info
-      @admin_user_delivery_info.update(quantity: @new_quantity)
       @user_delivery_info.update(quantity: @new_quantity)
     end
     
@@ -493,7 +489,6 @@ class DeliverySettingsController < ApplicationController
     @user_delivery_info = UserDelivery.find_by_id(@data)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
     @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
-    @admin_user_delivery_info = AdminUserDelivery.where(delivery_id: @delivery.id, inventory_id: @inventory.id).first
     
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
@@ -529,7 +524,6 @@ class DeliverySettingsController < ApplicationController
     end
     
     # remove delivery drink
-    @admin_user_delivery_info.destroy!
     @user_delivery_info.destroy!
 
     render :nothing => true
@@ -537,21 +531,52 @@ class DeliverySettingsController < ApplicationController
   end # end of remove_delivery_drink_quantity method
   
   def customer_delivery_messages
-    @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: params[:customer_delivery_message][:delivery_id]).first
+    # get data
+    @delivery_id = params[:customer_delivery_message][:delivery_id]
+    @message = params[:customer_delivery_message][:message]
+    
+    @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: @delivery_id).first
     if !@customer_delivery_message.blank?
-      @customer_delivery_message.update(message: params[:customer_delivery_message][:message], admin_notified: false)
+      @customer_delivery_message.update(message: @message, admin_notified: false)
     else
-      @new_customer_delivery_message = CustomerDeliveryMessage.create(user_id: current_user.id, 
-                                                                  delivery_id: params[:customer_delivery_message][:delivery_id],
-                                                                  message: params[:customer_delivery_message][:message],
+      @customer_delivery_message = CustomerDeliveryMessage.create(user_id: current_user.id, 
+                                                                  delivery_id: @delivery_id,
+                                                                  message: @message,
                                                                   admin_notified: false)
-      @new_customer_delivery_message.save!
     end
     
-    redirect_to user_deliveries_path('next')
-  end #send_delivery_message method
+    # now send an email to the Admin to notify of the message
+    AdminMailer.admin_message_review(current_user, @message, @delivery_id).deliver_now
+    # and update admin_notified field
+    @customer_delivery_message.update(admin_notified: true)
+    
+    redirect_to user_deliveries_path
+  end # end of customer_delivery_messages method
+  
+  def customer_delivery_requests
+    # get data
+    @message = params[:customer_delivery_request][:message]
+    
+    # add message to DB
+    CustomerDeliveryRequest.create(user_id: current_user.id, message: @message)
+    
+    @admins = ["carl@drinkknird.com", "vince@drinkknird.com"]
+    # now send an email to each Admin to notify of the message
+    @admins.each do |admin_email|
+      #AdminMailer.admin_customer_delivery_request(admin_email, current_user, @message).deliver_now
+    end
+    
+    redirect_to user_delivery_settings_location_path("confirm")
+  end #end of customer_delivery_requests method
   
   def delivery_location
+    # check if format exists and show message confirmation if so
+    if params.has_key?(:format)
+      if params[:format] == "confirm"
+        gon.delivery_request = true
+      end
+    end
+    
     # get user info
     @user = User.find(current_user.id)
     
@@ -677,6 +702,11 @@ class DeliverySettingsController < ApplicationController
     
     # find if the account has any other users (for menu links)
     @mates = User.where(account_id: @user.account_id, getting_started_step: 11).where.not(id: @user.id)
+    
+    # create new CustomerDeliveryRequest instance
+    @customer_delivery_request = CustomerDeliveryRequest.new
+    # and set correct path for form
+    @customer_delivery_request_path = customer_delivery_requests_settings_path
     
   end # end of delivery_location method
   

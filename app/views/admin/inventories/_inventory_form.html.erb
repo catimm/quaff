@@ -1,6 +1,6 @@
 <%= form_for [:admin, @inventory] do |f| %>
 	<div class="row no-margin">
-		<h2>Inventory form</h2>
+		<h3>Inventory Form for <%= @inventory.beer.brewery.short_brewery_name %> <%= @inventory.beer.beer_name %></h3>
 	</div>
 	<div class="row no-margin">
 		<div class="col-sm-1 col-xs-2 no-padding">
@@ -8,9 +8,9 @@
 		</div>
 		<div class="col-sm-5 col-xs-10">
 			<% if !@drink_id.nil? %>
-				<%= f.text_field :beer_id, value: @drink_id, :class => "form-control", placeholder: "Beer ID" %>
+				<%= f.text_field :beer_id, value: @drink_id, :readonly => true, :class => "form-control", placeholder: "Beer ID" %>
 			<% else %>
-				<%= f.text_field :beer_id, :class => "form-control", placeholder: "Beer ID" %>
+				<%= f.text_field :beer_id, :readonly => true, :class => "form-control", placeholder: "Beer ID" %>
 			<% end %>
 		</div>
 		
@@ -30,10 +30,25 @@
 		</div>
 		
 		<div class="col-sm-1 col-xs-2 no-padding">
-			<%= label :limit_per, '# to order' %>
+			<%= label :total_batch, 'Total batch' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
-			<%= f.text_field :order_request, :class => "form-control", placeholder: "# to order" %>
+			<%= f.text_field :total_batch, :readonly => true, :class => "form-control", placeholder: "Total batch" %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :regular_case_cost, 'Reg Case $' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :regular_case_cost, :class => "form-control", placeholder: "Reg Case $" %>
+		</div>
+		
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :sale_case_cost, 'Sale Case $' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :sale_case_cost, :class => "form-control", placeholder: "Sale Case $" %>
 		</div>
 	</div>
 	<div class="row no-margin">
@@ -60,15 +75,21 @@
 		</div>
 		
 		<div class="col-sm-1 col-xs-2 no-padding">
-			<%= label :limit_per, 'Limit/person' %>
+			<%= label :limit_per, 'Limit/acct' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
 			<%= f.text_field :limit_per, :class => "form-control", placeholder: "Limit/person" %>
 		</div>
 	</div>
-	<div class="col-sm-3 col-xs-0"></div>
-	<div class="col-sm-6 col-xs-12 text-center">
+	<div class="row no-margin">
+		<div class="col-xs-2 no-padding">
+			<%= label :currently_available, 'Currently Available?' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.check_box :currently_available %>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-offset-3 col-sm-6 text-center">
 		<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %>
-	</div>		
-	<div class="col-sm-3 col-xs-0"></div>			
+	</div>			
 <% end %>

@@ -36,6 +36,7 @@
 #  special_code           :string
 #  tpw                    :string
 #  account_id             :integer
+#  phone                  :string
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

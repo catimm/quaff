@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: disti_orders
+#
+#  id                    :integer          not null, primary key
+#  distributor_id        :integer
+#  inventory_id          :integer
+#  case_quantity_ordered :integer
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  disti_inventory_id: 1
+  inventory_id: 1
+  case_quantity_ordered: 1
+
+two:
+  disti_inventory_id: 1
+  inventory_id: 1
+  case_quantity_ordered: 1

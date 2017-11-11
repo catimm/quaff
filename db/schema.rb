@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171024041043) do
+ActiveRecord::Schema.define(version: 20171110231131) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -234,6 +234,13 @@ ActiveRecord::Schema.define(version: 20171024041043) do
     t.boolean  "admin_notified"
   end
 
+  create_table "customer_delivery_requests", force: :cascade do |t|
+    t.integer  "user_id"
+    t.text     "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "deliveries", force: :cascade do |t|
     t.integer  "account_id"
     t.date     "delivery_date"
@@ -249,6 +256,8 @@ ActiveRecord::Schema.define(version: 20171024041043) do
     t.boolean  "customer_has_previous_packaging"
     t.text     "final_delivery_notes"
     t.boolean  "share_admin_prep_with_user"
+    t.boolean  "recipient_is_21_plus"
+    t.datetime "delivered_at"
   end
 
   create_table "delivery_preferences", force: :cascade do |t|
@@ -332,6 +341,14 @@ ActiveRecord::Schema.define(version: 20171024041043) do
     t.boolean  "curation_ready"
   end
 
+  create_table "disti_orders", force: :cascade do |t|
+    t.integer  "distributor_id"
+    t.integer  "inventory_id"
+    t.integer  "case_quantity_ordered"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "distributors", force: :cascade do |t|
     t.string   "disti_name"
     t.string   "contact_name"
@@ -387,6 +404,7 @@ ActiveRecord::Schema.define(version: 20171024041043) do
     t.integer  "min_quantity"
     t.decimal  "regular_case_cost",   precision: 5, scale: 2
     t.decimal  "sale_case_cost",      precision: 5, scale: 2
+    t.integer  "disti_inventory_id"
   end
 
   create_table "inventory_transactions", force: :cascade do |t|
@@ -687,13 +705,13 @@ ActiveRecord::Schema.define(version: 20171024041043) do
     t.integer  "user_id"
     t.integer  "beer_id"
     t.float    "projected_rating"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
     t.boolean  "new_drink"
     t.integer  "account_id"
     t.integer  "size_format_id"
     t.integer  "inventory_id"
-    t.boolean  "disti_inventory_available"
+    t.integer  "disti_inventory_id"
   end
 
   create_table "user_fav_drinks", force: :cascade do |t|

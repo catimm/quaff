@@ -16,7 +16,6 @@
 #
 
 class CustomerDeliveryChange < ActiveRecord::Base
-  belongs_to :account
   belongs_to :user
   belongs_to :delivery
   belongs_to :account_delivery

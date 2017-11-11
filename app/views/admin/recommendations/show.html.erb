@@ -4,9 +4,7 @@
 		<div class="col-sm-2 no-padding">
 			<h1 class="section-header">Recos</h1>
 		</div>
-		<div class="col-sm-10">
-			<div class="row no-margin">
-			</div>
+		<div class="col-xs-12 col-sm-10 no-padding">
 			<div class="row first-row-admin-recommendation-decisions" id="chosen-customer-info">
 				<%= render 'chosen_customer_info' %>
 			</div>
@@ -22,72 +20,13 @@
 			<%= render 'account_delivery_estimates' %>
 		</div>
 		<hr>
-		<% @drink_recommendations.each do |drink| %>
-			<div class="row no-margin">
-				<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="drink-tile-<%= drink[1][0].id %>">
-					<div class="drink-delivery-tile">
-						<%= render 'layouts/drink_info_recommendations', drink: drink[1][0] %>
-					</div>
-				</div>
-				<div class="col-xs-10 col-sm-5 col-md-7">
-					<table class="table table-striped admin-recommendation-table">
-					    <tr>
-					    	<th>User</th>
-						    <th>New</th>
-						    <th>#</th>
-						    <th>Rating</th>
-						    <th>Delivered?</th>
-						    <th>Drank?</th>
-						   	<% if drink[1].count > 1 %>
-						    	<th class="text-center">Designate</th>
-						    <% end %>
-					    </tr>
-					    <% drink[1].each do |user| %>
-					    	<%= render 'recommended_drinks_list', 
-					    				{ drink: user, count: drink[1].count, drink_id: drink[0] }  %>
-					    <% end %>
-					  </table>
-				</div>
-				<div class="col-xs-2 col-sm-1 col-md-1 no-padding">
-					<h5 class="admin-add-quantity-header">Quantity</h5>
-					<% if @next_account_delivery.exists?(beer_id: drink[1][0].beer_id) %>
-						<% @this_current_quantity = AdminAccountDelivery.where(account_id: @account_id, delivery_id: @customer_next_delivery.id, beer_id: drink[1][0].beer_id )[0] %>
-						<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
-							<% @end_quantity = drink[1][0].inventory.limit_per %>
-						<% else %>
-							<% if drink[1][0].disti_inventory_available == true %>
-								<% @end_quantity = 24 %>
-							<% else %>
-								<% @end_quantity = (drink[1][0].inventory.stock + @this_current_quantity.quantity) %>
-							<% end %>
-						<% end %>
-						<% @quantity_available = [*0..@end_quantity] %>
-						<%= select_tag('curator_quantity_add', 
-										options_for_select(@quantity_available.map { |num| [num, num] }, @this_current_quantity.quantity),
-										class:"btn btn-success dropdown-toggle-admin-add-quantity", 
-										id: "#{drink[1][0].id}-#{drink[1].count}-#{drink[1][0].user_id}-#{drink[0]}", 
-										prompt: "Edit" ) %>
-					<% else %>
-						<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
-							<% @end_quantity = drink[1][0].inventory.limit_per %>
-						<% else %>
-							<% if drink[1][0].disti_inventory_available == true %>
-								<% @end_quantity = 24 %>
-							<% else %>
-								<% @end_quantity = drink[1][0].inventory.stock %>
-							<% end %>
-						<% end %>
-						<% @quantity_available = [*1..@end_quantity] %>
-						<%= select_tag('curator_quantity_add', 
-										options_for_select(@quantity_available.map { |num| [num, num] }), 
-										class:"btn btn-success dropdown-toggle-admin-add-quantity", 
-										id: "#{drink[1][0].id}-#{drink[1].count}-#{drink[1][0].user_id}-#{drink[0]}", 
-										prompt: "Add" ) %>
-					<% end %>
-				</div>
-			</div>
-			<hr>
-		<% end %>
+		<div class="row no-margin">
+			<% if @customer_next_delivery.status == "admin prep" || @customer_next_delivery.status == "user review" %>
+				<%= render 'recommended_drinks_list' %>
+			<% else %>	
+				<%= render 'admin_review_delivery' %>
+			<% end %>
+		</div>
 	</div>
 </div>
 <div id="admin_user_delivery" class="modal">

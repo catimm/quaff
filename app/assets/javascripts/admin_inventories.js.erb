@@ -35,5 +35,40 @@ $(function() {
 		  url: "/admin/beers/remove_multiple_drinks/" + all_vals
 		});
 	});
-
+	
+	// add logic to filter inventory by Maker 
+	$(document).on('change', '.maker-list-for-inventory', function () {
+		var maker_id = $(this).val();
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/inventories/change_inventory_maker_view/" + maker_id
+		});
+	});
+	
+	// add logic to filter order requests by Disti 
+	$(document).on('change', '.disti-list-for-order-requests', function () {
+		var disti_id = $(this).val();
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/inventories/change_disti_view/" + disti_id
+		});
+	});
+	
+	// process disti order requests
+	$(document).on('click', '#process-disti-order-requests', function () {
+		var order_quantities = $('.dropdown-toggle-admin-add-disti-inventory').map(function() {
+		    if(this.value != "" ) {
+		    	return this.id + "_" + this.value;
+		    }
+		}).get();
+		var all_vals = order_quantities.join("-");
+		
+		console.log(all_vals);
+		$.ajax({
+		  type: "POST",
+		  url: "/admin/inventories/process_order_requests/" + all_vals
+		});
+	});
 });

@@ -1,0 +1,89 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Inventory</h1>
+		</div>
+		<div class="col-xs-12 col-sm-8">
+			<div class="row">
+				<div class="col-xs-3">
+					<%= link_to "Knird Inventory", admin_inventory_path(@brewery_id), class: "drink-preference-view-option current" %>
+				</div>
+				<div class="col-xs-3">
+					<%= link_to "Order Requests", admin_order_requests_path(1), class: "drink-preference-view-option" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-4">
+				<h3>Total Inventory in Stock</h3>
+			</div>
+			<div class="col-xs-12 col-sm-2">
+				<h4 class="inventory-overview">Makers: <%= @inventory_makers.count('id') %></h4>
+			</div>
+			<div class="col-xs-12 col-sm-2">
+				<h4 class="inventory-overview">Unique drinks: <%= @inventory.in_stock.count %></h4>
+			</div>
+			<div class="col-xs-12 col-sm-2">
+				<h4 class="inventory-overview">Total drinks: <%= @inventory.in_stock.sum(:stock) %></h4>
+			</div>
+		</div>
+		<% if @brewery_id != 0 %>
+			<div class="row inventory-in-stock-title-row">
+				<div class="col-xs-4 col-sm-1">
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= @brewery.image %>">
+				</div>
+				<div class="col-xs-8 col-sm-7 text-left no-padding">
+					<h3 class="inventory-maker-title"><%= @brewery.short_brewery_name %> Stock <span>(<%= @inventory_in_stock.count %> <%= "drink".pluralize(@inventory_in_stock.count) %>)</span></h3>
+				</div>
+				<div class="col-xs-offset-1 col-xs-10 col-sm-3">
+					<%= collection_select(nil, "maker_list", @inventory_makers, :id, :short_brewery_name, {prompt: "Change maker view"}, {class: "form-control maker-list-for-inventory"}) %>
+				</div>
+			</div>
+			<div class="row no-margin" id="inventory-in-stock-holder">
+				<div class="col-xs-12">
+					<table class="table table-striped admin-recommendation-table">
+					    <tr>
+					    	<th>Drink</th>
+						    <th>Format</th>
+						    <th>Stock</th>
+						    <th>Reserved</th>
+						    <th>Drink Cost</th>
+						    <th>Drink Price</th>
+						    <th>Limit?</th>
+						    <th>Available?</th>
+						    <th></th>
+					    </tr>
+						<% @inventory_in_stock.each do |inventory| %>
+							<tr>
+								<td><%= inventory.beer.beer_name %></td>
+								<td><%= inventory.size_format.format_name %></td>
+								<td><%= inventory.stock %></td>
+								<td><%= inventory.reserved %></td>
+								<td>$<%= inventory.drink_cost %></td>
+								<td>$<%= inventory.drink_price %></td>
+								<td><%= inventory.limit_per %></td>
+								<td><%= inventory.currently_available %></td>
+								<td><%= link_to "Edit", edit_admin_inventory_path(inventory.id), :class => "btn btn-primary editButton" %></td>
+							</tr>
+						<% end %>
+					</table>
+				</div>
+			</div>
+		<% else %>
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-7">
+					<h4>Choose a maker from the drop down list to see related inventory.</h4>
+				</div>
+				<div class="col-xs-offset-1 col-xs-10 col-sm-3">
+					<%= collection_select(nil, "maker_list", @inventory_makers, :id, :short_brewery_name, {prompt: "Change maker view"}, {class: "form-control maker-list-for-inventory"}) %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

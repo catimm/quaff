@@ -1,0 +1,23 @@
+$(function() {
+	
+	// add logic to filter current Disti inventory 
+	$(document).on('change', '.disti-current-inventory', function () {
+		var disti_id = $(this).val();
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/disti_inventories/change_disti_inventory_view/" + disti_id
+		});
+	});
+	
+	// add logic to filter current Disti orders 
+	$(document).on('change', '.disti-current-orders', function () {
+		var disti_id = $(this).val();
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/disti_inventories/change_disti_orders_view/" + disti_id
+		});
+	});
+	
+});

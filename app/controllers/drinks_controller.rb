@@ -11,9 +11,6 @@ class DrinksController < ApplicationController
   require 'json'
   
   def deliveries   
-    # set view chosen
-    @deliveries_chosen = "current"
-    
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
     
@@ -21,8 +18,8 @@ class DrinksController < ApplicationController
     @account_users_count = User.where(account_id: current_user.account_id, getting_started_step: 11).count
     
     # get delivery info
-    @all_deliveries = Delivery.where(account_id: @user.account_id)
-    @upcoming_delivery = Delivery.where(account_id: @user.account_id).where(status: ["user review", "in progress"]).first
+    @all_deliveries = Delivery.where(account_id: @user.account_id).where.not(status: "admin prep")
+    @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress"]).first
     
     # check if deliveries exist before executing rest of code
     if !@all_deliveries.blank?
@@ -102,9 +99,6 @@ class DrinksController < ApplicationController
   end # end deliveries method
 
   def cellar
-    # set view chosen
-    @cellar_chosen = "current"
-    
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
     @user_id = @user.id
@@ -143,9 +137,6 @@ class DrinksController < ApplicationController
   end # end cellar method
   
   def wishlist
-    # set view chosen
-    @wishlist_chosen = "current"
-    
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
     
@@ -374,114 +365,103 @@ class DrinksController < ApplicationController
     # get data to add/update
     @data = params[:id]
     @data_split = @data.split("-")
-    @add_or_subtract = @data_split[0]
-    @account_delivery_id = @data_split[1]
+    @account_delivery_id = @data_split[0].to_i
+    @new_drink_quantity = @data_split[1].to_i
+    
+    # get related instances 
     
     # get Account Delivery info
     @account_delivery_info = AccountDelivery.find_by_id(@account_delivery_id)
+    @original_drink_quantity = @account_delivery_info.quantity
     
     # get User Delivery Info
-    @user_delivery_info = UserDelivery.where(account_delivery: @account_delivery_id, delivery_id: @account_delivery_info.delivery_id, user_id: current_user.id)[0]
+    @user_delivery_info = UserDelivery.where(account_delivery: @account_delivery_id)
+    @user_delivery_count = @user_delivery_info.count
     
     # get Delivery Info
     @delivery = Delivery.find_by_id(@account_delivery_info.delivery_id)
     
-    # get Inventory info
-    @drink_inventory = Inventory.find_by_id(@account_delivery_info.inventory_id)
+    # get Inventory Transaction info
+    @temp_inventory_transaction = InventoryTransaction.where(account_delivery_id: @account_delivery_id)
     
-    # adjust drink quantity
-    @original_account_quantity = @account_delivery_info.quantity
-    @original_user_quantity = @user_delivery_info.quantity
+    if @temp_inventory_transaction.count > 1
+      # get all inventory Ids
+      @inventory_ids = @temp_inventory_transaction.pluck(:inventory_id)
+      # get all related inventories
+      @inventories = Inventory.where(id: @inventory_ids)
+      # get Inventory info
+      @drink_inventory = @inventories.where(order_request: 0)[0]
+    else
+      # get Inventory info
+      @drink_inventory = Inventory.find_by_id(@temp_inventory_transaction[0].inventory_id)
+    end
     
-    # get related delivery costs
-    @originl_unit_subtotal_cost = @account_delivery_info.inventory.drink_cost
-    @originl_unit_subtotal_price = @account_delivery_info.inventory.drink_price
-    @originl_unit_tax = @originl_unit_subtotal_price * 0.096
-    @originl_unit_total = @originl_unit_subtotal_price + @originl_unit_tax
-    @original_delivery_subtotal = @delivery.subtotal
-    @original_delivery_tax = @delivery.sales_tax
-    @original_delivery_total = @delivery.total_price
+    # get actual Inventory Transaction
+    @real_inventory_transaction = InventoryTransaction.where(account_delivery_id: @account_delivery_id, inventory_id: @drink_inventory.id)[0]
+    
+    # adjust all related DB tables
+    
+    # first adjust drink quantity in Account Delivery table
+    @account_delivery_info.update(quantity: @new_drink_quantity)
+    
+    # adjust drink quantity in User Delivery table
+    if @user_delivery_count > 1
+      # determine number per allocated user
+      @drinks_per_user = (@new_drink_quantity / @user_delivery_count.to_f)
+      # run through each user and update quantity
+      @user_delivery_info.each do |user_drink|
+        user_drink.update(quantity: @drinks_per_user)
+      end
+      @user_delivery_id = @user_delivery_info.first.id
+    else
+      # just update the single user
+      @user_delivery_info.first.update(quantity: @new_drink_quantity)
+      @user_delivery_id = @user_delivery_info.first.id
+    end
+    
+    # adjust Inventory stock
+    # first add original quantity back into stock and out of reserved
+    @drink_inventory.increment!(:stock, @original_drink_quantity)
+    @drink_inventory.decrement!(:reserved, @original_drink_quantity)
+    # remove new quantity from stock and add to reserved
+    @drink_inventory.decrement!(:stock, @new_drink_quantity)
+    @drink_inventory.increment!(:reserved, @new_drink_quantity)
+
+    # update Inventory Transaction
+    @real_inventory_transaction.update(quantity: @new_drink_quantity)
+    
+    # Update Delivery Table prices 
+    # create a variable to hold subtotal
+    @current_subtotal = 0
+    # get all drinks in the Account Delivery Table
+    @account_delivery_drinks = AccountDelivery.where(account_id: @account_delivery_info.account_id, 
+                                                      delivery_id: @delivery.id)
+    # run through each drink and add the total price to the subtotal
+    @account_delivery_drinks.each do |drink|
+      @this_drink_total = (drink.drink_price * drink.quantity)
+      @current_subtotal = @current_subtotal + @this_drink_total
+    end
+    # now get sales tax
+    @current_sales_tax = @current_subtotal * 0.096
+    # and total price
+    @current_total_price = @current_subtotal + @current_sales_tax
+      
+    # update price info in Delivery table & change confirmation to false so an update confirmation is sent
+    @delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 
+                                    total_price: @current_total_price, delivery_change_confirmation: false)
     
     # add customer change to Customer Delivery Change Table
-    # first find if the customer has already changed this drink in this delivery
-    @customer_delivery_change = CustomerDeliveryChange.where(account_delivery_id: @account_delivery_id, 
-                                                              delivery_id: @delivery.id,
-                                                              beer_id: @account_delivery_info.beer_id)[0]
-    # if no changes already exist, create a new change log
-    if @customer_delivery_change.blank?
-      @customer_delivery_change =  CustomerDeliveryChange.create(user_id: current_user.id, 
-                                                                  delivery_id: @delivery.id, 
-                                                                  user_delivery_id: @user_delivery_info.id,
-                                                                  original_quantity: @original_account_quantity,
-                                                                  beer_id: @account_delivery_info.beer_id,
-                                                                  change_noted: false,
-                                                                  account_delivery_id: @account_delivery_id)
-    end
-                                   
-    # make DB changes
-    if @add_or_subtract == "add"
-      # set new quantity
-      @new_account_quantity = @original_account_quantity + 1
-      
-      # set new delivery costs
-      @new_account_drink_cost = @account_delivery_info.drink_cost + @originl_unit_subtotal_cost
-      @new_account_drink_price = @account_delivery_info.drink_price + @originl_unit_subtotal_price
-      @new_delivery_subtotal = @original_delivery_subtotal + @originl_unit_subtotal_price
-      @new_delivery_sales_tax = @originl_unit_tax + @original_delivery_tax
-      @new_delivery_total_price = @originl_unit_total + @original_delivery_total
-      
-      # update DB
-      @drink_inventory.decrement!(:stock)
-      @drink_inventory.increment!(:reserved)
-      @user_delivery_info.increment!(:quantity)
-      @account_delivery_info.update(quantity: @new_account_quantity, drink_cost: @new_account_drink_cost, drink_price: @new_account_drink_price)
-      @delivery.update(subtotal: @new_delivery_subtotal, sales_tax: @new_delivery_sales_tax, total_price: @new_delivery_total_price)
+    CustomerDeliveryChange.create(user_id: current_user.id, 
+                                  delivery_id: @delivery.id, 
+                                  user_delivery_id: @user_delivery_id,
+                                  original_quantity: @original_drink_quantity,
+                                  new_quantity: @new_drink_quantity,
+                                  beer_id: @account_delivery_info.beer_id,
+                                  change_noted: false,
+                                  account_delivery_id: @account_delivery_id)
     
-      # update customer change to Customer Delivery Change Table
-      @customer_delivery_change.update(new_quantity: @new_account_quantity)
-      
-    else
-      # set new quantity
-      @new_account_quantity = @original_account_quantity - 1
-      @new_user_quantity = @original_user_quantity - 1
-     
-      # update User Delivery table in DB
-      if @new_user_quantity == 0
-        # update quantity info
-        @user_delivery_info.destroy
-      else
-        # update quantity info
-        @user_delivery_info.decrement!(:quantity)
-      end
-      # update Account Delivery table in DB
-      if @new_account_quantity == 0
-        # update quantity info
-        @account_delivery_info.destroy
-      else
-        # set new user account costs
-        @new_account_drink_cost = @account_delivery_info.drink_cost - @originl_unit_subtotal_cost
-        @new_account_drink_price = @account_delivery_info.drink_price - @originl_unit_subtotal_price
-        # update quantity info
-        @account_delivery_info.update(quantity: @new_account_quantity, drink_cost: @new_account_drink_cost, drink_price: @new_account_drink_price)
-      end
-      
-      # set new delivery costs
-      @new_delivery_subtotal = @original_delivery_subtotal - @originl_unit_subtotal_price
-      @new_delivery_sales_tax = @original_delivery_tax - @originl_unit_tax
-      @new_delivery_total_price = @original_delivery_total - @originl_unit_total 
-      
-      # update Delivery table in DB
-      @delivery.update(subtotal: @new_delivery_subtotal, sales_tax: @new_delivery_sales_tax, total_price: @new_delivery_total_price)
-      
-      # update Inventory table in DB
-      @drink_inventory.increment!(:stock)
-      @drink_inventory.decrement!(:reserved)
-      
-      # update customer change to Customer Delivery Change Table
-      @customer_delivery_change.update(new_quantity: @new_account_quantity)
-    end
-
-    render js: "window.location.pathname = '#{user_deliveries_path(current_user.id, 'next')}'"
+    # send back to drink page
+    render js: "window.location.pathname = '#{user_deliveries_path}'"
   end # end change_supply_drink_quantity method
   
   def set_search_box_id

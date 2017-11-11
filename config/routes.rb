@@ -88,10 +88,12 @@ Rails.application.routes.draw do
   post '/delivery_settings/deliveries_update_estimates/:id' => 'delivery_settings#deliveries_update_estimates', :as => 'deliveries_update_estimates'
   patch '/delivery_settings/deliveries_update_preferences/:id' => 'delivery_settings#deliveries_update_preferences', :as => 'deliveries_update_preferences'
   get '/delivery_settings/change_next_delivery_date/:id' => 'delivery_settings#change_next_delivery_date', :as => 'change_next_delivery_date'
-  post '/delivery_settings/change_delivery_drink_quantity/:id' => 'delivery_settings#change_delivery_drink_quantity', :as => 'change_delivery_drink_quantity'
+  #post '/delivery_settings/change_delivery_drink_quantity/:id' => 'delivery_settings#change_delivery_drink_quantity', :as => 'change_delivery_drink_quantity'
   post '/delivery_settings/remove_delivery_drink_quantity/:id' => 'delivery_settings#remove_delivery_drink_quantity'
   post '/delivery_settings/customer_delivery_messages/' => 'delivery_settings#customer_delivery_messages', :as => 'customer_delivery_messages'
-
+  post '/delivery_settings/customer_delivery_requests/' => 'delivery_settings#customer_delivery_requests', :as => 'customer_delivery_requests_settings'
+  post '/signup/customer_delivery_requests/' => 'signup#customer_delivery_requests', :as => 'customer_delivery_requests_signup'
+  
   # routes to user drink preferences pages
   get '/drink_preferences/drink_profile/:id' => 'drink_preferences#drink_profile', :as => 'user_profile'
   get '/drink_preferences/drink_settings/:id' => 'drink_preferences#drink_settings', :as => 'user_drink_settings'
@@ -256,6 +258,7 @@ Rails.application.routes.draw do
   # admin recommendation routes
   get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
   get 'admin/recommendations/change_user_view/:id' => 'admin/recommendations#change_user_view'
+  get 'admin/recommendations/change_delivery_view/:id' => 'admin/recommendations#change_delivery_view'
   get 'admin/recommendations/change_delivery_drink_quantity/:id' => 'admin/recommendations#change_delivery_drink_quantity', :as => 'admin_change_delivery_drink_quantity'
   get 'admin/recommendations/admin_user_delivery/:id' => 'admin/recommendations#admin_user_delivery', :as =>'admin_user_delivery'
   get 'admin/recommendations/admin_user_feedback/:id' => 'admin/recommendations#admin_user_feedback', :as =>'admin_user_feedback'
@@ -263,16 +266,23 @@ Rails.application.routes.draw do
   get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
   post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
   post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
+  get 'admin/fulfillment/fulfillment_review_delivery/:id' => 'admin/fulfillment#fulfillment_review_delivery', :as =>'fulfillment_review_delivery'
   
   # admin inventory routes
   namespace :admin do
-      get 'order_requests' => 'inventories#order_requests'
-      get 'disti_orders' => 'disti_inventories#disti_orders'
       get 'disti_inventories_change' => 'disti_inventories#disti_inventories_change', :as => 'disti_inventories_change'
       post 'disti_inventories_import' => 'disti_inventories#import_disti_inventory', :as => 'import_disti_inventory'
       post 'disti_inventories_update' => 'disti_inventories#update_disti_inventory', :as => 'update_disti_inventory'
   end
-  
+  get 'admin/inventories/order_requests/:id' => 'admin/inventories#order_requests', :as => 'admin_order_requests'
+  get 'admin/inventories/change_inventory_maker_view/:id' => 'admin/inventories#change_inventory_maker_view'
+  get 'admin/inventories/change_disti_view/:id' => 'admin/inventories#change_disti_view'
+  post 'admin/inventories/process_order_requests/:id' => 'admin/inventories#process_order_requests'
+  get 'admin/disti_inventories/change_disti_inventory_view/:id' => 'admin/disti_inventories#change_disti_inventory_view'
+  get 'admin/disti_inventories/disti_orders/:id' => 'admin/disti_inventories#disti_orders', :as => 'admin_disti_orders'
+  get 'admin/disti_inventories/change_disti_orders_view/:id' => 'admin/disti_inventories#change_disti_orders_view'
+  patch 'admin/disti_inventories/process_inventory/:id' => 'admin/disti_inventories#process_inventory', :as => 'process_disti_inventory'
+ 
   
   # admin drink DB management routes
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"

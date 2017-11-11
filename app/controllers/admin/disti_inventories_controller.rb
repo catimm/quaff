@@ -2,12 +2,28 @@ class Admin::DistiInventoriesController < ApplicationController
   before_filter :verify_admin
   require 'csv'
   
-  def index 
-    # get all Distis
-    @distis = Distributor.all
-
-  end # end index method
-
+  def show
+    @distributor_id = params[:id]
+    
+    # get disti info
+    @distributor = Distributor.find_by_id(@distributor_id)
+    
+    # get unique drinks from disti inventory
+    @all_disti_inventory = DistiInventory.where(distributor_id: @distributor_id).select('distinct on (beer_id) *') 
+    
+    # get inventory ready for curation
+    @inventory_ready_for_curation = @all_disti_inventory.where(curation_ready: true)
+    
+    # get inventory that needs work
+    @inventory_not_ready_for_curation = @all_disti_inventory.where(curation_ready: false)
+    
+  end # end of show method
+  
+  def change_disti_inventory_view
+    # redirect back to recommendation page                                             
+    render js: "window.location = '#{admin_disti_inventory_path(params[:id])}'"
+  end # end of change_disti_view method
+  
   def new
     # to create a new Disti Inventory instance
     @disti_inventory = DistiInventory.new
@@ -77,9 +93,57 @@ class Admin::DistiInventoriesController < ApplicationController
   end # end import_disti_inventory method
   
   def disti_orders
+    # get url/id info
+    @distributor_id = params[:id]
     
-      
+    # get account owner info
+    @distributor = Distributor.find_by_id(@distributor_id)
+    
+    # get current orders for disti
+    @current_disti_orders = DistiOrder.where(distributor_id: @distributor_id)
+
+    
   end # end disti_orders method
+  
+  def change_disti_orders_view
+    # redirect back to recommendation page                                             
+    render js: "window.location = '#{admin_disti_orders_path(params[:id])}'"
+  end # end of change_disti_view method
+  
+  def process_inventory
+    # find inventory to be updated
+    @inventory = Inventory.find_by_id(params[:inventory][:id])
+    # update inventory
+    @inventory.update(size_format_id: params[:inventory][:size_format_id], 
+                      stock: params[:inventory][:min_quantity],
+                      order_request: 0,
+                      sale_case_cost: params[:inventory][:sale_case_cost], 
+                      min_quantity: params[:inventory][:min_quantity],
+                      drink_cost: params[:inventory][:drink_cost],
+                      drink_price: params[:inventory][:drink_price],
+                      limit_per: params[:inventory][:limit_per],
+                      total_batch: params[:inventory][:min_quantity],
+                      currently_available: params[:inventory][:currently_available])
+                      
+    # delete disti order
+    @disti_order = DistiOrder.find_by_id(params[:inventory][:disti_order_id]).destroy
+    
+    # get account owner info
+    @distributor = Distributor.find_by_id(params[:id])
+    
+    # get current orders for disti
+    @current_disti_orders = DistiOrder.where(distributor_id: params[:id])
+    if !@current_disti_orders.blank?
+      #refresh disti order view
+      respond_to do |format|
+        format.js
+      end # end of redirect to jquery
+    else
+      render js: "window.location = '#{admin_disti_orders_path(params[:id])}'"
+    end
+    
+  end # end of process_inventory method
+  
   
   private
   def disti_inventory_params

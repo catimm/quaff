@@ -179,54 +179,33 @@ class AdminMailer < ActionMailer::Base
     end
   end # end of porting email
   
-  def new_retailer_drink_email(email, retailer, maker, maker_id, drink, drink_id, source)
-    SparkPost::Request.request(open('https://api.sparkpost.com/api/v1/transmissions'), ENV['SPARKPOST_API_KEY'], {
-      recipients: [
-        {
-          address: { email: email },
-          substitution_data: {
-            retailer: retailer,
-            maker: brewery_name,
-            maker_id: brewery_id,
-            drink: beer_name,
-            drink_id: beer_id,
-            source: source
-          }
-        }
-      ],
-      content: {
-        template_id: 'new-retailer-drink-email'
-      },
-      #substitution_data: {
-      #  title: 'Daily News'
-      #}
-    })
-  end # end of new retailer drink email
-  
-  def retailer_drink_help(admin_email, retailer, drinks)
+  def admin_drink_change_review(user, next_delivery)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
     payload  = {
       recipients: [
         {
-          address: { email: admin_email },
+          address: { email: "carl@drinkknird.com" },
         }
       ],
       content: {
-        template_id: 'retailer-drink-help-email'
+        template_id: 'admin-drink-change-review'
       },
       substitution_data: {
-        retailer: retailer,
-        drinks: drinks,
+        account_id: user.account_id,
+        user_first_name: user.first_name,
+        user_username: user.username,
+        delivery_id: next_delivery.id,
+        delivery_date: next_delivery.delivery_date
       }
     }
-    
+
     response = sp.transmission.send_payload(payload)
     p response
     
-  end # end of retailer_drink_help email
-  
-  def admin_message_review(messages, message_status)
+  end # end of admin_drink_change_review email
+
+  def admin_message_review(user, message, delivery_id)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
     payload  = {
@@ -239,8 +218,11 @@ class AdminMailer < ActionMailer::Base
         template_id: 'admin-message-review'
       },
       substitution_data: {
-        message: messages,
-        status: message_status
+        account_id: user.account_id,
+        user_first_name: user.first_name,
+        user_username: user.username,
+        delivery_id: delivery_id,
+        message: message
       }
     }
 
@@ -248,6 +230,31 @@ class AdminMailer < ActionMailer::Base
     p response
     
   end # end of admin_message_review email
+  
+  def admin_customer_delivery_request(admin_email, user, message)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
+      ],
+      content: {
+        template_id: 'admin-customer-delivery-request'
+      },
+      substitution_data: {
+        user_id: user.id,
+        user_first_name: user.first_name,
+        user_username: user.username,
+        message: message
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of admin_customer_delivery_request email
   
   def admin_failed_invoice_payment_notice(customer, subscription)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
@@ -321,4 +328,31 @@ class AdminMailer < ActionMailer::Base
     p response
     
   end # end of disti_inventory_import_email
+  
+  def admin_disti_drink_order(disti, disti_order, admin_email, admin_name)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
+      ],
+      content: {
+        template_id: 'admin-disti-drink-order'
+      },
+      substitution_data: {
+        admin_name: admin_name,
+        disti_name: disti.disti_name,
+        contact_name: disti.contact_name,
+        contact_email: disti.contact_email,
+        contact_phone: disti.contact_phone,
+        order: disti_order
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+          
+  end # end of admin_disti_drink_order email
 end

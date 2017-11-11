@@ -36,6 +36,7 @@
 #  special_code           :string
 #  tpw                    :string
 #  account_id             :integer
+#  phone                  :string
 #
 
 class User < ActiveRecord::Base
@@ -72,6 +73,7 @@ class User < ActiveRecord::Base
   has_many :craft_stages
   has_many :reward_points
   has_many :projected_ratings
+  has_many :customer_delivery_requests
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   attr_accessor :valid_special_code # to hold special code

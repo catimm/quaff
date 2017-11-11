@@ -3,25 +3,25 @@
 	<% @user_drinks_per_week = (@user_preferences.drinks_per_week * 2.2).round %>
 	<% @delivery_cost_estimate_low = (((@user_preferences.price_estimate.to_f) *0.9).floor / 5).round * 5 %>
     <% @delivery_cost_estimate_high = ((((@user_preferences.price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5 %>
-	<% @user_drinks = AdminUserDelivery.where(delivery_id: @customer_next_delivery.id, user_id: user.id) %>
+	<% @user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id, user_id: user.id) %>
 	<% @next_user_delivery_cellar_drinks = 0 %>
 	<% @next_user_delivery_small_drinks = 0 %>
 	<% @next_user_delivery_large_drinks = 0 %>
 	<% @next_user_delivery_drink_price = 0 %>
 	<% @user_drinks.each do |drink| %>
-		<% if drink.admin_account_delivery.cellar == true %>
+		<% if drink.account_delivery.cellar == true %>
 	 		<% @this_cellar = 1 * drink.quantity %>
 	 		<% @next_user_delivery_cellar_drinks = @next_user_delivery_cellar_drinks + @this_cellar %>
 	 	<% end %>
-	 	<% if drink.admin_account_delivery.large_format == false %>
+	 	<% if drink.account_delivery.large_format == false %>
 	 		<% @this_small_format = 1 * drink.quantity %>
 	 		<% @next_user_delivery_small_drinks = @next_user_delivery_small_drinks + @this_small_format %>
 	 	<% end %>
-	 	<% if drink.admin_account_delivery.large_format == true %>
+	 	<% if drink.account_delivery.large_format == true %>
 	 		<% @this_large_format = drink.quantity %>
 	 		<% @next_user_delivery_large_drinks = @next_user_delivery_large_drinks + @this_large_format %>
 	 	<% end %>
-	 	<% @this_drink_price = drink.admin_account_delivery.drink_price * drink.quantity %>
+	 	<% @this_drink_price = drink.account_delivery.drink_price * drink.quantity %>
 	 	<% @next_user_delivery_drink_price = @next_user_delivery_drink_price + @this_drink_price %>
 	<% end %>
 	<div class="col-xs-2 col-sm-1 admin-user-identity">

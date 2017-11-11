@@ -14,7 +14,7 @@
 #
 
 class RewardPoint < ActiveRecord::Base
-  belongs_to :user 
+  belongs_to :account 
   belongs_to :beer
   belongs_to :reward_transaction_type
 end

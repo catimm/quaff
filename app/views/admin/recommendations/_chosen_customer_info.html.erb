@@ -1,7 +1,12 @@
-<div class="col-sm-1"></div>
-<div class="col-sm-2 text-left no-padding">
-	<h4>Showing: <span class="current-selected-user" id="current-user-recommendations"><%= @user.username %></span></h4>
+<div class="col-xs-4 col-sm-offset-1 col-sm-1 text-left no-padding">
+	<h4>Account:</h4>
 </div>
-<div class="col-sm-3">
-	<%= collection_select(@drink_recommendations, :account_id, Delivery.where(account_id: @customer_ids).where.not(status: "delivered").order('delivery_date asc'), :account_id, :recommendation_drop_down_view, {prompt: "Change customer view"}, {class: "form-control user-list-for-recommendation", id: "#{@view}"}) %>
+<div class="col-xs-8 col-sm-4">
+	<%= collection_select("account_list", :account_id, Account.where(id: @active_account_ids), :id, :recommendation_account_drop_down_view, {prompt: "Change customer view", selected: @current_account_id}, {class: "form-control user-list-for-recommendation"}) %>
+</div>
+<div class="col-xs-4 col-sm-1 text-left no-padding">
+	<h4>Delivery:</h4>
+</div>
+<div class="col-xs-8 col-sm-4">
+	<%= collection_select("delivery_list", :delivery_id, Delivery.where(account_id: @current_account_id, delivery_date: @customer_delivery_dates), :id, :recommendation_delivery_drop_down_view, {prompt: "Change delivery date", selected: @customer_next_delivery.id}, {class: "form-control delivery-list-for-recommendation"}) %>
 </div>

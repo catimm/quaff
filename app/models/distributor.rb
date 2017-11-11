@@ -13,5 +13,6 @@
 
 class Distributor < ActiveRecord::Base
   has_many :disti_inventories 
+  has_many :disti_orders
   
 end

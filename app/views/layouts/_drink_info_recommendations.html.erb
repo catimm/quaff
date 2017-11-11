@@ -1,4 +1,5 @@
 <div class="row no-margin drink-info-universal-first-row">
+	<% Rails.logger.debug("drink: #{drink.inspect}") %>
 	<div class="col-xs-2 col-sm-2 brewery-image-holder-universal">
 		<% if !drink.beer.brewery.image.blank? %>
 			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
