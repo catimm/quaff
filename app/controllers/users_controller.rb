@@ -758,12 +758,12 @@ class UsersController < ApplicationController
   private
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday)  
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :mobile_number)  
   end
   
   def new_user_params
     params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :role_id, :cohort, 
-                                 :password, :special_code, :user_color, :account_id, :getting_started_step)  
+                                 :password, :special_code, :user_color, :account_id, :getting_started_step, :mobile_number)  
   end
   
 end

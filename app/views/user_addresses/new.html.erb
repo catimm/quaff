@@ -15,7 +15,15 @@
 </div>
 <div class="row">
 	<div class="container">
-		<%= render 'user_address_form' %>
+		<%= simple_form_for @user_address do |f| %>
+			<%= render 'user_address_form', f: f %>
+			<div class="row submit-address-row-holder">
+				<div class="col-xs-4 col-sm-3 no-padding"></div>
+				<div class="col-xs-8 col-sm-9 no-padding-right">
+					<%= f.submit "Submit", :class => "btn btn-success submit-address-button" %>
+				</div>
+			</div>
+		<% end %>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

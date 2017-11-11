@@ -70,8 +70,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # update getting started step
-    if @user.getting_started_step < 3
-      @user.update(getting_started_step: 3)
+    if @user.getting_started_step < 4
+      @user.update(getting_started_step: 4)
     end
     
     # set sub-guide view
@@ -139,8 +139,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # update getting started step
-    if @user.getting_started_step < 4
-      @user.update(getting_started_step: 4)
+    if @user.getting_started_step < 5
+      @user.update(getting_started_step: 5)
     end
     
     # set sub-guide view
@@ -211,8 +211,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # update getting started step
-    if @user.getting_started_step < 5
-      @user.update(getting_started_step: 5)
+    if @user.getting_started_step < 6
+      @user.update(getting_started_step: 6)
     end
     
     # set sub-guide view
@@ -351,8 +351,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # update getting started step
-    if @user.getting_started_step < 6
-      @user.update(getting_started_step: 6)
+    if @user.getting_started_step < 7
+      @user.update(getting_started_step: 7)
     end
     
     # set sub-guide view
@@ -480,8 +480,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # update getting started step
-    if @user.getting_started_step < 7
-      @user.update(getting_started_step: 7)
+    if @user.getting_started_step < 8
+      @user.update(getting_started_step: 8)
     end
     
     # set sub-guide view
@@ -552,8 +552,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = User.find_by_id(current_user.id)
     # update getting started step
-    if @user.getting_started_step < 8
-      @user.update(getting_started_step: 8)
+    if @user.getting_started_step < 9
+      @user.update(getting_started_step: 9)
     end
     
     # set sub-guide view
@@ -657,10 +657,11 @@ class SignupController < ApplicationController
   def delivery_preferences_getting_started
     # get User info 
     @user = current_user
+
     #Rails.logger.debug("User info: #{@user.inspect}")
     # update getting started step
-    if @user.getting_started_step < 9
-      @user.update(getting_started_step: 9)
+    if @user.getting_started_step < 3
+      @user.update(getting_started_step: 3)
     end
     
     # set sub-guide view
@@ -738,9 +739,7 @@ class SignupController < ApplicationController
     end
     
     #set guide view
-    @user_chosen = 'complete'
-    @drink_chosen = 'complete'
-    @account_chosen = 'current'
+    @user_chosen = 'current'
     @account_address_chosen = 'current'
     @current_page = 'signup'
     
