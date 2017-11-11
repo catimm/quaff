@@ -17,10 +17,10 @@
 	</div>
 	<div class="row">
         <div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-12" id="signup-personal-info-holder">
-            <%= simple_form_for @user_address do |f| %>
+            <%= simple_form_for @user_address, url: {action: "process_delivery_address_getting_started"} do |f| %>
                 <%= render 'user_addresses/user_address_form', f: f %>
 				<div class="form-group">
-					<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-10 text-center">
+					<div class="col-xs-offset-1 col-xs-6 col-sm-offset-1 col-sm-5 text-center">
 						<%= f.submit "Next", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
 					</div>
 				</div>

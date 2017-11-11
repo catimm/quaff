@@ -11,10 +11,14 @@ class SignupController < ApplicationController
       @user.update(getting_started_step: 2)
     end
 
-    @user_address = UserAddress.new
+    @user_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
+
+    if @user_address.blank?
+      @user_address = UserAddress.new
+    end
     
     # set additional data
-    @account_id = params[:format]
+    @account_id = @user.account_id
     @header = "Add a new"
 
     #set guide view
@@ -49,7 +53,22 @@ class SignupController < ApplicationController
     @user_home_address_chosen = 'current'
     
   end # end of home_address_getting_started method
-  
+
+  def process_delivery_address_getting_started
+    @user = current_user
+    @existing_address = UserAddress.where(account_id: @user.account_id, location_type: address_params[:location_type])[0]
+
+    if @existing_address.blank?
+      # create new address
+      @new_address = UserAddress.create(address_params)
+    else
+      # update user address
+      @existing_address.update(address_params)
+    end
+
+    redirect_to delivery_preferences_getting_started_path(current_user.id)
+  end
+    
   def process_home_address_getting_started
     # find if user already has a home address in the DB
     @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
