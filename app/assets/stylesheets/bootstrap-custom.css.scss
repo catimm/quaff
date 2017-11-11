@@ -420,7 +420,7 @@ label {
         margin-left: 2px;
       }
 }
-#signup_birthdate_note {
+#signup_birthdate_note, #signup_phone_note {
   top: -0.7em;
   font-size: 70%;
   color: $normal-text;
@@ -2839,9 +2839,24 @@ $beer-header-lines-to-show-fp: 1;
 }
 
 // User Delivery Location Options
-.location-settings-header {
-    margin: 10px 0 20px 0;
+.delivery-location-help {
+  float: left;
+  margin: 20px 10px 20px 0;
+}
+.delivery-location-option-tile {
+  min-height: 150px;
+  border: 1.75px dashed $less-emphasized-text;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.delivery-info-row {
+  margin: 5px 10px;
+  .delivery-options-header {
+    span {
+      color: $action-background;
+    }
   }
+}
 .location-address-holder {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -2861,6 +2876,15 @@ $beer-header-lines-to-show-fp: 1;
 }
 .add-location {
   padding: 3px 12px;
+}
+.better-option-request-text {
+  color: $normal-text;
+  font-size: 16px;
+  width: 110%;
+}
+.formButton-make-delivery-request {
+  width: 80%;
+  margin-left: 5%;
 }
 .edit-delivery-location-button {
     color: $action-background;
@@ -2930,7 +2954,7 @@ $beer-header-lines-to-show-fp: 1;
   margin: 0 -10px 0 0 !important;
 }
 .add-delivery-location-row {
-  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .no-delivery {
   color: $normal-text;
@@ -3350,11 +3374,24 @@ $beer-header-lines-to-show-fp: 1;
   border: 1px solid $inverse-primary;
   border-radius: 6px;
 }
+.delivery-helpful-hints-text {
+  color: $normal-text;
+}
 .delivery-thoughts-text {
   color: $inverse-primary;
   background-color: $white;
   border-color: $inverse-primary;
-  margin: 10px 0;
+  margin: 0 10px 10px 0;
+  float: left;
+}
+.delivery-neighborhoods {
+  color: $normal-text;
+  margin-top: 10px;
+  line-height: 1.2;
+}
+.delivery-confirmation-text {
+  color: $normal-text;
+  line-height: 1.2;
 }
 .delivery-area-header {
   font-weight: 500;

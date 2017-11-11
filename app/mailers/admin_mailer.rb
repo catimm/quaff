@@ -231,6 +231,31 @@ class AdminMailer < ActionMailer::Base
     
   end # end of admin_message_review email
   
+  def admin_customer_delivery_request(admin_email, user, message)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
+      ],
+      content: {
+        template_id: 'admin-customer-delivery-request'
+      },
+      substitution_data: {
+        user_id: user.id,
+        user_first_name: user.first_name,
+        user_username: user.username,
+        message: message
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of admin_customer_delivery_request email
+  
   def admin_failed_invoice_payment_notice(customer, subscription)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 

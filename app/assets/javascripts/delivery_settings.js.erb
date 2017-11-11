@@ -1,4 +1,11 @@
 $(function () {
+	// show modal to confirm delivery request was made 
+	if (gon.delivery_request == true) {
+		$(window).load(function(){
+	        $('#delivery_request_settings_confirmation').modal('show');
+	    });
+	}
+	
 	$(document).on("scroll", function() {
 	    var second_row = $("#second-delivery-row").width();
 	    //moveScroller();

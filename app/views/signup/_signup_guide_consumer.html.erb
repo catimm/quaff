@@ -6,9 +6,9 @@
 			<div class="fa fa-chevron-right"></div>
 		</div>
 		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @drink_chosen %>">
-			<% if @user.getting_started_step >= 3 %>
-				<%= link_to "drink preferences", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_chosen} hidden-xs" %>
-				<%= link_to "drink", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
+			<% if @user.getting_started_step >= 4 %>
+				<%= link_to "drink preferences", drink_choice_getting_started_path, class: "guide-header #{@drink_chosen} hidden-xs" %>
+				<%= link_to "drink", drink_choice_getting_started_path, class: "guide-header #{@drink_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
 			<% else %>
 				<h5 class="guide-header hidden-xs">drink preferences</h5>
 				<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">drink</h5>
@@ -16,12 +16,10 @@
 			<div class="fa fa-chevron-right"></div>
 		</div>
 		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @account_chosen %>">
-			<% if @user.getting_started_step >= 9 %>
-				<%= link_to "account settings", account_membership_getting_started_path(@user.id), class: "guide-header #{@account_chosen} hidden-xs" %>
-				<%= link_to "account", account_membership_getting_started_path(@user.id), class: "guide-header #{@account_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
+			<% if @user.getting_started_step >= 10 %>
+				<%= link_to "membership", account_membership_getting_started_path, class: "guide-header #{@account_chosen}" %>
 			<% else %>
-				<h5 class="guide-header hidden-xs">account settings</h5>
-				<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">account</h5>
+				<h5 class="guide-header">membership</h5>
 			<% end %>
 		</div>
 	</div>
@@ -61,12 +59,5 @@
 		<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
 			<%= render 'signup/subguide_drink_event_guest' %>
 		</div>
-	<% end %>
-	<% if current_user.role_id == 1 || current_user.role_id == 4 %>
-		<% if @subguide == "account_settings" %>
-			<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
-				<%= render 'signup/subguide_consumer_account_settings' %>
-			</div>
-		<% end %>
 	<% end %>
 </div>

@@ -1,22 +1,17 @@
 <%= simple_form_for @user_address do |f| %>
-		<%= f.hidden_field :account_id, :value => @account_id %>
-		<%= f.hidden_field :current_delivery_location, :value => @current_delivery %>
-		<div class="row no-margin">
-			<div class="col-xs-12 col-sm-8">
-				<h3 class="user-settings-header"><%= @header %> delivery address</h3>
-			</div>
-		</div>
+		<%= f.hidden_field :account_id, :value => current_user.account_id %>
+		<%= f.hidden_field :current_delivery_location %>
 		<div class="row no-margin">
 			<div class="col-xs-12 col-sm-6">
 				<div class="row no-margin">
 					<div class="col-xs-4 col-sm-3 no-padding">
-						<%= label :location_type, 'Location Name' %>
+						<%= label :location_type, 'Location Type' %>
 					</div>
 					<div class="col-xs-8 col-sm-9 no-padding-right">
-						<%= f.input :location_type, priority: [ "Office" ], :collection => ["Office", "Other"], selected: "Office", :class => "form-control new-address-field", required: true, label: false %>
+						<%= f.input :location_type, priority: [ "Office" ], :collection => ["Home", "Office", "Other"], selected: @location_type, :class => "form-control new-address-field", required: true, label: false %>
 					</div>
 				</div>
-				<div class="row no-margin other-name-row-holder hidden">
+				<div class="row no-margin other-name-row-holder <%= @row_status %>">
 					<div class="col-xs-4 col-sm-3 no-padding">
 						<%= label :other_name, 'Other Name' %>
 					</div>

@@ -551,9 +551,32 @@ class DeliverySettingsController < ApplicationController
     @customer_delivery_message.update(admin_notified: true)
     
     redirect_to user_deliveries_path
-  end #send_delivery_message method
+  end # end of customer_delivery_messages method
+  
+  def customer_delivery_requests
+    # get data
+    @message = params[:customer_delivery_request][:message]
+    
+    # add message to DB
+    CustomerDeliveryRequest.create(user_id: current_user.id, message: @message)
+    
+    @admins = ["carl@drinkknird.com", "vince@drinkknird.com"]
+    # now send an email to each Admin to notify of the message
+    @admins.each do |admin_email|
+      #AdminMailer.admin_customer_delivery_request(admin_email, current_user, @message).deliver_now
+    end
+    
+    redirect_to user_delivery_settings_location_path("confirm")
+  end #end of customer_delivery_requests method
   
   def delivery_location
+    # check if format exists and show message confirmation if so
+    if params.has_key?(:format)
+      if params[:format] == "confirm"
+        gon.delivery_request = true
+      end
+    end
+    
     # get user info
     @user = User.find(current_user.id)
     
@@ -679,6 +702,11 @@ class DeliverySettingsController < ApplicationController
     
     # find if the account has any other users (for menu links)
     @mates = User.where(account_id: @user.account_id, getting_started_step: 11).where.not(id: @user.id)
+    
+    # create new CustomerDeliveryRequest instance
+    @customer_delivery_request = CustomerDeliveryRequest.new
+    # and set correct path for form
+    @customer_delivery_request_path = customer_delivery_requests_settings_path
     
   end # end of delivery_location method
   

@@ -6,8 +6,10 @@ class UserAddressesController < ApplicationController
     
     # set additional data
     @account_id = params[:format]
+    @location_type = "Office"
     @current_delivery = false
     @header = "Add a new"
+    @row_status = "hidden"
     
     # set session to remember page arrived from 
     session[:return_to] ||= request.referer
@@ -23,7 +25,7 @@ class UserAddressesController < ApplicationController
       redirect_to session.delete(:return_to)
     else # assume this is  coming from the signup process
       # redirect to next step in signup process
-      redirect_to delivery_preferences_getting_started_path(current_user.id)
+      redirect_to delivery_preferences_getting_started_path
     end
       
   end # end of create method
@@ -32,15 +34,14 @@ class UserAddressesController < ApplicationController
     # find address to edit
     @user_address = UserAddress.find_by_id(params[:id])
     
-    # get additional data for hidden fields
-    @account_id = params[:format]
-    @current_delivery = @user_address.current_delivery_location
-    
-    # get location name
+    # get location type and name
+    @location_type = @user_address.location_type
     if @user_address.location_type == "Other"
       @location_name = @user_address.other_name
+      @row_status = "show"
     else
       @location_name = @user_address.location_type
+      @row_status = "hidden"
     end
     @header = "Edit " + @location_name
     

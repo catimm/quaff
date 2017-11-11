@@ -91,7 +91,9 @@ Rails.application.routes.draw do
   #post '/delivery_settings/change_delivery_drink_quantity/:id' => 'delivery_settings#change_delivery_drink_quantity', :as => 'change_delivery_drink_quantity'
   post '/delivery_settings/remove_delivery_drink_quantity/:id' => 'delivery_settings#remove_delivery_drink_quantity'
   post '/delivery_settings/customer_delivery_messages/' => 'delivery_settings#customer_delivery_messages', :as => 'customer_delivery_messages'
-
+  post '/delivery_settings/customer_delivery_requests/' => 'delivery_settings#customer_delivery_requests', :as => 'customer_delivery_requests_settings'
+  post '/signup/customer_delivery_requests/' => 'signup#customer_delivery_requests', :as => 'customer_delivery_requests_signup'
+  
   # routes to user drink preferences pages
   get '/drink_preferences/drink_profile/:id' => 'drink_preferences#drink_profile', :as => 'user_profile'
   get '/drink_preferences/drink_settings/:id' => 'drink_preferences#drink_settings', :as => 'user_drink_settings'

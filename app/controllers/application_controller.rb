@@ -49,8 +49,16 @@ class ApplicationController < ActionController::Base
   end
   
   def authenticate_user!(options={})
-    if user_signed_in?
-      super(options)
+    if user_signed_in? 
+      Rails.logger.debug("User signed in")
+      if current_user.getting_started_step == 11
+        Rails.logger.debug("User completed signup")
+        super(options)
+      else
+        Rails.logger.debug("User did not complete signup")
+        sign_out current_user
+        redirect_to root_path
+      end
     else
       session[:user_return_to] = request.fullpath
       redirect_to new_user_session_path, :notice => 'Please log in first!'
@@ -71,8 +79,26 @@ class ApplicationController < ActionController::Base
     # set a different first view based on the user type
     if !session[:user_return_to].nil?
       @first_view = session[:user_return_to]
-    elsif  @user.getting_started_step < 11
+    elsif  @user.getting_started_step < 2
       @first_view = edit_user_path(@user.id)
+    elsif  @user.getting_started_step == 2
+      @first_view = delivery_address_getting_started_path
+    elsif  @user.getting_started_step == 3
+      @first_view = delivery_preferences_getting_started_path
+    elsif  @user.getting_started_step == 4
+      @first_view = drink_choice_getting_started_path
+    elsif  @user.getting_started_step == 5
+      @first_view = drink_journey_getting_started_path
+    elsif  @user.getting_started_step == 6
+      @first_view = drink_style_likes_getting_started_path
+    elsif  @user.getting_started_step == 7
+      @first_view = drink_style_dislikes_getting_started_path
+    elsif  @user.getting_started_step == 8
+      @first_view = drinks_weekly_getting_started_path
+    elsif  @user.getting_started_step == 9
+      @first_view = drinks_large_getting_started_path
+    elsif  @user.getting_started_step == 10
+      @first_view = account_membership_getting_started_path
     else
       if current_user.role_id == 1
         @first_view = admin_breweries_path
