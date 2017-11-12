@@ -802,7 +802,7 @@ ActiveRecord::Schema.define(version: 20171110231131) do
     t.string   "special_code"
     t.string   "tpw"
     t.integer  "account_id"
-    t.string   "mobile_number"
+    t.string   "phone"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

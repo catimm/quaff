@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   database: staging-data
   username: carltimm
-  password: password123
+  password: 
   pool: 5
   timeout: 5000
   port: 5432
