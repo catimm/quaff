@@ -50,14 +50,11 @@ class ApplicationController < ActionController::Base
   
   def authenticate_user!(options={})
     if user_signed_in? 
-      Rails.logger.debug("User signed in")
       if current_user.getting_started_step == 11
-        Rails.logger.debug("User completed signup")
         super(options)
       else
-        Rails.logger.debug("User did not complete signup")
         sign_out current_user
-        redirect_to root_path
+        redirect_to new_user_session_path, :notice => 'Please log in first!'
       end
     else
       session[:user_return_to] = request.fullpath

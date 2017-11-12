@@ -46,6 +46,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauth_providers => [:facebook, :twitter]
   
   validates_confirmation_of :password
+  validates :password_confirmation, :presence =>true, on: :create # only on create so users can edit without needing to input a new password with confirmation
   validates_uniqueness_of :username, if: "!username.nil?"
   
   # add searchkick to find other users (friends)

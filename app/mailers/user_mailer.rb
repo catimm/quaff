@@ -30,7 +30,7 @@ class UserMailer < ActionMailer::Base
   
   def guest_invite_email(invited, invitor)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-     
+    Rails.logger.debug("Raw invitation token: #{invited.raw_invitation_token.inspect}")
     payload  = {
       recipients: [
         {
@@ -452,7 +452,7 @@ class UserMailer < ActionMailer::Base
     
   end # end of delivery_date_with_end_date_change_confirmation email
   
-  def welcome_email(customer, membership_name, subscription_fee, renewal_date, membership_length)
+  def welcome_email(customer, membership_name, membership_deliveries, subscription_fee, renewal_date, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     
     @customer_delivery_preference = DeliveryPreference.find_by_user_id(customer.id)
@@ -478,6 +478,7 @@ class UserMailer < ActionMailer::Base
         drink_preference: @drink_preference,
         customer_id: customer.id,
         membership_name: membership_name,
+        membership_deliveries: membership_deliveries,
         subscription_fee: subscription_fee,
         renewal_date: renewal_date,
         membership_length: membership_length

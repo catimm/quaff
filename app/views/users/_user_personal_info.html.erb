@@ -18,9 +18,9 @@
 </div>
 <% if @show_phone == true %>
 	<div class="form-group">
-		<label for="phone_field" class="col-xs-4 col-sm-3 control-label">Phone <sup  id="signup_phone_note" data-toggle="tooltip" title="This is how we'll provide an update on delivery times.">?</sup></label>
+		<label for="phone_field" class="col-xs-4 col-sm-3 control-label">Mobile <sup  id="signup_phone_note" data-toggle="tooltip" title="This is how we'll provide an update on delivery times.">?</sup></label>
 		<div class="col-xs-8 col-sm-9">
-			<%= f.input :phone, as: :tel, input_html: { class: "form-control", id: "phone_field" }, placeholder: "Phone (for texts when delivering)", label: false, required: true %>
+			<%= f.input :phone, as: :tel, input_html: { class: "form-control", id: "phone_field" }, placeholder: "Mobile (for texts when delivering)", label: false, required: true %>
 		</div>
 	</div>
 <% end %>

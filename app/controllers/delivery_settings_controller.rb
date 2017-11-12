@@ -100,6 +100,9 @@ class DeliverySettingsController < ApplicationController
     # get user info
     @user = User.find(params[:id])
     
+    # get account owner info
+    @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
+    
     # set current page for jquery routing--preferences vs singup settings
     @current_page = "preferences"
     
@@ -139,7 +142,7 @@ class DeliverySettingsController < ApplicationController
     end
     
     # get user's delivery info
-    @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").first
+    @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").order("delivery_date ASC").first
     
     # get user's subscription info for delivery change date
 
@@ -242,11 +245,11 @@ class DeliverySettingsController < ApplicationController
     @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
 
     # get monthly estimates
-    @user_subscription = UserSubscription.where(user_id: current_user.id).first
+    @user_subscription = UserSubscription.where(user_id: @account_owner.id).first
     @user_subscription_name = @user_subscription.subscription.subscription_name
     @user_subscription_cost = @user_subscription.subscription.subscription_cost
     
-  end # end of delivery_settings method
+  end # end of index method
   
   def deliveries_update_estimates
     # get data to add/update
@@ -323,15 +326,18 @@ class DeliverySettingsController < ApplicationController
   end # end of deliveries_update_preferences
   
   def change_next_delivery_date
-    @requested_delivery_date = params[:id] + " 13:00:00"
+    @requested_delivery_date = params[:id]
     @new_delivery_date = DateTime.parse(@requested_delivery_date)
+    @second_delivery_date = @new_delivery_date + 14.days
     #Rails.logger.debug("Date chosen: #{@new_delivery_date.inspect}")
     
     # get user info
     @customer = User.find_by_id(current_user.id)
     
     # get user's delivery info
-    @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").first
+    @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
+    @first_delivery = @all_upcoming_deliveries.order("delivery_date DESC").first
+    @second_delivery = @all_upcoming_deliveries.order("delivery_date DESC").second
     
     # extend current membership active until date if new delivery date is pushed into the future
     @user_subscription = UserSubscription.find_by_user_id(current_user.id)
@@ -359,23 +365,27 @@ class DeliverySettingsController < ApplicationController
     # send confirmation and update accordingly
     if @possible_new_active_until_date > @current_active_until_date 
       # send a confirmation email about the change
-      UserMailer.delivery_date_with_end_date_change_confirmation(@customer, @delivery.delivery_date, @new_delivery_date).deliver_now
+      UserMailer.delivery_date_with_end_date_change_confirmation(@customer, @first_delivery.delivery_date, @new_delivery_date).deliver_now
     else  
       # send a confirmation email about the change
-      UserMailer.delivery_date_change_confirmation(@customer, @delivery.delivery_date, @new_delivery_date).deliver_now
+      UserMailer.delivery_date_change_confirmation(@customer, @first_delivery.delivery_date, @new_delivery_date).deliver_now
     end
 
     # send Admin an email about delivery date change 
-    AdminMailer.delivery_date_change_notice('carl@drinkknird.com', @customer, @delivery.delivery_date, @new_delivery_date).deliver_now
+    AdminMailer.delivery_date_change_notice('carl@drinkknird.com', @customer, @first_delivery.delivery_date, @new_delivery_date).deliver_now
     
-    # remove drinks from user delivery table
-    @user_delivery_drinks = UserDelivery.where(delivery_id: @delivery.id)
-    if !@user_delivery_drinks.blank?
-      @user_delivery_drinks.destroy_all
+    # remove drinks from account delivery table
+    @account_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
+    if !@account_delivery_drinks.blank?
+      @account_delivery_drinks.each do |account_drink|
+        UserDelivery.where(account_delivery_id: account_drink.id).destroy
+      end
+      @account_delivery_drinks.destroy_all
     end
     
     # now update delivery date and status
-    @delivery.update(delivery_date: @new_delivery_date, status: "admin prep")
+    @first_delivery.update_attribute(:delivery_date, @new_delivery_date)
+    @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
     
     redirect_to user_delivery_settings_path(current_user.id)
     

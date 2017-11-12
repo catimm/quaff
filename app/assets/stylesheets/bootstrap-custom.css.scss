@@ -235,6 +235,9 @@ body {
   overflow-x: hidden;
 
 }
+#flash_notice {
+  color: $bootstrap-red-button-hover-background;
+}
 .body-retail-index {
   padding-bottom: 0 !important;
 }
@@ -2873,6 +2876,9 @@ $beer-header-lines-to-show-fp: 1;
 .add-location-direction-text {
   margin-top: 45px;
   color: $normal-text;
+  span {
+    color: $action-background;
+  }
 }
 .add-location {
   padding: 3px 12px;

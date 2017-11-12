@@ -7,28 +7,13 @@ class ReloadsController < ApplicationController
   
   
   def index
-    # get all users currently with a delivery the next day
-    @tomorrow_deliveries = Delivery.
-                                where(status: "user review").
-                                where(delivery_date: (1.day.from_now.beginning_of_day)..(1.day.from_now.end_of_day))
+    @early_signup_customers = User.where.not(tpw: nil)
+    Rails.logger.debug("Early signup customers: #{@early_signup_customers.inspect}")
     
-    if !@tomorrow_deliveries.blank?
-      
-      # cycle through each delivery
-      @tomorrow_deliveries.each do |delivery|
-        # now change the delivery status for the user
-        delivery.update(status: "in progress")
-      end
-      
-    end # end of looping through each delivery in review
-      
-    #@early_signup_customers = User.where.not(tpw: nil)
-    #Rails.logger.debug("Early signup customers: #{@early_signup_customers.inspect}")
-    
-    #@early_signup_customers.each do |customer|
-    #  # send customer email to complete signup
-    #  UserMailer.set_first_password_email(customer).deliver_now
-    #end
+    @early_signup_customers.each do |customer|
+      # send customer email to complete signup
+      UserMailer.set_first_password_email(customer).deliver_now
+    end
     
   end # end of index method
   

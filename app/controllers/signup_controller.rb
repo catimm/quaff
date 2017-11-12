@@ -14,18 +14,15 @@ class SignupController < ApplicationController
     # set subguide view
     @subguide = "user_info"
     
-    # set user info
+    # set user info--Note, after removing "before_filter :authenticate_user!", current_user is no longer an object, but an instance
     @user = current_user
     
     if @user.getting_started_step < 2
-      @user.update(getting_started_step: 2)
+      @user.update_attribute(:getting_started_step, 2) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # create new user address instance
     @user_address = UserAddress.new
-    
-    # set additional data
-    #@account_id = params[:format]
     
   end # end delivery_address_getting_started method
 
@@ -54,7 +51,7 @@ class SignupController < ApplicationController
     #Rails.logger.debug("User info: #{@user.inspect}")
     # update getting started step
     if @user.getting_started_step < 3
-      @user.update(getting_started_step: 3)
+      @user.update_attribute(:getting_started_step, 3)
     end
     
     # get Account info
@@ -163,10 +160,20 @@ class SignupController < ApplicationController
       # update the current delivery time/zone
       UserAddress.update(@current_delivery_address.id, delivery_zone_id: @delivery_zone)
       # change next delivery date in deliveries table
-      @user_next_delivery_info = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")[0]
+      @user_next_delivery_info = Delivery.where(account_id: current_user.account_id).where(status: "admin prep")[0]
       # update record
       if !@user_next_delivery_info.blank?
         @user_next_delivery_info.update(delivery_date: @final_delivery_date)
+      else
+        # create first line in delivery table, but without status until customer pays membership fee
+        @next_delivery = Delivery.create(account_id: current_user.account_id, 
+                                        delivery_date: @final_delivery_date,
+                                        status: nil,
+                                        subtotal: 0,
+                                        sales_tax: 0,
+                                        total_price: 0,
+                                        delivery_change_confirmation: false,
+                                        share_admin_prep_with_user: false)
       end
     else # both address and delivery time/zone need to be updated
       # update the chosen address to be the delivery address
@@ -181,17 +188,9 @@ class SignupController < ApplicationController
                                       delivery_change_confirmation: false,
                                       share_admin_prep_with_user: false)
     end
-    
-    # find if customer already has a subscription (for early sign-up customers)
-    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
-    
-    if !@user_subscription.blank? && !@user_subscription.stripe_subscription_number.nil?
-      # redirect to thank you page because user already has a subscription
-      redirect_to signup_thank_you_path(current_user.id)
-    else # user needs to choose a subscription 
-      # redirect back to the delivery location page
-      redirect_to drink_choice_getting_started_path()
-    end
+
+    # redirect to first drink preference page
+    redirect_to drink_choice_getting_started_path
     
   end # end of choose_delivery_time method
   
@@ -216,7 +215,7 @@ class SignupController < ApplicationController
     @user = current_user
     # update getting started step
     if @user.getting_started_step < 4
-      @user.update(getting_started_step: 4)
+      @user.update_attribute(:getting_started_step, 4)
     end
     
     # set sub-guide view
@@ -285,7 +284,7 @@ class SignupController < ApplicationController
     @user = current_user
     # update getting started step
     if @user.getting_started_step < 5
-      @user.update(getting_started_step: 5)
+      @user.update_attribute(:getting_started_step, 5)
     end
     
     # set sub-guide view
@@ -340,16 +339,13 @@ class SignupController < ApplicationController
     @data = params[:format]
     
     # get User info 
-    @user = User.find(current_user.id)
+    @user = current_user
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     
     # save the user craft stage data
-    @user.update(craft_stage_id: @data)
-    
-    # clear params :format
-    params[:format].delete if params.has_key?(:format)
+    @user.update_attribute(:craft_stage_id, @data)
     
     # don't change the view
     render :nothing => true
@@ -360,7 +356,7 @@ class SignupController < ApplicationController
     @user = current_user
     # update getting started step
     if @user.getting_started_step < 6
-      @user.update(getting_started_step: 6)
+      @user.update_attribute(:getting_started_step, 6)
     end
     
     # set sub-guide view
@@ -487,9 +483,6 @@ class SignupController < ApplicationController
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     @delivery_preferences.update(gluten_free: @value)
     
-    # clear params :format
-    params[:format].delete if params.has_key?(:format)
-    
     # don't change the view
     render :nothing => true
     
@@ -500,7 +493,7 @@ class SignupController < ApplicationController
     @user = current_user
     # update getting started step
     if @user.getting_started_step < 7
-      @user.update(getting_started_step: 7)
+      @user.update_attribute(:getting_started_step, 7)
     end
     
     # set sub-guide view
@@ -629,7 +622,7 @@ class SignupController < ApplicationController
     @user = current_user
     # update getting started step
     if @user.getting_started_step < 8
-      @user.update(getting_started_step: 8)
+      @user.update_attribute(:getting_started_step, 8)
     end
     
     # set sub-guide view
@@ -701,7 +694,7 @@ class SignupController < ApplicationController
     @user = User.find_by_id(current_user.id)
     # update getting started step
     if @user.getting_started_step < 9
-      @user.update(getting_started_step: 9)
+      @user.update_attribute(:getting_started_step, 9)
     end
     
     # set sub-guide view
@@ -765,6 +758,10 @@ class SignupController < ApplicationController
       @next_step = account_membership_getting_started_path(@user.id)
     end
     
+    if !@user.tpw.nil?  
+      @next_step = signup_thank_you_path(@user.id)
+    end
+    
   end # end of drinks_weekly_getting_started action
   
   def process_drinks_large_getting_started
@@ -802,14 +799,12 @@ class SignupController < ApplicationController
     
   end # end of drinks_weekly_getting_started action
   
-  
-  
   def account_membership_getting_started
     # get User info 
     @user = current_user
     # update getting started step
     if @user.getting_started_step < 10
-      @user.update(getting_started_step: 10)
+      @user.update_attribute(:getting_started_step, 10)
     end
     
     #set guide view
@@ -859,7 +854,7 @@ class SignupController < ApplicationController
         @invitor = SpecialCode.find_by_special_code(@user.special_code)
         # get invitor current reward points info
         @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
-        @new_total_points = @invitor_reward_pnoints.total_points + @bottle_caps
+        @new_total_points = @invitor_reward_points.total_points + @bottle_caps
       end
     else
       @active_until = Date.today + 1.year
@@ -880,7 +875,7 @@ class SignupController < ApplicationController
                               auto_renew_subscription_id: @subscription_info.id,
                               deliveries_this_period: 0,
                               total_deliveries: 0,
-                              account_id: params[:format],
+                              account_id: @user.account_id,
                               renewals: 0,
                               currently_active: true)
                                 
@@ -923,10 +918,52 @@ class SignupController < ApplicationController
     # get user info
     @user = User.find_by_id(params[:id])
     
-    if @user.getting_started_step == 10
-      @user.update(getting_started_step: 11)
+    if @user.role_id == 4 || @user.role_id == 1
+      if @user.getting_started_step == 10
+        @user.update_attribute(:getting_started_step, 11)
+      end
+      if !@user.tpw.nil?
+        @user.update_attribute(:getting_started_step, 11)
+      end
+    else
+      if @user.getting_started_step == 9
+        @user.update_attribute(:getting_started_step, 11)
+      end
     end
-   
+
+    if !@user.tpw.nil?
+      # get first Delivery line in the DB
+      @delivery_info = Delivery.where(account_id: @user.account_id).first
+      
+      # update Delivery info with admin prep status
+      @delivery_info.update(status: "admin prep")
+    
+      # and create second line in delivery table so curator has option to plan ahead
+      @next_delivery_date = @delivery_info.delivery_date + 2.weeks
+      Delivery.create(account_id: @delivery_info.account_id, 
+                      delivery_date: @next_delivery_date,
+                      status: "admin prep",
+                      subtotal: 0,
+                      sales_tax: 0,
+                      total_price: 0,
+                      delivery_change_confirmation: false,
+                      share_admin_prep_with_user: false)
+    
+      # remove temporary password if it exists
+      @user.update(tpw: nil)
+    end
+    
+    # send welcome email if user is account owner
+    if @user.role_id == 1 || @user.role_id == 4
+      @user_subscription = UserSubscription.find_by_user_id(@user.id)
+      @membership_name = @user_subscription.subscription.subscription_name
+      @membership_deliveries = @user_subscription.subscription.deliveries_included
+      @subscription_fee = (@user_subscription.subscription.subscription_cost * @user_subscription.subscription.subscription_months_length)
+      @renewal_date = (Date.today + @user_subscription.subscription.subscription_months_length).strftime("%b %-d, %Y")
+      @membership_length = @user_subscription.subscription.subscription_months_length
+      UserMailer.welcome_email(@user, @membership_name, @membership_deliveries, @subscription_fee, @renewal_date, @membership_length).deliver_now
+    end
+    
   end # end of signup_thank_you action
   
   def early_signup

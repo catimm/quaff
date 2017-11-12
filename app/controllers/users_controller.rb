@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   def new
     @user = User.new
     @code = params[:format]
-    #Rails.logger.debug("Code: #{@code.inspect}")
+    Rails.logger.debug("User: #{@user.inspect}")
     
     # show phone row for new users (assuming they will be the account owner)
     @show_phone = true
@@ -73,7 +73,8 @@ class UsersController < ApplicationController
   
   def edit
     @user = User.find_by_id(params[:id])
-
+    #Rails.logger.debug("User info: #{@user.inspect}")
+    
     if @user.id != current_user.id
       return head :forbidden
     end
@@ -105,11 +106,14 @@ class UsersController < ApplicationController
   
   def update 
     @user = User.find_by_id(current_user.id)
+    #Rails.logger.debug("User info: #{@user.inspect}")
     if @user.id != current_user.id
+      #Rails.logger.debug("Forbidden runs")
       return head :forbidden
     end
     
     if @user.update(user_params)
+      #Rails.logger.debug("User updated")
       # Sign in the user by passing validation in case their password changed
       sign_in @user, :bypass => true
 
@@ -145,7 +149,7 @@ class UsersController < ApplicationController
       flash[:error] = @user.errors.full_messages[0]
 
       # redirect back to user account page
-      redirect_to :edit
+      redirect_to :action => 'edit'
     end
   end # end update action 
   
@@ -160,15 +164,10 @@ class UsersController < ApplicationController
     if @user.update(new_user_params)
       # Sign in the user by passing validation in case their password changed
       sign_in @user, :bypass => true
-      
-      # remove temporary password if it exists
-      if !@user.tpw.nil?
-        @user.update(tpw: nil)
-      end
     end
-      
+    
     # redirect to next step in signup process
-    redirect_to :edit
+    redirect_to :action => 'edit'
     
   end # end process_first_password method
   
@@ -787,8 +786,8 @@ class UsersController < ApplicationController
   
   def new_user_params
     params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :role_id, :cohort, 
-                                 :password, :special_code, :user_color, :account_id, :getting_started_step,
-                                 :phone)  
+                                 :password, :password_confirmation, :special_code, :user_color, :account_id, 
+                                 :getting_started_step, :phone)  
   end
   
 end

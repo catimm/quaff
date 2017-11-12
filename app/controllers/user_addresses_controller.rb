@@ -5,7 +5,6 @@ class UserAddressesController < ApplicationController
     @user_address = UserAddress.new
     
     # set additional data
-    @account_id = params[:format]
     @location_type = "Office"
     @current_delivery = false
     @header = "Add a new"
