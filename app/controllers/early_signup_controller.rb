@@ -15,22 +15,26 @@ class EarlySignupController < ApplicationController
   
   def process_invitation_code
     # get special code
-    @code = params[:id]
+    @code = params[:user][:special_code]
     
     @code_check = SpecialCode.where(special_code: @code)
-    #Rails.logger.debug("Code check info: #{@code_check.inspect}")
     
     if !@code_check.blank?
       @match = "yes"
       
-      render js: "window.location = '#{new_user_path(@code)}'"
-      #redirect_to early_signup_path("account", @code)
+      #render js: "window.location = '#{new_user_path(@code)}'"
+      redirect_to new_user_path(@code)
     else
-      @match = "no"
-      @message = 'Sorry, that code is not valid.'
+      # create User object 
+      @user = User.new
+      
+      # instantiate invitation request in case user doesn't have a code
+      @request_invitation = InvitationRequest.new
+      flash.now[:alert] = 'Sorry, that code is not valid.'
       respond_to do |format|
-        format.js
-      end # end of redirect to jquery
+        format.html {render invitation_code_path}
+      end # end of flash alert
+    
     end
     
   end # end process_invitation_code action

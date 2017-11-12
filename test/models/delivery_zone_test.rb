@@ -13,6 +13,7 @@
 #  max_account_number     :integer
 #  current_account_number :integer
 #  beginning_at           :datetime
+#  delivery_driver_id     :integer
 #
 
 require 'test_helper'

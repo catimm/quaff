@@ -180,7 +180,7 @@ Rails.application.routes.draw do
   
   # user early signup process
   get '/early_signup/invitation_code' => 'early_signup#invitation_code', :as => 'invitation_code'
-  post '/early_signup/process_invitation_code/:id' => 'early_signup#process_invitation_code', :as => 'process_invitation_code'
+  post '/early_signup/process_invitation_code' => 'early_signup#process_invitation_code', :as => 'process_invitation_code'
   
   post '/early_signup/request_code' => 'early_signup#request_code', :as => 'request_code'
   get '/early_signup/request_verification/:id' => 'early_signup#request_verification', :as => 'request_verification'

@@ -841,9 +841,13 @@ class SignupController < ApplicationController
         @reward_transaction_type_id = 1
         # find user who invited the new user
         @invitor = SpecialCode.find_by_special_code(@user.special_code)
-        # get invitor current reward points infon
-        @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
-        @new_total_points = @invitor_reward_points.total_points + @bottle_caps
+        if @invitor.user.role_id != 1
+          # get invitor current reward points info
+          @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
+          if !@invitor_reward_points.blank?
+            @new_total_points = @invitor_reward_points.total_points + @bottle_caps
+          end
+        end # end of check whether invitor is an admin
       end
     elsif @subscription_info.id == 3
       @active_until = Date.today + 1.year
@@ -852,18 +856,29 @@ class SignupController < ApplicationController
         @reward_transaction_type_id = 1
         # find user who invited the new user
         @invitor = SpecialCode.find_by_special_code(@user.special_code)
-        # get invitor current reward points info
-        @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
-        @new_total_points = @invitor_reward_points.total_points + @bottle_caps
+        if @invitor.user.role_id != 1
+          # get invitor current reward points info
+          @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
+          if !@invitor_reward_points.blank?
+            @new_total_points = @invitor_reward_points.total_points + @bottle_caps
+          end
+        end # end of check whether invitor is an admin
       end
     else
       @active_until = Date.today + 1.year
     end
     
-    # now award Reward Points to invitor
-    RewardPoint.create(account_id: @invitor.user.account_id, total_points: @new_total_points, transaction_points: @bottle_caps,
-                            reward_transaction_type_id: @reward_transaction_type_id, friend_user_id: @user.id)
-                            
+    # now award Reward Points to invitor if invitor is not an admin
+    if @invitor.user.role_id != 1
+      if !@invitor_reward_points.blank?
+        RewardPoint.create(account_id: @invitor.user.account_id, total_points: @new_total_points, transaction_points: @bottle_caps,
+                                reward_transaction_type_id: @reward_transaction_type_id, friend_user_id: @user.id)
+      else
+        RewardPoint.create(account_id: @invitor.user.account_id, total_points: @bottle_caps, transaction_points: @bottle_caps,
+                                reward_transaction_type_id: @reward_transaction_type_id, friend_user_id: @user.id)
+      end
+    end # end of check whether invitor is an admin
+                              
     # check if user already has a subscription row
     @user_subscription = UserSubscription.find_by_user_id(@user.id)
     

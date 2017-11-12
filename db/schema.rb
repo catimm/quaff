@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171110231131) do
+ActiveRecord::Schema.define(version: 20171112233523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -260,6 +260,12 @@ ActiveRecord::Schema.define(version: 20171110231131) do
     t.datetime "delivered_at"
   end
 
+  create_table "delivery_drivers", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "delivery_preferences", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "drinks_per_week"
@@ -286,6 +292,7 @@ ActiveRecord::Schema.define(version: 20171110231131) do
     t.integer  "max_account_number"
     t.integer  "current_account_number"
     t.datetime "beginning_at"
+    t.integer  "delivery_driver_id"
   end
 
   create_table "disti_change_temps", force: :cascade do |t|

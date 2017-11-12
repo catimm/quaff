@@ -58,7 +58,8 @@ class User < ActiveRecord::Base
   belongs_to :role 
   belongs_to :account
   
-  has_many :user_deliveries    
+  has_many :user_deliveries
+  has_many :delivery_drivers    
   has_many :admin_user_deliveries   
   has_many :user_subscriptions
   has_many :user_beer_ratings

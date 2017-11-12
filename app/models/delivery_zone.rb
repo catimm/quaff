@@ -13,9 +13,12 @@
 #  max_account_number     :integer
 #  current_account_number :integer
 #  beginning_at           :datetime
+#  delivery_driver_id     :integer
 #
 
 class DeliveryZone < ActiveRecord::Base
   attr_accessor :next_available_delivery_date # to hold temp variable for next available delivery date
+  
+  belongs_to :delivery_driver
   
 end

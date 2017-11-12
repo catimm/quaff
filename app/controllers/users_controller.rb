@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   def new
     @user = User.new
     @code = params[:format]
-    Rails.logger.debug("User: #{@user.inspect}")
+    #Rails.logger.debug("User: #{@user.inspect}")
     
     # show phone row for new users (assuming they will be the account owner)
     @show_phone = true

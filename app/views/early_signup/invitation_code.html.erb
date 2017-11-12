@@ -19,7 +19,7 @@
 				<div class="col-xs-0 col-sm-2 col-md-3"></div>
 				<div class="col-xs-12 col-sm-8 col-md-6">
 					<div class="row no-margin user-info-form">
-						<%= simple_form_for @user, :url => '/early_signup/process_invitation_code/:id', :html => { :class => 'form-horizontal' }, :remote => true do |f| %>
+						<%= simple_form_for @user, :url => process_invitation_code_path, :html => { :class => 'form-horizontal' } do |f| %>
 							<div class="col-xs-3 col-sm-4 col-md-3 no-padding-left">
 								<label for="discount_field" class="control-label invitation-code-label">Invitation code</label> 	
 							</div>
@@ -28,13 +28,18 @@
 											input_html: { class: "form-control", id: "special_code" }, 
 											placeholder: "Early signup invitation code here", 
 											label: false, required: true %>
-								<h5 class="discount-code-response hidden" id="invalid_code"></h5>
+								<% flash.each do |name, msg| %>
+								    <% if msg.is_a?(String) && ["alert", "error", "warning", "notice"].include?(name) %>
+								        <div class="flash-message" data-type="<%= name %>" >
+								          <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+								        </div>
+									<% end %>
+								<% end %>
 							</div>
 					</div>
 				</div>
 				<div class="row no-margin">
-					<div class="col-xs-0 col-sm-3 col-md-4"></div>
-					<div class="col-xs-12 col-sm-6 col-md-4 text-center">
+					<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
 						<%= f.submit "Next", class: "btn btn-success formButton code-verification-next-button" %>
 						<h5 class="terms-and-conditions-text">Don't have a code? 
 							<%= link_to "Request one here", "#", :class => 'text-center', data: {toggle: "modal", target: "#early_code_request"} %>

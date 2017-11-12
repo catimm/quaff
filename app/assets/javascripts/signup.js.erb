@@ -100,17 +100,6 @@ $(function() {
 		}
 	});
 	
-	// search for invitation code to see if valid
-	$(document).on("click", ".code-verification-next-button", function() {
-		value = $('#special_code').val();
-		delay(function(){
-			$.ajax({
-			  type: "POST",
-			  url: "/early_signup/process_invitation_code/" + value
-			});
-	    }, 500 );
-	});
-	
 	// clear invalid response 
 	$(document).on("keyup", "#special_code", function() {
 		if ($("#invalid_code").hasClass('show')) {
