@@ -336,8 +336,10 @@ class DeliverySettingsController < ApplicationController
     
     # get user's delivery info
     @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
-    @first_delivery = @all_upcoming_deliveries.order("delivery_date DESC").first
-    @second_delivery = @all_upcoming_deliveries.order("delivery_date DESC").second
+    @first_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
+    Rails.logger.debug("first delivery date: #{@first_delivery.inspect}")
+    @second_delivery = @all_upcoming_deliveries.order("delivery_date ASC").second
+    Rails.logger.debug("second delivery date: #{@second_delivery.inspect}")
     
     # extend current membership active until date if new delivery date is pushed into the future
     @user_subscription = UserSubscription.find_by_user_id(current_user.id)
