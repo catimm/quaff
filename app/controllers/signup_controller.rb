@@ -758,7 +758,11 @@ class SignupController < ApplicationController
       @next_step = account_membership_getting_started_path(@user.id)
     end
     
-    if !@user.tpw.nil?  
+    # find if user already has a user subscription
+    @user_subscription = UserSubscription.find_by_user_id(@user.id)
+    
+    # bypass the membership page if user already has a subscription
+    if !@user_subscription.blank?  
       @next_step = signup_thank_you_path(@user.id)
     end
     
