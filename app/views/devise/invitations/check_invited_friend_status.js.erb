@@ -5,4 +5,7 @@
 	}
 <% else %>
 	$("#invite-friend-failure-notice").removeClass('hidden').addClass('show');
+	if ($("#invite-friend-submit-button").is(':enabled')) {
+		$("#invite-friend-submit-button").prop('disabled', true);
+	}
 <% end %>

@@ -64,11 +64,9 @@
 									:url => {:controller => "signup", :action => "process_drink_style_likes_getting_started"}, 
 									:remote => true, :html => { :class => 'form-horizontal' } do |f| %>
 									<label for="gluten_free_field" class="col-xs-4 col-sm-3 control-label gluten-free-label">Yes</label>
-									<%= f.input :gluten_free, input_html: { class: "form-control", id: "gluten_free_field" }, 
-										:label => false, :as => :boolean do %>
-											<% f.check_box :gluten_free, {}, "true", "false" %>
-									 <% end %>
-									
+									<%= f.check_box :gluten_free,
+											input_html: { checked: @delivery_preferences.gluten_free, class: "form-control", id: "gluten_free_field" }, 
+											:label => false %>	
 								<% end %>
 							</div>
 						</div>

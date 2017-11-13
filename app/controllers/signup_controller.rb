@@ -271,7 +271,7 @@ class SignupController < ApplicationController
     if !@delivery_preferences.blank?
       @delivery_preferences.update(drink_option_id: @data)
     else
-      @new_delivery_preference = DeliveryPreference.create(user_id: @user.id, drink_option_id: @data)
+      @new_delivery_preference = DeliveryPreference.create(user_id: @user.id, drink_option_id: @data, gluten_free: false)
     end
     
     # don't change the view
@@ -869,7 +869,7 @@ class SignupController < ApplicationController
     end
     
     # now award Reward Points to invitor if invitor is not an admin
-    if @invitor.user.role_id != 1
+    if @invitor.user.role_id != 1 && @subscription_info.id != 1
       if !@invitor_reward_points.blank?
         RewardPoint.create(account_id: @invitor.user.account_id, total_points: @new_total_points, transaction_points: @bottle_caps,
                                 reward_transaction_type_id: @reward_transaction_type_id, friend_user_id: @user.id)
@@ -920,10 +920,6 @@ class SignupController < ApplicationController
                     total_price: 0,
                     delivery_change_confirmation: false,
                     share_admin_prep_with_user: false)
-                                    
-    # assign invitation code for user to share
-    @next_available_code = SpecialCode.where(user_id: nil).first
-    @next_available_code.update(user_id: @user.id)
                      
     # redirect user to signup thank you page
     redirect_to signup_thank_you_path(@user.id)
@@ -933,6 +929,11 @@ class SignupController < ApplicationController
     # get user info
     @user = User.find_by_id(params[:id])
     
+    # assign invitation code for user to share
+    @next_available_code = SpecialCode.where(user_id: nil).first
+    @next_available_code.update(user_id: @user.id)
+    
+    # update getting started step
     if @user.role_id == 4 || @user.role_id == 1
       if @user.getting_started_step == 10
         @user.update_attribute(:getting_started_step, 11)

@@ -112,6 +112,19 @@ class UsersController < ApplicationController
       return head :forbidden
     end
     
+    # find if user does not have an account id
+    if @user.account_id.nil?
+      # create a new account for the new user
+      @account = Account.create(account_type: "consumer", number_of_users: 1)
+      
+      # fill in other miscelaneous user info
+      params[:user][:account_id] = @account.id
+    end
+    
+    if @user.getting_started_step.nil?
+      params[:user][:getting_started_step] = 1
+    end
+    
     if @user.update(user_params)
       #Rails.logger.debug("User updated")
       # Sign in the user by passing validation in case their password changed
@@ -781,7 +794,7 @@ class UsersController < ApplicationController
   private
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone)  
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone, :account_id, :getting_started_step)  
   end
   
   def new_user_params

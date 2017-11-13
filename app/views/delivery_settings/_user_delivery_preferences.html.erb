@@ -89,11 +89,29 @@
 </div>
 <hr>
 <div class="row no-margin">
+	<div class="col-sm-5 no-padding">
+		<h3 class="delivery-preference-prompt">Do you drink only gluten-free drinks?</h3>
+	</div>
+	<div class="col-sm-3 no-padding-right">
+		<div class="delivery-preference-gluten-free-box">
+			<%= simple_form_for @delivery_preferences, 
+				:url => {:controller => "signup", :action => "process_drink_style_likes_getting_started"}, 
+				:remote => true, :html => { :class => 'form-horizontal' } do |f| %>
+				<label for="gluten_free_field" class="col-xs-4 col-sm-3 control-label gluten-free-label">Yes</label>
+				<%= f.check_box :gluten_free,
+						input_html: { checked: @delivery_preferences.gluten_free, class: "form-control", id: "gluten_free_field" }, 
+						:label => false %>	
+			<% end %>
+		</div>
+	</div>
+</div>
+<hr>
+<div class="row no-margin">
 	<div class="col-sm-4 no-padding">
 		<h3 class="delivery-preference-prompt">Additional requests</h3>
 	</div>
 	<div class="col-sm-8 delivery-additional-request">
-		<%= f.text_area :additional, {class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I drink only gluten free drinks"'}  %>
+		<%= f.text_area :additional, {class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I want to improve my cellar selection"'}  %>
 	</div>
 </div>
 <% end %>

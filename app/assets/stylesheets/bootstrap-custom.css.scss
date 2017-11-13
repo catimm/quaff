@@ -4026,6 +4026,14 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 22px;
   margin: 0;
 }
+.delivery-preference-gluten-free-box {
+  border: 1px solid $normal-text;
+  width: 50%;
+  height: 40px;
+  padding: 10px;
+  margin: 0 !important;
+  border-radius: 6px;
+}
 .mate-preference-header {
   color: $normal-text;
   span {

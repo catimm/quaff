@@ -196,8 +196,14 @@ $(function() {
 	
 	$(document).on('click', '#delivery_preference_gluten_free', function () {
 		
-		var new_value = $(this).val();
-		
+		var this_value = $(this).val();
+		if(this_value == 1){
+			new_value = 0;
+			$(this).val(0);
+		} else {
+			new_value = 1;
+			$(this).val(1);
+		}
 		// send data to controller
 		$.ajax({
 		  type: "POST",
