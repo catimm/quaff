@@ -10,13 +10,15 @@ class Admin::RecommendationsController < ApplicationController
     @chosen_delivery_id = params[:format]
     Rails.logger.debug("Account id: #{@account_id.inspect}")
     Rails.logger.debug("Chosen delivery id: #{@chosen_delivery_id.inspect}")
-    # get all account ids where account is currently active
+    # get all account ids where account is currently active--for view drop down menu
     @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
-    Rails.logger.debug("Active Account ids: #{@active_account_ids.inspect}")
+    #Rails.logger.debug("Active Account ids: #{@active_account_ids.inspect}")
     #set current account
     if @account_id == 0
       Rails.logger.debug("Account ID = 0")
-      @current_account_id = @active_account_ids.first
+      @current_accounts_with_upcoming_delivery = Delivery.current_accounts_with_upcoming_deliveries
+      Rails.logger.debug("Active Account w/Upcomgin Delivery: #{@current_accounts_with_upcoming_delivery.inspect}")
+      @current_account_id = @current_accounts_with_upcoming_delivery.first
     else
       Rails.logger.debug("Account ID != 0")
       @current_account_id = @account_id
@@ -25,13 +27,13 @@ class Admin::RecommendationsController < ApplicationController
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
     Rails.logger.debug("Account Owner: #{@account_owner.inspect}")
-    # get all delivery dates for chosen account for last few months and next month
+    # get all delivery dates for chosen account for last few months and next month--for view drop down menu
     @customer_delivery_dates = Delivery.where(account_id: @current_account_id, delivery_date: (3.months.ago)..(5.weeks.from_now)).pluck(:delivery_date)
     Rails.logger.debug("Customer Delivery Date: #{@customer_delivery_dates.inspect}")
     # get chosen delivery date
     if @chosen_delivery_id.nil?
       Rails.logger.debug("Chosen Delivery ID = 0")
-      @customer_next_delivery = Delivery.where(account_id: @current_account_id).where("delivery_date > ?", Date.today).order("delivery_date").first
+      @customer_next_delivery = Delivery.where(account_id: @current_account_id).where(delivery_date: (Date.today)..(13.days.from_now)).order("delivery_date ASC").first
     else
       Rails.logger.debug("Chosen Delivery ID != 0")
       @customer_next_delivery = Delivery.find_by_id(@chosen_delivery_id)

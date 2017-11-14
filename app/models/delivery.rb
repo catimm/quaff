@@ -38,6 +38,12 @@ class Delivery < ActiveRecord::Base
     "#{self.delivery_date} [#{self.status}]"
   end
   
+  # current accounts with upcoming deliveries
+  def self.current_accounts_with_upcoming_deliveries
+    @current_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
+    @account_ids = Delivery.where(account_id: @current_account_ids, delivery_date: (Date.today)..(13.days.from_now)).pluck(:account_id)
+  end
+  
   # scope account owners
   scope :account_owner, -> {
     joins(:account).merge(Account.owner)
