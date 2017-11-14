@@ -14,6 +14,7 @@
 #  current_account_number :integer
 #  beginning_at           :datetime
 #  delivery_driver_id     :integer
+#  excise_tax             :decimal(8, 6)
 #
 
 require 'test_helper'

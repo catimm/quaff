@@ -5,4 +5,7 @@
 	}
 <% else %>
 	$("#invite-mate-failure-notice").removeClass('hidden').addClass('show');
+	if ($("#invite-mate-submit-button").is(':enabled')) {
+		$("#invite-mate-submit-button").prop('disabled', true);
+	}
 <% end %>

@@ -69,29 +69,7 @@ $(function () {
 	});
 	
 	var timer;
-	
-	// update user info
-	$(document).on("change", ".user-info-field", function() {
-		var this_id = $(this).attr('id');
-		if (this_id != "user_username") {
-			var toRemove = 'user_';
-			var column = this_id.replace(toRemove,'');
-			
-			value = $(this).val();
-			
-			//clear any interval on key up
-			clearInterval(timer);
-			
-			timer = setTimeout(function() { //then give it a second to see if the user is finished
-		    	$.ajax({
-				  type: "POST",
-				  url: "/users/update_profile/" + column + "-" + value
-				});
-		    }, 500);
-		}
-		
-	});
-	
+
 	// search for username to see if unique
 	$(document).on("keyup", "#user_username", function() {
 		if ($(".user_username").hasClass('has-error')) {

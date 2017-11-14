@@ -10,7 +10,7 @@
 </div>
 <div class="row no-margin">
 	<div class="col-xs-12 col-sm-6" id="account-settings-personal-info-holder">
-		<%= simple_form_for @user, :url => update_user_profile_path(current_user.id), :html => { :class => 'form-horizontal' } do |f| %>
+		<%= simple_form_for @user, :url => update_profile_user_path, :html => { :class => 'form-horizontal' } do |f| %>
 			<%= render 'user_personal_info', f: f  %>
 			<div class="form-group">
 				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-9 text-center">

@@ -8,13 +8,13 @@
 		<div class="col-sm-7">
 			<div class="row no-margin">
 				<div class="col-xs-3 text-right">
-					<%= link_to "Guests", account_settings_mates_path(current_user.id), class: "drink-preference-view-option", id: "guests" %>
+					<%= link_to "Guests", account_settings_mates_user_path, class: "drink-preference-view-option", id: "guests" %>
 				</div>
 				<div class="col-xs-3 text-center">
-					<%= link_to "Profile", account_settings_profile_path(current_user.id), class: "drink-preference-view-option", id: "next" %>
+					<%= link_to "Profile", account_settings_profile_user_path, class: "drink-preference-view-option", id: "next" %>
 				</div>
 				<div class="col-xs-3">
-					<%= link_to "Membership", account_settings_membership_path(current_user.id), class: "drink-preference-view-option", id: "history" %>
+					<%= link_to "Membership", account_settings_membership_user_path, class: "drink-preference-view-option", id: "history" %>
 				</div>
 				<div class="col-xs-3 text-center">
 					<%= link_to "Credit card", account_settings_cc_path(current_user.id), class: "drink-preference-view-option current", id: "card" %>

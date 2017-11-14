@@ -630,6 +630,30 @@ class UserMailer < ActionMailer::Base
     
   end # end of three_day_membership_expiration_notice email
   
+  def customer_failed_charge_notice(customer, amount, description)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-failed-charge-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        amount: amount,
+        description: description
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of admin_failed_charge_notice email
+  
   def expiring_trial_email(owner, location)
     #Rails.logger.debug("Owner info: #{owner.first_name.inspect}")
     #Rails.logger.debug("Location info: #{location.name.inspect}")

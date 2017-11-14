@@ -12,6 +12,24 @@ Rails.application.routes.draw do
     post 'users/invitation/process_friend_invite' => 'invitations#process_friend_invite', :as => 'process_friend_invite'
   end
   
+  # routes to user profile pages
+  get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'
+  patch '/users/process_first_password' => 'users#process_first_password', :as => 'process_first_password_user'
+  get '/users/account_settings_profile' => 'users#account_settings_profile', :as => 'account_settings_profile_user' 
+  get '/users/account_settings_mates' => 'users#account_settings_mates', :as => 'account_settings_mates_user'
+  get '/users/plan_rewewal_off' => 'users#plan_rewewal_off', :as => 'plan_rewewal_off_user'
+  patch '/users/update_profile' => 'users#update_profile', :as => 'update_profile_user'
+  patch '/users/update_password' => 'users#update_password', :as => 'update_password_user'
+  post '/users/add_new_card' => 'users#add_new_card', :as => 'add_new_card_user'
+  get '/users/first_password/accept' => 'users#first_password', :as => 'first_password'
+  get '/users/delete_credit_card/:id' => 'users#delete_credit_card', :as => 'delete_credit_card_user'
+  get '/users/send_mate_invite_reminder/:id' => 'users#send_mate_invite_reminder', :as => 'send_mate_invite_reminder'
+  get '/users/drop_mate/:id' => 'users#drop_mate'
+  post '/users/process_user_plan_change/:id' => 'users#process_user_plan_change', :as => 'process_user_plan_change'
+  post '/users/update_home_address/:id' => 'users#update_home_address'
+  post '/users/username_verification/:id' => 'users#username_verification'
+  post '/stripe-webhooks' => 'users#stripe_webhooks'
+  
   resources :users do
     resources :drinks, :ratings, :rewards, :trackings   
   end
@@ -58,27 +76,6 @@ Rails.application.routes.draw do
   end
   
   root :to => 'home#index'
-  # routes to user profile pages
-  get '/users/first_password/accept' => 'users#first_password', :as => 'first_password'
-  patch '/users/process_first_password/:id' => 'users#process_first_password', :as => 'process_first_password'
-  
-  get '/users/user_account_add_guest/:id' => 'users#user_account_add_guest', :as => 'user_account_add_guest'
-  get '/users/account_settings_membership/:id' => 'users#account_settings_membership', :as => 'account_settings_membership'  
-  get '/users/account_settings_profile/:id' => 'users#account_settings_profile', :as => 'account_settings_profile' 
-  get '/users/account_settings_mates/:id' => 'users#account_settings_mates', :as => 'account_settings_mates'
-  get '/users/send_mate_invite_reminder/:id' => 'users#send_mate_invite_reminder', :as => 'send_mate_invite_reminder'
-  get '/users/drop_mate/:id' => 'users#drop_mate'
-  get '/users/account_settings_cc/:id' => 'users#account_settings_cc', :as => 'account_settings_cc'
-  get '/users/plan_rewewal_update/:id' => 'users#plan_rewewal_update', :as => 'plan_rewewal_update' 
-  post '/users/process_user_plan_change/:id' => 'users#process_user_plan_change', :as => 'process_user_plan_change'
-  patch '/users/update_profile/:id' => 'users#update_profile', :as => 'update_user_profile'
-  post '/users/update_home_address/:id' => 'users#update_home_address'
-  patch '/users/update_password/:id' => 'users#update_password'
-  post '/users/choose_plan/:id' => 'users#choose_plan', :as => 'choose_plan'
-  post '/stripe-webhooks' => 'users#stripe_webhooks'
-  post 'users/add_new_card/:id' => 'users#add_new_card', :as => 'add_new_card'
-  get 'users/delete_credit_card/:id' => 'users#delete_credit_card', :as => 'delete_credit_card'
-  post '/users/username_verification/:id' => 'users#username_verification'
    
   # routes to user deliveries pages
   get '/delivery_settings/index/:id' => 'delivery_settings#index', :as => 'user_delivery_settings'

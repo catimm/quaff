@@ -78,7 +78,7 @@ class InvitationsController < Devise::InvitationsController
       u.skip_invitation = true
     end
     # show raw token for dev purposes
-    Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
+    #Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
     # get info on invitor
     @invitor = User.find_by_id(params[:user][:invited_by_id])
     # get invitor invitation code
@@ -97,7 +97,7 @@ class InvitationsController < Devise::InvitationsController
     UserMailer.guest_invite_email(@invited_user, current_user).deliver_now  
     
     # redirect to mates page
-    redirect_to account_settings_mates_path(@invitor.id)
+    redirect_to account_settings_mates_user_path
          
   end # end of process_invite_guest action
   

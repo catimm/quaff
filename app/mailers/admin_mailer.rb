@@ -256,7 +256,7 @@ class AdminMailer < ActionMailer::Base
     
   end # end of admin_customer_delivery_request email
   
-  def admin_failed_invoice_payment_notice(customer, subscription)
+  def admin_failed_invoice_payment_notice(customer, amount, subscription, payment_descriptor)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
     payload  = {
@@ -272,8 +272,10 @@ class AdminMailer < ActionMailer::Base
         customer_name: customer.first_name,
         customer_email: customer.email,
         customer_id: customer.id,
+        amount: amount,
         knird_subscription: subscription.id,
-        stripe_subscription: subscription.stripe_subscription_number
+        stripe_subscription: subscription.stripe_subscription_number,
+        payment_descriptor: payment_descriptor
       }
     }
 
@@ -308,7 +310,6 @@ class AdminMailer < ActionMailer::Base
     p response
     
   end # end of admin_failed_charge_notice email
-  
   
   def disti_inventory_import_email(admin)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

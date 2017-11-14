@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171112233523) do
+ActiveRecord::Schema.define(version: 20171113241007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -286,13 +286,14 @@ ActiveRecord::Schema.define(version: 20171112233523) do
     t.string   "day_of_week"
     t.time     "start_time"
     t.time     "end_time"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
     t.string   "weeks_of_year"
     t.integer  "max_account_number"
     t.integer  "current_account_number"
     t.datetime "beginning_at"
     t.integer  "delivery_driver_id"
+    t.decimal  "excise_tax",             precision: 8, scale: 6
   end
 
   create_table "disti_change_temps", force: :cascade do |t|

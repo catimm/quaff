@@ -394,6 +394,7 @@ class Admin::RecommendationsController < ApplicationController
       @current_subtotal = @current_subtotal + @this_drink_total
     end
     # now get sales tax
+    @appropriate_tax = DeliveryZone.find_by_id(@user.account.delivery_zone_id).pluck(:excise_tax)
     @current_sales_tax = @current_subtotal * 0.096
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax

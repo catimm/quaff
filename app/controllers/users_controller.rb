@@ -172,7 +172,7 @@ class UsersController < ApplicationController
   end # end set_password method
   
   def process_first_password
-    @user = User.find(params[:id])
+    @user = User.find_by_id(current_user.id)
     
     if @user.update(new_user_params)
       # Sign in the user by passing validation in case their password changed
@@ -186,7 +186,7 @@ class UsersController < ApplicationController
   
   def account_settings_membership
     # get user info
-    @user = User.find(params[:id])
+    @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
 
     # set link as chosen
@@ -216,7 +216,7 @@ class UsersController < ApplicationController
   
   def account_settings_profile
     # get user info
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_id(current_user.id)
     #Rails.logger.debug("User info: #{@user.inspect}")
 
     # set link as chosen
@@ -244,7 +244,7 @@ class UsersController < ApplicationController
   
   def account_settings_mates
     # get user info
-    @user = User.find(params[:id])
+    @user = User.find_by_id(current_user.id)
     #Rails.logger.debug("User info: #{@user.inspect}")
     
     # find if the user has added any guests
@@ -280,7 +280,7 @@ class UsersController < ApplicationController
     @friend.destroy!
     
     # direct back to mates page
-    render js: "window.location = '#{account_settings_mates_path(current_user.id)}'"
+    render js: "window.location = '#{account_settings_mates_user_path}'"
     
   end # end of drop_mate method
   
@@ -345,69 +345,19 @@ class UsersController < ApplicationController
     
   end # end payments method
   
-  def choose_plan 
-    # find user's current plan
-    @customer_plan = UserSubscription.where(user_id: params[:id], currently_active: true)[0]
-    #Rails.logger.debug("User Plan info: #{@customer_plan.inspect}")
-    # find subscription level id
-    @subscription_level_id = Subscription.where(subscription_level: params[:format]).first
-    
-    # set active until date
-    if params[:format] == "enjoy" || params[:format] == "enjoy_beta"
-      @active_until = 3.months.from_now
-    else
-      @active_until = 12.months.from_now
-    end
-    
-    # update Stripe acct
-    customer = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number)
-    @plan_info = Stripe::Plan.retrieve(params[:format])
-    #Rails.logger.debug("Customer: #{customer.inspect}")
-    customer.description = @plan_info.statement_descriptor
-    customer.save
-    subscription = customer.subscriptions.retrieve(@customer_plan.stripe_subscription_number)
-    subscription.plan = params[:format]
-    subscription.save
-    
-    # now update user plan info in the DB
-    @customer_plan.update(subscription_id: @subscription_level_id.id, active_until: @active_until)
+  def plan_rewewal_off
+    @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: true)[0]
 
+    # change in Knird DB
+    @user_subscription.update(auto_renew_subscription_id: nil)
     
-    redirect_to :action => "plan", :id => current_user.id
+    # chanage user subscription auto renewal in Stripe
+    @customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
+    @subscription = @customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
+    @subscription.delete(:at_period_end => true)
     
-  end # end choose initial plan method
-  
-  def plan_rewewal_update
-    @user_subscription = UserSubscription.where(user_id: params[:id], currently_active: true)[0]
-    if @user_subscription.auto_renew_subscription_id.nil?
-      # change in Knird DB
-      @user_subscription.update(auto_renew_subscription_id: @user_subscription.subscription_id)
-    
-      # chanage user subscription auto renewal in Stripe after setting plan_id
-      if params[:id] == "one"
-        @plan_id = "one_month"
-      elsif params[:id] == "three"
-        @plan_id = "three_month"
-      else
-        @plan_id = "twelve_month"
-      end 
-      
-      @customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
-      @subscription = @customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
-      @subscription.plan = @plan_id
-      @subscription.save
-    else
-      # change in Knird DB
-      @user_subscription.update(auto_renew_subscription_id: nil)
-      
-      # chanage user subscription auto renewal in Stripe
-      @customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
-      @subscription = @customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
-      @subscription.delete(:at_period_end => true)
-    end
-    
-    redirect_to account_settings_membership_path(current_user.id)
-  end # end plan_rewewal_update method
+    redirect_to account_settings_membership_user_path
+  end # end plan_rewewal_off method
   
   def process_user_plan_change
     if params[:id] == "one"
@@ -512,7 +462,7 @@ class UsersController < ApplicationController
     end
     
     # redirect back to membership page
-    redirect_to account_settings_membership_path(current_user.id)
+    redirect_to account_settings_membership_user_path
     
   end # end of process_user_plan_change method
   
@@ -586,23 +536,40 @@ class UsersController < ApplicationController
           #Rails.logger.debug("Failed charge event")
           # get customer data
           @customer_number = event_object['customer']
-          #Rails.logger.debug("customer number: #{@customer_number.inspect}")
           # get charge description
-          @charge_description = event_object['description']
-          #Rails.logger.debug("charge description: #{@charge_description.inspect}")
-          if @charge_description.include? "Knird delivery." # run only if this is a delivery charge
-            # get charge amount
-            @charge_amount = ((event_object['amount']).to_f / 100).round(2)
-            # get customer subscription info
-            @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number)[0]
-            # get customer info
-            @user = User.find_by_id(@user_subscription.user_id)
-            # get delivery info
-            @delivery_info = Delivery.where(account_id: @user.account_id, total_price: @charge_amount).first
-            # send Admin notice
-            AdminMailer.admin_failed_invoice_payment_notice(@user, @delivery_info).deliver_now
-          end
-           
+          @charge_description_one = event_object['description']
+          #Rails.logger.debug("charge description one: #{@charge_description_one.inspect}")
+          @charge_description_two = event_object['statement_descriptor']
+          if !@charge_description_one.nil?
+            if @charge_description_one.include?("delivery") # run only if this is a delivery charge
+              # get charge amount
+              @charge_amount = ((event_object['amount']).to_f / 100).round(2)
+              # get customer subscription info
+              @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number)[0]
+              # get customer info
+              @user = User.find_by_id(@user_subscription.user_id)
+              # get delivery info
+              @delivery_info = Delivery.where(account_id: @user.account_id, total_price: @charge_amount).first
+              # send Admin notice
+              AdminMailer.admin_failed_charge_notice(@user, @delivery_info).deliver_now
+              # send customer notice
+              UserMailer.customer_failed_charge_notice(@user, @charge_amount, @charge_description_one)
+            end
+          end # end of nil test
+          if !@charge_description_two.nil?
+            if @charge_description_two.include?("plan")
+              # get charge amount
+              @charge_amount = ((event_object['amount']).to_f / 100).round(2)
+              # get customer subscription info
+              @user_subscription = UserSubscription.where(account_id: 1)[0] #stripe_customer_number: @customer_number
+              # get customer info
+              @user = User.find_by_id(1)#@user_subscription.user_id
+              # send Admin notice
+              AdminMailer.admin_failed_invoice_payment_notice(@user, @charge_amount, @user_subscription, @charge_description_two).deliver_now
+              # send customer notice
+              UserMailer.customer_failed_charge_notice(@user, @charge_amount, @payment_descriptor)
+            end
+          end # end of nil test
         when 'customer.subscription.created'
            #Rails.logger.debug("Subscription created event")
            # get the customer number
@@ -651,7 +618,7 @@ class UsersController < ApplicationController
   
   def update_profile
     # get user info
-    @user = User.find(current_user.id)
+    @user = User.find_by_id(current_user.id)
     
     # update user info
     @user.update(user_params)
@@ -660,7 +627,7 @@ class UsersController < ApplicationController
     @preference_updated = @user.updated_at
     
     # redirect back to account settings page
-    redirect_to account_settings_profile_path(current_user.id)
+    redirect_to account_settings_profile_user_path
     
   end # end update_profile method
   
@@ -674,21 +641,21 @@ class UsersController < ApplicationController
         # set saved message
         flash[:success] = "New password saved!"            
         # redirect back to user account page
-        redirect_to account_settings_profile_path(current_user.id)
+        redirect_to account_settings_profile_user_path
       else
         # set saved message
         flash[:failure] = "Sorry, new passwords didn't match."
         # redirect back to user account page
-        redirect_to account_settings_profile_path(current_user.id)
+        redirect_to account_settings_profile_user_path
       end
     else
       # set saved message
       flash[:failure] = "Sorry, current password didn't match."
       # redirect back to user account page
-      redirect_to account_settings_profile_path(current_user.id)   
+      redirect_to account_settings_profile_user_path   
     end
 
-  end
+  end # end of update_password method
   
   def update_home_address
     # get data to add/update
@@ -720,9 +687,7 @@ class UsersController < ApplicationController
     # get time of last update
     @preference_updated = @user_home_address.updated_at
     
-    respond_to do |format|
-      format.js { render 'last_updated.js.erb' }
-    end # end of redirect to jquery
+    render js: "window.location = '#{account_settings_profile_user_path}'"
   
   end # end of update_home_address method
   
@@ -757,7 +722,7 @@ class UsersController < ApplicationController
   
   def add_new_card
     # get customer subscription info
-    @customer_subscription_info = UserSubscription.find_by_user_id(params[:id])
+    @customer_subscription_info = UserSubscription.find_by_user_id(current_user.id)
     
     # get customer Stripe account info
     @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)
@@ -766,7 +731,7 @@ class UsersController < ApplicationController
     @customer.sources.create(:card => params[:stripeToken])
 
     # redirect back to membership page
-    redirect_to account_settings_membership_path(current_user.id)
+    redirect_to account_settings_membership_user_path
     
   end # end of add_new_card
   
@@ -776,12 +741,12 @@ class UsersController < ApplicationController
     
     # get customer Stripe account info
     @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)
-    
+    Rails.logger.debug("customer: #{@customer.inspect}")
     # delete the credit  card
     @customer.sources.retrieve(params[:id]).delete
     
     # redirect back to membership page
-    redirect_to account_settings_membership_path(current_user.id)
+    redirect_to account_settings_membership_user_path
     
   end # end of delete_credit_card method
   
