@@ -9,7 +9,7 @@ class Admin::RecommendationsController < ApplicationController
     @account_id = params[:id].to_i
     @chosen_delivery_id = params[:format]
     Rails.logger.debug("Account id: #{@account_id.inspect}")
-    Rails.logger.debug("Chosen delivery id: #{@chosen_delivery_id.inspect}")
+    Rails.logger.debug("Chosen delivery drink: #{@chosen_delivery_id.inspect}")
     # get all account ids where account is currently active--for view drop down menu
     @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
     #Rails.logger.debug("Active Account ids: #{@active_account_ids.inspect}")

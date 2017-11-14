@@ -34,7 +34,7 @@
 						<% else %>
 							<% @number_of_ratings = UserBeerRating.where(user_id: individual_drink.user_id, beer: individual_drink.beer.id).count %>
 							<td><%= @number_of_ratings %></td>
-							<% @user_rating = drink.user.user_drink_rating(individual_drink.beer.id) %>
+							<% @user_rating = individual_drink.user.user_drink_rating(individual_drink.beer.id) %>
 							<td><%= @user_rating %></td>
 						<% end %>
 						<% @delivered_recently = AccountDelivery.delivered_recently(@account_owner[0].id, @account_id, individual_drink.beer_id)[0] %>
