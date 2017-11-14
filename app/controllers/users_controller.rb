@@ -553,7 +553,7 @@ class UsersController < ApplicationController
               # send Admin notice
               AdminMailer.admin_failed_charge_notice(@user, @delivery_info).deliver_now
               # send customer notice
-              UserMailer.customer_failed_charge_notice(@user, @charge_amount, @charge_description_one)
+              UserMailer.customer_failed_charge_notice(@user, @charge_amount, @charge_description_one).deliver_now
             end
           end # end of nil test
           if !@charge_description_two.nil?
@@ -567,7 +567,7 @@ class UsersController < ApplicationController
               # send Admin notice
               AdminMailer.admin_failed_invoice_payment_notice(@user, @charge_amount, @user_subscription, @charge_description_two).deliver_now
               # send customer notice
-              UserMailer.customer_failed_charge_notice(@user, @charge_amount, @payment_descriptor)
+              UserMailer.customer_failed_charge_notice(@user, @charge_amount, @charge_description_two).deliver_now
             end
           end # end of nil test
         when 'customer.subscription.created'

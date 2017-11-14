@@ -632,7 +632,7 @@ class UserMailer < ActionMailer::Base
   
   def customer_failed_charge_notice(customer, amount, description)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-
+    
     payload  = {
       recipients: [
         {
