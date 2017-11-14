@@ -8,30 +8,35 @@ class Admin::RecommendationsController < ApplicationController
     # get account and delivery info
     @account_id = params[:id].to_i
     @chosen_delivery_id = params[:format]
-    
+    Rails.logger.debug("Account id: #{@account_id.inspect}")
+    Rails.logger.debug("Chosen delivery id: #{@chosen_delivery_id.inspect}")
     # get all account ids where account is currently active
     @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
-
+    Rails.logger.debug("Active Account ids: #{@active_account_ids.inspect}")
     #set current account
     if @account_id == 0
+      Rails.logger.debug("Account ID = 0")
       @current_account_id = @active_account_ids.first
     else
+      Rails.logger.debug("Account ID != 0")
       @current_account_id = @account_id
     end
-
+    Rails.logger.debug("Current Account id: #{@current_account_id.inspect}")
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
-    
+    Rails.logger.debug("Account Owner: #{@account_owner.inspect}")
     # get all delivery dates for chosen account for last few months and next month
     @customer_delivery_dates = Delivery.where(account_id: @current_account_id, delivery_date: (3.months.ago)..(5.weeks.from_now)).pluck(:delivery_date)
-    
+    Rails.logger.debug("Customer Delivery Date: #{@customer_delivery_dates.inspect}")
     # get chosen delivery date
     if @chosen_delivery_id.nil?
+      Rails.logger.debug("Chosen Delivery ID = 0")
       @customer_next_delivery = Delivery.where(account_id: @current_account_id).where("delivery_date > ?", Date.today).order("delivery_date").first
     else
+      Rails.logger.debug("Chosen Delivery ID != 0")
       @customer_next_delivery = Delivery.find_by_id(@chosen_delivery_id)
     end
-    
+    Rails.logger.debug("Customer Next Delivery: #{@customer_next_delivery.inspect}")
     # show correct view if delivery is past point of adjustments
     if @customer_next_delivery.status == "in progress" || @customer_next_delivery.status == "delivered"
       @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
