@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171114214240) do
+ActiveRecord::Schema.define(version: 20171115203905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -413,6 +413,7 @@ ActiveRecord::Schema.define(version: 20171114214240) do
     t.decimal  "regular_case_cost",   precision: 5, scale: 2
     t.decimal  "sale_case_cost",      precision: 5, scale: 2
     t.integer  "disti_inventory_id"
+    t.integer  "total_demand"
   end
 
   create_table "inventory_transactions", force: :cascade do |t|

@@ -24,5 +24,6 @@ class DistiInventory < ActiveRecord::Base
   belongs_to :distributor
   
   has_many :inventories
+  has_many :user_drink_recommendations
   
 end

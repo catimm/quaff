@@ -23,6 +23,7 @@ class UserDrinkRecommendation < ActiveRecord::Base
   belongs_to :user
   belongs_to :beer
   belongs_to :inventory
+  belongs_to :disti_inventory
   belongs_to :size_format
   
   attr_accessor :within_month # to hold whether customer had drink delivered within last month

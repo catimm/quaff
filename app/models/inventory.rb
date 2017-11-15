@@ -20,6 +20,7 @@
 #  regular_case_cost   :decimal(5, 2)
 #  sale_case_cost      :decimal(5, 2)
 #  disti_inventory_id  :integer
+#  total_demand        :integer
 #
 
 class Inventory < ActiveRecord::Base
@@ -71,6 +72,11 @@ class Inventory < ActiveRecord::Base
   scope :packaged_not_in_stock, -> { 
     where(stock: 0)
   } 
+  
+  # scope inventory not in stock 
+  scope :out_of_stock, -> { 
+    where(stock: 0)
+  }
    
   # scope inventory not in stock 
   scope :empty_stock, -> { 

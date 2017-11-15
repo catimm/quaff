@@ -7,234 +7,65 @@ class ReloadsController < ApplicationController
   
   
   def index
-    # first delete all old rows of assessed drinks
-    @old_data = UserDrinkRecommendation.delete_all
+    # get all inventory with order requests
+    @requested_inventory = Inventory.where('order_request > ?', 0)
     
-    # get list of available Knird Inventory
-    @available_knird_inventory = Inventory.where(currently_available: true, size_format_id: [1,2,3,4,5,10,11,12,14]).where("stock > ?", 0)
-    
-    # get list of available Disti Inventory
-    @available_disti_inventory = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: [1,2,3,4,5,10,11,12,14])
-    
-    # get drink type info 
-    @drink_types = BeerType.all
-      
     # get list of all currently_active subscriptions
-    @active_subscriptions = UserSubscription.where(account_id: 1) #currently_active: true
+    @active_subscriptions = UserSubscription.where(currently_active: true)
     
-    # get user info from users who have completed delivery preferences
-    @delivery_preference_user_ids = DeliveryPreference.all.pluck(:user_id)
-    @users = User.where(id: @delivery_preference_user_ids)
-    
-    # determine viable drinks for each active account
-    @active_subscriptions.each do |account|
-
-      # get each user associated to this account
-      @active_users = User.where(account_id: account.account_id, getting_started_step: 11)
+    @requested_inventory.each do |inventory|
+      # create variables to hold total demand for this inventory item
+      @total_demand = 0
       
-      @active_users.each do |user|
-        #Rails.logger.debug("this user: #{user.inspect}")
-        # get all drink styles the user claims to like
-        @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
+      # determine viable drinks for each active account
+      @active_subscriptions.each do |account|
+  
+        # get each user associated to this account
+        @active_users = User.where(account_id: account.account_id, getting_started_step: 11)
         
-         # now get all drink types associated with remaining drink styles
-        @additional_drink_types = Array.new
-        @user_style_likes.each do |style_id|
-          # get related types
-          @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
-          @type_id.each do |type_id|
-            # insert into array
-            @additional_drink_types << type_id
-          end
-        end
-        #Rails.logger.debug("Additional Drink Types: #{@additional_drink_types.inspect}")
-        # get all drink types the user has rated favorably
-        @user_preferred_drink_types = user_likes_drink_types(user.id)
-        #Rails.logger.debug("User Preferred Drink Types: #{@user_preferred_drink_types.inspect}")
-        # create array to hold the drink types the user likes
-        @user_type_likes = @user_preferred_drink_types.keys
-        
-        # find remaining styles claimed to be liked but without significant ratings
-        @user_type_likes.each do |type_id|
-          if type_id != nil
-            # get info for this drink type
-            this_type = @drink_types.where(id: type_id)[0]
-            # determine if this user's style preferences map to this drink
-            if @user_style_likes.include? this_type.beer_style_id
-              # remove this style id if it matches
-              @user_style_likes.delete(this_type.beer_style_id)
-            end
-          end
-        end
-        
-        # get drink types from special relationship drinks
-        @drink_type_relationships = BeerTypeRelationship.all
-        @relational_drink_types_one = @drink_type_relationships.where(relationship_one: @user_style_likes).pluck(:beer_type_id) 
-        @relational_drink_types_two = @drink_type_relationships.where(relationship_two: @user_style_likes).pluck(:beer_type_id) 
-        @relational_drink_types_three = @drink_type_relationships.where(relationship_three: @user_style_likes).pluck(:beer_type_id) 
-        
-        # create an aggregated list of all beer types the user should like
-        @final_user_type_likes = @user_type_likes + @additional_drink_types + @relational_drink_types_one + @relational_drink_types_two + @relational_drink_types_three
-        #Rails.logger.debug("final types liked 1: #{@final_user_type_likes.inspect}")
-        # removes duplicates from the array
-        @final_user_type_likes = @final_user_type_likes.uniq
-        @final_user_type_likes = @final_user_type_likes.grep(Integer)
-        #Rails.logger.debug("final types liked 2: #{@final_user_type_likes.inspect}")
-        # now filter the complete drinks available against the drink types the user likes
-        # first create an array to hold each viable drink
-        @assessed_drinks = Array.new
-        
-        # cycle through each knird inventory drink to determine whether to keep it
-        @available_knird_inventory.each do |available_drink|
-          if @final_user_type_likes.include? available_drink.beer.beer_type_id
-            @assessed_drinks << available_drink.beer_id
-          end
-        end
-        # cycle through each disti inventory drink to determine whether to keep it
-        @available_disti_inventory.each do |available_drink|
-          if @final_user_type_likes.include? available_drink.beer.beer_type_id
-            @assessed_drinks << available_drink.beer_id
-          end
-        end
-        
-        # get count of total drinks to be assessed
-        @available_assessed_drinks = @assessed_drinks.length
-        #Rails.logger.debug("Available drinks not flattened: #{@assessed_drinks.inspect}")
-        #Rails.logger.debug("# of available drinks not flattened: #{@available_assessed_drinks.inspect}")
-        #dedup assessed drink array
-        @assessed_drinks = @assessed_drinks.uniq
-        # get count of total drinks to be assessed
-        @available_assessed_drinks = @assessed_drinks.length
-        #Rails.logger.debug("# of available drinks NOW flattened: #{@available_assessed_drinks.inspect}")
-        #Rails.logger.debug("Available drinks, flattened: #{@assessed_drinks.inspect}")
-        # create empty hash to hold list of drinks that have been assessed
-        @compiled_assessed_drinks = Array.new
-        
-        # assess each drink to add if rated highly enough
-        @assessed_drinks.each do |drink_id|
-          #Rails.logger.debug("This drink: #{drink_id.inspect}")
+        @active_users.each do |user|
+          # assess drink to add if user would rated highly enough
+
           # find if user has rated/had this drink before
-          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: drink_id)
+          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: inventory.beer_id)
 
           # make sure this drink should be included as a recommendation
           if !@drink_ratings.blank? # first check if it is a new drink
             # get average rating
             @drink_ratings_last = @drink_ratings.last
             @drink_rating_average = @drink_ratings.average(:user_beer_rating)
-            @final_projection = @drink_rating_average
-            
-            # set additional info
-            @number_of_ratings = @drink_ratings.count
-            if @drink_ratings_last.rated_on > 1.month.ago
-              @drank_recently = false
-            else
-              @drank_recently = true
-            end
             
             if @drink_ratings_last.rated_on > 1.month.ago && @drink_rating_average >= 8 # if not new, make sure if it's been recently that the customer has had it that they REALLY like it
               # define drink status
               @add_this = true
-              @new_drink_status = false
             elsif  @drink_ratings_last.rated_on < 1.month.ago && @drink_rating_average >= 7.5 # or make sure if it's been a while that they still like it
               # define drink status
               @add_this = true
-              @new_drink_status = false
             end
           else
-            # set additional info
-            @number_of_ratings = 0
-            @drank_recently = false
-            
             # get this drink from DB for the Type Based Guess Concern
-            @drink = Beer.find_by_id(drink_id)
+            @drink = Beer.find_by_id(inventory.beer_id)
             
             # find the drink best_guess for the user
             type_based_guess(@drink, user.id)
             if @drink.best_guess >= 7.5 # if customer has not had it, make sure it is still a high recommendation
               # define drink status
               @add_this = true
-              @new_drink_status = true
-              @final_projection = @drink.best_guess
             end
           end
           
           # determine whether to add this drink 
           if @add_this == true
-            # determine if we've delivered this drink to the user recently
-            @recent_account_delivery_ids = Delivery.where(account_id: user.account_id).where('delivery_date > ?', 1.month.ago).pluck(:id)
-            if !@recent_account_delivery_ids.blank?
-              @recent_account_drink_ids = AccountDelivery.where(delivery_id: @recent_account_delivery_ids, beer_id: drink_id).pluck(:id)
-            end
-            if !@recent_account_drink_ids.blank?
-              @recent_user_delivery_drinks = UserDelivery.where(user_id: user.id, account_delivery_id: @recent_account_drink_ids)
-            end
-            if !@recent_user_delivery_drinks.blank?
-              @delivered_recently = true
-            else
-              @delivered_recently = false
-            end
-            # determine if drink comes from Knird inventory, Disti inventory or both
-            @inventory_items = @available_knird_inventory.where(beer_id: drink_id)
-            @disti_inventory_items = @available_disti_inventory.where(beer_id: drink_id)
-            # get size_formats
-            @inventory_item_formats = @inventory_items.pluck(:size_format_id)
-            @disti_inventory_item_formats = @disti_inventory_items.pluck(:size_format_id)
-            @total_formats = @inventory_item_formats + @disti_inventory_item_formats
-
-            # run through each format and add to recommended list for curation
-            @total_formats.each do |format|
-              @inventory_id = @inventory_items.where(size_format_id: format)
-              if @inventory_id.blank?
-                @final_inventory_id = nil
-              else
-                @final_inventory_id = @inventory_id[0].id
-              end
-              @disti_inventory_id = @disti_inventory_items.where(size_format_id: format)
-              if @disti_inventory_id.blank?
-                @final_disti_inventory_id = nil
-              else
-                @final_disti_inventory_id = @disti_inventory_id[0].id
-              end
-              
-              # create Hash to hold drink info
-              @individual_drink_info = Hash.new   
-               
-              # create user drink recommendation info
-              @individual_drink_info["user_id"] = user.id
-              @individual_drink_info["beer_id"] = drink_id
-              @individual_drink_info["projected_rating"] = @final_projection
-              @individual_drink_info["new_drink"] = @new_drink_status  
-              @individual_drink_info["account_id"] = user.account_id
-              @individual_drink_info["size_format_id"] = format
-              @individual_drink_info["inventory_id"] = @final_inventory_id
-              @individual_drink_info["disti_inventory_id"] = @final_disti_inventory_id
-              @individual_drink_info["number_of_ratings"] = @number_of_ratings
-              @individual_drink_info["delivered_recently"] = @delivered_recently
-              @individual_drink_info["drank_recently"] = @drank_recently
-              #Rails.logger.debug("Individual drink to be added: #{@individual_drink_info.inspect}")
-              # insert this data into hash
-              @compiled_assessed_drinks << @individual_drink_info
-              #Rails.logger.debug("Compiled drinks: #{@compiled_assessed_drinks.inspect}")
-            end # end of cycling through formats
-            
-          end # end of test of whether to add drink
-          
-        end # end of loop adding assessed drinks to array
+            @total_demand = @total_demand + 1
+          end
+        end # end of cycle through each active user
         
-        #dedup drink array
-        @compiled_assessed_drinks = @compiled_assessed_drinks.uniq
-        #Rails.logger.debug("Compiled assessed drinks: #{@compiled_assessed_drinks.inspect}")
-        
-        # sort the array of hashes by projected rating and keep top 200
-        @compiled_assessed_drinks = @compiled_assessed_drinks.sort_by{ |hash| hash['projected_rating'] }.reverse.first(200)
-        #Rails.logger.debug("array of hashes #{@compiled_assessed_drinks.inspect}")
-        
-        # insert array of hashes into user_drink_recommendations table
-        UserDrinkRecommendation.create(@compiled_assessed_drinks)
+      end # end of cycle through each active account
       
-      end # of loop through each active account user
- 
-    end # end of loop through active accounts
+      # update this inventory item with this demand
+      inventory.update(total_demand: @total_demand)
+      
+    end # end of cycle through inventory requests
     
   end # end of index method
   

@@ -1,6 +1,5 @@
 <% @drink_recommendations.each do |drink_group| %>
 	<% drink_group[1].each do |drink| %>
-	<% Rails.logger.debug("Drink info: #{drink.inspect}") %>
 		<div class="row no-margin">
 			<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="drink-tile-<%= drink[1][0].id %>">
 				<div class="drink-delivery-tile">
@@ -34,7 +33,7 @@
 							<td><%= individual_drink.projected_rating %></td>
 							<td><%= individual_drink.delivered_recently.humanize %></td>
 							<td><%= individual_drink.drank_recently.humanize %></td>
-							<% if drink.count > 1 %>
+							<% if drink[1].count > 1 %>
 								<% @next_account_delivery_drink = @next_account_delivery.where(beer_id: individual_drink.beer_id, size_format_id: individual_drink.size_format_id)[0] %>
 								<% if !@next_account_delivery_drink.nil? %>
 									<% @user_delivery_drink = UserDelivery.where(account_delivery_id: @next_account_delivery_drink.id, user_id: individual_drink.user_id) %>

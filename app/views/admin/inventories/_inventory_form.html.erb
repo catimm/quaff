@@ -1,16 +1,20 @@
 <%= form_for [:admin, @inventory] do |f| %>
 	<div class="row no-margin">
-		<h3>Inventory Form for <%= @inventory.beer.brewery.short_brewery_name %> <%= @inventory.beer.beer_name %></h3>
+		<% if @new == true %>
+			<h3>New Inventory Form</h3>
+		<% else %>
+			<h3>Inventory Form for <%= @inventory.beer.brewery.short_brewery_name %> <%= @inventory.beer.beer_name %></h3>
+		<% end %>
 	</div>
 	<div class="row no-margin">
 		<div class="col-sm-1 col-xs-2 no-padding">
 			<%= label :beer_id, 'Drink ID' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
-			<% if !@drink_id.nil? %>
-				<%= f.text_field :beer_id, value: @drink_id, :readonly => true, :class => "form-control", placeholder: "Beer ID" %>
+			<% if @new == true %>
+				<%= f.text_field :beer_id, :class => "form-control", placeholder: "Beer ID" %>
 			<% else %>
-				<%= f.text_field :beer_id, :readonly => true, :class => "form-control", placeholder: "Beer ID" %>
+				<%= f.text_field :beer_id, value: @drink_id, :readonly => true, :class => "form-control", placeholder: "Beer ID" %>
 			<% end %>
 		</div>
 		
@@ -33,7 +37,11 @@
 			<%= label :total_batch, 'Total batch' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
-			<%= f.text_field :total_batch, :readonly => true, :class => "form-control", placeholder: "Total batch" %>
+			<% if @new == true %>
+				<%= f.text_field :total_batch, :class => "form-control", placeholder: "Total batch" %>
+			<% else %>
+				<%= f.text_field :total_batch, :readonly => true, :class => "form-control", placeholder: "Total batch" %>
+			<% end %>
 		</div>
 	</div>
 	<div class="row no-margin">

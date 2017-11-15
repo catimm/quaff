@@ -8,8 +8,6 @@
 						<h2 class="formSpace">Log in</h2>
 					    <%= form_for(resource, :class => "input-group", :as => resource_name, :url => session_path(resource_name)) do |f| %> 
 					      <% flash.each do |name, msg| %>
-						    <% Rails.logger.debug("Name: #{name.inspect}") %>
-						    <% Rails.logger.debug("Message: #{msg.inspect}") %>
 						    <% if msg.is_a?(String) && ["alert", "error", "warning", "notice"].include?(name) %>
 						        <div class="flash-message" data-type="<%= name %>" >
 						          <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>

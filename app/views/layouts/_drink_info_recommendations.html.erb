@@ -18,7 +18,28 @@
 			<%= svg drink.size_format.image %>
 		</h5>
 	</div>
-	<div class="col-xs-8 no-padding text-right">
+	<div class="col-xs-3 item-cost-holder">
+		<% if drink.inventory_id.nil? %>
+			<% if drink.disti_inventory.current_case_cost < drink.disti_inventory.regular_case_cost %>
+				<% @item_price_class = "item-price-special" %>
+			<% else %>
+				<% @item_price_class = "item-price" %>
+			<% end %>
+			<h5 class="item-price">
+				$<%= drink.disti_inventory.drink_price %>
+			</h5>
+		<% else %>
+			<% if !drink.inventory.sale_case_cost.nil? %>
+				<% @item_price_class = "item-price-special" %>
+			<% else %>
+				<% @item_price_class = "item-price" %>
+			<% end %>
+			<h5 class=<%= @item_price_class %>>
+				$<%= drink.inventory.drink_price %>
+			</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-5 no-padding text-right">
 		<h5 class="order-quantity">Limited Qty: 
 			<span id="user-delivery"><%= drink.limited_quantity %></span>
 		</h5>

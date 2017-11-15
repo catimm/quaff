@@ -588,14 +588,8 @@ task :assess_drink_recommendations => :environment do
         
         # get count of total drinks to be assessed
         @available_assessed_drinks = @assessed_drinks.length
-        #Rails.logger.debug("Available drinks not flattened: #{@assessed_drinks.inspect}")
-        #Rails.logger.debug("# of available drinks not flattened: #{@available_assessed_drinks.inspect}")
         #dedup assessed drink array
         @assessed_drinks = @assessed_drinks.uniq
-        # get count of total drinks to be assessed
-        @available_assessed_drinks = @assessed_drinks.length
-        #Rails.logger.debug("# of available drinks NOW flattened: #{@available_assessed_drinks.inspect}")
-        #Rails.logger.debug("Available drinks, flattened: #{@assessed_drinks.inspect}")
         # create empty hash to hold list of drinks that have been assessed
         @compiled_assessed_drinks = Array.new
         
@@ -726,6 +720,72 @@ task :assess_drink_recommendations => :environment do
     end # end of loop through active accounts
 
 end # end of assessing drink recommendations task
+
+desc "assess total demand for inventory requested"
+task :assess_total_demand_for_inventory => :environment do 
+    include UserLikesDrinkTypes
+    include TypeBasedGuess
+    # get all inventory with order requests
+    @requested_inventory = Inventory.where('order_request > ?', 0)
+    
+    # get list of all currently_active subscriptions
+    @active_subscriptions = UserSubscription.where(currently_active: true)
+    
+    @requested_inventory.each do |inventory|
+      # create variables to hold total demand for this inventory item
+      @total_demand = 0
+      
+      # determine viable drinks for each active account
+      @active_subscriptions.each do |account|
+  
+        # get each user associated to this account
+        @active_users = User.where(account_id: account.account_id, getting_started_step: 11)
+        
+        @active_users.each do |user|
+          # assess drink to add if user would rated highly enough
+
+          # find if user has rated/had this drink before
+          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: inventory.beer_id)
+
+          # make sure this drink should be included as a recommendation
+          if !@drink_ratings.blank? # first check if it is a new drink
+            # get average rating
+            @drink_ratings_last = @drink_ratings.last
+            @drink_rating_average = @drink_ratings.average(:user_beer_rating)
+            
+            if @drink_ratings_last.rated_on > 1.month.ago && @drink_rating_average >= 8 # if not new, make sure if it's been recently that the customer has had it that they REALLY like it
+              # define drink status
+              @add_this = true
+            elsif  @drink_ratings_last.rated_on < 1.month.ago && @drink_rating_average >= 7.5 # or make sure if it's been a while that they still like it
+              # define drink status
+              @add_this = true
+            end
+          else
+            # get this drink from DB for the Type Based Guess Concern
+            @drink = Beer.find_by_id(inventory.beer_id)
+            
+            # find the drink best_guess for the user
+            type_based_guess(@drink, user.id)
+            if @drink.best_guess >= 7.5 # if customer has not had it, make sure it is still a high recommendation
+              # define drink status
+              @add_this = true
+            end
+          end
+          
+          # determine whether to add this drink 
+          if @add_this == true
+            @total_demand = @total_demand + 1
+          end
+        end # end of cycle through each active user
+        
+      end # end of cycle through each active account
+      
+      # update this inventory item with this demand
+      inventory.update(total_demand: @total_demand)
+      
+    end # end of cycle through inventory requests
+    
+end # end of assess_total_demand_for_inventory task
 
 desc "share admin drink prep with customers" # step 3 of curation process (step #2 is manual curation)
 task :share_admin_prep_with_customer => :environment do

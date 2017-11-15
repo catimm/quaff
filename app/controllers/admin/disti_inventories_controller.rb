@@ -101,9 +101,22 @@ class Admin::DistiInventoriesController < ApplicationController
     
     # get current orders for disti
     @current_disti_orders = DistiOrder.where(distributor_id: @distributor_id)
-
     
   end # end disti_orders method
+  
+  def disti_orders_new
+    @disti_order = DistiOrder.new
+  end # end of disti_orders_new method
+  
+  def disti_orders_create
+    # create new row in table
+    DistiOrder.create(distributor_id: params[:disti_order][:distributor_id], 
+                      inventory_id: params[:disti_order][:inventory_id], 
+                      case_quantity_ordered: params[:disti_order][:case_quantity_ordered])    
+    
+    # send back to disti order page
+    redirect_to admin_disti_orders_path(params[:disti_order][:distributor_id])
+  end # end of disti_orders_create method
   
   def change_disti_orders_view
     # redirect back to recommendation page                                             

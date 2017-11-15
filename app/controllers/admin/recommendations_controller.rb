@@ -139,9 +139,9 @@ class Admin::RecommendationsController < ApplicationController
 
     # find if drink has order limitations and if so what they are
     @drink_recommendations.each do |drink_group|
-      Rails.logger.debug("Drink group info: #{drink_group[1].inspect}")
+      #Rails.logger.debug("Drink group info: #{drink_group[1].inspect}")
       drink_group[1].each do |drink|
-        Rails.logger.debug("Drink info: #{drink.inspect}")
+        #Rails.logger.debug("Drink info: #{drink.inspect}")
         if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil?
           drink[1][0].limited_quantity = drink[1][0].inventory.limit_per
         else
@@ -350,6 +350,18 @@ class Admin::RecommendationsController < ApplicationController
         else
           @large_format = false
         end
+        # adjust drink price to wholesale if user is admin
+        if @user.role_id == 1
+          if !@inventory.sale_case_cost.nil?
+            @wholesale_cost = (@inventory.sale_case_cost / @inventory.min_quantity)
+          else
+            @wholesale_cost = (@inventory.regular_case_cost / @inventory.min_quantity)
+          end
+          @stripe_fees = (@wholesale_cost * 0.029)
+          @drink_price = (@wholesale_cost + @stripe_fees)
+        else
+          @drink_price = @inventory.drink_price
+        end
         # create new table entry
         @next_delivery_admin_info = AccountDelivery.create(account_id: @drink_recommendation.account_id, 
                                                               beer_id: @drink_recommendation.beer_id,
@@ -357,7 +369,7 @@ class Admin::RecommendationsController < ApplicationController
                                                               cellar: @cellar,
                                                               large_format: @large_format,
                                                               delivery_id: @customer_next_delivery.id,
-                                                              drink_price: @inventory.drink_price,
+                                                              drink_price: @drink_price,
                                                               times_rated: 0,
                                                               size_format_id: @drink_recommendation.size_format_id)
         

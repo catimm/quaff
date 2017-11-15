@@ -275,6 +275,8 @@ Rails.application.routes.draw do
   post 'admin/inventories/process_order_requests/:id' => 'admin/inventories#process_order_requests'
   get 'admin/disti_inventories/change_disti_inventory_view/:id' => 'admin/disti_inventories#change_disti_inventory_view'
   get 'admin/disti_inventories/disti_orders/:id' => 'admin/disti_inventories#disti_orders', :as => 'admin_disti_orders'
+  get 'admin/disti_orders_new/disti_orders_new' => 'admin/disti_inventories#disti_orders_new', :as => 'admin_disti_orders_new'
+  post 'admin/disti_orders_new/disti_orders_create' => 'admin/disti_inventories#disti_orders_create', :as => 'admin_disti_orders_create'
   get 'admin/disti_inventories/change_disti_orders_view/:id' => 'admin/disti_inventories#change_disti_orders_view'
   patch 'admin/disti_inventories/process_inventory/:id' => 'admin/disti_inventories#process_inventory', :as => 'process_disti_inventory'
  

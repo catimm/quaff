@@ -38,33 +38,33 @@
 		<div class="row no-margin">
 			<div class="col-xs-12">
 				<% if !@requested_orders.blank? %>
-					<table class="table table-striped admin-recommendation-table">
+					<table class="table table-bordered admin-recommendation-table">
 						<tr>
-						  <th>Item #</th>
-						  <th>UPC</th>
+						  <th class="text-center">Item #</th>
 						  <th>Drink</th>
-						  <th>Format</th>
-						  <th>Regular Cost</th>
-						  <th>Current Cost</th>
-						  <th>Case Quantity</th>
-						  <th># Requested</th>
-						  <th>Cases to Order</th>
+						  <th class="text-center">Format</th>
+						  <th class="text-center">Regular Cost</th>
+						  <th class="text-center">Current Cost</th>
+						  <th class="text-center">Drinks/Case</th>
+						  <th class="text-center">Drinks Requested</th>
+						  <th class="text-center">Total Demand</th>
+						  <th class="text-center">Cases to Order</th>
 						</tr>
 						<% @requested_orders.each do |drink| %>
 							<tr>
-						    	<td><%= drink.disti_inventory.disti_item_number %></td>
-						    	<% if !drink.disti_inventory.disti_upc.nil? %>
-						    		<td><%= drink.disti_inventory.disti_upc %></td>
-						    	<% else %>
-						    		<td>N/A</td>
-						    	<% end %>
+						    	<td class="text-center"><%= drink.disti_inventory.disti_item_number %></td>
 						    	<td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
-						        <td><%= drink.size_format.format_name %></td>
-						        <td><%= drink.disti_inventory.regular_case_cost %></td>
-						        <td><%= drink.disti_inventory.current_case_cost %></td>
-						        <td><%= drink.disti_inventory.min_quantity %></td>
-						        <td><%= drink.order_request %></td>
-						        <td>
+						        <td class="text-center"><%= drink.size_format.format_name %></td>
+						        <td class="text-center">$<%= drink.disti_inventory.regular_case_cost %></td>
+						        <td class="text-center">$<%= drink.disti_inventory.current_case_cost %></td>
+						        <td class="text-center"><%= drink.disti_inventory.min_quantity %></td>
+						        <td class="text-center"><%= drink.order_request %></td>
+						        <% if !drink.total_demand.nil? %>
+						       		<td class="text-center"><%= drink.total_demand %></td>
+						       	<% else %>
+						       		<td class="text-center">N/A</td>
+						       	<% end %>
+						        <td class="text-center">
 									<%= select_tag('disti_inventory_add', 
 										options_for_select(@case_order_number.map { |num| [num, num] }),
 										id: drink.distributor_id.to_s + "_" + drink.id.to_s,

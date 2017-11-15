@@ -16,6 +16,9 @@ class Admin::InventoriesController < ApplicationController
 
       # grab all inventory for the chosen Maker
       @inventory_in_stock = @inventory.in_stock.joins(:beer).where('beers.brewery_id = ?', @brewery_id)
+      
+      # grab all out of stock inventory for the chosen Maker
+      @inventory_out_of_stock = @inventory.out_of_stock.joins(:beer).where('beers.brewery_id = ?', @brewery_id)
     end
     
   end # end show method
@@ -28,6 +31,7 @@ class Admin::InventoriesController < ApplicationController
   def new
     # to create a new Inventory instance
     @inventory = Inventory.new
+    @new = true
     # grab drink id if it is passed in params
     if params.has_key?(:format)
       @drink_id = params[:format]
@@ -35,8 +39,19 @@ class Admin::InventoriesController < ApplicationController
   end # end new method
   
   def create
+    # set additional params for this addition
+    if params[:inventory][:stock].blank?
+      params[:inventory][:stock] = 0
+    end
+    if params[:inventory][:reserved].blank?
+      params[:inventory][:reserved] = 0
+    end
+    params[:inventory][:order_request] = 0
+    
     @new_inventory = Inventory.create!(inventory_params)
-    redirect_to admin_inventories_path
+    @beer = Beer.find_by_id(@new_inventory.beer_id)
+    # send back to inventory page (show.html.erb)
+    redirect_to admin_inventory_path(@beer.brewery_id)
   end # end create method
   
   def edit

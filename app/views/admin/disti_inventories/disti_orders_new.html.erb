@@ -1,0 +1,56 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Disti Order Form</h1>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<div class="row">
+				<div class="col-xs-12 no-padding-right">
+					<%= link_to "Back to Previous", request.referer.present? ? request.referer : default_path, class: "drink-preference-view-option current" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6">
+				<%= simple_form_for [:admin, @disti_order], :url => admin_disti_orders_create_path, :method => :post do |f| %>
+					<div class="row disti-inventory-form-row">
+						<h2>Disti Order form</h2>
+					</div>
+					<div class="row disti-inventory-form-row">
+						<div class="col-xs-4 col-sm-3 no-padding">
+							<%= label :distributor_id, 'Distributor' %>
+						</div>
+						<div class="col-xs-8 col-sm-9 no-padding-right">
+							<%= f.input :distributor_id, :collection => Distributor.all, :label_method => :disti_name,:value_method => :id, prompt: "Select a distributor", :class => "form-control", required: true, label: false %>
+						</div>
+					</div>	
+					<div class="row disti-inventory-form-row">
+						<div class="col-xs-3 no-padding">
+							<%= label :inventory_id, 'Inventory id' %>
+						</div>
+						<div class="col-xs-9">
+							<%= f.text_field :inventory_id, :class => "form-control", placeholder: "Inventory id" %>
+						</div>
+					</div>
+					<div class="row disti-inventory-form-row">
+						<div class="col-xs-3 no-padding">
+							<%= label :case_quantity_ordered, 'Case quantity' %>
+						</div>
+						<div class="col-xs-9">
+							<%= f.text_field :case_quantity_ordered, :class => "form-control", placeholder: "Case quantity" %>
+						</div>
+					</div>
+					<div class="col-sm-offset-3 col-sm-9 col-xs-offset-1 col-xs-10 text-center">
+						<%= f.submit "Submit", class: "btn btn-default btn-success formButton" %>
+					</div>					
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

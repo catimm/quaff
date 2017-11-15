@@ -20,6 +20,7 @@
 #  regular_case_cost   :decimal(5, 2)
 #  sale_case_cost      :decimal(5, 2)
 #  disti_inventory_id  :integer
+#  total_demand        :integer
 #
 
 require 'test_helper'

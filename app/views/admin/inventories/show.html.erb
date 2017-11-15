@@ -6,11 +6,14 @@
 		</div>
 		<div class="col-xs-12 col-sm-8">
 			<div class="row">
-				<div class="col-xs-3">
+				<div class="col-xs-6 col-sm-4">
 					<%= link_to "Knird Inventory", admin_inventory_path(@brewery_id), class: "drink-preference-view-option current" %>
 				</div>
-				<div class="col-xs-3">
+				<div class="col-xs-6 col-sm-4">
 					<%= link_to "Order Requests", admin_order_requests_path(1), class: "drink-preference-view-option" %>
+				</div>
+				<div class="col-xs-12 col-sm-4">
+					<%= link_to "Add new inventory", new_admin_inventory_path, :class => "btn btn-success inputButton2 order-inventory" %>
 				</div>
 			</div>
 		</div>
@@ -38,10 +41,15 @@
 					<img class="img-responsive center-block" alt="Responsive image" src="<%= @brewery.image %>">
 				</div>
 				<div class="col-xs-8 col-sm-7 text-left no-padding">
-					<h3 class="inventory-maker-title"><%= @brewery.short_brewery_name %> Stock <span>(<%= @inventory_in_stock.count %> <%= "drink".pluralize(@inventory_in_stock.count) %>)</span></h3>
+					<h3 class="inventory-maker-title"><%= @brewery.short_brewery_name %> <span>(id: <%= @brewery.id %>; drinks in stock: <%= @inventory_in_stock.count %>)</span></h3>
 				</div>
 				<div class="col-xs-offset-1 col-xs-10 col-sm-3">
 					<%= collection_select(nil, "maker_list", @inventory_makers, :id, :short_brewery_name, {prompt: "Change maker view"}, {class: "form-control maker-list-for-inventory"}) %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4>Currently in stock</h4>
 				</div>
 			</div>
 			<div class="row no-margin" id="inventory-in-stock-holder">
@@ -60,7 +68,7 @@
 					    </tr>
 						<% @inventory_in_stock.each do |inventory| %>
 							<tr>
-								<td><%= inventory.beer.beer_name %></td>
+								<td><%= inventory.beer.beer_name %> [id: <%= inventory.id %>]</td>
 								<td><%= inventory.size_format.format_name %></td>
 								<td><%= inventory.stock %></td>
 								<td><%= inventory.reserved %></td>
@@ -68,6 +76,41 @@
 								<td>$<%= inventory.drink_price %></td>
 								<td><%= inventory.limit_per %></td>
 								<td><%= inventory.currently_available %></td>
+								<td><%= link_to "Edit", edit_admin_inventory_path(inventory.id), :class => "btn btn-primary editButton" %></td>
+							</tr>
+						<% end %>
+					</table>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4>Out of stock</h4>
+				</div>
+			</div>
+			<div class="row no-margin" id="inventory-in-stock-holder">
+				<div class="col-xs-12">
+					<table class="table table-striped admin-recommendation-table">
+					    <tr>
+					    	<th>Drink</th>
+						    <th>Format</th>
+						    <th>Stock</th>
+						    <th>Reserved</th>
+						    <th>Drink Cost</th>
+						    <th>Drink Price</th>
+						    <th>Limit?</th>
+						    <th>Available?</th>
+						    <th></th>
+					    </tr>
+						<% @inventory_out_of_stock.each do |inventory| %>
+							<tr>
+								<td><%= inventory.beer.beer_name %> [id: <%= inventory.id %>]</td>
+								<td><%= inventory.size_format.format_name %></td>
+								<td>0</td>
+								<td>0</td>
+								<td>$<%= inventory.drink_cost %></td>
+								<td>$<%= inventory.drink_price %></td>
+								<td><%= inventory.limit_per %></td>
+								<td>No</td>
 								<td><%= link_to "Edit", edit_admin_inventory_path(inventory.id), :class => "btn btn-primary editButton" %></td>
 							</tr>
 						<% end %>

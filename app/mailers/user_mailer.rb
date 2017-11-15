@@ -30,7 +30,7 @@ class UserMailer < ActionMailer::Base
   
   def guest_invite_email(invited, invitor)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-    Rails.logger.debug("Raw invitation token: #{invited.raw_invitation_token.inspect}")
+    #Rails.logger.debug("Raw invitation token: #{invited.raw_invitation_token.inspect}")
     payload  = {
       recipients: [
         {
