@@ -13,6 +13,9 @@
 #  size_format_id     :integer
 #  inventory_id       :integer
 #  disti_inventory_id :integer
+#  number_of_ratings  :integer
+#  delivered_recently :boolean
+#  drank_recently     :boolean
 #
 
 class UserDrinkRecommendation < ActiveRecord::Base

@@ -30,14 +30,14 @@ class AccountDelivery < ActiveRecord::Base
   attr_accessor :this_beer_descriptors # to hold list of descriptors user typically likes/dislikes
   attr_accessor :top_descriptor_list # to hold list of top drink descriptors
   
-  # determine whether drink has been delivered within last 6 weeks
+  # determine whether drink has been delivered within last month
   scope :delivered_recently, ->(user_id, account_id, drink_id) {
     where(id: account_id, beer_id: drink_id).
     joins(:user_deliveries).
     where('user_deliveries.user_id = ?', user_id).
     joins(:delivery).
-    where('deliveries.status = ?', "delivered")
-    #where('deliveries.delivery_date > ?', 6.weeks.ago)
+    where('deliveries.status = ?', "delivered").
+    where('deliveries.delivery_date > ?', 1.month.ago)
   } # end of within_last scope
   
   # method for inventory limits

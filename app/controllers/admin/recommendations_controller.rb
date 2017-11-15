@@ -8,37 +8,29 @@ class Admin::RecommendationsController < ApplicationController
     # get account and delivery info
     @account_id = params[:id].to_i
     @chosen_delivery_id = params[:format]
-    Rails.logger.debug("Account id: #{@account_id.inspect}")
-    Rails.logger.debug("Chosen delivery drink: #{@chosen_delivery_id.inspect}")
+    
     # get all account ids where account is currently active--for view drop down menu
     @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
     #Rails.logger.debug("Active Account ids: #{@active_account_ids.inspect}")
     #set current account
     if @account_id == 0
-      Rails.logger.debug("Account ID = 0")
       @current_accounts_with_upcoming_delivery = Delivery.current_accounts_with_upcoming_deliveries
-      Rails.logger.debug("Active Account w/Upcomgin Delivery: #{@current_accounts_with_upcoming_delivery.inspect}")
       @current_account_id = @current_accounts_with_upcoming_delivery.first
     else
-      Rails.logger.debug("Account ID != 0")
       @current_account_id = @account_id
     end
-    Rails.logger.debug("Current Account id: #{@current_account_id.inspect}")
+    
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
-    Rails.logger.debug("Account Owner: #{@account_owner.inspect}")
     # get all delivery dates for chosen account for last few months and next month--for view drop down menu
     @customer_delivery_dates = Delivery.where(account_id: @current_account_id, delivery_date: (3.months.ago)..(5.weeks.from_now)).pluck(:delivery_date)
-    Rails.logger.debug("Customer Delivery Date: #{@customer_delivery_dates.inspect}")
+
     # get chosen delivery date
     if @chosen_delivery_id.nil?
-      Rails.logger.debug("Chosen Delivery ID = 0")
       @customer_next_delivery = Delivery.where(account_id: @current_account_id).where(delivery_date: (Date.today)..(13.days.from_now)).order("delivery_date ASC").first
     else
-      Rails.logger.debug("Chosen Delivery ID != 0")
       @customer_next_delivery = Delivery.find_by_id(@chosen_delivery_id)
     end
-    Rails.logger.debug("Customer Next Delivery: #{@customer_next_delivery.inspect}")
     # show correct view if delivery is past point of adjustments
     if @customer_next_delivery.status == "in progress" || @customer_next_delivery.status == "delivered"
       @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
@@ -141,26 +133,31 @@ class Admin::RecommendationsController < ApplicationController
     @customer_messages = CustomerDeliveryMessage.where(delivery_id: @customer_next_delivery.id)
       
     # get recommended drinks by user
-    @drink_recommendations = UserDrinkRecommendation.where(account_id: @current_account_id).group_by(&:beer_id)
-    
+    @drink_recommendations = UserDrinkRecommendation.where(account_id: @current_account_id).
+                              group_by(&:beer_id).
+                              each_with_object({}) {|(k, v), h| h[k] = v.group_by(&:size_format_id) }
+
     # find if drink has order limitations and if so what they are
-    @drink_recommendations.each do |drink|
-      #Rails.logger.debug("Drink info: #{drink.inspect}")
-      if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil?
-        drink[1][0].limited_quantity = drink[1][0].inventory.limit_per
-      else
-        if drink[1][0].disti_inventory_id != nil
-          drink[1][0].limited_quantity = "No"
+    @drink_recommendations.each do |drink_group|
+      Rails.logger.debug("Drink group info: #{drink_group[1].inspect}")
+      drink_group[1].each do |drink|
+        Rails.logger.debug("Drink info: #{drink.inspect}")
+        if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil?
+          drink[1][0].limited_quantity = drink[1][0].inventory.limit_per
         else
-          @this_current_quantity = @next_account_delivery.where(beer_id: drink[1][0].beer_id )[0]
-          if !@this_current_quantity.blank?
-            drink[1][0].limited_quantity = drink[1][0].inventory.stock + @this_current_quantity.quantity 
+          if drink[1][0].disti_inventory_id != nil
+            drink[1][0].limited_quantity = "No"
           else
-            drink[1][0].limited_quantity = drink[1][0].inventory.stock
+            @this_current_quantity = @next_account_delivery.where(beer_id: drink[1][0].beer_id )[0]
+            if !@this_current_quantity.blank?
+              drink[1][0].limited_quantity = drink[1][0].inventory.stock + @this_current_quantity.quantity 
+            else
+              drink[1][0].limited_quantity = drink[1][0].inventory.stock
+            end
           end
-        end
-      end
-    end
+        end # end of inventory limit check
+      end # end of each drink
+    end # end of drink gropu
 
   end # end of show action
   
@@ -401,7 +398,7 @@ class Admin::RecommendationsController < ApplicationController
       @current_subtotal = @current_subtotal + @this_drink_total
     end
     # now get sales tax
-    @appropriate_tax = DeliveryZone.find_by_id(@user.account.delivery_zone_id).pluck(:excise_tax)
+    @appropriate_tax = DeliveryZone.where(id: @user.account.delivery_zone_id).pluck(:excise_tax)
     @current_sales_tax = @current_subtotal * 0.096
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
@@ -412,7 +409,7 @@ class Admin::RecommendationsController < ApplicationController
                                     delivery_change_confirmation: false)
     
     # redirect back to recommendation page                                             
-    render js: "window.location = '#{admin_recommendation_path(@user.account_id, @delivery_id.id)}'"
+    render js: "window.location = '#{admin_recommendation_path(@user.account_id, @delivery_id)}'"
     
   end # end admin_account_delivery method
   

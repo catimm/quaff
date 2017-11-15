@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113241007) do
+ActiveRecord::Schema.define(version: 20171114214240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -720,6 +720,9 @@ ActiveRecord::Schema.define(version: 20171113241007) do
     t.integer  "size_format_id"
     t.integer  "inventory_id"
     t.integer  "disti_inventory_id"
+    t.integer  "number_of_ratings"
+    t.boolean  "delivered_recently"
+    t.boolean  "drank_recently"
   end
 
   create_table "user_fav_drinks", force: :cascade do |t|
