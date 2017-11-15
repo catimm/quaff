@@ -509,7 +509,7 @@ task :assess_drink_recommendations => :environment do
     @drink_types = BeerType.all
       
     # get list of all currently_active subscriptions
-    @active_subscriptions = UserSubscription.where(account_id: 1) #currently_active: true
+    @active_subscriptions = UserSubscription.where(currently_active: true)
     
     # get user info from users who have completed delivery preferences
     @delivery_preference_user_ids = DeliveryPreference.all.pluck(:user_id)
