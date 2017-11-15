@@ -14,7 +14,7 @@
 			<% if @new == true %>
 				<%= f.text_field :beer_id, :class => "form-control", placeholder: "Beer ID" %>
 			<% else %>
-				<%= f.text_field :beer_id, value: @drink_id, :readonly => true, :class => "form-control", placeholder: "Beer ID" %>
+				<%= f.text_field :beer_id, :readonly => true, :class => "form-control", placeholder: "Beer ID" %>
 			<% end %>
 		</div>
 		

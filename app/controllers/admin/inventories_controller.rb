@@ -7,7 +7,7 @@ class Admin::InventoriesController < ApplicationController
     
     # grab all Makers in stock
     @inventory = Inventory.all
-    @inventory_makers = Brewery.joins(:beers).merge(Beer.drinks_in_stock)
+    @inventory_makers = Brewery.joins(:beers).merge(Beer.drinks_in_stock).uniq
     #Rails.logger.debug("inventory makers: #{@inventory_makers.inspect}")
     
     if @brewery_id != 0
