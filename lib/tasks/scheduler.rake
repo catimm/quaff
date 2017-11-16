@@ -827,12 +827,13 @@ task :share_admin_prep_with_customer => :environment do
             end
             
           if @has_mates == false
+            @user_delivery = UserDelivery.where(account_delivery_id: drink.id)
             # add drink data to array for customer review email
             @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
                             :drink => drink.beer.beer_name,
                             :drink_type => drink.beer.beer_type.beer_type_short_name,
                             :format => drink.size_format.format_name,
-                            :projected_rating => drink.user_deliveries.projected_rating,
+                            :projected_rating => @user_delivery[0].projected_rating,
                             :quantity => drink.quantity,
                             :odd => @odd}).as_json
           else
