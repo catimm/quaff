@@ -37,6 +37,7 @@
 #  tpw                    :string
 #  account_id             :integer
 #  phone                  :string
+#  recent_addition        :boolean
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

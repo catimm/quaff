@@ -37,6 +37,7 @@
 #  tpw                    :string
 #  account_id             :integer
 #  phone                  :string
+#  recent_addition        :boolean
 #
 
 require 'test_helper'

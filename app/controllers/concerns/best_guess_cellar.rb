@@ -38,9 +38,9 @@ module BestGuessCellar
     else 
       style_based_guess(@drink)
     end
-    @projected_rating = ((((@drink.best_guess)*2).round)/2.0)
+    @projected_rating = ((((@drink.best_guess)*2).round)/2.0).to_f
     # crate projected rating table entry
-    ProjectedRating.create(user_id: user_id, beer_id: @drink.id, projected_rating: @projected_rating)
-
+    #ProjectedRating.create(user_id: user_id, beer_id: @drink.id, projected_rating: @projected_rating)
+    return @projected_rating
   end # end of method
 end # end of module

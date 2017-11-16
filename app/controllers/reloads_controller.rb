@@ -3,70 +3,50 @@ class ReloadsController < ApplicationController
   include UserLikesDrinkTypes
   include TypeBasedGuess
   include BestGuess
+  include BestGuessCellar
   require "stripe"
   
   
   def index
-    # get all inventory with order requests
-    @requested_inventory = Inventory.where('order_request > ?', 0)
+    # get all new users
+    @recent_additions = User.where(recent_addition: true)
     
-    # get list of all currently_active subscriptions
-    @active_subscriptions = UserSubscription.where(currently_active: true)
-    
-    @requested_inventory.each do |inventory|
-      # create variables to hold total demand for this inventory item
-      @total_demand = 0
-      
-      # determine viable drinks for each active account
-      @active_subscriptions.each do |account|
-  
-        # get each user associated to this account
-        @active_users = User.where(account_id: account.account_id, getting_started_step: 11)
+    if !@recent_additions.blank?
+      # loop through recent additions to add Projected Ratings for each
+      @recent_additions.each do |new_user|
+       
+        # find if account has cellar drinks
+        @cellar_drinks = UserCellarSupply.where(account_id: new_user.account_id)
         
-        @active_users.each do |user|
-          # assess drink to add if user would rated highly enough
-
-          # find if user has rated/had this drink before
-          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: inventory.beer_id)
-
-          # make sure this drink should be included as a recommendation
-          if !@drink_ratings.blank? # first check if it is a new drink
-            # get average rating
-            @drink_ratings_last = @drink_ratings.last
-            @drink_rating_average = @drink_ratings.average(:user_beer_rating)
-            
-            if @drink_ratings_last.rated_on > 1.month.ago && @drink_rating_average >= 8 # if not new, make sure if it's been recently that the customer has had it that they REALLY like it
-              # define drink status
-              @add_this = true
-            elsif  @drink_ratings_last.rated_on < 1.month.ago && @drink_rating_average >= 7.5 # or make sure if it's been a while that they still like it
-              # define drink status
-              @add_this = true
-            end
-          else
-            # get this drink from DB for the Type Based Guess Concern
-            @drink = Beer.find_by_id(inventory.beer_id)
-            
-            # find the drink best_guess for the user
-            type_based_guess(@drink, user.id)
-            if @drink.best_guess >= 7.5 # if customer has not had it, make sure it is still a high recommendation
-              # define drink status
-              @add_this = true
-            end
-          end
+        if !@cellar_drinks.blank?
+          @cellar_drinks.each do |cellar_drink|
+            # get projected rating
+            @this_user_projected_rating = best_guess_cellar(cellar_drink.beer_id, new_user.id)
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: new_user.id, beer_id: cellar_drink.beer_id, projected_rating: @this_user_projected_rating)
+          end # end of cycle through each cellar drink and add projected rating for new user
           
-          # determine whether to add this drink 
-          if @add_this == true
-            @total_demand = @total_demand + 1
-          end
-        end # end of cycle through each active user
+        end # end of check whether cellar drinks exist
         
-      end # end of cycle through each active account
-      
-      # update this inventory item with this demand
-      inventory.update(total_demand: @total_demand)
-      
-    end # end of cycle through inventory requests
+        # find if account has wishlist drinks
+        @wishlist_drinks = Wishlist.where(account_id: new_user.account_id)
+        
+        if !@wishlist_drinks.blank?
+          @wishlist_drinks.each do |wishlist_drink|
+            # get projected rating
+            @this_user_projected_rating = best_guess_cellar(wishlist_drink.beer_id, new_user.id)
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: new_user.id, beer_id: wishlist_drink.beer_id, projected_rating: @this_user_projected_rating)
+          end # end of cycle through each wishlist drink and add projected rating for new user
+          
+        end # end of check whether wishlist drinks exist
+        
+        new_user.update(recent_addition: false)
+        
+      end # end of loop through recent additions
     
+    end # end of check whether recent additions exist  
+  
   end # end of index method
   
   def data

@@ -721,6 +721,51 @@ task :assess_drink_recommendations => :environment do
 
 end # end of assessing drink recommendations task
 
+desc "add Project Ratings for new account additions"
+task :add_projected_ratings_for_new_mates => :environment do
+    include BestGuessCellar
+    
+    # get all new users
+    @recent_additions = User.where(recent_addition: true)
+    
+    if !@recent_additions.blank?
+      # loop through recent additions to add Projected Ratings for each
+      @recent_additions.each do |new_user|
+       
+        # find if account has cellar drinks
+        @cellar_drinks = UserCellarSupply.where(account_id: new_user.account_id)
+        
+        if !@cellar_drinks.blank?
+          @cellar_drinks.each do |cellar_drink|
+            # get projected rating
+            @this_user_projected_rating = best_guess_cellar(cellar_drink.beer_id, new_user.id)
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: new_user.id, beer_id: cellar_drink.beer_id, projected_rating: @this_user_projected_rating)
+          end # end of cycle through each cellar drink and add projected rating for new user
+          
+        end # end of check whether cellar drinks exist
+        
+        # find if account has wishlist drinks
+        @wishlist_drinks = Wishlist.where(account_id: new_user.account_id)
+        
+        if !@wishlist_drinks.blank?
+          @wishlist_drinks.each do |wishlist_drink|
+            # get projected rating
+            @this_user_projected_rating = best_guess_cellar(wishlist_drink.beer_id, new_user.id)
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: new_user.id, beer_id: wishlist_drink.beer_id, projected_rating: @this_user_projected_rating)
+          end # end of cycle through each wishlist drink and add projected rating for new user
+          
+        end # end of check whether wishlist drinks exist
+        
+        new_user.update(recent_addition: false)
+        
+      end # end of loop through recent additions
+    
+    end # end of check whether recent additions exist
+    
+end # end of task to add Projected Ratings for new mates
+
 desc "assess total demand for inventory requested"
 task :assess_total_demand_for_inventory => :environment do 
     include UserLikesDrinkTypes
@@ -988,10 +1033,11 @@ end # end of user_change_confirmation task
 
 desc "customer review reminder email" # Step 5 of curation sends user reminder that their chance to provide feedback is ending
 task :end_user_review_period_reminder => :environment do
+    require 'date'
     # get all users currently with a delivery the next day
     @tomorrow_deliveries = Delivery.
                                 where(status: "user review").
-                                where(delivery_date: (1.day.from_now.beginning_of_day)..(1.day.from_now.end_of_day)). 
+                                where(delivery_date: Date.tomorrow). 
                                 pluck(:account_id)
     if !@tomorrow_deliveries.blank?
       # cycle through each delivery
@@ -1012,10 +1058,11 @@ end # end of end_user_review_period_reminder task
 
 desc "end customer review period" # Step 6 of curation ends the feedback period so drinks can be prepared for delivery
 task :end_user_review_period => :environment do
+  require 'date'
   # get all users currently with a delivery the next day
   @tomorrow_deliveries = Delivery.
                               where(status: "user review").
-                              where(delivery_date: (1.day.from_now.beginning_of_day)..(1.day.from_now.end_of_day))
+                              where(delivery_date: Date.tomorrow)
   
   if !@tomorrow_deliveries.blank?
     

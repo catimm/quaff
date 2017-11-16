@@ -950,6 +950,9 @@ class SignupController < ApplicationController
       if @user.getting_started_step == 9
         @user.update_attribute(:getting_started_step, 11)
       end
+      if @user.role_id == 5
+        @user.update(recent_addition: true)
+      end
     end
 
     if !@user.tpw.nil?

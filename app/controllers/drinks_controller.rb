@@ -196,13 +196,48 @@ class DrinksController < ApplicationController
     
     if @account_users_count > 1
       @account_users.each do |user|
-        if user.user_drink_rating(@new_cellar_drink.beer_id).nil?
-          if user.user_drink_projected_rating(@new_cellar_drink.beer_id).nil?
-            best_guess_cellar(@new_cellar_drink.beer_id, user.id)
+        # find if this drink was originally recommended to user
+        @user_delivery = UserDelivery.where(account_delivery_id: @new_cellar_drink.id, user_id: user.id)
+        
+        if !@user_delivery.blank?
+          @this_user_projected_rating = @user_delivery[0].projected_rating
+        else # if this drink wasn't originally recommended to user
+          @user_drink_rating = user.user_drink_rating(@new_cellar_drink.beer_id)
+          if @user_drink_rating.nil?
+            @this_user_projected_rating = best_guess_cellar(@new_cellar_drink.beer_id, user.id)
+          else
+            @this_user_projected_rating = @user_drink_rating
           end
-        end
-      end
-    end
+        end # end of check whether UserDelivery row exists
+        
+        # find if a projected rating entry exists for this user
+        @projected_rating = ProjectedRating.where(user_id: user.id, beer_id: @new_cellar_drink.beer_id)
+       
+        # now create or update the projected rating for this user
+        if !@projected_rating.blank?
+          ProjectedRating.update(@projected_rating[0].id, projected_rating: @this_user_projected_rating)
+        else
+          # create new project rating DB entry
+          ProjectedRating.create(user_id: user.id, beer_id: @new_cellar_drink.beer_id, projected_rating: @this_user_projected_rating)
+        end # end of creating/updating projected rating DB
+        
+      end # end of loop through each account user
+    
+    else # this account only has the one user -- the customer who was recommended this drink
+      # find the projected rating for this user
+      @user_delivery = UserDelivery.where(account_delivery_id: @new_cellar_drink.id)
+      # find if a projected rating entry exists for this user
+      @projected_rating = ProjectedRating.where(user_id: @user.id, beer_id: @new_cellar_drink.beer_id)
+      
+      # now create or update the projected rating for this user
+      if @projected_rating.blank?
+        # create new project rating DB entry
+        ProjectedRating.create(user_id: user.id, beer_id: @new_cellar_drink.beer_id, projected_rating: @user_delivery[0].projected_rating)
+      else
+        ProjectedRating.update(@projected_rating[0].id, projected_rating: @user_delivery[0].projected_rating)
+      end # end of creating/updating projected rating DB
+        
+    end # end of check wether there is more than one account user
     
     # find if this drink already exists in the account's cellar
     @existing_cellar_drink = UserCellarSupply.where(account_id: @user.account_id, beer_id: @new_cellar_drink.beer_id)
