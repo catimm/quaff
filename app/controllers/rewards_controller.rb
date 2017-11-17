@@ -4,11 +4,13 @@ class RewardsController < ApplicationController
   def index
     # get user info
     @user = User.find_by_id(current_user.id)
+    # get account owner info
+    @account_owner = User.where(account_id: @user.account_id, role_id: [1,4])
     # get user rewards info
     @user_rewards = RewardPoint.where(account_id: @user.account_id).sort_by(&:updated_at).reverse
     
     # get user subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true)[0]
+    @user_subscription = UserSubscription.where(user_id: @account_owner.id, currently_active: true)[0]
     if @user_subscription.subscription_id == 3
       @reward_multiplier_text = "1.5 bottle caps"
       @reward_multiplier = 1.5
