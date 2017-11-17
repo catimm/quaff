@@ -5,7 +5,7 @@ class RewardsController < ApplicationController
     # get user info
     @user = User.find_by_id(current_user.id)
     # get account owner info
-    @account_owner = User.where(account_id: @user.account_id, role_id: [1,4])
+    @account_owner = User.where(account_id: @user.account_id, role_id: [1,4])[0]
     # get user rewards info
     @user_rewards = RewardPoint.where(account_id: @user.account_id).sort_by(&:updated_at).reverse
     
