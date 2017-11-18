@@ -22,4 +22,6 @@ class DeliveryZone < ActiveRecord::Base
   
   belongs_to :delivery_driver
   
+  has_many :user_addresses
+  
 end

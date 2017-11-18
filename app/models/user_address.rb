@@ -22,6 +22,7 @@ class UserAddress < ActiveRecord::Base
   after_save :check_delivery_zone_sum, if: :delivery_zone_id_changed?
   
   belongs_to :account
+  belongs_to :delivery_zone
   
   attr_accessor :user_id # to hold current user id
   

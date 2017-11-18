@@ -24,6 +24,7 @@
 	 	<% @this_drink_price = drink.account_delivery.drink_price * drink.quantity %>
 	 	<% @next_user_delivery_drink_price = @next_user_delivery_drink_price + @this_drink_price %>
 	<% end %>
+	<% Rails.logger.debug("Next Delivery Drink Price: #{@next_user_delivery_drink_price.inspect}") %>
 	<div class="col-xs-2 col-sm-1 admin-user-identity">
 		<% if user.user_graphic.nil? %>
 			<%= render 'layouts/user_initials_small', friend: user %>
@@ -79,7 +80,7 @@
 	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
 		<div class="delivery-settings-info-box total-price">
 			<p>current price</p>
-			<h4 class="delivery-preference-prompt">$<%= (@next_user_delivery_drink_price * 1.096).round(2) %></h4>
+			<h4 class="delivery-preference-prompt">$<%= (@next_user_delivery_drink_price * (1 + @account_tax)) %></h4>
 		</div>
 	</div>
 </div>

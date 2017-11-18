@@ -19,9 +19,15 @@ class Admin::RecommendationsController < ApplicationController
     else
       @current_account_id = @account_id
     end
-    
+    Rails.logger.debug("Current Account Id: #{@current_account_id.inspect}")
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
+    # get account delivery address
+    @account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
+    @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    # get account tax
+    @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    @multiply_by_tax = 1 + @account_tax
     # get all delivery dates for chosen account for last few months and next month--for view drop down menu
     @customer_delivery_dates = Delivery.where(account_id: @current_account_id, delivery_date: (3.months.ago)..(5.weeks.from_now)).pluck(:delivery_date)
 
@@ -91,7 +97,31 @@ class Admin::RecommendationsController < ApplicationController
         @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
         @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
         #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
-      end
+      
+        # create array to hold user identification info
+        @user_identification = Hash.new
+        @user_identification["id"] = user.id
+        
+        # drink preference
+        if @delivery_preferences.drink_option_id == 1
+          @drink_preference = "Beer"
+        elsif @delivery_preferences.drink_option_id == 2
+          @drink_preference = "Cider"
+        else
+          @drink_preference = "Beer & Cider"
+        end
+        
+        # self identified
+        if user.craft_stage_id == 1
+          @self_identified = "Casual"
+        elsif user.craft_stage_id == 2
+          @self_identified = "Geek"
+        else
+          @self_identified = "Connoisseur"
+        end
+        @user_identification["identity"] = @drink_preference + " " + @self_identified
+        @user_identification_array << @user_identification
+      end # end of check whether user delivery preferences are available
       
       # completing total cost estimate
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
@@ -101,31 +131,9 @@ class Admin::RecommendationsController < ApplicationController
       else
         @next_account_delivery_drink_price = 0
       end
-      # create array to hold user identification info
-      @user_identification = Hash.new
-      @user_identification["id"] = user.id
-      
-      # drink preference
-      if @delivery_preferences.drink_option_id == 1
-        @drink_preference = "Beer"
-      elsif @delivery_preferences.drink_option_id == 2
-        @drink_preference = "Cider"
-      else
-        @drink_preference = "Beer & Cider"
-      end
-      
-      # self identified
-      if user.craft_stage_id == 1
-        @self_identified = "Casual"
-      elsif user.craft_stage_id == 2
-        @self_identified = "Geek"
-      else
-        @self_identified = "Connoisseur"
-      end
-      @user_identification["identity"] = @drink_preference + " " + @self_identified
-      @user_identification_array << @user_identification
-      
-    end
+    
+    
+    end # end of loop through each user
     #Rails.logger.debug("User Identification Array: #{@user_identification_array.inspect}")
     
      # check if account has provided feedback on this delivery
@@ -157,7 +165,7 @@ class Admin::RecommendationsController < ApplicationController
           end
         end # end of inventory limit check
       end # end of each drink
-    end # end of drink gropu
+    end # end of drink group
 
   end # end of show action
   
@@ -410,8 +418,12 @@ class Admin::RecommendationsController < ApplicationController
       @current_subtotal = @current_subtotal + @this_drink_total
     end
     # now get sales tax
-    @appropriate_tax = DeliveryZone.where(id: @user.account.delivery_zone_id).pluck(:excise_tax)
-    @current_sales_tax = @current_subtotal * 0.096
+    # get account delivery address
+    @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
+    @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    # get account tax
+    @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    @current_sales_tax = @current_subtotal * @account_tax
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
     

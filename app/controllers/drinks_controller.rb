@@ -13,6 +13,12 @@ class DrinksController < ApplicationController
   def deliveries   
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
+
+    # get account delivery address
+    @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
+    @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    # get account tax
+    @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
     
     # determine if account has multiple users and add appropriate CSS class tags
     @account_users_count = User.where(account_id: current_user.account_id, getting_started_step: 11).count
