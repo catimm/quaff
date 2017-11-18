@@ -62,8 +62,8 @@ class Admin::InventoriesController < ApplicationController
   
   def update
     @inventory = Inventory.find(params[:id])
-    @update_inventory = @inventory.update(inventory_params)
-    redirect_to admin_inventories_path
+    @inventory.update(inventory_params)
+    redirect_to admin_inventory_path(@inventory.beer.brewery_id)
   end # end update method
   
   def order_requests
