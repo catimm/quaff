@@ -5654,6 +5654,9 @@ $delivery-beer-header-lines-to-show: 2;
 .fulfillment-address {
   margin-bottom: 5px;
 }
+.fulfillment-instructions {
+  min-height: 15px;
+}
 .fulfillment-delivery-date-row {
   background: $extra-light-gray;
   margin: 0 !important;

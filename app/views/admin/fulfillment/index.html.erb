@@ -25,6 +25,7 @@
 						<div class="row">
 							<h5><%= @account_owner.first_name %> <%= @account_owner.last_name %> (<%= @account_owner.username %>)</h5>
 							<h5><%= @account_owner.email %></h5>
+							<h5><%= number_to_phone(@account_owner.phone) %></h5>
 						</div>
 						<div class="row">
 							<h5 class="fulfillment-address"><%= @delivery_address.address_street %>, <%= @delivery_address.address_unit %></h5>
