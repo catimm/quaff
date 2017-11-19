@@ -20,12 +20,20 @@
 			<%= render 'account_delivery_estimates' %>
 		</div>
 		<hr>
-		<div class="row no-margin">
-			<% if @customer_next_delivery.status == "admin prep" || @customer_next_delivery.status == "user review" %>
-				<%= render 'recommended_drinks_list' %>
-			<% else %>	
+		<% if @customer_next_delivery.status == "admin prep" || @customer_next_delivery.status == "user review" %>
+			<div class="row no-margin">
+				<h3>Items in stock</h3>
+				<%= render 'drink_recommendations_in_stock' %>
+			</div>
+			<div class="row no-margin">
+				<h3>Items with distributors</h3>
+				<%= render 'drink_recommendations_with_disti' %>
+			</div>
+		<% else %>	
+			<div class="row no-margin">
 				<%= render 'admin_review_delivery' %>
-			<% end %>
+			</div>
+		<% end %>
 		</div>
 	</div>
 </div>

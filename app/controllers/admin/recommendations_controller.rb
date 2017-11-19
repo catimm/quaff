@@ -19,7 +19,7 @@ class Admin::RecommendationsController < ApplicationController
     else
       @current_account_id = @account_id
     end
-    Rails.logger.debug("Current Account Id: #{@current_account_id.inspect}")
+    #Rails.logger.debug("Current Account Id: #{@current_account_id.inspect}")
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
     # get account delivery address
@@ -141,12 +141,21 @@ class Admin::RecommendationsController < ApplicationController
     @customer_messages = CustomerDeliveryMessage.where(delivery_id: @customer_next_delivery.id)
       
     # get recommended drinks by user
-    @drink_recommendations = UserDrinkRecommendation.where(account_id: @current_account_id).
+    @drink_recommendations_in_stock = UserDrinkRecommendation.where(account_id: @current_account_id).
+                              where('projected_rating >= ?', 7).
+                              where.not(inventory_id: nil).
                               group_by(&:beer_id).
                               each_with_object({}) {|(k, v), h| h[k] = v.group_by(&:size_format_id) }
-
+    
+    @drink_recommendations_with_disti = UserDrinkRecommendation.where(account_id: @current_account_id, 
+                              inventory_id: nil).
+                              where('projected_rating >= ?', 7).
+                              where.not(disti_inventory_id: nil).
+                              group_by(&:beer_id).
+                              each_with_object({}) {|(k, v), h| h[k] = v.group_by(&:size_format_id) }
+                              
     # find if drink has order limitations and if so what they are
-    @drink_recommendations.each do |drink_group|
+    @drink_recommendations_in_stock.each do |drink_group|
       #Rails.logger.debug("Drink group info: #{drink_group[1].inspect}")
       drink_group[1].each do |drink|
         #Rails.logger.debug("Drink info: #{drink.inspect}")
@@ -166,7 +175,29 @@ class Admin::RecommendationsController < ApplicationController
         end # end of inventory limit check
       end # end of each drink
     end # end of drink group
-
+    
+    # find if drink has order limitations and if so what they are
+    @drink_recommendations_with_disti.each do |drink_group|
+      #Rails.logger.debug("Drink group info: #{drink_group[1].inspect}")
+      drink_group[1].each do |drink|
+        #Rails.logger.debug("Drink info: #{drink.inspect}")
+        if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil?
+          drink[1][0].limited_quantity = drink[1][0].inventory.limit_per
+        else
+          if drink[1][0].disti_inventory_id != nil
+            drink[1][0].limited_quantity = "No"
+          else
+            @this_current_quantity = @next_account_delivery.where(beer_id: drink[1][0].beer_id )[0]
+            if !@this_current_quantity.blank?
+              drink[1][0].limited_quantity = drink[1][0].inventory.stock + @this_current_quantity.quantity 
+            else
+              drink[1][0].limited_quantity = drink[1][0].inventory.stock
+            end
+          end
+        end # end of inventory limit check
+      end # end of each drink
+    end # end of drink group
+    
   end # end of show action
   
   def change_user_view
