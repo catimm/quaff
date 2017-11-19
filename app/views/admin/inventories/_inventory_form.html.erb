@@ -83,17 +83,27 @@
 		</div>
 		
 		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :min_quantity, 'Min quantity' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<% if @new == true %>
+				<%= f.text_field :min_quantity, :class => "form-control", placeholder: "Min quantity per  case" %>
+			<% else %>
+				<%= f.text_field :min_quantity, :readonly => true, :class => "form-control", placeholder: "Min quantity per  case" %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-1 col-xs-2 no-padding">
 			<%= label :limit_per, 'Limit/acct' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
 			<%= f.text_field :limit_per, :class => "form-control", placeholder: "Limit/person" %>
 		</div>
-	</div>
-	<div class="row no-margin">
 		<div class="col-xs-2 no-padding">
 			<%= label :currently_available, 'Currently Available?' %>
 		</div>
-		<div class="col-sm-5 col-xs-10">
+		<div class="col-sm-4 col-xs-10">
 			<%= f.check_box :currently_available %>
 		</div>
 	</div>
