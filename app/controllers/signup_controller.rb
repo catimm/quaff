@@ -827,7 +827,7 @@ class SignupController < ApplicationController
     
     # find subscription level id
     @subscription_info = Subscription.find_by_subscription_level(@plan_name)
-    Rails.logger.debug("Subscription info: #{@subscription_info.inspect}")
+    #Rails.logger.debug("Subscription info: #{@subscription_info.inspect}")
     
     #get user info
     @user = current_user
@@ -874,7 +874,7 @@ class SignupController < ApplicationController
     end
     
     # now award Reward Points to invitor if invitor is not an admin
-    if @subscription_info.id != 1 || @subscription_info.id != 7
+    if @subscription_info.id != 1 && @subscription_info.id != 7
       if @invitor.user.role_id != 1
         if !@invitor_reward_points.blank?
           RewardPoint.create(account_id: @invitor.user.account_id, total_points: @new_total_points, transaction_points: @bottle_caps,
