@@ -873,7 +873,7 @@ class SignupController < ApplicationController
     end
     
     # now award Reward Points to invitor if invitor is not an admin
-    if @subscription_info.id != 1
+    if @subscription_info.id != 1 || @subscription_info.id != 7
       if @invitor.user.role_id != 1
         if !@invitor_reward_points.blank?
           RewardPoint.create(account_id: @invitor.user.account_id, total_points: @new_total_points, transaction_points: @bottle_caps,
@@ -884,6 +884,8 @@ class SignupController < ApplicationController
         end
       end # end of check whether invitor is an admin
     end # end of check whether this is for a 1-month subscription                         
+    
+    
     # check if user already has a subscription row
     @user_subscription = UserSubscription.find_by_user_id(@user.id)
     

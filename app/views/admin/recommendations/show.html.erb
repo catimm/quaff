@@ -22,11 +22,11 @@
 		<hr>
 		<% if @customer_next_delivery.status == "admin prep" || @customer_next_delivery.status == "user review" %>
 			<div class="row no-margin">
-				<h3>Items in stock</h3>
+				<h3><u>Items in stock</u></h3>
 				<%= render 'drink_recommendations_in_stock' %>
 			</div>
 			<div class="row no-margin">
-				<h3>Items with distributors</h3>
+				<h3><u>Items with distributors</u></h3>
 				<%= render 'drink_recommendations_with_disti' %>
 			</div>
 		<% else %>	
