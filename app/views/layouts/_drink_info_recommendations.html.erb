@@ -29,8 +29,10 @@
 				$<%= drink.disti_inventory.drink_price %>
 			</h5>
 		<% else %>
-			<% if !drink.inventory.sale_case_cost.nil? && drink.inventory.drink_price > ((drink.inventory.sale_case_cost / drink.inventory.min_quantity) * 1.45).round(2) %>
-				<% @item_price_class = "item-price-special" %>
+			<% if !drink.inventory.sale_case_cost.nil? %>
+				<% if drink.inventory.drink_price > ((drink.inventory.sale_case_cost / drink.inventory.min_quantity) * 1.45).round(2) %>
+					<% @item_price_class = "item-price-special" %>
+				<% end %>
 			<% else %>
 				<% @item_price_class = "item-price" %>
 			<% end %>
