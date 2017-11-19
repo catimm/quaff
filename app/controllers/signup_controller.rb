@@ -827,6 +827,7 @@ class SignupController < ApplicationController
     
     # find subscription level id
     @subscription_info = Subscription.find_by_subscription_level(@plan_name)
+    Rails.logger.debug("Subscription info: #{@subscription_info.inspect}")
     
     #get user info
     @user = current_user
