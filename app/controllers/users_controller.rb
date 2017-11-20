@@ -72,7 +72,7 @@ class UsersController < ApplicationController
   end # end create action
   
   def edit
-    @user = User.find_by_id(params[:id])
+    @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
     
     if @user.id != current_user.id
@@ -172,7 +172,7 @@ class UsersController < ApplicationController
   end # end set_password method
   
   def process_first_password
-    @user = User.find_by_id(current_user.id)
+    @user = User.find_by_id(params[:user][:id])
     
     if @user.update(new_user_params)
       # Sign in the user by passing validation in case their password changed
@@ -180,7 +180,7 @@ class UsersController < ApplicationController
     end
     
     # redirect to next step in signup process
-    redirect_to :action => 'edit'
+    redirect_to users_start_account_path
     
   end # end process_first_password method
   

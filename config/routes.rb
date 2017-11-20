@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   end
   
   # routes to user profile pages
+  get '/users/start_account' => 'users#edit', :as => 'users_start_account'
   get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'
   patch '/users/process_first_password' => 'users#process_first_password', :as => 'process_first_password_user'
   get '/users/account_settings_profile' => 'users#account_settings_profile', :as => 'account_settings_profile_user' 
