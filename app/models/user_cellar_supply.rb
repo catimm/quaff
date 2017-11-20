@@ -13,6 +13,8 @@
 #
 
 class UserCellarSupply < ActiveRecord::Base
+  searchkick word_middle: [:beer_name]
+  
   belongs_to :user
   belongs_to :account
   belongs_to :beer
