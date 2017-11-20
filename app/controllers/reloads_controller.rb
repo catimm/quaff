@@ -8,44 +8,104 @@ class ReloadsController < ApplicationController
   
   
   def index
-    # get all new users
-    @recent_additions = User.where(recent_addition: true)
+    # get customers who have drinks slated for delivery this week
+    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
     
-    if !@recent_additions.blank?
-      # loop through recent additions to add Projected Ratings for each
-      @recent_additions.each do |new_user|
+    if !@accounts_with_deliveries.blank?
+      @accounts_with_deliveries.each do |account_delivery|
+        # find if the account has any mates
+        @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 11).pluck(:id)
+        
+        # find if any of these mates has drinks allocated to them
+        @mates_ids_with_drinks = UserDelivery.where(user_id: @mates_ids, delivery_id: account_delivery.id).pluck(:user_id)
+        @unique_mates_ids = @mates_ids_with_drinks.uniq
+        if @unique_mates_ids.count > 1
+          @has_mates_with_drinks = true
+        else
+          @has_mates_with_drinks = false
+        end
+        
+        @next_delivery_plans = AccountDelivery.where(delivery_id: account_delivery.id)
+        
+        # get total quantity of next delivery
+        @total_quantity = @next_delivery_plans.sum(:quantity)
+        
+        # create array of drinks for email
+        @email_drink_array = Array.new
+        
+        # put drinks in user_delivery table to share with customer
+        @next_delivery_plans.each_with_index do |drink, index|
+          # find if drinks is odd/even
+          if index.odd?
+            @odd = false # easier to make this backwards than change sparkpost email logic....
+          else  
+            @odd = true
+          end
+          # find if drink is cellarable
+            if drink.cellar == true
+              @cellarable = "Yes"
+            else
+              @cellarable = "No"
+            end
+            
+          if @has_mates_with_drinks == false
+            @user_delivery = UserDelivery.where(account_delivery_id: drink.id)
+            # add drink data to array for customer review email
+            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                            :drink => drink.beer.beer_name,
+                            :drink_type => drink.beer.beer_type.beer_type_short_name,
+                            :format => drink.size_format.format_name,
+                            :projected_rating => @user_delivery[0].projected_rating,
+                            :quantity => drink.quantity,
+                            :odd => @odd}).as_json
+          else
+            @designated_users = UserDelivery.where(account_delivery_id: drink.id)
+            @drink_user_data = Array.new
+            @designated_users.each do |user|
+              @user_data = { :name => user.user.first_name,
+                                :projected_rating => user.projected_rating,
+                                :quantity => user.quantity
+                              }
+              # push array into user drink array
+              @drink_user_data << @user_data
+            end
+            # add drink data to array for customer review email
+            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                            :drink => drink.beer.beer_name,
+                            :drink_type => drink.beer.beer_type.beer_type_short_name,
+                            :format => drink.size_format.format_name,
+                            :users => @drink_user_data,
+                            :odd => @odd}).as_json
+          end # end of test whether multiple users in account have drinks
+          
+          # push this array into overall email array
+          @email_drink_array << @drink_account_data
+          
+        end # end of loop to create drink table for email
+        
+        # get next delivery info
+        @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
        
-        # find if account has cellar drinks
-        @cellar_drinks = UserCellarSupply.where(account_id: new_user.account_id)
+        # get user information for those with drinks
+        @users_with_drinks = User.where(id: @unique_mates_ids)
         
-        if !@cellar_drinks.blank?
-          @cellar_drinks.each do |cellar_drink|
-            # get projected rating
-            @this_user_projected_rating = best_guess_cellar(cellar_drink.beer_id, new_user.id)
-            # create new project rating DB entry
-            ProjectedRating.create(user_id: new_user.id, beer_id: cellar_drink.beer_id, projected_rating: @this_user_projected_rating)
-          end # end of cycle through each cellar drink and add projected rating for new user
-          
-        end # end of check whether cellar drinks exist
+        # send customer email(s) for review
+        if @has_mates_with_drinks == false
+          # send email to single user with drinks
+          UserMailer.customer_delivery_review(@users_with_drinks[0], @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates_with_drinks).deliver_now
+        else
+          # send email to all customers with drinks
+          @users_with_drinks.each do |user_with_drinks|
+            UserMailer.customer_delivery_review(user_with_drinks, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates_with_drinks).deliver_now
+          end
+        end # end of test of who to send emails to
+
+        # update delivery status
+        @customer_next_delivery.update(status: "user review", delivery_change_confirmation: true)
         
-        # find if account has wishlist drinks
-        @wishlist_drinks = Wishlist.where(account_id: new_user.account_id)
-        
-        if !@wishlist_drinks.blank?
-          @wishlist_drinks.each do |wishlist_drink|
-            # get projected rating
-            @this_user_projected_rating = best_guess_cellar(wishlist_drink.beer_id, new_user.id)
-            # create new project rating DB entry
-            ProjectedRating.create(user_id: new_user.id, beer_id: wishlist_drink.beer_id, projected_rating: @this_user_projected_rating)
-          end # end of cycle through each wishlist drink and add projected rating for new user
-          
-        end # end of check whether wishlist drinks exist
-        
-        new_user.update(recent_addition: false)
-        
-      end # end of loop through recent additions
-    
-    end # end of check whether recent additions exist  
+      end # end of loop through each account 
+      
+    end # end of check whether any customers need notice
   
   end # end of index method
   

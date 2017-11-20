@@ -839,13 +839,16 @@ task :share_admin_prep_with_customer => :environment do
     
     if !@accounts_with_deliveries.blank?
       @accounts_with_deliveries.each do |account_delivery|
-        # find if the account has any other users
-        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 11).where.not(role_id: [1,4])
+        # find if the account has any mates
+        @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 11).pluck(:id)
         
-        if !@mates.blank?
-          @has_mates = true
+        # find if any of these mates has drinks allocated to them
+        @mates_ids_with_drinks = UserDelivery.where(user_id: @mates_ids, delivery_id: account_delivery.id).pluck(:user_id)
+        @unique_mates_ids = @mates_ids_with_drinks.uniq
+        if @unique_mates_ids.count > 1
+          @has_mates_with_drinks = true
         else
-          @has_mates = false
+          @has_mates_with_drinks = false
         end
         
         @next_delivery_plans = AccountDelivery.where(delivery_id: account_delivery.id)
@@ -871,7 +874,7 @@ task :share_admin_prep_with_customer => :environment do
               @cellarable = "No"
             end
             
-          if @has_mates == false
+          if @has_mates_with_drinks == false
             @user_delivery = UserDelivery.where(account_delivery_id: drink.id)
             # add drink data to array for customer review email
             @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
@@ -899,23 +902,30 @@ task :share_admin_prep_with_customer => :environment do
                             :format => drink.size_format.format_name,
                             :users => @drink_user_data,
                             :odd => @odd}).as_json
-          end
+          end # end of test whether multiple users in account have drinks
+          
           # push this array into overall email array
           @email_drink_array << @drink_account_data
           
-        end
-        #Rails.logger.debug("email drink array: #{@email_drink_array.inspect}")
+        end # end of loop to create drink table for email
+        
         # get next delivery info
         @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
-
-        # create customer variable for email to customer
-        @customers = User.where(account_id: @customer_next_delivery.account_id, getting_started_step: 11)
        
-        # send email to each customer for review
-        @customers.each do |customer|
-          UserMailer.customer_delivery_review(customer, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates).deliver_now
-        end
+        # get user information for those with drinks
+        @users_with_drinks = User.where(id: @unique_mates_ids)
         
+        # send customer email(s) for review
+        if @has_mates_with_drinks == false
+          # send email to single user with drinks
+          UserMailer.customer_delivery_review(@users_with_drinks[0], @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates_with_drinks).deliver_now
+        else
+          # send email to all customers with drinks
+          @users_with_drinks.each do |user_with_drinks|
+            UserMailer.customer_delivery_review(user_with_drinks, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates_with_drinks).deliver_now
+          end
+        end # end of test of who to send emails to
+
         # update delivery status
         @customer_next_delivery.update(status: "user review", delivery_change_confirmation: true)
         

@@ -16,6 +16,7 @@ class Admin::RecommendationsController < ApplicationController
     if @account_id == 0
       @current_accounts_with_upcoming_delivery = Delivery.current_accounts_with_upcoming_deliveries
       @current_account_id = @current_accounts_with_upcoming_delivery.first
+      @account_id = @current_account_id
     else
       @current_account_id = @account_id
     end
@@ -628,6 +629,15 @@ class Admin::RecommendationsController < ApplicationController
       @user_identification_array << @user_identification
       
     end
+    
+    # get account owner info
+    @account_owner = User.where(account_id: @admin_account_delivery_info.account_id, role_id: [1,4])
+    # get account delivery address
+    @account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
+    @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    # get account tax
+    @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    @multiply_by_tax = 1 + @account_tax
     
     # update Account/User delivery info
     respond_to do |format|
