@@ -257,10 +257,10 @@ class BeersController < ApplicationController
   end
   
   def add_user_drink_recommendation
-    @user_id = params[:user_id]
-    @drink_id = params[:drink_id]
+    @user_id = params[:user_id].to_i
+    @drink_id = params[:drink_id].to_i
     @status = params[:status]
-    @rating = params[:rating]
+    @rating = params[:rating].to_i
     
     # get user info
     @user = User.find_by_id(@user_id)
@@ -272,10 +272,12 @@ class BeersController < ApplicationController
     @available_disti_inventory = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: [1,2,3,4,5,10,11,12,14])
     
     if @status == "new"
+      Rails.logger.debug("Status is new")
       @new_drink = true
       @number_of_ratings = 0
       @drank_recently = false
     else
+      Rails.logger.debug("Status is NOT new")
       @new_drink = false
       # find if user has rated/had this drink before
       @drink_ratings = UserBeerRating.where(user_id: @user_id, beer_id: @drink_id).order('rated_on DESC')
@@ -308,9 +310,11 @@ class BeersController < ApplicationController
     @inventory_item_formats = @inventory_items.pluck(:size_format_id)
     @disti_inventory_item_formats = @disti_inventory_items.pluck(:size_format_id)
     @total_formats = @inventory_item_formats + @disti_inventory_item_formats
-
+    @total_formats = @total_formats.uniq
+     Rails.logger.debug("Total formats: #{@total_formats.inspect}") 
     # run through each format and add to recommended list for curation
     @total_formats.each do |format|
+      Rails.logger.debug("Runs through each format")
       @inventory_id = @inventory_items.where(size_format_id: format)
       if @inventory_id.blank?
         @final_inventory_id = nil
