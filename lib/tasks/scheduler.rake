@@ -526,6 +526,9 @@ task :assess_drink_recommendations => :environment do
       
       @active_users.each do |user|
         #Rails.logger.debug("this user: #{user.inspect}")
+        # find if user has wishlist drinks
+        @user_wishlist_drink_ids = Wishlist.where(user_id: user.id, removed_at: nil).pluck(:beer_id)
+        
         # get all drink styles the user claims to like
         @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
         
@@ -572,6 +575,8 @@ task :assess_drink_recommendations => :environment do
         @final_user_type_likes = @final_user_type_likes.uniq
         @final_user_type_likes = @final_user_type_likes.grep(Integer)
         #Rails.logger.debug("final types liked 2: #{@final_user_type_likes.inspect}")
+        
+        
         # now filter the complete drinks available against the drink types the user likes
         # first create an array to hold each viable drink
         @assessed_drinks = Array.new
@@ -589,6 +594,13 @@ task :assess_drink_recommendations => :environment do
           end
         end
         
+        # add wishlist drinks if they exist
+        if !@user_wishlist_drink_ids.blank?
+          @user_wishlist_drink_ids.each do |wishlist_drink_id|
+            @assessed_drinks << wishlist_drink_id
+          end
+        end
+        
         # get count of total drinks to be assessed
         @available_assessed_drinks = @assessed_drinks.length
         #dedup assessed drink array
@@ -598,6 +610,10 @@ task :assess_drink_recommendations => :environment do
         
         # assess each drink to add if rated highly enough
         @assessed_drinks.each do |drink_id|
+          # set if this is a wishlist drink
+          if @user_wishlist_drink_ids.include?(drink_id)
+            @wishlist_item = true
+          end
           #Rails.logger.debug("This drink: #{drink_id.inspect}")
           # find if user has rated/had this drink before
           @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: drink_id).order('created_at DESC')
@@ -617,7 +633,11 @@ task :assess_drink_recommendations => :environment do
               @drank_recently = true
             end
             
-            if @drink_ratings_last.rated_on > 1.month.ago && @drink_rating_average >= 8 # if not new, make sure if it's been recently that the customer has had it that they REALLY like it
+            if @wishlist_item == true
+              # define drink status
+              @add_this = true
+              @new_drink_status = false
+            elsif @drink_ratings_last.rated_on > 1.month.ago && @drink_rating_average >= 8 # if not new, make sure if it's been recently that the customer has had it that they REALLY like it
               # define drink status
               @add_this = true
               @new_drink_status = false
@@ -636,13 +656,18 @@ task :assess_drink_recommendations => :environment do
             
             # find the drink best_guess for the user
             type_based_guess(@drink, user.id)
-            if @drink.best_guess >= 7.5 # if customer has not had it, make sure it is still a high recommendation
+            if @wishlist_item == true
+              # define drink status
+              @add_this = true
+              @new_drink_status = true
+              @final_projection = @drink.best_guess
+            elsif @drink.best_guess >= 7.5 # if customer has not had it, make sure it is still a high recommendation
               # define drink status
               @add_this = true
               @new_drink_status = true
               @final_projection = @drink.best_guess
             end
-          end
+          end # end of check whether it is a new drink
           
           # determine whether to add this drink 
           if @add_this == true
@@ -650,9 +675,13 @@ task :assess_drink_recommendations => :environment do
             @recent_account_delivery_ids = Delivery.where(account_id: user.account_id).where('delivery_date > ?', 1.month.ago).pluck(:id)
             if !@recent_account_delivery_ids.blank?
               @recent_account_drink_ids = AccountDelivery.where(delivery_id: @recent_account_delivery_ids, beer_id: drink_id).pluck(:id)
+            else
+              @recent_account_drink_ids = nil
             end
             if !@recent_account_drink_ids.blank?
               @recent_user_delivery_drinks = UserDelivery.where(user_id: user.id, account_delivery_id: @recent_account_drink_ids)
+            else
+              @recent_user_delivery_drinks = nil
             end
             if !@recent_user_delivery_drinks.blank?
               @delivered_recently = true
@@ -1050,16 +1079,19 @@ task :end_user_review_period_reminder => :environment do
     # get all users currently with a delivery the next day
     @tomorrow_deliveries = Delivery.
                                 where(status: "user review").
-                                where(delivery_date: Date.tomorrow). 
-                                pluck(:account_id)
+                                where(delivery_date: Date.tomorrow)
     if !@tomorrow_deliveries.blank?
       # cycle through each delivery
-      @tomorrow_deliveries.each do |account_id|
-        # get each account user
-        @account_users = User.where(account_id: account_id, getting_started_step: 11)
+      @tomorrow_deliveries.each do |delivery|
+        # find users who have drinks allocated to them
+        @users_with_drinks_ids = UserDelivery.where(delivery_id: delivery.id).pluck(:user_id)
+        @users_with_drinks_ids = @users_with_drinks_ids.uniq
         
+        # get user info for each user with drinks
+        @account_user_with_drinks = User.where(id: @users_with_drinks_ids)
+
         # send an email to each user to remind them they only have a few hours to review the delivery
-        @account_users.each do |user|
+        @account_user_with_drinks.each do |user|
             UserMailer.end_user_review_period_reminder(user).deliver_now
         end
       

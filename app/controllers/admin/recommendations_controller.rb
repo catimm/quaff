@@ -31,6 +31,8 @@ class Admin::RecommendationsController < ApplicationController
     @multiply_by_tax = 1 + @account_tax
     # get all delivery dates for chosen account for last few months and next month--for view drop down menu
     @customer_delivery_dates = Delivery.where(account_id: @current_account_id, delivery_date: (3.months.ago)..(5.weeks.from_now)).pluck(:delivery_date)
+    # find if account has wishlist items
+    @account_wishlist_items = Wishlist.where(account_id: @account_owner[0].account_id)
 
     # get chosen delivery date
     if @chosen_delivery_id.nil?
@@ -692,6 +694,13 @@ class Admin::RecommendationsController < ApplicationController
     @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
     
     render :partial => 'admin/recommendations/admin_review_delivery'
+  end #end of admin_review_delivery method
+  
+  def admin_review_wishlist
+    # get account wishlist drinks 
+    @account_wishlist = Wishlist.where(account_id: params[:id], removed_at: nil)
+    
+    render :partial => 'admin/recommendations/admin_review_wishlist'
   end #end of admin_review_delivery method
   
   private

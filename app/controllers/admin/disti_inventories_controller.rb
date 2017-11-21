@@ -44,7 +44,7 @@ class Admin::DistiInventoriesController < ApplicationController
   
   def update
     @disti_inventory = DistiInventory.find(params[:id])
-    @inventory.update(disti_inventory_params)
+    @disti_inventory.update(disti_inventory_params)
     
     redirect_to admin_disti_inventories_path
     

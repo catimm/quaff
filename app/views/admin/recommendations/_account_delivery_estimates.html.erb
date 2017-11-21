@@ -53,6 +53,14 @@
 			<h4 class="delivery-preference-prompt">$<%= @next_account_delivery_drink_price %></h4>
 		</div>
 	</div>
+	<% if !@account_wishlist_items.blank? %>
+		<div class="col-xs-6 col-sm-3 preference-estimate-holder-admin">
+			<h5 class="wishlist-notification">*  
+				<u><%= link_to "Account has Wishlist Items", admin_review_wishlist_path(@account_id),
+				data: {toggle: "modal", target: "#admin_review_wishlist"} %></u>
+			</h5>
+		</div>
+	<% end %>
 </div>
 <% if !@mates.blank? %>
 	<% @users.each do |user| %>

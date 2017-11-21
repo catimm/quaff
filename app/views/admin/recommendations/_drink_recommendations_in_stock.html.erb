@@ -10,11 +10,14 @@
 				<table class="table table-striped admin-recommendation-table">
 				    <tr>
 				    	<th>User</th>
-					    <th>New</th>
-					    <th>#</th>
-					    <th>Rating</th>
-					    <th>Delivered?</th>
-					    <th>Drank?</th>
+					    <th class="text-center">New</th>
+					    <th class="text-center">#</th>
+					    <th class="text-center">Rating</th>
+					    <th class="text-center">Delivered?</th>
+					    <th class="text-center">Drank?</th>
+					   	<% if @account_wishlist_items.map{|a|a.beer_id}.include?(drink[1][0].beer_id)%>
+					    	<th class="text-center">Wishlist</th>
+					    <% end %>
 					   	<% if drink[1].count > 1 %>
 					    	<th class="text-center">Designate</th>
 					    <% end %>
@@ -28,11 +31,15 @@
 									<%= render 'layouts/user_graphic_small', friend: individual_drink.user %>
 								<% end %>
 							</td>
-							<td><%= individual_drink.new_drink.humanize %></td>
-							<td><%= individual_drink.number_of_ratings %></td>
-							<td><%= individual_drink.projected_rating %></td>
-							<td><%= individual_drink.delivered_recently.humanize %></td>
-							<td><%= individual_drink.drank_recently.humanize %></td>
+							<td class="text-center"><%= individual_drink.new_drink.humanize %></td>
+							<td class="text-center"><%= individual_drink.number_of_ratings %></td>
+							<td class="text-center"><%= individual_drink.projected_rating %></td>
+							<td class="text-center"><%= individual_drink.delivered_recently.humanize %></td>
+							<td class="text-center"><%= individual_drink.drank_recently.humanize %></td>
+							<% @user_wishlist_item = @account_wishlist_items.where(user_id: individual_drink.user_id, beer_id: individual_drink.beer_id) %>
+							<% if !@user_wishlist_item.blank? %>
+								<td class="text-center">Yes</td>
+							<% end %>
 							<% if drink[1].count > 1 %>
 								<% @next_account_delivery_drink = @next_account_delivery.where(beer_id: individual_drink.beer_id, size_format_id: individual_drink.size_format_id)[0] %>
 								<% if !@next_account_delivery_drink.nil? %>

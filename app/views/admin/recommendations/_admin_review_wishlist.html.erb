@@ -1,0 +1,35 @@
+<% if !@account_wishlist.blank? %>
+	<table class="table table-striped admin-recommendation-table">
+		<tr>
+		  <th>User</th>
+		  <th>Drink</th>
+		  <th>Drink Type</th>
+		  <th>Cellarable</th>
+		  <th>Projected Rating</th>
+		</tr>
+		<% @account_wishlist.each_with_index do |drink, index| %>
+		  <% @projected_rating = ProjectedRating.where(user_id: drink.user_id, beer_id: drink.beer_id).first %>
+	      <tr>
+	      	<td>
+	      		<% if drink.user.user_graphic.nil? %>
+					<%= render 'layouts/user_initials_xsmall', friend: drink.user %>
+				<% else %>
+					<%= render 'layouts/user_graphic_small', friend: drink.user %>
+				<% end %>
+	      	</td>
+	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+	        <td><%= drink.beer.beer_type.beer_type_name %></td>
+	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
+	        <td>
+	        	<% if !@projected_rating.blank? %>
+	        		<%= @projected_rating.projected_rating %>
+	        	<% else %>
+	        		N/A
+	        	<% end %>
+	        </td>
+	      </tr>
+		<% end %>
+	</table>
+<% else %>
+<h4>Um, there's nothing in this Wishlist. Odd, that.</h4>
+<% end %>

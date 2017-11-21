@@ -24,8 +24,7 @@
 	 	<% @this_drink_price = drink.account_delivery.drink_price * drink.quantity %>
 	 	<% @next_user_delivery_drink_price = @next_user_delivery_drink_price + @this_drink_price %>
 	<% end %>
-	<% Rails.logger.debug("Next Delivery Drink Price: #{@next_user_delivery_drink_price.inspect}") %>
-	<% Rails.logger.debug("Account Tax: #{@account_tax.inspect}") %>
+	
 	<div class="col-xs-2 col-sm-1 admin-user-identity">
 		<% if user.user_graphic.nil? %>
 			<%= render 'layouts/user_initials_small', friend: user %>

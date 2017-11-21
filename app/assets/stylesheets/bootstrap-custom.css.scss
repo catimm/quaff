@@ -4037,6 +4037,9 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 22px;
   margin: 0;
 }
+.wishlist-notification {
+  color: $action-background;
+}
 .delivery-preference-gluten-free-box {
   border: 1px solid $normal-text;
   width: 50%;
