@@ -528,7 +528,6 @@ task :assess_drink_recommendations => :environment do
         #Rails.logger.debug("this user: #{user.inspect}")
         # find if user has wishlist drinks
         @user_wishlist_drink_ids = Wishlist.where(user_id: user.id, removed_at: nil).pluck(:beer_id)
-        
         # get all drink styles the user claims to like
         @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
         
@@ -613,6 +612,8 @@ task :assess_drink_recommendations => :environment do
           # set if this is a wishlist drink
           if @user_wishlist_drink_ids.include?(drink_id)
             @wishlist_item = true
+          else
+            @wishlist_item = false
           end
           #Rails.logger.debug("This drink: #{drink_id.inspect}")
           # find if user has rated/had this drink before
@@ -695,7 +696,8 @@ task :assess_drink_recommendations => :environment do
             @inventory_item_formats = @inventory_items.pluck(:size_format_id)
             @disti_inventory_item_formats = @disti_inventory_items.pluck(:size_format_id)
             @total_formats = @inventory_item_formats + @disti_inventory_item_formats
-
+            @total_formats = @total_formats.uniq
+            
             # run through each format and add to recommended list for curation
             @total_formats.each do |format|
               @inventory_id = @inventory_items.where(size_format_id: format)
@@ -726,7 +728,7 @@ task :assess_drink_recommendations => :environment do
               @individual_drink_info["number_of_ratings"] = @number_of_ratings
               @individual_drink_info["delivered_recently"] = @delivered_recently
               @individual_drink_info["drank_recently"] = @drank_recently
-              #Rails.logger.debug("Individual drink to be added: #{@individual_drink_info.inspect}")
+
               # insert this data into hash
               @compiled_assessed_drinks << @individual_drink_info
               #Rails.logger.debug("Compiled drinks: #{@compiled_assessed_drinks.inspect}")

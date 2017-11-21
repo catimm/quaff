@@ -40,9 +40,6 @@ class ReloadsController < ApplicationController
         #Rails.logger.debug("this user: #{user.inspect}")
         # find if user has wishlist drinks
         @user_wishlist_drink_ids = Wishlist.where(user_id: user.id, removed_at: nil).pluck(:beer_id)
-        if user.id == 1
-          Rails.logger.debug("User Wishlist Drink Ids: #{@user_wishlist_drink_ids.inspect}")
-        end
         # get all drink styles the user claims to like
         @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
         
@@ -124,17 +121,11 @@ class ReloadsController < ApplicationController
         
         # assess each drink to add if rated highly enough
         @assessed_drinks.each do |drink_id|
-         if user.id == 1
-          Rails.logger.debug("Assessed Drink: #{drink_id.inspect}")
-         end
           # set if this is a wishlist drink
           if @user_wishlist_drink_ids.include?(drink_id)
             @wishlist_item = true
           else
             @wishlist_item = false
-          end
-          if user.id == 1
-            Rails.logger.debug("Wishlist Item Status: #{@wishlist_item.inspect}")
           end
           #Rails.logger.debug("This drink: #{drink_id.inspect}")
           # find if user has rated/had this drink before
@@ -193,9 +184,6 @@ class ReloadsController < ApplicationController
           
           # determine whether to add this drink 
           if @add_this == true
-            if user.id == 1
-              Rails.logger.debug("Hits Add This")
-            end 
             # determine if we've delivered this drink to the user recently
             @recent_account_delivery_ids = Delivery.where(account_id: user.account_id).where('delivery_date > ?', 1.month.ago).pluck(:id)
             if !@recent_account_delivery_ids.blank?
@@ -221,9 +209,7 @@ class ReloadsController < ApplicationController
             @disti_inventory_item_formats = @disti_inventory_items.pluck(:size_format_id)
             @total_formats = @inventory_item_formats + @disti_inventory_item_formats
             @total_formats = @total_formats.uniq
-            if user.id == 1
-              Rails.logger.debug("Total Formats: #{@total_formats.inspect}")
-            end
+            
             # run through each format and add to recommended list for curation
             @total_formats.each do |format|
               @inventory_id = @inventory_items.where(size_format_id: format)
@@ -254,9 +240,7 @@ class ReloadsController < ApplicationController
               @individual_drink_info["number_of_ratings"] = @number_of_ratings
               @individual_drink_info["delivered_recently"] = @delivered_recently
               @individual_drink_info["drank_recently"] = @drank_recently
-              if user.id == 1
-                Rails.logger.debug("Individual drink to be added: #{@individual_drink_info.inspect}")
-              end
+
               # insert this data into hash
               @compiled_assessed_drinks << @individual_drink_info
               #Rails.logger.debug("Compiled drinks: #{@compiled_assessed_drinks.inspect}")
