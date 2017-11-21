@@ -51,6 +51,8 @@ Rails.application.routes.draw do
    resources :drinks, only: :show, path: "" # -> drinkknird.com/draft/1
  end
  
+ # route to beers methods
+ get '/beers/add_user_drink_recommendation/:user_id/:drink_id/:status/:rating' => 'beers#add_user_drink_recommendation', :as => 'add_user_drink_recommendation'
  resources :beers do
    collection do
      get :descriptors, as: :descriptors

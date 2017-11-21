@@ -2,6 +2,7 @@ class BeersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_descriptor_tags, only: [:show]
   include BestGuess
+  include BestGuessCellar
   include QuerySearch
   include CreateNewDrink
   include DrinkDescriptorCloud
@@ -31,17 +32,22 @@ class BeersController < ApplicationController
   end
   
   def show
+    # get current user info
     @user = current_user
     # grab beer info
     #@beer = Beer.where(id: params[:id])[0]
     #Rails.logger.debug("Beer info #{@beer.inspect}")
     
+    # get all user drink recommendations with this drink
+    @current_recommendtions = UserDrinkRecommendation.where(beer_id: params[:id])
+    
     # get user and drink data for admins
-   if current_user.role_id == 1
+    if current_user.role_id == 1
      # get unique customer ids
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
      #@role_ids = [1, 2, 3, 4] 
-     @customers = UserSubscription.where(currently_active: true)
+     @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
+     @active_users = User.where(account_id: @active_account_ids, getting_started_step: 11)
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
@@ -50,29 +56,40 @@ class BeersController < ApplicationController
      @list_of_customers_who_had = Array.new
      @list_of_customers_who_not_had = Array.new
      
-     @customers.each do |customer|
-       if customer.user.username.blank?
-         @username = customer.user.first_name + customer.user.last_name[0]
-       else
-         @username = customer.user.username
-       end
-       #Rails.logger.debug("Customer name #{customer.user.inspect}")
-       @this_user_best_guess = best_guess(params[:id], customer.user_id)[0]
-       #Rails.logger.debug("Customer best guess: #{@this_user_best_guess.best_guess.inspect}")
-       if @this_user_best_guess.best_guess >= 7.75
-         @users_would_like += 1
-         @this_customer_likes = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
-         @list_of_customers_who_like << @this_customer_likes
-         @drink_rating_check = UserBeerRating.where(user_id: customer.user_id, beer_id: params[:id]).first
-         if !@drink_rating_check.nil?
-          @users_have_had += 1
-          @this_customer_had = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
-          @list_of_customers_who_had << @this_customer_had
+     @active_users.each do |customer|
+       if customer.user_drink_rating(params[:id]) == nil
+         if !customer.user_drink_projected_rating(params[:id]).nil?
+           customer.specific_drink_best_guess = customer.user_drink_projected_rating(params[:id])
          else
-          @this_customer_not_had = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
-          @list_of_customers_who_not_had << @this_customer_not_had
-         end  # end of check on whether user has had drink
-       end # end of best guess minimum check
+           customer.specific_drink_best_guess = best_guess_cellar(params[:id], customer.id)
+         end
+         @list_of_customers_who_not_had << customer
+       else
+         @list_of_customers_who_had << customer
+       end
+       
+       #if customer.user.username.blank?
+       #  @username = customer.user.first_name + customer.user.last_name[0]
+       #else
+       #  @username = customer.user.username
+       #end
+       #Rails.logger.debug("Customer name #{customer.user.inspect}")
+       #@this_user_best_guess = best_guess(params[:id], customer.user_id)[0]
+       #Rails.logger.debug("Customer best guess: #{@this_user_best_guess.best_guess.inspect}")
+       #if @this_user_best_guess.best_guess >= 7.75
+       #  @users_would_like += 1
+       #  @this_customer_likes = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+       #  @list_of_customers_who_like << @this_customer_likes
+       #  @drink_rating_check = UserBeerRating.where(user_id: customer.user_id, beer_id: params[:id]).first
+       #  if !@drink_rating_check.nil?
+       #   @users_have_had += 1
+       #   @this_customer_had = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+       #   @list_of_customers_who_had << @this_customer_had
+       #  else
+       #   @this_customer_not_had = @username + " (" + @this_user_best_guess.best_guess.round(2).to_s + ")"
+       #   @list_of_customers_who_not_had << @this_customer_not_had
+       #  end  # end of check on whether user has had drink
+       #end # end of best guess minimum check
      end # end of loop through customers
       
      @users_have_not_had = @users_would_like - @users_have_had
@@ -238,6 +255,97 @@ class BeersController < ApplicationController
       format.json { render json: descriptors }
     end
   end
+  
+  def add_user_drink_recommendation
+    @user_id = params[:user_id]
+    @drink_id = params[:drink_id]
+    @status = params[:status]
+    @rating = params[:rating]
+    
+    # get user info
+    @user = User.find_by_id(@user_id)
+    
+    # get list of available Knird Inventory
+    @available_knird_inventory = Inventory.where(currently_available: true, size_format_id: [1,2,3,4,5,10,11,12,14]).where("stock > ?", 0)
+    
+    # get list of available Disti Inventory
+    @available_disti_inventory = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: [1,2,3,4,5,10,11,12,14])
+    
+    if @status == "new"
+      @new_drink = true
+      @number_of_ratings = 0
+      @drank_recently = false
+    else
+      @new_drink = false
+      # find if user has rated/had this drink before
+      @drink_ratings = UserBeerRating.where(user_id: @user_id, beer_id: @drink_id).order('rated_on DESC')
+      @most_recent_rating = @drink_ratings.first
+      @number_of_ratings = @drink_ratings.count
+      if @most_recent_rating.rated_on > 1.month
+        @drank_recently = true
+      else
+        @drank_recently = false
+      end
+    end
+    
+    # determine if we've delivered this drink to the user recently
+    @recent_account_delivery_ids = Delivery.where(account_id: @user.account_id).where('delivery_date > ?', 1.month.ago).pluck(:id)
+    if !@recent_account_delivery_ids.blank?
+      @recent_account_drink_ids = AccountDelivery.where(delivery_id: @recent_account_delivery_ids, beer_id: @drink_id).pluck(:id)
+    end
+    if !@recent_account_drink_ids.blank?
+      @recent_user_delivery_drinks = UserDelivery.where(user_id: @user_id, account_delivery_id: @recent_account_drink_ids)
+    end
+    if !@recent_user_delivery_drinks.blank?
+      @delivered_recently = true
+    else
+      @delivered_recently = false
+    end
+    # determine if drink comes from Knird inventory, Disti inventory or both
+    @inventory_items = @available_knird_inventory.where(beer_id: @drink_id)
+    @disti_inventory_items = @available_disti_inventory.where(beer_id: @drink_id)
+    # get size_formats
+    @inventory_item_formats = @inventory_items.pluck(:size_format_id)
+    @disti_inventory_item_formats = @disti_inventory_items.pluck(:size_format_id)
+    @total_formats = @inventory_item_formats + @disti_inventory_item_formats
+
+    # run through each format and add to recommended list for curation
+    @total_formats.each do |format|
+      @inventory_id = @inventory_items.where(size_format_id: format)
+      if @inventory_id.blank?
+        @final_inventory_id = nil
+      else
+        @final_inventory_id = @inventory_id[0].id
+      end
+      @disti_inventory_id = @disti_inventory_items.where(size_format_id: format)
+      if @disti_inventory_id.blank?
+        @final_disti_inventory_id = nil
+      else
+        @final_disti_inventory_id = @disti_inventory_id[0].id
+      end
+      
+      # create new User Drink Recommendation
+      UserDrinkRecommendation.create(user_id: @user_id,
+                                     beer_id: @drink_id,
+                                     projected_rating: @rating,
+                                     new_drink: @new_drink,
+                                     account_id: @user.account_id,
+                                     size_format_id: format,
+                                     inventory_id: @final_inventory_id,
+                                     disti_inventory_id: @final_disti_inventory_id,
+                                     number_of_ratings: @number_of_ratings,
+                                     delivered_recently: @delivered_recently,
+                                     drank_recently: @drank_recently) 
+                                     
+    end # end of cycling through formats
+
+    #  drink info
+    @drink = Beer.find_by_id(@drink_id)
+    
+    # redirect back to drink page
+    redirect_to brewery_beer_path(@drink.brewery_id, @drink_id)
+    
+  end # end of add_user_drink_recommendation method
   
   private
     # collect existing beer descriptors

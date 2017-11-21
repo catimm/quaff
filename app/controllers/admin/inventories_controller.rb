@@ -21,6 +21,15 @@ class Admin::InventoriesController < ApplicationController
       @inventory_out_of_stock = @inventory.out_of_stock.joins(:beer).where('beers.brewery_id = ?', @brewery_id)
     end
     
+    # get current inventory value
+    @inventory_value = 0
+    @in_stock = @inventory.in_stock
+    @in_stock.each do |inventory|
+      @total_in_stock = (inventory.stock + inventory.reserved)
+      @total_value = @total_in_stock * inventory.drink_cost
+      @inventory_value = @inventory_value + @total_value
+    end
+    
   end # end show method
   
   def change_inventory_maker_view

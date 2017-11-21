@@ -597,12 +597,12 @@ task :assess_drink_recommendations => :environment do
         @assessed_drinks.each do |drink_id|
           #Rails.logger.debug("This drink: #{drink_id.inspect}")
           # find if user has rated/had this drink before
-          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: drink_id)
+          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: drink_id).order('created_at DESC')
 
           # make sure this drink should be included as a recommendation
           if !@drink_ratings.blank? # first check if it is a new drink
             # get average rating
-            @drink_ratings_last = @drink_ratings.last
+            @drink_ratings_last = @drink_ratings.first
             @drink_rating_average = @drink_ratings.average(:user_beer_rating)
             @final_projection = @drink_rating_average
             

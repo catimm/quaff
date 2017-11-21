@@ -3,58 +3,67 @@
 	<ul>
 		<li>
 			<h5>
-				<b><%= @users_have_not_had %> <%= "customer".pluralize(@users_have_not_had) %></b> would like this drink and it would be new</b>.
+				<b><%= @list_of_customers_who_not_had.size %> <%= "customer".pluralize(@users_have_not_had) %></b> would like this drink and it would be new</b>.
 			</h5>
-			<ul>
-				<li>
-					<p class='lists-of-customers'>
-						<% @list_of_customers_who_not_had.each_with_index do |customer, i| %>
-							<% if i == @list_of_customers_who_had.size - 1 %>
-								<span><%= i + 1 %>) </span> <%= customer %>
+			<p class='lists-of-customers'>
+				<table class="table-bordered" id="admin-user-data-drink-table">
+					<tr>
+						<th>User</th>
+						<th>Id</th>
+						<th>Rating</th>
+						<th>State</th>
+					</tr>
+					<% @list_of_customers_who_not_had.each do |customer| %>
+						<% @user_recommendation = @current_recommendtions.where(user_id: customer.id) %>
+						<tr>
+							<td><%= customer.username %></td>
+							<td><%= customer.id %></td>
+							<td><%= customer.specific_drink_best_guess %></td>
+							<% if !@user_recommendation.blank? %>
+								<td class="text-center">In!</td>
 							<% else %>
-								<span><%= i + 1 %>) </span> <%= customer %>,
+								<td class="text-center">
+									<%= link_to add_user_drink_recommendation_path(customer.id, @drink.id, "new", customer.specific_drink_best_guess), :class => 'add_user_drink_recommendation text-center' do %>
+										<i class="fa fa-plus"></i>
+									<% end %>
+								</td>
 							<% end %>
-						<% end %>
-					</p>
-				</li>
-			</ul>
+						</tr>
+					<% end %>
+				</table>
+			</p>
 		</li>
 		<li>
 			<h5>
-				<b><%= @users_have_had %> <%= "customer".pluralize(@users_have_had) %></b> users would like this drink and it would be a <b>'retry' drink</b>.
+				<b><%= @list_of_customers_who_had.size %> <%= "customer".pluralize(@users_have_had) %></b> users would like this drink and it would be a <b>'retry' drink</b>.
 			</h5>
-			<ul>
-				<li>
-					<p class='lists-of-customers'>
-						<% @list_of_customers_who_had.each_with_index do |customer, i| %>
-							<% if i == @list_of_customers_who_not_had.size - 1 %>
-								<span><%= i + 1 %>) </span> <%= customer %>
+			<p class='lists-of-customers'>
+				<table class="table-bordered" id="admin-user-data-drink-table">
+					<tr>
+						<th>User</th>
+						<th>Id</th>
+						<th>Rating</th>
+						<th>State</th>
+					</tr>
+					<% @list_of_customers_who_had.each do |customer| %>
+						<% @customer_rating = customer.user_drink_rating(@drink.id) %>
+						<tr>
+							<td><%= customer.username %></td>
+							<td><%= customer.id %></td>
+							<td><%= @customer_rating %></td>
+							<% if !@user_recommendation.blank? %>
+								<td class="text-center">In!</td>
 							<% else %>
-								<span><%= i + 1 %>) </span> <%= customer %>,
+								<td class="text-center">
+									<%= link_to add_user_drink_recommendation_path(customer.id, @drink.id, "repeat", @customer_rating), :class => 'add_user_drink_recommendation text-center' do %>
+										<i class="fa fa-plus"></i>
+									<% end %>
+								</td>
 							<% end %>
-						<% end %>
-					</p>
-				</li>
-			</ul>
+						</tr>
+					<% end %>
+				</table>
+			</p>
 		</li>
 	</ul>
-</div>
-<div class="row no-margin">
-	<h5>In stock: <%= @inventory_count %></h5>
-	<ul>
-		<li>Reserved: <%= @reserved_drinks %></li>
-		<li>Set to be ordered: <%= @set_to_order_drinks %></li>
-		<li>Currently available: <%= @available_drinks %></li>
-	</ul>
-</div>
-<div class="row no-margin">
-	<% if !@inventory.nil? %>
-		<%= link_to edit_admin_inventory_path(@drink.id), :class => "btn btn-success edit-beer-info" do %>
-			<i class="fa fa-wrench"> edit inventory</i>
-		<% end %>
-	<% else %>
-		<%= link_to new_admin_inventory_path(@drink.id), :class => "btn btn-success edit-beer-info" do %>
-			<i class="fa fa-plus"> add to inventory</i>
-		<% end %>
-	<% end %>
 </div>

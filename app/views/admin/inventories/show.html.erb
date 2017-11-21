@@ -34,6 +34,9 @@
 			<div class="col-xs-12 col-sm-2">
 				<h4 class="inventory-overview">Total drinks: <%= @inventory.in_stock.sum(:stock) %></h4>
 			</div>
+			<div class="col-xs-12 col-sm-2 no-padding">
+				<h4 class="inventory-overview">Total value: $<%= @inventory_value %></h4>
+			</div>
 		</div>
 		<% if @brewery_id != 0 %>
 			<div class="row inventory-in-stock-title-row">

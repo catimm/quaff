@@ -81,6 +81,7 @@ class User < ActiveRecord::Base
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   attr_accessor :valid_special_code # to hold special code
   attr_accessor :password_confirmation # to confirm password
+  attr_accessor :specific_drink_best_guess # to hold temp drink best guess
   
   # set user roles for cancancan
   def super_admin?
