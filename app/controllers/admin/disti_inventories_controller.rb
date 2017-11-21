@@ -33,7 +33,7 @@ class Admin::DistiInventoriesController < ApplicationController
   def create
     DistiInventory.create!(disti_inventory_params)
     
-    redirect_to admin_disti_inventories_path
+    redirect_to admin_disti_inventory_path(1)
   end # end create method
   
   def edit
@@ -46,7 +46,7 @@ class Admin::DistiInventoriesController < ApplicationController
     @disti_inventory = DistiInventory.find(params[:id])
     @disti_inventory.update(disti_inventory_params)
     
-    redirect_to admin_disti_inventories_path
+    redirect_to admin_disti_inventory_path(1)
     
   end # end update method
   
