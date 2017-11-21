@@ -53,7 +53,7 @@ class Inventory < ActiveRecord::Base
   
   # scope large cellar drinks
   scope :large_cellar_drinks, -> { 
-    where(size_format_id: 5).
+    where(size_format_id: [5, 14]).
     joins(:beer).merge(Beer.cellar_drinks)
   }
   

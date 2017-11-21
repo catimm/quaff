@@ -7,6 +7,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  image       :string
+#  packaged    :boolean
 #
 
 class SizeFormat < ActiveRecord::Base

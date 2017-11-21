@@ -265,19 +265,20 @@ class BeersController < ApplicationController
     # get user info
     @user = User.find_by_id(@user_id)
     
+    # get packaged size formats
+    @packaged_format_ids = SizeFormat.where(packaged: true).pluck(:id)
+    
     # get list of available Knird Inventory
-    @available_knird_inventory = Inventory.where(currently_available: true, size_format_id: [1,2,3,4,5,10,11,12,14]).where("stock > ?", 0)
+    @available_knird_inventory = Inventory.where(currently_available: true, size_format_id: @packaged_format_ids).where("stock > ?", 0)
     
     # get list of available Disti Inventory
-    @available_disti_inventory = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: [1,2,3,4,5,10,11,12,14])
+    @available_disti_inventory = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: @packaged_format_ids)
     
     if @status == "new"
-      Rails.logger.debug("Status is new")
       @new_drink = true
       @number_of_ratings = 0
       @drank_recently = false
     else
-      Rails.logger.debug("Status is NOT new")
       @new_drink = false
       # find if user has rated/had this drink before
       @drink_ratings = UserBeerRating.where(user_id: @user_id, beer_id: @drink_id).order('rated_on DESC')
@@ -311,10 +312,8 @@ class BeersController < ApplicationController
     @disti_inventory_item_formats = @disti_inventory_items.pluck(:size_format_id)
     @total_formats = @inventory_item_formats + @disti_inventory_item_formats
     @total_formats = @total_formats.uniq
-     Rails.logger.debug("Total formats: #{@total_formats.inspect}") 
     # run through each format and add to recommended list for curation
     @total_formats.each do |format|
-      Rails.logger.debug("Runs through each format")
       @inventory_id = @inventory_items.where(size_format_id: format)
       if @inventory_id.blank?
         @final_inventory_id = nil
