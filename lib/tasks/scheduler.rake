@@ -586,15 +586,18 @@ task :assess_drink_recommendations => :environment do
         
         # cycle through each knird inventory drink to determine whether to keep it
         @available_knird_inventory.each do |available_drink|
+          if user.id == 8
+            Rails.logger.debug("This Knird inventory drink: #{available_drink.inspect}")
+          end
           if @final_user_type_likes.include? available_drink.beer.beer_type_id
-            if available_drink.beer_id == 12243 || available_drink.beer_id == "12243"
-              Rails.logger.debug("This Knird inventory drink: #{available_drink.inspect}")
-            end
             @assessed_drinks << available_drink.beer_id
           end
         end
         # cycle through each disti inventory drink to determine whether to keep it
         @available_disti_inventory.each do |available_drink|
+          if user.id == 8
+            Rails.logger.debug("This disti inventory drink: #{available_drink.inspect}")
+          end
           if @final_user_type_likes.include? available_drink.beer.beer_type_id
             if available_drink.beer_id == 12243 || available_drink.beer_id == "12243"
               Rails.logger.debug("This disti inventory drink: #{available_drink.inspect}")
