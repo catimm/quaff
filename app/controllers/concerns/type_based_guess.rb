@@ -22,7 +22,7 @@ module TypeBasedGuess
     @good_drinks_descriptors = Array.new
     # loop through each highly rated drink to pull out descriptors
     @same_type_rated_by_user_good.each do |beer|
-      @good_beer = Beer.find(beer.beer_id)
+      @good_beer = Beer.find_by_id(beer.beer_id)
       @good_beer_descriptors = @good_beer.descriptors.most_used(3)
       @good_beer_descriptors.each do |descriptor| 
         @good_drinks_descriptors << descriptor["name"]

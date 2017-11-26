@@ -417,8 +417,12 @@ class Admin::RecommendationsController < ApplicationController
         
         
         # check if this drink could be allocated to multiple users or just one
-        @number_of_possible_allocations = UserDrinkRecommendation.where(account_id: @drink_recommendation.account_id, beer_id: @drink_recommendation.beer_id).count
-        if @number_of_possible_allocations == 1 # if this is the only person, create a Admin User Delivery entry
+        @number_of_possible_allocations = UserDrinkRecommendation.where(account_id: @drink_recommendation.account_id, 
+                                                                        beer_id: @drink_recommendation.beer_id, 
+                                                                        size_format_id: @drink_recommendation.size_format_id).pluck(:user_id)
+        @number_of_possible_allocations = @number_of_possible_allocations.uniq
+        @allocation_count = @number_of_possible_allocations.count
+        if @allocation_count == 1 # if this is the only person, create a Admin User Delivery entry
           UserDelivery.create(user_id: @drink_recommendation.user_id,
                                   account_delivery_id: @next_delivery_admin_info.id,
                                   delivery_id: @customer_next_delivery.id,

@@ -527,9 +527,6 @@ task :assess_drink_recommendations => :environment do
       #Rails.logger.debug("Active users: #{@active_users.inspect}")
       
       @active_users.each do |user|
-        if user.id == 8
-          Rails.logger.debug("this user: #{user.inspect}")
-        end
         # find if user has wishlist drinks
         @user_wishlist_drink_ids = Wishlist.where(user_id: user.id, removed_at: nil).pluck(:beer_id)
         # get all drink styles the user claims to like
@@ -586,22 +583,13 @@ task :assess_drink_recommendations => :environment do
         
         # cycle through each knird inventory drink to determine whether to keep it
         @available_knird_inventory.each do |available_drink|
-          if user.id == 8
-            Rails.logger.debug("This Knird inventory drink: #{available_drink.inspect}")
-          end
           if @final_user_type_likes.include? available_drink.beer.beer_type_id
             @assessed_drinks << available_drink.beer_id
           end
         end
         # cycle through each disti inventory drink to determine whether to keep it
         @available_disti_inventory.each do |available_drink|
-          if user.id == 8
-            Rails.logger.debug("This disti inventory drink: #{available_drink.inspect}")
-          end
           if @final_user_type_likes.include? available_drink.beer.beer_type_id
-            if available_drink.beer_id == 12243 || available_drink.beer_id == "12243"
-              Rails.logger.debug("This disti inventory drink: #{available_drink.inspect}")
-            end
             @assessed_drinks << available_drink.beer_id
           end
         end
@@ -609,7 +597,6 @@ task :assess_drink_recommendations => :environment do
         # add wishlist drinks if they exist
         if !@user_wishlist_drink_ids.blank?
           @user_wishlist_drink_ids.each do |wishlist_drink_id|
-            Rails.logger.debug("This wishlist drink: #{wishlist_drink_id.inspect}")
             @assessed_drinks << wishlist_drink_id
           end
         end
