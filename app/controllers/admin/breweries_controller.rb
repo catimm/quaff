@@ -160,6 +160,13 @@ class Admin::BreweriesController < ApplicationController
       # put drink in Beer table
       @perm_drink = Beer.create(@temp_drink.attributes.merge({:brewery_id => @perm_brewery.id, :vetted => nil}))
       
+      # change associations in disti_inventories table
+      @disti_inventory_to_change = DistiInventory.where(beer_id: @temp_drink.id)
+      if !@disti_inventory_to_change.blank?
+        @disti_inventory_to_change.each do |this_drink|
+          this_drink.update(beer_id: @perm_drink.id)
+        end
+      end
       # change associations in user_beer_ratings table
       @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id)
       if !@user_beer_ratings_to_change.empty?
@@ -209,7 +216,14 @@ class Admin::BreweriesController < ApplicationController
       
       # add data to permanent drink table
       @perm_drink = Beer.create(@temp_drink.attributes.merge({:brewery_id => params[:brewery][:id], :vetted => nil}))
-  
+      
+      # change associations in disti_inventories table
+      @disti_inventory_to_change = DistiInventory.where(beer_id: @temp_drink.id)
+      if !@disti_inventory_to_change.blank?
+        @disti_inventory_to_change.each do |this_drink|
+          this_drink.update(beer_id: @perm_drink.id)
+        end
+      end
       # change associations in user_beer_ratings table
       @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @temp_drink.id)
       if !@user_beer_ratings_to_change.empty?
