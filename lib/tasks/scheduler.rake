@@ -1,11 +1,12 @@
 desc "Send email to early signup customers to complete registration"
 task :email_early_signup_customers => :environment do
-  @early_signup_customers = User.where.not(tpw: nil)
-    
-  @early_signup_customers.each do |customer|
+  #@early_signup_customers = User.where.not(tpw: nil)
+  # resend email to specific customer
+  @customer = User.find_by_id(26) 
+  #@early_signup_customers.each do |customer|
     # send customer email to complete signup
-    UserMailer.set_first_password_email(customer).deliver_now
-  end
+    UserMailer.set_first_password_email(@customer).deliver_now
+  #end
     
 end # end Process Disti Inventory Import
 
