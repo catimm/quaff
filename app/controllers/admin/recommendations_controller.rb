@@ -257,6 +257,9 @@ class Admin::RecommendationsController < ApplicationController
         @inventory_info = @requested_inventory
         @adjusted_quantity = @requested_inventory.order_request - @next_delivery_admin_info.quantity
         if @adjusted_quantity == 0
+          # find disti order in process 
+          @disti_order = DistiOrder.find_by_inventory_id(@requested_inventory.id)
+          @disti_order.destroy
           @requested_inventory.destroy
         else
           @requested_inventory.update(order_request: @adjusted_quantity)

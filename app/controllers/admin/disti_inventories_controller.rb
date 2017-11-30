@@ -126,9 +126,12 @@ class Admin::DistiInventoriesController < ApplicationController
   def process_inventory
     # find inventory to be updated
     @inventory = Inventory.find_by_id(params[:inventory][:id])
+    @current_order_request = @inventory.order_request
+    @updated_stock = (params[:inventory][:min_quantity]).to_i - @current_order_request.to_i
     # update inventory
     @inventory.update(size_format_id: params[:inventory][:size_format_id], 
-                      stock: params[:inventory][:min_quantity],
+                      stock: @updated_stock,
+                      reserved: @current_order_request,
                       order_request: 0,
                       sale_case_cost: params[:inventory][:sale_case_cost], 
                       min_quantity: params[:inventory][:min_quantity],
