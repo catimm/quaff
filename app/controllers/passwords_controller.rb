@@ -10,10 +10,6 @@ class PasswordsController < Devise::PasswordsController
 
   # POST /resource/password
   def create
-    @customer = User.find_by_email(params[:user][:email])
-    if @customer.cohort == "f_&_f"
-      redirect_to early_customer_password_response_path(@customer.id)
-    else
       self.resource = resource_class.send_reset_password_instructions(resource_params)
       yield resource if block_given?
   
@@ -21,9 +17,7 @@ class PasswordsController < Devise::PasswordsController
         respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
       else
         respond_with(resource)
-      end
-    end
-    
+      end 
   end
 
   # GET /resource/password/edit?reset_password_token=abcdef
