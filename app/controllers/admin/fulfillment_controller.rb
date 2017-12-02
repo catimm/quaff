@@ -106,7 +106,7 @@ class Admin::FulfillmentController < ApplicationController
     # update account based on number of remaining deliveries in this period
     @remaining_deliveries = @subscription_deliveries_included - @account_owner_subscription.deliveries_this_period
     if @remaining_deliveries == 0
-      UserMailer.seven_day_membership_expiration_notice(@user, @user_subscription).delivery_now
+      UserMailer.seven_day_membership_expiration_notice(@user, @customer_subscription).delivery_now
     elsif @remaining_deliveries >= 2
       # start next delivery cycle
       # get new delivery date

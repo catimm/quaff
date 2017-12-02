@@ -376,13 +376,17 @@ class DeliverySettingsController < ApplicationController
     # send Admin an email about delivery date change 
     AdminMailer.delivery_date_change_notice('carl@drinkknird.com', @customer, @first_delivery.delivery_date, @new_delivery_date).deliver_now
     
-    # remove drinks from account delivery table
+    # get and destroy drinks from account delivery table
     @account_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
     if !@account_delivery_drinks.blank?
-      @account_delivery_drinks.each do |account_drink|
-        UserDelivery.where(account_delivery_id: account_drink.id).destroy
-      end
       @account_delivery_drinks.destroy_all
+      
+      # get and destroy User Deliveries
+      @user_delivery_drinks = UserDelivery.where(delivery_id: @first_delivery.id)
+      if !@user_delivery_drinks.blank?
+        @user_delivery_drinks.destroy_all
+      end
+      
     end
     
     # now update delivery date and status
