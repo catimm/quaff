@@ -129,7 +129,7 @@ class Admin::BreweriesController < ApplicationController
   
   def show
     # to keep search function indexed properly
-    Brewery.reindex
+    Beer.reindex
     
     redirect_to admin_breweries_path
   end

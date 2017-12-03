@@ -9,7 +9,7 @@ class BeersController < ApplicationController
   
   def index
     # conduct search
-    query_search(params[:format])
+    query_search(params[:format], only_ids: true)
     
     @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
     #Rails.logger.debug("Drink results: #{@final_search_results.inspect}")
