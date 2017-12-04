@@ -23,7 +23,7 @@
 		            <li class="dropdown-link"><%= link_to "Knird Inventory", admin_inventory_path(0) %></li>
 		            <li class="dropdown-link"><%= link_to "Disti Inventory", admin_disti_inventory_path(1) %></li>
 					<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
-		            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendation_path(0) %></li> 
+		            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendations_path %></li> 
 			    <% elsif current_user.role_id == 2 %>
 			    	<li class="dropdown-header">Admin links</li>
 		            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>

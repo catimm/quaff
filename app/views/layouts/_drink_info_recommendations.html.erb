@@ -43,8 +43,15 @@
 			</h5>
 		<% end %>
 	</div>
-	<div class="col-xs-5 no-padding text-right">
-		<h5 class="order-quantity">Limited Qty: 
+	<div class="col-xs-3 no-padding text-right">
+		<% if !drink.inventory_id.nil? %>
+			<h5 class="order-quantity">Stock: 
+				<span id="user-delivery"><%= drink.inventory.stock %></span>
+			</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-4 no-padding text-right">
+		<h5 class="order-quantity">Limited to: 
 			<span id="user-delivery"><%= drink.limited_quantity %></span>
 		</h5>
 	</div>

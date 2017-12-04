@@ -3,7 +3,16 @@ class Admin::RecommendationsController < ApplicationController
   helper_method :sort_column, :sort_direction
   require 'json'
   #require 'date'
-
+  
+  def index
+    @upcoming_deliveries = Delivery.where.not(status: "delivered")
+                                .order("delivery_date ASC")
+                                .group_by {|account| account.account_id}
+    #Rails.logger.debug("Upcoming deliveries: #{@upcoming_deliveries.inspect}")
+    #@upcoming_deliveries_unique_accounts = @upcoming_deliveries.uniq(:account_id)
+    #Rails.logger.debug("Unique Account ids: #{@upcoming_deliveries_unique_accounts.inspect}")
+  end # end of index method
+  
   def show
     # get account and delivery info
     @account_id = params[:id].to_i

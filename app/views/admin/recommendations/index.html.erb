@@ -1,0 +1,63 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12 col-sm-2 no-padding">
+			<h1 class="section-header">Recos</h1>
+		</div>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding-right">
+				<div class="col-xs-12 col-sm-6 text-left no-padding">
+					<h3>Upcoming deliveries & status</h3>
+				</div>
+			</div>
+		</div>
+		<div class="row no-margin">
+				<div class="col-xs-8">
+					<table class="table table-bordered">
+					    <tr>
+					    	<th>Account</th>
+						    <th>Upcoming delivery</th>
+						    <th>Curated?</th>
+						    <th>Next delivery</th>
+						    <th>Curated?</th>
+					    </tr>
+						<% @upcoming_deliveries.each do |delivery| %>
+								<% Rails.logger.debug("Delivery: #{delivery.inspect}") %>
+								<% Rails.logger.debug("Delivery info: #{delivery[1][0].inspect}") %>
+								<% Rails.logger.debug("Delivery info: #{delivery[1][0]["account_id"].inspect}") %>
+								<% @account_owner = User.where(account_id: delivery[0], role_id: [1,4]).first %>
+								<tr>
+									<td><%= @account_owner.first_name %> [<%= @account_owner.username %>; <%= delivery[0] %>]</td>
+									<td class="text-center"><%= link_to "#{delivery[1][0]["delivery_date"]}", 
+													admin_recommendation_path(delivery[0],delivery[1][0]["id"]) %>
+									</td>
+									<% if delivery[1][0]["share_admin_prep_with_user"] == true %>
+										<td class="text-center">Y</td>
+									<% else %>
+										<td class="text-center">N</td>
+									<% end %>
+									<% if !delivery[1][1].blank? %>
+										<td class="text-center"><%= link_to "#{delivery[1][1]["delivery_date"]}", 
+													admin_recommendation_path(delivery[0],delivery[1][1]["id"]) %>
+										</td>
+										<% if delivery[1][1]["share_admin_prep_with_user"] == true %>
+											<td class="text-center">Y</td>
+										<% else %>
+											<td class="text-center">N</td>
+										<% end %>
+									<% else %>
+										<td class="text-center">N/A</td>
+										<td class="text-center">N/A</td>
+									<% end %>
+								</tr>
+						<% end %>
+					</table>
+				</div>
+			</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>
