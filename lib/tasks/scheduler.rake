@@ -532,9 +532,7 @@ task :assess_drink_recommendations => :environment do
         @user_wishlist_drink_ids = Wishlist.where(user_id: user.id, removed_at: nil).pluck(:beer_id)
         # get all drink styles the user claims to like
         @user_style_likes = UserStylePreference.where(user_preference: "like", user_id: user.id).pluck(:beer_style_id) 
-        if user.id == 34
-          Rails.logger.debug("User 34 Style Likes: #{@user_style_likes.inspect}")
-        end
+
         # get all drink styles the user claims to dislike
         @user_style_dislikes = UserStylePreference.where(user_preference: "dislike", user_id: user.id).pluck(:beer_style_id)
         
@@ -547,9 +545,6 @@ task :assess_drink_recommendations => :environment do
             # insert into array
             @additional_drink_types << type_id
           end
-        end
-        if user.id == 34
-          Rails.logger.debug("User 34 Additional Drink Types: #{@additional_drink_types.inspect}")
         end
         
         # get all drink types associated with remaining drink styles the user dislikes
@@ -565,14 +560,10 @@ task :assess_drink_recommendations => :environment do
         
         # get all drink types the user has rated favorably
         @user_preferred_drink_types = user_likes_drink_types(user.id)
-        if user.id == 34
-          Rails.logger.debug("User 34 Preferred Drink Types: #{@user_preferred_drink_types.inspect}")
-        end
+
         # create array to hold the drink types the user likes
         @user_type_likes = @user_preferred_drink_types.keys
-        if user.id == 34
-          Rails.logger.debug("User 34 Type Likes: #{@user_type_likes.inspect}")
-        end
+
         # find remaining styles claimed to be liked but without significant ratings
         @user_type_likes.each do |type_id|
           if type_id != nil
@@ -587,9 +578,6 @@ task :assess_drink_recommendations => :environment do
         end
         # create almost final user type likes in order to find relevant relational drink types
         @almost_final_user_type_likes = @user_type_likes + @additional_drink_types 
-        if user.id == 34
-          Rails.logger.debug("User 34 Type Likes, almost final: #{@almost_final_user_type_likes.inspect}")
-        end
         
         # get drink types from special relationship drinks
         @drink_type_relationships = BeerTypeRelationship.all
@@ -597,35 +585,23 @@ task :assess_drink_recommendations => :environment do
                                                        .where.not(relationship_two: @dislike_drink_types)
                                                        .where.not(relationship_three: @dislike_drink_types)
                                                        .pluck(:beer_type_id) 
-        if user.id == 34
-          Rails.logger.debug("User 34 Relational 1: #{@relational_drink_types_one.inspect}")
-        end
+
         @relational_drink_types_two = @drink_type_relationships.where(relationship_two: @almost_final_user_type_likes)
                                                        .where.not(relationship_one: @dislike_drink_types)
                                                        .where.not(relationship_three: @dislike_drink_types)
                                                        .pluck(:beer_type_id) 
-        if user.id == 34
-          Rails.logger.debug("User 34 Relational 2: #{@relational_drink_types_two.inspect}")
-        end
+
         @relational_drink_types_three = @drink_type_relationships.where(relationship_three: @almost_final_user_type_likes)
                                                        .where.not(relationship_one: @dislike_drink_types)
                                                        .where.not(relationship_two: @dislike_drink_types)
                                                        .pluck(:beer_type_id) 
-        if user.id == 34
-          Rails.logger.debug("User 34 Relational 3: #{@relational_drink_types_three.inspect}")
-        end
         
         # create an aggregated list of all beer types the user should like
         @final_user_type_likes = @user_type_likes + @additional_drink_types + @relational_drink_types_one + @relational_drink_types_two + @relational_drink_types_three
-        if user.id == 34
-          Rails.logger.debug("User 34 final types liked 1: #{@final_user_type_likes.inspect}")
-        end
+
         # removes duplicates from the array
         @final_user_type_likes = @final_user_type_likes.uniq
         @final_user_type_likes = @final_user_type_likes.grep(Integer)
-        if user.id == 34
-          Rails.logger.debug("User 34 final types liked 2: #{@final_user_type_likes.inspect}")
-        end 
         
         # now filter the complete drinks available against the drink types the user likes
         # first create an array to hold each viable drink
