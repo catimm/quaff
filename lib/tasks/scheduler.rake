@@ -535,7 +535,10 @@ task :assess_drink_recommendations => :environment do
         if user.id == 34
           Rails.logger.debug("User 34 Style Likes: #{@user_style_likes.inspect}")
         end
-         # now get all drink types associated with remaining drink styles
+        # get all drink styles the user claims to dislike
+        @user_style_dislikes = UserStylePreference.where(user_preference: "dislike", user_id: user.id).pluck(:beer_style_id)
+        
+        # get all drink types associated with remaining drink styles the user likes
         @additional_drink_types = Array.new
         @user_style_likes.each do |style_id|
           # get related types
@@ -547,6 +550,17 @@ task :assess_drink_recommendations => :environment do
         end
         if user.id == 34
           Rails.logger.debug("User 34 Additional Drink Types: #{@additional_drink_types.inspect}")
+        end
+        
+        # get all drink types associated with remaining drink styles the user dislikes
+        @dislike_drink_types = Array.new
+        @user_style_dislikes.each do |style_id|
+          # get related types
+          @type_id = @drink_types.where(beer_style_id: style_id).pluck(:id)
+          @type_id.each do |type_id|
+            # insert into array
+            @dislike_drink_types << type_id
+          end
         end
         
         # get all drink types the user has rated favorably
@@ -579,15 +593,24 @@ task :assess_drink_recommendations => :environment do
         
         # get drink types from special relationship drinks
         @drink_type_relationships = BeerTypeRelationship.all
-        @relational_drink_types_one = @drink_type_relationships.where(relationship_one: @almost_final_user_type_likes).pluck(:beer_type_id) 
+        @relational_drink_types_one = @drink_type_relationships.where(relationship_one: @almost_final_user_type_likes)
+                                                       .where.not(relationship_two: @dislike_drink_types)
+                                                       .where.not(relationship_three: @dislike_drink_types)
+                                                       .pluck(:beer_type_id) 
         if user.id == 34
           Rails.logger.debug("User 34 Relational 1: #{@relational_drink_types_one.inspect}")
         end
-        @relational_drink_types_two = @drink_type_relationships.where(relationship_two: @almost_final_user_type_likes).pluck(:beer_type_id) 
+        @relational_drink_types_two = @drink_type_relationships.where(relationship_two: @almost_final_user_type_likes)
+                                                       .where.not(relationship_one: @dislike_drink_types)
+                                                       .where.not(relationship_three: @dislike_drink_types)
+                                                       .pluck(:beer_type_id) 
         if user.id == 34
           Rails.logger.debug("User 34 Relational 2: #{@relational_drink_types_two.inspect}")
         end
-        @relational_drink_types_three = @drink_type_relationships.where(relationship_three: @almost_final_user_type_likes).pluck(:beer_type_id) 
+        @relational_drink_types_three = @drink_type_relationships.where(relationship_three: @almost_final_user_type_likes)
+                                                       .where.not(relationship_one: @dislike_drink_types)
+                                                       .where.not(relationship_two: @dislike_drink_types)
+                                                       .pluck(:beer_type_id) 
         if user.id == 34
           Rails.logger.debug("User 34 Relational 3: #{@relational_drink_types_three.inspect}")
         end
