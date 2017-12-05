@@ -251,69 +251,6 @@ class Admin::BeersController < ApplicationController
       if @drink_name.blank?
        AltBeerName.create(name: @beer.beer_name, beer_id: params[:id])
       end
-      
-      # change associations in disti_inventories table
-      @disti_inventory_to_change = DistiInventory.where(beer_id: @beer.id)
-      if !@disti_inventory_to_change.blank?
-        @disti_inventory_to_change.each do |drink|
-          drink.update(beer_id: params[:id])
-        end
-      end
-      # change associations in beer_locations table
-      @beer_locations_to_change = BeerLocation.where(beer_id: @beer.id)
-      if !@beer_locations_to_change.empty?
-        @beer_locations_to_change.each do |beers|
-          BeerLocation.update(beers.id, beer_id: params[:id])
-        end
-      end
-      # change associations in alt_beer_names table
-      @alt_beer_names_to_change = AltBeerName.where(beer_id: @beer.id)
-      if !@alt_beer_names_to_change.empty?
-        @alt_beer_names_to_change.each do |beers|
-          AltBeerName.update(beers.id, beer_id: params[:id])
-        end
-      end
-      # change associations in user_beer_ratings table
-      @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @beer.id)
-      if !@user_beer_ratings_to_change.empty?
-        @user_beer_ratings_to_change.each do |beers|
-          UserBeerRating.update(beers.id, beer_id: params[:id])
-        end
-      end
-      # change associations in user_beer_trackings table
-      @user_beer_trackings_to_change = Wishlist.where(beer_id: @beer.id)
-      if !@user_beer_trackings_to_change.empty?
-        @user_beer_trackings_to_change.each do |beers|
-          Wishlist.update(beers.id, beer_id: params[:id])
-        end
-      end
-      # change associations in user_supplies table
-      @user_supplies_to_change = UserCellarSupply.where(beer_id: @beer.id)
-      if !@user_supplies_to_change.empty?
-        @user_supplies_to_change.each do |beers|
-          UserCellarSupply.update(beers.id, beer_id: params[:id])
-        end
-      end
-      # align formats associated with this drink
-      @drink_formats = BeerFormat.where(beer_id: @beer.id)
-      if !@drink_formats.blank?
-        @drink_formats.each do |format| 
-          format.update(beer_id: params[:id])
-        end
-      end
-    
-      # destroy drink
-      @beer.destroy
-    else
-      # find beer being deleted
-      @beer = TempBeer.find_by_id(params[:id])
-      # get drink name
-      @drink_name = AltBeerName.where(name: @beer.beer_name)
-      
-      # add name of drink being deleted to alt beer name table if it isn't already there
-      if @drink_name.blank?
-       AltBeerName.create(name: @beer.beer_name, beer_id: params[:id])
-      end
     
       # destroy drink
       @beer.destroy
@@ -340,56 +277,6 @@ class Admin::BeersController < ApplicationController
         # add name of drink being deleted to alt beer name table if it isn't already there
         if @drink_name.blank?
          AltBeerName.create(name: @drink.beer_name, beer_id: drink_id)
-        end
-        
-        # change associations in disti_inventories table
-        @disti_inventory_to_change = DistiInventory.where(beer_id: @drink.id)
-        if !@disti_inventory_to_change.blank?
-          @disti_inventory_to_change.each do |drink|
-            drink.update(beer_id: drink_id)
-          end
-        end
-        # change associations in beer_locations table
-        @beer_locations_to_change = BeerLocation.where(beer_id: @drink.id)
-        if !@beer_locations_to_change.empty?
-          @beer_locations_to_change.each do |beers|
-            BeerLocation.update(beers.id, beer_id: drink_id)
-          end
-        end
-        # change associations in alt_beer_names table
-        @alt_beer_names_to_change = AltBeerName.where(beer_id: @drink.id)
-        if !@alt_beer_names_to_change.empty?
-          @alt_beer_names_to_change.each do |beers|
-            AltBeerName.update(beers.id, beer_id: drink_id)
-          end
-        end
-        # change associations in user_beer_ratings table
-        @user_beer_ratings_to_change = UserBeerRating.where(beer_id: @drink.id)
-        if !@user_beer_ratings_to_change.empty?
-          @user_beer_ratings_to_change.each do |beers|
-            UserBeerRating.update(beers.id, beer_id: drink_id)
-          end
-        end
-        # change associations in user_beer_trackings table
-        @user_beer_trackings_to_change = Wishlist.where(beer_id: @drink.id)
-        if !@user_beer_trackings_to_change.empty?
-          @user_beer_trackings_to_change.each do |beers|
-            Wishlist.update(beers.id, beer_id: drink_id)
-          end
-        end
-        # change associations in user_supplies table
-        @user_supplies_to_change = UserCellarSupply.where(beer_id: @drink.id)
-        if !@user_supplies_to_change.empty?
-          @user_supplies_to_change.each do |beers|
-            UserCellarSupply.update(beers.id, beer_id: drink_id)
-          end
-        end
-        # align formats associated with this drink
-        @drink_formats = BeerFormat.where(beer_id: @drink.id)
-        if !@drink_formats.blank?
-          @drink_formats.each do |format| 
-            format.update(beer_id: drink_id)
-          end
         end
         
         # destroy drink
