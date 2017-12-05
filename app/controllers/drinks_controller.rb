@@ -271,7 +271,7 @@ class DrinksController < ApplicationController
   
   def drink_search
     # conduct search
-    query_search(params[:query])
+    query_search(params[:query], only_ids: true)
     
     @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
     #Rails.logger.debug("Drink results: #{@final_search_results.inspect}")
