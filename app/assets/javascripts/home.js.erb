@@ -31,11 +31,9 @@ $(function () {
 			        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight();
 			        var ot = $("#home-scroller-anchor").offset().top;
 			        if(st > ot) {
-			            $("#home-header-get-started-button").removeClass("hidden").addClass("show");
 			            $("#home-navbar").addClass("common_navbar");
 			        } else {
 			            if(st <= ot) {
-			                $("#home-header-get-started-button").removeClass("show").addClass("hidden");
 			                $("#home-navbar").removeClass("common_navbar");
 			            }
 			        }
