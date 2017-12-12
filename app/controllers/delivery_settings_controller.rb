@@ -165,7 +165,7 @@ class DeliverySettingsController < ApplicationController
     @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
     
     @today = Date.today
-    Rails.logger.debug("Today: #{@today.inspect}")
+    #Rails.logger.debug("Today: #{@today.inspect}")
     # get user's delivery zone
     @user_delivery_zone = current_user.account.delivery_zone_id
     # get delivery zone info
@@ -177,7 +177,7 @@ class DeliverySettingsController < ApplicationController
     else
       @change_permitted = false
     end
-    Rails.logger.debug("Change permitted: #{@change_permitted.inspect}")
+    #Rails.logger.debug("Change permitted: #{@change_permitted.inspect}")
     
     # determine current week status
     @current_week_number = Date.today.strftime("%U").to_i
@@ -396,7 +396,8 @@ class DeliverySettingsController < ApplicationController
                           subtotal: 0, 
                           sales_tax: 0, 
                           total_price: 0,
-                          status: "admin prep")
+                          status: "admin prep",
+                          share_admin_prep_with_user: false)
     @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
     
     redirect_to user_delivery_settings_path(current_user.id)
