@@ -3,11 +3,17 @@ class Admin::FulfillmentController < ApplicationController
   require "stripe"
  
   def index
-    @delivery_driver_id = DeliveryDriver.find_by_user_id(current_user.id)
-    @delivery_driver_zone_ids = DeliveryZone.where(delivery_driver_id: @delivery_driver_id).pluck(:id)
-    @delivery_driver_account_ids = Account.where(delivery_zone_id: @delivery_driver_zone_ids).pluck(:id)
-    @in_progress_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids, status: "in progress").order('delivery_date ASC')
-    #Rails.logger.debug("Live deliveries: #{@live_delivery_info.inspect}")
+    if current_user.role_id == 1
+      @in_progress_delivery_info = Delivery.where(status: "in progress").order('delivery_date ASC')
+      #Rails.logger.debug("Live deliveries: #{@live_delivery_info.inspect}")
+    else
+      @delivery_driver_id = DeliveryDriver.find_by_user_id(current_user.id)
+      @delivery_driver_zone_ids = DeliveryZone.where(delivery_driver_id: @delivery_driver_id).pluck(:id)
+      @delivery_driver_account_ids = Account.where(delivery_zone_id: @delivery_driver_zone_ids).pluck(:id)
+      @in_progress_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids, status: "in progress").order('delivery_date ASC')
+      #Rails.logger.debug("Live deliveries: #{@live_delivery_info.inspect}")
+    end
+    
     @delivered_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids, status: "delivered").where('delivery_date >= ?', 1.week.ago).order('delivery_date DESC')
     #Rails.logger.debug("Delivered info: #{@delivered_delivery_info.inspect}")
     
