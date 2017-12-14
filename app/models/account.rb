@@ -26,7 +26,9 @@ class Account < ActiveRecord::Base
   # create view in admin recommendation drop down
   def recommendation_account_drop_down_view
     @account_owner = User.where(account_id: self.id, role_id: [1,4])[0]
+    Rails.logger.debug("Acct owner: #{@account_owner.inspect}")
     @next_delivery = Delivery.where(account_id: self.id).where.not(status: "delivered").order("delivery_date ASC").first
+    Rails.logger.debug("Next delivery: #{@next_delivery.inspect}")
     "#{@account_owner.first_name} [#{@account_owner.username} next on #{@next_delivery.delivery_date}]"
   end
   
