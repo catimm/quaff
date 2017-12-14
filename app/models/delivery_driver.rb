@@ -11,4 +11,11 @@
 class DeliveryDriver < ActiveRecord::Base
   belongs_to :user
   has_many :delivery_zones
+
+  # create view in admin recommendation drop down
+  def driver_name_drop_down_view
+    "#{user.first_name} #{user.last_name}"
+  end
+
+
 end

@@ -24,6 +24,7 @@
 class Delivery < ActiveRecord::Base
   belongs_to :account
   
+  has_many :delivery_zones
   has_many :account_deliveries
   has_many :admin_account_deliveries
   has_many :user_deliveries    

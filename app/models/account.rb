@@ -12,6 +12,7 @@
 #
 
 class Account < ActiveRecord::Base
+  
   has_many :account_deliveries
   has_many :admin_account_deliveries
   has_many :deliveries
@@ -20,6 +21,8 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :user_addresses, :allow_destroy => true
   has_many :users
   accepts_nested_attributes_for :users, :allow_destroy => true
+  
+  belongs_to :delivery_zone
   
   attr_accessor :user_id # to hold current user id
     
