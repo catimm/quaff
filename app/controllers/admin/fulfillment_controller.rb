@@ -10,7 +10,7 @@ class Admin::FulfillmentController < ApplicationController
       @delivery_driver_zone_ids = DeliveryZone.where(delivery_driver_id: @delivery_driver.id).pluck(:id)
       @delivery_driver_account_ids = Account.where(delivery_zone_id: @delivery_driver_zone_ids).pluck(:id)
       @in_progress_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids).
-                                            where(delivery_date: Date.today..7.days.from_now).
+                                            where(delivery_date: 1.day.ago..7.days.from_now).
                                             where.not(status: "delivered").
                                             joins(:account => [ :delivery_zone ]).
                                             order("delivery_date ASC, delivery_zones.start_time ASC")
@@ -72,7 +72,7 @@ class Admin::FulfillmentController < ApplicationController
     @delivery_driver_zone_ids = DeliveryZone.where(delivery_driver_id: @delivery_driver.id).pluck(:id)
     @delivery_driver_account_ids = Account.where(delivery_zone_id: @delivery_driver_zone_ids).pluck(:id)
     @in_progress_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids).
-                                          where(delivery_date: Date.today..7.days.from_now).
+                                          where(delivery_date: 1.day.ago..7.days.from_now).
                                           where.not(status: "delivered").
                                           joins(:account => [ :delivery_zone ]).
                                           order("delivery_date ASC, delivery_zones.start_time ASC")
