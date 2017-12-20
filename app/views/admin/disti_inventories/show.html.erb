@@ -104,9 +104,6 @@
 								    <th></th>
 							    </tr>
 								<% @inventory_not_ready_for_curation.each do |inventory| %>
-									<% if inventory.beer.brewery.nil? %>
-										<% Rails.logger.debug("Inventory ID: #{inventory.id.inspect}") %>
-									<% end %>
 									<tr>
 										<td><%= inventory.disti_item_number %></td>
 										<td><%= inventory.beer.brewery.short_brewery_name %></td>
