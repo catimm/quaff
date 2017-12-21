@@ -32,7 +32,11 @@ class Account < ActiveRecord::Base
     #Rails.logger.debug("Acct owner: #{@account_owner.inspect}")
     @next_delivery = Delivery.where(account_id: self.id).where.not(status: "delivered").order("delivery_date ASC").first
     #Rails.logger.debug("Next delivery: #{@next_delivery.inspect}")
-    "#{@account_owner.first_name} [#{@account_owner.username} next on #{@next_delivery.delivery_date}]"
+    if !@next_delivery.blank?
+      "#{@account_owner.first_name} [#{@account_owner.username} next on #{@next_delivery.delivery_date}]"
+    else
+      "#{@account_owner.first_name} [#{@account_owner.username} is not scheduled"
+    end
   end
   
   # scope not yet delivered to account owners
