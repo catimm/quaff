@@ -1,0 +1,26 @@
+$(function() {
+    $('#gift-value-custom-amount').change(function(){
+        $('#gift_certificate_amount').val($(this).val());
+    });
+    $('input[name=giftValue]').change(function() {
+        var selectedValue = $(this).val();
+        if (selectedValue == "25") {
+            $('.gift-value-description > span').text('$25 covers a 1-month subscription & approx. 5 drinks.');
+            $('#gift_certificate_amount').val(25);
+            $('#gift-value-custom-amount').val('');
+        }
+        else if (selectedValue == "50") {
+            $('.gift-value-description > span').text('$50 covers a 3-month subscription & approx. 10 drinks.');
+            $('#gift_certificate_amount').val(50);
+            $('#gift-value-custom-amount').val('');
+        }
+        else if (selectedValue == "100") {
+            $('.gift-value-description > span').text('$50 covers a 6-month subscription & approx. 20 drinks.');
+            $('#gift_certificate_amount').val(100);
+            $('#gift-value-custom-amount').val('');
+        }
+        else if (selectedValue == "custom") {
+            $('.gift-value-description > span').text('');
+        }
+    });
+});

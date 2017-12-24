@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Giver name:</strong>
+  <%= @gift_certificate.giver_name %>
+</p>
+
+<p>
+  <strong>Giver email:</strong>
+  <%= @gift_certificate.giver_email %>
+</p>
+
+<p>
+  <strong>Receiver email:</strong>
+  <%= @gift_certificate.receiver_email %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @gift_certificate.amount %>
+</p>
+
+<p>
+  <strong>Redeem code:</strong>
+  <%= @gift_certificate.redeem_code %>
+</p>
+
+<%= link_to 'Edit', edit_gift_certificate_path(@gift_certificate) %> |
+<%= link_to 'Back', gift_certificates_path %>

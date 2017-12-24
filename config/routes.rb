@@ -194,6 +194,10 @@ Rails.application.routes.draw do
   get '/early_signup/early_signup_confirmation/:id' => 'early_signup#early_signup_confirmation', :as => 'early_signup_confirmation'
   
   get '/early_signup/early_customer_password_response/:id' => 'early_signup#early_customer_password_response', :as => 'early_customer_password_response'
+
+  # Gift certificates
+  get '/gift_certificates/new' => 'gift_certificates#new', :as => 'gift_certificates_new'
+  post '/gift_certificates/process_new_gift_certificate' => 'gift_certificates#process_new_gift_certificate', :as => 'process_new_gift_certificate'
   
   # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"

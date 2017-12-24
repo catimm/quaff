@@ -1,0 +1,71 @@
+<%= render 'layouts/header_no_search' %> 
+
+<div class="row justify-content-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 text-center">
+                <h3>Gift of craft beer &amp; cider</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-offset-2 col-xs-8 col-sm-offset-4 col-sm-4 container">
+                <%= simple_form_for @gift_certificate, :url => process_new_gift_certificate_path, :html => { :class => 'form-horizontal' } do |f| %>
+                    <div class="row">
+                        <label for="giver_name_field" class="control-label gift-form-label">Gift Value</label>
+                    </div>
+                    <div class="row btn-group" role="group" data-toggle="buttons">
+                        <label class="btn btn-primary btn-lg">
+                            <input type="radio" name="giftValue" value="25">$25</input>
+                        </label>
+                        <label class="btn btn-primary active btn-lg">
+                            <input type="radio" name="giftValue" value="50">$50</input>
+                        </label>
+                        <label class="btn btn-primary btn-lg">
+                            <input type="radio" name="giftValue" value="100">$100</input>
+                        </label>
+                        <label class="gift-value-custom btn-lg btn btn-primary">
+                            <input type="radio" name="giftValue" value="custom">
+                                <input type="number" id="gift-value-custom-amount" placeholder="Enter Amount" pattern="[0-9]{1,3}" min="10" max="999"></input>
+                            </input>
+                        </label>
+                    </div>
+                    <div class="row gift-value-description text-center">
+                        <span>$50 covers a 3-month subscription &amp; approx. 10 drinks.</span>
+                    </div>
+                    <div class="row">
+                        <label for="giver_name_field" class="control-label gift-form-label">From</label>
+                    </div>
+                    <div class="row gift-form-control">
+                        <%= f.input :giver_name, label: false, required: true, placeholder: "Your Name" %>
+                    </div>
+                    <div class="row gift-form-control">
+                        <%= f.input :giver_email, label: false, required: true, type: "email", placeholder: "Your Email" %>
+                    </div>
+
+                    <div class="row">
+                        <label for="giver_name_field" class="control-label gift-form-label">To</label>
+                    </div>
+                    <div class="row gift-form-control">
+                        <%= f.input :receiver_name, label: false, required: true, placeholder: "Recipient's Name" %>
+                    </div>
+                    <div class="row gift-form-control">
+                        <%= f.input :receiver_email, label: false, required: true, type: "email", placeholder: "Recipient's Email" %>
+                    </div>
+
+                    <%= f.hidden_field :amount, value: "50" %>
+
+                    <div class="row">
+                        <div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6 text-center">
+                            <%= f.submit "Place Order", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <h1>New Gift Certificate</h1>
+
+<%= render 'form' %>
+ -->

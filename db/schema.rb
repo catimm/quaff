@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171121010239) do
+ActiveRecord::Schema.define(version: 20171223053809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -393,6 +393,17 @@ ActiveRecord::Schema.define(version: 20171121010239) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean  "mate"
+  end
+
+  create_table "gift_certificates", force: :cascade do |t|
+    t.string   "giver_name"
+    t.string   "giver_email"
+    t.string   "receiver_email"
+    t.decimal  "amount"
+    t.string   "redeem_code"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "receiver_name"
   end
 
   create_table "inventories", force: :cascade do |t|
