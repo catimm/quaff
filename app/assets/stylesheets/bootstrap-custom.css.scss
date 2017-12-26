@@ -3344,6 +3344,10 @@ $beer-header-lines-to-show-fp: 1;
   padding: 0 !important;
 }
 
+.gift-success-buttons {
+  margin-right: 20px;
+}
+
 .gift-value-custom input[type="number"] {
   width: 90px;
   height: 44px;
@@ -3391,6 +3395,10 @@ $beer-header-lines-to-show-fp: 1;
 
 .gift-form-label {
   color: black;
+}
+
+.flash_success {
+  background-color: #286090;
 }
 
 .terms-and-conditions-text {

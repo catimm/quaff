@@ -208,8 +208,7 @@ class UsersController < ApplicationController
     end
     
     # customer's Stripe card info
-    @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
-                                        all(:object => "card")
+    @customer_cards = []
     #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
     
   end # end of account_settings_membership action
@@ -531,6 +530,13 @@ class UsersController < ApplicationController
             @drink_quantity = @user_delivery.sum(:quantity)
             # send delivery confirmation email
             UserMailer.delivery_confirmation_email(@user, @delivery, @drink_quantity).deliver_now
+          elsif @charge_description.include? "Knird Gift Certificate" # run only if this is a gift certificate
+            metadata = event_object['metadata']
+            redeem_code = metadata['redeem_code']
+            gift_certificate = GiftCertificate.find_by redeem_code: redeem_code
+            gift_certificate.purchase_completed = true
+            gift_certificate.save
+            UserMailer.gift_certificate_created_email(gift_certificate).deliver_now
           end
         when 'charge.failed'
           #Rails.logger.debug("Failed charge event")
@@ -554,6 +560,11 @@ class UsersController < ApplicationController
               AdminMailer.admin_failed_charge_notice(@user, @delivery_info).deliver_now
               # send customer notice
               UserMailer.customer_failed_charge_notice(@user, @charge_amount, @charge_description_one).deliver_now
+            elsif @charge_description_one.include? "Knird Gift Certificate" # run only if this is a gift certificate
+              metadata = event_object['metadata']
+              redeem_code = metadata['redeem_code']
+              gift_certificate = GiftCertificate.find_by redeem_code: redeem_code
+              UserMailer.gift_certificate_failed_email(gift_certificate).deliver_now
             end
           end # end of nil test
           if !@charge_description_two.nil?

@@ -1,15 +1,8 @@
 class GiftCertificatesController < ApplicationController
-  before_action :set_gift_certificate, only: [:show, :edit, :update, :destroy]
+  require "stripe"
+  require "coupon_code"
 
-  # GET /gift_certificates
-  # GET /gift_certificates.json
-  def index
-    @gift_certificates = GiftCertificate.all
-  end
-
-  # GET /gift_certificates/1
-  # GET /gift_certificates/1.json
-  def show
+  def success
   end
 
   # GET /gift_certificates/new
@@ -17,51 +10,55 @@ class GiftCertificatesController < ApplicationController
     @gift_certificate = GiftCertificate.new
   end
 
-  # GET /gift_certificates/1/edit
-  def edit
-  end
-
   # POST /gift_certificates
   # POST /gift_certificates.json
   def create
     @gift_certificate = GiftCertificate.new(gift_certificate_params)
 
-    respond_to do |format|
-      if @gift_certificate.save
-        format.html { redirect_to @gift_certificate, notice: 'Gift certificate was successfully created.' }
-        format.json { render :show, status: :created, location: @gift_certificate }
-      else
-        format.html { render :new }
-        format.json { render json: @gift_certificate.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+    token = params[:stripeToken]
+    amount = (gift_certificate_params[:amount].to_f * 100).floor
 
-  # PATCH/PUT /gift_certificates/1
-  # PATCH/PUT /gift_certificates/1.json
-  def update
-    respond_to do |format|
-      if @gift_certificate.update(gift_certificate_params)
-        format.html { redirect_to @gift_certificate, notice: 'Gift certificate was successfully updated.' }
-        format.json { render :show, status: :ok, location: @gift_certificate }
-      else
-        format.html { render :edit }
-        format.json { render json: @gift_certificate.errors, status: :unprocessable_entity }
-      end
+    # Create the gift certificate with purchase completed as false
+    # will be set to true by the callback from stripe
+    @gift_certificate.purchase_completed = false
+    coupon_code = generate_unique_coupon_code()
+    if coupon_code == nil
+      # Return error
+      flash[:failure] = "A gift certificate could not be created and your credit card has not been charged. Please try again later."
+      redirect_to gift_certificates_new_path()
     end
-  end
 
-  # DELETE /gift_certificates/1
-  # DELETE /gift_certificates/1.json
-  def destroy
-    @gift_certificate.destroy
-    respond_to do |format|
-      format.html { redirect_to gift_certificates_url, notice: 'Gift certificate was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    Rails.logger.debug("Redeem code: #{coupon_code}")
+    @gift_certificate.redeem_code = coupon_code
+    @gift_certificate.save
+
+    # Make the stripe call after saving the gift certificate to make sure
+    # that when the callback comes from stripe there is already a record in the db to update
+    charge = Stripe::Charge.create(
+      :amount => amount,
+      :currency => "usd",
+      :description => "Knird Gift Certificate for #{@gift_certificate.receiver_email}",
+      :source => token,
+      :metadata => {"redeem_code" => @gift_certificate.redeem_code}
+    )
+    
+    flash[:success] = "Thank you for ordering the gift certificate. You will receive an email at #{@gift_certificate.giver_email} with the details shortly."
+    redirect_to gift_certificates_success_path()
   end
 
   private
+    def generate_unique_coupon_code
+        # try 10 times to generate a unique code and quit if unsuccessful
+        for i in 0..10
+          new_code = CouponCode.generate(parts: 2)
+          existing = GiftCertificate.find_by redeem_code: new_code
+          if existing == nil
+            return new_code
+          end
+        end
+        return nil
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_gift_certificate
       @gift_certificate = GiftCertificate.find(params[:id])
@@ -69,6 +66,6 @@ class GiftCertificatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def gift_certificate_params
-      params.require(:gift_certificate).permit(:giver_name, :giver_email, :receiver_email, :amount, :redeem_code)
+      params.require(:gift_certificate).permit(:giver_name, :giver_email, :receiver_name, :receiver_email, :amount, :redeem_code)
     end
 end

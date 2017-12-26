@@ -1,15 +1,18 @@
 <%= render 'layouts/header_no_search' %> 
-
+<script src="https://checkout.stripe.com/checkout.js"></script>
 <div class="row justify-content-center">
     <div class="container">
         <div class="row">
             <div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 text-center">
-                <h3>Gift of craft beer &amp; cider</h3>
+                <h3 class="homepage-emphasis">Gift of craft beer &amp; cider</h3>
             </div>
         </div>
 
         <div class="row">
             <div class="col-xs-offset-2 col-xs-8 col-sm-offset-4 col-sm-4 container">
+                <%- flash.each do |name, msg| -%>
+				    <%= content_tag :div, msg, class: "alert alert-warning", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+                <%- end -%>
                 <%= simple_form_for @gift_certificate, :url => process_new_gift_certificate_path, :html => { :class => 'form-horizontal' } do |f| %>
                     <div class="row">
                         <label for="giver_name_field" class="control-label gift-form-label">Gift Value</label>
@@ -44,7 +47,7 @@
                     </div>
 
                     <div class="row">
-                        <label for="giver_name_field" class="control-label gift-form-label">To</label>
+                        <label for="receiver_name_field" class="control-label gift-form-label">To</label>
                     </div>
                     <div class="row gift-form-control">
                         <%= f.input :receiver_name, label: false, required: true, placeholder: "Recipient's Name" %>
@@ -57,7 +60,7 @@
 
                     <div class="row">
                         <div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6 text-center">
-                            <%= f.submit "Place Order", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+                            <input type="submit" class="btn btn-success user-info-next-button" id="gift-certificate-stripe-button" value="Place Order"></input>
                         </div>
                     </div>
                 <% end %>
@@ -69,3 +72,5 @@
 
 <%= render 'form' %>
  -->
+
+ <!-- data-email="< % = @user.email %>"  -->

@@ -197,7 +197,8 @@ Rails.application.routes.draw do
 
   # Gift certificates
   get '/gift_certificates/new' => 'gift_certificates#new', :as => 'gift_certificates_new'
-  post '/gift_certificates/process_new_gift_certificate' => 'gift_certificates#process_new_gift_certificate', :as => 'process_new_gift_certificate'
+  get '/gift_certificates/success' => 'gift_certificates#success', :as => 'gift_certificates_success'
+  post '/gift_certificates/process_new_gift_certificate' => 'gift_certificates#create', :as => 'process_new_gift_certificate'
   
   # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"
