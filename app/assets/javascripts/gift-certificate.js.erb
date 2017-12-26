@@ -40,7 +40,13 @@ $(function() {
             return true;
         }
 
+        $('#gift-certificate-stripe-button').attr("disabled", "disabled");
+
+        var checkoutInProgress = false;
+
         var token = function(res){
+            checkoutInProgress = true;
+            $('#gift-certificate-stripe-button').attr("disabled", "disabled");
             var $id = $('<input type=hidden name=stripeToken />').val(res.id);
             var $email = $('<input type=hidden name=stripeEmail />').val(res.email);
             $('form').append($id).append($email).submit();
@@ -57,7 +63,12 @@ $(function() {
             description: '$' + amount + ' - Knird Gift Certificate',
             panelLabel:  'Checkout',
             token:       token,
-            email:       email
+            email:       email,
+            closed:      function(eventData) {
+                if (!checkoutInProgress) {
+                    $('#gift-certificate-stripe-button').removeAttr("disabled");
+                }
+            }
         });
         
         return false;

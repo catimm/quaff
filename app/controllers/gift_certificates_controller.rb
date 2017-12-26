@@ -8,6 +8,13 @@ class GiftCertificatesController < ApplicationController
   # GET /gift_certificates/new
   def new
     @gift_certificate = GiftCertificate.new
+
+    if user_signed_in?
+        @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
+        @gift_certificate.giver_email = current_user.email
+    end
+
+    @logged_in = current_user
   end
 
   # POST /gift_certificates
@@ -28,7 +35,6 @@ class GiftCertificatesController < ApplicationController
       redirect_to gift_certificates_new_path()
     end
 
-    Rails.logger.debug("Redeem code: #{coupon_code}")
     @gift_certificate.redeem_code = coupon_code
     @gift_certificate.save
 
