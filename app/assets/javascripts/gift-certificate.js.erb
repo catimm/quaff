@@ -1,13 +1,4 @@
 $(function() {
-    var handler = StripeCheckout.configure({
-        key: '<%= Rails.configuration.stripe[:publishable_key] %>',
-        locale: 'auto',
-        token: function(token) {
-            // You can access the token ID with `token.id`.
-            // Get the token ID to your server-side code for use.
-        }
-    });
-
     $('#gift-value-custom-amount').change(function(){
         $('#gift_certificate_amount').val($(this).val());
     });

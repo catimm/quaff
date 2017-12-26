@@ -17,6 +17,18 @@ class GiftCertificatesController < ApplicationController
     @logged_in = current_user
   end
 
+  def redeem
+  end
+
+  def process_redeem
+      @redeem_code = params[:redeem_code]
+      @gift_certificate = GiftCertificate.find_by(redeem_code: @redeem_code, purchase_completed: true, redeemed: false)
+      if @gift_certificate == nil
+          flash[:failure] = "This redemption code is not valid. Please enter a valid redemption code and try again."
+          redirect_to gift_certificates_redeem_path()
+      end
+  end
+  
   # POST /gift_certificates
   # POST /gift_certificates.json
   def create
