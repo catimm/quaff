@@ -20,12 +20,18 @@ class GiftCertificatesController < ApplicationController
   def redeem
   end
 
+  def signin_and_redeem
+      redeem_code = params[:redeem_code]
+      session[:user_return_to] = gift_certificates_redeem_path() + "?redeem_code=#{redeem_code}"
+      redirect_to new_user_session_path
+  end
+  
   def process_redeem
       @redeem_code = params[:redeem_code]
       @gift_certificate = GiftCertificate.find_by(redeem_code: @redeem_code, purchase_completed: true, redeemed: false)
       if @gift_certificate == nil
           flash[:failure] = "This redemption code is not valid. Please enter a valid redemption code and try again."
-          redirect_to gift_certificates_redeem_path()
+          redirect_to gift_certificates_redeem_path() + "?redeem_code=#{redeem_code}"
       end
   end
   
