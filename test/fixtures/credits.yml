@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  total_credit: 1.5
+  transaction_credit: 1.5
+  transaction_type: MyString
+  account_id: 
+
+two:
+  total_credit: 1.5
+  transaction_credit: 1.5
+  transaction_type: MyString
+  account_id: 
