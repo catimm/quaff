@@ -8,10 +8,10 @@
         </div>
 
         <div class="container">
-            <div class="col-xs-3 col-sm-3 text-center">
+            <div class="col-xs-4 col-sm-3 text-center">
                 <%= link_to "Send a gift certificate", gift_certificates_new_path(), class: "btn btn-primary" %>
             </div>
-            <div class="col-offset-xs-1 col-xs-8 col-offset-sm-1 col-sm-4 text-center">
+            <div class="col-offset-xs-2 col-xs-4 col-offset-sm-2 col-sm-3 text-center">
                 <%= link_to "Redeem a gift certificate", gift_certificates_redeem_path(), class: "btn btn-primary" %>
             </div>
         </div>
@@ -44,7 +44,7 @@
             <tbody>
                 <% @credits.each do |credit| %>
                     <tr>
-                        <td><%= credit.created_at.strftime("%m/%d/%Y") %></td>
+                        <td><%= credit.created_at.strftime("%b %e, %Y") %></td>
                         <td> <span class="<%= if credit.total_credit > 0 then "positive-amount" else "negative-amount" end %>"> <%= if credit.total_credit > 0 then "+" else "-" end %></span> $<%= credit.transaction_credit.to_i %></td>
                         <td><%= credit.reason_string %></td>
                         <td class="amount-column">$<%= credit.total_credit.to_i %></td>
