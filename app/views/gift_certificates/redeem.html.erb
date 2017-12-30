@@ -34,7 +34,7 @@
                     <%= link_to "Log in & Redeem", gift_certificates_signin_and_redeem_path() + "?redeem_code=#{params[:redeem_code]}", class: "btn btn-default" %>
                 </div>
                 <div class="col-xs-5 col-sm-offset-1 col-sm-3">
-                    <%= link_to "Sign up to Redeem", new_user_path(), class: "btn btn-success" %>
+                    <%= link_to "Sign up to Redeem", gift_certificates_signup_and_redeem_path() + "?redeem_code=#{params[:redeem_code]}", class: "btn btn-success" %>
                 </div>
             </div>
         <% end %>

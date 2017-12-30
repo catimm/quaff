@@ -201,6 +201,7 @@ Rails.application.routes.draw do
   post '/gift_certificates/process_new_gift_certificate' => 'gift_certificates#create', :as => 'process_new_gift_certificate'
   get '/gift_certificates/redeem' => 'gift_certificates#redeem', :as => 'gift_certificates_redeem'
   get '/gift_certificates/signin_and_redeem' => 'gift_certificates#signin_and_redeem', :as => 'gift_certificates_signin_and_redeem'
+  get '/gift_certificates/signup_and_redeem' => 'gift_certificates#signup_and_redeem', :as => 'gift_certificates_signup_and_redeem'
   post '/gift_certificates/redeem' => 'gift_certificates#process_redeem', :as => 'gift_certificates_process_redeem'
   
   # privacy and terms routes
