@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'
   patch '/users/process_first_password' => 'users#process_first_password', :as => 'process_first_password_user'
   get '/users/account_settings_profile' => 'users#account_settings_profile', :as => 'account_settings_profile_user' 
+  get '/users/account_settings_gifts_credits' => 'users#account_settings_gifts_credits', :as => 'account_settings_gifts_credits_user' 
   get '/users/account_settings_mates' => 'users#account_settings_mates', :as => 'account_settings_mates_user'
   get '/users/plan_rewewal_off' => 'users#plan_rewewal_off', :as => 'plan_rewewal_off_user'
   patch '/users/update_profile' => 'users#update_profile', :as => 'update_profile_user'

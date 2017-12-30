@@ -1,0 +1,58 @@
+<%= render 'layouts/header' %> 
+    <%= render 'user_account_settings_common', current_section: "GiftsCredits" %>
+    <div class="row no-margin">
+        <div class="container">
+            <div class="col-xs-12 col-sm-8">
+                <h3 class="user-settings-header">Gifts</h3>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="col-xs-3 col-sm-3 text-center">
+                <%= link_to "Send a gift certificate", gift_certificates_new_path(), class: "btn btn-primary" %>
+            </div>
+            <div class="col-offset-xs-1 col-xs-8 col-offset-sm-1 col-sm-4 text-center">
+                <%= link_to "Redeem a gift certificate", gift_certificates_redeem_path(), class: "btn btn-primary" %>
+            </div>
+        </div>
+    </div>
+    <div class="row no-margin">
+        <div class="container">
+            <div class="col-xs-12 col-sm-8">
+                <h3 class="user-settings-header">Your Credits</h3>
+            </div>
+        </div>
+    </div>
+    <% if @credits == nil or @credits.length == 0%>
+        <div class="container">
+            <div class="col-xs-12 col-sm-8">
+                <h4 class="recent-ratings-header">You do not have any credits. You can earn credits by referring a user to Knird or ordering drinks.</h4>
+            </div>
+        </div>
+    <% else %>
+    <div class="container">
+            <div class="col-xs-12 col-sm-8">
+                <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @credits.each do |credit| %>
+                    <tr>
+                        <td><%= credit.created_at.strftime("%m/%d/%Y") %></td>
+                        <td> <span class="<%= if credit.total_credit > 0 then "positive-amount" else "negative-amount" end %>"> <%= if credit.total_credit > 0 then "+" else "-" end %></span> $<%= credit.transaction_credit.to_i %></td>
+                        <td><%= credit.reason_string %></td>
+                        <td class="amount-column">$<%= credit.total_credit.to_i %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <% end %>
+<%= render 'layouts/footer' %>

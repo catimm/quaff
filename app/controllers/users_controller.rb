@@ -253,7 +253,11 @@ class UsersController < ApplicationController
     session[:return_to] ||= request.referer
     
   end # end of account_settings_profile action
-  
+
+  def account_settings_gifts_credits
+      @credits = Credit.where(account_id: current_user.account_id)
+  end
+    
   def account_settings_mates
     # get user info
     @user = User.find_by_id(current_user.id)

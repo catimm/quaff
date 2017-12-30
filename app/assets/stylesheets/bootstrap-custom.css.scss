@@ -3401,6 +3401,14 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: 20px;
 }
 
+.positive-amount {
+  background-color: lightgreen;
+}
+
+.negative-amount {
+  background-color: $faded-red;
+}
+
 .flash_success {
   background-color: #286090;
 }

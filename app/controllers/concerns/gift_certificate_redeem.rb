@@ -16,9 +16,16 @@ module GiftCertificateRedeem
             if gift_certificate == nil
                 return false
             end
+
+            # Get the latest credit record
+            @latest_credit = Credts.find_by(account_id: user.account_id).order(updated_at: :desc).first
+            credit_total = 0.0
+            if !@latest_credit.nil?
+                credit_total = @latest_credit.total_credit
+            end
             
             # add credit to the user that is redeeming
-            Credit.create(total_credit: gift_certificate.amount, transaction_credit: gift_certificate.amount, transaction_type: :GIFT_REDEEM, account_id: user.account_id)
+            Credit.create(total_credit: credit_total + gift_certificate.amount, transaction_credit: gift_certificate.amount, transaction_type: :GIFT_REDEEM, account_id: user.account_id)
 
             # mark the gift certificate as already redeemed
             gift_certificate.redeemed = true
