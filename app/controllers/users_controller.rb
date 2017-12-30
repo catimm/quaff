@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   include DeliveryEstimator
   include BestGuess
   include QuerySearch
+  include GiftCertificateRedeem
   require "stripe"
   require 'json'
   
@@ -60,6 +61,18 @@ class UsersController < ApplicationController
       else
         # set redirect link
         @redirect_link = delivery_address_getting_started_path
+      end
+
+      # Redeem gift certificate if required
+      if !session[:redeem_code].nil?
+          redeem_code = session[:redeem_code]
+
+          if redeem_certificate(redeem_code, current_user) == true
+              flash[:success] = "The gift certificate with code #{redeem_code} was successfully redeemed and credited to your account."
+          else
+              session[:user_return_to] = @redirect_link
+              @redirect_link = gift_certificates_redeem_path
+          end
       end
       
       # redirect to next step in signup process
@@ -208,8 +221,7 @@ class UsersController < ApplicationController
     end
     
     # customer's Stripe card info
-    @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
-                                        all(:object => "card")
+    @customer_cards = []
     #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
     
   end # end of account_settings_membership action
@@ -241,7 +253,11 @@ class UsersController < ApplicationController
     session[:return_to] ||= request.referer
     
   end # end of account_settings_profile action
-  
+
+  def account_settings_gifts_credits
+      @credits = Credit.where(account_id: current_user.account_id).order(created_at: :desc)
+  end
+    
   def account_settings_mates
     # get user info
     @user = User.find_by_id(current_user.id)
@@ -531,6 +547,13 @@ class UsersController < ApplicationController
             @drink_quantity = @user_delivery.sum(:quantity)
             # send delivery confirmation email
             UserMailer.delivery_confirmation_email(@user, @delivery, @drink_quantity).deliver_now
+          elsif @charge_description.include? "Knird Gift Certificate" # run only if this is a gift certificate
+            metadata = event_object['metadata']
+            redeem_code = metadata['redeem_code']
+            gift_certificate = GiftCertificate.find_by redeem_code: redeem_code
+            gift_certificate.purchase_completed = true
+            gift_certificate.save
+            UserMailer.gift_certificate_created_email(gift_certificate).deliver_now
           end
         when 'charge.failed'
           #Rails.logger.debug("Failed charge event")
@@ -554,6 +577,11 @@ class UsersController < ApplicationController
               AdminMailer.admin_failed_charge_notice(@user, @delivery_info).deliver_now
               # send customer notice
               UserMailer.customer_failed_charge_notice(@user, @charge_amount, @charge_description_one).deliver_now
+            elsif @charge_description_one.include? "Knird Gift Certificate" # run only if this is a gift certificate
+              metadata = event_object['metadata']
+              redeem_code = metadata['redeem_code']
+              gift_certificate = GiftCertificate.find_by redeem_code: redeem_code
+              UserMailer.gift_certificate_failed_email(gift_certificate).deliver_now
             end
           end # end of nil test
           if !@charge_description_two.nil?

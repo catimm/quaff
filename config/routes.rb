@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'
   patch '/users/process_first_password' => 'users#process_first_password', :as => 'process_first_password_user'
   get '/users/account_settings_profile' => 'users#account_settings_profile', :as => 'account_settings_profile_user' 
+  get '/users/account_settings_gifts_credits' => 'users#account_settings_gifts_credits', :as => 'account_settings_gifts_credits_user' 
   get '/users/account_settings_mates' => 'users#account_settings_mates', :as => 'account_settings_mates_user'
   get '/users/plan_rewewal_off' => 'users#plan_rewewal_off', :as => 'plan_rewewal_off_user'
   patch '/users/update_profile' => 'users#update_profile', :as => 'update_profile_user'
@@ -194,6 +195,15 @@ Rails.application.routes.draw do
   get '/early_signup/early_signup_confirmation/:id' => 'early_signup#early_signup_confirmation', :as => 'early_signup_confirmation'
   
   get '/early_signup/early_customer_password_response/:id' => 'early_signup#early_customer_password_response', :as => 'early_customer_password_response'
+
+  # Gift certificates
+  get '/gift_certificates/new' => 'gift_certificates#new', :as => 'gift_certificates_new'
+  get '/gift_certificates/success' => 'gift_certificates#success', :as => 'gift_certificates_success'
+  post '/gift_certificates/process_new_gift_certificate' => 'gift_certificates#create', :as => 'process_new_gift_certificate'
+  get '/gift_certificates/redeem' => 'gift_certificates#redeem', :as => 'gift_certificates_redeem'
+  get '/gift_certificates/signin_and_redeem' => 'gift_certificates#signin_and_redeem', :as => 'gift_certificates_signin_and_redeem'
+  get '/gift_certificates/signup_and_redeem' => 'gift_certificates#signup_and_redeem', :as => 'gift_certificates_signup_and_redeem'
+  post '/gift_certificates/redeem' => 'gift_certificates#process_redeem', :as => 'gift_certificates_process_redeem'
   
   # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"

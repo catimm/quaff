@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Total credit:</strong>
+  <%= @credit.total_credit %>
+</p>
+
+<p>
+  <strong>Transaction credit:</strong>
+  <%= @credit.transaction_credit %>
+</p>
+
+<p>
+  <strong>Transaction type:</strong>
+  <%= @credit.transaction_type %>
+</p>
+
+<p>
+  <strong>Account:</strong>
+  <%= @credit.account %>
+</p>
+
+<%= link_to 'Edit', edit_credit_path(@credit) %> |
+<%= link_to 'Back', credits_path %>

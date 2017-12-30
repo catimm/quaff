@@ -1,0 +1,69 @@
+<%= render 'layouts/header' %> 
+    <%= render 'user_account_settings_common', current_section: "GiftsCredits" %>
+    <div class="row no-margin">
+        <div class="container">
+            <div class="col-xs-12 col-sm-8">
+            <%- flash.each do |name, msg| -%>
+                <%= content_tag :div, msg, class: "alert alert-success text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+            <%- end -%>
+            </div>
+            <div class="col-xs-12 col-sm-8">
+                <h3 class="user-settings-header">Gifts</h3>
+            </div>
+        </div>
+        <div class="container">
+            <div class="col-xs-6 col-sm-4" style="padding-top: 20px;">
+                <%= link_to "Send a gift certificate", gift_certificates_new_path(), class: "btn btn-primary" %>
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                <%= form_tag gift_certificates_process_redeem_path, :html => { :class => 'form-horizontal' } do |f| %>
+                    <div class="row text-center">
+                        <%= text_field_tag :redeem_code, params[:redeem_code], size: 20, placeholder: "Enter redemption code", class: "form-control", :required => true %>
+                    </div>
+                    <div class="row text-center">
+                        <input type="submit" class="btn btn-success gift-redeem-submit" value="Redeem Your Gift"></input>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+    <div class="row no-margin">
+        <div class="container">
+            <div class="col-xs-12 col-sm-8">
+                <h3 class="user-settings-header">Your Credits</h3>
+            </div>
+        </div>
+    </div>
+    <% if @credits == nil or @credits.length == 0%>
+        <div class="container">
+            <div class="col-xs-12 col-sm-8">
+                <h4 class="recent-ratings-header">You do not have any credits. You can earn credits by referring a user to Knird or ordering drinks.</h4>
+            </div>
+        </div>
+    <% else %>
+    <div class="container">
+            <div class="col-xs-12 col-sm-8">
+                <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @credits.each do |credit| %>
+                    <tr>
+                        <td><%= credit.created_at.strftime("%b %e, %Y") %></td>
+                        <td> <span class="<%= if credit.total_credit > 0 then "positive-amount" else "negative-amount" end %>"> <%= if credit.total_credit > 0 then "+" else "-" end %></span> $<%= credit.transaction_credit.to_i %></td>
+                        <td><%= credit.reason_string %></td>
+                        <td class="amount-column">$<%= credit.total_credit.to_i %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <% end %>
+<%= render 'layouts/footer' %>

@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Gift Certificates</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Giver name</th>
+      <th>Giver email</th>
+      <th>Receiver email</th>
+      <th>Amount</th>
+      <th>Redeem code</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @gift_certificates.each do |gift_certificate| %>
+      <tr>
+        <td><%= gift_certificate.giver_name %></td>
+        <td><%= gift_certificate.giver_email %></td>
+        <td><%= gift_certificate.receiver_email %></td>
+        <td><%= gift_certificate.amount %></td>
+        <td><%= gift_certificate.redeem_code %></td>
+        <td><%= link_to 'Show', gift_certificate %></td>
+        <td><%= link_to 'Edit', edit_gift_certificate_path(gift_certificate) %></td>
+        <td><%= link_to 'Destroy', gift_certificate, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Gift certificate', new_gift_certificate_path %>

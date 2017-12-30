@@ -1,4 +1,5 @@
 class Admin::FulfillmentController < ApplicationController
+  include CreditsUse
   before_filter :verify_admin
   require "stripe"
  
@@ -120,8 +121,10 @@ class Admin::FulfillmentController < ApplicationController
     
     # charge customer
     @customer_subscription = UserSubscription.where(account_id: @delivery.account_id).first
-    if @delivery.total_price != 0
-      @total_price = (@delivery.total_price * 100).floor # put total charge in cents
+    remaining_amount = charge_with_credits(@delivery.account_id, @delivery.total_price, :DRINKS_DELIVERY)
+
+    if remaining_amount != 0
+      @total_price = (remaining_amount * 100).floor # put total charge in cents
       @charge_description = @delivery_date + ' Knird delivery.'
       Stripe::Charge.create(
         :amount => @total_price, # in cents
