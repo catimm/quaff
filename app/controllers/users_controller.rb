@@ -255,7 +255,7 @@ class UsersController < ApplicationController
   end # end of account_settings_profile action
 
   def account_settings_gifts_credits
-      @credits = Credit.where(account_id: current_user.account_id)
+      @credits = Credit.where(account_id: current_user.account_id).order(created_at: :desc)
   end
     
   def account_settings_mates

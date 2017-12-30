@@ -61,7 +61,7 @@ class GiftCertificatesController < ApplicationController
           session.delete(:user_return_to)
           redirect_to return_path
       else
-          redirect_to gift_certificates_redeem_path()
+          redirect_to account_settings_gifts_credits_user_path()
       end
   end
   

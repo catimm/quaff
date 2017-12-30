@@ -18,7 +18,7 @@ module GiftCertificateRedeem
             end
 
             # Get the latest credit record
-            @latest_credit = Credts.find_by(account_id: user.account_id).order(updated_at: :desc).first
+            @latest_credit = Credit.where(account_id: user.account_id).order(updated_at: :desc).first
             credit_total = 0.0
             if !@latest_credit.nil?
                 credit_total = @latest_credit.total_credit
