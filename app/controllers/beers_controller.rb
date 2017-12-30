@@ -284,7 +284,7 @@ class BeersController < ApplicationController
       @drink_ratings = UserBeerRating.where(user_id: @user_id, beer_id: @drink_id).order('rated_on DESC')
       @most_recent_rating = @drink_ratings.first
       @number_of_ratings = @drink_ratings.count
-      if @most_recent_rating.rated_on > 1.month
+      if @most_recent_rating.rated_on > 1.month.ago
         @drank_recently = true
       else
         @drank_recently = false

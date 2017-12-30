@@ -3,11 +3,34 @@ class Admin::FulfillmentController < ApplicationController
   require "stripe"
  
   def index
-    @delivery_driver_id = DeliveryDriver.find_by_user_id(current_user.id)
-    @delivery_driver_zone_ids = DeliveryZone.where(delivery_driver_id: @delivery_driver_id).pluck(:id)
-    @delivery_driver_account_ids = Account.where(delivery_zone_id: @delivery_driver_zone_ids).pluck(:id)
-    @in_progress_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids, status: "in progress").order('delivery_date ASC')
-    #Rails.logger.debug("Live deliveries: #{@live_delivery_info.inspect}")
+    if params.has_key?(:format)
+      # get upcoming deliveries
+      @delivery_driver = DeliveryDriver.find_by_id(params[:format])
+      @delivery_driver_name = @delivery_driver.user.first_name + " " + @delivery_driver.user.last_name
+      @delivery_driver_zone_ids = DeliveryZone.where(delivery_driver_id: @delivery_driver.id).pluck(:id)
+      @delivery_driver_account_ids = Account.where(delivery_zone_id: @delivery_driver_zone_ids).pluck(:id)
+      @in_progress_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids).
+                                            where(delivery_date: 1.day.ago..7.days.from_now).
+                                            where.not(status: "delivered").
+                                            joins(:account => [ :delivery_zone ]).
+                                            order("delivery_date ASC, delivery_zones.start_time ASC")
+    else
+      @delivery_driver_name = "All Drivers"
+      # get upcoming deliveries
+      @in_progress_delivery_info = Delivery.where(delivery_date: Date.today..7.days.from_now).
+                                            where.not(status: "delivered").
+                                            joins(:account => [ :delivery_zone ]).
+                                            order("delivery_date ASC, delivery_zones.start_time ASC")
+    end
+   
+                                          
+    #Rails.logger.debug("Upcoming deliveries: #{@in_progress_delivery_info.inspect}")
+    
+    # get list of upcoming delivery dates
+    @upcoming_delivery_dates = @in_progress_delivery_info.pluck(:delivery_date).uniq
+    #Rails.logger.debug("Upcoming delivery dates: #{@upcoming_delivery_dates.inspect}")
+    
+    # get deliveries delivered within last week
     @delivered_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids, status: "delivered").where('delivery_date >= ?', 1.week.ago).order('delivery_date DESC')
     #Rails.logger.debug("Delivered info: #{@delivered_delivery_info.inspect}")
     
@@ -36,6 +59,59 @@ class Admin::FulfillmentController < ApplicationController
     end
     
   end # end of index method
+  
+  def change_driver_view
+    @driver_id = params[:id]
+    # redirect back to recommendation page                                             
+    render js: "window.location = '#{admin_fulfillment_index_path(@driver_id)}'"
+  end # end of change_disti_view method
+  
+  def show
+    # get upcoming deliveries
+    @delivery_driver = DeliveryDriver.find_by_user_id(params[:id])
+    @delivery_driver_zone_ids = DeliveryZone.where(delivery_driver_id: @delivery_driver.id).pluck(:id)
+    @delivery_driver_account_ids = Account.where(delivery_zone_id: @delivery_driver_zone_ids).pluck(:id)
+    @in_progress_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids).
+                                          where(delivery_date: 1.day.ago..7.days.from_now).
+                                          where.not(status: "delivered").
+                                          joins(:account => [ :delivery_zone ]).
+                                          order("delivery_date ASC, delivery_zones.start_time ASC")
+                                          
+    #Rails.logger.debug("Upcoming deliveries: #{@in_progress_delivery_info.inspect}")
+    
+    # get list of upcoming delivery dates
+    @upcoming_delivery_dates = @in_progress_delivery_info.pluck(:delivery_date).uniq
+    #Rails.logger.debug("Upcoming delivery dates: #{@upcoming_delivery_dates.inspect}")
+    
+    # get deliveries delivered within last week
+    @delivered_delivery_info = Delivery.where(account_id: @delivery_driver_account_ids, status: "delivered").where('delivery_date >= ?', 1.week.ago).order('delivery_date DESC')
+    #Rails.logger.debug("Delivered info: #{@delivered_delivery_info.inspect}")
+    
+    # determine number of drinks in each delivery currently live
+    @in_progress_delivery_info.each do |delivery|
+      # get account delivery details
+      @account_delivery = AccountDelivery.where(delivery_id: delivery.id)
+      
+      # count number of drinks in delivery
+      @drink_count = @account_delivery.sum(:quantity)
+      
+      # attribute this drink count to the delivery
+      delivery.delivery_quantity = @drink_count
+    end
+    
+    # determine number of drinks in each delivery already delivered
+    @delivered_delivery_info.each do |delivery|
+      # get account delivery details
+      @account_delivery = AccountDelivery.where(delivery_id: delivery.id)
+      
+       # count number of drinks in delivery
+      @drink_count = @account_delivery.sum(:quantity)
+      
+      # attribute this drink count to the delivery
+      delivery.delivery_quantity = @drink_count
+    end
+    
+  end # end of show method
   
   def admin_confirm_delivery
     # get delivery info
@@ -106,7 +182,7 @@ class Admin::FulfillmentController < ApplicationController
     # update account based on number of remaining deliveries in this period
     @remaining_deliveries = @subscription_deliveries_included - @account_owner_subscription.deliveries_this_period
     if @remaining_deliveries == 0
-      UserMailer.seven_day_membership_expiration_notice(@user, @customer_subscription).delivery_now
+      UserMailer.seven_day_membership_expiration_notice(@account_owner, @customer_subscription).delivery_now
     elsif @remaining_deliveries >= 2
       # start next delivery cycle
       # get new delivery date

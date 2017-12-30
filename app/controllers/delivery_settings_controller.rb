@@ -164,19 +164,20 @@ class DeliverySettingsController < ApplicationController
     @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 13.hours
     @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
     
-    @today = DateTime.now
+    @today = Date.today
+    #Rails.logger.debug("Today: #{@today.inspect}")
     # get user's delivery zone
     @user_delivery_zone = current_user.account.delivery_zone_id
     # get delivery zone info
     @delivery_zone_info = DeliveryZone.find_by_id(@user_delivery_zone)
     
     # determine number of days needed before allowing change in delivery date
-    if @delivery.status == "user review"
-      @days_notice_required = 1
+    if @today < @delivery.delivery_date
+      @change_permitted = true
     else
-      @days_notice_required = 3
+      @change_permitted = false
     end
-    #Rails.logger.debug("Days notice required: #{@days_notice_required.inspect}")
+    #Rails.logger.debug("Change permitted: #{@change_permitted.inspect}")
     
     # determine current week status
     @current_week_number = Date.today.strftime("%U").to_i
@@ -205,7 +206,7 @@ class DeliverySettingsController < ApplicationController
     # next determine which of two options is best based on days noticed required
     @days_between_today_and_first_option = @first_delivery_date_option - Date.today
     #Rails.logger.debug("Days between today and first option: #{@days_between_today_and_first_option.inspect}")
-    if @days_between_today_and_first_option >= @days_notice_required
+    if @change_permitted == true
       @first_change_date_option = @first_delivery_date_option
     else
       @first_change_date_option = @second_delivery_date_option
@@ -337,9 +338,9 @@ class DeliverySettingsController < ApplicationController
     # get user's delivery info
     @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
     @first_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
-    Rails.logger.debug("first delivery date: #{@first_delivery.inspect}")
+    #Rails.logger.debug("first delivery date: #{@first_delivery.inspect}")
     @second_delivery = @all_upcoming_deliveries.order("delivery_date ASC").second
-    Rails.logger.debug("second delivery date: #{@second_delivery.inspect}")
+    #Rails.logger.debug("second delivery date: #{@second_delivery.inspect}")
     
     # extend current membership active until date if new delivery date is pushed into the future
     @user_subscription = UserSubscription.find_by_user_id(current_user.id)
@@ -390,7 +391,13 @@ class DeliverySettingsController < ApplicationController
     end
     
     # now update delivery date and status
-    @first_delivery.update_attribute(:delivery_date, @new_delivery_date)
+    @next_delivery = Delivery.find_by_id(@first_delivery.id)
+    @next_delivery.update(delivery_date: @new_delivery_date, 
+                          subtotal: 0, 
+                          sales_tax: 0, 
+                          total_price: 0,
+                          status: "admin prep",
+                          share_admin_prep_with_user: false)
     @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
     
     redirect_to user_delivery_settings_path(current_user.id)

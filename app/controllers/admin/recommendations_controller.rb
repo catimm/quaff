@@ -268,7 +268,9 @@ class Admin::RecommendationsController < ApplicationController
         if @adjusted_quantity == 0
           # find disti order in process 
           @disti_order = DistiOrder.find_by_inventory_id(@requested_inventory.id)
-          @disti_order.destroy
+          if !@disti_order.blank?
+            @disti_order.destroy
+          end
           @requested_inventory.destroy
         else
           @requested_inventory.update(order_request: @adjusted_quantity)

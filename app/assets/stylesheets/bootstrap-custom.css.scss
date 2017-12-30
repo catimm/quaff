@@ -5656,7 +5656,7 @@ $delivery-beer-header-lines-to-show: 2;
 .maker-list-for-inventory {
   margin-top: 15px;
 }
-.disti-list-for-order-requests, .disti-current-orders, .disti-current-inventory {
+.disti-list-for-order-requests, .disti-current-orders, .disti-current-inventory, .current-driver {
   margin-top: 10px;
 }
 
@@ -5727,6 +5727,9 @@ $delivery-beer-header-lines-to-show: 2;
     margin: 0 5px;
   }
 }
+.driver-icon-holder {
+  float: left;
+}
 .fulfillment-address {
   margin-bottom: 5px;
 }
@@ -5739,8 +5742,7 @@ $delivery-beer-header-lines-to-show: 2;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   h5 {
-    text-align: center;
-    margin: 5px 0;
+    margin: 5px;
   }
 }
 .delivery-confirm-button {

@@ -25,14 +25,14 @@
 		<div class="row no-margin">
 			<div class="col-xs-8">
 				<h3 class="delivery-preference-prompt">Next delivery:</h3>
-				<% if @days_notice_required > 1 %>
+				<% if @change_permitted == true %>
 					<%= link_to "Change next delivery date", "#", :class => "btn btn-primary pause-delivery-button", 
 							data: {toggle: "modal", target: "#pause_delivery"} %>
 				<% else %>
 					<%= link_to "Change next delivery date", "#", :class => "btn btn-default pause-delivery-button", 
-							data: {toggle: "tooltip", title: "It's too late to change this week's delivery date!"} %>
+							data: {toggle: "tooltip", title: "Your delivery is today! Please email to change this week's delivery date."} %>
 				<% end %>
-				<p class="delivery-detail">You'll receive 2 deliveries/month--every other Thursday.</p>
+				<p class="delivery-detail">You'll receive 2 deliveries/month--every other week.</p>
 			</div>
 			<div class="col-xs-4">
 				<div class="row no-margin preferences-next-delivery-date text-center">

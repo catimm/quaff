@@ -12,6 +12,7 @@
 #
 
 class Account < ActiveRecord::Base
+  
   has_many :account_deliveries
   has_many :admin_account_deliveries
   has_many :deliveries
@@ -21,13 +22,21 @@ class Account < ActiveRecord::Base
   has_many :users
   accepts_nested_attributes_for :users, :allow_destroy => true
   
+  belongs_to :delivery_zone
+  
   attr_accessor :user_id # to hold current user id
     
   # create view in admin recommendation drop down
   def recommendation_account_drop_down_view
     @account_owner = User.where(account_id: self.id, role_id: [1,4])[0]
+    #Rails.logger.debug("Acct owner: #{@account_owner.inspect}")
     @next_delivery = Delivery.where(account_id: self.id).where.not(status: "delivered").order("delivery_date ASC").first
-    "#{@account_owner.first_name} [#{@account_owner.username} next on #{@next_delivery.delivery_date}]"
+    #Rails.logger.debug("Next delivery: #{@next_delivery.inspect}")
+    if !@next_delivery.blank?
+      "#{@account_owner.first_name} [#{@account_owner.username} next on #{@next_delivery.delivery_date}]"
+    else
+      "#{@account_owner.first_name} [#{@account_owner.username} is not scheduled"
+    end
   end
   
   # scope not yet delivered to account owners

@@ -8,5 +8,14 @@ $(function() {
 	
 	});
 	
+	// add logic to filter current drivers 
+	$(document).on('change', '#driver_list_delivery_driver_id', function () {
+		var driver_id = $(this).val();
+
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/fulfillment/change_driver_view/" + driver_id
+		});
+	});
 	
 });

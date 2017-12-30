@@ -293,6 +293,8 @@ Rails.application.routes.draw do
   get 'admin/disti_inventories/change_disti_orders_view/:id' => 'admin/disti_inventories#change_disti_orders_view'
   patch 'admin/disti_inventories/process_inventory/:id' => 'admin/disti_inventories#process_inventory', :as => 'process_disti_inventory'
  
+  # admin fulfillment routs
+  get 'admin/fulfillment/change_driver_view/:id' => 'admin/fulfillment#change_driver_view'
   
   # admin drink DB management routes
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
