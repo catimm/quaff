@@ -1,6 +1,7 @@
 class GiftCertificatesController < ApplicationController
   require "stripe"
   require "coupon_code"
+  include GiftCertificateRedeem
 
   def success
   end
@@ -18,7 +19,7 @@ class GiftCertificatesController < ApplicationController
   end
 
   def redeem
-      if !session[:user_return_to].nil?
+      if !session[:user_return_to].nil? and session[:user_return_to].include? gift_certificates_redeem_path
           # delete the session return to prevent returning to this url after every sign-in
           session.delete(:user_return_to)
       end
@@ -32,7 +33,13 @@ class GiftCertificatesController < ApplicationController
 
   def signup_and_redeem
       redeem_code = params[:redeem_code]
-      session[:user_return_to] = redeem_code
+
+      if redeem_code == nil
+          # use an invalid redeem code to redirect user from signup page to redeem page
+          redeem_code = "MANUAL_ENTRY"
+      end
+
+      session[:redeem_code] = redeem_code
       redirect_to new_user_path()
   end
   
@@ -42,27 +49,12 @@ class GiftCertificatesController < ApplicationController
   end
     
   def process_redeem
-      @redeem_code = params[:redeem_code]
-      @gift_certificate = GiftCertificate.where("redeem_code = ? AND purchase_completed = True AND (redeemed IS NULL OR redeemed = False)", @redeem_code).first
-      if @gift_certificate == nil
-          return redirect_invalid_code @redeem_code
+      redeem_code = params[:redeem_code]
+      if redeem_certificate(redeem_code, current_user) == false
+          return redirect_invalid_code redeem_code
       end
-      GiftCertificate.transaction do
-          # Get gift certificate inside transaction again to make sure that the gift card cant get redeemed twice
-          # by requests coming at the same time
-          @gift_certificate = GiftCertificate.where("redeem_code = ? AND purchase_completed = True AND (redeemed IS NULL OR redeemed = False)", @redeem_code).first
-          if @gift_certificate == nil
-              return redirect_invalid_code @redeem_code
-          end
-          
-          # add credit to the user that is redeeming
-          Credit.create(total_credit: @gift_certificate.amount, transaction_credit: @gift_certificate.amount, transaction_type: :GIFT_REDEEM, account_id: current_user.account_id)
-
-          # mark the gift certificate as already redeemed
-          @gift_certificate.redeemed = true
-          @gift_certificate.save()
-      end
-
+      
+      flash[:success] = "The gift certificate with code #{redeem_code} was successfully redeemed and credited to your account."
       return_path = session[:user_return_to]
 
       if return_path != nil

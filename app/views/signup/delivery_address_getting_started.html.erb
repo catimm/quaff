@@ -10,6 +10,13 @@
 		<%= render 'signup/signup_guide_consumer' %>
 	</div>
 	<div class="row">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 container">
+			<%- flash.each do |name, msg| -%>
+				<%= content_tag :div, msg, class: "alert alert-success", :id => "flash_gift_signup_#{name}" if msg.is_a?(String) %>
+			<%- end -%>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-xs-12 text-center">
 			<h2 class="signup-question">Add a delivery address</h2>
 			<h5 class="signup-question-detail">You can update this info on your account profile page anytime after signup.</h5>

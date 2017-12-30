@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   include DeliveryEstimator
   include BestGuess
   include QuerySearch
+  include GiftCertificateRedeem
   require "stripe"
   require 'json'
   
@@ -60,6 +61,18 @@ class UsersController < ApplicationController
       else
         # set redirect link
         @redirect_link = delivery_address_getting_started_path
+      end
+
+      # Redeem gift certificate if required
+      if !session[:redeem_code].nil?
+          redeem_code = session[:redeem_code]
+
+          if redeem_certificate(redeem_code, current_user) == true
+              flash[:success] = "The gift certificate with code #{redeem_code} was successfully redeemed and credited to your account."
+          else
+              session[:user_return_to] = @redirect_link
+              @redirect_link = gift_certificates_redeem_path
+          end
       end
       
       # redirect to next step in signup process
