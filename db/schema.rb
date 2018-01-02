@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171121010239) do
+ActiveRecord::Schema.define(version: 20171227052703) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,6 +212,17 @@ ActiveRecord::Schema.define(version: 20171121010239) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "credits", force: :cascade do |t|
+    t.float    "total_credit"
+    t.float    "transaction_credit"
+    t.string   "transaction_type"
+    t.integer  "account_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "credits", ["account_id"], name: "index_credits_on_account_id", using: :btree
+
   create_table "customer_delivery_changes", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "delivery_id"
@@ -393,6 +404,19 @@ ActiveRecord::Schema.define(version: 20171121010239) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean  "mate"
+  end
+
+  create_table "gift_certificates", force: :cascade do |t|
+    t.string   "giver_name"
+    t.string   "giver_email"
+    t.string   "receiver_email"
+    t.decimal  "amount"
+    t.string   "redeem_code"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "receiver_name"
+    t.boolean  "purchase_completed"
+    t.boolean  "redeemed"
   end
 
   create_table "inventories", force: :cascade do |t|
@@ -815,6 +839,7 @@ ActiveRecord::Schema.define(version: 20171121010239) do
     t.string   "special_code"
     t.string   "tpw"
     t.integer  "account_id"
+    t.string   "mobile_number"
     t.string   "phone"
     t.boolean  "recent_addition"
   end
@@ -843,4 +868,5 @@ ActiveRecord::Schema.define(version: 20171121010239) do
     t.string   "state"
   end
 
+  add_foreign_key "credits", "accounts"
 end

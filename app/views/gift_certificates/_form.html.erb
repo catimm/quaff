@@ -1,0 +1,15 @@
+<%= simple_form_for(@gift_certificate, :url => process_new_gift_certificate_path) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :giver_name %>
+    <%= f.input :giver_email %>
+    <%= f.input :receiver_email %>
+    <%= f.input :amount %>
+    <%= f.input :redeem_code %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

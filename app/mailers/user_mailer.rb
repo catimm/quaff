@@ -672,4 +672,42 @@ class UserMailer < ActionMailer::Base
     }
     mandrill_client.messages.send_template template_name, template_content, message
   end
+
+  def gift_certificate_created_email(gift_certificate)
+    template_name = "gift-certificate-created-email"
+    template_content = []
+    message = {
+      to: [{email: gift_certificate.receiver_email}, {email: gift_certificate.giver_email, type: "cc"}],
+      inline_css: true,
+      merge_vars: [
+        {rcpt: gift_certificate.receiver_email,
+         vars: [
+           {name: "giver_name", content: gift_certificate.giver_name},
+           {name: "receiver_name", content: gift_certificate.receiver_name},
+           {name: "amount", content: gift_certificate.amount},
+           {name: "redeem_code", content: gift_certificate.redeem_code}
+         ]}
+      ]
+    }
+    mandrill_client.messages.send_template template_name, template_content, message
+  end
+
+  def gift_certificate_failed_email(gift_certificate)
+    template_name = "gift_certificate_failed_email"
+    template_content = []
+    message = {
+      to: [{email: gift_certificate.giver_email}],
+      inline_css: true,
+      merge_vars: [
+        {rcpt: gift_certificate.giver_email,
+         vars: [
+           {name: "giver_name", content: gift_certificate.giver_name},
+           {name: "receiver_name", content: gift_certificate.receiver_name},
+           {name: "amount", content: gift_certificate.amount}
+         ]}
+      ]
+    }
+    mandrill_client.messages.send_template template_name, template_content, message
+  end
+  
 end

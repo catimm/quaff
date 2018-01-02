@@ -1,0 +1,67 @@
+$(function() {
+    $('#gift-value-custom-amount').change(function(){
+        $('#gift_certificate_amount').val($(this).val());
+    });
+
+    $('input[name=giftValue]').change(function() {
+        var selectedValue = $(this).val();
+        if (selectedValue == "25") {
+            $('.gift-value-description > span').text('$25 covers a 1-month subscription & approx. 5 drinks.');
+            $('#gift_certificate_amount').val(25);
+            $('#gift-value-custom-amount').val('');
+        }
+        else if (selectedValue == "50") {
+            $('.gift-value-description > span').text('$50 covers a 3-month subscription & approx. 10 drinks.');
+            $('#gift_certificate_amount').val(50);
+            $('#gift-value-custom-amount').val('');
+        }
+        else if (selectedValue == "100") {
+            $('.gift-value-description > span').text('$50 covers a 6-month subscription & approx. 20 drinks.');
+            $('#gift_certificate_amount').val(100);
+            $('#gift-value-custom-amount').val('');
+        }
+        else if (selectedValue == "custom") {
+            $('.gift-value-description > span').text('');
+        }
+    });
+
+    $('#gift-certificate-stripe-button').click(function() {
+        // If the form is not valid, do not open the stripe checkout form
+        if (!$('#new_gift_certificate')[0].checkValidity()) {
+            return true;
+        }
+
+        $('#gift-certificate-stripe-button').attr("disabled", "disabled");
+
+        var checkoutInProgress = false;
+
+        var token = function(res){
+            checkoutInProgress = true;
+            $('#gift-certificate-stripe-button').attr("disabled", "disabled");
+            var $id = $('<input type=hidden name=stripeToken />').val(res.id);
+            var $email = $('<input type=hidden name=stripeEmail />').val(res.email);
+            $('form').append($id).append($email).submit();
+        };
+
+        // Open the stripe checkout form
+        var amount = Number.parseFloat($("#gift_certificate_amount").val());
+        var email = $("#gift_certificate_giver_email").val();
+        StripeCheckout.open({
+            key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+            amount:      amount * 100, // Amount in cents
+            name:        'Knird',
+            image:       'https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg',
+            description: '$' + amount + ' - Knird Gift Certificate',
+            panelLabel:  'Checkout',
+            token:       token,
+            email:       email,
+            closed:      function(eventData) {
+                if (!checkoutInProgress) {
+                    $('#gift-certificate-stripe-button').removeAttr("disabled");
+                }
+            }
+        });
+        
+        return false;
+    });
+});

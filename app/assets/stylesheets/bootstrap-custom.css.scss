@@ -3340,6 +3340,79 @@ $beer-header-lines-to-show-fp: 1;
   margin: 15px 0 !important;
   width: 95% !important;
 }
+.gift-value-custom {
+  padding: 0 !important;
+}
+
+.gift-success-buttons {
+  margin-right: 20px;
+}
+
+.gift-value-custom input[type="number"] {
+  width: 90px;
+  height: 44px;
+  background-color: #337ab7;
+  border: none;
+  text-align: center;
+}
+
+.gift-value-custom input[type="number"]::-webkit-input-placeholder {
+  color: white;
+  font-size: 14px;
+}
+
+.gift-value-custom input[type="number"]::-moz-placeholder {
+  color: white;
+  font-size: 14px;
+}
+
+.gift-value-custom input[type="number"]::-ms-input-placeholder {
+  color: white;
+  font-size: 14px;
+}
+
+.gift-value-custom.active input[type="number"] {
+  background-color: #286090;
+}
+
+.gift-value-custom input[type="number"] {
+   -moz-appearance:textfield;
+}
+
+.gift-value-custom input[type=number]::-webkit-inner-spin-button,
+.gift-value-custom input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.gift-form-control .form-group{
+  margin-left: 0px !important;
+}
+
+.gift-value-description {
+  margin-top: 10px;
+}
+
+.gift-form-label {
+  color: black;
+}
+
+.gift-redeem-submit {
+  margin-top: 20px;
+}
+
+.positive-amount {
+  background-color: lightgreen;
+}
+
+.negative-amount {
+  background-color: $faded-red;
+}
+
+.flash_success {
+  background-color: #286090;
+}
+
 .terms-and-conditions-text {
   color: $normal-text;
 }
@@ -7277,8 +7350,8 @@ $delivery-beer-header-lines-to-show: 2;
   .user-account-header {
     font-size: 28px;
   }
-  
-  
+
+ 
 // Footer css
   .footer {
     background: $dark-gray !important;

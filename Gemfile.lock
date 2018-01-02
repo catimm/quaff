@@ -91,6 +91,7 @@ GEM
       sass (~> 3.2.19)
     compass-rails (2.0.0)
       compass (>= 0.12.2)
+    coupon_code (0.0.2)
     d3-rails (3.5.17)
       railties (>= 3.1)
     daemons (1.2.2)
@@ -382,6 +383,7 @@ DEPENDENCIES
   cancancan
   chosen-rails
   coffee-rails (~> 4.0.0)
+  coupon_code
   d3-rails (~> 3.5.11)
   derailed
   devise (~> 4.1.1)
@@ -433,3 +435,9 @@ DEPENDENCIES
   will_paginate
   will_paginate-bootstrap
   wkhtmltopdf-binary
+
+RUBY VERSION
+   ruby 2.2.1p85
+
+BUNDLED WITH
+   1.15.4

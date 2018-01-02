@@ -1,0 +1,14 @@
+<%= simple_form_for(@credit) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :total_credit %>
+    <%= f.input :transaction_credit %>
+    <%= f.input :transaction_type %>
+    <%= f.association :account %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
