@@ -1276,17 +1276,7 @@ task :update_customer_subscriptions => :environment do
         @end_date = @active_until.strftime("%B %e, %Y")
         
         # update Knird DB with new active_until date, reset deliveries_this_period column, and update subscription id
-        UserSubscription.update(customer.id, active_until: @active_until, 
-                                             subscription_id: customer.auto_renew_subscription_id, 
-                                             deliveries_this_period: 0)
-        
-        # find customer's Stripe info
-        @customer = Stripe::Customer.retrieve(customer.stripe_customer_number)
-        
-        # create the new subscription plan
-        @new_subscription = @customer.subscriptions.create(
-          :plan => @plan_id
-        )
+        UserSubscription.update(customer.id, currently_active: false)
         
         # send customer rewnewal email
         UserMailer.renewing_membership(customer.user, @new_months, @end_date).deliver_now
