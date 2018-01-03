@@ -435,9 +435,3 @@ DEPENDENCIES
   will_paginate
   will_paginate-bootstrap
   wkhtmltopdf-binary
-
-RUBY VERSION
-   ruby 2.2.1p85
-
-BUNDLED WITH
-   1.15.4

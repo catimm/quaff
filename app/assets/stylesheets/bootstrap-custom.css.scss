@@ -3340,8 +3340,15 @@ $beer-header-lines-to-show-fp: 1;
   margin: 15px 0 !important;
   width: 95% !important;
 }
+.knird-credit-header {
+  margin-top: 10px;
+}
+.gift-value {
+  padding: 5px 15px !important;
+}
 .gift-value-custom {
-  padding: 0 !important;
+  padding: 4px 15px !important;
+  min-width: 150px;
 }
 
 .gift-success-buttons {
@@ -3350,7 +3357,6 @@ $beer-header-lines-to-show-fp: 1;
 
 .gift-value-custom input[type="number"] {
   width: 90px;
-  height: 44px;
   background-color: #337ab7;
   border: none;
   text-align: center;
@@ -3384,23 +3390,26 @@ $beer-header-lines-to-show-fp: 1;
     -webkit-appearance: none;
     margin: 0;
 }
-
 .gift-form-control .form-group{
   margin-left: 0px !important;
 }
 
 .gift-value-description {
   margin-top: 10px;
+  margin-bottom: 10px;
+  color: $normal-text;
+  white-space: nowrap;
 }
 
 .gift-form-label {
   color: black;
 }
-
-.gift-redeem-submit {
-  margin-top: 20px;
+.redemption-row {
+  margin: 10px 0;
 }
-
+.gift-redeem-submit-standalone {
+  margin-top: 10px;
+}
 .positive-amount {
   background-color: lightgreen;
 }
@@ -6697,6 +6706,18 @@ $delivery-beer-header-lines-to-show: 2;
   #friend-search-results-holder {
     margin-left: 5px;
   }
+  // Mobile Credit Purchase
+  .gift-value {
+    padding: 5px 10px !important;
+  }
+  .gift-value-custom {
+    padding: 4px 10px !important;
+    min-width: 105px;
+  }
+  .gift-value-description {
+    white-space: normal;
+  }
+
   // Mobile Deliveries page
   .next-delivery-tile-no-review {
     height: 300px;

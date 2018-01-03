@@ -5,8 +5,8 @@
                 <%= content_tag :div, msg, class: "alert alert-warning text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
             <%- end -%>
         <div class="row">
-            <div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 text-center">
-                <h2 class="signup-question">Redeem a Knird Gift Certificate</h3>
+            <div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 text-center knird-credit-header">
+                <h2 class="signup-question">Redeem Knird Credit</h3>
             </div>
         </div>
         <% if user_signed_in? %>
@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="row text-center">
-                <input type="submit" class="btn btn-success gift-redeem-submit" value="Redeem Your Gift"></input>
+                <input type="submit" class="btn btn-success gift-redeem-submit-standalone" value="Redeem Credit"></input>
             </div>
             <% end %>
         <% else %>

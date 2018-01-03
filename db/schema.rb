@@ -839,7 +839,6 @@ ActiveRecord::Schema.define(version: 20171227052703) do
     t.string   "special_code"
     t.string   "tpw"
     t.integer  "account_id"
-    t.string   "mobile_number"
     t.string   "phone"
     t.boolean  "recent_addition"
   end
