@@ -2,10 +2,13 @@ class Credit < ActiveRecord::Base
   belongs_to :account
 
   def reason_string
-      if self.transaction_type == "GIFT_REDEEM"
-          return "Gift certificate redeemed"
-      end
-
-      return ""
+        case self.transaction_type
+        when "GIFT_REDEEM"
+            "Gift certificate redeemed"
+        when "DRINKS_DELIVERY"
+            "Drinks & delivery charges"
+        else
+            ""
+        end
   end
 end
