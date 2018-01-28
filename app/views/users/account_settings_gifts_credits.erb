@@ -45,7 +45,7 @@
 			                <% @credits.each do |credit| %>
 			                    <tr>
 			                        <td><%= credit.created_at.strftime("%b %e, %Y") %></td>
-			                        <td> <span class="<%= if credit.total_credit > 0 then "positive-amount" else "negative-amount" end %>"> <%= if credit.total_credit > 0 then "+" else "-" end %></span> $<%= credit.transaction_credit.to_i %></td>
+			                        <td> <span class="<%= if credit.transaction_credit > 0 then "positive-amount" else "negative-amount" end %>"> <%= if credit.transaction_credit > 0 then "+" else "-" end %></span> $<%= credit.transaction_credit.abs %></td>
 			                        <td><%= credit.reason_string %></td>
 			                        <td class="amount-column">$<%= credit.total_credit.to_i %></td>
 			                    </tr>
