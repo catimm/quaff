@@ -18,8 +18,20 @@
 				<% end %>
 	      	</td>
 	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
-	        <td><%= drink.beer.beer_type.beer_type_name %></td>
-	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
+	        <td>
+	        	<% if !drink.beer.beer_type.blank? %>
+	        		<%= drink.beer.beer_type.beer_type_name %>
+	        	<% else %>
+	        		N/A
+	        	<% end %>
+	        </td>
+	        <td>
+	        	<% if !drink.beer.beer_type.blank? %>
+	        		<%= drink.beer.beer_type.cellarable.humanize %>
+	        	<% else %>
+	        		N/A
+	        	<% end %>
+	        </td>
 	        <td>
 	        	<% if !@projected_rating.blank? %>
 	        		<%= @projected_rating.projected_rating %>

@@ -12,7 +12,7 @@
 </div>
 <% if @customer_next_delivery.status == "admin prep" || @customer_next_delivery.status == "user review"%>
 	<div class="col-xs-4 col-sm-2 no-padding">
-		<%= link_to "Review delivery", admin_review_delivery_path(@account_id), :class => "btn btn-primary admin-check-button",
+		<%= link_to "Review delivery", admin_review_delivery_path(@chosen_delivery_id), :class => "btn btn-primary admin-check-button",
 					data: {toggle: "modal", target: "#admin_review_delivery"} %>
 	</div>
 	<div class="col-xs-4 col-sm-2 no-padding">

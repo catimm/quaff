@@ -1235,29 +1235,8 @@ task :update_customer_subscriptions => :environment do
       if customer.auto_renew_subscription_id == nil
         # send customer email
         UserMailer.cancelled_membership(customer.user).deliver_now
-        
-      elsif customer.auto_renew_subscription_id == customer.subscription_id # if customer is renewing current subscription
-        # determine which plan customer is being renewed into
-        if customer.auto_renew_subscription_id == 1
-          @active_until = 1.month.from_now
-          @new_months = "month"
-        elsif customer.auto_renew_subscription_id == 2
-          @active_until = 3.months.from_now
-          @new_months = "3 months"
-        elsif customer.auto_renew_subscription_id == 3
-          @active_until = 12.months.from_now
-          @new_months = "12 months"
-        end
-        # set end date as text
-        @end_date = @active_until.strftime("%B %e, %Y")
-        
-        # update Knird DB with new active_until date & reset deliveries_this_period column
-        UserSubscription.update(customer.id, active_until: @active_until, deliveries_this_period: 0)
-        
-        # send customer renewal email
-        UserMailer.renewing_membership(customer.user, @new_months, @end_date).deliver_now
-        
-      else # if customer is renewing to a different subscription
+      
+      else # renewal will happen  
         # determine which plan customer is being renewed into
         if customer.auto_renew_subscription_id == 1
           @plan_id = "one_month"
@@ -1275,14 +1254,69 @@ task :update_customer_subscriptions => :environment do
         # set end date as text
         @end_date = @active_until.strftime("%B %e, %Y")
         
-        # update Knird DB with new active_until date, reset deliveries_this_period column, and update subscription id
-        UserSubscription.update(customer.id, currently_active: false)
+        # determine if customer is renewing current subscription or changing subscriptions
+        if customer.auto_renew_subscription_id == customer.subscription_id # if customer is renewing current subscription
+          
+          # update Knird DB with new active_until date & reset deliveries_this_period column
+          UserSubscription.update(customer.id, active_until: @active_until, deliveries_this_period: 0)
+          
+        else # if customer is renewing to a different subscription
+          
+          # update Knird DB with new active_until date, reset deliveries_this_period column, and update subscription id
+          UserSubscription.update(customer.id, currently_active: false)
+          
+        end # end of checking for change in subscription
         
         # send customer rewnewal email
         UserMailer.renewing_membership(customer.user, @new_months, @end_date).deliver_now
         
-      end
+        # find last delivery date
+        @last_delivery = Delivery.where(status: "delivered").order(delivery_date: :desc).last
+        
+        # create next two delivery dates
+        @first_delivery_date = @last_delivery.delivery_date + 2.weeks
+        Delivery.create(account_id: customer.account_id, 
+                    delivery_date: @first_delivery_date,
+                    status: "admin prep",
+                    subtotal: 0,
+                    sales_tax: 0,
+                    total_price: 0,
+                    delivery_change_confirmation: false,
+                    share_admin_prep_with_user: false)
+        
+        @second_delivery_date = @last_delivery.delivery_date + 4.weeks
+        Delivery.create(account_id: customer.account_id, 
+                    delivery_date: @second_delivery_date,
+                    status: "admin prep",
+                    subtotal: 0,
+                    sales_tax: 0,
+                    total_price: 0,
+                    delivery_change_confirmation: false,
+                    share_admin_prep_with_user: false)
+                    
+      end # end of checking for renewal
        
     end # end loop through expiring customers
   
+end # end of update_customer_subscriptions task
+
+desc "expiring customers subscriptions"
+task :expiring_customer_subscriptions => :environment do
+  # find customers whose subscription expires in 3 days  
+    @expiring_subscriptions = UserSubscription.where(active_until: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
+    #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
+    
+    # check if any expiring customers exist
+    if !@expiring_subscriptions.blank?
+      # loop through each customer and update 
+      @expiring_subscriptions.each do |subscription|
+        # get customer info
+        @customer_info = User.find_by_id(subscription.user_id)
+        
+        # send customer rewnewal email
+        UserMailer.three_day_membership_expiration_notice(@customer_info, subscription).deliver_now
+         
+      end # end loop through expiring customers  
+    end # end of check whether expiring customers exist
+    
 end # end of update_customer_subscriptions task

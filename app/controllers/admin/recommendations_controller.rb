@@ -708,8 +708,7 @@ class Admin::RecommendationsController < ApplicationController
   
   def admin_review_delivery
     # get drinks slated for next delivery 
-    @customer_next_delivery = Delivery.where(account_id: params[:id]).where(status: ["admin prep", "user review", "in progress"]).first
-    @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
+    @next_delivery_plans = AccountDelivery.where(delivery_id: params[:id])
     
     render :partial => 'admin/recommendations/admin_review_delivery'
   end #end of admin_review_delivery method
