@@ -9,7 +9,12 @@ class HomeController < ApplicationController
     if user_signed_in?
       redirect_to after_sign_in_path_for(nil)
     end
-     
+    
+    # get delivery example drinks
+    @cider_explorer_drinks = AccountDelivery.find(21,352,354,355,194,19,417,96)
+    @beer_geek_drinks = AccountDelivery.find(255,270,167,112,358,345,329,416)
+    @beer_connoisseur_drinks = AccountDelivery.find(225,415,16,445,359,71,423,56) 
+    
   end # end index action
   
   def create
