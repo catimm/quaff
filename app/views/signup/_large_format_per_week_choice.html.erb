@@ -1,4 +1,4 @@
-<% (0..@drinks_per_week).each do |i| %>
+<% (0..(@max_large_format_drinks||@drinks_per_week)).each do |i| %>
   <div class="col-xs-2 no-padding number-box-holder-parent">
   	<% if @large_format_drinks_per_week == i %>
 	  	<div class="number-box-holder large-format chosen" id="<%= i %>-<%= @current_page %>">

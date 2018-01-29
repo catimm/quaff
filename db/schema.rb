@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171227052703) do
+ActiveRecord::Schema.define(version: 20180129003135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -488,6 +488,20 @@ ActiveRecord::Schema.define(version: 20171227052703) do
     t.string   "image_holder"
   end
 
+  create_table "orders", force: :cascade do |t|
+    t.integer  "account_id"
+    t.string   "drink_type"
+    t.integer  "number_of_drinks"
+    t.integer  "number_of_large_drinks"
+    t.datetime "delivery_date"
+    t.string   "additional_requests"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "drink_option_id"
+  end
+
+  add_index "orders", ["account_id"], name: "index_orders_on_account_id", using: :btree
+
   create_table "pg_search_documents", force: :cascade do |t|
     t.text     "content"
     t.integer  "searchable_id"
@@ -868,4 +882,5 @@ ActiveRecord::Schema.define(version: 20171227052703) do
   end
 
   add_foreign_key "credits", "accounts"
+  add_foreign_key "orders", "accounts"
 end

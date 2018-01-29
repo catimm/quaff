@@ -205,6 +205,10 @@ Rails.application.routes.draw do
   get '/gift_certificates/signup_and_redeem' => 'gift_certificates#signup_and_redeem', :as => 'gift_certificates_signup_and_redeem'
   post '/gift_certificates/redeem' => 'gift_certificates#process_redeem', :as => 'gift_certificates_process_redeem'
   
+  # Orders
+  get '/orders/new' => 'orders#new', :as => 'orders_new'
+  post '/orders/process' => 'orders#process_order', :as => 'process_order'
+
   # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
