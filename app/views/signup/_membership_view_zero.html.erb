@@ -1,0 +1,47 @@
+<div class="row">
+	<div class="container">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 text-center no-padding">
+			<h2 class="signup-question membership-plan-signup">Confirm your plan</h2>
+			<h5 class="signup-question-detail">Entering your credit card will ensure you're set for future orders.</h5>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+		<div class="homepage-plan-options">
+			<%= render 'layouts/deliveries_plan_zero' %>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<%= form_tag process_account_membership_getting_started_path("zero"), class:"plan-button" do %>
+						<input name="plan_id" type="hidden" value="zero"></input>
+			          	<script 
+			          		class="stripe-button" 
+			          		data-name="Knird" 
+			          		data-description="$0 for 0 Prepaid Knird Deliveries" 
+			          		data-currency="USD" 
+			          		data-label="Start the 0 Delivery Plan"
+			          		data-email="<%= @user.email %>" 
+			          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+			          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+			          		src="https://checkout.stripe.com/checkout.js">
+			          	</script>
+					<% end %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-offset-2 col-xs-8 col-sm-offset-5 col-sm-2 text-center">
+		<h6 class="membership-option-change"><i>or</i></h6>
+		<%= link_to change_membership_choice_path, class: 'btn btn-success formButton-start-plan' do %>
+			<i class="fa fa-refresh" aria-hidden="true"> Change plans</i>
+		<% end %>
+	</div>
+</div>
+

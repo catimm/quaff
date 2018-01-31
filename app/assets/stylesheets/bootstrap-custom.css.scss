@@ -1500,6 +1500,7 @@ p {
 }
 .plan-button {
   margin-bottom: 10px !important;
+  text-align: center;
 }
 .with-contract {
   color: $less-emphasized-text;
@@ -3233,6 +3234,10 @@ $beer-header-lines-to-show-fp: 1;
   font-weight: 500;
   margin-bottom: 10px;
 }
+.membership-option-change {
+  color: $normal-text;
+  margin: 0;
+}
 .membership-plan-signup {
   margin-bottom: 20px;
 }
@@ -3260,7 +3265,10 @@ $beer-header-lines-to-show-fp: 1;
     height: inherit;
   }
 }
-.signup-category-image-holder, .signup-journey-image-holder, .signup-plan-start-holder {
+.signup-category-image-holder, 
+.signup-journey-image-holder, 
+.signup-plan-start-holder, 
+.signup-frequency-holder {
   background: $white;
   height: 100%;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -3273,24 +3281,43 @@ $beer-header-lines-to-show-fp: 1;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
-.signup-category-image-holder.left, .signup-journey-image-holder.left, .signup-plan-holder.left, .signup-plan-start-holder.left {
+.signup-category-image-holder.left, 
+.signup-journey-image-holder.left, 
+.signup-plan-holder.left, 
+.signup-plan-start-holder.left
+.signup-frequency-holder.left {
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
-.signup-category-image-holder.right, .signup-journey-image-holder.right, .signup-plan-holder.right, .signup-plan-start-holder.right {
+.signup-category-image-holder.right, 
+.signup-journey-image-holder.right, 
+.signup-plan-holder.right, 
+.signup-plan-start-holder.right,
+.signup-frequency-holder.right {
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
 }
-.signup-category-image-holder:hover, .signup-journey-image-holder:hover, .signup-plan-holder:hover, .signup-plan-start-holder:hover {
+.signup-category-image-holder:hover, 
+.signup-journey-image-holder:hover, 
+.signup-plan-holder:hover, 
+.signup-plan-start-holder:hover,
+.signup-frequency-holder:hover {
   background: $signup-category-image-background-start;
   h3, p {
     color: $white;
   }
 }
-.signup-category-image-holder.chosen, .signup-journey-image-holder.chosen, .signup-plan-holder.chosen, .signup-plan-start-holder.chosen {
+.signup-category-image-holder.chosen, 
+.signup-journey-image-holder.chosen, 
+.signup-plan-holder.chosen, 
+.signup-plan-start-holder.chosen,
+.signup-frequency-holder.chosen {
   background: $signup-category-image-background-chosen;
 }
-.signup-category-image-holder-chosen-cover, .signup-journey-image-holder-chosen-cover, .signup-plan-start-holder-chosen-cover {
+.signup-category-image-holder-chosen-cover, 
+.signup-journey-image-holder-chosen-cover, 
+.signup-plan-start-holder-chosen-cover,
+.signup-frequency-holder-chosen-cover {
     background: rgba(0,135,203, 0.4);
     height: 100% !important;
     width: 100% !important;
@@ -3318,6 +3345,22 @@ $beer-header-lines-to-show-fp: 1;
   }
 .signup-plan-holder.left {
   border-right: 2px solid $normal-text;
+}
+.signup-frequency-holder {
+  padding: 10px 0;
+}
+.signup-frequency-first-level-text {
+  color: $action-background;
+  margin: 20px 0;
+  font-size: 48px;
+}
+.signup-frequency-second-level-text {
+  color: $normal-text;
+  font-style: italic;
+}
+.signup-frequency-third-level-text {
+  color: $more-emphasized-text;
+  margin: 20px 0;
 }
 .signup-category-image-first-level-text {
   color: $normal-text;
@@ -3397,8 +3440,12 @@ $beer-header-lines-to-show-fp: 1;
   color: $action-background !important;
 }
 .signup-drinks-per-week-next-step {
-  width: 100%;
-  margin: 10px 0 !important;
+  width: 80%;
+  margin: 30px 0 !important;
+}
+#large_drinks_next_step_button {
+  width: 80%;
+  margin: 30px 0 !important;
 }
 #signup-delivery-new-slider.slider.slider-horizontal {
   width: 100% !important;
@@ -3471,6 +3518,9 @@ $beer-header-lines-to-show-fp: 1;
 .signup-styles-next-step, .signup-styles-to-thank-you-next-step {
   width: 80%;
   margin: 15px 0 0 0;
+}
+.signup-frequency-first-level-text {
+  
 }
 .user-plan-cost {
   color: $user-action;
@@ -3745,11 +3795,6 @@ $beer-header-lines-to-show-fp: 1;
 .first-row-container {
   
 }
-
-.top-margin-10 {
-  margin-top: 10px;
-}
-
 .section-header {
   font-weight: 500;
   padding-bottom: 10px;

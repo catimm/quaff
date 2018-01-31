@@ -7,61 +7,10 @@
 	<div class="row membership-details-row">
 		<div class="col-xs-12 col-sm-4">
 			<div class="homepage-plan-options">
-				<div class="row no-margin">
-					<div class="col-xs-12">
-						<h3 class="retail-plan-header">0 Prepaid Deliveries</h3>
-						<h5 class="retail-plan-subheader">The "no plan" plan. <br>Order when your supply is running low.</h5>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Deliveries included:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>0</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Delivery frequency:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>as ordered</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cash back on purchases:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>0%</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cash back on rated drinks:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>0%</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Bottle caps
-							<sup  data-toggle="tooltip" title="Bottle caps can be earned with a prepaid membership and used to &quot;jump to the front of the line&quot; to purchase rare & limited drinks.">?</sup>:
-						</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>0 / $1</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cost per delivery:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>$6</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Total plan cost:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>$0</h4>
-					</div>
-				</div>
+				<%= render 'layouts/deliveries_plan_zero' %>
 				<div class="row no-margin">
 					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", invitation_code_path("plan-name"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						<%= link_to "Get started", invitation_code_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
 					</div>
 				</div>
 				<div class="row no-margin">
@@ -73,63 +22,10 @@
 		</div>
 		<div class="col-xs-12 col-sm-4">
 			<div class="homepage-plan-options">
-				<div class="row no-margin">
-					<div class="col-xs-12">
-						<h3 class="retail-plan-header">6 Prepaid Deliveries</h3>
-						<h5 class="retail-plan-subheader">The ole test spin. Kick the tires. <br> Make sure we <i>deliver</i> on our promises.</h5>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Deliveries included:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>6</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Delivery frequency:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>varies
-							<sup  data-toggle="tooltip" title="You'll receive a delivery every 2 - 6 weeks, depending on your individual preferences and consumption habits.">?</sup>
-						</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cash back on purchases:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>0%</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cash back on rated drinks:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>5%</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Bottle caps
-							<sup  data-toggle="tooltip" title="1 bottle cap is earned per dollar spent and can be used to &quot;jump to the front of the line&quot; to purchase rare & limited drinks.">?</sup>:
-						</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>1 / $1</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cost per delivery:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>$5</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Total plan cost:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>$30</h4>
-					</div>
-				</div>
+				<%= render 'layouts/deliveries_plan_six' %>
 				<div class="row no-margin">
 					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", invitation_code_path("plan-name"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						<%= link_to "Get started", invitation_code_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
 					</div>
 				</div>
 				<div class="row no-margin">
@@ -141,63 +37,10 @@
 		</div>
 		<div class="col-xs-12 col-sm-4">
 			<div class="homepage-plan-options">
-				<div class="row no-margin">
-					<div class="col-xs-12">
-						<h3 class="retail-plan-header">25 Prepaid Deliveries</h3>
-						<h5 class="retail-plan-subheader">Best prices. Most rewards.</br>Greatest access to limited & rare drinks.</h5>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Deliveries included:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>25</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Delivery frequency:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>varies
-							<sup  data-toggle="tooltip" title="You'll receive a delivery every 2 - 6 weeks, depending on your individual preferences and consumption habits.">?</sup>	
-						</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cash back on purchases:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>5%</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cash back on rated drinks:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>5%</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Bottle caps
-							<sup  data-toggle="tooltip" title="1.5 bottle caps are earned per dollar spent and can be used to &quot;jump to the front of the line&quot; to purchase rare & limited drinks.">?</sup>:
-						</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>1.5 / $1</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Cost per delivery:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>$4</h4>
-					</div>
-					<div class="col-xs-8 membership-plan-feature-setup">
-						<h4>Total plan cost:</h4>
-					</div>
-					<div class="col-xs-4 membership-plan-feature-shown">
-						<h4>$100</h4>
-					</div>
-				</div>
+				<%= render 'layouts/deliveries_plan_twenty_five' %>
 				<div class="row no-margin">
 					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", invitation_code_path("plan-name"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						<%= link_to "Get started", invitation_code_path("twenty-five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
 					</div>
 				</div>
 				<div class="row no-margin">
