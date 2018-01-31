@@ -9,6 +9,7 @@
 #  updated_at                        :datetime         not null
 #  delivery_location_user_address_id :integer
 #  delivery_zone_id                  :integer
+#  delivery_frequency                :integer
 #
 
 require 'test_helper'

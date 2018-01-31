@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: credits
+#
+#  id                 :integer          not null, primary key
+#  total_credit       :float
+#  transaction_credit :float
+#  transaction_type   :string
+#  account_id         :integer
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#
+
 class Credit < ActiveRecord::Base
   belongs_to :account
 

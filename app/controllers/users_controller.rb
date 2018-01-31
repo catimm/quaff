@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     
     # set sub-guide view
     @user_chosen = "current"
-    @subguide = "user_info"
+    @subguide = "user"
     
     # send getting_started_step data to js to show welcome modal if needed
     gon.getting_started_step = 0
@@ -101,7 +101,7 @@ class UsersController < ApplicationController
     end
     
     # set sub-guide view
-    @subguide = "user_info"
+    @subguide = "user"
     
     #set guide view
     @user_chosen = 'current'
@@ -618,7 +618,7 @@ class UsersController < ApplicationController
         when 'customer.subscription.trial_will_end'
           #Rails.logger.debug("Subscription trial soon ending event")
         when 'customer.created'
-          Rails.logger.debug("Customer created event")
+          #Rails.logger.debug("Customer created event")
           # get the customer number
           @stripe_customer_number = event_object['id']
           #Rails.logger.debug("Stripe customer number: #{@stripe_customer_number.inspect}")

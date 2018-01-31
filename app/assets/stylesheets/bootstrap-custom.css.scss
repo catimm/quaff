@@ -3352,7 +3352,7 @@ $beer-header-lines-to-show-fp: 1;
 .signup-frequency-first-level-text {
   color: $action-background;
   margin: 20px 0;
-  font-size: 48px;
+  font-size: 36px;
 }
 .signup-frequency-second-level-text {
   color: $normal-text;
@@ -3361,6 +3361,7 @@ $beer-header-lines-to-show-fp: 1;
 .signup-frequency-third-level-text {
   color: $more-emphasized-text;
   margin: 20px 0;
+  font-size: 24px;
 }
 .signup-category-image-first-level-text {
   color: $normal-text;
@@ -3423,6 +3424,7 @@ $beer-header-lines-to-show-fp: 1;
 }
 .drinks-per-week-meaning-text {
   color: $normal-text;
+  margin-bottom: 0;
   span {
     color: $header-text;
     font-size: 22px;
@@ -4298,7 +4300,7 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 18px;
   float: left;
   line-height: 0.65;
-  margin: 0 -10px 0 15px;
+  margin: 0 -7px 0 10px;
 }
 .delivery-date-choice {
   color: $normal-text;

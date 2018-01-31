@@ -748,25 +748,10 @@ class SignupController < ApplicationController
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     
-    # update both format preferences and cost estimator 
+    # update format preference
     @delivery_preferences.update(max_large_format: @input)
-    @drinks_per_week = @delivery_preferences.drinks_per_week
-    delivery_estimator(current_user.id, @drinks_per_week, @input.to_i, "update")
     
-    # get data for delivery estimates
-    @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
-    @drink_delivery_estimate = @drink_per_delivery_calculation
-    
-    # get small/large format estimates
-    @large_delivery_estimate = @input.to_i
-    @small_delivery_estimate = @drink_per_delivery_calculation - (@large_delivery_estimate * 2)
-    
-    # get estimated cost estimates -- rounded to nearest multiple of 5
-    @delivery_cost_estimate = @delivery_preferences.price_estimate
-    @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-    @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-    
-    # show delivery cost information and 'next' button
+    # show 'next' button
     respond_to do |format|
       format.js
     end # end of redirect to jquery
@@ -776,6 +761,9 @@ class SignupController < ApplicationController
   def delivery_frequency_getting_started
     # get User info 
     @user = User.find_by_id(current_user.id)
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    
     # update getting started step
     if @user.getting_started_step < 10
       @user.update_attribute(:getting_started_step, 10)
@@ -792,7 +780,7 @@ class SignupController < ApplicationController
     
     @current_page = 'signup'
     
-    # get number of drinks user drinks each week
+    # get delivery preferences
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
     if !@delivery_preferences.blank?
       # get user's drink preference
@@ -805,6 +793,16 @@ class SignupController < ApplicationController
       else
         @drink_preference = "beers/ciders"
       end
+      
+      # define drink estimates
+      @total_delivery_drinks = @delivery_preferences.drinks_per_delivery
+      @large_delivery_estimate = @delivery_preferences.max_large_format
+      @small_delivery_estimate = @delivery_preferences.drinks_per_delivery
+      
+      # get estimated cost estimates -- rounded to nearest multiple of 5
+      @delivery_cost_estimate = @delivery_preferences.price_estimate
+      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
     end
         
     # determine minimum number of weeks between deliveries
@@ -831,9 +829,64 @@ class SignupController < ApplicationController
     @number_of_drinks_second_option = (@drinks_per_week * @number_of_weeks_second_option * 1.1).round
     @number_of_drinks_third_option =  (@drinks_per_week * @number_of_weeks_third_option * 1.1).round
     
+    # check if user has already selected a delivery frequency
+    @first_delivery_option_chosen = "hidden"
+    @second_delivery_option_chosen = "hidden"
+    @third_delivery_option_chosen = "hidden"
+    
+    # update if one is already chosen
+    if !@account.delivery_frequency.blank?
+      # set total number of possible large format drinks
+      @large_delivery_estimate = @large_delivery_estimate * @account.delivery_frequency
+      # show frequency choice already made
+      @drinks_per_week_meaning_show_status = "show"
+      if @account.delivery_frequency == @number_of_weeks_first_option
+        @first_delivery_option_chosen = "show"
+      elsif @account.delivery_frequency == @number_of_weeks_second_option
+        @second_delivery_option_chosen = "show"
+      elsif @account.delivery_frequency == @number_of_weeks_third_option
+        @third_delivery_option_chosen = "show"
+      end
+    else
+      @drinks_per_week_meaning_show_status = "hidden"
+    end
+    
   end #end of delivery_frequency_getting_started method
   
   def process_delivery_frequency_getting_started
+    # get selected frequency
+    @delivery_info = params[:id]
+    @delivery_info_split = @delivery_info.split("-")
+    @drinks_per_delivery = @delivery_info_split[0].to_i
+    @delivery_frequency = @delivery_info_split[1].to_i
+    
+    # update Account with delivery frequency preference
+    @account = Account.find_by_id(current_user.account_id)
+    @account.update_attribute(:delivery_frequency, @delivery_frequency)
+    
+    # update Delivery Preferences with drinks per delivery
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    @delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery)
+    
+    # get delivery estimate 
+    delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
+    # refresh delivery preferences
+    @updated_delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    # define drink estimates
+    @total_delivery_drinks = @updated_delivery_preferences.drinks_per_delivery
+    @large_delivery_estimate = @updated_delivery_preferences.max_large_format * @account.delivery_frequency
+    @small_delivery_estimate = @updated_delivery_preferences.drinks_per_delivery
+    
+    # get estimated cost estimates -- rounded to nearest multiple of 5
+    @delivery_cost_estimate = @updated_delivery_preferences.price_estimate
+    @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+    @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+    
+    # show delivery cost information and 'next' button
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
     
   end # end process_delivery_frequency_getting_started method
   
@@ -860,7 +913,7 @@ class SignupController < ApplicationController
     @drink_chosen = 'complete'
     @delivery_chosen = 'current'
     @delivery_frequency_chosen = 'complete'
-    @delivery_preference_chosen = 'complete'
+    @delivery_preference_chosen = 'current'
     
     @current_page = 'signup'
     

@@ -358,6 +358,33 @@ $(function() {
 		}
 	});
 	
+	// logic to chose delivery frequency
+	$(document).on('click', '.signup-frequency-holder', function () {
+		$(this).siblings('.signup-frequency-holder-chosen-cover').removeClass('hidden').addClass('show');
+		$(this).parent().siblings('.signup-frequency-holder-parent').children('.signup-frequency-holder-chosen-cover').removeClass('show').addClass('hidden');
+		
+		// find which page this is from
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var frequency_choice = id_split[0];
+		var current_page = id_split[1];
+		
+		// get choices to send to controller
+		var number_of_drinks = $(this).children(".signup-frequency-first-level-text").attr('id');
+		var number_of_weeks = $(this).children(".signup-frequency-third-level-text").attr('id');
+		
+		if(current_page == "signup") {
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/process_delivery_frequency_getting_started/" + number_of_drinks + "-" + number_of_weeks
+			});
+		} else {
+			
+		}
+		
+	});
+	
 	// send additional delivery preferences to controller
 	$(document).on("keyup", "#delivery_preference_additional", function() {
 		$('#update_delivery_preferences_button').removeAttr('disabled');

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180129003135) do
+ActiveRecord::Schema.define(version: 20180131195511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20180129003135) do
     t.datetime "updated_at",                        null: false
     t.integer  "delivery_location_user_address_id"
     t.integer  "delivery_zone_id"
+    t.integer  "delivery_frequency"
   end
 
   create_table "admin_account_deliveries", force: :cascade do |t|
@@ -290,6 +291,7 @@ ActiveRecord::Schema.define(version: 20180129003135) do
     t.integer  "max_cellar"
     t.boolean  "gluten_free"
     t.text     "admin_comments"
+    t.integer  "drinks_per_delivery"
   end
 
   create_table "delivery_zones", force: :cascade do |t|

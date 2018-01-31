@@ -15,9 +15,9 @@
 			<% end %>
 			<div class="fa fa-chevron-right"></div>
 		</div>
-		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @account_chosen %>">
+		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @delivery_chosen %>">
 			<% if @user.getting_started_step >= 10 %>
-				<%= link_to "delivery preferences", delivery_frequency_getting_started_path, class: "guide-header #{@account_address_chosen}" %>
+				<%= link_to "delivery preferences", delivery_frequency_getting_started_path, class: "guide-header #{@delivery_chosen}" %>
 			<% else %>
 				<h5 class="guide-header hidden-xs">delivery preferences</h5>
 				<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">delivery</h5>

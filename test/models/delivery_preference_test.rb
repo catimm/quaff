@@ -15,6 +15,7 @@
 #  max_cellar          :integer
 #  gluten_free         :boolean
 #  admin_comments      :text
+#  drinks_per_delivery :integer
 #
 
 require 'test_helper'

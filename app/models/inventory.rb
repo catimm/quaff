@@ -35,25 +35,25 @@ class Inventory < ActiveRecord::Base
   
   #scope small cooler drinks
   scope :small_cooler_drinks, -> { 
-    where("inventories.size_format_id <= ?", 4).
+    where(size_format_id: [1, 2, 3, 4, 10, 11, 15, 16]).
     joins(:beer).merge(Beer.cooler_drinks)
   }
   
   # scope small cellar drinks
   scope :small_cellar_drinks, -> { 
-    where("inventories.size_format_id <= ?", 4).
+    where(size_format_id: [1, 2, 3, 4, 10, 11, 15, 16]).
     joins(:beer).merge(Beer.cellar_drinks)
   }
   
   # scope large cooler drinks
   scope :large_cooler_drinks, -> { 
-    where(size_format_id: 5).
+    where(size_format_id: [5, 12, 14]).
     joins(:beer).merge(Beer.cooler_drinks)
   }
   
   # scope large cellar drinks
   scope :large_cellar_drinks, -> { 
-    where(size_format_id: [5, 14]).
+    where(size_format_id: [5, 12, 14]).
     joins(:beer).merge(Beer.cellar_drinks)
   }
   
@@ -65,12 +65,13 @@ class Inventory < ActiveRecord::Base
   # scope inventory stock 
   scope :packaged_in_stock, -> { 
     where("stock > ?", 0).
-    where("inventories.size_format_id <= ?", 5)
+    where(size_format_id: [1, 2, 3, 4, 5, 10, 11, 12, 14, 15, 16])
   }
   
   # scope packaged drinks not currently in stock 
   scope :packaged_not_in_stock, -> { 
-    where(stock: 0)
+    where(stock: 0).
+    where(size_format_id: [1, 2, 3, 4, 5, 10, 11, 12, 14, 15, 16])
   } 
   
   # scope inventory not in stock 
@@ -86,7 +87,7 @@ class Inventory < ActiveRecord::Base
   # scope inventory stock 
   scope :draft_in_stock, -> { 
     where("stock >= ? OR order_request >= ?", 1, 1).
-    where("inventories.size_format_id >= ?", 6)
+    where(size_format_id: [6, 7, 8, 9, 13])
   }
 
   # scope all drinks not in inventory
@@ -96,7 +97,7 @@ class Inventory < ActiveRecord::Base
   
   # scope all packaged inventory
   scope :packaged_inventory,   -> { 
-    where("inventories.size_format_id <= ?", 5)
+    where(size_format_id: [1, 2, 3, 4, 5, 10, 11, 12, 14, 15, 16])
   }
   
    # scope all draft drinks not in inventory

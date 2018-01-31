@@ -2,7 +2,7 @@ class OrdersController < ApplicationController
     def new
         @order = Order.new
         @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-        @max_large_format_drinks = 12
+        @max_large_format_drinks = 14
         @current_page = "orders"
 
         @order.drink_option_id = @delivery_preferences.drink_option_id

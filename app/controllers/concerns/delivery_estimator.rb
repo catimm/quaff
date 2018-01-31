@@ -1,32 +1,21 @@
 module DeliveryEstimator
   extend ActiveSupport::Concern
   
-  def delivery_estimator(customer_id, drinks_per_week, large_format, status)
-    # get customer info
-    @customer_info = User.find_by_id(customer_id)
-    @customer_sophistication = @customer_info.craft_stage_id
-    
-    # get customer delivery preferences
-    @delivery_preferences = DeliveryPreference.find_by_user_id(customer_id)
-    
-    #determine drinks per delivery
-    @drink_per_delivery_calculation = (drinks_per_week * 2.2).round
-    #Rails.logger.debug("Drinks per delivery: #{@drink_per_delivery_calculation.inspect}") 
-    
+  def delivery_estimator(delivery_preferences, craft_stage)
+
     # determine large format percentage
-    @large_percentage = ((large_format.to_f) / (drinks_per_week.to_f)).round(3)
+    @large_percentage = ((delivery_preferences.max_large_format.to_f) / (delivery_preferences.drinks_per_delivery.to_f)).round(3)
     
-    # determine # of large and small format drinks
-    @large_format_number = large_format
-    #Rails.logger.debug("Large Format #: #{@large_format_number.inspect}")
-    @small_format_number = @drink_per_delivery_calculation - (@large_format_number * 2) # this counts each large format as 2 small format drinks
-    #Rails.logger.debug("Small Format #: #{@small_format_number.inspect}")
+    # # of large format drinks
+    @large_format_number = delivery_preferences.max_large_format
+    # determine small format number by counting each large format as 2 small format drinks
+    @small_format_number = delivery_preferences.drinks_per_delivery - (@large_format_number * 2)
      
     # determine percentage of cellar/cooler drinks per delivery
-    if @customer_sophistication == 1
+    if craft_stage == 1
       @cellar_percentage = 0.05
       @cooler_percentage = 0.95
-    elsif @customer_sophistication == 2
+    elsif craft_stage == 2
       @cellar_percentage = 0.075
       @cooler_percentage = 0.925
     else
@@ -35,17 +24,13 @@ module DeliveryEstimator
     end
     
     # determine max number of cellar drinks per delivery
-    @max_cellar = (@drink_per_delivery_calculation * @cellar_percentage).round
+    @max_cellar = (delivery_preferences.drinks_per_delivery * @cellar_percentage).round
 
     # determine number of large/small cellar/cooler drinks
-    @number_of_large_cellar = (@large_format_number * @cellar_percentage)  
-    @number_of_small_cellar = (@small_format_number * @cellar_percentage)
-    @number_of_large_cooler = (@large_format_number * @cooler_percentage)
-    @number_of_small_cooler = (@small_format_number * @cooler_percentage)
-    #Rails.logger.debug("# large cellar: #{@number_of_large_cellar.inspect}") 
-    #Rails.logger.debug("# small cellar: #{@number_of_small_cellar.inspect}") 
-    #Rails.logger.debug("# large cooler: #{@number_of_large_cooler.inspect}")
-    #Rails.logger.debug("# small cooler: #{@number_of_small_cooler.inspect}") 
+    @number_of_large_cellar = (@large_format_number * @cellar_percentage).round  
+    @number_of_small_cellar = (@small_format_number * @cellar_percentage).round
+    @number_of_large_cooler = (@large_format_number * @cooler_percentage).round
+    @number_of_small_cooler = (@small_format_number * @cooler_percentage).round 
     
     # get all drinks in inventory
     @inventory = Inventory.all
@@ -87,31 +72,18 @@ module DeliveryEstimator
     else
       @large_cellar_cost = 18
     end
-    #Rails.logger.debug("Small cooler cost: #{@small_cooler_cost.inspect}")
-    #Rails.logger.debug("Small cellar cost: #{@large_cooler_cost.inspect}")
-    #Rails.logger.debug("Large cooler cost: #{@small_cellar_cost.inspect}")
-    #Rails.logger.debug("Large cellar cost: #{@large_cellar_cost.inspect}")
-   
     
     # multiply drink numbers by drink costs
     @cost_estimate_cooler_small = (@small_cooler_cost * @number_of_small_cooler)  
     @cost_estimate_cooler_large = (@large_cooler_cost * @number_of_large_cooler) 
     @cost_estimate_cellar_small = (@small_cellar_cost * @number_of_small_cellar)
     @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
-    #Rails.logger.debug("$ small cooler: #{@cost_estimate_cooler_small.inspect}") 
-    #Rails.logger.debug("$ large cooler: #{@cost_estimate_cooler_large.inspect}")
-    #Rails.logger.debug("$ small cellar: #{@cost_estimate_cellar_small.inspect}")
-    #Rails.logger.debug("$ large cellar: #{@cost_estimate_cellar_large.inspect}") 
     
     @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
     #Rails.logger.debug("Total $: #{@total_cost_estimate.inspect}") 
   
-    # update delivery prefrence drink total estimation
-    if status == "update"
-      @delivery_preferences.update(price_estimate: @total_cost_estimate, max_cellar: @max_cellar)
-    else
-      @delivery_preferences.temp_cost_estimate = @total_cost_estimate
-    end
+    # update delivery preferences
+    DeliveryPreference.update(delivery_preferences.id, price_estimate: @total_cost_estimate, max_cellar: @max_cellar)
     
   end # end delivery_estimator method
 

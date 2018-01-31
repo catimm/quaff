@@ -15,11 +15,13 @@
 #  max_cellar          :integer
 #  gluten_free         :boolean
 #  admin_comments      :text
+#  drinks_per_delivery :integer
 #
 
 class DeliveryPreference < ActiveRecord::Base
   belongs_to :user
   belongs_to :drink_option
   
+  attr_accessor :temp_max_cellar # to hold temp # of max cellar drinks
   attr_accessor :temp_cost_estimate # to hold temp cost estimate
 end
