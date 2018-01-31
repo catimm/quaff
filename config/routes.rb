@@ -148,6 +148,12 @@ Rails.application.routes.draw do
   post '/signup/process_home_address_getting_started' => 'signup#process_home_address_getting_started', :as => 'process_home_address_getting_started'
 
   get '/signup/delivery_address_getting_started' => 'signup#delivery_address_getting_started', :as => 'delivery_address_getting_started'
+  
+  get '/signup/account_membership_getting_started' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
+  post '/signup/process_account_membership_getting_started/:id' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
+  
+  get '/signup/change_membership_choice' => 'signup#change_membership_choice', :as => 'change_membership_choice'
+  get '/signup/process_change_membership_choice/:id' => 'signup#process_change_membership_choice', :as => 'process_change_membership_choice'
    
   get '/signup/drink_choice_getting_started' => 'signup#drink_choice_getting_started', :as => 'drink_choice_getting_started'
   post '/signup/process_drink_choice_getting_started/:id' => 'signup#process_drink_choice_getting_started', :as => 'process_drink_choice_getting_started'
@@ -164,12 +170,12 @@ Rails.application.routes.draw do
 
   get '/signup/drinks_large_getting_started' => 'signup#drinks_large_getting_started', :as => 'drinks_large_getting_started'
   post '/signup/process_drinks_large_getting_started/:id' => 'signup#process_drinks_large_getting_started', :as => 'process_drinks_large_getting_started'
-    
+  
+  get '/signup/delivery_frequency_getting_started' => 'signup#delivery_frequency_getting_started', :as => 'delivery_frequency_getting_started'
+  post '/signup/process_delivery_frequency_getting_started/:id' => 'signup#process_delivery_frequency_getting_started', :as => 'process_delivery_frequency_getting_started'
+   
   get '/signup/delivery_preferences_getting_started' => 'signup#delivery_preferences_getting_started', :as => 'delivery_preferences_getting_started'
   get '/signup/choose_delivery_time' => 'signup#choose_delivery_time', :as => 'choose_delivery_time'
-  
-  get '/signup/account_membership_getting_started' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
-  post '/signup/process_account_membership_getting_started/:id' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
   
   get '/signup/signup_thank_you/:id' => 'signup#signup_thank_you', :as => 'signup_thank_you'
   
@@ -180,7 +186,7 @@ Rails.application.routes.draw do
   patch '/signup/account_info_process' => 'signup#account_info_process', :as => 'account_info_process'
   
   # user early signup process
-  get '/early_signup/invitation_code' => 'early_signup#invitation_code', :as => 'invitation_code'
+  get '/early_signup/invitation_code/:id' => 'early_signup#invitation_code', :as => 'invitation_code'
   post '/early_signup/process_invitation_code' => 'early_signup#process_invitation_code', :as => 'process_invitation_code'
   
   post '/early_signup/request_code' => 'early_signup#request_code', :as => 'request_code'

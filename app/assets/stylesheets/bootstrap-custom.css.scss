@@ -14,11 +14,12 @@ $light-gray: #f0f0f0;
 $medium-light-gray: #d9d9d9;
 $medium-gray: #909090;
 $dark-gray: #747474;
-$extra-dark-gray: #545454;
+$extra-dark-gray: #606060;
 $extra-extra-dark-gray: #242424;
 $black: #000;
 $dark-blue: #4780b4;
 $bright-blue: #0087cb;
+$ninty-five-person-version-bright-blue: #e6f7ff;
 $light-blue: #17B1FB;
 $faded-blue: #91D8FA;
 $super-light-blue: #71CDF9;
@@ -64,7 +65,8 @@ $signup-category-image-background-start: $medium-light-gray;
 $signup-category-image-background-chosen: $super-light-faded-blue;
 $soft-border: $extra-light-gray;
 $homepage-works-icon: $medium-light-gray; 
-$header-text: $black;
+$navbar-color: $extra-dark-gray;
+$header-text: $extra-dark-gray;
 $normal-text: $dark-gray;
 $more-emphasized-text: $extra-dark-gray;
 $dark-border: $extra-dark-gray;
@@ -77,6 +79,7 @@ $special-text: $bright-orange;
 $best-guess-text: $bright-orange;
 $user-rating-text: $bright-blue;
 $action-background: $bright-blue;
+$drink-example-background: $ninty-five-person-version-bright-blue;
 $user-action: $bright-green;
 $rating-text: $bright-blue;
 $step-background: $light-green;
@@ -377,26 +380,57 @@ label {
     -o-background-size: cover;
     background-size: cover;
 }
-.valueStatement {
-  padding: 13% 0 20px 0;
-  height:90vh;
-  width: 100%;
-  position: fixed;
-  color: $white;
-  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
+.intro-section {
+  padding: 0 0 10px 0;
+}
+.value-statement {
+  padding: 110px 0 20px 0;
+  color: #606060;
   text-align: left;
-  div {
-    h1.brand-subfont {
-      font-size: 265% !important;
-      .homepage-extra-spacing {
-        letter-spacing: 1px;
-      }
-    }
-    h3.brand-subfont {
-      margin-top: 0;
+  h1.brand-subfont {
+    
+    .homepage-extra-spacing {
+      letter-spacing: 1px;
     }
   }
+  h3.brand-subfont {
+    margin-top: 0;
+  }
 }
+.example-drink-holder {
+  padding: 40px 0 0 0;
+  margin-bottom: 20px;
+}
+.large_drink_format {
+  width: 100px;
+  float: left;
+  margin-right: 10px;
+}
+.medium_drink_format {
+  padding-top: 143px;
+  width: 100px;
+  float: left;
+  margin-right: 8px;
+}
+.small_drink_format {
+  padding-top: 199px;
+  width: 100px;
+  float: left;
+}
+.carousel-fade {
+    .carousel-inner {
+        .item {
+            transition-property: opacity !important;
+        }
+        .item, .active.left, .active.right {
+            opacity: 0 !important;
+        }
+        .active, .next.left, .prev.right {
+            opacity: 1 !important;
+        }
+    }
+}
+
 #homepage-get-started-box {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -483,18 +517,15 @@ label {
 .first-section {
   margin-top: -90px;
 }
-.formButton-get-started-bottom-homepage {
-  width: 100%;
-  margin: 20px 0;
-  font-size: 16px;
-}
 .homepage-last-row {
   padding-bottom: 40px;
   margin-bottom: -20px !important;
 }
 .index-section-header {
   text-align: center;
-  margin: 35px 0;
+  margin: 25px 0;
+  color: $header-text;
+  line-height: 1.3;
 }
 .about-us-text {
   color: $normal-text;
@@ -555,12 +586,15 @@ label {
 .value-prop-holder {
   margin: 15px 0 10px 0;
 }
+.value-prop-icons {
+  margin-right: 10px;
+  float: left;
+}
 .value-header {
   color: $normal-text;
   text-align: justify;
   font-size: 20px;
-  float: left;
-  width: 90%;
+  width: 87%;
 }
 .value-desc {
   font-size: 18px;
@@ -569,10 +603,11 @@ label {
   line-height: 1.5;
 }
 .how-it-works-overview {
-  margin: 20px 0 30px 0;
+  margin: 0 0 30px 0;
 }
 .how-it-works-holder-row {
-  margin: 0 0 20px 0 !important;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 .how-it-works-number {
   float: right;
@@ -589,12 +624,6 @@ label {
     margin: 0 0 5px 11px;
   }
 }
-.how-it-works-text-holder {
-  margin-top: 16px;
-}
-.how-it-works-text-holder.second-point {
-  margin-top: 5px;
-}
 .how-it-works-icon-holder {
   float: left;
   margin-right: 7.5px;
@@ -604,20 +633,17 @@ label {
 }
 .how-it-works-desc {
   float: left;
-  margin-top: 0;
+  margin: 10px 0;
   color: $normal-text;
-  line-height: 1.5;
   vertical-align: middle !important;
-  span {
-    color: $action-background;
-  }
+  font-size: 20px;
 }
 .how-it-works-desc.second-point {
   margin-bottom: 0;
 }
 .vertical-dotted-line {
   border-right: 2px dashed $action-background;
-  height: 20px;
+  height: 25px;
   margin: 0 22px 0 0 !important; 
 }
 .icon-background {
@@ -661,19 +687,90 @@ label {
     margin: 0;
   }
 }
+.how-it-works-icons {
+  color: $action-background !important;
+  font-size: 24px !important;
+  margin: 5px 7px 0 0;
+  float: left;
+}
+.middle-price-example {
+  border-right: 1px solid $soft-border;
+  border-left: 1px solid $soft-border;
+}
+.price-example-chosen {
+  background: $white;
+  color: $action-background;
+  text-align: center;
+  h5 {
+    font-size: 16px;
+  }
+}
+.price-example-not-chosen {
+  background: $drink-example-background;
+  border-bottom: 1px solid $soft-border;
+  color: $less-emphasized-text;
+  text-align: center;
+  h5 {
+    font-weight: 200;
+  }
+}
+.price-example-not-chosen:hover {
+  background: #b3e6ff;
+  color: $action-background;
+  h5 {
+    font-weight: 400;
+    text-decoration: underline;
+  }
+}
 .expectations-statements {
   font-size: 18px;
   color: $normal-text;
   line-height: 1.5;
-  margin-left: -15px;
+  margin-bottom: 25px;
+  margin-top: 0;
 }
-.expectations-second-statement {
-  margin-top: 10px;
-}
-.expectations-third-statement {
-  margin: 30px 0 40px 0;
-  text-align: center;
+.sample-delivery-text {
+  color: $more-emphasized-text;
   font-size: 20px;
+  margin-top: 15px;
+  margin-left: 10px;
+  span {
+    color: $action-background;
+    sup {
+      font-size: 55%;
+      color: $action-background;
+      border: 1px solid $action-background;;
+      border-radius: 4px;
+      width: 12px;
+      height: 12px;
+      padding: 1px 3px 1px 2.5px;
+      top: -0.8em;
+    }
+  }
+}
+.example-delivery-info-row {
+  margin: 12.5px 0 5px 0;
+}
+.cider-explorer-example {
+  .example-delivery-info-row {
+    margin-left: -55px;
+  }
+}
+.beer-connoisseur-example {
+  .example-delivery-info-row {
+    margin-left: -30px;
+  }
+}
+.order-quantity-homepage {
+  color: $normal-text;
+  font-weight: 500;
+  margin: 10px 10px 0 0;
+  font-size: 15px;
+  sup {
+    border: 1px solid $less-emphasized-text;
+    border-radius: 4px;
+    padding: 1px 2px;
+  }
 }
 .craft-stage-container {
   text-align: center;
@@ -1246,6 +1343,21 @@ $beer-header-lines-to-show: 2;
   text-decoration: underline;
   float: left;
 }
+.beer-tile-header-homepage {
+  @extend .tile-header; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $beer-header-font-size*$beer-header-line-height*$beer-header-lines-to-show; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: $beer-header-font-size;
+  line-height: $beer-header-line-height;
+  -webkit-line-clamp: $beer-header-lines-to-show;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  float: left;
+}
 .beer-tile-header.rating-header {
   text-decoration: none !important;
 }
@@ -1409,8 +1521,10 @@ p {
       }
   }
 }
+.membership-details-row {
+  margin: 20px 0;
+}
 .homepage-plan-options {
-  text-align: center;
   border: 1px solid $less-emphasized-text !important;
   border-radius: 6px;
   margin: 0 !important;
@@ -1450,30 +1564,61 @@ p {
   text-align: center;
   color: $user-rating-text;
   font-weight: 500;
-  margin-bottom: 15px;
+  margin: 15px 0 10px 0;
 }
 .retail-plan-subheader {
   text-align: center;
+  height: 2*1.3*14px;
   color: $less-emphasized-text;
   font-weight: 400;
-  margin-top: 5px;
+  line-height: 1.3;
+  margin: 0 0 15px 0;
 }
-.retail-plan-feature-list {
-  text-align: left;
+.membership-plan-feature-setup {
+  text-align: right;
+  color: $more-emphasized-text;
+  padding-right: 0 !important;
+  padding-left: 5px !important;
+  h4 {
+    margin-top: 0 !important;
+    font-size: 15px !important;
+    sup {
+      font-size: 9px;
+      border: 1px solid $less-emphasized-text;
+      border-radius: 4px;
+      padding: 1px 3px;
+      margin-right: 2px;
+    }
+  }
+}
+.membership-plan-feature-shown {
+  color: $user-rating-text;
+  font-weight: 500;
+  padding-right: 2.5px !important;
+  padding-left: 5px !important;
+  h4 {
+    font-size: 16px !important;
+    margin-top: 0 !important;
+    sup {
+      font-size: 9px;
+      border: 1px solid $user-rating-text;
+      border-radius: 4px;
+      padding: 1px 3px;
+    }
+  }
+}
+.plan-get-started-button {
+  width: 80%;
+  margin: 10px 10% 0 10%;
+  font-size: 14px;
+}
+.plan-get-started-button:hover {
+  background: $user-rating-text !important;
+}
+.membership-extra-info {
   color: $normal-text;
-  padding-left: 0 !important;
-}
-.retail-plan-feature-list-12-mo {
-  text-align: left;
-  color: $normal-text;
-  padding-left: 0 !important;
-  width: 105%;
-}
-#retail-plan-feature-list-12-mo {
-  width: 105%;
-}
-.retail-plan-option-or {
-  color: $normal-text;
+  font-style: italic;
+  text-align: center;
 }
 // Rating page
 .rating-from-supply {
@@ -2533,13 +2678,13 @@ $beer-header-lines-to-show-fp: 1;
   border-color: #4cae4c !important;
 }
 .homeNavbar {
-  background: transparent !important;
-  border-color: transparent !important;
+  background: #606060 !important;
+  border-color: #606060 !important;
   z-index: 9999;
 }
 .signup_navbar, .common_navbar {
-  background: $dark-gray !important;
-  border-color: $dark-gray !important;
+  background: $navbar-color !important;
+  border-color: $navbar-color !important;
   z-index: 9999;
 }
 .navbar {
@@ -2565,7 +2710,7 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
   .navbar-header-home {
-    text-align: center !important;
+    
     a { 
       font-size: 36px;
       font-weight: 400;
@@ -2582,16 +2727,19 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
 }
-.btn.formButton-home-header-get-started-button {
-  width: 100%;
-  margin: 12.5px 0 0 30px !important;
+.btn.formButton-home-get-started-button {
+  width: 40%;
+  margin: 20px 0 0 0px !important;
 }
-.btn.formButton-home-header-get-started-button:hover {
-  width: 100%;
-  margin-top: 7.5px;
-  background: $user-action !important;
-  border-color: #4cae4c !important;
-  color: $white !important;
+.home-gift-certificate-button {
+  margin: 12px 0 0 20px;
+  width: 110%;
+  font-size: 14px !important;
+  padding: 6px 12px !important;
+}
+.home-gift-certificate-button:hover {
+  background: $action-background !important;
+  border-color: #0077b3 !important;
 }
 .dropdown-toggle {
   height: 64px;
@@ -3597,6 +3745,11 @@ $beer-header-lines-to-show-fp: 1;
 .first-row-container {
   
 }
+
+.top-margin-10 {
+  margin-top: 10px;
+}
+
 .section-header {
   font-weight: 500;
   padding-bottom: 10px;
@@ -5290,16 +5443,18 @@ input[type="checkbox"] {
 }
 .delivery-info-box.subtotal, .delivery-setgings-info-box.subtotal {
   float: left;
-  margin-right: 16px;
+  margin-right: 2px;
   border: 1px solid $normal-text;
+  min-width: 80px;
   h4 {
     color: $normal-text;
   }
 }
 .delivery-info-box.sales-tax, .delivery-settings-info-box.sales-tax {
   float: left;
-  margin-right: 16px;
+  margin-right: 2px;
   border: 1px solid $less-emphasized-text;
+  min-width: 50px;
   h4 {
     color: $less-emphasized-text;
   }
@@ -6552,6 +6707,21 @@ $delivery-beer-header-lines-to-show: 2;
     text-decoration: underline;
     float: left;
   }
+  .beer-tile-header-homepage {
+    @extend .tile-header; 
+    display: block; /* Fallback for non-webkit */
+    display: -webkit-box;
+    height: $beer-header-font-size*$beer-header-line-height*$beer-header-lines-to-show; /* Fallback for non-webkit */
+    margin: 5px auto 5px auto;
+    font-size: $beer-header-font-size;
+    line-height: $beer-header-line-height;
+    -webkit-line-clamp: $beer-header-lines-to-show;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: underline;
+    float: left;
+  }
   .tile-subheader {
     font-size: 11px; 
     color: $less-emphasized-text;
@@ -6827,6 +6997,9 @@ $delivery-beer-header-lines-to-show: 2;
     width: 40%;
   }
   // Mobile Index page
+header {
+  min-height: 100vh;
+}
 .banner {
     min-height: 100vh;
     background: url("https://s3-us-west-2.amazonaws.com/knird/banner.jpg") no-repeat scroll center center / cover transparent;
@@ -6837,26 +7010,47 @@ $delivery-beer-header-lines-to-show: 2;
     -o-background-size: cover;
     background-size: cover;
 }
-.valueStatement {
-  padding-top: 20%;
-  height:100%;
-  width: 100%;
-  position: relative;
-  color: $white;
-  text-shadow: 1px 1px 15px rgba(0, 0, 0, 0.6);
-  text-align: left;
-  div {
-    h1.brand-subfont {
-      font-size: 165% !important;
-      .homepage-extra-spacing {
-        letter-spacing: 1px;
-      }
-    }
-    h3.brand-subfont {
-      font-size: 120%;
-      margin: 0;
+.navLinks {
+  padding-top: 30px;
+  width: 80px;
+  a {
+    padding-left: 10px !important;
+  }
+}
+.value-statement {
+  padding-top: 40px;
+  padding: 20px 0 10px 20px !important;
+  color: #606060;
+  h1.brand-subfont {
+    font-size: 28px !important;
+    .homepage-extra-spacing {
+      letter-spacing: 1px;
     }
   }
+}
+.btn.formButton-home-get-started-button {
+  width: 40%;
+  margin: 20px 0 0 0px !important;
+}
+.example-drink-holder {
+  padding: 5px 0 0 75px;
+  margin-bottom: 20px;
+}
+.large_drink_format {
+  width: 70px;
+  float: left;
+  margin-right: 10px;
+}
+.medium_drink_format {
+  padding-top: 99.8px !important;
+  width: 70px;
+  float: left;
+  margin-right: 8px;
+}
+.small_drink_format {
+  padding-top: 139.41px !important;
+  width: 70px;
+  float: left;
 }
 .homepage-or-try-another-zip {
   margin: 10px 0 0 0 !important;
@@ -6889,6 +7083,7 @@ $delivery-beer-header-lines-to-show: 2;
 }
 .value-header {
   font-size: 16px;
+  margin-top: 0 !important;
 }
 .value-desc {
   font-size: 16px;
@@ -6915,6 +7110,10 @@ $delivery-beer-header-lines-to-show: 2;
 }
 .how-it-works-desc {
   font-size: 16px;
+  margin-top: 0 !important;
+}
+.how-it-works-overview {
+  margin: 0 0 10px 0;
 }
 .vertical-dotted-line {
   height: 70px;
@@ -6928,6 +7127,43 @@ $delivery-beer-header-lines-to-show: 2;
   color: $normal-text;
   line-height: 1.5;
   margin-left: 0;
+}
+.price-examples {
+  padding: 0 !important;
+  h5 {
+    font-size: 13.5px !important;
+  }
+}
+.sample-delivery-text {
+  margin-left: 0 !important;
+  font-size: 18px;
+}
+.cider-explorer-example, .beer-connoisseur-example {
+  .example-delivery-info-row {
+    margin-left: 15px;
+  }
+}
+.example-delivery-info-row {
+    padding: 0 15px !important;
+    margin-left: 15px;
+}
+.delivery-info-box.subtotal, .delivery-setgings-info-box.subtotal {
+  min-width: 50px;
+  h4 {
+    margin: 0 0 0 5px !important;
+  }
+}
+.delivery-info-box.sales-tax, .delivery-settings-info-box.sales-tax {
+  min-width: 40px;
+  h4 {
+    margin: 0 0 0 2px !important; 
+  }
+}
+.delivery-info-box.total-price, .delivery-settings-info-box.total-price {
+  min-width: 50px;
+  h4 {
+    margin: 0 0 0 5px !important;
+  }
 }
 #mobile-delivery-thoughts-container {
   margin-bottom: 10px;
@@ -6958,12 +7194,12 @@ $delivery-beer-header-lines-to-show: 2;
   text-align: left;
   color: $normal-text;
   padding-left: 0 !important;
+  list-style: none;
 }
 .early-signup-checkout-extra-note.note-text {
   width: 94%;
 }
 .homepage-plan-options {
-  text-align: center;
   border: 1px solid $less-emphasized-text !important;
   border-radius: 6px;
   margin: 0 0 10px 0 !important;
@@ -6984,8 +7220,11 @@ $delivery-beer-header-lines-to-show: 2;
   width: 100%;
 }
 .index-section-header {
-  font-size: 20px;
-  margin: 25px 0;
+  font-size: 18px;
+  margin: 20px 0;
+}
+.value-prop-row {
+  margin-top: 10px !important;
 }
 .value-prop-section {
   padding-bottom: 0 !important;
@@ -7427,17 +7666,11 @@ $delivery-beer-header-lines-to-show: 2;
       -o-background-size: cover;
       background-size: cover;
   }
-  .valueStatement {
-    div {
-      h1.brand-subfont {
-        font-size: 210% !important;
-        .homepage-extra-spacing {
-          letter-spacing: 1px;
-        }
-      }
-      h3.brand-subfont {
-        font-size: 160%;
-        margin: 0;
+  .value-statement {
+    h1.brand-subfont {
+      font-size: 30px;
+      .homepage-extra-spacing {
+        letter-spacing: 1px;
       }
     }
   }
@@ -7449,13 +7682,12 @@ $delivery-beer-header-lines-to-show: 2;
     width: 90%;
   }
   .vertical-dotted-line {
-    height: 80px;
+    height: 25px;
   }
   .early-signup-checkout-extra-note.note-text {
     width: 94%;
   }
   .homepage-plan-options {
-    text-align: center;
     border: 1px solid $less-emphasized-text !important;
     border-radius: 6px;
     margin: 0 0 10px 0 !important;
