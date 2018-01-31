@@ -24,11 +24,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="container">
-			<div class="col-xs-offset-4 col-xs-4 text-center">
-				<%= link_to "Next", drinks_large_getting_started_path(@user.id), disabled: true, class: "btn btn-default btn-success signup-drinks-per-week-next-step", id: "liked_styles_next_step_button" %>
-			</div>
-		</div>
+	<div class="row drinks-per-week-meaning-row <%= @drinks_per_week_meaning_show_status %>" id="drinks-per-week-meaning-row">
+		<%= render 'drinks_per_week_meaning' %>
 	</div>
 <%= render 'layouts/footer' %>

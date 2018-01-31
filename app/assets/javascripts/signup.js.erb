@@ -151,14 +151,25 @@ $(function() {
 			
 			$('#drink_choice_next_step_button').removeAttr('disabled');
 			$("#drink_choice_next_step_button").removeClass('btn-default').addClass('btn-success');
-		} else {
+		} 
+		else if(current_page == "orders") {
+			var drink_type = "Beer";
+			if (new_value == 2) {
+				drink_type = "Cider";
+			}
+			else if (new_value == 3) {
+				drink_type = "Beer & Cider";
+			}
+			$('#order-drink-type-text').text(drink_type);
+			$('#order_drink_option_id').val(new_value);
+		}
+		else {
 			$('#delivery_preference_drink_option_id').val(new_value);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 			// indicate there is unsave data changed on the page
 			unsaved = true;
 		}
-		
 	});
 	
 	$(document).on('click', '.signup-journey-image-holder', function () {
@@ -234,8 +245,32 @@ $(function() {
 		
 		if(current_page == "signup") {
 			var controller_url = "/signup/process_drinks_weekly_getting_started/" + drinks_per_week
-			$("#liked_styles_next_step_button").removeAttr('disabled');
-		} else {
+			if($("#drinks-per-week-meaning-row").hasClass("hidden")) {
+				$("#drinks-per-week-meaning-row").removeClass("hidden").addClass("show");
+			}
+		} 
+		else if (current_page == "orders") {
+			var controller_url = "";
+			var currently_selected_large_format_drinks = parseInt($('#order_number_of_large_drinks').val() | "0");
+			var max_large_format_drink = Math.ceil(drinks_per_week/2.0);
+			for (var i = 0; i <= 12; i++) {
+				if( i <= max_large_format_drink) {
+					$('.number-box-holder.large-format:eq(' + i + ')').removeClass('hidden').addClass('show');
+				}
+				else {
+					$('.number-box-holder.large-format:eq(' + i + ')').removeClass('show').addClass('hidden');
+				}
+			}
+
+			if (currently_selected_large_format_drinks > max_large_format_drink) {
+				$('.number-box-holder.large-format:eq(' + max_large_format_drink + ')').addClass('chosen');
+				$('.number-box-holder.large-format:eq(' + currently_selected_large_format_drinks + ')').removeClass('chosen');
+				$("#order_number_of_large_drinks").val(large_format);
+			}
+
+			$('#order_number_of_drinks').val(drinks_per_week);
+		}
+		else {
 			$("#delivery_preference_drinks_per_week").val(drinks_per_week);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
@@ -243,13 +278,16 @@ $(function() {
 			// indicate there is unsave data changed on the page
 			unsaved = true;
 		}
-		 
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: controller_url
-		});
 		
+		// send data to controller to update delivery preferences
+		// only for signup and delivery preferences page.
+		if (controller_url != "") {
+			$.ajax({
+				type: "POST",
+				url: controller_url
+			});
+		}
+	
 	});
 	
 	$(document).on('click', '.signup-plan-start-holder', function () {
@@ -295,8 +333,12 @@ $(function() {
 		
 		if(current_page == "signup") {
 			var controller_url = "/signup/process_drinks_large_getting_started/" + large_format
-			$("#large_drinks_next_step_button").removeAttr('disabled');
-		} else {
+		} 
+		else if (current_page == "orders") {
+			var controller_url = "";
+			$("#order_number_of_large_drinks").val(large_format);
+		}
+		else {
 			$("#delivery_preference_max_large_format").val(large_format);
 			$('#update_delivery_preferences_button').removeAttr('disabled');
 			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
@@ -305,12 +347,15 @@ $(function() {
 			unsaved = true;
 		}
 		
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: controller_url
-		});
-		
+		// send data to controller to update delivery preferences
+		// only for signup and delivery preferences page.
+		if (controller_url != "") {
+			// send data to controller
+			$.ajax({
+			type: "POST",
+			url: controller_url
+			});
+		}
 	});
 	
 	// send additional delivery preferences to controller

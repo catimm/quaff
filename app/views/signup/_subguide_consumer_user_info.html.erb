@@ -1,7 +1,7 @@
 <% @user_address_test = UserAddress.where(account_id: current_user.account_id) %>
 <% if @user_address_test.blank? %>
 	<div class="col-xs-4 no-padding signup-guide-column-holder <%= @user_personal_info_chosen %>">
-		<%= link_to "personal preferences", edit_user_path(@user.id), class: "guide-header #{@user_personal_info_chosen}" %>
+		<%= link_to "personal", edit_user_path(@user.id), class: "guide-header #{@user_personal_info_chosen}" %>
 		<h5 class="pipe-separator">&#124;</h5>
 	</div>
 	<div class="col-xs-4 no-padding signup-guide-column-holder <%= @user_delivery_address_chosen %>">
@@ -12,23 +12,23 @@
 		<% end %>
 		<h5 class="pipe-separator">&#124;</h5>
 	</div>
-	<div class="col-xs-4 no-padding signup-guide-column-holder <%= @user_plan_chosen %>">
+	<div class="col-xs-4 no-padding signup-guide-column-holder <%= @account_address_chosen %>">
 		<% if @user.getting_started_step >= 3 %>
-			<%= link_to "plan choice", account_membership_getting_started_path, class: "guide-header #{@user_plan_chosen}" %>
+			<%= link_to "delivery preferences", delivery_preferences_getting_started_path, class: "guide-header #{@account_address_chosen}" %>
 		<% else %>
-			<h5 class="guide-header">plan choice</h5>
+			<h5 class="guide-header">delivery preferences</h5>
 		<% end %>
-	</div>	
+	</div>
 <% else %>
 	<div class="col-xs-6 col-sm-offset-2 col-sm-4 col-md-offset-3 col-md-3 no-padding signup-guide-column-holder <%= @user_personal_info_chosen %>">
 		<%= link_to "personal", edit_user_path(@user.id), class: "guide-header #{@user_personal_info_chosen}" %>
 		<h5 class="pipe-separator">&#124;</h5>
 	</div>
-	<div class="col-xs-4 no-padding signup-guide-column-holder <%= @user_plan_chosen %>">
+	<div class="col-xs-6 col-sm-4 col-md-3 no-padding signup-guide-column-holder <%= @account_address_chosen %>">
 		<% if @user.getting_started_step >= 3 %>
-			<%= link_to "plan choice", account_membership_getting_started_path, class: "guide-header #{@user_plan_chosen}" %>
+			<%= link_to "delivery preferences", delivery_preferences_getting_started_path, class: "guide-header #{@account_address_chosen}" %>
 		<% else %>
-			<h5 class="guide-header">plan choice</h5>
+			<h5 class="guide-header">delivery preferences</h5>
 		<% end %>
 	</div>
 <% end %>

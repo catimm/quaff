@@ -618,11 +618,11 @@ class UsersController < ApplicationController
         when 'customer.subscription.trial_will_end'
           #Rails.logger.debug("Subscription trial soon ending event")
         when 'customer.created'
-          Rails.logger.debug("Customer created event")
+          #Rails.logger.debug("Customer created event")
           # get the customer number
           @stripe_customer_number = event_object['id']
           #Rails.logger.debug("Stripe customer number: #{@stripe_customer_number.inspect}")
-          #@stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
+          @stripe_subscription_number = event_object['subscriptions']['data'][0]['id']
           # get the user's info
           @user_email = event_object['email']
           #Rails.logger.debug("Customer email #{@user_email.inspect}")
@@ -634,7 +634,8 @@ class UsersController < ApplicationController
           #Rails.logger.debug("User Subscription: #{@user_subscription.inspect}")
           
           # update the user's subscription info
-          @user_subscription.update(stripe_customer_number: @stripe_customer_number)
+          @user_subscription.update(stripe_customer_number: @stripe_customer_number, 
+                                    stripe_subscription_number: @stripe_subscription_number)
       end
     rescue Exception => ex
       render :json => {:status => 422, :error => "Webhook call failed"}

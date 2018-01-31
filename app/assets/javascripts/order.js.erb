@@ -1,0 +1,17 @@
+$(function() {
+    $('#order-change-drink-type').click(function() {
+        if ($('#order-drink-type').hasClass('hidden')) {
+            $('#order-change-drink-type a').text('Hide');
+            $('#order-drink-type').removeClass('hidden');
+        }
+        else {
+            $('#order-change-drink-type a').text('Change');
+            $('#order-drink-type').addClass('hidden');
+        }
+    });
+
+    $('.order-delivery-date-change-row').click(function() {
+        var selectedDate = $(this).attr('id');
+        $('#order_delivery_date').val(selectedDate);
+    });
+});

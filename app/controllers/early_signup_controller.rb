@@ -8,8 +8,8 @@ class EarlySignupController < ApplicationController
     # instantiate invitation request in case user doesn't have a code
     @request_invitation = InvitationRequest.new
     
-    # create membership choice session variable
-    session[:new_membership] = params[:id]
+    # set guide CSS
+    @code_step = 'current'
     
   end # end invitation_code action
   

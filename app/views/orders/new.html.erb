@@ -1,0 +1,91 @@
+<%= render 'layouts/header' %>
+<%= form_for @order, :url => {:action => "process_order"} do |f| %>
+            <%= f.hidden_field :delivery_date %>
+			<%= f.hidden_field :drink_option_id %>
+			<%= f.hidden_field :number_of_drinks %>
+			<%= f.hidden_field :number_of_large_drinks %>
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Order Drinks</h1>
+		</div>
+	</div>
+</div>
+<div class="row top-margin-10">
+	    <div class="container" id="user-delivery-preferences-holder">
+	        <div class="row no-margin">
+                <div class="col-xs-10 col-sm-4 no-padding">
+                    <h3 class="delivery-preference-prompt">Drink preference: <span class="delivery-preference-prompt" id="order-drink-type-text"><%= @drink_type_preference %></span></h3>
+                </div>
+                <div class="col-xs-2 col-sm-1 no-padding" id="order-change-drink-type">
+                    <a href="#" id="order-change-drink-type-text">Change</a>
+                </div>
+            </div>
+            <div class="row no-margin">
+                <div class="col-xs-offset-3 col-sm-offset-1 col-xs-6 no-padding-right hidden" id="order-drink-type">
+                    <div class="row preferences-drink-category-row-holder top-margin-10">
+                        <%= render 'delivery_settings/drink_category_choice' %>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row no-margin">
+                <div class="col-xs-12 no-padding">
+                    <div class="row no-margin">
+                        <div class="col-sm-6 no-padding">
+                            <h3 class="delivery-preference-prompt">How many drinks would you like?</h3>
+                        </div>
+                        <div class="col-sm-6 no-padding-right">
+                            <%= render 'signup/drinks_per_week_choice'%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row no-margin">
+                <div class="col-xs-12 no-padding">
+                    <div class="row no-margin">
+                        <div class="col-sm-6 no-padding">
+                            <h3 class="delivery-preference-prompt">How many large format (22oz) drinks would you like?</h3>
+                        </div>
+                        <div class="col-sm-6 no-padding-right" id="order_large_format_drinks">
+                            <%= render 'signup/large_format_per_week_choice'%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row no-margin">
+                <div class="col-xs-12 no-padding">
+                    <div class="row no-margin">
+                        <div class="col-sm-6 no-padding">
+                            <h3 class="delivery-preference-prompt">Additional requests</h3>
+                        </div>
+                        <div class="col-sm-6 delivery-additional-request">
+                            <%= f.text_area :additional_requests, {class: 'form-control', placeholder: 'For example, "All IPAs" or "I want to improve my cellar selection"'}  %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row no-margin">
+                <div class="col-xs-12 no-padding">
+                    <div class="row no-margin">
+                        <div class="col-sm-6 no-padding">
+                            <h3 class="delivery-preference-prompt">Choose your delivery Date</h3>
+                        </div>
+                        <div class="col-sm-6 no-padding-right" id="order_large_format_drinks">
+                            <%= render 'delivery_date_options'%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-offset-2 col-xs-6 col-sm-offset-3 col-sm-4 text-center">
+                    <input type="submit" class="btn btn-success user-info-next-button" id="place-order-button" value="Place Order"></input>
+                </div>
+            </div>
+	    </div>
+    </div>
+<% end %>
+<%= render 'layouts/footer' %>

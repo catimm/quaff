@@ -23,9 +23,88 @@
 			</div>
 		</div>
 	</div>
-	<div class="row no-margin text-center">
-		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
-			<%= link_to "Next", @next_step, disabled: true, class: "btn btn-default btn-success signup-styles-next-step", id: "large_drinks_next_step_button" %>
+	<div class="row <%= @drinks_per_week_meaning_show_status %> " id="drinks-per-week-meaning">
+		<div class="container hidden-xs">
+			<div class="row">
+				<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
+					<% if !@delivery_preferences.max_large_format.nil? %>
+						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-signup">
+							<%= render 'per_delivery_estimate' %>
+						</div>
+					<% else %>
+						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-signup">
+							
+						</div>
+					<% end %>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-offset-3 col-sm-6 large-format-meaning-parent">
+					<div class="row no-margin drinks-per-week-meaning-first-row">
+						<div class="col-xs-12">
+							<h4 class="drinks-per-week-meaning-text">
+								We consider a large format drink to equal two drinks and we adjust your small drink total accordingly.
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin drinks-per-week-meaning-first-row">
+						<div class="col-xs-12">
+							<h4 class="drinks-per-week-meaning-text">
+								You can adjust your price estimate by changing your drink input here or on your delivery 
+								preferences page after signup.
+							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row no-margin text-center">
+				<div class="col-xs-0 col-sm-4"></div>
+				<div class="col-xs-12 col-sm-4">
+						<%= link_to "Next", @next_step, class: "btn btn-default btn-success signup-styles-next-step", id: "liked_styles_next_step_button" %>
+				</div>
+			</div>
+		</div>
+		<div class="container hidden-sm hidden-md hidden-lg hidden-xl">
+			<div class="row">
+				<div class="col-xs-1"></div>
+				<div class="col-xs-10">
+					<% if !@delivery_preferences.max_large_format.nil? %>
+						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-signup">
+							<%= render 'per_delivery_estimate' %>
+						</div>
+					<% else %>
+						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-signup">
+							
+						</div>
+					<% end %>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-1"></div>
+				<div class="col-xs-10 large-format-meaning-parent">
+					<div class="row no-margin drinks-per-week-meaning-first-row">
+						<div class="col-xs-12">
+							<h4 class="drinks-per-week-meaning-text">
+								We consider a large format drink to equal two drinks and we adjust your small drink total accordingly.
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin drinks-per-week-meaning-first-row">
+						<div class="col-xs-12">
+							<h4 class="drinks-per-week-meaning-text">
+								You can adjust your price estimate by changing your drink input here or on your delivery 
+								preferences page after signup.
+							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row no-margin text-center">
+				<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+					<%= link_to "Next", @next_step, class: "btn btn-default btn-success signup-styles-next-step", id: "liked_styles_next_step_button" %>
+				</div>
+			</div>
 		</div>
 	</div>
+			
 <%= render 'layouts/footer' %>
