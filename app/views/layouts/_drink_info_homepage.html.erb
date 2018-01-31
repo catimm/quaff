@@ -1,0 +1,29 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<div class="col-xs-2 col-sm-2 brewery-image-holder-universal">
+		<% if !drink.beer.brewery.image.blank? %>
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+		<% else %>
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-xs-10 no-padding drink-name-and-info-holder-universal">
+		<%= render 'layouts/drink_name_and_info_homepage', drink: drink.beer %>	
+	</div>
+</div>
+<div class="row no-margin size-price-row">
+	<div class="col-xs-3">
+		<h5 class="svg-holder" data-toggle="tooltip" title="<%= drink.size_format.format_name %>" data-placement="right">
+			<%= svg drink.size_format.image %>
+		</h5>
+	</div>
+	<div class="col-xs-4 text-center">
+		<h5 class="order-quantity-homepage">Qty: <%= drink.quantity.round %></h5>
+	</div>
+	<div class="col-xs-5 text-right">
+		<h5 class="item-price">
+			<%= number_to_currency(drink.drink_price, precision: 2) %> each
+		</h5>		
+	</div>
+</div>

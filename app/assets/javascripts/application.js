@@ -38,6 +38,7 @@ jQuery( function($) {
     $('div').tooltip();
     $('a').tooltip();
     $('sup').tooltip();
+    $('span').tooltip();
     $('p').tooltip();
     $('h1').tooltip();
     $('h2').tooltip();

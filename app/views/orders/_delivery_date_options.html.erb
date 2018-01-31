@@ -1,0 +1,18 @@
+<% @first_day = Time.now.in_time_zone("Pacific Time (US & Canada)").hour >= 17 ? (Date.today + 1.days) : Date.today  %>
+<% (1..12).each do |i| %>
+	<% @next_date = @first_day + (i).days %>
+	<% @next_date_id = @next_date.strftime("%Y-%m-%d") %>
+    <div class="col-sm-2 no-padding delivery-date-change-row-holder">
+        <div class="row no-margin delivery-date-change-row order-delivery-date-change-row text-center" id="<%= @next_date_id %>">
+            <div class="col-xs-12 delivery-change-month-holder">
+                <h1 class="delivery-change-month"><%= (@next_date).strftime("%^b") %></h1>
+            </div>
+            <div class="col-xs-12 delivery-change-date-holder">
+                <h1 class="delivery-change-date"><%= (@next_date).strftime("%e") %></h1>
+            </div>
+            <div class="col-xs-12 delivery-change-day-holder">
+                <h1 class="delivery-change-day"><%= (@next_date).strftime("%^a") %></h1>
+            </div>
+        </div>
+    </div>
+<% end %>

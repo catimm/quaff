@@ -1,4 +1,49 @@
 $(function () {
+		// set delay function
+
+		
+		var delay_small_fade = (function(){
+		  var timer = 0;
+		  return function(callback, ms){
+		    clearTimeout (timer);
+		    timer = setTimeout(callback, ms);
+		  };
+		})();
+		
+		var delay_small = (function(){
+		  var timer = 0;
+		  return function(callback, ms){
+		    clearTimeout (timer);
+		    timer = setTimeout(callback, ms);
+		  };
+		})();
+		
+
+		
+		$('#large_drink_format_carousel').fadeIn(1000, function(){
+		  $(this).removeClass("hidden");
+		  $(this).carousel({
+		      pause: null,
+		      interval: 3000
+		  });
+		});
+			
+		$('#medium_drink_format_carousel').delay(500).fadeIn(1000, function(){
+		  $(this).removeClass("hidden");
+		  $(this).carousel({
+		      pause: null,
+		      interval: 3000
+		  });
+		});
+		
+		$('#small_drink_format_carousel').delay(1000).fadeIn(1500, function(){
+		  $(this).removeClass("hidden");
+		  $(this).carousel({
+		      pause: null,
+		      interval: 3000
+		  });
+		});
+		
 		$(document).on('keyup', '#check-zip-code', function () {
 		   var zipCode = $(this).val();
 		   if(zipCode.length > 4){
@@ -23,26 +68,71 @@ $(function () {
 	
 		});
 		
-		// set function for sticky scroller
-		function lockHeaderButton() {
-			if ( window.location.pathname == '/' ) {
-			//if(window.location.href.indexOf("reloads") > -1) {
-			    var move = function() {
-			        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight();
-			        var ot = $("#home-scroller-anchor").offset().top;
-			        if(st > ot) {
-			            $("#home-navbar").addClass("common_navbar");
-			        } else {
-			            if(st <= ot) {
-			                $("#home-navbar").removeClass("common_navbar");
-			            }
-			        }
-			    };
-			    $(window).scroll(move);
-			    move();
+		// change example delivery view
+		$(document).on("click", ".price-examples", function() {
+			var this_id = $(this).attr('id');
+			
+			if (this_id == "cider-explorer") {
+				// change this button class
+				$(".cider-explorer-example").removeClass("hidden").addClass("show");
+				$("#cider-explorer").removeClass("price-example-not-chosen").addClass("price-example-chosen");
+				// determine other button that needs change
+				if ($(".beer-geek-example").hasClass("show")) {
+					$(".beer-geek-example").removeClass("show").addClass("hidden");
+					$("#beer-geek").removeClass("price-example-chosen").addClass("price-example-not-chosen");
+				} else {
+					$(".beer-connoisseur-example").removeClass("show").addClass("hidden");
+					$("#beer-connoisseur").removeClass("price-example-chosen").addClass("price-example-not-chosen");
+				}
+			} else if (this_id == "beer-geek") {
+				// change this button class
+				$(".beer-geek-example").removeClass("hidden").addClass("show");
+				$("#beer-geek").removeClass("price-example-not-chosen").addClass("price-example-chosen");
+				// determine other button that needs change
+				if ($(".cider-explorer-example").hasClass("show")) {
+					$(".cider-explorer-example").removeClass("show").addClass("hidden");
+					$("#cider-explorer").removeClass("price-example-chosen").addClass("price-example-not-chosen");
+				} else {
+					$(".beer-connoisseur-example").removeClass("show").addClass("hidden");
+					$("#beer-connoisseur").removeClass("price-example-chosen").addClass("price-example-not-chosen");
+				}
+			} else {
+				// change this button class
+				$(".beer-connoisseur-example").removeClass("hidden").addClass("show");
+				$("#beer-connoisseur").removeClass("price-example-not-chosen").addClass("price-example-chosen");
+				// determine other button that needs change
+				if ($(".beer-geek-example").hasClass("show")) {
+					$(".beer-geek-example").removeClass("show").addClass("hidden");
+					$("#beer-geek").removeClass("price-example-chosen").addClass("price-example-not-chosen");
+				} else {
+					$(".cider-explorer-example").removeClass("show").addClass("hidden");
+					$("#cider-explorer").removeClass("price-example-chosen").addClass("price-example-not-chosen");
+				}
 			}
-		}
-		$(document).on("scroll", function() {
-		    lockHeaderButton();
+			
+	
 		});
+		
+		// set function for sticky scroller
+		//function lockHeaderButton() {
+		//	if ( window.location.pathname == '/' ) {
+			//if(window.location.href.indexOf("reloads") > -1) {
+		//	    var move = function() {
+		//	        var st = $(window).scrollTop() + $('.navbar.navbar-default.navbar-fixed-top.homeNavbar').outerHeight();
+		//	        var ot = $("#home-scroller-anchor").offset().top;
+		//	        if(st > ot) {
+		//	            $("#home-navbar").addClass("common_navbar");
+		//	        } else {
+		//	            if(st <= ot) {
+		//	                $("#home-navbar").removeClass("common_navbar");
+		//	            }
+		//	        }
+		//	    };
+		//	    $(window).scroll(move);
+		//	    move();
+		//	}
+		//}
+		//$(document).on("scroll", function() {
+		 //   lockHeaderButton();
+		//});
 });
