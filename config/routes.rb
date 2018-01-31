@@ -180,7 +180,7 @@ Rails.application.routes.draw do
   patch '/signup/account_info_process' => 'signup#account_info_process', :as => 'account_info_process'
   
   # user early signup process
-  get '/early_signup/invitation_code/:id' => 'early_signup#invitation_code', :as => 'invitation_code'
+  get '/early_signup/invitation_code' => 'early_signup#invitation_code', :as => 'invitation_code'
   post '/early_signup/process_invitation_code' => 'early_signup#process_invitation_code', :as => 'process_invitation_code'
   
   post '/early_signup/request_code' => 'early_signup#request_code', :as => 'request_code'
