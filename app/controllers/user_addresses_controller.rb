@@ -24,7 +24,7 @@ class UserAddressesController < ApplicationController
       redirect_to session.delete(:return_to)
     else # assume this is  coming from the signup process
       # redirect to next step in signup process
-      redirect_to delivery_preferences_getting_started_path
+      redirect_to account_membership_getting_started_path
     end
       
   end # end of create method

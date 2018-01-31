@@ -1,0 +1,58 @@
+<%= render 'layouts/header_early_signup' %> 
+	<div class="row no-margin spinner-signup text-center">
+		<div class="spinner-text">
+			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+			<h4>Processing...</h4>
+		</div>
+	</div>
+	<div class="row no-margin first-row-signup">
+		<%= render 'signup/signup_guide_consumer' %>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">Choose which delivery option works best for you.</h2>
+				<h5 class="signup-question-detail">You can update this on your delivery preferences page anytime after signup.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+				<div class="row">
+					<div class="col-xs-12 col-sm-4 no-padding signup-frequency-holder-parent">
+						<div class="signup-frequency-holder left" id="first-delivery-option">
+							<h1 class="signup-frequency-first-level-text"><%= @number_of_drinks_first_option %> <%= @drink_preference %></h1>
+							<h5 class="signup-frequency-second-level-text">every</h5>
+							<h2 class="signup-frequency-third-level-text"><%= @number_of_weeks_first_option %> weeks</h2>
+						</div>
+						<div class="signup-frequency-holder-holder-chosen-cover left <%= @first_delivery_option_chosen %>"></div>
+					</div>
+					<div class="col-xs-12 col-sm-4 no-padding signup-frequency-holder-parent">
+						<div class="signup-frequency-holder middle-option" id="second-delivery-option">
+							<h1 class="signup-frequency-first-level-text"><%= @number_of_drinks_second_option %> <%= @drink_preference %></h1>
+							<h5 class="signup-frequency-second-level-text">every</h5>
+							<h2 class="signup-frequency-third-level-text"><%= @number_of_weeks_second_option %> weeks</h2>
+						</div>
+						<div class="signup-frequency-holder-holder-chosen-cover <%= @second_delivery_option_chosen %>"></div>
+					</div>
+					<div class="col-xs-12 col-sm-4 no-padding signup-frequency-holder-parent">
+						<div class="signup-frequency-holder right" id="third-delivery-option">
+							<h1 class="signup-frequency-first-level-text"><%= @number_of_drinks_third_option %> <%= @drink_preference %></h1>
+							<h5 class="signup-frequency-second-level-text">every</h5>
+							<h2 class="signup-frequency-third-level-text"><%= @number_of_weeks_third_option %> weeks</h2>
+						</div>
+						<div class="signup-frequency-holder-holder-chosen-cover <%= @third_delivery_option_chosen %>"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container">
+			<div class="col-xs-offset-4 col-xs-4 text-center">
+				<%= link_to "Next", drinks_large_getting_started_path(@user.id), disabled: true, class: "btn btn-default btn-success signup-drinks-per-week-next-step", id: "liked_styles_next_step_button" %>
+			</div>
+		</div>
+	</div>
+<%= render 'layouts/footer' %>
