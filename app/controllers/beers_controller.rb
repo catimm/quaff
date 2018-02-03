@@ -47,7 +47,7 @@ class BeersController < ApplicationController
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
      #@role_ids = [1, 2, 3, 4] 
      @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
-     @active_users = User.where(account_id: @active_account_ids, getting_started_step: 11)
+     @active_users = User.where(account_id: @active_account_ids, getting_started_step: 12)
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
      @users_would_like = 0

@@ -1,7 +1,0 @@
-<div class="col-xs-6 col-sm-offset-4 col-sm-4 col-md-offset-4 col-md-3 no-padding <%= @account_membership_chosen %>">
-	<% if @user.getting_started_step >= 10 %>
-		<%= link_to "membership", account_membership_getting_started_path(@user.id), class: "guide-header #{@account_membership_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">membership</h5>
-	<% end %>
-</div>

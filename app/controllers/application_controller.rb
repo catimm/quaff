@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   
   def authenticate_user!(options={})
     if user_signed_in? 
-      if current_user.getting_started_step == 11
+      if current_user.getting_started_step == 12
         super(options)
       else
         sign_out current_user
@@ -72,7 +72,9 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     #Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
     @user = current_user
-
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    session[:user_subscription_id] = @user_subscription.subscription_id
+    
     # set a different first view based on the user type
     if !session[:user_return_to].nil?
       @first_view = session[:user_return_to]
@@ -81,7 +83,7 @@ class ApplicationController < ActionController::Base
     elsif  @user.getting_started_step == 2
       @first_view = delivery_address_getting_started_path
     elsif  @user.getting_started_step == 3
-      @first_view = delivery_preferences_getting_started_path
+      @first_view = account_membership_getting_started_path
     elsif  @user.getting_started_step == 4
       @first_view = drink_choice_getting_started_path
     elsif  @user.getting_started_step == 5
@@ -95,7 +97,9 @@ class ApplicationController < ActionController::Base
     elsif  @user.getting_started_step == 9
       @first_view = drinks_large_getting_started_path
     elsif  @user.getting_started_step == 10
-      @first_view = account_membership_getting_started_path
+      @first_view = delivery_frequency_getting_started_path
+    elsif @user.getting_started_step == 11
+      @first_view = delivery_preferences_getting_started_path
     else
       if current_user.role_id == 1
         @first_view = admin_breweries_path

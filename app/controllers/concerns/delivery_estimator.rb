@@ -80,7 +80,7 @@ module DeliveryEstimator
     @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
     
     @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
-    #Rails.logger.debug("Total $: #{@total_cost_estimate.inspect}") 
+    Rails.logger.debug("Total $: #{@total_cost_estimate.inspect}") 
   
     # update delivery preferences
     DeliveryPreference.update(delivery_preferences.id, price_estimate: @total_cost_estimate, max_cellar: @max_cellar)

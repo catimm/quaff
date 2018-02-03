@@ -1,5 +1,8 @@
 $(function() {
-	$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'user_delivery_estimates_for_customer' ) %>");
-	$("#large_format_drinks_per_week_options").html("<%= escape_javascript(render 'signup/large_format_per_week_choice' ) %>");	
+	$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'layouts/per_delivery_estimate' ) %>");
+	<% if @column == "drinks_per_week" || @column == "large_format" %>
+		$("#large_format_drinks_per_week_options").html("<%= escape_javascript(render 'signup/large_format_per_week_choice' ) %>");	
+	<% end %>
+	$("#preferences-delivery-frequency-row-holder").html("<%= escape_javascript(render 'signup/delivery_frequency_options' ) %>");
 	$('[data-toggle="tooltip"]').tooltip();
 });

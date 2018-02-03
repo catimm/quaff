@@ -210,14 +210,30 @@ class UsersController < ApplicationController
   
     # get customer plan details
     @customer_plan = UserSubscription.where(user_id: @user.id, currently_active: true)[0]
+    # determine remaining deliveries
+    if @customer_plan.subscription_id == 2
+      @remaining_deliveries = 6 - @customer_plan.deliveries_this_period
+    elsif @customer_plan.subscription_id == 3
+      @remaining_deliveries = 25 - @customer_plan.deliveries_this_period
+    end
     
-    # set CSS style indicator
+    # set CSS style indicator & appropriate text
     if @customer_plan.subscription_id == 1
-      @one_month = "current"
+      @zero = "current"
+      @current_plan_definition = "0 Prepaid Deliveries"
     elsif @customer_plan.subscription_id == 2
-      @three_month = "current"
+      @six = "current"
+      @current_plan_definition = "6 Prepaid Deliveries"
     else
-      @twelve_month = "current"
+      @twenty_five = "current"
+      @current_plan_definition = "25 Prepaid Deliveries"
+    end
+    if @customer_plan.auto_renew_subscription_id == 1
+      @next_plan_definition = "0 Prepaid Deliveries"
+    elsif @customer_plan.auto_renew_subscription_id == 2
+      @next_plan_definition = "6 Prepaid Deliveries"
+    else
+      @next_plan_definition = "25 Prepaid Deliveries"
     end
     
     # customer's Stripe card info
@@ -365,122 +381,97 @@ class UsersController < ApplicationController
     @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: true)[0]
 
     # change in Knird DB
-    @user_subscription.update(auto_renew_subscription_id: nil)
-    
-    # chanage user subscription auto renewal in Stripe
-    @customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number)
-    @subscription = @customer.subscriptions.retrieve(@user_subscription.stripe_subscription_number)
-    @subscription.delete(:at_period_end => true)
+    @user_subscription.update_attribute(:auto_renew_subscription_id, 1)
     
     redirect_to account_settings_membership_user_path
   end # end plan_rewewal_off method
   
   def process_user_plan_change
-    if params[:id] == "one"
+    if params[:id] == "zero"
       @update = 1
-      @plan_id = "one_month"
-    elsif params[:id] == "three"
+      @plan_id = "zero"
+    elsif params[:id] == "six"
       @update = 2
-      @plan_id = "three_month"
+      @plan_id = "six"
     else
       @update = 3
-      @plan_id = "twelve_month"
+      @plan_id = "twenty_five"
     end
-    # get all of user subscription info
-    @user_subscription = UserSubscription.where(user_id: current_user.id)
     
-    # get Stripe customer info
-    @customer = Stripe::Customer.retrieve(@user_subscription[0].stripe_customer_number)
-    
-    # count records returned (there will either be 1 or 2)
-    @total_count = @user_subscription.count
-    
-    if @total_count == 1 # the record returned is the currently active subscription
-      # update current subscription in Knird DB
-      @user_subscription[0].update(auto_renew_subscription_id: @update)
-      
-      # determine active until date of new subscription (as of now)
-      if @update == 1
-        @new_active_until = @user_subscription[0].active_until + 1.month
-      elsif @update == 2
-        @new_active_until = @user_subscription[0].active_until + 3.months
-      else
-        @new_active_until = @user_subscription[0].active_until + 1.year
-      end
-
-      # add new subscription to Knird DB
-      UserSubscription.create(user_id: current_user.id, subscription_id: @update, active_until: @new_active_until, 
-                              stripe_customer_number: @user_subscription[0].stripe_customer_number,
-                              auto_renew_subscription_id: @update, deliveries_this_period: 0, total_deliveries: 0,
-                              account_id: current_user.account_id, renewals: 0, currently_active: false)
-    
-      # update current Stripe subscription
-      @subscription = @customer.subscriptions.retrieve(@user_subscription[0].stripe_subscription_number)
-      @subscription.delete(:at_period_end => true)
-      
-      # add new Stripe subscription, in trial mode until current subscription ends
-      # create a new Stripe subscription for customer
-      @trial_end_date = Time.at(@user_subscription[0].active_until).to_datetime.to_i
-      @customer.subscriptions.create(
-              :plan => @plan_id,
-              :trial_end => @trial_end_date)
-              
-    else # user currently is set to renew to a subscription other than the current subscription
-      # get current user subscription info
-      @current_subscription = @user_subscription.where(currently_active: true)[0]
-      #Rails.logger.debug("Current Plan: #{@current_subscription.inspect}")
-      
-      # get plan currently set to renew to
-      @subscription_set_to = @user_subscription.where(currently_active: false)[0]
-      #Rails.logger.debug("Set to Renew Plan: #{@subscription_set_to.inspect}")
-      
-      # remove plan currently set to renew from Stripe
-      @removing_subscription = @customer.subscriptions.retrieve(@subscription_set_to.stripe_subscription_number)
-      @removing_subscription.delete
-      
-      # remove plan currently set to renew from Knird db
-      @subscription_set_to.delete
-      
-      # reset current plan to renew in Knird db
-      @current_subscription.update(auto_renew_subscription_id: @update)
-        
-      # determine if chosen subscription is the current subscription or a different option
-      if @current_subscription.subscription.subscription_level == @plan_id
-        
-        # reset current plan to renew in Stripe
-        @keeping_subscription = @customer.subscriptions.retrieve(@current_subscription.stripe_subscription_number)
-        @keeping_subscription.plan = @plan_id
-        @keeping_subscription.save
-        
-      else
-        # determine active until date of new subscription (as of now)
-        if @update == 1
-          @new_active_until = @current_subscription.active_until + 1.month
-        elsif @update == 2
-          @new_active_until = @current_subscription.active_until + 3.months
-        else
-          @new_active_until = @current_subscription.active_until + 1.year
-        end
-      
-        # add newly chosen plan to renew in Knird db
-        UserSubscription.create(user_id: current_user.id, subscription_id: @update, active_until: @new_active_until, 
-                              stripe_customer_number: @current_subscription.stripe_customer_number,
-                              auto_renew_subscription_id: @update, deliveries_this_period: 0, total_deliveries: 0,
-                              account_id: current_user.account_id, renewals: 0, currently_active: false)
-         
-        # add newly chosen plan to renew in Stripe
-        @trial_end_date = Time.at(@current_subscription.active_until).to_datetime.to_i
-        @customer.subscriptions.create(
-              :plan => @plan_id,
-              :trial_end => @trial_end_date)
-                             
-      end
-    end
+    # get current user subscription info
+    @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: true).first
+    @user_subscription.update_attribute(:auto_renew_subscription_id, @update)
     
     # redirect back to membership page
     redirect_to account_settings_membership_user_path
     
   end # end of process_user_plan_change method
+  
+  def start_new_plan
+    # find subscription level id
+    @new_subscription_info = Subscription.find_by_subscription_level(params[:id])
+    @total_price = (@new_subscription_info.subscription_cost * 100).floor
+    @charge_description = @new_subscription_info.subscription_name
+    
+    # get current subscription
+    @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: true).first
+    
+    # charge the customer for subscription 
+    Stripe::Charge.create(
+      :amount => @total_price, # in cents
+      :currency => "usd",
+      :customer => @user_subscription.stripe_customer_number,
+      :description => @charge_description
+    )
+    
+    # update user subscription info
+    @user_subscription.update_attribute(:currently_active, false)
+    # create a new user_subscription row
+    UserSubscription.create(user_id: current_user.id, 
+                            subscription_id: @new_subscription_info.id,
+                            stripe_customer_number: @user_subscription.stripe_customer_number,
+                            auto_renew_subscription_id: @new_subscription_info.id,
+                            deliveries_this_period: 0,
+                            total_deliveries: 0,
+                            account_id: current_user.account_id,
+                            renewals: 0,
+                            currently_active: true)
+    
+    # update user subscription session cookie
+    session[:user_subscription_id] = @new_subscription_info.id
+    # set new plan session cookie
+    session[:start_new_plan_start_date_step] = true
+    
+    # get user's current delivery address
+    @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first
+    # change current delivery location to false
+    @current_delivery_address.update_attribute(:current_delivery_location, false)
+    
+    # create Delivery table entries 
+    @first_delivery = Delivery.create(account_id: current_user.account_id, 
+                                    #delivery_date: @first_delivery_date,
+                                    status: "admin prep",
+                                    subtotal: 0,
+                                    sales_tax: 0,
+                                    total_price: 0,
+                                    delivery_change_confirmation: false,
+                                    share_admin_prep_with_user: false)
+                                        
+    # and create second line in delivery table so curator has option to plan ahead
+    #@next_delivery_date = @first_delivery_date + 2.weeks
+    Delivery.create(account_id: current_user.account_id, 
+                    #delivery_date: @next_delivery_date,
+                    status: "admin prep",
+                    subtotal: 0,
+                    sales_tax: 0,
+                    total_price: 0,
+                    delivery_change_confirmation: false,
+                    share_admin_prep_with_user: false)
+    
+    # redirect to user delivery settings page
+    redirect_to user_delivery_settings_location_path #user_delivery_settings_path
+  
+  end # end of start_new_plan method
   
   def stripe_webhooks
     #Rails.logger.debug("Webhooks is firing")

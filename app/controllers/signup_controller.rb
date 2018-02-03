@@ -185,6 +185,9 @@ class SignupController < ApplicationController
   def drink_choice_getting_started
     # get User info 
     @user = current_user
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    
     # update getting started step
     if @user.getting_started_step < 4
       @user.update_attribute(:getting_started_step, 4)
@@ -254,6 +257,9 @@ class SignupController < ApplicationController
   def drink_journey_getting_started
     # get User info 
     @user = current_user
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    
     # update getting started step
     if @user.getting_started_step < 5
       @user.update_attribute(:getting_started_step, 5)
@@ -326,6 +332,9 @@ class SignupController < ApplicationController
   def drink_style_likes_getting_started
     # get User info 
     @user = current_user
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    
     # update getting started step
     if @user.getting_started_step < 6
       @user.update_attribute(:getting_started_step, 6)
@@ -463,6 +472,9 @@ class SignupController < ApplicationController
   def drink_style_dislikes_getting_started
     # get User info 
     @user = current_user
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    
     # update getting started step
     if @user.getting_started_step < 7
       @user.update_attribute(:getting_started_step, 7)
@@ -582,12 +594,12 @@ class SignupController < ApplicationController
       
       # determine path for 'Next' button
       if @user.role_id == 6
-        @next_step = signup_thank_you_path(@user.id)
+        @next_step = signup_thank_you_path
       else
-        # determine if user has a paid plan
+        # determine if user has a preppaid delivery plan
         @user_subscription = UserSubscription.where(user_id: @user.id).first
         if @user_subscription.subscription_id == 1
-          @next_step = delivery_frequency_getting_started_path(@user.id)
+          @next_step = signup_thank_you_path
         else
           @next_step = drinks_weekly_getting_started_path(@user.id)
         end
@@ -598,6 +610,9 @@ class SignupController < ApplicationController
   def drinks_weekly_getting_started
     # get User info 
     @user = current_user
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    
     # update getting started step
     if @user.getting_started_step < 8
       @user.update_attribute(:getting_started_step, 8)
@@ -670,6 +685,9 @@ class SignupController < ApplicationController
   def drinks_large_getting_started
     # get User info 
     @user = User.find_by_id(current_user.id)
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    
     # update getting started step
     if @user.getting_started_step < 9
       @user.update_attribute(:getting_started_step, 9)
@@ -730,10 +748,10 @@ class SignupController < ApplicationController
     end
     
     # determine path for 'Next' button
-    if @user.role_id == 5 || @user.role_id == 6
-      @next_step = signup_thank_you_path(@user.id)
+    if @user.role_id == 5
+      @next_step = signup_thank_you_path
     else
-      @next_step = delivery_frequency_getting_started_path(@user.id)
+      @next_step = delivery_frequency_getting_started_path
     end
     
   end # end of drinks_weekly_getting_started action
@@ -806,7 +824,7 @@ class SignupController < ApplicationController
     end
         
     # determine minimum number of weeks between deliveries
-    @number_of_weeks_first_option = 1
+    @number_of_weeks_first_option = 2
     @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
       
     if @user.craft_stage_id == 1
@@ -825,7 +843,7 @@ class SignupController < ApplicationController
     @number_of_weeks_second_option = @number_of_weeks_first_option + 1
     @number_of_weeks_third_option = @number_of_weeks_first_option + 2
     # set number of drink options
-    @number_of_drinks_first_option = @total_drinks
+    @number_of_drinks_first_option = @total_drinks.round
     @number_of_drinks_second_option = (@drinks_per_week * @number_of_weeks_second_option * 1.1).round
     @number_of_drinks_third_option =  (@drinks_per_week * @number_of_weeks_third_option * 1.1).round
     
@@ -1004,13 +1022,10 @@ class SignupController < ApplicationController
     @delivery_zone = @data_split[1].to_i
     @delivery_date = @data_split[2]
     @date_adjustment = @delivery_date.split("_") 
-    @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1] + " 13:00:00"
+    @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1]
     #Rails.logger.debug("date: #{@final_delivery_date.inspect}")
     @final_delivery_date = DateTime.parse(@final_delivery_date)
     #Rails.logger.debug("Parsed date: #{@final_delivery_date.inspect}")
-    
-    # get user info for confirmation email
-    @customer = User.find_by_id(current_user.id)
     
     # update the Account info
     Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
@@ -1018,30 +1033,16 @@ class SignupController < ApplicationController
     # find if user already has chosen a delivery address
     @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
     #Rails.logger.debug("Delivery address: #{@current_delivery_address.inspect}")
-
-    if !@current_delivery_address.blank? && @current_delivery_address.id == @address # address is chosen and not changing, just the delivery time/zone
+    
+     # find if just delivery zone needs to be update or both chosen address and delivery zone
+    if !@current_delivery_address.blank? && @current_delivery_address.id == @address
       # update the current delivery time/zone
       UserAddress.update(@current_delivery_address.id, delivery_zone_id: @delivery_zone)
-      # change next delivery date in deliveries table
-      @user_next_delivery_info = Delivery.where(account_id: current_user.account_id).where(status: "admin prep")[0]
-      # update record
-      if !@user_next_delivery_info.blank?
-        @user_next_delivery_info.update(delivery_date: @final_delivery_date)
-      else
-        
-      end
-    else # both address and delivery time/zone need to be updated
+      # find if deliveries table entry exists. if so, delete them
+      @user_next_delivery_info = Delivery.where(account_id: current_user.account_id).where(status: "admin prep").delete_all
+    else # both address and delivery zone need to be updated
       # update the chosen address to be the delivery address
       UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
-      # create first line in delivery table, but without status until customer pays membership fee
-      @next_delivery = Delivery.create(account_id: current_user.account_id, 
-                                      delivery_date: @final_delivery_date,
-                                      status: nil,
-                                      subtotal: 0,
-                                      sales_tax: 0,
-                                      total_price: 0,
-                                      delivery_change_confirmation: false,
-                                      share_admin_prep_with_user: false)
     end
     
     # create Delivery table entries 
@@ -1056,7 +1057,7 @@ class SignupController < ApplicationController
                                         
     # and create second line in delivery table so curator has option to plan ahead
     @next_delivery_date = @first_delivery.delivery_date + 2.weeks
-    Delivery.create(account_id: @delivery_info.account_id, 
+    Delivery.create(account_id: current_user.account_id, 
                     delivery_date: @next_delivery_date,
                     status: "admin prep",
                     subtotal: 0,
@@ -1066,55 +1067,26 @@ class SignupController < ApplicationController
                     share_admin_prep_with_user: false)
                     
     # redirect to first drink preference page
-    redirect_to signup_thank_you_path(@user.id)
+    redirect_to signup_thank_you_path
     
   end # end of choose_delivery_time method
   
   def signup_thank_you
     # get user info
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_id(current_user.id)
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id).first
     
     # assign invitation code for user to share
     @next_available_code = SpecialCode.where(user_id: nil).first
     @next_available_code.update(user_id: @user.id)
     
     # update getting started step
-    if @user.role_id == 4 || @user.role_id == 1
-      if @user.getting_started_step == 10
-        @user.update_attribute(:getting_started_step, 11)
-      end
-      if !@user.tpw.nil?
-        @user.update_attribute(:getting_started_step, 11)
-      end
-    else
-      if @user.getting_started_step == 9
-        @user.update_attribute(:getting_started_step, 11)
-      end
-      if @user.role_id == 5
-        @user.update(recent_addition: true)
-      end
+    if @user.getting_started_step < 12
+      @user.update_attribute(:getting_started_step, 12)
     end
-
-    if !@user.tpw.nil?
-      # get first Delivery line in the DB
-      @delivery_info = Delivery.where(account_id: @user.account_id).first
-      
-      # update Delivery info with admin prep status
-      @delivery_info.update(status: "admin prep")
-    
-      # and create second line in delivery table so curator has option to plan ahead
-      @next_delivery_date = @delivery_info.delivery_date + 2.weeks
-      Delivery.create(account_id: @delivery_info.account_id, 
-                      delivery_date: @next_delivery_date,
-                      status: "admin prep",
-                      subtotal: 0,
-                      sales_tax: 0,
-                      total_price: 0,
-                      delivery_change_confirmation: false,
-                      share_admin_prep_with_user: false)
-    
-      # remove temporary password if it exists
-      @user.update(tpw: nil)
+    if @user.role_id == 5 || @user.role_id == 6
+      @user.update(recent_addition: true)
     end
     
     # send welcome email if user is account owner

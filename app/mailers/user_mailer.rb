@@ -384,6 +384,11 @@ class UserMailer < ActionMailer::Base
   
   def delivery_zone_change_confirmation(customer, location_and_time, old_date, next_date, user_address_info, delivery_zone_info)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    if old_date == "none"
+      @old_date = "none"
+    else
+      @old_date = old_date.strftime("%A, %B %-d")
+    end
     if user_address_info.location_type == "Other"
       @location_name = user_address_info.other_name
     else
@@ -395,7 +400,7 @@ class UserMailer < ActionMailer::Base
       @street_address = user_address_info.address_street
     end
     @city_address = user_address_info.city + ", " + user_address_info.state + " " + user_address_info.zip
-    @new_time = "Every other " + delivery_zone_info.day_of_week + ", " + (delivery_zone_info.start_time).strftime("%l:%M%P") + " - " + (delivery_zone_info.end_time).strftime("%l:%M%P")
+    @new_time = delivery_zone_info.day_of_week + "s, " + (delivery_zone_info.start_time).strftime("%l:%M%P") + " - " + (delivery_zone_info.end_time).strftime("%l:%M%P")
 
     payload  = {
       recipients: [
@@ -411,7 +416,7 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer.first_name,
         location_and_time: location_and_time,
-        old_date: old_date.strftime("%A, %B %-d"),
+        old_date: @old_date,
         next_date: next_date.strftime("%A, %B %-d"),
         location_name: @location_name,
         street_address: @street_address,

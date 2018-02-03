@@ -54,11 +54,11 @@ class Admin::RecommendationsController < ApplicationController
       @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
     end
     # find if the account has any other users
-    @mates = User.where(account_id: @current_account_id, getting_started_step: 11).where.not(id: @account_owner[0].id)
+    @mates = User.where(account_id: @current_account_id, getting_started_step: 12).where.not(id: @account_owner[0].id)
     
     # set users to get relevant delivery info
     if !@mates.blank?
-      @users = User.where(account_id: @current_account_id, getting_started_step: 11)
+      @users = User.where(account_id: @current_account_id, getting_started_step: 12)
     else
       @users = @account_owner
     end
@@ -559,11 +559,11 @@ class Admin::RecommendationsController < ApplicationController
     @customer_next_delivery = Delivery.where(account_id: @user_recommendation_info.account_id).where.not(status: "delivered").first
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user_recommendation_info.account_id, getting_started_step: 11).where.not(id: @user.id)
+    @mates = User.where(account_id: @user_recommendation_info.account_id, getting_started_step: 12).where.not(id: @user.id)
     
     # set users to get relevant delivery info
     if !@mates.blank?
-      @users = User.where(account_id: @user_recommendation_info.account_id, getting_started_step: 11)
+      @users = User.where(account_id: @user_recommendation_info.account_id, getting_started_step: 12)
     else
       @users = @user
     end

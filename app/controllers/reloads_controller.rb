@@ -34,7 +34,7 @@ class ReloadsController < ApplicationController
     @active_subscriptions.each do |account|
 
       # get each user associated to this account
-      @active_users = User.where(account_id: account.account_id, getting_started_step: 11)
+      @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
       
       @active_users.each do |user|
         #Rails.logger.debug("this user: #{user.inspect}")

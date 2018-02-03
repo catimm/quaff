@@ -1,43 +1,73 @@
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_choice_chosen %>">
-	<%= link_to "choice", drink_choice_getting_started_path, class: "guide-header #{@drink_choice_chosen}" %>
-	<h5 class="pipe-separator">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_journey_chosen %>">
-	<% if @user.getting_started_step >= 5 %>
-		<%= link_to "journey", drink_journey_getting_started_path, class: "guide-header #{@drink_journey_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">journey</h5>
-	<% end %>
-	<h5 class="pipe-separator">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column <%= @drink_likes_chosen %>">
-	<% if @user.getting_started_step >= 6 %>
-		<%= link_to "likes", drink_style_likes_getting_started_path, class: "guide-header #{@drink_likes_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">likes</h5>
-	<% end %>
-	<h5 class="pipe-separator hidden-xs">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_dislikes_chosen %>">
-	<% if @user.getting_started_step >= 7 %>
-		<%= link_to "dislikes", drink_style_dislikes_getting_started_path, class: "guide-header #{@drink_dislikes_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">dislikes</h5>
-	<% end %>
-	<h5 class="pipe-separator">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_per_weeks_chosen %>">
-	<% if @user.getting_started_step >= 8 %>
-		<%= link_to "per week", drinks_weekly_getting_started_path, class: "guide-header #{@drink_per_weeks_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">per week</h5>
-	<% end %>
-	<h5 class="pipe-separator">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column<%= @drink_size_chosen %>">
-	<% if @user.getting_started_step >= 9 %>
-		<%= link_to "size", drinks_large_getting_started_path, class: "guide-header #{@drink_size_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">size</h5>
-	<% end %>
-</div>
+<% if @user_subscription.subscription_id != 1 %>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_choice_chosen %>">
+		<%= link_to "choice", drink_choice_getting_started_path, class: "guide-header #{@drink_choice_chosen}" %>
+		<h5 class="pipe-separator">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_journey_chosen %>">
+		<% if @user.getting_started_step >= 5 %>
+			<%= link_to "journey", drink_journey_getting_started_path, class: "guide-header #{@drink_journey_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">journey</h5>
+		<% end %>
+		<h5 class="pipe-separator">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column <%= @drink_likes_chosen %>">
+		<% if @user.getting_started_step >= 6 %>
+			<%= link_to "likes", drink_style_likes_getting_started_path, class: "guide-header #{@drink_likes_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">likes</h5>
+		<% end %>
+		<h5 class="pipe-separator hidden-xs">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_dislikes_chosen %>">
+		<% if @user.getting_started_step >= 7 %>
+			<%= link_to "dislikes", drink_style_dislikes_getting_started_path, class: "guide-header #{@drink_dislikes_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">dislikes</h5>
+		<% end %>
+		<h5 class="pipe-separator">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_per_weeks_chosen %>">
+		<% if @user.getting_started_step >= 8 %>
+			<%= link_to "per week", drinks_weekly_getting_started_path, class: "guide-header #{@drink_per_weeks_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">per week</h5>
+		<% end %>
+		<h5 class="pipe-separator">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column<%= @drink_size_chosen %>">
+		<% if @user.getting_started_step >= 9 %>
+			<%= link_to "size", drinks_large_getting_started_path, class: "guide-header #{@drink_size_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">size</h5>
+		<% end %>
+	</div>
+<% else %>
+	<div class="col-xs-4 col-sm-offset-2 col-sm-2 no-padding signup-guide-column-holder <%= @drink_choice_chosen %>">
+		<%= link_to "choice", drink_choice_getting_started_path, class: "guide-header #{@drink_choice_chosen}" %>
+		<h5 class="pipe-separator">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_journey_chosen %>">
+		<% if @user.getting_started_step >= 5 %>
+			<%= link_to "journey", drink_journey_getting_started_path, class: "guide-header #{@drink_journey_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">journey</h5>
+		<% end %>
+		<h5 class="pipe-separator">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column <%= @drink_likes_chosen %>">
+		<% if @user.getting_started_step >= 6 %>
+			<%= link_to "likes", drink_style_likes_getting_started_path, class: "guide-header #{@drink_likes_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">likes</h5>
+		<% end %>
+		<h5 class="pipe-separator hidden-xs">&#124;</h5>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_dislikes_chosen %>">
+		<% if @user.getting_started_step >= 7 %>
+			<%= link_to "dislikes", drink_style_dislikes_getting_started_path, class: "guide-header #{@drink_dislikes_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">dislikes</h5>
+		<% end %>
+	</div>
+<% end %>

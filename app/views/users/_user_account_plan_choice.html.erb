@@ -1,326 +1,81 @@
-<div class="row value-prop-row hidden-sm hidden-md hidden-lg hidden-xl">
-		<div class="row">
-			<div class="col-xs-1"></div>
-			<div class="col-xs-10">
-				<div class="row homepage-plan-options <%= @one_month %>">
-					<div class="col-xs-12 no-padding">
-						<div class="row no-margin">
-							<div class="col-xs-12">
-								<h3 class="user-plan-header <%= @one_month %>">1 month membership</h3>
-							</div>
-						</div>
-						<div class="row no-margin">
-							<div class="col-xs-12 no-padding mobile-membership-plan-list">
-								<h5 class="membership-plan-includes">Plan includes:</h5>
-								<ul class="mobile-retail-plan-feature-list">
-									<li>2 personalized, curated deliveries</li>
-									<li>Direct access to personal drink curator</li>
-									<li>An introductory sync with your curator</li>
-								</ul>
-							</div>
-						</div>
-						<div class="row no-margin">
-							<div class="col-xs-12 no-padding">
-								<h5 class="contract-type-header">Membership cost
-									<sup  data-toggle="tooltip" title="The $12 1-month membership includes the items listed 
-																		but does not include the cost of the drinks. However,
-																		our drink prices are competetive, in line with local 
-																		shops. Also, although the membership fee is 
-																		non-refundable, you can stop deliveries at any 
-																		time and are under no obligation to buy any more 
-																		drinks from Knird.">
-										?
-									</sup>
-								</h5>
-								<h2 class="retailer-plan-cost">$12<span class="with-contract">/mo</span></h2>
-							</div>
-						</div>
-						<div class="row no-margin renew-button-info">
-						<div class="col-xs-12 no-padding">
-							<% if @customer_plan.auto_renew_subscription_id == 1 %>
-								<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
-							<% else %>
-								<%= link_to "#", class: 'btn btn-success formButton-start-plan', 
-										data: {toggle: "modal", target: "#change_auto_renew_plan_to_one"} do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Auto renew to the 1 mo plan</i>
-								<% end %>
-							<% end %>
-						</div>
-					</div>
-					</div>
+<div class="row user-membership-optons-row">
+	<div class="col-xs-12 col-sm-4">
+		<div class="homepage-plan-options <%= @zero %>">
+			<%= render 'layouts/deliveries_plan_zero' %>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<% if @customer_plan.subscription_id == 1 && @customer_plan.auto_renew_subscription_id == 1 %>
+						<h4 class="formButton-renew-plan-set">Current plan</h4>
+					<% elsif @customer_plan.auto_renew_subscription_id == 1 %>
+						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
+					<% else %>
+						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
+								data: {toggle: "modal", target: "#change_auto_renew_plan_to_zero"} do %>
+							<i class="fa fa-refresh" aria-hidden="true"> Auto renew to this plan</i>
+						<% end %>
+					<% end %>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-1"></div>
-			<div class="col-xs-10">
-				<div class="row homepage-plan-options <%= @three_month %>">
-					<div class="col-xs-12 no-padding">
-						<div class="row no-margin">
-							<div class="col-xs-12">
-								<h3 class="user-plan-header <%= @three_month %>">3 month membership</h3>
-							</div>
-						</div>
-						<div class="row no-margin">
-							<div class="col-sm-0"></div>
-							<div class="col-xs-12 no-padding mobile-membership-plan-list">
-								<h5 class="membership-plan-includes">Plan includes:</h5>
-								<ul class="mobile-retail-plan-feature-list">
-									<li>6 personalized, curated deliveries</li>
-									<li>Direct access to personal drink curator</li>
-									<li>An introductory sync with your curator</li>
-									<li>1 curated tasting session for you</li>
-									<li>Reward points for limited/rare drinks</li>
-								</ul>
-							</div>
-						</div>
-						<div class="row-no-margin">
-							<div class="col-xs-12 no-padding">
-								<h5 class="contract-type-header">
-									Membership cost
-									<sup  data-toggle="tooltip" title="The $30 3-month membership includes the items listed 
-																		but does not include the cost of the drinks. However,
-																		our drink prices are competetive, in line with local 
-																		shops. Also, although the membership fee is 
-																		non-refundable, you can stop deliveries at any 
-																		time and are under no obligation to buy any more 
-																		drinks from Knird.">
-										?
-									</sup>
-								</h5>
-								<h2 class="retailer-plan-cost">$10<span class="with-contract">/mo</span></h2>
-							</div>
-						</div>
-						<div class="row no-margin renew-button-info">
-						<div class="col-xs-12 no-padding">
-							<% if @customer_plan.auto_renew_subscription_id == 2 %>
-								<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
-							<% else %>
-								<%= link_to "#", class: 'btn btn-success formButton-start-plan', 
-										data: {toggle: "modal", target: "#change_auto_renew_plan_to_three"} do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Auto renew to the 3 mo plan</i>
-								<% end %>
-							<% end %>
-						</div>
-					</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-1"></div>
-			<div class="col-xs-10">
-				<div class="row homepage-plan-options <%= @twelve_month %>">
-					<div class="col-xs-12 no-padding">	
-						<div class="row no-margin">
-							<div class="col-xs-12">
-								<h3 class="user-plan-header <%= @twelve_month %>">12 month membership</h3>
-							</div>
-						</div>
-						<div class="row no-margin">
-							<div class="col-xs-12 no-padding mobile-membership-plan-list">
-								<h5 class="membership-plan-includes">Plan includes:</h5>
-								<ul class="mobile-retail-plan-feature-list">
-									<li>25 personalized, curated deliveries</li>
-									<li>Direct access to personal drink curator</li>
-									<li>An introductory sync with your curator</li>
-									<li>4 curated tasting sessions for you & friends</li>
-									<li>1.5x reward points for limited/rare drinks</li>
-								</ul>
-							</div>
-						</div>
-						<div class="row-no-margin">
-							<div class="col-xs-12 no-padding">
-								<h5 class="contract-type-header">
-									Membership cost
-									<sup  data-toggle="tooltip" title="The $96 12-month membership includes the items listed 
-																		but does not include the cost of the drinks. However,
-																		our drink prices are competetive, in line with local 
-																		shops. Also, although the membership fee is 
-																		non-refundable, you can stop deliveries at any 
-																		time and are under no obligation to buy any more 
-																		drinks from Knird.">
-										?
-									</sup>
-								</h5>
-								<h2 class="retailer-plan-cost">$8<span class="with-contract">/mo</span></h2>					
-							</div>
-						</div>
-						<div class="row no-margin renew-button-info">
-						<div class="col-xs-12 no-padding">
-							<% if @customer_plan.auto_renew_subscription_id == 3 %>
-								<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
-							<% else %>
-								<%= link_to "#", class: 'btn btn-success formButton-start-plan', 
-										data: {toggle: "modal", target: "#change_auto_renew_plan_to_twelve"} do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Auto renew to the 12 mo plan</i>
-								<% end %>
-							<% end %>
-						</div>
-					</div>
-					</div>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row value-prop-row hidden-xs">
-		<div class="col-sm-4">
-			<div class="row homepage-plan-options <%= @one_month %>">
+	<div class="col-xs-12 col-sm-4">
+		<div class="homepage-plan-options <%= @six %>">
+			<%= render 'layouts/deliveries_plan_six' %>
+			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
-					<div class="row no-margin">
-						<div class="col-xs-12">
-							<h3 class="user-plan-header <%= @one_month %>">1 month membership</h3>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-0 col-sm-1"></div>
-						<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
-							<h5 class="membership-plan-includes">Plan includes:</h5>
-							<ul class="retail-plan-feature-list">
-								<li>2 personalized, curated deliveries</li>
-								<li>Direct access to personal drink curator</li>
-								<li>An introductory sync with your curator</li>
-							</ul>
-						</div>
-					</div>
-					<div class="row-no-margin">
-						<div class="col-xs-12 no-padding">
-							<h5 class="contract-type-header">Membership cost
-								<sup  data-toggle="tooltip" title="The $12 1-month membership includes the items listed 
-																	but does not include the cost of the drinks. However,
-																	our drink prices are competetive, in line with local 
-																	shops. Also, although the membership fee is 
-																	non-refundable, you can stop deliveries at any 
-																	time and are under no obligation to buy any more 
-																	drinks from Knird.">
-									?
-								</sup>
-							</h5>
-							<h2 class="retailer-plan-cost">$12<span class="with-contract">/mo</span></h2>
-						</div>
-					</div>
-					<div class="row no-margin renew-button-info">
-						<div class="col-xs-12 no-padding">
-							<% if @customer_plan.auto_renew_subscription_id == 1 %>
-								<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
-							<% else %>
-								<%= link_to "#", class: 'btn btn-success formButton-start-plan', 
-										data: {toggle: "modal", target: "#change_auto_renew_plan_to_one"} do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Auto renew to the 1 mo plan</i>
-								<% end %>
-							<% end %>
-						</div>
-					</div>
+					<% if @customer_plan.subscription_id == 1 && @customer_plan.auto_renew_subscription_id == 1 %>
+						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
+								data: {toggle: "modal", target: "#start_six_plan"} do %>
+							<i class="fa fa-play" aria-hidden="true"> Start the 6 Prepaid Deliveries Plan</i>
+						<% end %>
+					<% elsif @customer_plan.auto_renew_subscription_id == 2 %>
+						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
+					<% else %>
+						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
+								data: {toggle: "modal", target: "#change_auto_renew_plan_to_six"} do %>
+							<i class="fa fa-refresh" aria-hidden="true"> Auto renew to this plan</i>
+						<% end %>
+					<% end %>
 				</div>
 			</div>
-		</div>
-		
-		<div class="col-sm-4">
-			<div class="row homepage-plan-options <%= @three_month %>">
+			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
-					<div class="row no-margin">
-						<div class="col-xs-12">
-							<h3 class="user-plan-header <%= @three_month %>">3 month membership</h3>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-0 col-sm-1"></div>
-						<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
-							<h5 class="membership-plan-includes">Plan includes:</h5>
-							<ul class="retail-plan-feature-list">
-								<li>6 personalized, curated deliveries</li>
-								<li>Direct access to personal drink curator</li>
-								<li>An introductory sync with your curator</li>
-								<li>1 curated tasting session for you</li>
-								<li>Reward points for limited/rare drinks</li>
-							</ul>
-						</div>
-					</div>
-					<div class="row-no-margin">
-						<div class="col-xs-12 no-padding">
-							<h5 class="contract-type-header">
-								Membership cost
-								<sup  data-toggle="tooltip" title="The $30 3-month membership includes the items listed 
-																	but does not include the cost of the drinks. However,
-																	our drink prices are competetive, in line with local 
-																	shops. Also, although the membership fee is 
-																	non-refundable, you can stop deliveries at any 
-																	time and are under no obligation to buy any more 
-																	drinks from Knird.">
-									?
-								</sup>
-							</h5>
-							<h2 class="retailer-plan-cost">$10<span class="with-contract">/mo</span></h2>
-						</div>
-					</div>
-					<div class="row no-margin renew-button-info">
-						<div class="col-xs-12 no-padding">
-							<% if @customer_plan.auto_renew_subscription_id == 2 %>
-								<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
-							<% else %>
-								<%= link_to "#", class: 'btn btn-success formButton-start-plan', 
-										data: {toggle: "modal", target: "#change_auto_renew_plan_to_three"} do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Auto renew to the 3 mo plan</i>
-								<% end %>
-							<% end %>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="col-sm-4">
-			<div class="row homepage-plan-options <%= @twelve_month %>">
-				<div class="col-xs-12 no-padding">	
-					<div class="row no-margin">
-						<div class="col-xs-12">
-							<h3 class="user-plan-header <%= @twelve_month %>">12 month membership</h3>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-0 col-sm-1"></div>
-						<div class="col-xs-12 col-sm-10 no-padding mobile-membership-plan-list">
-							<h5 class="membership-plan-includes">Plan includes:</h5>
-							<ul class="retail-plan-feature-list" id="retail-plan-feature-list-12-mo">
-								<li>25 personalized, curated deliveries</li>
-								<li>Direct access to personal drink curator</li>
-								<li>An introductory sync with your curator</li>
-								<li>4 curated tasting sessions for you & friends</li>
-								<li>1.5x reward points for limited/rare drinks</li>
-							</ul>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<h5 class="contract-type-header">
-								Membership cost
-								<sup  data-toggle="tooltip" title="The $96 12-month membership includes the items listed 
-																	but does not include the cost of the drinks. However,
-																	our drink prices are competetive, in line with local 
-																	shops. Also, although the membership fee is 
-																	non-refundable, you can stop deliveries at any 
-																	time and are under no obligation to buy any more 
-																	drinks from Knird.">
-									?
-								</sup>
-							</h5>
-							<h2 class="retailer-plan-cost">$8<span class="with-contract">/mo</span></h2>					
-						</div>
-					</div>
-					<div class="row no-margin renew-button-info">
-						<div class="col-xs-12 no-padding">
-							<% if @customer_plan.auto_renew_subscription_id == 3 %>
-								<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
-							<% else %>
-								<%= link_to "#", class: 'btn btn-success formButton-start-plan', 
-										data: {toggle: "modal", target: "#change_auto_renew_plan_to_twelve"} do %>
-									<i class="fa fa-refresh" aria-hidden="true"> Auto renew to the 12 mo plan</i>
-								<% end %>
-							<% end %>
-						</div>
-					</div>
+					<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
 				</div>
 			</div>
 		</div>
 	</div>
-	<hr>
+	<div class="col-xs-12 col-sm-4">
+		<div class="homepage-plan-options <%= @twenty_five %>">
+			<%= render 'layouts/deliveries_plan_twenty_five' %>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<% if @customer_plan.subscription_id == 1 && @customer_plan.auto_renew_subscription_id == 1 %>
+						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
+								data: {toggle: "modal", target: "#start_twenty_five_plan"} do %>
+							<i class="fa fa-play" aria-hidden="true"> Start the 25 Prepaid Deliveries Plan</i>
+						<% end %>
+					<% elsif @customer_plan.auto_renew_subscription_id == 3 %>
+						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
+					<% else %>
+						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
+								data: {toggle: "modal", target: "#change_auto_renew_plan_to_twenty_five"} do %>
+							<i class="fa fa-refresh" aria-hidden="true"> Auto renew to this plan</i>
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>

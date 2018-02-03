@@ -1,26 +1,22 @@
 <% if current_user.role_id == 1 || current_user.role_id == 4 %>
 	<div class="row no-margin">
 		<div class="col-xs-4 col-md-offset-3 col-md-2 no-padding signup-guide-column-holder <%= @user_chosen %>">
-			<%= link_to "user preferences", edit_user_path(@user.id), class: "guide-header #{@user_chosen} hidden-xs" %>
-			<%= link_to "user", edit_user_path(@user.id), class: "guide-header #{@user_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
+			<%= link_to "user", edit_user_path(@user.id), class: "guide-header #{@user_chosen}" %>
 			<div class="fa fa-chevron-right"></div>
 		</div>
 		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @drink_chosen %>">
 			<% if @user.getting_started_step >= 4 %>
-				<%= link_to "drink preferences", drink_choice_getting_started_path, class: "guide-header #{@drink_chosen} hidden-xs" %>
-				<%= link_to "drink", drink_choice_getting_started_path, class: "guide-header #{@drink_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
+				<%= link_to "drinks", drink_choice_getting_started_path, class: "guide-header #{@drink_chosen}" %>
 			<% else %>
-				<h5 class="guide-header hidden-xs">drink preferences</h5>
-				<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">drink</h5>
+				<h5 class="guide-header">drinks</h5>
 			<% end %>
 			<div class="fa fa-chevron-right"></div>
 		</div>
 		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @delivery_chosen %>">
 			<% if @user.getting_started_step >= 10 %>
-				<%= link_to "delivery preferences", delivery_frequency_getting_started_path, class: "guide-header #{@delivery_chosen}" %>
+				<%= link_to "deliveries", delivery_frequency_getting_started_path, class: "guide-header #{@delivery_chosen}" %>
 			<% else %>
-				<h5 class="guide-header hidden-xs">delivery preferences</h5>
-				<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">delivery</h5>
+				<h5 class="guide-header">deliveries</h5>
 			<% end %>
 		</div>
 	</div>
@@ -28,17 +24,14 @@
 <% if current_user.role_id == 5 || current_user.role_id == 6 || current_user.role_id == 8 || current_user.role_id == 9 %>
 	<div class="row no-margin">
 		<div class="col-xs-4 col-md-offset-3 col-md-3 no-padding signup-guide-column-holder <%= @user_chosen %>">
-			<%= link_to "user preferences", edit_user_path(@user.id), class: "guide-header #{@user_chosen} hidden-xs" %>
-			<%= link_to "user", edit_user_path(@user.id), class: "guide-header #{@user_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
+			<%= link_to "user", edit_user_path(@user.id), class: "guide-header #{@user_chosen}" %>
 			<div class="fa fa-chevron-right"></div>
 		</div>
 		<div class="col-xs-4 col-md-3 no-padding signup-guide-column-holder <%= @drink_chosen %>">
 			<% if @user.getting_started_step >= 3 %>
-				<%= link_to "drink preferences", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_chosen} hidden-xs" %>
-				<%= link_to "drink", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_chosen} hidden-sm hidden-md hidden-lg hidden-xl" %>
+				<%= link_to "drinks", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_chosen}" %>
 			<% else %>
-				<h5 class="guide-header hidden-xs">drink preferences</h5>
-				<h5 class="guide-header hidden-sm hidden-md hidden-lg hidden-xl">drink</h5>
+				<h5 class="guide-header">drinks</h5>
 			<% end %>
 		</div>
 	</div>

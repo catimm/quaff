@@ -6,6 +6,18 @@ $(function () {
 	    });
 	}
 	
+	// show modal for 1st step of settings for those with a new plan 
+	if (gon.new_plan_step_one == true) {
+		$(window).load(function(){
+	        $('#new_plan_step_one').modal('show');
+	    });
+	}
+	// show modal for 2nd step of settings for those with a new plan  
+	if (gon.new_plan_step_two == true) {
+		$(window).load(function(){
+	        $('#new_plan_step_two').modal('show');
+	    });
+	}
 	$(document).on("scroll", function() {
 	    var second_row = $("#second-delivery-row").width();
 	    //moveScroller();

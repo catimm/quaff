@@ -66,6 +66,7 @@ $signup-category-image-background-chosen: $super-light-faded-blue;
 $soft-border: $extra-light-gray;
 $homepage-works-icon: $medium-light-gray; 
 $navbar-color: $extra-dark-gray;
+$footer-color: $extra-dark-gray;
 $header-text: $extra-dark-gray;
 $normal-text: $dark-gray;
 $more-emphasized-text: $extra-dark-gray;
@@ -1459,18 +1460,6 @@ p {
   width: 90% !important;
   margin: 10px 0;
 }
-.formButton-renew-plan-set {
-  display: inline-block;
-  width: 90% !important;
-  margin: 10px 0;
-  color: $user-rating-text;
-  border: 1px solid $user-rating-text;
-  white-space: nowrap;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.42857143;
-  border-radius: 4px;
-}
 .feature-list-column-sign-up {
   font-size: 16px;
   color: $normal-text;
@@ -1615,6 +1604,19 @@ p {
 }
 .plan-get-started-button:hover {
   background: $user-rating-text !important;
+}
+.formButton-renew-plan-set {
+  display: inline-block;
+  width: 80%;
+  margin: 10px 10% 0 10%;
+  color: $user-rating-text;
+  border: 1px solid $user-rating-text;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  text-align: center;
 }
 .membership-extra-info {
   color: $normal-text;
@@ -2867,7 +2869,7 @@ $beer-header-lines-to-show-fp: 1;
 }
 //
 .footer {
-  background: $dark-gray !important;
+  background: $footer-color !important;
   bottom: 0;
   position: absolute;
   height: 50px !important;
@@ -2979,6 +2981,9 @@ $beer-header-lines-to-show-fp: 1;
     color: $user-rating-text;
     font-weight: 600;
   }
+}
+.user-membership-optons-row {
+  margin: 10px 0;
 }
 .auto-confirm-confirmation-text {
   color: $normal-text;
@@ -3437,6 +3442,13 @@ $beer-header-lines-to-show-fp: 1;
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
+}
+.reset-estimate-message {
+  color: $more-emphasized-text;
+  margin: 10px 40px;
+  text-align: center;
+  background: $special-designated-yellow;
+  border-radius: 6px;
 }
 .drinks-per-delivery-highlight-change {
   color: $action-background !important;
@@ -7661,7 +7673,7 @@ header {
  
 // Footer css
   .footer {
-    background: $dark-gray !important;
+    background: $footer-color !important;
     bottom: 0;
     position: absolute;
     height: 40px;

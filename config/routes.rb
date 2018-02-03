@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   get '/users/send_mate_invite_reminder/:id' => 'users#send_mate_invite_reminder', :as => 'send_mate_invite_reminder'
   get '/users/drop_mate/:id' => 'users#drop_mate'
   post '/users/process_user_plan_change/:id' => 'users#process_user_plan_change', :as => 'process_user_plan_change'
+  post '/users/start_new_plan/:id' => 'users#start_new_plan', :as => 'start_new_plan'
   post '/users/update_home_address/:id' => 'users#update_home_address'
   post '/users/username_verification/:id' => 'users#username_verification'
   post '/stripe-webhooks' => 'users#stripe_webhooks'
@@ -82,13 +83,13 @@ Rails.application.routes.draw do
   root :to => 'home#index'
    
   # routes to user deliveries pages
-  get '/delivery_settings/index/:id' => 'delivery_settings#index', :as => 'user_delivery_settings'
+  get '/delivery_settings/index' => 'delivery_settings#index', :as => 'user_delivery_settings'
   get '/delivery_settings/delivery_location' => 'delivery_settings#delivery_location', :as => 'user_delivery_settings_location'
   get '/delivery_settings/change_delivery_time' => 'delivery_settings#change_delivery_time', :as => 'change_delivery_time'
   get '/delivery_settings/total_estimate' => 'delivery_settings#total_estimate', :as => 'user_delivery_settings_total_estimate'
   post '/delivery_settings/deliveries_update_estimates/:id' => 'delivery_settings#deliveries_update_estimates', :as => 'deliveries_update_estimates'
-  patch '/delivery_settings/deliveries_update_preferences/:id' => 'delivery_settings#deliveries_update_preferences', :as => 'deliveries_update_preferences'
-  get '/delivery_settings/change_next_delivery_date/:id' => 'delivery_settings#change_next_delivery_date', :as => 'change_next_delivery_date'
+  patch '/delivery_settings/deliveries_update_preferences' => 'delivery_settings#deliveries_update_preferences', :as => 'deliveries_update_preferences'
+  get '/delivery_settings/change_next_delivery_date' => 'delivery_settings#change_next_delivery_date', :as => 'change_next_delivery_date'
   #post '/delivery_settings/change_delivery_drink_quantity/:id' => 'delivery_settings#change_delivery_drink_quantity', :as => 'change_delivery_drink_quantity'
   post '/delivery_settings/remove_delivery_drink_quantity/:id' => 'delivery_settings#remove_delivery_drink_quantity'
   post '/delivery_settings/customer_delivery_messages/' => 'delivery_settings#customer_delivery_messages', :as => 'customer_delivery_messages'
@@ -177,7 +178,7 @@ Rails.application.routes.draw do
   get '/signup/delivery_preferences_getting_started' => 'signup#delivery_preferences_getting_started', :as => 'delivery_preferences_getting_started'
   get '/signup/choose_delivery_time' => 'signup#choose_delivery_time', :as => 'choose_delivery_time'
   
-  get '/signup/signup_thank_you/:id' => 'signup#signup_thank_you', :as => 'signup_thank_you'
+  get '/signup/signup_thank_you' => 'signup#signup_thank_you', :as => 'signup_thank_you'
   
   post '/signup/username_verification/:id' => 'signup#username_verification', :as => 'username_verification'
   

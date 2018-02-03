@@ -70,7 +70,7 @@
 								<% @delivery_time_options = @delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}%>
 								<% @delivery_time_options.each do |option| %>
 									<div class="col-xs-5 optional-delivery-time-container" id="<%= @additional_delivery_location_name %>">
-										<h5 class="current-delivery-choice day-holder">Every other <%= option.day_of_week %>,</h5>  
+										<h5 class="current-delivery-choice day-holder"><%= option.day_of_week %>s,</h5>  
 										<h5 class="current-delivery-choice time-holder">
 											<%=  (option.start_time).strftime("%l:%M%P") %> 
 											- <%= (option.end_time).strftime("%l:%M%P") %>

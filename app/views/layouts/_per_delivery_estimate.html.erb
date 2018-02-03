@@ -1,12 +1,17 @@
-<h4 class="estimated-delivery-price-header">Estimates for delivery every <%= @account.delivery_frequency %> weeks</h4>
+<h3 class="reset-estimate-message <%= @reset_estimate_visible_status %> ">
+	Choose your preferred delivery frequency to see updated delivery estimates
+</h3>
+<h4 class="estimated-delivery-price-header delivery-estimate-information <%= @estimate_visible_status %>">
+	Estimates for a delivery every <%= @account.delivery_frequency %> weeks
+</h4>
 
-<div class="col-xs-3 preference-estimate-holder">
+<div class="col-xs-3 preference-estimate-holder delivery-estimate-information <%= @estimate_visible_status %>">
 	<div class="delivery-settings-info-box drinks">
 		<p>total drinks</p>
 		<h4 class="delivery-preference-prompt">~<%= @total_delivery_drinks %></h4>
 	</div>	
 </div>
-<div class="col-xs-2 preference-estimate-holder">
+<div class="col-xs-2 preference-estimate-holder delivery-estimate-information <%= @estimate_visible_status %>">
 	<div class="delivery-settings-info-box small">
 		<p>small</p>
 		<h4 class="delivery-preference-prompt"><span class="preference-estimate-signs"><<br>=</span>
@@ -14,7 +19,7 @@
 		</h4>
 	</div>	
 </div>
-<div class="col-xs-2 preference-estimate-holder">
+<div class="col-xs-2 preference-estimate-holder delivery-estimate-information <%= @estimate_visible_status %>">
 	<div class="delivery-settings-info-box large">
 		<p>large</p>
 		<h4 class="delivery-preference-prompt"><span class="preference-estimate-signs"><<br>=</span>
@@ -22,7 +27,7 @@
 		</h4>
 	</div>	
 </div>
-<div class="col-xs-4 preference-estimate-holder no-padding-right">
+<div class="col-xs-4 preference-estimate-holder no-padding-right delivery-estimate-information <%= @estimate_visible_status %>">
 	<div class="delivery-settings-info-box total-price">
 		<p>total price <sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup></p>
 		<h4 class="delivery-preference-prompt">~<%= number_to_currency(@delivery_cost_estimate_low, precision: 0) %> - <%= number_to_currency(@delivery_cost_estimate_high, precision: 0) %></h4>

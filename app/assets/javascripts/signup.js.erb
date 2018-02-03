@@ -236,11 +236,6 @@ $(function() {
 		if(large_format_original != undefined) {
 			var split_original = large_format_original.split('-');
 			var large_format = split_original[0];
-			
-			if(large_format > drinks_per_week){
-				large_format = drinks_per_week;
-				$("#delivery_preference_max_large_format").val(large_format);
-			}
 		}
 		
 		if(current_page == "signup") {
@@ -374,13 +369,17 @@ $(function() {
 		var number_of_weeks = $(this).children(".signup-frequency-third-level-text").attr('id');
 		
 		if(current_page == "signup") {
-			// send data to controller
+			// send data to signup controller--process_delivery_frequency_getting_started method
 			$.ajax({
 			  type: "POST",
 			  url: "/signup/process_delivery_frequency_getting_started/" + number_of_drinks + "-" + number_of_weeks
 			});
 		} else {
-			
+			// send data to delivery settings controller--deliveries_update_estimates method
+			$.ajax({
+			  type: "POST",
+			  url: "/delivery_settings/deliveries_update_estimates/frequency-" + number_of_drinks + "-" + number_of_weeks
+			});
 		}
 		
 	});

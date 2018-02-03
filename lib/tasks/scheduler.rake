@@ -524,7 +524,7 @@ task :assess_drink_recommendations => :environment do
     @active_subscriptions.each do |account|
 
       # get each user associated to this account
-      @active_users = User.where(account_id: account.account_id, getting_started_step: 11)
+      @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
       #Rails.logger.debug("Active users: #{@active_users.inspect}")
       
       @active_users.each do |user|
@@ -845,7 +845,7 @@ task :assess_total_demand_for_inventory => :environment do
       @active_subscriptions.each do |account|
   
         # get each user associated to this account
-        @active_users = User.where(account_id: account.account_id, getting_started_step: 11)
+        @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
         
         @active_users.each do |user|
           # assess drink to add if user would rated highly enough
@@ -901,7 +901,7 @@ task :share_admin_prep_with_customer => :environment do
     if !@accounts_with_deliveries.blank?
       @accounts_with_deliveries.each do |account_delivery|
         # find if the account has any mates
-        @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 11).pluck(:id)
+        @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 12).pluck(:id)
         
         # find if any of these mates has drinks allocated to them
         @mates_ids_with_drinks = UserDelivery.where(user_id: @mates_ids, delivery_id: account_delivery.id).pluck(:user_id)
@@ -1006,7 +1006,7 @@ task :user_change_confirmation => :environment do
       @accounts_with_changes.each do |account_delivery|
         
         # find if the account has any other users
-        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 11).where.not(role_id: [1,4])
+        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 12).where.not(role_id: [1,4])
         
         if !@mates.blank?
           @has_mates = true
@@ -1074,7 +1074,7 @@ task :user_change_confirmation => :environment do
         @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
 
         # create customer variable for email to customer
-        @customers = User.where(account_id: @customer_next_delivery.account_id, getting_started_step: 11)
+        @customers = User.where(account_id: @customer_next_delivery.account_id, getting_started_step: 12)
        
         # send email to each customer for review
         @customers.each do |customer|
@@ -1158,7 +1158,7 @@ task :top_of_mind_reminder => :environment do
       # cycle through each delivery still in review
       @last_week_deliveries.each do |delivery|
         # get each account user
-        @account_users = User.where(account_id: account_id, getting_started_step: 11)
+        @account_users = User.where(account_id: account_id, getting_started_step: 12)
         
         # send an email to each user to remind them they only have a few hours to review the delivery
         @account_users.each do |user|
