@@ -24,8 +24,8 @@ class DrinksController < ApplicationController
     @account_users_count = User.where(account_id: current_user.account_id, getting_started_step: 12).count
     
     # get delivery info
-    @all_deliveries = Delivery.where(account_id: @user.account_id).where.not(status: "admin prep")
-    @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress"]).first
+    @all_deliveries = Delivery.where(account_id: @user.account_id)
+    @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress", "admin prep"]).order(delivery_date: :desc).first
     
     # check if deliveries exist before executing rest of code
     if !@all_deliveries.blank?

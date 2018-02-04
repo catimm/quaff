@@ -2468,6 +2468,9 @@ $beer-header-lines-to-show-fp: 1;
 .half-top-margin {
   margin-top: 5px;
 }
+.full-top-margin {
+  margin-top: 10px !important;
+}
 .each-beer {
   margin-right: 0;
 }
@@ -3960,6 +3963,7 @@ $beer-header-lines-to-show-fp: 1;
     line-height: 8px;      
   } 
 }
+
 .edit-drink-rating {
   width: 30px;
   height: 30px;

@@ -1,16 +1,17 @@
 module DeliveryEstimator
   extend ActiveSupport::Concern
-  
-  def delivery_estimator(delivery_preferences, craft_stage)
+
+  def estimate_drinks(number_of_drinks, max_large_format, craft_stage)
 
     # determine large format percentage
-    @large_percentage = ((delivery_preferences.max_large_format.to_f) / (delivery_preferences.drinks_per_delivery.to_f)).round(3)
-    
-    # # of large format drinks
-    @large_format_number = delivery_preferences.max_large_format
+    @large_percentage = (max_large_format.to_f / number_of_drinks.to_f).round(3)
+
+    # of large format drinks
+    @large_format_number = max_large_format
+
     # determine small format number by counting each large format as 2 small format drinks
-    @small_format_number = delivery_preferences.drinks_per_delivery - (@large_format_number * 2)
-     
+    @small_format_number = number_of_drinks - (@large_format_number * 2)
+
     # determine percentage of cellar/cooler drinks per delivery
     if craft_stage == 1
       @cellar_percentage = 0.05
@@ -22,9 +23,9 @@ module DeliveryEstimator
       @cellar_percentage = 0.1
       @cooler_percentage = 0.9
     end
-    
+
     # determine max number of cellar drinks per delivery
-    @max_cellar = (delivery_preferences.drinks_per_delivery * @cellar_percentage).round
+    @max_cellar = (number_of_drinks * @cellar_percentage).round
 
     # determine number of large/small cellar/cooler drinks
     @number_of_large_cellar = (@large_format_number * @cellar_percentage).round  
@@ -80,7 +81,13 @@ module DeliveryEstimator
     @cost_estimate_cellar_large = (@large_cellar_cost * @number_of_large_cellar)
     
     @total_cost_estimate = (@cost_estimate_cooler_small + @cost_estimate_cooler_large + @cost_estimate_cellar_small + @cost_estimate_cellar_large).round
-    Rails.logger.debug("Total $: #{@total_cost_estimate.inspect}") 
+    return @total_cost_estimate
+  end
+  
+  
+  def delivery_estimator(delivery_preferences, craft_stage)
+
+    @total_cost_estimate = estimate_drinks(delivery_preferences.drinks_per_delivery, delivery_preferences.max_large_format, craft_stage)
   
     # update delivery preferences
     DeliveryPreference.update(delivery_preferences.id, price_estimate: @total_cost_estimate, max_cellar: @max_cellar)

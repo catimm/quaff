@@ -12,7 +12,7 @@
 			<%= f.hidden_field :drink_option_id %>
 			<%= f.hidden_field :number_of_drinks %>
 			<%= f.hidden_field :number_of_large_drinks %>
-    <div class="row no-margin">
+    <div class="row no-margin full-top-margin">
         <div class="col-xs-10 col-sm-4 no-padding">
             <h3 class="delivery-preference-prompt">Drink preference: <span class="delivery-preference-prompt" id="order-drink-type-text"><%= @drink_type_preference %></span></h3>
         </div>
@@ -22,7 +22,7 @@
     </div>
     <div class="row no-margin">
         <div class="col-xs-offset-3 col-sm-offset-1 col-xs-6 no-padding-right hidden" id="order-drink-type">
-            <div class="row preferences-drink-category-row-holder top-margin-10">
+            <div class="row preferences-drink-category-row-holder half-top-margin">
                 <%= render 'delivery_settings/drink_category_choice' %>
             </div>
         </div>
@@ -79,8 +79,16 @@
             </div>
         </div>
     </div>
+    <div class="row full-top-margin">
+        <div class="col-xs-offset-4 col-xs-4 preference-estimate-holder no-padding-right delivery-estimate-information">
+            <div class="delivery-settings-info-box total-price">
+                <p>total price <sup  data-toggle="tooltip" title="You always have final say on the delivery, so you'll never be surprised by the actual cost.">?</sup></p>
+                <h4 class="delivery-preference-prompt">~0</h4>
+            </div>
+        </div>
+    </div>
     <div class="row">
-        <div class="col-xs-offset-2 col-xs-6 col-sm-offset-3 col-sm-4 text-center">
+        <div class="col-xs-offset-4 col-xs-4 col-sm-offset-4 col-sm-4 text-center">
             <input type="submit" class="btn btn-success user-info-next-button" id="place-order-button" value="Place Order"></input>
         </div>
     </div>

@@ -1,4 +1,7 @@
 class OrdersController < ApplicationController
+    before_filter :authenticate_user!
+    include DeliveryEstimator
+
     def new
         @order = Order.new
         @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
@@ -30,12 +33,18 @@ class OrdersController < ApplicationController
         end
     end
 
+    def get_estimate
+        @order = Order.new(order_params)
+        estimate_drinks(@order.number_of_drinks, @order.number_of_large_drinks, current_user.craft_stage_id)
+    end
+
     def process_order
         @order = Order.new(order_params)
         @order.account_id = current_user.account_id
         @order.save
 
-        Delivery.create(account_id: current_user.account_id, 
+        Delivery.create(account_id: current_user.account_id,
+                                order_id: @order.id,
                                 delivery_date: @order.delivery_date,
                                 status: "admin prep",
                                 subtotal: 0,
@@ -44,6 +53,7 @@ class OrdersController < ApplicationController
                                 delivery_change_confirmation: false,
                                 share_admin_prep_with_user: false)
 
+        AdminMailer.admin_customer_order(current_user, @order).deliver_now
         redirect_to user_deliveries_path
     end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180131195511) do
+ActiveRecord::Schema.define(version: 20180204032609) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -270,7 +270,10 @@ ActiveRecord::Schema.define(version: 20180131195511) do
     t.boolean  "share_admin_prep_with_user"
     t.boolean  "recipient_is_21_plus"
     t.datetime "delivered_at"
+    t.integer  "order_id"
   end
+
+  add_index "deliveries", ["order_id"], name: "index_deliveries_on_order_id", using: :btree
 
   create_table "delivery_drivers", force: :cascade do |t|
     t.integer  "user_id"
@@ -884,5 +887,6 @@ ActiveRecord::Schema.define(version: 20180131195511) do
   end
 
   add_foreign_key "credits", "accounts"
+  add_foreign_key "deliveries", "orders"
   add_foreign_key "orders", "accounts"
 end

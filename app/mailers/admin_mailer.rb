@@ -235,7 +235,31 @@ class AdminMailer < ActionMailer::Base
     p response
     
   end # end of admin_message_review email
-  
+
+  def admin_customer_order(user, order)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: "carl@drinkknird.com" },
+        }
+      ],
+      content: {
+        template_id: 'admin-customer-order'
+      },
+      substitution_data: {
+        user_id: user.id,
+        user_username: user.username,
+        order_id: order.id,
+        additional_requests: order.additional_requests
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+  end
+    
   def admin_customer_delivery_request(admin_email, user, message)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 

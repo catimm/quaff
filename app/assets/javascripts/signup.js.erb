@@ -248,7 +248,7 @@ $(function() {
 			var controller_url = "";
 			var currently_selected_large_format_drinks = parseInt($('#order_number_of_large_drinks').val() | "0");
 			var max_large_format_drink = Math.ceil(drinks_per_week/2.0);
-			for (var i = 0; i <= 12; i++) {
+			for (var i = 0; i <= 14; i++) {
 				if( i <= max_large_format_drink) {
 					$('.number-box-holder.large-format:eq(' + i + ')').removeClass('hidden').addClass('show');
 				}

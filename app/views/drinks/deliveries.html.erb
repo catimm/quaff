@@ -51,6 +51,12 @@
 			</div>
 			<div class="row no-margin">
 				<div class="row no-margin delivery-first-row" id="delivery-first-row-<%= @first_delivery.id %>">
+					<% if @first_delivery.status == "admin prep"%>
+					<div class="col-xs-12 col-sm-7 col-md-6 no-padding-right" id="delivery-toggle-holder-<%= @first_delivery.id %>">
+						<h4 class="delivered-on-date visible-xs hidden-sm hidden-md hidden-lg hidden-xl">You will receive an email with details once your curator has picked out the drinks for you. To be delivered on <%= (@first_delivery.delivery_date).strftime("%a, %b %-d %Y") %></h4>
+						<h4 class="delivered-on-date hidden-xs visible-sm visible-md visible-lg visible-xl">You will receive an email with details once your curator has picked out the drinks for you. To be delivered on <%= (@first_delivery.delivery_date).strftime("%A, %B %-d %Y") %></h4>
+					</div>
+					<% else %>
 					<div class="col-xs-12 col-sm-7 col-md-6 no-padding-right" id="delivery-toggle-holder-<%= @first_delivery.id %>">
 						<div class="delivery-drinks-show-more hidden" id="delivery-drinks-more-<%= @first_delivery.id %>">
 							<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
@@ -77,6 +83,7 @@
 							<%= render(partial: 'drink_card_current_delivery', locals: { drink: drink }) %>
 						<% end %>
 					<% end %>	
+			<% end %>
 				</div>
 			<hr>
 			</div>
