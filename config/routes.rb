@@ -214,6 +214,7 @@ Rails.application.routes.draw do
   
   # Orders
   get '/orders/new' => 'orders#new', :as => 'orders_new'
+  get '/orders/new/estimate' => 'orders#estimate', :as => 'orders_estimate'
   post '/orders/process' => 'orders#process_order', :as => 'process_order'
  
   # privacy and terms routes

@@ -33,9 +33,11 @@ class OrdersController < ApplicationController
         end
     end
 
-    def get_estimate
-        @order = Order.new(order_params)
-        estimate_drinks(@order.number_of_drinks, @order.number_of_large_drinks, current_user.craft_stage_id)
+    def estimate
+        number_of_drinks = params[:number_of_drinks].to_i
+        number_of_large_drinks = params[:number_of_large_drinks].to_i
+        price_estimate = estimate_drinks(number_of_drinks, number_of_large_drinks, current_user.craft_stage_id)
+        render plain: price_estimate
     end
 
     def process_order
