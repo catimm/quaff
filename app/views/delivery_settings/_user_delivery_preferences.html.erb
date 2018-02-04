@@ -1,5 +1,4 @@
 <%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
-			<%= f.hidden_field :first_delivery_date %>
 			<%= f.hidden_field :drink_option_id %>
 			<%= f.hidden_field :drinks_per_week %>
 			<%= f.hidden_field :max_large_format %>
