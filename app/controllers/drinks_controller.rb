@@ -13,7 +13,10 @@ class DrinksController < ApplicationController
   def deliveries   
     # get user's delivery info
     @user = User.find_by_id(current_user.id)
-
+    
+    # get user subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id).first
+    
     # get account delivery address
     @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
     @account_delivery_zone_id = @account_delivery_address.delivery_zone_id

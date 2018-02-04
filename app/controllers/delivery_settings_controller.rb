@@ -346,9 +346,6 @@ class DeliverySettingsController < ApplicationController
     
     # get drink info for estimates
     if @column == "drinks_per_week" || @column == "large_format"
-      # update delivery preferences
-      @delivery_preferences.update_attributes(drinks_per_week: @data_value_one, max_large_format: @data_value_two)
-      
       # remove delivery frequency from account so users choose new frequency
       @account.update_attribute(:delivery_frequency, nil)
       
@@ -357,7 +354,17 @@ class DeliverySettingsController < ApplicationController
       if @max_large_format_drinks < 1
         @max_large_format_drinks = 1
       end
-      @large_format_drinks_per_week = @data_value_two.to_i
+      
+      # set large format number
+      if @data_value_two.to_i > @max_large_format_drinks 
+        @large_format_drinks_per_week = @max_large_format_drinks
+      else
+        @large_format_drinks_per_week = @data_value_two.to_i
+      end
+      
+      # update delivery preferences
+      @delivery_preferences.update_attributes(drinks_per_week: @data_value_one, max_large_format: @data_value_two)
+      
       # get new delivery estimates
       delivery_estimator(@delivery_preferences, @user.craft_stage_id)
       
@@ -462,7 +469,7 @@ class DeliverySettingsController < ApplicationController
                                  additional: params[:delivery_preference][:additional])
     
     # update cost estimator
-    delivery_estimator(current_user.id, @drinks_per_week, @large_format, "update")
+    delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
 
     render js: "window.location = '#{user_delivery_settings_path}'"
 
