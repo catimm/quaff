@@ -43,6 +43,7 @@ class OrdersController < ApplicationController
     def process_order
         @order = Order.new(order_params)
         @order.account_id = current_user.account_id
+        @order.user_id = current_user.id
 
         if !@order.valid?
             flash[:failure] = "Please select the number of drinks, delivery date and limit the additional request to 500 characters"

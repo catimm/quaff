@@ -496,10 +496,9 @@ desc "Assess Drink Recommendations For Users" # step 1 of curation process
 task :assess_drink_recommendations => :environment do
     include UserLikesDrinkTypes
     include TypeBasedGuess
-    
-    # first delete all old rows of assessed drinks
-    @old_data = UserDrinkRecommendation.delete_all
-    
+
+    only_for_orders = (ENV['only_for_orders'] == "true")
+
     # get packaged size formats
     @packaged_format_ids = SizeFormat.where(packaged: true).pluck(:id)
     
@@ -511,20 +510,27 @@ task :assess_drink_recommendations => :environment do
     
     # get drink type info 
     @drink_types = BeerType.all
-      
+    
+    if !only_for_orders
+      # first delete all old rows of assessed drinks
+      @old_data = UserDrinkRecommendation.delete_all
+    end
+    
     # get list of all currently_active subscriptions
     @active_subscriptions = UserSubscription.where(currently_active: true)
     #Rails.logger.debug("Active subscriptions: #{@active_subscriptions.inspect}")
     
-    # get user info from users who have completed delivery preferences
-    @delivery_preference_user_ids = DeliveryPreference.all.pluck(:user_id)
-    @users = User.where(id: @delivery_preference_user_ids)
-    
     # determine viable drinks for each active account
     @active_subscriptions.each do |account|
 
-      # get each user associated to this account
-      @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
+      if only_for_orders
+        # get active users that have an outstanding order but with no recommendations
+        @active_users = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations) AND getting_started_step=? AND account_id=?', 12, account.account_id)
+      else
+        # get each user associated to this account
+        @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
+      end
+      
       #Rails.logger.debug("Active users: #{@active_users.inspect}")
       
       @active_users.each do |user|
