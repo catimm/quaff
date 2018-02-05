@@ -44,9 +44,8 @@
 		</h5>
 	</div>
 	<div class="col-xs-6 no-padding">
-		<h5 class="item-price" data-toggle="tooltip" title="Price includes tax">
-			<% @total_price = (drink.drink_price * (1 + @account_tax)) %>
-			<%= number_to_currency(@total_price, precision: 2) %> each
+		<h5 class="item-price" data-toggle="tooltip" title="Price does not include tax">
+			<%= number_to_currency(drink.drink_price, precision: 2) %> each
 		</h5>		
 	</div>
 	<div class="col-xs-4 no-padding">

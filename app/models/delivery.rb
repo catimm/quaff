@@ -19,6 +19,9 @@
 #  share_admin_prep_with_user       :boolean
 #  recipient_is_21_plus             :boolean
 #  delivered_at                     :datetime
+#  order_id                         :integer
+#  no_plan_delivery_fee             :decimal(5, 2)
+#  grand_total                      :decimal(5, 2)
 #
 
 class Delivery < ActiveRecord::Base

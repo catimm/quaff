@@ -135,7 +135,7 @@ $(function() {
 			  type: "GET",
 			  url: "/orders/new/estimate?number_of_drinks=" + number_of_drinks + "&number_of_large_drinks=" + number_of_large_drinks,
 			  success: function(data) {
-				  $('#order_price_estimate').text("~" + data);
+				  $('#order_price_estimate').text(data);
 			  }
 			});
 		}
@@ -281,6 +281,8 @@ $(function() {
 			}
 
 			$('#order_number_of_drinks').val(drinks_per_week);
+			$('#total_drinks').text(drinks_per_week);
+			$('#confirmed_total_drinks').text(drinks_per_week);
 			setOrderEstimate();
 		}
 		else {
@@ -342,6 +344,7 @@ $(function() {
 		if(drinks_per_week_original != undefined) {
 			var split_original = drinks_per_week_original.split('-');
 			var drinks_per_week = split_original[0];
+			var small_format = drinks_per_week
 		}
 		
 		if(current_page == "signup") {
@@ -350,7 +353,9 @@ $(function() {
 		else if (current_page == "orders") {
 			var controller_url = "";
 			$("#order_number_of_large_drinks").val(large_format);
-
+			$("#large_drink_number").text(large_format);
+			$("#small_drink_number").text(small_format);
+			$(".preference-estimate-signs").removeClass("hidden").addClass("show");
 			setOrderEstimate();
 		}
 		else {

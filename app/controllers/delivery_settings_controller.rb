@@ -239,7 +239,7 @@ class DeliverySettingsController < ApplicationController
     @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
 
     # get monthly estimates
-    @user_subscription = UserSubscription.where(user_id: @account_owner.id).first
+    @user_subscription = UserSubscription.where(user_id: @account_owner.id, currently_active: true).first
     @user_subscription_name = @user_subscription.subscription.subscription_name
     @user_subscription_cost = @user_subscription.subscription.subscription_cost
     

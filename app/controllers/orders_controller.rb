@@ -37,11 +37,15 @@ class OrdersController < ApplicationController
         number_of_drinks = params[:number_of_drinks].to_i
         number_of_large_drinks = params[:number_of_large_drinks].to_i
         price_estimate = estimate_drinks(number_of_drinks, number_of_large_drinks, current_user.craft_stage_id)
-        render plain: price_estimate
+        # set high and low estimate
+        @delivery_cost_estimate_low = (((price_estimate.to_f) *0.9).floor / 5).round * 5
+        @delivery_cost_estimate_high = ((((price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        @final_estimate = "~ $" + @delivery_cost_estimate_low.to_s + " - $" + @delivery_cost_estimate_high.to_s
+        render plain: @final_estimate
     end
 
     def process_order
-        @order = Order.new(order_params)
+        @order = Order.create(order_params)
         @order.account_id = current_user.account_id
         @order.user_id = current_user.id
 
@@ -67,7 +71,9 @@ class OrdersController < ApplicationController
                                 share_admin_prep_with_user: false)
 
         AdminMailer.admin_customer_order(current_user, @order).deliver_now
-        redirect_to user_deliveries_path
+        
+        render js: "window.location = '#{user_deliveries_path}'"
+
     end
 
     def order_params

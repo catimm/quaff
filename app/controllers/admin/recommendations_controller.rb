@@ -479,9 +479,16 @@ class Admin::RecommendationsController < ApplicationController
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
     
+    # update grand total if user has a delivery fee
+    if !@customer_next_delivery.no_plan_delivery_fee.blank?
+      @grand_total = @current_total_price + @customer_next_delivery.no_plan_delivery_fee
+    else 
+      @grand_total = @current_total_price
+    end
+    
     # update price info in Delivery table and set change confirmation to false so user gets notice
     @customer_next_delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 
-                                    total_price: @current_total_price, 
+                                    total_price: @current_total_price, grand_total: @grand_total,
                                     delivery_change_confirmation: false)
     
     # redirect back to recommendation page                                             
@@ -689,8 +696,19 @@ class Admin::RecommendationsController < ApplicationController
     # find delivery to share
     @next_customer_delivery = Delivery.find_by_id(params[:id])
     
+    # get user subscription type
+    @user_subscription = UserSubscription.where(account_id: @next_customer_delivery.account_id, currently_active: true).first
+    
+    if @user_subscription.subscription_id == 1
+      @delivery_fee = 6
+      @grand_total = @next_customer_delivery.total_price + @delivery_fee
+    else
+      @delivery_fee = 0
+      @grand_total = @next_customer_delivery.total_price + @delivery_fee
+    end
+    
     # update status
-    @next_customer_delivery.update(share_admin_prep_with_user: true)
+    @next_customer_delivery.update(share_admin_prep_with_user: true, no_plan_delivery_fee: @delivery_fee, grand_total: @grand_total)
     
     # redirect back to recommendation page                  
     redirect_to admin_recommendation_path(@next_customer_delivery.account_id) 

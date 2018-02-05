@@ -5517,7 +5517,8 @@ input[type="checkbox"] {
     color: $normal-text;
   }
 }
-.delivery-info-box.sales-tax, .delivery-settings-info-box.sales-tax {
+.delivery-info-box.sales-tax, 
+.delivery-settings-info-box.sales-tax {
   float: left;
   margin-right: 2px;
   border: 1px solid $less-emphasized-text;
@@ -5526,13 +5527,15 @@ input[type="checkbox"] {
     color: $less-emphasized-text;
   }
 }
-.delivery-info-box.total-price, .delivery-settings-info-box.total-price {
+.delivery-info-box.total-price, 
+.delivery-settings-info-box.total-price {
   border: 1px solid $money-color;
   min-width: 80px;
   h4 {
     color: $money-color;
   }
 }
+
 .show-more-price-info, .show-more-descriptors {
   color: $user-action;
 }
@@ -6732,7 +6735,7 @@ $delivery-beer-header-lines-to-show: 2;
     font-size: 11px;
   }
   .delivery-stats-holder {
-    margin-left: 20px;
+    margin-left: 0 !important;
   }
   $beer-header-rating-history-font-size: 12px;
   $beer-header-rating-history-line-height: 1.1;
