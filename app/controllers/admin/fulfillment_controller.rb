@@ -120,8 +120,8 @@ class Admin::FulfillmentController < ApplicationController
     @delivery_date = (@delivery.delivery_date).strftime("%B %e, %Y")
     
     # charge customer
-    @customer_subscription = UserSubscription.where(account_id: @delivery.account_id).first
-    remaining_amount = charge_with_credits(@delivery.account_id, @delivery.total_price, :DRINKS_DELIVERY)
+    @customer_subscription = UserSubscription.where(account_id: @delivery.account_id, currently_active: true).first
+    remaining_amount = charge_with_credits(@delivery.account_id, @delivery.grand_total, :DRINKS_DELIVERY)
 
     if remaining_amount != 0
       @total_price = (remaining_amount * 100).floor # put total charge in cents
@@ -174,33 +174,32 @@ class Admin::FulfillmentController < ApplicationController
     # get delivery account owner info
     @account_owner = User.where(account_id: @delivery.account_id, role_id: [1,4])
     
-    # get account owner subscription info
-    @account_owner_subscription = UserSubscription.find_by_user_id(@account_owner[0].id)
-    @subscription_deliveries_included = @account_owner_subscription.subscription.deliveries_included
+    # get account owner subscription deliveries info
+    @subscription_deliveries_included = @customer_subscription.subscription.deliveries_included
     
     # increment delivery totals
-    @account_owner_subscription.increment!(:deliveries_this_period)
-    @account_owner_subscription.increment!(:total_deliveries)
-    
-    # update account based on number of remaining deliveries in this period
-    @remaining_deliveries = @subscription_deliveries_included - @account_owner_subscription.deliveries_this_period
-    if @remaining_deliveries == 0
-      UserMailer.seven_day_membership_expiration_notice(@account_owner[0], @customer_subscription).delivery_now
-    elsif @remaining_deliveries >= 2
-      # start next delivery cycle
-      # get new delivery date
-      @second_delivery_date = @delivery.delivery_date + 4.weeks
-      # insert new line in delivery table
-      @next_delivery = Delivery.create(account_id: @delivery.account_id, 
-                                        delivery_date: @second_delivery_date,
-                                        status: "admin prep",
-                                        subtotal: 0,
-                                        sales_tax: 0,
-                                        total_price: 0,
-                                        delivery_change_confirmation: false,
-                                        share_admin_prep_with_user: false)
-    end
-    
+    @customer_subscription.increment!(:deliveries_this_period)
+    @customer_subscription.increment!(:total_deliveries)
+    if @customer_subscription.subscription_id != 1
+      # update account based on number of remaining deliveries in this period
+      @remaining_deliveries = @subscription_deliveries_included - @customer_subscription.deliveries_this_period
+      if @remaining_deliveries == 0
+        UserMailer.seven_day_membership_expiration_notice(@account_owner[0], @customer_subscription).deliver_now
+      elsif @remaining_deliveries >= 2
+        # start next delivery cycle
+        # get new delivery date
+        @second_delivery_date = @delivery.delivery_date + 4.weeks
+        # insert new line in delivery table
+        @next_delivery = Delivery.create(account_id: @delivery.account_id, 
+                                          delivery_date: @second_delivery_date,
+                                          status: "admin prep",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false)
+      end
+    end # end of check whether user is no plan customer
                                       
     # redirect back to delivery page
     redirect_to admin_fulfillment_index_path

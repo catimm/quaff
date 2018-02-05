@@ -15,7 +15,7 @@ class DrinksController < ApplicationController
     @user = User.find_by_id(current_user.id)
     
     # get user subscription info
-    @user_subscription = UserSubscription.where(account_id: @user.account_id).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # get account delivery address
     @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
@@ -28,7 +28,11 @@ class DrinksController < ApplicationController
     
     # get delivery info
     @all_deliveries = Delivery.where(account_id: @user.account_id)
-    @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress", "admin prep"]).order(delivery_date: :desc).first
+    if @user_subscription.subscription_id == 1
+      @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress", "admin prep"]).order(delivery_date: :asc).first
+    else
+      @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress"]).order(delivery_date: :asc).first
+    end
     
     # check if deliveries exist before executing rest of code
     if !@all_deliveries.blank?
@@ -412,7 +416,8 @@ class DrinksController < ApplicationController
     @account_delivery_id = @data_split[0].to_i
     @new_drink_quantity = @data_split[1].to_i
     
-    # get related instances 
+    # get account info
+    @account = Account.find_by_id(current_user.account_id) 
     
     # get Account Delivery info
     @account_delivery_info = AccountDelivery.find_by_id(@account_delivery_id)
@@ -486,13 +491,21 @@ class DrinksController < ApplicationController
       @current_subtotal = @current_subtotal + @this_drink_total
     end
     # now get sales tax
-    @current_sales_tax = @current_subtotal * 0.096
+    
+    # first get account tax
+    @account_tax = DeliveryZone.where(id: @account.delivery_zone_id).pluck(:excise_tax)[0]
+    @current_sales_tax = @current_subtotal * @account_tax
+    
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
-      
+     
+    # and grand total
+    @grand_total = @current_total_price + @delivery.no_plan_delivery_fee
+     
     # update price info in Delivery table & change confirmation to false so an update confirmation is sent
     @delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 
-                                    total_price: @current_total_price, delivery_change_confirmation: false)
+                                    total_price: @current_total_price, grand_total: @grand_total,
+                                    delivery_change_confirmation: false)
     
     # add customer change to Customer Delivery Change Table
     CustomerDeliveryChange.create(user_id: current_user.id, 

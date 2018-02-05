@@ -13,5 +13,20 @@ $(function() {
     $('.order-delivery-date-change-row').click(function() {
         var selectedDate = $(this).attr('id');
         $('#order_delivery_date').val(selectedDate);
+        var date_pieces = selectedDate.split('-');
+        var confirmed_date = date_pieces[1] + "-" + date_pieces[2] + "-" + date_pieces[0];
+        $("#confirmed_order_delivery_date").text(confirmed_date);
     });
+    
+    // submit form upon confirmation
+    $('#submit-drink-order').click(function(){
+	    var valuesToSubmit = $("#new_order").serialize();
+	    $.ajax({
+	        type: "POST",
+	        url: "/orders/process",
+	        data: valuesToSubmit
+	        //dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
+	    });
+	 });	    
+
 });

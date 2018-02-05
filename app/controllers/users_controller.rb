@@ -497,7 +497,7 @@ class UsersController < ApplicationController
           @amount_billed = event_object['lines']['data'][0]['amount']
           if @amount_billed != 0
             # get customer subscription info
-            @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number, stripe_subscription_number: @subscription_number)[0]
+            @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number, currently_active: true)[0]
             # update customer subscription info
             @user_subscription.update(currently_active: true)
           end
@@ -509,7 +509,7 @@ class UsersController < ApplicationController
           @subscription_number = event_object['lines']['data'][0]['id']
           #Rails.logger.debug("subscription number: #{@subscription_number.inspect}")
           # get customer subscription info
-          @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number, stripe_subscription_number: @subscription_number)[0]
+          @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number, currently_active: true)[0]
           # get customer info
           @user = User.find_by_id(@user_subscription.user_id)
           # if this subsription is currently active, change the status and send Admin an email to investigate
@@ -528,7 +528,7 @@ class UsersController < ApplicationController
             #Rails.logger.debug("charge amount: #{@charge_amount.inspect}")
             # get the customer number
             @stripe_customer_number = event_object['customer']
-            @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number).first
+            @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number, currently_active: true).first
             # get customer info
             @user = User.find(@user_subscription.user_id)
             #Rails.logger.debug("Delivery Charge Event")
@@ -559,7 +559,7 @@ class UsersController < ApplicationController
               # get charge amount
               @charge_amount = ((event_object['amount']).to_f / 100).round(2)
               # get customer subscription info
-              @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number)[0]
+              @user_subscription = UserSubscription.where(stripe_customer_number: @customer_number, currently_active: true)[0]
               # get customer info
               @user = User.find_by_id(@user_subscription.user_id)
               # get delivery info
@@ -597,7 +597,7 @@ class UsersController < ApplicationController
            @stripe_customer_subscription_number = event_object['id']
            
            # get customer's subscription data in DB
-           @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number, stripe_subscription_number: nil)[0]
+           @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number, currently_active: true)[0]
            
            # update customer's subscription #
            @user_subscription.update(stripe_subscription_number: @stripe_customer_subscription_number)
@@ -740,7 +740,7 @@ class UsersController < ApplicationController
   
   def add_new_card
     # get customer subscription info
-    @customer_subscription_info = UserSubscription.find_by_user_id(current_user.id)
+    @customer_subscription_info = UserSubscription.where(user_id: current_user.id, currently_active: true).first
     
     # get customer Stripe account info
     @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)
@@ -755,7 +755,7 @@ class UsersController < ApplicationController
   
   def delete_credit_card
     # get customer subscription info
-    @customer_subscription_info = UserSubscription.find_by_user_id(current_user.id)
+    @customer_subscription_info = UserSubscription.where(user_id: current_user.id, currently_active: true).first
     
     # get customer Stripe account info
     @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)

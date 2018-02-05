@@ -357,7 +357,7 @@ class UserMailer < ActionMailer::Base
   
   def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-    @user_subscription_info = UserSubscription.find_by_user_id(customer.id)
+    @user_subscription_info = UserSubscription.where(user_id: customer.id, currently_active: true).first
     @new_active_until = (@user_subscription_info.active_until).strftime("%B %-d, %Y")
 
     payload  = {
@@ -432,7 +432,7 @@ class UserMailer < ActionMailer::Base
   
   def delivery_date_with_end_date_change_confirmation(customer, old_delivery_date, new_delivery_date)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-    @user_subscription_info = UserSubscription.find_by_user_id(customer.id)
+    @user_subscription_info = UserSubscription.where(user_id: customer.id, currently_active: true).first
     @new_active_until = (@user_subscription_info.active_until).strftime("%B %-d, %Y")
 
     payload  = {

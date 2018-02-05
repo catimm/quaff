@@ -1,0 +1,40 @@
+<div class="delivery-info-box drinks">
+	<p>drinks</p>
+	<h4 class="delivery-preference-prompt"><%= delivery.delivery_drink_count %></h4>
+</div>	
+<% if delivery.delivery_large_count != 0 %>
+	<div class="delivery-info-box small hidden-xs hidden-sm">
+		<p>small</p>
+		<h4 class="delivery-preference-prompt"><%= delivery.delivery_small_count %></h4>
+	</div>	
+	<div class="delivery-info-box large hidden-xs hidden-sm">
+		<p>large</p>
+		<h4 class="delivery-preference-prompt"><%= delivery.delivery_large_count %></h4>
+	</div>
+<% end %>
+<% if delivery.delivery_cellar_count != 0 %>
+	<div class="delivery-info-box cellar hidden-xs hidden-sm">
+		<p>cellar</p>
+		<h4 class="delivery-preference-prompt"><%= delivery.delivery_cellar_count %></h4>
+	</div>
+<% end %>		
+<div class="delivery-info-box subtotal">
+	<p>subtotal</p>
+	<h4 class="delivery-preference-prompt"><%= number_to_currency(delivery.subtotal, precision: 2) %></h4>
+</div>	
+<div class="delivery-info-box sales-tax">
+	<p>tax</p>
+	<h4 class="delivery-preference-prompt"><%= number_to_currency(delivery.sales_tax, precision: 2) %></h4>
+</div>	
+<div class="delivery-info-box subtotal">
+	<p>drink total</p>
+	<h4 class="delivery-preference-prompt"><%= number_to_currency(delivery.total_price, precision: 2) %></h4>
+</div>
+<div class="delivery-info-box sales-tax">
+	<p>delivery</p>
+	<h4 class="delivery-preference-prompt"><%= number_to_currency(delivery.no_plan_delivery_fee, precision: 0) %></h4>
+</div>
+<div class="delivery-info-box total-price">
+	<p>grand total</p>
+	<h4 class="delivery-preference-prompt"><%= number_to_currency(delivery.grand_total, precision: 2) %></h4>
+</div>

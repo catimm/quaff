@@ -249,9 +249,10 @@ class AdminMailer < ActionMailer::Base
         template_id: 'admin-customer-order'
       },
       substitution_data: {
-        user_id: user.id,
+        user_first_name: user.first_name,
         user_username: user.username,
         order_id: order.id,
+        delivery_date: order.delivery_date,
         additional_requests: order.additional_requests
       }
     }
