@@ -43,7 +43,17 @@ class OrdersController < ApplicationController
     def process_order
         @order = Order.new(order_params)
         @order.account_id = current_user.account_id
+
+        if !@order.valid?
+            flash[:failure] = "Please select the number of drinks, delivery date and limit the additional request to 500 characters"
+            redirect_to orders_new_path
+            return
+        end
+
         @order.save
+
+        @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+        @delivery_preferences.update(drinks_per_week: @order.number_of_drinks, max_large_format: @order.number_of_large_drinks, drinks_per_delivery: @order.number_of_drinks)
 
         Delivery.create(account_id: current_user.account_id,
                                 order_id: @order.id,

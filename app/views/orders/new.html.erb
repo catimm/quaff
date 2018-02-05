@@ -12,6 +12,9 @@
 			<%= f.hidden_field :drink_option_id %>
 			<%= f.hidden_field :number_of_drinks %>
 			<%= f.hidden_field :number_of_large_drinks %>
+            <%- flash.each do |name, msg| -%>
+                <%= content_tag :div, msg, class: "alert alert-warning text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+            <%- end -%>
     <div class="row no-margin full-top-margin">
         <div class="col-xs-10 col-sm-4 no-padding">
             <h3 class="delivery-preference-prompt">Drink preference: <span class="delivery-preference-prompt" id="order-drink-type-text"><%= @drink_type_preference %></span></h3>
