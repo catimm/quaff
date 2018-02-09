@@ -97,168 +97,192 @@ class DeliverySettingsController < ApplicationController
   end # end deliveries method
  
   def index
-    if session[:start_new_plan_preferences_step]
-      gon.new_plan_step_two = true
-    end
-    # get user info
-    @user = User.find_by_id(current_user.id)
-    
-    # get account info
-    @account = Account.find_by_id(@user.account_id )
-    
-    # get account owner info
-    @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
-    
-    # set current page for jquery routing--preferences vs signup settings
-    @current_page = "preferences"
-    
-    # find if the account has any other users who have completed their profile
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 12).where.not(id: @user.id)
-    
-    # get drink options
-    @drink_options = DrinkOption.all
-    
-    # get delivery preferences info
-    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    
-    # find if customer has recieved first delivery or is within one day of it
-    if !@delivery_preferences.first_delivery_date.nil?
-      @first_delivery = @delivery_preferences.first_delivery_date
-      @email_review_date = @first_delivery - 3.days
-      @today = DateTime.now
-      @current_time_difference = ((@first_delivery - @today) / (60*60*24)).floor
+    # get data to use on page
+      # get user info
+      @user = User.find_by_id(current_user.id)
       
-      # set the chosen date
-      if @first_delivery.to_date == @next_thursday
-        # set current style variable for CSS plan outline
-        @start_1_chosen = "hidden"
-        @start_2_chosen = "show"
-        @start_3_chosen = "hidden"
-      elsif @first_delivery.to_date == @second_thursday
-        # set current style variable for CSS plan outline
-        @start_1_chosen = "hidden"
-        @start_2_chosen = "hidden"
-        @start_3_chosen = "show"
-      else 
-        # set current style variable for CSS plan outline
-        @start_1_chosen = "show"
-        @start_2_chosen = "hidden"
-        @start_3_chosen = "hidden"
+      # get account info
+      @account = Account.find_by_id(@user.account_id )
+      
+      # get account owner info
+      @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
+      
+      # set current page for jquery routing--preferences vs signup settings
+      @current_page = "preferences"
+      
+      # get drink options
+      @drink_options = DrinkOption.all
+      
+      # get delivery preferences info
+      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+      
+      # get user's delivery info
+      @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").order("delivery_date ASC").first 
+      
+      # find if the account has any other users who have completed their profile
+      @mates = User.where(account_id: @user.account_id, getting_started_step: 12).where.not(id: @user.id)
+      
+    # set universal data for page, regardless of mates status
+      # update time of last save
+      @preference_updated = @delivery_preferences.updated_at
+      
+      # set option for changing the next delivery date
+      @today = Date.today
+      #Rails.logger.debug("Today: #{@today.inspect}")
+      # get user's delivery zone
+      @user_delivery_zone = current_user.account.delivery_zone_id
+      # get delivery zone info
+      @delivery_zone_info = DeliveryZone.find_by_id(@user_delivery_zone)
+      
+      # determine number of days needed before allowing change in delivery date
+      if @today < @delivery.delivery_date
+        @change_permitted = true
+      else
+        @change_permitted = false       
       end
-    end
+      #Rails.logger.debug("Change permitted: #{@change_permitted.inspect}")
+      
+      # determine current week status
+      @current_week_number = Date.today.strftime("%U").to_i
+      if @current_week_number.even?
+        @current_week_status = "even"
+      else
+        @current_week_status = "odd"
+      end
+      
+      # first determine next two options based on week alignment
+      if @delivery_zone_info.weeks_of_year == "every"
+        @number_of_days = 7
+        @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
+        @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
+      elsif @delivery_zone_info.weeks_of_year == @current_week_status
+        @number_of_days = 14
+        @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
+        @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 14.days
+      else
+        @number_of_days = 14
+        @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
+        @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 21.days
+      end
+   
+      # next determine which of two options is best based on days noticed required
+      @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+  
+      if @change_permitted == true
+        @first_change_date_option = @first_delivery_date_option
+      else
+        @first_change_date_option = @second_delivery_date_option
+      end
+      @first_change_date_option_id = @first_change_date_option.strftime("%Y-%m-%d")
     
-    # get user's delivery info
-    @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").order("delivery_date ASC").first
+      # set drink category choice
+      if @delivery_preferences.drink_option_id == 1
+        @drink_type_preference = "beers"
+        @beer_chosen = "show"
+        @cider_chosen = "hidden"
+        @beer_and_cider_chosen = "hidden"
+      elsif @delivery_preferences.drink_option_id == 2
+        @drink_type_preference = "ciders"
+        @beer_chosen = "hidden"
+        @cider_chosen = "show"
+        @beer_and_cider_chosen = "hidden"
+      elsif @delivery_preferences.drink_option_id == 3
+        @drink_type_preference = "beers/ciders"
+        @beer_chosen = "hidden"
+        @cider_chosen = "hidden"
+        @beer_and_cider_chosen = "show"
+      else
+        @beer_chosen = "hidden"
+        @cider_chosen = "hidden"
+        @beer_and_cider_chosen = "hidden"
+      end
     
-    # get user's subscription info for delivery change date
-
-    #Rails.logger.debug("Delivery preferences: #{@delivery_preferences.inspect}") 
-    # update time of last save
-
-    @preference_updated = @delivery_preferences.updated_at
-
-    # get dates of next few Thursdays
-    @date_time_now = DateTime.now
-    #Rails.logger.debug("1st: #{@date_thursday.inspect}")
-    @date_time_next_thursday_noon = Date.today.next_week.advance(:days=>3) + 13.hours
-    @time_difference = ((@date_time_next_thursday_noon - @date_time_now) / (60*60*24)).floor
-    
-    @today = Date.today
-    #Rails.logger.debug("Today: #{@today.inspect}")
-    # get user's delivery zone
-    @user_delivery_zone = current_user.account.delivery_zone_id
-    # get delivery zone info
-    @delivery_zone_info = DeliveryZone.find_by_id(@user_delivery_zone)
-    
-    # determine number of days needed before allowing change in delivery date
-    if @today < @delivery.delivery_date
-      @change_permitted = true
+      # get current user's drink preferences
+      @current_user_drinks_per_week = @delivery_preferences.drinks_per_week
+      @current_user_large_format_drinks_per_week = @delivery_preferences.max_large_format
+      @current_user_price_estimate = @delivery_preferences.price_estimate
+      # set large format view
+      @max_large_format_drinks = (@current_user_drinks_per_week / 2).round
+        if @max_large_format_drinks < 1
+          @max_large_format_drinks = 1
+        end
+      
+    # get page data, depending on whether the account has mates
+    if !@mates.blank?
+      @mate_count = @mates.size
+      @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
+      # create an array to hold the mates drink preferences
+      @account_mates_preferences = Array.new
+      # set account variables
+      @account_drinks_per_week = 0
+      @account_drinks_per_delivery = 0
+      @account_large_format_drinks_per_week = 0
+      @account_price_estimate = 0
+      # loop through account users to get total account needs
+      @account_users.each do |account_user|
+        # create both Array and Hash to hold this mate's info
+        @account_user_info = Array.new
+        @account_user_specifics = Hash.new
+        # get this user's delivery preferences
+        @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
+        # push user_id into Array
+        @account_user_info << account_user.id
+        # determine user's cost estimate
+        @user_delivery_cost_estimate = @user_delivery_preferences.price_estimate
+        @user_delivery_cost_estimate_low = (((@user_delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+        @user_delivery_cost_estimate_high = ((((@user_delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        # push user preferences into Hash
+        if account_user.id == current_user.id
+          @this_name = "Your"
+        else
+          @this_name = account_user.first_name + "'s"
+        end
+        @account_user_specifics["name"] = @this_name
+        @account_user_specifics["color"] = account_user.user_color + "-text"
+        @account_user_specifics["drinks_per_delivery"] = @user_delivery_preferences.drinks_per_delivery
+        @account_user_specifics["max_large"] = @user_delivery_preferences.max_large_format
+        @account_user_specifics["cost_estimate_low"] = @user_delivery_cost_estimate_low
+        @account_user_specifics["cost_estimate_high"] = @user_delivery_cost_estimate_high
+        # push Hash into Array
+        @account_user_info << @account_user_specifics
+        # push Array into larger Array
+        @account_mates_preferences << @account_user_info
+        # add user's info to total account info
+        @account_drinks_per_week = @account_drinks_per_week + @user_delivery_preferences.drinks_per_week
+        @account_drinks_per_delivery = @account_drinks_per_delivery + @user_delivery_preferences.drinks_per_delivery
+        @account_large_format_drinks_per_week = @account_large_format_drinks_per_week + @user_delivery_preferences.max_large_format
+        @account_price_estimate = @account_price_estimate + @user_delivery_cost_estimate
+      end # end of loop through each mate/account user
+      
+      # set total drinks to account info
+      @drinks_per_week = @account_drinks_per_week
+      @max_large = @account_large_format_drinks_per_week
+      @price_estimate = @account_price_estimate
+      @account_delivery_cost_estimate_low = (((@price_estimate.to_f) *0.9).floor / 5).round * 5
+      @account_delivery_cost_estimate_high = ((((@price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      # push account info into array
+      @total_account_preferences = ["account",
+                                      {"name"=>"Account",
+                                        "color"=>"action-background-text",
+                                        "drinks_per_delivery"=>@account_drinks_per_delivery,
+                                        "max_large"=>@max_large,
+                                        "cost_estimate_low"=>@account_delivery_cost_estimate_low,
+                                        "cost_estimate_high"=>@account_delivery_cost_estimate_high}]    
+      @account_mates_preferences << @total_account_preferences
     else
-      @change_permitted = false
-    end
-    #Rails.logger.debug("Change permitted: #{@change_permitted.inspect}")
-    
-    # determine current week status
-    @current_week_number = Date.today.strftime("%U").to_i
-    if @current_week_number.even?
-      @current_week_status = "even"
-    else
-      @current_week_status = "odd"
-    end
-    
-    # first determine next two options based on week alignment
-    if @delivery_zone_info.weeks_of_year == "every"
-      @number_of_days = 7
-      @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
-      @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
-    elsif @delivery_zone_info.weeks_of_year == @current_week_status
-      @number_of_days = 14
-      @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
-      @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 14.days
-    else
-      @number_of_days = 14
-      @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
-      @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 21.days
-    end
-    #Rails.logger.debug("First Delivery Option: #{@first_delivery_date_option.inspect}")
-    #Rails.logger.debug("Second Delivery Option: #{@second_delivery_date_option.inspect}")
-    # next determine which of two options is best based on days noticed required
-    @days_between_today_and_first_option = @first_delivery_date_option - Date.today
-    #Rails.logger.debug("Days between today and first option: #{@days_between_today_and_first_option.inspect}")
-    if @change_permitted == true
-      @first_change_date_option = @first_delivery_date_option
-    else
-      @first_change_date_option = @second_delivery_date_option
-    end
-    @first_change_date_option_id = @first_change_date_option.strftime("%Y-%m-%d")
-    # set drink category choice
-    if @delivery_preferences.drink_option_id == 1
-      @drink_type_preference = "beers"
-      @beer_chosen = "show"
-      @cider_chosen = "hidden"
-      @beer_and_cider_chosen = "hidden"
-    elsif @delivery_preferences.drink_option_id == 2
-      @drink_type_preference = "ciders"
-      @beer_chosen = "hidden"
-      @cider_chosen = "show"
-      @beer_and_cider_chosen = "hidden"
-    elsif @delivery_preferences.drink_option_id == 3
-      @drink_type_preference = "beers/ciders"
-      @beer_chosen = "hidden"
-      @cider_chosen = "hidden"
-      @beer_and_cider_chosen = "show"
-    else
-      @beer_chosen = "hidden"
-      @cider_chosen = "hidden"
-      @beer_and_cider_chosen = "hidden"
-    end
-    
-    # get estimated cost estimates -- rounded to nearest multiple of 5
-    @delivery_cost_estimate = @delivery_preferences.price_estimate
-    @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-    @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-
-    # get monthly estimates
-    @user_subscription = UserSubscription.where(user_id: @account_owner.id, currently_active: true).first
-    @user_subscription_name = @user_subscription.subscription.subscription_name
-    @user_subscription_cost = @user_subscription.subscription.subscription_cost
-    
+      # set total drinks to individual user info
+      @drinks_per_week = @current_user_drinks_per_week
+      @max_large = @current_user_large_format_drinks_per_week
+      @price_estimate = @current_user_price_estimate
+    end # end of mates check/branch
+    #Rails.logger.debug("Compiled user preferences: #{@account_mates_preferences.inspect}")
     # get current delivery frequency preferences
-    
-    # get user's drink preferences
-    @drinks_per_week = @delivery_preferences.drinks_per_week
-    @large_format_drinks_per_week = @delivery_preferences.max_large_format
-    # set large format view
-    @max_large_format_drinks = (@drinks_per_week / 2).round
-      if @max_large_format_drinks < 1
-        @max_large_format_drinks = 1
-      end
       
     # determine minimum number of weeks between deliveries
     @number_of_weeks_first_option = 2
     @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
       
-    if @user.craft_stage_id == 1
+    if @account_owner.craft_stage_id == 1
       while @total_drinks < 7
         @number_of_weeks_first_option += 1
         @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1).round
@@ -274,11 +298,14 @@ class DeliverySettingsController < ApplicationController
     @number_of_weeks_second_option = @number_of_weeks_first_option + 1
     @number_of_weeks_third_option = @number_of_weeks_first_option + 2
     # set number of drink options
+    @number_of_current_users_drinks_first_option = (@current_user_drinks_per_week * @number_of_weeks_first_option * 1.1).round
+    @number_of_current_users_drinks_second_option = (@current_user_drinks_per_week * @number_of_weeks_second_option * 1.1).round
+    @number_of_current_users_drinks_third_option = (@current_user_drinks_per_week * @number_of_weeks_third_option * 1.1).round
     @number_of_drinks_first_option = @total_drinks.round
     @number_of_drinks_second_option = (@drinks_per_week * @number_of_weeks_second_option * 1.1).round
     @number_of_drinks_third_option =  (@drinks_per_week * @number_of_weeks_third_option * 1.1).round
     
-    # check if user has already selected a delivery frequency
+    # check if account has already selected a delivery frequency
     @first_delivery_option_chosen = "hidden"
     @second_delivery_option_chosen = "hidden"
     @third_delivery_option_chosen = "hidden"
@@ -290,13 +317,18 @@ class DeliverySettingsController < ApplicationController
       @estimate_visible_status = "show"
       
       # set estimate values
-      @total_delivery_drinks = (@delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1).round
+      @total_delivery_drinks = (@drinks_per_week * @account.delivery_frequency * 1.1).round
       @drink_delivery_estimate = @drink_per_delivery_calculation
   
       # set small/large format drink estimates
-      @large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
+      @large_delivery_estimate = (@max_large * @account.delivery_frequency)
       @small_delivery_estimate = @total_delivery_drinks
       
+      # get estimated cost estimates -- rounded to nearest multiple of 5
+      @delivery_cost_estimate = @price_estimate
+      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+    
       # show frequency choice already made
       @drinks_per_week_meaning_show_status = "show"
       if @account.delivery_frequency == @number_of_weeks_first_option
@@ -323,6 +355,9 @@ class DeliverySettingsController < ApplicationController
     @data_value_one = @data_split[1]
     @data_value_two = @data_split[2]
     
+    # set current page for jquery routing--preferences vs signup settings
+    @current_page = "preferences"
+      
     # get user info
     @user = User.find_by_id(current_user.id)
     
@@ -330,16 +365,18 @@ class DeliverySettingsController < ApplicationController
     @account = Account.find_by_id(current_user.account_id)
     # get user delivery preferences
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    
+
     # get delivery info
     @customer_next_delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
-
-    # update customer info if needed
-    if @column == "craft_journey"
-      @user.update(craft_stage_id: @data_value_one)
-      # get new delivery estimate
-      delivery_estimator(@delivery_preferences, @user.craft_stage_id)
+    
+    # find if the account has any other users who have completed their profile
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 12).where.not(id: @user.id)
+    
+    # update customer drink choice if needed
+    if @column == "drink_choice"
+      @delivery_preferences.update_attribute(:drink_option_id, @data_value_one)
     end
+    
     if @column == "post_signup"
       @user.update(getting_started_step: @data_value_one)
     end
@@ -356,7 +393,9 @@ class DeliverySettingsController < ApplicationController
       end
       
       # set large format number
-      if @data_value_two.to_i > @max_large_format_drinks 
+      if @data_value_two == "undefined"
+        @large_format_drinks_per_week = @max_large_format_drinks
+      elsif @data_value_two.to_i > @max_large_format_drinks 
         @large_format_drinks_per_week = @max_large_format_drinks
       else
         @large_format_drinks_per_week = @data_value_two.to_i
@@ -364,26 +403,99 @@ class DeliverySettingsController < ApplicationController
       
       # update delivery preferences
       @delivery_preferences.update_attributes(drinks_per_week: @data_value_one, max_large_format: @data_value_two)
-      
       # get new delivery estimates
       delivery_estimator(@delivery_preferences, @user.craft_stage_id)
-      
     end
     
     if @column == "frequency" 
       # update delivery preferences
+      Rails.logger.debug("Delivery Preferences pre-update: #{@delivery_preferences.inspect}")
       @delivery_preferences.update_attribute(:drinks_per_delivery, @data_value_one) 
+      Rails.logger.debug("Delivery Preferences post-update: #{@delivery_preferences.inspect}")
       # update account
       @account.update_attribute(:delivery_frequency, @data_value_two) 
       # get new delivery estimates
       delivery_estimator(@delivery_preferences, @user.craft_stage_id)
+      Rails.logger.debug("Delivery Preferences post-estimator: #{@delivery_preferences.inspect}")
     end
     
     # update delivery preferences to grab new delivery estimates
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    @current_user_drinks_per_week = @delivery_preferences.drinks_per_week
+    @current_user_large_format_drinks_per_week = @delivery_preferences.max_large_format
+    @current_user_price_estimate = @delivery_preferences.price_estimate
+      
+    # get page data, depending on whether the account has mates
+    if !@mates.blank?
+      @mate_count = @mates.size
+      @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
+      # create an array to hold the mates drink preferences
+      @account_mates_preferences = Array.new
+      # set account variables
+      @account_drinks_per_week = 0
+      @account_drinks_per_delivery = 0
+      @account_large_format_drinks_per_week = 0
+      @account_price_estimate = 0
+      # loop through account users to get total account needs
+      @account_users.each do |account_user|
+        # create both Array and Hash to hold this mate's info
+        @account_user_info = Array.new
+        @account_user_specifics = Hash.new
+        # get this user's delivery preferences
+        @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
+        # push user_id into Array
+        @account_user_info << account_user.id
+        # determine user's cost estimate
+        @user_delivery_cost_estimate = @user_delivery_preferences.price_estimate
+        @user_delivery_cost_estimate_low = (((@user_delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+        @user_delivery_cost_estimate_high = ((((@user_delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        # push user preferences into Hash
+        if account_user.id == current_user.id
+          @this_name = "Your"
+        else
+          @this_name = account_user.first_name + "'s"
+        end
+        @account_user_specifics["name"] = @this_name
+        @account_user_specifics["color"] = account_user.user_color + "-text"
+        @account_user_specifics["drinks_per_delivery"] = @user_delivery_preferences.drinks_per_delivery
+        @account_user_specifics["max_large"] = @user_delivery_preferences.max_large_format
+        @account_user_specifics["cost_estimate_low"] = @user_delivery_cost_estimate_low
+        @account_user_specifics["cost_estimate_high"] = @user_delivery_cost_estimate_high
+        # push Hash into Array
+        @account_user_info << @account_user_specifics
+        # push Array into larger Array
+        @account_mates_preferences << @account_user_info
+        # add user's info to total account info
+        @account_drinks_per_week = @account_drinks_per_week + @user_delivery_preferences.drinks_per_week
+        @account_drinks_per_delivery = @account_drinks_per_delivery + @user_delivery_preferences.drinks_per_delivery
+        @account_large_format_drinks_per_week = @account_large_format_drinks_per_week + @user_delivery_preferences.max_large_format
+        @account_price_estimate = @account_price_estimate + @user_delivery_cost_estimate
+      end # end of loop through each mate/account user
+      
+      # set total drinks to account info
+      @drinks_per_week = @account_drinks_per_week
+      @max_large = @account_large_format_drinks_per_week
+      @price_estimate = @account_price_estimate
+      @account_delivery_cost_estimate_low = (((@price_estimate.to_f) *0.9).floor / 5).round * 5
+      @account_delivery_cost_estimate_high = ((((@price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      # push account info into array
+      @total_account_preferences = ["account",
+                                      {"name"=>"Account",
+                                        "color"=>"action-background-text",
+                                        "drinks_per_delivery"=>@account_drinks_per_delivery,
+                                        "max_large"=>@max_large,
+                                        "cost_estimate_low"=>@account_delivery_cost_estimate_low,
+                                        "cost_estimate_high"=>@account_delivery_cost_estimate_high}]    
+      @account_mates_preferences << @total_account_preferences
+    else
+      # set total drinks to individual user info
+      @drinks_per_week = @current_user_drinks_per_week
+      @max_large = @current_user_large_format_drinks_per_week
+      @price_estimate = @current_user_price_estimate
+    end # end of mates check/branch
+    Rails.logger.debug("Compiled user preferences: #{@account_mates_preferences.inspect}")
     
     # determine minimum number of weeks between deliveries
-    @drinks_per_week = @delivery_preferences.drinks_per_week
     @number_of_weeks_first_option = 2
     @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
       
@@ -403,6 +515,9 @@ class DeliverySettingsController < ApplicationController
     @number_of_weeks_second_option = @number_of_weeks_first_option + 1
     @number_of_weeks_third_option = @number_of_weeks_first_option + 2
     # set number of drink options
+    @number_of_current_users_drinks_first_option = (@delivery_preferences.drinks_per_week * @number_of_weeks_first_option * 1.1).round
+    @number_of_current_users_drinks_second_option = (@delivery_preferences.drinks_per_week * @number_of_weeks_second_option * 1.1).round
+    @number_of_current_users_drinks_third_option = (@delivery_preferences.drinks_per_week * @number_of_weeks_third_option * 1.1).round
     @number_of_drinks_first_option = @total_drinks.round
     @number_of_drinks_second_option = (@drinks_per_week * @number_of_weeks_second_option * 1.1).round
     @number_of_drinks_third_option =  (@drinks_per_week * @number_of_weeks_third_option * 1.1).round
@@ -420,15 +535,15 @@ class DeliverySettingsController < ApplicationController
       @estimate_visible_status = "show"
       
       # set estimate values
-      @total_delivery_drinks = (@delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1).round
+      @total_delivery_drinks = (@drinks_per_week * @account.delivery_frequency * 1.1).round
       @drink_delivery_estimate = @drink_per_delivery_calculation
   
       # set small/large format drink estimates
-      @large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
+      @large_delivery_estimate = (@max_large * @account.delivery_frequency)
       @small_delivery_estimate = @total_delivery_drinks
       
       # get estimated cost estimates -- rounded to nearest multiple of 5
-      @delivery_cost_estimate = @delivery_preferences.price_estimate
+      @delivery_cost_estimate = @price_estimate
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
       @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
     
@@ -441,11 +556,14 @@ class DeliverySettingsController < ApplicationController
       elsif @account.delivery_frequency == @number_of_weeks_third_option
         @third_delivery_option_chosen = "show"
       end
+      @display_special_message = false
     else
       @drinks_per_week_meaning_show_status = "hidden"
       # set estimate visuals
+      @display_special_message = true
       @reset_estimate_visible_status = "show"
       @estimate_visible_status = "hidden"
+      @account.delivery_frequency = 1
     end
 
     respond_to do |format|
@@ -454,24 +572,17 @@ class DeliverySettingsController < ApplicationController
     
   end # end of deliveries_update_estimates
   
-  def deliveries_update_preferences
+  def deliveries_update_additional_requests
     # get user delivery preferences
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
     
-    @drinks_per_week = (params[:delivery_preference][:drinks_per_week]).to_i
-    @large_format = (params[:delivery_preference][:max_large_format]).to_i
-    
     # update customer delivery preferences
-    @delivery_preferences.update(first_delivery_date: params[:delivery_preference][:first_delivery_date], 
-                                 drink_option_id: params[:delivery_preference][:drink_option_id], 
-                                 drinks_per_week: @drinks_per_week, 
-                                 max_large_format: @large_format,
-                                 additional: params[:delivery_preference][:additional])
+    @delivery_preferences.update(additional: params[:delivery_preference][:additional])
+    @preference_updated = @delivery_preferences.updated_at
     
-    # update cost estimator
-    delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
-
-    render js: "window.location = '#{user_delivery_settings_path}'"
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
 
   end # end of deliveries_update_preferences
   
@@ -731,83 +842,76 @@ class DeliverySettingsController < ApplicationController
       @current_week_status = "odd"
     end
     
-    if session[:start_new_plan_start_date_step]
-      gon.new_plan_step_one = true
-      @days_notice_required = 3
-      @display_a_currently_chosen_time = false
-    else
-      @display_a_currently_chosen_time = true
-      # get user delivery location preference
-      @delivery_location_preference = DeliveryPreference.find_by_user_id(current_user.id)
-      #Rails.logger.debug("Delivery preference info: #{@delivery_location_preference.inspect}")
-      
-      # get current delivery location
-      @current_delivery_location = UserAddress.where(account_id: @user.account_id, current_delivery_location: true)[0]
-      #Rails.logger.debug("Current Delivery Location: #{@current_delivery_location.inspect}")
-      
-      # get name of current delivery location
-      if @current_delivery_location.location_type == "Other"
-        @current_delivery_location_name = @current_delivery_location.other_name.upcase
-      else
-        @current_delivery_location_name = @current_delivery_location.location_type.upcase
-      end
-              
-      # get current delivery day/time
-      @current_delivery_time = DeliveryZone.find_by_id(@current_delivery_location.delivery_zone_id)
-      
-      # get current delivery time options 
-      @current_delivery_time_options = DeliveryZone.where(zip_code: @current_delivery_location.zip).
-                                        where.not(id: @current_delivery_location.delivery_zone_id)
-     
-      # get user's delivery info
-      @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
-      # get next planned delivery
-      @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
-      
-      # determine number of days needed before allowing change in delivery date
-      if @next_delivery.status == "user review"
-        @days_notice_required = 1
-      else
-        @days_notice_required = 3
-      end
-
-      # get next delivery date(s) of current delivery alternatives 
-      @current_delivery_time_options.each do |option|
-          # first determine next two options based on week alignment
-          if option.weeks_of_year == "every"
-            @first_delivery_date_option = Date.parse(option.day_of_week)
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-          elsif option.weeks_of_year == @current_week_status
-            @first_delivery_date_option = Date.parse(option.day_of_week)
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
-          else
-            @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
-          end
-
-          # next determine which of two options is best based on days noticed required
-          @days_between_today_and_first_option = @first_delivery_date_option - Date.today
-          #Rails.logger.debug("Days between today and first option: #{@days_between_today_and_first_option.inspect}")
-          if @days_between_today_and_first_option >= @days_notice_required
-            if @first_delivery_date_option < option.beginning_at
-              option.next_available_delivery_date = option.beginning_at
-            else
-              option.next_available_delivery_date = @first_delivery_date_option
-            end
-          else
-            if @second_delivery_date_option < option.beginning_at
-              option.next_available_delivery_date = option.beginning_at
-            else
-              option.next_available_delivery_date = @second_delivery_date_option
-            end
-          end
-      end
-      
-      # order delivery time options by date
-      @current_delivery_time_options = @current_delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}
+    @display_a_currently_chosen_time = true
+    # get user delivery location preference
+    @delivery_location_preference = DeliveryPreference.find_by_user_id(current_user.id)
+    #Rails.logger.debug("Delivery preference info: #{@delivery_location_preference.inspect}")
     
-    end # end of check whether this is a new plan signup
-     
+    # get current delivery location
+    @current_delivery_location = UserAddress.where(account_id: @user.account_id, current_delivery_location: true)[0]
+    #Rails.logger.debug("Current Delivery Location: #{@current_delivery_location.inspect}")
+    
+    # get name of current delivery location
+    if @current_delivery_location.location_type == "Other"
+      @current_delivery_location_name = @current_delivery_location.other_name.upcase
+    else
+      @current_delivery_location_name = @current_delivery_location.location_type.upcase
+    end
+            
+    # get current delivery day/time
+    @current_delivery_time = DeliveryZone.find_by_id(@current_delivery_location.delivery_zone_id)
+    
+    # get current delivery time options 
+    @current_delivery_time_options = DeliveryZone.where(zip_code: @current_delivery_location.zip).
+                                      where.not(id: @current_delivery_location.delivery_zone_id)
+   
+    # get user's delivery info
+    @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
+    # get next planned delivery
+    @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
+    
+    # determine number of days needed before allowing change in delivery date
+    if @next_delivery.status == "user review"
+      @days_notice_required = 1
+    else
+      @days_notice_required = 3
+    end
+  
+    # get next delivery date(s) of current delivery alternatives 
+    @current_delivery_time_options.each do |option|
+      # first determine next two options based on week alignment
+      if option.weeks_of_year == "every"
+        @first_delivery_date_option = Date.parse(option.day_of_week)
+        @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+      elsif option.weeks_of_year == @current_week_status
+        @first_delivery_date_option = Date.parse(option.day_of_week)
+        @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
+      else
+        @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+        @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
+      end
+
+      # next determine which of two options is best based on days noticed required
+      @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+      #Rails.logger.debug("Days between today and first option: #{@days_between_today_and_first_option.inspect}")
+      if @days_between_today_and_first_option >= @days_notice_required
+        if @first_delivery_date_option < option.beginning_at
+          option.next_available_delivery_date = option.beginning_at
+        else
+          option.next_available_delivery_date = @first_delivery_date_option
+        end
+      else
+        if @second_delivery_date_option < option.beginning_at
+          option.next_available_delivery_date = option.beginning_at
+        else
+          option.next_available_delivery_date = @second_delivery_date_option
+        end
+      end
+    end
+      
+    # order delivery time options by date
+    @current_delivery_time_options = @current_delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}
+   
     # get other location options
     @additional_delivery_locations = UserAddress.where(account_id: @user.account_id, current_delivery_location: false)
     
@@ -891,48 +995,31 @@ class DeliverySettingsController < ApplicationController
     @second_delivery = @all_upcoming_deliveries.order("delivery_date ASC").second
     #Rails.logger.debug("second delivery date: #{@second_delivery.inspect}")
     
-    if session[:start_new_plan_start_date_step]
-      # set variables for appropriate confirmation email
+    # get current delivery address
+    @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
+    #Rails.logger.debug("Delivery address: #{@current_delivery_address.inspect}")
+    
+    if @current_delivery_address.id == @address # address is not changing, just update the delivery time/zone
+      # update the current delivery time/zone
+      @current_delivery_address.update_attribute(:delivery_zone_id, @delivery_zone)
+      # get new user delivery address info for confirmation email
+      @new_delivery_address = @current_delivery_address
+      @location_and_time_change = false
+    else # both address and delivery time/zone need to be updated
+      # update current delivery address
+      @current_delivery_address.update_attributes(current_delivery_location: false, delivery_zone_id: nil)
       # get the new delivery address & update it
       UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
       # get new user delivery address info for confirmation email
       @new_delivery_address = UserAddress.find_by_id(@address)
-      @old_date = "none"
-      @location_and_time_change = "new"
-      
-      # remove session cookie and set the next one
-      session.delete(:start_new_plan_start_date_step)
-      session[:start_new_plan_preferences_step] = true
-      
-      # set next view
-      @next_view = user_delivery_settings_path
-    else
-      # get current delivery address
-      @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
-      #Rails.logger.debug("Delivery address: #{@current_delivery_address.inspect}")
-      
-      if @current_delivery_address.id == @address # address is not changing, just update the delivery time/zone
-        # update the current delivery time/zone
-        @current_delivery_address.update_attribute(:delivery_zone_id, @delivery_zone)
-        # get new user delivery address info for confirmation email
-        @new_delivery_address = @current_delivery_address
-        @location_and_time_change = false
-      else # both address and delivery time/zone need to be updated
-        # update current delivery address
-        @current_delivery_address.update_attributes(current_delivery_location: false, delivery_zone_id: nil)
-        # get the new delivery address & update it
-        UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
-        # get new user delivery address info for confirmation email
-        @new_delivery_address = UserAddress.find_by_id(@address)
-        @location_and_time_change = true
-      end
+      @location_and_time_change = true
+    end
 
-      # capture original delivery date for confirmation email before updating record
-      @old_date = @next_delivery.delivery_date
-      
-      # set next view
-      @next_view = user_delivery_settings_location_path
-    end # end of check whether this is a new plan signup
+    # capture original delivery date for confirmation email before updating record
+    @old_date = @next_delivery.delivery_date
+    
+    # set next view
+    @next_view = user_delivery_settings_location_path
     
     # update delivery dates
     @next_delivery.update_attribute(:delivery_date, @final_delivery_date)

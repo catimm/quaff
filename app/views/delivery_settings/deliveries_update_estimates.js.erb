@@ -1,8 +1,17 @@
 $(function() {
-	$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'layouts/per_delivery_estimate' ) %>");
-	<% if @column == "drinks_per_week" || @column == "large_format" %>
-		$("#large_format_drinks_per_week_options").html("<%= escape_javascript(render 'signup/large_format_per_week_choice' ) %>");	
+	<% if !@mates.blank? %>
+		$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'delivery_settings/per_delivery_estimate_with_mates' ) %>");
+	<% else %>
+		$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'layouts/per_delivery_estimate' ) %>");
 	<% end %>
-	$("#preferences-delivery-frequency-row-holder").html("<%= escape_javascript(render 'signup/delivery_frequency_options' ) %>");
+	<% if @column == "drinks_per_week" || @column == "large_format" %>
+		$("#large_format_drinks_per_week_options").html("<%= escape_javascript(render 'delivery_settings/large_format_per_week_choice' ) %>");	
+	<% end %>
+	$("#preferences-delivery-frequency-row-holder").html("<%= escape_javascript(render 'delivery_settings/delivery_frequency_options' ) %>");
 	$('[data-toggle="tooltip"]').tooltip();
+	$("#last_updated_holder").addClass('drinks-per-delivery-highlight-change');
+    $( ".drinks-per-delivery-highlight-change" ).fadeOut( 1000, function() {
+	    $("#last_updated_holder").removeClass('drinks-per-delivery-highlight-change');
+	  });
+	$("#last_updated_holder").fadeIn(100);
 });

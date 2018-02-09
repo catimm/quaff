@@ -35,7 +35,7 @@ class OrdersController < ApplicationController
 
     def estimate
         number_of_drinks = params[:number_of_drinks].to_i
-        number_of_large_drinks = params[:number_of_large_drinks].to_i
+        number_of_large_drinks = (number_of_drinks/7.to_f).ceil
         price_estimate = estimate_drinks(number_of_drinks, number_of_large_drinks, current_user.craft_stage_id)
         # set high and low estimate
         @delivery_cost_estimate_low = (((price_estimate.to_f) *0.9).floor / 5).round * 5
@@ -45,13 +45,23 @@ class OrdersController < ApplicationController
     end
 
     def process_order
-        @order = Order.create(order_params)
+        @order = Order.new(order_params)
         @order.account_id = current_user.account_id
         @order.user_id = current_user.id
-
+        @order.number_of_large_drinks = (@order.number_of_drinks/7.to_f).ceil
+        
         if !@order.valid?
-            flash[:failure] = "Please select the number of drinks, delivery date and limit the additional request to 500 characters"
-            redirect_to orders_new_path
+            @request_length = @order.additional_requests.size
+            if @order.delivery_date.nil? && @order.number_of_drinks.nil?
+              flash[:failure] = "Please select the number of drinks and a delivery date"
+            elsif @order.delivery_date.nil?
+              flash[:failure] = "Please select a delivery date"
+            elsif @order.number_of_drinks.nil?
+              flash[:failure] = "Please select the number of drinks"
+            else
+              flash[:failure] = "Please limit the additional request to 500 characters"
+            end
+            render js: "window.location = '#{orders_new_path}'"
             return
         end
 

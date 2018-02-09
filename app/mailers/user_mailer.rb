@@ -357,8 +357,6 @@ class UserMailer < ActionMailer::Base
   
   def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-    @user_subscription_info = UserSubscription.where(user_id: customer.id, currently_active: true).first
-    @new_active_until = (@user_subscription_info.active_until).strftime("%B %-d, %Y")
 
     payload  = {
       recipients: [
@@ -372,8 +370,7 @@ class UserMailer < ActionMailer::Base
       substitution_data: {
         customer_name: customer.first_name,
         old_delivery_date: (old_delivery_date).strftime("%B #{old_delivery_date.day.ordinalize}"),
-        new_delivery_date: (new_delivery_date).strftime("%B #{new_delivery_date.day.ordinalize}"),
-        new_active_until: @new_active_until
+        new_delivery_date: (new_delivery_date).strftime("%B #{new_delivery_date.day.ordinalize}")
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")

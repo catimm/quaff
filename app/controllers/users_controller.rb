@@ -447,6 +447,16 @@ class UsersController < ApplicationController
     # change current delivery location to false
     @current_delivery_address.update_attribute(:current_delivery_location, false)
     
+    # get user's current delivery preferences
+    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    # update delivery preferences to clear them so user can choose preferences specifically for new plan
+    @delivery_preferences.update_attributes(drinks_per_week: nil, 
+                                            additional: nil, 
+                                            price_estimate: nil, 
+                                            max_large_format: nil,
+                                            max_cellar: nil,
+                                            drinks_per_delivery: nil)
+    
     # create Delivery table entries 
     @first_delivery = Delivery.create(account_id: current_user.account_id, 
                                     #delivery_date: @first_delivery_date,
@@ -468,8 +478,11 @@ class UsersController < ApplicationController
                     delivery_change_confirmation: false,
                     share_admin_prep_with_user: false)
     
-    # redirect to user delivery settings page
-    redirect_to user_delivery_settings_location_path #user_delivery_settings_path
+    # reset user's getting_started_step
+    User.update(current_user.id, getting_started_step: 8)
+    
+    # redirect user to 8th step of signup--weekly drinks consumed
+    redirect_to drinks_weekly_getting_started_path
   
   end # end of start_new_plan method
   

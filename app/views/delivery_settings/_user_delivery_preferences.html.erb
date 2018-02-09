@@ -1,20 +1,19 @@
-<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_preferences"}, :remote => true do |f| %>
-			<%= f.hidden_field :drink_option_id %>
-			<%= f.hidden_field :drinks_per_week %>
-			<%= f.hidden_field :max_large_format %>
 <div class="row no-margin estimate-holder" id="scroller-anchor">
 	<div class="row no-margin" id="delivery-info-row">
 		<div class="col-sm-8">
 			<h4>Change preferences below to update your delivery estimates</h4>
 			<div class="row no-margin estimated-delivery-price-holder-signup" id="delivery-estimates-for-customer">
-				<%= render 'layouts/per_delivery_estimate' %>
+				<% if !@mates.blank? %>
+					<%= render 'delivery_settings/per_delivery_estimate_with_mates' %>
+				<% else %>
+					<%= render 'layouts/per_delivery_estimate' %>
+				<% end %>
 			</div>
 		</div>
-		<div class="col-sm-4">
+		<div class="col-sm-4" id="last_updated_holder">
 			<% if !@preference_updated.nil? %>
 				<%= render 'layouts/preferences_last_updated' %>
 			<% end %>
-			<%= f.submit "Save changes", disabled: true, class: "btn btn-default update_delivery_preferences", id: "update_delivery_preferences_button" %>
 		</div>	
 	</div>
 </div>
@@ -71,7 +70,7 @@
 				<h3 class="delivery-preference-prompt">What is the average number of <%= @drink_type_preference %> you drink at home each week?</h3>
 			</div>
 			<div class="col-sm-6 no-padding-right">
-				<%= render 'signup/drinks_per_week_choice'%>
+				<%= render 'delivery_settings/drinks_per_week_choice'%>
 			</div>
 		</div>
 	</div>
@@ -82,7 +81,7 @@
 		<h3 class="delivery-preference-prompt">What is the max number of large format drinks (22oz) you would drink each week?</h3>
 	</div>
 	<div class="col-sm-6 no-padding-right" id="large_format_drinks_per_week_options">
-		<%= render 'signup/large_format_per_week_choice'%>
+		<%= render 'delivery_settings/large_format_per_week_choice'%>
 	</div>
 </div>
 <hr>
@@ -94,7 +93,7 @@
 			</div>
 			<div class="col-xs-12 col-sm-9">
 				<div class="row no-margin preferences-delivery-frequency-row-holder" id="preferences-delivery-frequency-row-holder">
-					<%= render 'signup/delivery_frequency_options' %>
+					<%= render 'delivery_settings/delivery_frequency_options' %>
 				</div>
 			</div>
 		</div>
@@ -120,14 +119,16 @@
 </div>
 <hr>
 <div class="row no-margin">
-	<div class="col-sm-4 no-padding">
-		<h3 class="delivery-preference-prompt">Additional requests</h3>
-	</div>
-	<div class="col-sm-8 delivery-additional-request">
-		<%= f.text_area :additional, {class: 'form-control', placeholder: 'For example, "I always want an ISA on hand" or "I want to improve my cellar selection"'}  %>
-	</div>
+	<%= form_for @delivery_preferences, :url => {:action => "deliveries_update_additional_requests"}, :remote => true do |f| %>
+		<div class="col-sm-4 no-padding">
+			<h3 class="delivery-preference-prompt">Additional requests</h3>
+			<%= f.submit "Save additional requests", disabled: true, class: "btn btn-default update_delivery_request", id: "update_delivery_request_button" %>
+		</div>
+		<div class="col-sm-8 delivery-additional-request">
+			<%= f.text_area :additional, {class: 'form-control delivery-additional-request-form', placeholder: 'For example, "I always want an ISA on hand" or "I want to improve my cellar selection"'}  %>
+		</div>
+	<% end %>
 </div>
-<% end %>
 <div id="pause_delivery" class="modal">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

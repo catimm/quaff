@@ -14,6 +14,13 @@ $(function() {
 	    });
 	}
 	
+	// show modal for 1st step of settings for those with a new plan 
+	if (gon.new_plan_step_one == true) {
+		$(window).load(function(){
+	        $('#new_plan_step_one').modal('show');
+	    });
+	}
+	
 	// use Modernizr to add datepicker view to browsers that don't support date
 	if (!Modernizr.inputtypes.date) {
 	  $("input[type='date']").datepicker();
@@ -106,11 +113,7 @@ $(function() {
 			$("#invalid_code").removeClass('show').addClass('hidden');
 		}
 	});
-	
-	// change unsaved back to true if save button is clicked
-	$(document).on('click', '#update_delivery_preferences_button', function () {
-	    unsaved = false;
-	});
+
 	// bind event to page navigation
 	$(window).bind('beforeunload', function() {
 	    if(unsaved){
@@ -127,18 +130,18 @@ $(function() {
 	// Gets the order estimate field by making an Ajax query and sets
 	// it in the UI
 	setOrderEstimate = function() {
-		var number_of_drinks = $('#order_number_of_drinks').val(), 
-			number_of_large_drinks = $("#order_number_of_large_drinks").val();
+		var number_of_drinks = $('#order_number_of_drinks').val(); 
+			// should_remove number_of_large_drinks = $("#order_number_of_large_drinks").val();
 
-		if (number_of_drinks != '' && number_of_large_drinks != '') {
+		// should_remove if (number_of_drinks != '' && number_of_large_drinks != '') {
 			$.ajax({
 			  type: "GET",
-			  url: "/orders/new/estimate?number_of_drinks=" + number_of_drinks + "&number_of_large_drinks=" + number_of_large_drinks,
+			  url: "/orders/new/estimate?number_of_drinks=" + number_of_drinks, // should_remove + "&number_of_large_drinks=" + number_of_large_drinks,
 			  success: function(data) {
 				  $('#order_price_estimate').text(data);
 			  }
 			});
-		}
+		// should_remove }
 	}
 	
 	// add logic to change background color of image chosen and send data to controller
@@ -181,11 +184,11 @@ $(function() {
 			$('#order_drink_option_id').val(new_value);
 		}
 		else {
-			$('#delivery_preference_drink_option_id').val(new_value);
-			$('#update_delivery_preferences_button').removeAttr('disabled');
-			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
-			// indicate there is unsave data changed on the page
-			unsaved = true;
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/delivery_settings/deliveries_update_estimates/drink_choice-" + new_value
+			});
 		}
 	});
 	
@@ -257,28 +260,25 @@ $(function() {
 		
 		if(current_page == "signup") {
 			var controller_url = "/signup/process_drinks_weekly_getting_started/" + drinks_per_week
-			if($("#drinks-per-week-meaning-row").hasClass("hidden")) {
-				$("#drinks-per-week-meaning-row").removeClass("hidden").addClass("show");
-			}
 		} 
 		else if (current_page == "orders") {
 			var controller_url = "";
-			var currently_selected_large_format_drinks = parseInt($('#order_number_of_large_drinks').val() | "0");
-			var max_large_format_drink = Math.ceil(drinks_per_week/2.0);
-			for (var i = 0; i <= 14; i++) {
-				if( i <= max_large_format_drink) {
-					$('.number-box-holder.large-format:eq(' + i + ')').removeClass('hidden').addClass('show');
-				}
-				else {
-					$('.number-box-holder.large-format:eq(' + i + ')').removeClass('show').addClass('hidden');
-				}
-			}
+			// should_remove var currently_selected_large_format_drinks = parseInt($('#order_number_of_large_drinks').val() | "0");
+			// should_remove var max_large_format_drink = Math.ceil(drinks_per_week/2.0);
+			// should_remove for (var i = 0; i <= 14; i++) {
+			// should_remove	if( i <= max_large_format_drink) {
+			// should_remove		$('.number-box-holder.large-format:eq(' + i + ')').removeClass('hidden').addClass('show');
+			// should_remove	}
+			// should_remove	else {
+			// should_remove		$('.number-box-holder.large-format:eq(' + i + ')').removeClass('show').addClass('hidden');
+			// should_remove	}
+			// should_remove }
 
-			if (currently_selected_large_format_drinks > max_large_format_drink) {
-				$('.number-box-holder.large-format:eq(' + max_large_format_drink + ')').addClass('chosen');
-				$('.number-box-holder.large-format:eq(' + currently_selected_large_format_drinks + ')').removeClass('chosen');
-				$("#order_number_of_large_drinks").val(large_format);
-			}
+			// should_remove if (currently_selected_large_format_drinks > max_large_format_drink) {
+			// should_remove	$('.number-box-holder.large-format:eq(' + max_large_format_drink + ')').addClass('chosen');
+			// should_remove	$('.number-box-holder.large-format:eq(' + currently_selected_large_format_drinks + ')').removeClass('chosen');
+			// should_remove	$("#order_number_of_large_drinks").val(large_format);
+			// should_remove }
 
 			$('#order_number_of_drinks').val(drinks_per_week);
 			$('#total_drinks').text(drinks_per_week);
@@ -287,11 +287,7 @@ $(function() {
 		}
 		else {
 			$("#delivery_preference_drinks_per_week").val(drinks_per_week);
-			$('#update_delivery_preferences_button').removeAttr('disabled');
-			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 			var controller_url = "/delivery_settings/deliveries_update_estimates/drinks_per_week-" + drinks_per_week + "-" + large_format
-			// indicate there is unsave data changed on the page
-			unsaved = true;
 		}
 		
 		// send data to controller to update delivery preferences
@@ -322,10 +318,6 @@ $(function() {
 			});
 		} else {
 			$('#delivery_preference_first_delivery_date').val(new_value);
-			$('#update_delivery_preferences_button').removeAttr('disabled');
-			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
-			// indicate there is unsave data changed on the page
-			unsaved = true;
 		}
 		
 	});
@@ -352,19 +344,15 @@ $(function() {
 		} 
 		else if (current_page == "orders") {
 			var controller_url = "";
-			$("#order_number_of_large_drinks").val(large_format);
-			$("#large_drink_number").text(large_format);
-			$("#small_drink_number").text(small_format);
+			// should_remove $("#order_number_of_large_drinks").val(large_format);
+			// should_remove $("#large_drink_number").text(large_format);
+			// should_remove $("#small_drink_number").text(small_format);
 			$(".preference-estimate-signs").removeClass("hidden").addClass("show");
 			setOrderEstimate();
 		}
 		else {
 			$("#delivery_preference_max_large_format").val(large_format);
-			$('#update_delivery_preferences_button').removeAttr('disabled');
-			$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
 			var controller_url = "/delivery_settings/deliveries_update_estimates/large_format-" + drinks_per_week + "-" + large_format
-			// indicate there is unsave data changed on the page
-			unsaved = true;
 		}
 		
 		// send data to controller to update delivery preferences
@@ -372,8 +360,8 @@ $(function() {
 		if (controller_url != "") {
 			// send data to controller
 			$.ajax({
-			type: "POST",
-			url: controller_url
+				type: "POST",
+				url: controller_url
 			});
 		}
 	});
@@ -407,14 +395,6 @@ $(function() {
 			});
 		}
 		
-	});
-	
-	// send additional delivery preferences to controller
-	$(document).on("keyup", "#delivery_preference_additional", function() {
-		$('#update_delivery_preferences_button').removeAttr('disabled');
-		$('#update_delivery_preferences_button').removeClass('btn-default').addClass('btn-success');
-		// indicate there is unsave data changed on the page
-		unsaved = true;
 	});
 	
 	// keep track of how many styles have been chosen

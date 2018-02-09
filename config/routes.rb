@@ -88,8 +88,8 @@ Rails.application.routes.draw do
   get '/delivery_settings/change_delivery_time' => 'delivery_settings#change_delivery_time', :as => 'change_delivery_time'
   get '/delivery_settings/total_estimate' => 'delivery_settings#total_estimate', :as => 'user_delivery_settings_total_estimate'
   post '/delivery_settings/deliveries_update_estimates/:id' => 'delivery_settings#deliveries_update_estimates', :as => 'deliveries_update_estimates'
-  patch '/delivery_settings/deliveries_update_preferences' => 'delivery_settings#deliveries_update_preferences', :as => 'deliveries_update_preferences'
-  get '/delivery_settings/change_next_delivery_date' => 'delivery_settings#change_next_delivery_date', :as => 'change_next_delivery_date'
+  patch '/delivery_settings/deliveries_update_additional_requests' => 'delivery_settings#deliveries_update_additional_requests', :as => 'deliveries_update_additional_requests'
+  get '/delivery_settings/change_next_delivery_date/:id' => 'delivery_settings#change_next_delivery_date', :as => 'change_next_delivery_date'
   #post '/delivery_settings/change_delivery_drink_quantity/:id' => 'delivery_settings#change_delivery_drink_quantity', :as => 'change_delivery_drink_quantity'
   post '/delivery_settings/remove_delivery_drink_quantity/:id' => 'delivery_settings#remove_delivery_drink_quantity'
   post '/delivery_settings/customer_delivery_messages/' => 'delivery_settings#customer_delivery_messages', :as => 'customer_delivery_messages'
@@ -134,8 +134,10 @@ Rails.application.routes.draw do
 
   # user ratings routes
   post '/ratings/:user_id/rate_drink_from_supply/:id' => 'ratings#rate_drink_from_supply', :as => 'rate_drink_from_supply'
-  get '/ratings/user_ratings/:id' => 'ratings#user_ratings', :as => 'recent_user_ratings'
-  get '/ratings/friend_ratings/:id' => 'ratings#friend_ratings', :as => 'recent_friend_ratings'
+  get '/users/:user_id/ratings/:beer_id/new' => 'ratings#new', :as => 'new_drink_rating'
+  get '/ratings/user_ratings' => 'ratings#user_ratings', :as => 'recent_user_ratings'
+  get '/ratings/friend_ratings' => 'ratings#friend_ratings', :as => 'recent_friend_ratings'
+  get '/ratings/unrated_drinks' => 'ratings#unrated_drinks', :as => 'unrated_drinks'
   
   # rewards routes
   #get '/rewards/index/:id' => 'rewards#index', :as => 'user_rewards'

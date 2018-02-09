@@ -442,7 +442,8 @@ class Admin::RecommendationsController < ApplicationController
                                   delivery_id: @customer_next_delivery.id,
                                   quantity: @order_quantity,
                                   new_drink: @drink_recommendation.new_drink,
-                                  projected_rating: @drink_recommendation.projected_rating)
+                                  projected_rating: @drink_recommendation.projected_rating,
+                                  times_rated: 0)
         end
       end
       
@@ -532,7 +533,8 @@ class Admin::RecommendationsController < ApplicationController
                                   delivery_id: @admin_account_delivery_info.delivery_id,
                                   quantity: @total_per_user,
                                   new_drink: @user_recommendation_info.new_drink,
-                                  projected_rating: @user_recommendation_info.projected_rating)
+                                  projected_rating: @user_recommendation_info.projected_rating,
+                                  times_rated: 0)
       else
         # find and remove user allocation
         @user_allocation = @account_user_drinks.where(user_id: @user_recommendation_info.user_id)[0]
@@ -552,7 +554,8 @@ class Admin::RecommendationsController < ApplicationController
                                   delivery_id: @admin_account_delivery_info.delivery_id,
                                   quantity: @admin_account_delivery_info.quantity,
                                   new_drink: @user_recommendation_info.new_drink,
-                                  projected_rating: @user_recommendation_info.projected_rating)
+                                  projected_rating: @user_recommendation_info.projected_rating,
+                                  times_rated: 0)
     end
     
     # create data to update Account/User Info in top row with jquery
@@ -711,7 +714,7 @@ class Admin::RecommendationsController < ApplicationController
     @next_customer_delivery.update(share_admin_prep_with_user: true, no_plan_delivery_fee: @delivery_fee, grand_total: @grand_total)
     
     # redirect back to recommendation page                  
-    redirect_to admin_recommendation_path(@next_customer_delivery.account_id) 
+    redirect_to admin_recommendation_path(@next_customer_delivery.account_id, @next_customer_delivery.id) 
     
   end # end of share_delivery_with_customer method
   

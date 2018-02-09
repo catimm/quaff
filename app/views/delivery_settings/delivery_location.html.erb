@@ -10,11 +10,6 @@
 					<div class="col-xs-4">
 						<%= link_to "My Preferences", user_delivery_settings_path, class: "drink-preference-view-option", id: "next" %>
 					</div>
-					<% if !@mates.blank? %>
-					<div class="col-xs-4">
-						<%= link_to 'Delivery Estimate', user_delivery_settings_total_estimate_path, class: "drink-preference-view-option", id: "history" %>
-					</div>
-					<% end %>
 				<% end %>
 				<div class="col-xs-4 no-padding-right">
 					<%= link_to 'Delivery Location', user_delivery_settings_location_path, class: "drink-preference-view-option current", id: "history" %>

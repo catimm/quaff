@@ -2316,7 +2316,7 @@ $beer-header-lines-to-show-fp: 1;
   float: left;
 }
 .rating-card-user-rating-holder {
-  padding: 10px 0 0 0;
+  padding: 15px 0 0 0;
 }
 .rating-user-rating-acknowledged {
   color: $user-rating-text;
@@ -3457,8 +3457,20 @@ $beer-header-lines-to-show-fp: 1;
   background: $special-designated-yellow;
   border-radius: 6px;
 }
+#last_updated_holder {
+  margin-top: 15px;
+}
+.last-updated-header {
+  text-align: center;
+  color: $less-emphasized-text;
+  margin-top: 10px;
+}
 .drinks-per-delivery-highlight-change {
-  color: $action-background !important;
+  background: $special-designated-yellow;
+  border-radius: 6px;
+  p {
+    color: $black;
+  }
 }
 .signup-drinks-per-week-next-step {
   width: 80%;
@@ -3937,27 +3949,26 @@ $beer-header-lines-to-show-fp: 1;
   left: 14px;
   top: 22px;
 }
-.rate-beer, .rate-drink-from-delivery {
-  width: 28px;
-  height: 28px;
-  padding: 4px 0 0 3px;
+.rate-beer, .rate-drink-from-delivery, .edit-drink-rating {
+  width: 22px;
+  height: 22px;
+  padding: 2px 0 0 3px;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  border-radius: 50%;
+  border-radius: 6px;
   vertical-align: middle;
   background: $step-background;
   color: #fff;
   margin: 0;
   z-index: 1000;
   position: absolute;
-  right: 0;
-  top: -2px;
+  right: 8px;
   text-decoration: none;
   i {
     color: $white;
     display: block;
     float: left;
-    font-size: 12px;
+    font-size: 9px;
   }
   p {
     color: $white;
@@ -3968,35 +3979,6 @@ $beer-header-lines-to-show-fp: 1;
   } 
 }
 
-.edit-drink-rating {
-  width: 30px;
-  height: 30px;
-  padding: 6px 2px 2px 6px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  border-radius: 50%;
-  vertical-align: middle;
-  background: $step-background;
-  color: #fff;
-  margin: 0;
-  z-index: 1000;
-  position: absolute;
-  right: 3px;
-  top: -10px;
-  text-decoration: none !important;
-  i {
-    color: $white;
-    display: block;
-    float: left;
-    font-size: 10px;
-  }
-  p {
-    color: $white;
-    font-size: 10px;
-    text-align: center;
-    padding-right: 4px;      
-  } 
-}
 .drink-info-separater {
   margin: 5px 0;
 }
@@ -4335,6 +4317,18 @@ $beer-header-lines-to-show-fp: 1;
   color: $normal-text;
   font-size: 22px;
   margin: 0;
+  .current-drink-choice {
+    color: $action-background;
+  }
+  #order-change-drink-type {
+    font-size: 16px;
+  }
+}
+#order-change-drink-type-text {
+  color: $action-background;
+}
+#order-page-last-row {
+  margin: 0 0 50px 0;
 }
 .wishlist-notification {
   color: $action-background;
@@ -4467,9 +4461,9 @@ $beer-header-lines-to-show-fp: 1;
     font-size: 14px !important;
   }
 }
-.update_delivery_preferences {
+.update_delivery_request {
   width: 80%;
-  margin-bottom: 10px;
+  margin-top: 5px;
 }
 .estimate-holder {
   background: #fff !important;
@@ -4490,7 +4484,52 @@ $beer-header-lines-to-show-fp: 1;
   overflow: hidden;
   background: #fff;
 }
-
+.change-estimate-view-holder {
+  padding: 0 0 0 5px;
+}
+.change-estimate-direction {
+  margin: 2.5px 0 0 0;
+  color: $less-emphasized-text;
+  font-size: 12px;
+}
+.account-estimate-button {
+  margin: 2.5px 0 6px 0;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid $action-background;
+  background: $action-background;
+  text-align: center;
+  .account-estimate-button-text {
+    margin: 8.5px 0;
+    color: $white;
+  }
+}
+.account-estimate-button.inverse {
+  background: $white;
+  .account-estimate-button-text {
+    color: $action-background;
+  }
+}
+.account-estimate-button.inverse:hover {
+  background: $white;
+  .account-estimate-button-text {
+    color: $action-background;
+  }
+}
+.user-initial-holder-for-estimates {
+  margin: 0 3.85px 0 0;
+  border-radius: 4px;
+  height: 22.5px;
+  width: 22.5px;
+  text-align: center;
+  padding-top: 5px;
+  float: left;
+}
+.user-initial-text-for-estimates {
+  color: $white;
+  margin: 0 !important;
+  font-size: 14px;
+}
 .preference-estimate-holder {
   margin-bottom: 10px;
 }
@@ -4579,6 +4618,11 @@ $beer-header-lines-to-show-fp: 1;
 }
 .bottom-ratings-tile-rows {
   margin: 5px 0 !important;
+}
+.delete-extra-drink-rating-button {
+  margin: 0;
+  font-size: 14px;
+  padding: 0 6px; 
 }
 .past-user-descriptors-ratings {
   padding: 10px 0 0 5px !important;
@@ -4732,26 +4776,148 @@ $descriptor-lines-to-show: 2;
   margin: 0 !important;
   font-size: 14px;
 }
+.action-background-text {
+  color: $action-background;
+}
 .light-aqua-blue {
   background: $light-aqua-blue;
+}
+.light-aqua-blue-text {
+  color: $light-aqua-blue;
 }
 .light-orange {
   background: $light-orange;
 }
+.light-orange-text {
+  color: $light-orange;
+}
 .faded-blue {
   background: $faded-blue;
+}
+.faded-blue-text {
+  color: $faded-blue;
 }
 .light-purple {
   background: $light-purple;
 }
+.light-purple-text {
+  color: $light-purple;
+}
 .faded-green {
   background: $faded-green;
+}
+.faded-green-text {
+  color: $faded-green;
 }
 .light-yellow {
   background: $light-yellow;
 }
+.light-yellow-text {
+  color: $light-yellow;
+}
 .faded-red {
   background: $faded-red;
+}
+.faded-red-text {
+  color: $faded-red;
+}
+.light-aqua-blue.inverse {
+  border: 1px solid $light-aqua-blue;
+  background: $white;
+  h4 {
+    color: $light-aqua-blue;
+  }
+}
+.light-aqua-blue.inverse:hover {
+  border: 1px solid $light-aqua-blue;
+  background: $light-aqua-blue;
+  h4 {
+    color: $white;
+  }
+}
+.light-orange.inverse {
+  border: 1px solid $light-orange;
+  background: $white;
+  h4 {
+    color: $light-orange;
+  }
+}
+.light-orange.inverse:hover {
+  border: 1px solid $light-orange;
+  background: $light-orange;
+  h4 {
+    color: $white;
+  }
+}
+.faded-blue.inverse {
+  border: 1px solid $faded-blue;
+  background: $white;
+  h4 {
+    color: $faded-blue;
+  }
+}
+.faded-blue.inverse:hover {
+  border: 1px solid $faded-blue;
+  background: $faded-blue;
+  h4 {
+    color: $white;
+  }
+}
+.light-purple.inverse {
+  border: 1px solid $light-purple;
+  background: $white;
+  h4 {
+    color: $light-purple;
+  }
+}
+.light-purple.inverse:hover {
+  border: 1px solid $light-purple;
+  background: $light-purple;
+  h4 {
+    color: $white;
+  }
+}
+.faded-green.inverse {
+  border: 1px solid $faded-green;
+  background: $white;
+  h4 {
+    color: $faded-green;
+  }
+}
+.faded-green.inverse:hover {
+  border: 1px solid $faded-green;
+  background: $faded-green;
+  h4 {
+    color: $white;
+  }
+}
+.light-yellow.inverse {
+  border: 1px solid $light-yellow;
+  background: $white;
+  h4 {
+    color: $light-yellow;
+  }
+}
+.light-yellow.inverse:hover {
+  border: 1px solid $light-yellow;
+  background: $light-yellow;
+  h4 {
+    color: $white;
+  }
+}
+.faded-red.inverse {
+  border: 1px solid $faded-red;
+  background: $white;
+  h4 {
+    color: $faded-red;
+  }
+}
+.faded-red.inverse:hover {
+  border: 1px solid $faded-red;
+  background: $faded-red;
+  h4 {
+    color: $white;
+  }
 }
 .user-graphic-holder-div {
   margin: 5px 0 0 -5px;
@@ -4980,10 +5146,6 @@ $descriptor-lines-to-show: 2;
   i {
     color: $white;
   }
-}
-.last-updated-header {
-  color: $less-emphasized-text;
-  margin-top: 20px;
 }
 .style-choose-neither {
   font-weight: 500;
@@ -7064,7 +7226,7 @@ $delivery-beer-header-lines-to-show: 2;
     margin: 2px -30px 0 30px;
   }
   .delivery-preference-prompt {
-    width: 40%;
+    //width: 40%;
   }
   // Mobile Index page
 header {

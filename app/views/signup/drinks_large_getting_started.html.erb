@@ -23,9 +23,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="row no-margin text-center">
+	<div class="row no-margin text-center <%= @large_format_next_button_status %>" id="signup-large-format-next-button-holder">
 		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
-			<%= link_to "Next", @next_step, disabled: true, class: "btn btn-default btn-success signup-styles-next-step", id: "large_drinks_next_step_button" %>
+			<%= link_to "Next", @next_step, class: "btn btn-default btn-success signup-styles-next-step", id: "large_drinks_next_step_button" %>
 		</div>
 	</div>
 <%= render 'layouts/footer' %>

@@ -6,12 +6,6 @@ $(function () {
 	    });
 	}
 	
-	// show modal for 1st step of settings for those with a new plan 
-	if (gon.new_plan_step_one == true) {
-		$(window).load(function(){
-	        $('#new_plan_step_one').modal('show');
-	    });
-	}
 	// show modal for 2nd step of settings for those with a new plan  
 	if (gon.new_plan_step_two == true) {
 		$(window).load(function(){
@@ -98,7 +92,12 @@ $(function () {
 		// make page not jump to top
 		return false;
 	});
-	 
+	
+	// allow user to save additional delivery preferences info once they start typing
+	$(document).on("keyup", ".delivery-additional-request-form", function() {
+		$("#update_delivery_request_button").removeAttr('disabled');
+		$("#update_delivery_request_button").addClass('btn-success');
+	});
 	// show/hide subtotal and sales tax on user delivery stats
 	$(document).on("click", ".show-more-price-info", function() {
 		$(this).removeClass("show").addClass("hidden");
@@ -112,5 +111,35 @@ $(function () {
 		$(this).siblings(".delivery-info-box.sales-tax").removeClass("show").addClass("hidden");
 		$(this).siblings(".show-more-price-info").removeClass("hidden").addClass("show");
 	});
-	 
+	
+	// allow user to see delivery estimates for full account and all account users
+	$(document).on("click", ".user-initial-holder-for-estimates", function() {
+		// change buttons view
+		$(".user-initial-holder-for-estimates").removeClass("inverse");
+		$(".user-initial-holder-for-estimates").addClass("inverse");
+		$(this).removeClass("inverse");
+		if (!$("#account-estimate-button").hasClass("inverse")) {
+			$("#account-estimate-button").addClass("inverse");
+		}
+		// get user id of view chosen
+		var user_id_data = $(this).attr('id');
+		var user_id_data_split = user_id_data.split('-');
+		var user_id = user_id_data_split[2];
+		// show appropriate estimate
+		if ($("#user-account").hasClass("show")) {
+			$("#user-account").removeClass("show").addClass("hidden");
+		}
+		$(".mates-preferences-holder").removeClass("show").removeClass("hidden").addClass("hidden");
+		$("#user-" + user_id).removeClass("hidden").addClass("show");
+	});
+	// allow user to see delivery estimates for full account and all account users
+	$(document).on("click", "#account-estimate-button", function() {
+		// change buttons view
+		$(this).removeClass("inverse");
+		$(".user-initial-holder-for-estimates").removeClass("inverse");
+		$(".user-initial-holder-for-estimates").addClass("inverse");
+		// show account estimate
+		$(".mates-preferences-holder").removeClass("show").removeClass("hidden").addClass("hidden");
+		$("#user-account").removeClass("hidden").addClass("show");
+	});
 });

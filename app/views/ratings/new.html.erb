@@ -68,6 +68,9 @@
 			<%= rate.hidden_field :projected_rating, :value => @our_best_guess %>
 			<%= rate.hidden_field :current_descriptors, :value => "" %>
 			<%= rate.hidden_field :beer_type_id, :value => @this_drink.beer_type_id %>
+			<% if !@account_delivery_id.nil? %>
+				<%= rate.hidden_field :account_delivery_id, :value => @account_delivery_id %>
+			<% end %>
 			<div class="row rating-top-row">
 				<div class="col-sm-1 col-xs-0"></div>
 				<div class="col-sm-10 col-xs-12 rating-holder text-center">

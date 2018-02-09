@@ -2,14 +2,15 @@
 #
 # Table name: user_cellar_supplies
 #
-#  id                 :integer          not null, primary key
-#  user_id            :integer
-#  beer_id            :integer
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  total_quantity     :integer
-#  account_id         :integer
-#  remaining_quantity :integer
+#  id                  :integer          not null, primary key
+#  user_id             :integer
+#  beer_id             :integer
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  total_quantity      :integer
+#  account_id          :integer
+#  remaining_quantity  :integer
+#  account_delivery_id :integer
 #
 
 class UserCellarSupply < ActiveRecord::Base

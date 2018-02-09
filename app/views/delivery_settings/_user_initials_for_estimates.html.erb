@@ -1,0 +1,21 @@
+<% if !friend.first_name.nil? %>
+	<% @first_name_initial = friend.first_name[0,1] %>
+<% else %>
+	<% @first_name_initial = "G" %>
+<% end %>
+<% if !friend.last_name.nil? %>
+	<% @last_name_initial = friend.last_name[0,1] %>
+<% elsif !friend.first_name.nil? && !friend.last_name.nil? %>
+	<% @last_name_initial = "$" %>
+<% else %>
+	<% @last_name_initial = "" %>
+<% end %>
+<% @friend_initials = @first_name_initial + @last_name_initial %>
+<% if friend.id == current_user.id %>
+	<% @this_name = "Your" %>
+<% else %>
+	<% @this_name = friend.first_name + "'s" %>
+<% end %>
+<div id="user-id-<%= friend.id %>" class="user-initial-holder-for-estimates <%= @user_chosen %> <%= friend.user_color %> inverse" data-toggle="tooltip" title="Check <%= @this_name %> estimates">
+	<h4 class="user-initial-text-for-estimates <%= @user_chosen %>"><%= @friend_initials %></h4>
+</div>

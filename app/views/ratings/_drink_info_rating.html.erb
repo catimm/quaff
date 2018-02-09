@@ -50,5 +50,16 @@
 	</div>
 </div>
 <div class="row no-margin size-price-row">
-	<h6 class="rated-on-date">Rated on <%= (drink.created_at).strftime("%b %e, %Y") %></h6>
+	<div class="col-xs-8">
+		<h6 class="rated-on-date">Rated on <%= (drink.created_at).strftime("%b %e, %Y") %></h6>
+	</div>
+	<div class="col-xs-4 text-right">
+		<% if !drink.user_delivery.nil? %>
+			<% if drink.user_delivery.times_rated > (drink.user_delivery.quantity).ceil %>
+				<%= link_to user_rating_path(current_user.id, drink.id), method: :delete, data: { confirm: 'Are you certain you want to delete this?' }, :class => 'btn btn-danger delete-extra-drink-rating-button', title: 'Delete this rating', 'data-toggle' => 'tooltip' do %>
+					<i class="fa fa-trash"></i>
+				<% end %> 
+			<% end %>
+		<% end %>
+	</div>
 </div>

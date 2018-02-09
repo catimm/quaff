@@ -12,6 +12,7 @@
 #  new_drink           :boolean
 #  likes_style         :string
 #  projected_rating    :float
+#  times_rated         :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

@@ -262,7 +262,8 @@ class DrinksController < ApplicationController
                                 beer_id: @new_cellar_drink.beer_id,
                                 total_quantity: @drink_quantity,
                                 account_id: @user.account_id,
-                                remaining_quantity: @drink_quantity)
+                                remaining_quantity: @drink_quantity,
+                                account_delivery_id: @account_delivery_id)
     else
       @existing_cellar_drink[0].increment!(:total_quantity, @drink_quantity)
       @existing_cellar_drink[0].increment!(:remaining_quantity, @drink_quantity)

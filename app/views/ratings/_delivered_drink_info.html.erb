@@ -1,0 +1,46 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<div class="col-xs-2 col-sm-2 brewery-image-holder-universal">
+		<% if !drink.beer.brewery.image.blank? %>
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+		<% else %>
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-xs-8 col-sm-8 no-padding drink-name-and-info-holder-universal">
+		<%= render 'layouts/delivered_drink_name_and_info', drink: drink %>	
+	</div>
+	<div class="drink-info-universal-show-more hidden">
+		<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+	</div>
+	<div class="drink-info-universal-show-less show">
+		<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+	</div>
+</div>
+<div class="row no-margin drink-info-universal-second-row show">	
+	<hr class="drink-info-separater">
+	<div class="col-xs-5 col-sm-6 no-padding">
+		<%= render 'layouts/delivered_drink_user_rating_info', drink: drink %>
+	</div>
+	<div class="col-xs-7 col-sm-6 cloud-descriptor-holder-universal no-padding">
+		<div class="cloud-descriptors" id="account_drink_<%= drink.id %>"></div>
+	</div>
+</div>
+<div class="row no-margin size-price-row hidden">
+	<div class="col-xs-2">
+		<h5 class="svg-holder" data-toggle="tooltip" title="<%= drink.size_format.format_name %>" data-placement="right">
+			<%= svg drink.size_format.image %>
+		</h5>
+	</div>
+	<div class="col-xs-4 no-padding">
+		<h5 class="item-price" data-toggle="tooltip" title="Price does not include tax">
+			<%= number_to_currency(drink.drink_price, precision: 2) %> each
+		</h5>		
+	</div>
+	<div class="col-xs-3 no-padding text-right">
+		<h5 class="order-quantity">Qty: 
+			<span id="user-delivery-<%= drink.id %>"><%= drink.quantity.round %></span>
+		</h5>
+	</div>
+</div>

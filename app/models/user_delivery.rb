@@ -12,11 +12,14 @@
 #  new_drink           :boolean
 #  likes_style         :string
 #  projected_rating    :float
+#  times_rated         :integer
 #
 
 class UserDelivery < ActiveRecord::Base
   belongs_to :user
   belongs_to :account_delivery
   belongs_to :delivery
+  
+  has_many :user_beer_ratings
 
 end

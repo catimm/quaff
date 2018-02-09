@@ -21,10 +21,12 @@ class UserBeerRating < ActiveRecord::Base
   belongs_to :user
   belongs_to :beer
   belongs_to :beer_type
+  belongs_to :user_delivery
   
   accepts_nested_attributes_for :beer
   
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
+  attr_accessor :account_delivery_id # to hold if this rating is connected to a delivered drink
   
   # method to put ratings together by brewery.
   def rating_by_brewery

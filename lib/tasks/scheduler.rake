@@ -525,7 +525,8 @@ task :assess_drink_recommendations => :environment do
 
       if only_for_orders
         # get active users that have an outstanding order but with no recommendations
-        @active_users = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations) AND getting_started_step=? AND account_id=?', 12, account.account_id)
+        @order_owner = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations)')
+        @active_users = User.where(account_id: @order_owner.account_id, getting_started_step: 12)
       else
         # get each user associated to this account
         @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
@@ -902,7 +903,7 @@ end # end of assess_total_demand_for_inventory task
 desc "share admin drink prep with customers" # step 3 of curation process (step #2 is manual curation)
 task :share_admin_prep_with_customer => :environment do
     # get customers who have drinks slated for delivery this week
-    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
+    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (1.day.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
     
     if !@accounts_with_deliveries.blank?
       @accounts_with_deliveries.each do |account_delivery|

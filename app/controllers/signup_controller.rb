@@ -106,7 +106,7 @@ class SignupController < ApplicationController
     
     
     # check if user already has a subscription row
-    @user_subscription = UserSubscription.find_by_user_id(@user.id)
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
     
     if @user_subscription.blank?
       # create a new user_subscription row
@@ -186,7 +186,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 4
@@ -258,7 +258,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 5
@@ -333,7 +333,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 6
@@ -473,7 +473,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 7
@@ -597,21 +597,26 @@ class SignupController < ApplicationController
         @next_step = signup_thank_you_path
       else
         # determine if user has a preppaid delivery plan
-        @user_subscription = UserSubscription.where(user_id: @user.id).first
+        @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
         if @user_subscription.subscription_id == 1
           @next_step = signup_thank_you_path
         else
-          @next_step = drinks_weekly_getting_started_path(@user.id)
+          @next_step = drinks_weekly_getting_started_path
         end
       end
     
   end # end drink_style_likes_getting_started action
   
   def drinks_weekly_getting_started
+    # display message if this is a no-plan user adding a new paid plan
+    if session[:start_new_plan_start_date_step]
+      gon.new_plan_step_one = true
+    end
+    
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 8
@@ -646,10 +651,9 @@ class SignupController < ApplicationController
      # get number of drinks per week
     if !@delivery_preferences.drinks_per_week.nil?
       @drinks_per_week = @delivery_preferences.drinks_per_week
-      @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
-      @drinks_per_week_meaning_show_status = "show"
+      @drinks_weekly_next_button_status = "show"
     else
-      @drinks_per_week_meaning_show_status = "hidden"
+      @drinks_weekly_next_button_status = "hidden"
     end
  
   end # end of drinks_weekly_getting_started action
@@ -662,19 +666,6 @@ class SignupController < ApplicationController
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     
     @delivery_preferences.update(drinks_per_week: params[:id])
-      
-    # set variables to show in partial
-    # set drink category choice
-    if @delivery_preferences.drink_option_id == 1
-      @drink_preference = "beers"
-    elsif @delivery_preferences.drink_option_id == 2
-      @drink_preference = "ciders"
-    else
-      @drink_preference = "beers/ciders"
-    end
-    @drinks_per_week = @delivery_preferences.drinks_per_week
-    @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
-    @drinks_per_week_meaning_show_status = "show"
 
     respond_to do |format|
       format.js
@@ -683,10 +674,15 @@ class SignupController < ApplicationController
   end # end of drinks_weekly_getting_started action
   
   def drinks_large_getting_started
+    # remove session cookie for user switching to paid plan if need be
+    if session[:start_new_plan_start_date_step]
+      session.delete(:start_new_plan_start_date_step)
+    end
+      
     # get User info 
     @user = User.find_by_id(current_user.id)
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id).first
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 9
@@ -726,20 +722,13 @@ class SignupController < ApplicationController
     # get number of large format drinks per week if it exists
     if !@delivery_preferences.max_large_format.nil?
       @drinks_per_week = @delivery_preferences.drinks_per_week
-      @drink_per_delivery_calculation = (@drinks_per_week * 2.2).round
       
       # get small/large format estimates
       @large_delivery_estimate = @delivery_preferences.max_large_format
-      @small_delivery_estimate = @drink_per_delivery_calculation - (@large_delivery_estimate * 2)
-      
-      # get estimated cost estimates -- rounded to nearest multiple of 5
-      @delivery_cost_estimate = @delivery_preferences.price_estimate
-      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
     
-      @drinks_per_week_meaning_show_status = "show"
+      @large_format_next_button_status = "show"
     else
-      @drinks_per_week_meaning_show_status = "hidden"
+      @large_format_next_button_status = "hidden"
     end
     
     # get number of large format drinks per week
@@ -821,6 +810,9 @@ class SignupController < ApplicationController
       @delivery_cost_estimate = @delivery_preferences.price_estimate
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
       @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      
+      # make sure reset message doesn't show
+      @reset_estimate_visible_status = "hidden"
     end
         
     # determine minimum number of weeks between deliveries
@@ -901,6 +893,9 @@ class SignupController < ApplicationController
     @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
     @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
     
+    # make sure reset message doesn't show
+    @reset_estimate_visible_status = "hidden"
+      
     # show delivery cost information and 'next' button
     respond_to do |format|
       format.js
@@ -1075,7 +1070,7 @@ class SignupController < ApplicationController
     # get user info
     @user = User.find_by_id(current_user.id)
     # get User Subscription info
-    @user_subscription = UserSubscription.where(account_id: @user.account_id).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # assign invitation code for user to share
     @next_available_code = SpecialCode.where(user_id: nil).first
@@ -1091,10 +1086,10 @@ class SignupController < ApplicationController
     
     # send welcome email if user is account owner
     if @user.role_id == 1 || @user.role_id == 4
-      @user_subscription = UserSubscription.find_by_user_id(@user.id)
+      @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
       @membership_name = @user_subscription.subscription.subscription_name
       @membership_deliveries = @user_subscription.subscription.deliveries_included
-      @subscription_fee = (@user_subscription.subscription.subscription_cost * @user_subscription.subscription.subscription_months_length)
+      @subscription_fee = (@user_subscription.subscription.subscription_cost)
       @renewal_date = (Date.today + @user_subscription.subscription.subscription_months_length).strftime("%b %-d, %Y")
       @membership_length = @user_subscription.subscription.subscription_months_length
       UserMailer.welcome_email(@user, @membership_name, @membership_deliveries, @subscription_fee, @renewal_date, @membership_length).deliver_now
