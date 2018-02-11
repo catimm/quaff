@@ -1,7 +1,8 @@
 <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
     <ul class="nav navbar-nav">
     	<% if user_signed_in? %>
-     		<% if session[:user_subscription_id] != 1 %>
+     		<% @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first %>
+     		<% if @user_subscription.subscription_id != 1 %>
 		   		<li class="navLinks dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
 		          <ul class="dropdown-menu">

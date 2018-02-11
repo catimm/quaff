@@ -78,7 +78,7 @@ class InvitationsController < Devise::InvitationsController
       u.skip_invitation = true
     end
     # show raw token for dev purposes
-    #Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
+    Rails.logger.debug("Raw invitation token: #{@invited_user.raw_invitation_token.inspect}")
     # get info on invitor
     @invitor = User.find_by_id(params[:user][:invited_by_id])
     # get invitor invitation code

@@ -71,21 +71,31 @@ $(function () {
 	$(document).on("click", ".change-delivery-time-and-place", function() {
 		// add new date to confirmation message
 		new_location = $(this).parent(".optional-delivery-time-container").attr('id');
-		new_date = $(this).siblings(".day-holder").html();
-		new_time = $(this).siblings(".time-holder").html();
-		next_time = $(this).siblings(".next-holder").html();
-		next_time = next_time.replace('(Starting: ','(starting ');
-		$("#new-delivery-date-and-time").html(new_location + " on " + new_date + new_time + next_time);
+		if ($(this).siblings(".day-holder").length) {
+			new_date = $(this).siblings(".day-holder").html();
+			new_time = $(this).siblings(".time-holder").html();
+			next_time = $(this).siblings(".next-holder").html();
+			next_time = next_time.replace('(Starting: ','(starting ');
+			$("#new-delivery-date-and-time").html(new_location + " on " + new_date + new_time + next_time);
+			
+			calendar_date = next_time.replace('(starting ','');
+			calendar_date = calendar_date.replace(')','');
+			calendar_date = calendar_date.replace('.','_');
+			calendar_date = calendar_date.replace('.','_');
+			calendar_date = $.trim(calendar_date);
+			
+			// update URL with correct IDs
+			value = $(this).attr('id');
+			$("#change-delivery-time-button").attr("href", "/delivery_settings/change_delivery_time." + value + "-" + calendar_date);
+		} else {
+			$("#new-delivery-date-and-time").html(new_location);
+			// update URL with correct IDs
+			value = $(this).attr('id');
+			$("#change-delivery-time-button").attr("href", "/delivery_settings/change_delivery_time." + value);
+		}
 		
-		calendar_date = next_time.replace('(starting ','');
-		calendar_date = calendar_date.replace(')','');
-		calendar_date = calendar_date.replace('.','_');
-		calendar_date = calendar_date.replace('.','_');
-		calendar_date = $.trim(calendar_date);
 		
-		// update URL with correct IDs
-		value = $(this).attr('id');
-		$("#change-delivery-time-button").attr("href", "/delivery_settings/change_delivery_time." + value + "-" + calendar_date);	
+			
 	});
 	
 	// choose first delivery time and place

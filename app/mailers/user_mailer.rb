@@ -386,6 +386,11 @@ class UserMailer < ActionMailer::Base
     else
       @old_date = old_date.strftime("%A, %B %-d")
     end
+    if next_date == "none"
+      @next_date = "none"
+    else
+      @next_date = next_date.strftime("%A, %B %-d")
+    end
     if user_address_info.location_type == "Other"
       @location_name = user_address_info.other_name
     else
@@ -414,7 +419,7 @@ class UserMailer < ActionMailer::Base
         customer_name: customer.first_name,
         location_and_time: location_and_time,
         old_date: @old_date,
-        next_date: next_date.strftime("%A, %B %-d"),
+        next_date: @next_date,
         location_name: @location_name,
         street_address: @street_address,
         city_address: @city_address,

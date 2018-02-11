@@ -19,6 +19,24 @@ class UserAddressesController < ApplicationController
     # create new address
     @new_address = UserAddress.create(address_params)
     
+    # check if user has a subscription
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+    
+    # get delivery zone
+    @delivery_zone = DeliveryZone.where(zip_code: @new_address.zip).first
+    
+    # add delivery zone if this is a zero plan
+    if session[:new_membership] == "zero" || (!@user_subscription.blank? && @user_subscription.subscription_id == 1)
+      if current_user.getting_started_step < 12
+        # update Account and Addrress info
+        Account.update(current_user.account_id, delivery_location_user_address_id: @new_address.id, delivery_zone_id: @delivery_zone.id)
+        @new_address.update(current_delivery_location: true, delivery_zone_id: @delivery_zone.id)
+      else
+        @new_address.update(current_delivery_location: false, delivery_zone_id: @delivery_zone.id)
+      end
+    end
+    
+    # redirect user
     if session[:return_to]
       # redirect back to last page before new location page
       redirect_to session.delete(:return_to)

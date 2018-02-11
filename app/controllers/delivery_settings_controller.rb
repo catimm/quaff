@@ -409,14 +409,14 @@ class DeliverySettingsController < ApplicationController
     
     if @column == "frequency" 
       # update delivery preferences
-      Rails.logger.debug("Delivery Preferences pre-update: #{@delivery_preferences.inspect}")
+      #Rails.logger.debug("Delivery Preferences pre-update: #{@delivery_preferences.inspect}")
       @delivery_preferences.update_attribute(:drinks_per_delivery, @data_value_one) 
-      Rails.logger.debug("Delivery Preferences post-update: #{@delivery_preferences.inspect}")
+      #Rails.logger.debug("Delivery Preferences post-update: #{@delivery_preferences.inspect}")
       # update account
       @account.update_attribute(:delivery_frequency, @data_value_two) 
       # get new delivery estimates
       delivery_estimator(@delivery_preferences, @user.craft_stage_id)
-      Rails.logger.debug("Delivery Preferences post-estimator: #{@delivery_preferences.inspect}")
+      #Rails.logger.debug("Delivery Preferences post-estimator: #{@delivery_preferences.inspect}")
     end
     
     # update delivery preferences to grab new delivery estimates
@@ -441,8 +441,18 @@ class DeliverySettingsController < ApplicationController
         # create both Array and Hash to hold this mate's info
         @account_user_info = Array.new
         @account_user_specifics = Hash.new
+        
         # get this user's delivery preferences
         @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
+        # update drinks per delivery for each user
+        @drinks_per_delivery = (@user_delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1)
+        # update preferences
+        @user_delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery) 
+        # get new delivery estimates
+        delivery_estimator(@user_delivery_preferences, account_user.craft_stage_id)
+        # get updated delivery preferences variable
+        @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
+       
         # push user_id into Array
         @account_user_info << account_user.id
         # determine user's cost estimate
@@ -493,7 +503,7 @@ class DeliverySettingsController < ApplicationController
       @max_large = @current_user_large_format_drinks_per_week
       @price_estimate = @current_user_price_estimate
     end # end of mates check/branch
-    Rails.logger.debug("Compiled user preferences: #{@account_mates_preferences.inspect}")
+    #Rails.logger.debug("Compiled user preferences: #{@account_mates_preferences.inspect}")
     
     # determine minimum number of weeks between deliveries
     @number_of_weeks_first_option = 2
@@ -834,6 +844,9 @@ class DeliverySettingsController < ApplicationController
     # get user info
     @user = User.find(current_user.id)
     
+    # get user subscription
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+    
     # determine current week status
     @current_week_number = Date.today.strftime("%U").to_i
     if @current_week_number.even?
@@ -964,75 +977,102 @@ class DeliverySettingsController < ApplicationController
   end # end of delivery_location method
   
   def change_delivery_time
-    # first get correct address and delivery zone
-    @data = params[:format]
-    @data_split = @data.split("-")
-    @address = @data_split[0].to_i
-    #Rails.logger.debug("address: #{@address.inspect}")
-    @delivery_zone = @data_split[1].to_i
-    @delivery_date = @data_split[2]
-    @date_adjustment = @delivery_date.split("_") 
-    @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1] + " 13:00:00"
-    #Rails.logger.debug("date: #{@final_delivery_date.inspect}")
-    @final_delivery_date = DateTime.parse(@final_delivery_date)
-    #Rails.logger.debug("Parsed date: #{@final_delivery_date.inspect}")
-    
     # get user info for confirmation email
     @customer = User.find_by_id(current_user.id)
     
-    # update the Account info
-    Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
-    
-    # set curator email for notification
-    @admin_email = "carl@drinkknird.com"
-    
-    # get user's delivery info
-    @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
-    # get next planned delivery
-    @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
-    #Rails.logger.debug("first delivery date: #{@first_delivery.inspect}")
-    # get second planned delivery 
-    @second_delivery = @all_upcoming_deliveries.order("delivery_date ASC").second
-    #Rails.logger.debug("second delivery date: #{@second_delivery.inspect}")
+    # get user's subscription
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
     
     # get current delivery address
     @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
-    #Rails.logger.debug("Delivery address: #{@current_delivery_address.inspect}")
-    
-    if @current_delivery_address.id == @address # address is not changing, just update the delivery time/zone
-      # update the current delivery time/zone
-      @current_delivery_address.update_attribute(:delivery_zone_id, @delivery_zone)
-      # get new user delivery address info for confirmation email
-      @new_delivery_address = @current_delivery_address
-      @location_and_time_change = false
-    else # both address and delivery time/zone need to be updated
-      # update current delivery address
-      @current_delivery_address.update_attributes(current_delivery_location: false, delivery_zone_id: nil)
-      # get the new delivery address & update it
-      UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
-      # get new user delivery address info for confirmation email
-      @new_delivery_address = UserAddress.find_by_id(@address)
-      @location_and_time_change = true
-    end
-
-    # capture original delivery date for confirmation email before updating record
-    @old_date = @next_delivery.delivery_date
-    
-    # set next view
-    @next_view = user_delivery_settings_location_path
-    
-    # update delivery dates
-    @next_delivery.update_attribute(:delivery_date, @final_delivery_date)
-    @second_delivery_date = @final_delivery_date + 2.weeks
-    @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
+       
+    # get data
+    @data = params[:format]
+    @data_split = @data.split("-")
+    # first get correct address and delivery zone
+    @address = @data_split[0].to_i
+    #Rails.logger.debug("address: #{@address.inspect}")
+    @delivery_zone = @data_split[1].to_i
     
     # get delivery zone info for confirmation email
     @user_delivery_zone = DeliveryZone.find_by_id(@delivery_zone)
+      
+    if @user_subscription.subscription_id != 1
+      @delivery_date = @data_split[2]
+      @date_adjustment = @delivery_date.split("_") 
+      @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1] + " 13:00:00"
+      #Rails.logger.debug("date: #{@final_delivery_date.inspect}")
+      @final_delivery_date = DateTime.parse(@final_delivery_date)
+      #Rails.logger.debug("Parsed date: #{@final_delivery_date.inspect}")
+      
+      # set curator email for notification
+      @admin_email = "carl@drinkknird.com"
+      
+      # get user's delivery info
+      @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
+      # get next planned delivery
+      @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
+      #Rails.logger.debug("first delivery date: #{@first_delivery.inspect}")
+      # get second planned delivery 
+      @second_delivery = @all_upcoming_deliveries.order("delivery_date ASC").second
+      
+      # update the Account info
+      Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
+      
+      if @current_delivery_address.id == @address # address is not changing, just update the delivery time/zone
+        # update the current delivery time/zone
+        @current_delivery_address.update_attribute(:delivery_zone_id, @delivery_zone)
+        # get new user delivery address info for confirmation email
+        @new_delivery_address = @current_delivery_address
+        @location_and_time_change = false
+      else # both address and delivery time/zone need to be updated
+        # update current delivery address
+        @current_delivery_address.update_attributes(current_delivery_location: false)
+        # get the new delivery address & update it
+        UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
+        # get new user delivery address info for confirmation email
+        @new_delivery_address = UserAddress.find_by_id(@address)
+        @location_and_time_change = true
+      end
+  
+      # capture original delivery date for confirmation email before updating record
+      @old_date = @next_delivery.delivery_date
+      
+      # set next view
+      @next_view = user_delivery_settings_location_path
+      
+      # update delivery dates
+      @next_delivery.update_attribute(:delivery_date, @final_delivery_date)
+      @second_delivery_date = @final_delivery_date + 2.weeks
+      @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
+      
+      # send confirmation email to customer with admin bcc'd
+      UserMailer.delivery_zone_change_confirmation(@customer, @location_and_time_change, @old_date, @final_delivery_date, @new_delivery_address, @user_delivery_zone).deliver_now
+      AdminMailer.delivery_zone_change_notice(@customer, @admin_email, @location_and_time_change, @old_date, @final_delivery_date, @new_delivery_address, @user_delivery_zone).deliver_now
+    else
+      # update the Account info
+      Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
+      # update current delivery address
+      @current_delivery_address.update_attributes(current_delivery_location: false)
+      # get the new delivery address & update it
+      UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
+      
+      # get new user delivery address info for confirmation email
+      @location_and_time_change = false
+      @old_date = "none"
+      @final_delivery_date = "none"
+      # get new user delivery address info for confirmation email
+      @new_delivery_address = UserAddress.find_by_id(@address)
+      
+      
+      # send confirmation email to customer with admin bcc'd
+      UserMailer.delivery_zone_change_confirmation(@customer, @location_and_time_change, @old_date, @final_delivery_date, @new_delivery_address, @user_delivery_zone).deliver_now
+       
+      # set next view
+      @next_view = user_delivery_settings_location_path
+      
+    end
     
-    # send confirmation email to customer with admin bcc'd
-    UserMailer.delivery_zone_change_confirmation(@customer, @location_and_time_change, @old_date, @final_delivery_date, @new_delivery_address, @user_delivery_zone).deliver_now
-    AdminMailer.delivery_zone_change_notice(@customer, @admin_email, @location_and_time_change, @old_date, @final_delivery_date, @new_delivery_address, @user_delivery_zone).deliver_now
-
     # redirect back to next logical view, depending if this is a person starting a new plan
     redirect_to @next_view
     

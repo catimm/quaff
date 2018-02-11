@@ -3365,6 +3365,9 @@ $beer-header-lines-to-show-fp: 1;
   color: $action-background;
   margin: 20px 0;
   font-size: 36px;
+  span {
+    font-size: 28px;
+  }
 }
 .signup-frequency-second-level-text {
   color: $normal-text;
@@ -3551,9 +3554,6 @@ $beer-header-lines-to-show-fp: 1;
 .signup-styles-next-step, .signup-styles-to-thank-you-next-step {
   width: 80%;
   margin: 15px 0 0 0;
-}
-.signup-frequency-first-level-text {
-  
 }
 .user-plan-cost {
   color: $user-action;

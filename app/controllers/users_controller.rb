@@ -13,8 +13,8 @@ class UsersController < ApplicationController
   
   def new
     @user = User.new
-    @code = params[:format]
-    #Rails.logger.debug("User: #{@user.inspect}")
+    # change session variable with new membership choice
+    session[:new_membership] = params[:format]
     
     # show phone row for new users (assuming they will be the account owner)
     @show_phone = true
@@ -92,6 +92,9 @@ class UsersController < ApplicationController
       return head :forbidden
     end
     #Rails.logger.debug("User info: #{@user.inspect}")
+    
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # show phone if user is account owner
     if @user.role_id == 1 || @user.role_id == 4
@@ -209,7 +212,7 @@ class UsersController < ApplicationController
     @current_page = "user"
   
     # get customer plan details
-    @customer_plan = UserSubscription.where(user_id: @user.id, currently_active: true)[0]
+    @customer_plan = UserSubscription.where(account_id: @user.account_id, currently_active: true)[0]
     # determine remaining deliveries
     if @customer_plan.subscription_id == 2
       @remaining_deliveries = 6 - @customer_plan.deliveries_this_period
@@ -325,7 +328,7 @@ class UsersController < ApplicationController
     @card_chosen = "chosen"
     
     # find user's current plan
-    @customer_plan = UserSubscription.where(user_id: @user.id, currently_active: true)[0]
+    @customer_plan = UserSubscription.where(account_id: @user.account_id, currently_active: true)[0]
     #Rails.logger.debug("User Plan info: #{@customer_plan.inspect}")
     
     # customer's Stripe card info
@@ -360,7 +363,7 @@ class UsersController < ApplicationController
   
   def plan
     # find if user has a plan already
-    @customer_plan = UserSubscription.where(user_id: params[:id], currently_active: true)[0]
+    @customer_plan = UserSubscription.where(account_id: current_user.account_id, currently_active: true)[0]
     
     if !@customer_plan.blank?
       if @customer_plan.subscription_id == 1
@@ -378,7 +381,7 @@ class UsersController < ApplicationController
   end # end payments method
   
   def plan_rewewal_off
-    @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: true)[0]
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true)[0]
 
     # change in Knird DB
     @user_subscription.update_attribute(:auto_renew_subscription_id, 1)
@@ -399,7 +402,7 @@ class UsersController < ApplicationController
     end
     
     # get current user subscription info
-    @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
     @user_subscription.update_attribute(:auto_renew_subscription_id, @update)
     
     # redirect back to membership page
@@ -414,7 +417,7 @@ class UsersController < ApplicationController
     @charge_description = @new_subscription_info.subscription_name
     
     # get current subscription
-    @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
     
     # charge the customer for subscription 
     Stripe::Charge.create(
@@ -456,27 +459,6 @@ class UsersController < ApplicationController
                                             max_large_format: nil,
                                             max_cellar: nil,
                                             drinks_per_delivery: nil)
-    
-    # create Delivery table entries 
-    @first_delivery = Delivery.create(account_id: current_user.account_id, 
-                                    #delivery_date: @first_delivery_date,
-                                    status: "admin prep",
-                                    subtotal: 0,
-                                    sales_tax: 0,
-                                    total_price: 0,
-                                    delivery_change_confirmation: false,
-                                    share_admin_prep_with_user: false)
-                                        
-    # and create second line in delivery table so curator has option to plan ahead
-    #@next_delivery_date = @first_delivery_date + 2.weeks
-    Delivery.create(account_id: current_user.account_id, 
-                    #delivery_date: @next_delivery_date,
-                    status: "admin prep",
-                    subtotal: 0,
-                    sales_tax: 0,
-                    total_price: 0,
-                    delivery_change_confirmation: false,
-                    share_admin_prep_with_user: false)
     
     # reset user's getting_started_step
     User.update(current_user.id, getting_started_step: 8)
@@ -753,7 +735,7 @@ class UsersController < ApplicationController
   
   def add_new_card
     # get customer subscription info
-    @customer_subscription_info = UserSubscription.where(user_id: current_user.id, currently_active: true).first
+    @customer_subscription_info = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
     
     # get customer Stripe account info
     @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)
@@ -768,7 +750,7 @@ class UsersController < ApplicationController
   
   def delete_credit_card
     # get customer subscription info
-    @customer_subscription_info = UserSubscription.where(user_id: current_user.id, currently_active: true).first
+    @customer_subscription_info = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
     
     # get customer Stripe account info
     @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)

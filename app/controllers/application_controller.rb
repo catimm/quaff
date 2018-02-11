@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     #Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
     @user = current_user
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     session[:user_subscription_id] = @user_subscription.subscription_id
     
     # set a different first view based on the user type

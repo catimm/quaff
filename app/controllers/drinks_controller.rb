@@ -53,24 +53,26 @@ class DrinksController < ApplicationController
       #Rails.logger.debug("First Delivery info: #{@first_delivery.inspect}")
       #Rails.logger.debug("Remaining Deliveries info: #{@remaining_deliveries.inspect}")  
       # get delivery drinks
-      @first_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
+      if !@first_delivery.blank?
+        @first_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
       
-      # combine drinks from old deliveries into one array to get descriptor info
-      @drink_history_descriptors = Array.new
       
-      # get delivery info from delivery history
-      @delivery_history_array = Array.new
-      
-      @remaining_deliveries.each do |delivery|
-        @this_delivery_array = Array.new
-        @this_delivery_array << delivery
-        @this_delivery_drinks = AccountDelivery.where(delivery_id: delivery.id)
-        @this_delivery_array << @this_delivery_drinks
-        @drink_history_descriptors << @this_delivery_drinks
-        @delivery_history_array << @this_delivery_array
-      end
-      #Rails.logger.debug("Drink Descriptor Array: #{@drink_history_descriptors.inspect}")
+        # combine drinks from old deliveries into one array to get descriptor info
+        @drink_history_descriptors = Array.new
         
+        # get delivery info from delivery history
+        @delivery_history_array = Array.new
+        
+        @remaining_deliveries.each do |delivery|
+          @this_delivery_array = Array.new
+          @this_delivery_array << delivery
+          @this_delivery_drinks = AccountDelivery.where(delivery_id: delivery.id)
+          @this_delivery_array << @this_delivery_drinks
+          @drink_history_descriptors << @this_delivery_drinks
+          @delivery_history_array << @this_delivery_array
+        end
+        #Rails.logger.debug("Drink Descriptor Array: #{@drink_history_descriptors.inspect}")
+          
           @time_now = Time.now
           @next_delivery_date = @first_delivery.delivery_date
           @next_delivery_review_end_date = @next_delivery_date - 1.day
@@ -106,7 +108,9 @@ class DrinksController < ApplicationController
             if @user_delivery_message.blank?
               @user_delivery_message = CustomerDeliveryMessage.new
             end 
-            
+        
+        end # end of check whether first delivery exists
+         
     end # end of check on @upcoming_delivery variable
       
   end # end deliveries method
@@ -319,7 +323,6 @@ class DrinksController < ApplicationController
                             account_id: @user.account_id, 
                             beer_id: @this_drink_id,
                             total_quantity: 1,
-                            purchased_from_knird: false,
                             remaining_quantity: 1)
     
     # find projected rating if necessary

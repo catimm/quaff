@@ -17,12 +17,8 @@ class RatingsController < ApplicationController
     @user = current_user
     @time = Time.now
     # get drink info
-    @drink_id = params[:beer_id]
-    @this_drink = Beer.where(id: @drink_id).first
-    if params.has_key?(:format)
-      # get account delivery info
-      @account_delivery_id = params[:format]
-    end 
+    @drink_id = params[:format]
+    @this_drink = Beer.find_by_id(@drink_id)
       
     @user_drink_rating = UserBeerRating.new
     @user_drink_rating.build_beer

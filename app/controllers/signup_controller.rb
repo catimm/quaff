@@ -106,7 +106,7 @@ class SignupController < ApplicationController
     
     
     # check if user already has a subscription row
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     if @user_subscription.blank?
       # create a new user_subscription row
@@ -186,7 +186,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 4
@@ -258,7 +258,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 5
@@ -333,7 +333,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 6
@@ -462,7 +462,12 @@ class SignupController < ApplicationController
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
-    @delivery_preferences.update(gluten_free: @value)
+    if @delivery_preferences.gluten_free == true
+      @delivery_preferences.update(gluten_free: false)
+    else
+      @delivery_preferences.update(gluten_free: true)
+    end
+    
     
     # don't change the view
     render :nothing => true
@@ -473,7 +478,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 7
@@ -596,8 +601,8 @@ class SignupController < ApplicationController
       if @user.role_id == 6
         @next_step = signup_thank_you_path
       else
-        # determine if user has a preppaid delivery plan
-        @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+        # determine if user has a prepaid delivery plan
+        @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
         if @user_subscription.subscription_id == 1
           @next_step = signup_thank_you_path
         else
@@ -616,7 +621,7 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 8
@@ -665,24 +670,28 @@ class SignupController < ApplicationController
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
     
-    @delivery_preferences.update(drinks_per_week: params[:id])
-
+    # if user is an account mate, determine drinks per delivery based on account delivery frequency setting
+    if @user.role_id == 5
+      @account = Account.find_by_id(@user.account_id)
+      @drinks_per_delivery = (params[:id].to_i * @account.delivery_frequency * 1.1).round
+      # update delivery preferences
+      @delivery_preferences.update(drinks_per_week: params[:id], drinks_per_delivery: @drinks_per_delivery)
+    else
+      # update delivery preferences
+      @delivery_preferences.update(drinks_per_week: params[:id])
+    end
+    
     respond_to do |format|
       format.js
     end # end of redirect to jquery
     
   end # end of drinks_weekly_getting_started action
   
-  def drinks_large_getting_started
-    # remove session cookie for user switching to paid plan if need be
-    if session[:start_new_plan_start_date_step]
-      session.delete(:start_new_plan_start_date_step)
-    end
-      
+  def drinks_large_getting_started   
     # get User info 
     @user = User.find_by_id(current_user.id)
     # get User Subscription info
-    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 9
@@ -757,6 +766,12 @@ class SignupController < ApplicationController
     
     # update format preference
     @delivery_preferences.update(max_large_format: @input)
+      
+    # if user is an account mate, determine price estimate for mate
+    if @user.role_id == 5
+      # get delivery estimate 
+      delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
+    end
     
     # show 'next' button
     respond_to do |format|
@@ -770,6 +785,9 @@ class SignupController < ApplicationController
     @user = User.find_by_id(current_user.id)
     # get Account info
     @account = Account.find_by_id(@user.account_id)
+    
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
     if @user.getting_started_step < 10
@@ -918,6 +936,9 @@ class SignupController < ApplicationController
       @user.update_attribute(:getting_started_step, 11)
     end
     
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    
     # set sub-guide view
     @subguide = "delivery"
     
@@ -1039,7 +1060,7 @@ class SignupController < ApplicationController
       # update the chosen address to be the delivery address
       UserAddress.update(@address, current_delivery_location: true, delivery_zone_id: @delivery_zone)
     end
-    
+
     # create Delivery table entries 
     @first_delivery = Delivery.create(account_id: current_user.account_id, 
                                     delivery_date: @final_delivery_date,
@@ -1060,7 +1081,7 @@ class SignupController < ApplicationController
                     total_price: 0,
                     delivery_change_confirmation: false,
                     share_admin_prep_with_user: false)
-                    
+                   
     # redirect to first drink preference page
     redirect_to signup_thank_you_path
     
@@ -1093,6 +1114,10 @@ class SignupController < ApplicationController
       @renewal_date = (Date.today + @user_subscription.subscription.subscription_months_length).strftime("%b %-d, %Y")
       @membership_length = @user_subscription.subscription.subscription_months_length
       UserMailer.welcome_email(@user, @membership_name, @membership_deliveries, @subscription_fee, @renewal_date, @membership_length).deliver_now
+    end
+    
+    if session[:new_membership]
+      session.delete(:new_membership)
     end
     
   end # end of signup_thank_you action

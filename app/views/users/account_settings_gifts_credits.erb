@@ -4,7 +4,9 @@
 	    <div class="row no-margin">
             <div class="col-xs-12 col-sm-8">
             <%- flash.each do |name, msg| -%>
-                <%= content_tag :div, msg, class: "alert alert-success text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+                <% if msg.include?  "gift certificate" %>
+                	<%= content_tag :div, msg, class: "alert alert-success text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+            	<% end %>
             <%- end -%>
             </div>
 	    </div>
