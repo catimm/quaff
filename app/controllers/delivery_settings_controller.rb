@@ -211,6 +211,7 @@ class DeliverySettingsController < ApplicationController
     if !@mates.blank?
       @mate_count = @mates.size
       @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
+      Rails.logger.debug("Account Users: #{@account_users.inspect}")
       # create an array to hold the mates drink preferences
       @account_mates_preferences = Array.new
       # set account variables
@@ -220,6 +221,7 @@ class DeliverySettingsController < ApplicationController
       @account_price_estimate = 0
       # loop through account users to get total account needs
       @account_users.each do |account_user|
+        Rails.logger.debug("This Account User: #{account_user.inspect}")
         # create both Array and Hash to hold this mate's info
         @account_user_info = Array.new
         @account_user_specifics = Hash.new
