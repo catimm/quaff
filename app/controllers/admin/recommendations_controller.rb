@@ -32,6 +32,10 @@ class Admin::RecommendationsController < ApplicationController
     #Rails.logger.debug("Current Account Id: #{@current_account_id.inspect}")
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
+    
+    # get account info
+    @account = Account.find_by_id(@account_owner[0].account_id)
+    
     # get account delivery address
     @account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
     @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
@@ -87,8 +91,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id) 
                                                                 
         # set estimate values
-        @individual_drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-        @drink_per_delivery_estimate = @drink_per_delivery_estimate + @individual_drink_per_delivery_calculation
+        @drink_per_delivery_estimate = @drink_per_delivery_estimate + @delivery_preferences.drinks_per_delivery
         
         # set new drinks in account delivery
         @next_account_delivery_new_drinks = @next_account_user_drinks.where(new_drink: true).sum(:quantity).round
@@ -97,13 +100,13 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_cellar_drinks = @next_account_delivery.where(cellar: true).sum(:quantity).round
         
         # set small/large format drink estimates
-        @individual_large_delivery_estimate = @delivery_preferences.max_large_format
+        @individual_large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
         @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
-        @individual_small_delivery_estimate = @individual_drink_per_delivery_calculation - (@individual_large_delivery_estimate * 2)
+        @individual_small_delivery_estimate = @drink_per_delivery_estimate
         @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
         @next_account_delivery_small_drinks = @next_account_delivery.where(large_format: false).sum(:quantity)
         @next_account_delivery_large_drinks = @next_account_delivery.where(large_format: true).sum(:quantity)
-        @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * 2)
+        @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * @account.delivery_frequency)
         
         # get price estimate
         @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
@@ -139,7 +142,9 @@ class Admin::RecommendationsController < ApplicationController
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
       @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
       if !@customer_next_delivery.total_price.nil?
-        @next_account_delivery_drink_price = @customer_next_delivery.total_price.round(2)
+        @next_account_delivery_subtotal = @customer_next_delivery.subtotal
+        @next_account_delivery_tax = @customer_next_delivery.sales_tax
+        @next_account_delivery_drink_price = @customer_next_delivery.total_price
       else
         @next_account_delivery_drink_price = 0
       end
@@ -565,6 +570,9 @@ class Admin::RecommendationsController < ApplicationController
     # get account owner info
     @user = User.find_by_id(@account_owner_user_id)
     
+    # get account info
+    @account = Account.find_by_id(@user.account_id)
+    
     # get next delivery date
     @customer_next_delivery = Delivery.where(account_id: @user_recommendation_info.account_id).where.not(status: "delivered").first
     
@@ -602,8 +610,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id) 
                                                                 
         # set estimate values
-        @individual_drink_per_delivery_calculation = (@delivery_preferences.drinks_per_week * 2.2).round
-        @drink_per_delivery_estimate = @drink_per_delivery_estimate + @individual_drink_per_delivery_calculation
+        @drink_per_delivery_estimate = @drink_per_delivery_estimate + @delivery_preferences.drinks_per_delivery
         
         # set new drinks in account delivery
         @next_account_delivery_new_drinks = @next_account_user_drinks.where(new_drink: true).sum(:quantity).round
@@ -612,13 +619,13 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_cellar_drinks = @next_account_delivery.where(cellar: true).sum(:quantity).round
         
         # set small/large format drink estimates
-        @individual_large_delivery_estimate = (@delivery_preferences.max_large_format * 2)
+        @individual_large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
         @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
-        @individual_small_delivery_estimate = @individual_drink_per_delivery_calculation - (@individual_large_delivery_estimate * 2)
+        @individual_small_delivery_estimate = @drink_per_delivery_estimate
         @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
         @next_account_delivery_small_drinks = @next_account_delivery.where(large_format: false).sum(:quantity)
         @next_account_delivery_large_drinks = @next_account_delivery.where(large_format: true).sum(:quantity)
-        @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * 2)
+        @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * @account.delivery_frequency)
         
         # get price estimate
         @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
@@ -630,7 +637,9 @@ class Admin::RecommendationsController < ApplicationController
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
       @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
       if !@customer_next_delivery.total_price.nil?
-        @next_account_delivery_drink_price = @customer_next_delivery.total_price.round(2)
+        @next_account_delivery_subtotal = @customer_next_delivery.subtotal
+        @next_account_delivery_tax = @customer_next_delivery.sales_tax
+        @next_account_delivery_drink_price = @customer_next_delivery.total_price
       else
         @next_account_delivery_drink_price = 0
       end

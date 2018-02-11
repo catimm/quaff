@@ -112,11 +112,21 @@ class RatingsController < ApplicationController
   end # end of update method
   
   def user_ratings
-    # get user info
-    @user = User.find_by_id(current_user.id)
-    
-    # get user ratings history
-    @user_ratings = UserBeerRating.where(user_id: current_user.id)
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user = User.find_by_id(params[:format])
+    else
+      # get user info
+      @user = User.find_by_id(current_user.id)
+    end
+
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_ratings = UserBeerRating.where(user_id: params[:format])
+    else
+      # get user ratings history
+      @user_ratings = UserBeerRating.where(user_id: current_user.id)
+    end
     
     # get recent user ratings history
     @recent_user_ratings = @user_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)

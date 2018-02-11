@@ -47,10 +47,22 @@
 			<h4 class="delivery-preference-prompt"><%= number_to_currency(@delivery_cost_estimate_low, precision: 0) %> - <%= number_to_currency(@delivery_cost_estimate_high, precision: 0) %></h4>
 		</div>
 	</div>
+    <div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box subtotal">
+			<p>subtotal</p>
+			<h4 class="delivery-preference-prompt"><%= number_to_currency(@next_account_delivery_subtotal, precision: 2) %></h4>
+		</div>
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box sales-tax">
+			<p>tax</p>
+			<h4 class="delivery-preference-prompt"><%= number_to_currency(@next_account_delivery_tax, precision: 2) %></h4>
+		</div>
+	</div>    
 	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
 		<div class="delivery-settings-info-box total-price">
 			<p>current price</p>
-			<h4 class="delivery-preference-prompt">$<%= @next_account_delivery_drink_price %></h4>
+			<h4 class="delivery-preference-prompt"><%= number_to_currency(@next_account_delivery_drink_price, precision: 2) %></h4>
 		</div>
 	</div>
 	<% if !@account_wishlist_items.blank? %>
