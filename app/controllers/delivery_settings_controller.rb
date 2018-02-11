@@ -211,7 +211,6 @@ class DeliverySettingsController < ApplicationController
     if !@mates.blank?
       @mate_count = @mates.size
       @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
-      Rails.logger.debug("Account Users: #{@account_users.inspect}")
       # create an array to hold the mates drink preferences
       @account_mates_preferences = Array.new
       # set account variables
@@ -221,7 +220,6 @@ class DeliverySettingsController < ApplicationController
       @account_price_estimate = 0
       # loop through account users to get total account needs
       @account_users.each do |account_user|
-        Rails.logger.debug("This Account User: #{account_user.inspect}")
         # create both Array and Hash to hold this mate's info
         @account_user_info = Array.new
         @account_user_specifics = Hash.new
@@ -250,7 +248,7 @@ class DeliverySettingsController < ApplicationController
         # push Array into larger Array
         @account_mates_preferences << @account_user_info
         # add user's info to total account info
-        @account_drinks_per_week = @account_drinks_per_week + (@user_delivery_preferences.drinks_per_week * 1.1).round
+        @account_drinks_per_week = @account_drinks_per_week + @user_delivery_preferences.drinks_per_week
         @account_drinks_per_delivery = @account_drinks_per_delivery + @user_delivery_preferences.drinks_per_delivery
         @account_large_format_drinks_per_week = @account_large_format_drinks_per_week + @user_delivery_preferences.max_large_format
         @account_price_estimate = @account_price_estimate + @user_delivery_cost_estimate
@@ -273,7 +271,7 @@ class DeliverySettingsController < ApplicationController
       @account_mates_preferences << @total_account_preferences
     else
       # set total drinks to individual user info
-      @drinks_per_week = (@current_user_drinks_per_week * 1.1)
+      @drinks_per_week = @current_user_drinks_per_week
       @max_large = @current_user_large_format_drinks_per_week
       @price_estimate = @current_user_price_estimate
     end # end of mates check/branch
@@ -282,7 +280,7 @@ class DeliverySettingsController < ApplicationController
       
     # determine minimum number of weeks between deliveries
     @number_of_weeks_first_option = 2
-    @total_drinks = (@number_of_weeks_first_option * @drinks_per_week)
+    @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
       
     if @account_owner.craft_stage_id == 1
       while @total_drinks < 7
@@ -449,7 +447,7 @@ class DeliverySettingsController < ApplicationController
         
         if @column == "frequency" 
           # update drinks per delivery for each user
-          @drinks_per_delivery = (@user_delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1).round
+          @drinks_per_delivery = (@user_delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1)
           # update preferences
           @user_delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery) 
           # get new delivery estimates
@@ -481,7 +479,7 @@ class DeliverySettingsController < ApplicationController
         # push Array into larger Array
         @account_mates_preferences << @account_user_info
         # add user's info to total account info
-        @account_drinks_per_week = @account_drinks_per_week + (@user_delivery_preferences.drinks_per_week * 1.1).round
+        @account_drinks_per_week = @account_drinks_per_week + @user_delivery_preferences.drinks_per_week
         @account_drinks_per_delivery = @account_drinks_per_delivery + @user_delivery_preferences.drinks_per_delivery
         @account_large_format_drinks_per_week = @account_large_format_drinks_per_week + @user_delivery_preferences.max_large_format
         @account_price_estimate = @account_price_estimate + @user_delivery_cost_estimate
@@ -504,7 +502,7 @@ class DeliverySettingsController < ApplicationController
       @account_mates_preferences << @total_account_preferences
     else
       # set total drinks to individual user info
-      @drinks_per_week = (@current_user_drinks_per_week * 1.1)
+      @drinks_per_week = @current_user_drinks_per_week
       @max_large = @current_user_large_format_drinks_per_week
       @price_estimate = @current_user_price_estimate
     end # end of mates check/branch
@@ -512,7 +510,7 @@ class DeliverySettingsController < ApplicationController
     
     # determine minimum number of weeks between deliveries
     @number_of_weeks_first_option = 2
-    @total_drinks = (@number_of_weeks_first_option * @drinks_per_week)
+    @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
       
     if @user.craft_stage_id == 1
       while @total_drinks < 7
