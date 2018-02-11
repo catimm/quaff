@@ -14,8 +14,8 @@
 #  inventory_id       :integer
 #  disti_inventory_id :integer
 #  number_of_ratings  :integer
-#  delivered_recently :boolean
-#  drank_recently     :boolean
+#  delivered_recently :date
+#  drank_recently     :date
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

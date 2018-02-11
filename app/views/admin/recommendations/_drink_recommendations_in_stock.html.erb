@@ -34,8 +34,16 @@
 							<td class="text-center"><%= individual_drink.new_drink.humanize %></td>
 							<td class="text-center"><%= individual_drink.number_of_ratings %></td>
 							<td class="text-center"><%= individual_drink.projected_rating %></td>
-							<td class="text-center"><%= individual_drink.delivered_recently.humanize %></td>
-							<td class="text-center"><%= individual_drink.drank_recently.humanize %></td>
+							<% if !individual_drink.delivered_recently.nil? %>	
+								<td class="text-center"><%= individual_drink.delivered_recently.strftime("%m/%d/%y") %></td>
+							<% else %>
+								<td class="text-center">No</td>
+							<% end %>
+							<% if !individual_drink.drank_recently.nil? %>
+								<td class="text-center"><%= individual_drink.drank_recently.strftime("%m/%d/%y") %></td>
+							<% else %>
+								<td class="text-center">No</td>
+							<% end %>
 							<% @user_wishlist_item = @account_wishlist_items.where(user_id: individual_drink.user_id, beer_id: individual_drink.beer_id) %>
 							<% if !@user_wishlist_item.blank? %>
 								<td class="text-center">Yes</td>

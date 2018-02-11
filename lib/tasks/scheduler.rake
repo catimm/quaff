@@ -662,10 +662,10 @@ task :assess_drink_recommendations => :environment do
             
             # set additional info
             @number_of_ratings = @drink_ratings.count
-            if @drink_ratings_last.rated_on > 1.month.ago
-              @drank_recently = false
+            if !@drink_ratings_last.nil?
+              @drank_recently = @drink_ratings_last.rated_on
             else
-              @drank_recently = true
+              @drank_recently = nil
             end
             
             if @wishlist_item == true
@@ -714,14 +714,15 @@ task :assess_drink_recommendations => :environment do
               @recent_account_drink_ids = nil
             end
             if !@recent_account_drink_ids.blank?
-              @recent_user_delivery_drinks = UserDelivery.where(user_id: user.id, account_delivery_id: @recent_account_drink_ids)
+              @recent_user_delivery_drinks = UserDelivery.where(user_id: user.id, account_delivery_id: @recent_account_drink_ids).order('created_at DESC')
             else
               @recent_user_delivery_drinks = nil
             end
             if !@recent_user_delivery_drinks.blank?
-              @delivered_recently = true
+              @most_recent_delivery = @recent_user_delivery_drinks.first
+              @delivered_recently = @most_recent_delivery.delivery.delivery_date
             else
-              @delivered_recently = false
+              @delivered_recently = nil
             end
             # determine if drink comes from Knird inventory, Disti inventory or both
             @inventory_items = @available_knird_inventory.where(beer_id: drink_id)
