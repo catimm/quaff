@@ -449,7 +449,7 @@ class DeliverySettingsController < ApplicationController
         
         if @column == "frequency" 
           # update drinks per delivery for each user
-          @drinks_per_delivery = (@user_delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1)
+          @drinks_per_delivery = (@user_delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1).round
           # update preferences
           @user_delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery) 
           # get new delivery estimates
