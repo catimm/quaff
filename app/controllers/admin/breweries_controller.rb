@@ -81,6 +81,7 @@ class Admin::BreweriesController < ApplicationController
   def update
     if params[:brewery][:form_type] == "edit"
       @brewery = Brewery.find(params[:id])
+      @letter = @brewery.brewery_name.chars.first
       @brewery.update(brewery_name: params[:brewery][:brewery_name], short_brewery_name: params[:brewery][:short_brewery_name], 
                       collab: params[:brewery][:collab], vetted: params[:brewery][:vetted],
                       brewery_city: params[:brewery][:brewery_city], brewery_state_short: params[:brewery][:brewery_state_short],
@@ -91,6 +92,7 @@ class Admin::BreweriesController < ApplicationController
     elsif params[:brewery][:form_type] == "delete"
       # get id of brewery to delete
       @brewery_to_delete = Brewery.find_by_id(params[:brewery][:delete_brewery])
+      @letter = @brewery_to_delete.brewery_name.chars.first
       
       # add name to Alt Brewery Name table
       AltBreweryName.create(name: @brewery_to_delete.brewery_name, brewery_id: params[:brewery][:id])
@@ -103,8 +105,10 @@ class Admin::BreweriesController < ApplicationController
         this_beer.save
       end
       @brewery_to_delete.destroy
+      
     end
-    redirect_to admin_breweries_path
+
+    redirect_to admin_breweries_path(letter: @letter)
   end 
   
   

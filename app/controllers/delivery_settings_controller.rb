@@ -444,15 +444,18 @@ class DeliverySettingsController < ApplicationController
         
         # get this user's delivery preferences
         @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
-        # update drinks per delivery for each user
-        @drinks_per_delivery = (@user_delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1)
-        # update preferences
-        @user_delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery) 
-        # get new delivery estimates
-        delivery_estimator(@user_delivery_preferences, account_user.craft_stage_id)
-        # get updated delivery preferences variable
-        @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
-       
+        
+        if @column == "frequency" 
+          # update drinks per delivery for each user
+          @drinks_per_delivery = (@user_delivery_preferences.drinks_per_week * @account.delivery_frequency * 1.1)
+          # update preferences
+          @user_delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery) 
+          # get new delivery estimates
+          delivery_estimator(@user_delivery_preferences, account_user.craft_stage_id)
+          # get updated delivery preferences variable
+          @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
+        end
+        
         # push user_id into Array
         @account_user_info << account_user.id
         # determine user's cost estimate
