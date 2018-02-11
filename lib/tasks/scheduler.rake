@@ -525,8 +525,8 @@ task :assess_drink_recommendations => :environment do
 
       if only_for_orders
         # get active users that have an outstanding order but with no recommendations
-        @order_owner = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations)')
-        @active_users = User.where(account_id: @order_owner.account_id, getting_started_step: 12)
+        @order_owners_account_ids = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations)').pluck(:account_id)
+        @active_users = User.where(account_id: @order_owners_account_ids, getting_started_step: 12)
       else
         # get each user associated to this account
         @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
