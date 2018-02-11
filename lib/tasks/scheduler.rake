@@ -684,7 +684,7 @@ task :assess_drink_recommendations => :environment do
           else
             # set additional info
             @number_of_ratings = 0
-            @drank_recently = false
+            @drank_recently = nil
             
             # get this drink from DB for the Type Based Guess Concern
             @drink = Beer.find_by_id(drink_id)
