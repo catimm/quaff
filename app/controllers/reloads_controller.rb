@@ -11,7 +11,7 @@ class ReloadsController < ApplicationController
   def index
     @user_deliveries = UserDelivery.all
     @user_deliveries.each do |user_delivery|
-      @number_of_user_drink_ratings = UserBeerRating.where(user_account_delivery: user_delivery).count
+      @number_of_user_drink_ratings = UserBeerRating.where(user_delivery_id: user_delivery.id).count
       user_delivery.increment!(:times_rated, @number_of_user_drink_ratings)
       user_delivery.account_delivery.increment!(:times_rated, @number_of_user_drink_ratings) 
     end
