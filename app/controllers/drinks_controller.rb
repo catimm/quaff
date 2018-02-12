@@ -11,8 +11,13 @@ class DrinksController < ApplicationController
   require 'json'
   
   def deliveries   
-    # get user's delivery info
-    @user = User.find_by_id(current_user.id)
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user = User.find_by_id(params[:format])
+    else
+      # get user info
+      @user = User.find_by_id(current_user.id)
+    end
     
     # get user subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
@@ -24,7 +29,7 @@ class DrinksController < ApplicationController
     @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
     
     # determine if account has multiple users and add appropriate CSS class tags
-    @account_users_count = User.where(account_id: current_user.account_id, getting_started_step: 12).count
+    @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 12).count
     
     # get delivery info
     @all_deliveries = Delivery.where(account_id: @user.account_id)
@@ -103,7 +108,7 @@ class DrinksController < ApplicationController
             #Rails.logger.debug("Descriptors array: #{gon.drink_descriptor_array.inspect}")
             
             # allow customer to send message
-            @user_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: @first_delivery.id).first
+            @user_delivery_message = CustomerDeliveryMessage.where(user_id: @user.id, delivery_id: @first_delivery.id).first
             #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
             if @user_delivery_message.blank?
               @user_delivery_message = CustomerDeliveryMessage.new
@@ -116,13 +121,18 @@ class DrinksController < ApplicationController
   end # end deliveries method
 
   def cellar
-    # get user's delivery info
-    @user = User.find_by_id(current_user.id)
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user = User.find_by_id(params[:format])
+    else
+      # get user info
+      @user = User.find_by_id(current_user.id)
+    end
     @user_id = @user.id
     #Rails.logger.debug("Current User Info: #{@user.inspect}")
     
     # determine if account has multiple users and add appropriate CSS class tags
-    @account_users = User.where(account_id: current_user.account_id, getting_started_step: 12)
+    @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
     @account_users_count = @account_users.count
     
     if @account_users_count == 1
@@ -134,7 +144,7 @@ class DrinksController < ApplicationController
     end
 
     # get cellar drinks
-    @cellar_drinks = UserCellarSupply.where(account_id: current_user.account_id).where.not(remaining_quantity: 0)
+    @cellar_drinks = UserCellarSupply.where(account_id: @user.account_id).where.not(remaining_quantity: 0)
     #Rails.logger.debug("Cellar Drinks: #{@cellar_drinks.inspect}")
     
     # create array to hold descriptors cloud
@@ -154,14 +164,19 @@ class DrinksController < ApplicationController
   end # end cellar method
   
   def wishlist
-    # get user's delivery info
-    @user = User.find_by_id(current_user.id)
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user = User.find_by_id(params[:format])
+    else
+      # get user info
+      @user = User.find_by_id(current_user.id)
+    end
     
     # set variable for user drink rating info
     @account_users = @user
     
     # get wishlist drinks
-    @wishlist_drinks = Wishlist.where(user_id: current_user.id, removed_at: nil)
+    @wishlist_drinks = Wishlist.where(user_id: @user.id, removed_at: nil)
     
     # create array to hold descriptors cloud
     @final_descriptors_cloud = Array.new
