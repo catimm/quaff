@@ -17,8 +17,10 @@ class ReloadsController < ApplicationController
       @account_delivery = AccountDelivery.where(account_id: @user.account_id, beer_id: rating.beer_id).first
       if !@account_delivery.blank?
         @user_delivery = UserDelivery.where(account_delivery_id: @account_delivery.id).first
-        rating.update(user_delivery_id: @user_delivery.id)
-        @user_delivery.increment!(:times_rated)
+        if !@user_delivery.blank?
+          rating.update(user_delivery_id: @user_delivery.id)
+          @user_delivery.increment!(:times_rated)
+        end
         @account_delivery.increment!(:times_rated)
       end
     end
