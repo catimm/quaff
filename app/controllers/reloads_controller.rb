@@ -9,22 +9,11 @@ class ReloadsController < ApplicationController
   
   
   def index
-    @active_accounts = UserSubscription.where(currently_active: true).pluck(:account_id)
-    @active_user_ids = User.where(account_id: @active_accounts, getting_started_step: 12).pluck(:id)
-    @first_delivery = DateTime.new(2017,11,18,8,0,0)
-    @user_drink_ratings = UserBeerRating.where(user_id: @active_user_ids).where("created_at > ?", @first_delivery)
-    
-    @user_drink_ratings.each do |rating|
-      @user = User.find_by_id(rating.user_id)
-      @account_delivery = AccountDelivery.where(account_id: @user.account_id, beer_id: rating.beer_id).first
-      if !@account_delivery.blank?
-        @user_delivery = UserDelivery.where(account_delivery_id: @account_delivery.id).first
-        if !@user_delivery.blank?
-          rating.update(user_delivery_id: @user_delivery.id)
-          @user_delivery.increment!(:times_rated)
-        end
-        @account_delivery.increment!(:times_rated)
-      end
+    @user_deliveries = UserDelivery.all
+    @user_deliveries.each do |user_delivery|
+      @number_of_user_drink_ratings = UserBeerRating.where(user_account_delivery: user_delivery).count
+      user_delivery.increment!(:times_rated, @number_of_user_drink_ratings)
+      user_delivery.account_delivery.increment!(:times_rated, @number_of_user_drink_ratings) 
     end
 
   end # end of index method
