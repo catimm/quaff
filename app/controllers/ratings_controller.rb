@@ -150,8 +150,13 @@ class RatingsController < ApplicationController
   end # end of friend_ratings method
   
   def unrated_drinks
-    # get user info
-    @user = User.find_by_id(current_user.id)
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user = User.find_by_id(params[:format])
+    else
+      # get user info
+      @user = User.find_by_id(current_user.id)
+    end
     
     # get delivery info
     @past_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(12)
@@ -166,7 +171,7 @@ class RatingsController < ApplicationController
       @this_delivery_array = Array.new
       @this_delivery_array << delivery
       @this_delivery_user_drinks = UserDelivery.
-                                    where(user_id: current_user.id, delivery_id: delivery.id).
+                                    where(user_id: @user.id, delivery_id: delivery.id).
                                     where("quantity > times_rated").
                                     pluck(:account_delivery_id)
       if !@this_delivery_user_drinks.blank?
