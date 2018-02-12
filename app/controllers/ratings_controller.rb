@@ -14,6 +14,9 @@ class RatingsController < ApplicationController
     if params.has_key?(:source)
       @ratings_source = params[:source]
     end
+    if params.has_key?(:format)
+      @account_delivery_id = params[:format]
+    end
     @user = current_user
     @time = Time.now
     # get drink info
@@ -37,11 +40,11 @@ class RatingsController < ApplicationController
     
     # indicate user has rated this delivered drink
     if !params[:user_beer_rating][:account_delivery_id].nil?
-      # first the account delivery table
+       # first the account delivery table
       @account_delivery = AccountDelivery.find_by_id(params[:user_beer_rating][:account_delivery_id])
       @account_delivery.increment!(:times_rated)
       # now user delivery table
-      @user_delivery = UserDelivery.where(user_id: current_user.id, account_delivery_id: params[:user_beer_rating][:account_delivery_id]).first
+      @user_delivery = UserDelivery.where(account_delivery_id: params[:user_beer_rating][:account_delivery_id]).first
       @user_delivery.increment!(:times_rated)
     end
     
