@@ -38,23 +38,23 @@ class RatingsController < ApplicationController
     @beer = Beer.find(params[:user_beer_rating][:beer_id])
     params[:user_beer_rating][:current_descriptors] = params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens]
     
-    # indicate user has rated this delivered drink
-    if !params[:user_beer_rating][:account_delivery_id].nil?
-       # first the account delivery table
-      @account_delivery = AccountDelivery.find_by_id(params[:user_beer_rating][:account_delivery_id])
-      @account_delivery.increment!(:times_rated)
-      # now user delivery table
-      @user_delivery = UserDelivery.where(account_delivery_id: params[:user_beer_rating][:account_delivery_id]).first
-      @user_delivery.increment!(:times_rated)
-    end
-    
     # post new rating and related info
     @new_user_rating = UserBeerRating.new(rating_params)
-    if !@user_delivery.blank?
-      @new_user_rating.user_delivery_id = @user_delivery.id
-    end
     @new_user_rating.save!
     @user.tag(@beer, :with => params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens], :on => :descriptors)
+    
+    # get the related account delivery id
+    @account_delivery_id = @new_user_rating.account_delivery_id
+    
+    # indicate user has rated this delivered drink
+    if !@account_delivery_id.nil?
+       # first the account delivery table
+      @account_delivery = AccountDelivery.find_by_id(@account_delivery_id)
+      @account_delivery.increment!(:times_rated)
+      # now user delivery table
+      @user_delivery = UserDelivery.where(account_delivery_id: @account_delivery_id).first
+      @user_delivery.increment!(:times_rated)
+    end
     
     # now redirect back to previous page
     redirect_to session.delete(:return_to)
@@ -265,7 +265,7 @@ class RatingsController < ApplicationController
      # Never trust parameters from the scary internet, only allow the white list through.
     def rating_params
       params.require(:user_beer_rating).permit(:user_id, :beer_id, :drank_at, :projected_rating, :user_beer_rating, :comment,
-                      :rated_on, :current_descriptors, :beer_type_id)
+                      :rated_on, :current_descriptors, :beer_type_id, :account_delivery_id)
     end
     
     
