@@ -13,7 +13,6 @@ class ReloadsController < ApplicationController
     @active_user_ids = User.where(account_id: @active_accounts, getting_started_step: 12).pluck(:id)
     @first_delivery = DateTime.new(2017,11,18,8,0,0)
     @user_drink_ratings = UserBeerRating.where(user_id: @active_user_ids).where("created_at > ?", @first_delivery)
-    @old_ratings = UserBeerRating.where(user_id: @active_user_ids).where("created_at < ? AND user_delivery_id IS NOT NULL", @first_delivery)
     
     @user_drink_ratings.each do |rating|
       @user = User.find_by_id(rating.user_id)
@@ -27,10 +26,7 @@ class ReloadsController < ApplicationController
         @account_delivery.increment!(:times_rated)
       end
     end
-  
-    @old_ratings.each do |old_rating|
-      old_rating.update(user_delivery_id: nil)
-    end
+
   end # end of index method
   
   def data

@@ -55,8 +55,13 @@
 	</div>
 	<div class="col-xs-4 text-right">
 		<% if !drink.user_delivery.nil? %>
-			<% if drink.user_delivery.times_rated > (drink.user_delivery.quantity).ceil %>
-				<%= link_to user_rating_path(current_user.id, drink.id), method: :delete, data: { confirm: 'Are you certain you want to delete this?' }, :class => 'btn btn-danger delete-extra-drink-rating-button', title: 'Delete this rating', 'data-toggle' => 'tooltip' do %>
+		<% if (drink.user_delivery.quantity % 1).zero? %>
+			<% @user_delivery_quantity = drink.user_delivery.quantity %>
+		<% else %>
+			<% @user_delivery_quantity = (drink.user_delivery.quantity).ceil %>
+		<% end %>
+			<% if drink.user_delivery.times_rated > @user_delivery_quantity %>
+				<%= link_to user_rating_path(current_user.id, drink.id), method: :delete, data: { confirm: 'Are you certain you want to delete this?' }, :class => 'btn btn-danger delete-extra-drink-rating-button', title: 'Duplicate rating?', 'data-toggle' => 'tooltip' do %>
 					<i class="fa fa-trash"></i>
 				<% end %> 
 			<% end %>
