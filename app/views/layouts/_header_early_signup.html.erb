@@ -1,9 +1,16 @@
-<nav class="navbar navbar-default navbar-fixed-top signup_navbar" role="navigation">
-    <div class="container">
-        <div class="row no-margin"></div>   
-            <div class="navbar-header-home col-xs-2 col-sm-4">
-                <%= link_to "Knird", root_path, id: "logo", class:"navbar-brand brand visible-sm visible-md visible-lg brand-font" %>
-                <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
-        	</div>
-    </div><!-- /.container -->
-</nav>
+<nav class="navbar navbar-default navbar-fixed-top common_navbar" role="navigation">
+        
+        <div class="container no-padding">
+	         <div class="row no-margin">   
+	            <div class="navbar-header col-xs-2 col-sm-7 col-md-8" id="home-navbar">
+	                <div class="row no-margin">
+		                <div class="col-xs-1 col-sm-10 text-left mobile-logo-holder">
+			                <%= link_to "Knird", root_path, id: "logo", class:"navbar-brand brand visible-sm visible-md visible-lg brand-font" %>
+			                <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
+		            	</div>
+		            </div> <!-- /.row -->
+	            </div> <!-- /.navbar-header -->
+        	</div> <!-- /.row -->
+        </div> <!-- /.container -->
+        
+    </nav>

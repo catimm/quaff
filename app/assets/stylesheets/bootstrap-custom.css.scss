@@ -2797,6 +2797,14 @@ $beer-header-lines-to-show-fp: 1;
     color: $normal-text !important;
   }
 }
+.outside-seattle-message {
+  color: $normal-text;
+  margin-top: 30px;
+  line-height: 1.3;
+  span {
+    color: $action-background;
+  }
+}
 // Search drop down results
 .tt-query {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);

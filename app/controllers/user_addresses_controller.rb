@@ -25,26 +25,37 @@ class UserAddressesController < ApplicationController
     # get delivery zone
     @delivery_zone = DeliveryZone.where(zip_code: @new_address.zip).first
     
-    # add delivery zone if this is a zero plan
-    if session[:new_membership] == "zero" || (!@user_subscription.blank? && @user_subscription.subscription_id == 1)
-      if current_user.getting_started_step < 12
-        # update Account and Addrress info
-        Account.update(current_user.account_id, delivery_location_user_address_id: @new_address.id, delivery_zone_id: @delivery_zone.id)
-        @new_address.update(current_delivery_location: true, delivery_zone_id: @delivery_zone.id)
-      else
-        @new_address.update(current_delivery_location: false, delivery_zone_id: @delivery_zone.id)
+    if !@delivery_zone.blank? # keep user in signup flow
+      # add delivery zone if this is a zero plan
+      if session[:new_membership] == "zero" || (!@user_subscription.blank? && @user_subscription.subscription_id == 1)
+          if current_user.getting_started_step < 12
+            # update Account and Addrress info
+            Account.update(current_user.account_id, delivery_location_user_address_id: @new_address.id, delivery_zone_id: @delivery_zone.id)
+            @new_address.update(current_delivery_location: true, delivery_zone_id: @delivery_zone.id)
+          else
+            @new_address.update(current_delivery_location: false, delivery_zone_id: @delivery_zone.id)
+          end
       end
+        
+      # redirect user
+      if session[:return_to]
+        # redirect back to last page before new location page
+        redirect_to session.delete(:return_to)
+      else # assume this is  coming from the signup process
+        # redirect to next step in signup process
+        redirect_to account_membership_getting_started_path
+      end
+    
+    else # get user out of signup flow since they don't live in Seattle
+        # send Admin mail
+        AdminMailer.outside_seattle_interest(current_user, @new_address).deliver_now
+        # redirect to message about Seattle focus
+        session.delete(:user_return_to)
+        sign_out(current_user)
+        redirect_to outside_seattle_path
+        return
     end
     
-    # redirect user
-    if session[:return_to]
-      # redirect back to last page before new location page
-      redirect_to session.delete(:return_to)
-    else # assume this is  coming from the signup process
-      # redirect to next step in signup process
-      redirect_to account_membership_getting_started_path
-    end
-      
   end # end of create method
   
   def edit

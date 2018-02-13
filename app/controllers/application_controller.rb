@@ -73,7 +73,9 @@ class ApplicationController < ActionController::Base
     #Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
     @user = current_user
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-    session[:user_subscription_id] = @user_subscription.subscription_id
+    if !session[:user_return_to].nil?
+      session[:user_subscription_id] = @user_subscription.subscription_id
+    end
     
     # set a different first view based on the user type
     if !session[:user_return_to].nil?

@@ -222,6 +222,7 @@ Rails.application.routes.draw do
   # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
+  get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'

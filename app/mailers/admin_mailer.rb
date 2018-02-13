@@ -75,6 +75,32 @@ class AdminMailer < ActionMailer::Base
 
   end # end of user added email
   
+  def outside_seattle_interest(requestor, requestor_location)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: "carl@drinkknird.com" },
+        }
+      ],
+      content: {
+        template_id: 'outside-seattle-interest'
+      },
+      substitution_data: {
+        requestor_name: requestor.first_name,
+        requestor_email: requestor.email,
+        requestor_id: requestor.id,
+        requestor_city: requestor_location.city,
+        requestor_zip: requestor_location.zip
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+
+  end # end of user added email
+  
   def delivery_zone_number_update(admin_email, delivery_zone_info)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
 
