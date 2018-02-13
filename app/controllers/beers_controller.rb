@@ -277,7 +277,7 @@ class BeersController < ApplicationController
     if @status == "new"
       @new_drink = true
       @number_of_ratings = 0
-      @drank_recently = false
+      @drank_recently = nil
     else
       @new_drink = false
       # find if user has rated/had this drink before
@@ -285,9 +285,9 @@ class BeersController < ApplicationController
       @most_recent_rating = @drink_ratings.first
       @number_of_ratings = @drink_ratings.count
       if @most_recent_rating.rated_on > 1.month.ago
-        @drank_recently = true
+        @drank_recently =  @most_recent_delivery.rated_on
       else
-        @drank_recently = false
+        @drank_recently = nil
       end
     end
     
@@ -300,9 +300,9 @@ class BeersController < ApplicationController
       @recent_user_delivery_drinks = UserDelivery.where(user_id: @user_id, account_delivery_id: @recent_account_drink_ids)
     end
     if !@recent_user_delivery_drinks.blank?
-      @delivered_recently = true
+      @delivered_recently = @recent_user_delivery_drinks[0].delivery.delivery_date
     else
-      @delivered_recently = false
+      @delivered_recently = nil
     end
     # determine if drink comes from Knird inventory, Disti inventory or both
     @inventory_items = @available_knird_inventory.where(beer_id: @drink_id)
