@@ -147,14 +147,20 @@ class SignupController < ApplicationController
       end # end of check whether user is buying prepaid deliveries
       
     end
-                     
+    
+    # add special line for remaining early signup customer
+    if @user.email == "justinokun@gmail.com"
+      @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+      @user_subscription.update(subscription_id: 2, auto_renew_subscription_id: 2)
+    end
+                    
     # redirect user to drink choice page
     redirect_to drink_choice_getting_started_path
     
   end # end process_account_getting_started action
   
   def change_membership_choice
-    # serve page
+    # add logic to choose which set of plan options are displayed
   end # end of change_membership_choice method
   
   def process_change_membership_choice
