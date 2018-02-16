@@ -3265,6 +3265,16 @@ $beer-header-lines-to-show-fp: 1;
   color: $normal-text;
   font-style: italic;
   margin-bottom: 30px;
+  span {
+    color: $action-background;
+  }
+}
+.mate-total-note {
+  width: 80%;
+  color: $less-emphasized-text;
+  span {
+    color: $action-background;
+  }
 }
 .signup-question-detail-set-password {
   color: $normal-text;
@@ -4331,6 +4341,9 @@ $beer-header-lines-to-show-fp: 1;
   #order-change-drink-type {
     font-size: 16px;
   }
+}
+#last-row-in-delivery-numbers-signup {
+  margin: 0 0 50px 0;
 }
 #order-change-drink-type-text {
   color: $action-background;

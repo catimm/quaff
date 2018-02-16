@@ -9,10 +9,10 @@
 		<%= render 'signup/signup_guide_consumer_new' %>
 	</div>
 	<% if session[:new_membership] == "zero" %>
-		<%= render 'signup/membership_view_zero' %>
+		<%= render 'signup/membership_view_delivery_zero' %>
 	<% elsif session[:new_membership] == "six" %>
-		<%= render 'signup/membership_view_six' %>
+		<%= render 'signup/membership_view_delivery_six' %>
 	<% else %>
-		<%= render 'signup/membership_view_twenty_five' %>
+		<%= render 'signup/membership_view_delivery_twenty_five' %>
 	<% end %>
 <%= render 'layouts/footer' %>

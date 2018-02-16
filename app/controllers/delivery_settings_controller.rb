@@ -120,7 +120,7 @@ class DeliverySettingsController < ApplicationController
       @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").order("delivery_date ASC").first 
       
       # find if the account has any other users who have completed their profile
-      @mates = User.where(account_id: @user.account_id, getting_started_step: 12).where.not(id: @user.id)
+      @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
       
     # set universal data for page, regardless of mates status
       # update time of last save
@@ -210,7 +210,7 @@ class DeliverySettingsController < ApplicationController
     # get page data, depending on whether the account has mates
     if !@mates.blank?
       @mate_count = @mates.size
-      @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
+      @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
       # create an array to hold the mates drink preferences
       @account_mates_preferences = Array.new
       # set account variables
@@ -370,7 +370,7 @@ class DeliverySettingsController < ApplicationController
     @customer_next_delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
     
     # find if the account has any other users who have completed their profile
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 12).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
     
     # update customer drink choice if needed
     if @column == "drink_choice"
@@ -428,7 +428,7 @@ class DeliverySettingsController < ApplicationController
     # get page data, depending on whether the account has mates
     if !@mates.blank?
       @mate_count = @mates.size
-      @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
+      @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
       # create an array to hold the mates drink preferences
       @account_mates_preferences = Array.new
       # set account variables
@@ -970,7 +970,7 @@ class DeliverySettingsController < ApplicationController
     end
     
     # find if the account has any other users (for menu links)
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 12).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
     
     # create new CustomerDeliveryRequest instance
     @customer_delivery_request = CustomerDeliveryRequest.new
@@ -1086,10 +1086,10 @@ class DeliverySettingsController < ApplicationController
     @user = User.find(current_user.id)
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 12).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
     
     # get all users on account
-    @users = User.where(account_id: @user.account_id, getting_started_step: 12)
+    @users = User.where(account_id: @user.account_id, getting_started_step: 10)
     @drink_per_delivery_calculation = 0
     @large_delivery_estimate = 0
     @small_delivery_estimate = 0

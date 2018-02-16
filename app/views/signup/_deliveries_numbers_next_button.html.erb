@@ -1,0 +1,5 @@
+<% if @show_live_button == true %>
+	<%= link_to "Next", @redirect_link, class: "btn btn-default btn-success signup-drinks-per-week-next-step", id: "liked_styles_next_step_button" %>
+<% else %>
+	<%= link_to "Next", @redirect_link, disabled: true, class: "btn btn-default btn-success signup-drinks-per-week-next-step", id: "liked_styles_next_step_button" %>
+<% end %>

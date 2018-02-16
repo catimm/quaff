@@ -17,6 +17,13 @@ class HomeController < ApplicationController
     
   end # end index action
   
+  def knird_ships
+    # get delivery example drinks
+    @cider_explorer_drinks = AccountDelivery.find(21,352,354,355,194,19,417,96)
+    @beer_geek_drinks = AccountDelivery.find(255,270,167,112,358,345,329,416)
+    @beer_connoisseur_drinks = AccountDelivery.find(225,415,16,445,359,71,423,56) 
+  end # end shipping_plans
+  
   def create
     InvitationRequest.create(invitation_request_params)
     

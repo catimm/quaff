@@ -59,6 +59,20 @@ class UsersController < ApplicationController
         # set redirect link
         @redirect_link = drink_choice_getting_started_path
       else
+        # create user subscription table entry
+        
+        # find subscription level id
+        @subscription_info = Subscription.find_by_subscription_level(session[:new_membership])
+        
+        # create a new user_subscription row
+        UserSubscription.create(user_id: @user.id, 
+                                subscription_id: @subscription_info.id,
+                                auto_renew_subscription_id: @subscription_info.id,
+                                deliveries_this_period: 0,
+                                total_deliveries: 0,
+                                account_id: @user.account_id,
+                                renewals: 0,
+                                currently_active: false)
         # set redirect link
         @redirect_link = delivery_address_getting_started_path
       end

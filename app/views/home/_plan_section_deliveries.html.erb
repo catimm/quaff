@@ -1,0 +1,54 @@
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<h3 class="index-section-header">Find a Knird plan that works for you</h3> 
+		</div>
+	</div>
+	<div class="row membership-details-row">
+		<div class="col-xs-12 col-sm-4">
+			<div class="homepage-plan-options">
+				<%= render 'layouts/plan_delivery_zero' %>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<%= link_to "Get started", new_user_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4">
+			<div class="homepage-plan-options">
+				<%= render 'layouts/plan_delivery_six' %>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<%= link_to "Get started", new_user_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4">
+			<div class="homepage-plan-options">
+				<%= render 'layouts/plan_delivery_twenty_five' %>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<%= link_to "Get started", new_user_path("twenty_five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

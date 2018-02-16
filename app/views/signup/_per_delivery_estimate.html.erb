@@ -1,0 +1,33 @@
+<h3 class="reset-estimate-message <%= @reset_estimate_visible_status %> ">
+	Choose your preferred delivery frequency to see updated delivery estimates
+</h3>
+<% if !@account.delivery_frequency.nil? %>
+	<h4 class="estimated-delivery-price-header delivery-estimate-information <%= @estimate_visible_status %>">
+		Your estimates for a delivery every <%= @account.delivery_frequency %> weeks
+	</h4>
+<% else %>
+	<h4 class="estimated-delivery-price-header delivery-estimate-information <%= @estimate_visible_status %>">
+		Change input below to update these delivery estimates
+	</h4>
+<% end %>
+<div class="col-xs-4 col-sm-offset-2 col-sm-3 col-md-offset-3 col-md-2 preference-estimate-holder delivery-estimate-information <%= @estimate_visible_status %>">
+	<div class="delivery-settings-info-box drinks">
+		<p>total drinks</p>
+		<% if !@total_delivery_drinks.nil? && !@account.delivery_frequency.nil? %>
+			<h4 class="delivery-preference-prompt"><span id="total_drinks"><%= @total_delivery_drinks %></span></h4>
+		<% else %>
+			<h4 class="delivery-preference-prompt"><span id="total_drinks">TBD</span></h4>
+		<% end %>
+	</div>	
+</div>
+<div class="col-xs-7 col-sm-5 col-md-4 preference-estimate-holder no-padding-right delivery-estimate-information <%= @estimate_visible_status %>">
+	<div class="delivery-settings-info-box total-price">
+		<p>total price <sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup></p>
+		<% if !@delivery_cost_estimate.nil? && !@account.delivery_frequency.nil? %>
+			<h4 class="delivery-preference-prompt">~<%= number_to_currency(@delivery_cost_estimate_low, precision: 0) %> - <%= number_to_currency(@delivery_cost_estimate_high, precision: 0) %></h4>
+		<% else %>
+			<h4 class="delivery-preference-prompt" id="order_price_estimate">TBD</h4>
+		<% end %>
+		
+	</div>
+</div>

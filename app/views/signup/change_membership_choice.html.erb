@@ -5,52 +5,101 @@
 			<h2 class="signup-question membership-plan-signup">Change your plan preference</h2>
 		</div>
 	</div>
-	<div class="row membership-details-row">
-		<div class="col-xs-12 col-sm-4">
-			<div class="homepage-plan-options">
-				<%= render 'layouts/deliveries_plan_zero' %>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", process_change_membership_choice_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+	<% if @membership_type == "delivery"%>
+		<div class="row membership-details-row">
+			<div class="col-xs-12 col-sm-4">
+				<div class="homepage-plan-options">
+					<%= render 'layouts/plan_delivery_zero' %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<%= link_to "Get started", process_change_membership_choice_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
+						</div>
 					</div>
 				</div>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
+			</div>
+			<div class="col-xs-12 col-sm-4">
+				<div class="homepage-plan-options">
+					<%= render 'layouts/plan_delivery_six' %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<%= link_to "Get started", process_change_membership_choice_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-4">
+				<div class="homepage-plan-options">
+					<%= render 'layouts/plan_delivery_twenty_five' %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<%= link_to "Get started", process_change_membership_choice_path("twenty-five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-4">
-			<div class="homepage-plan-options">
-				<%= render 'layouts/deliveries_plan_six' %>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", process_change_membership_choice_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+	<% else %>
+		<div class="row membership-details-row">
+			<div class="col-xs-12 col-sm-4">
+				<div class="homepage-plan-options">
+					<%= render 'layouts/plan_shipping_a' %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<%= link_to "Get started", process_change_membership_choice_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						</div>
 					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-xs-12 col-sm-4">
-			<div class="homepage-plan-options">
-				<%= render 'layouts/deliveries_plan_twenty_five' %>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", process_change_membership_choice_path("twenty-five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
+			<div class="col-xs-12 col-sm-4">
+				<div class="homepage-plan-options">
+					<%= render 'layouts/plan_shipping_b' %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<%= link_to "Get started", process_change_membership_choice_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-4">
+				<div class="homepage-plan-options">
+					<%= render 'layouts/plan_shipping_c' %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<%= link_to "Get started", process_change_membership_choice_path("twenty-five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+	<% end %>
 </div>
 <%= render 'layouts/footer' %>

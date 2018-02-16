@@ -2,4 +2,6 @@ $(function() {
 	if ($("#signup-large-format-next-button-holder").hasClass("hidden")) {
 		$("#signup-large-format-next-button-holder").removeClass("hidden").addClass("show");
 	}
+	$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'signup/per_delivery_estimate' ) %>");
+	$("#delivery-number-next-button").html("<%= escape_javascript(render 'signup/deliveries_numbers_next_button' ) %>");
 });

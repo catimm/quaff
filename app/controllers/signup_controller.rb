@@ -60,64 +60,13 @@ class SignupController < ApplicationController
     @total_price = (@subscription_info.subscription_cost * 100).floor
     @charge_description = @subscription_info.subscription_name
     
-    # set reward point info
-    #if @subscription_info.id == 2
-    #  if !@user.special_code.blank?
-    #    @bottle_caps = 30
-    #    @reward_transaction_type_id = 1
-    #    # find user who invited the new user
-    #    @invitor = SpecialCode.find_by_special_code(@user.special_code)
-    #    if @invitor.user.role_id != 1
-    #      # get invitor current reward points info
-    #      @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
-    #      if !@invitor_reward_points.blank?
-    #        @new_total_points = @invitor_reward_points.total_points + @bottle_caps
-    #      end
-    #    end # end of check whether invitor is an admin
-    #  end
-    #elsif @subscription_info.id == 3
-    #  if !@user.special_code.blank?
-    #    @bottle_caps = 30
-    #    @reward_transaction_type_id = 1
-    #    # find user who invited the new user
-    #    @invitor = SpecialCode.find_by_special_code(@user.special_code)
-    #    if @invitor.user.role_id != 1
-    #      # get invitor current reward points info
-    #      @invitor_reward_points = RewardPoint.where(account_id: @invitor.user.account_id).order('updated_at DESC').first
-    #      if !@invitor_reward_points.blank?
-    #        @new_total_points = @invitor_reward_points.total_points + @bottle_caps
-    #      end
-    #    end # end of check whether invitor is an admin
-    #  end
-    #end
-    
-    # now award Reward Points to invitor if invitor is not an admin
-    #if @subscription_info.id != 1 && @subscription_info.id != 7
-    #  if @invitor.user.role_id != 1
-    #    if !@invitor_reward_points.blank?
-    #      RewardPoint.create(account_id: @invitor.user.account_id, total_points: @new_total_points, transaction_points: @bottle_caps,
-    #                              reward_transaction_type_id: @reward_transaction_type_id, friend_user_id: @user.id)
-    #    else
-    #      RewardPoint.create(account_id: @invitor.user.account_id, total_points: @bottle_caps, transaction_points: @bottle_caps,
-    #                              reward_transaction_type_id: @reward_transaction_type_id, friend_user_id: @user.id)
-    #    end
-    #  end # end of check whether invitor is an admin
-    #end # end of check whether this is for a 1-month subscription                         
-    
-    
     # check if user already has a subscription row
-    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    @current_customer = UserSubscription.where(account_id: @user.account_id).where("stripe_customer_number IS NOT NULL").first
     
-    if @user_subscription.blank?
-      # create a new user_subscription row
-      UserSubscription.create(user_id: @user.id, 
-                              subscription_id: @subscription_info.id,
-                              auto_renew_subscription_id: @subscription_info.id,
-                              deliveries_this_period: 0,
-                              total_deliveries: 0,
-                              account_id: @user.account_id,
-                              renewals: 0,
-                              currently_active: true)
+    
+    if @current_customer.blank?
+      @user_subscription = UserSubscription.where(account_id: @user.account_id, subscription_id: @subscription_info.id, currently_active: false).first
+      @user_subscription.update_attribute(:currently_active, true)
                                 
       # create Stripe customer acct
       customer = Stripe::Customer.create(
@@ -135,13 +84,13 @@ class SignupController < ApplicationController
       end # end of check whether user is buying prepaid deliveries
     else
       # retrieve customer Stripe info
-      customer = Stripe::Customer.retrieve(@user_subscription.stripe_customer_number) 
+      customer = Stripe::Customer.retrieve(@current_customer.stripe_customer_number) 
       # charge the customer for subscription 
       if @plan_name != "zero"
         Stripe::Charge.create(
           :amount => @total_price, # in cents
           :currency => "usd",
-          :customer => @user_subscription.stripe_customer_number,
+          :customer => @current_customer.stripe_customer_number,
           :description => @charge_description
         )
       end # end of check whether user is buying prepaid deliveries
@@ -612,181 +561,18 @@ class SignupController < ApplicationController
         if @user_subscription.subscription_id == 1
           @next_step = signup_thank_you_path
         else
-          @next_step = drinks_weekly_getting_started_path
+          @next_step = delivery_numbers_getting_started_path
         end
       end
     
   end # end drink_style_likes_getting_started action
   
-  def drinks_weekly_getting_started
+  def delivery_numbers_getting_started
     # display message if this is a no-plan user adding a new paid plan
     if session[:start_new_plan_start_date_step]
       gon.new_plan_step_one = true
     end
     
-    # get User info 
-    @user = current_user
-    # get User Subscription info
-    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-    
-    # update getting started step
-    if @user.getting_started_step < 8
-      @user.update_attribute(:getting_started_step, 8)
-    end
-    
-    # set sub-guide view
-    @subguide = "drink"
-    
-    #set guide view
-    @user_chosen = 'complete'
-    @drink_chosen = 'current'
-    @drink_choice_chosen = 'complete'
-    @drink_journey_chosen = 'complete'
-    @drink_likes_chosen = 'complete'
-    @drink_dislikes_chosen = 'complete'
-    @drink_per_weeks_chosen = 'current'
-    @current_page = 'signup'
-    
-    # get Delivery Preference info if it exists
-    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    
-    # set drink category choice
-    if @delivery_preferences.drink_option_id == 1
-      @drink_preference = "beers"
-    elsif @delivery_preferences.drink_option_id == 2
-      @drink_preference = "ciders"
-    else
-      @drink_preference = "beers/ciders"
-    end
-    
-     # get number of drinks per week
-    if !@delivery_preferences.drinks_per_week.nil?
-      @drinks_per_week = @delivery_preferences.drinks_per_week
-      @drinks_weekly_next_button_status = "show"
-    else
-      @drinks_weekly_next_button_status = "hidden"
-    end
- 
-  end # end of drinks_weekly_getting_started action
-  
-  def process_drinks_weekly_getting_started
-    # get User info 
-    @user = current_user
-    
-    # get Delivery Preference info if it exists
-    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
-    
-    # if user is an account mate, determine drinks per delivery based on account delivery frequency setting
-    if @user.role_id == 5
-      @account = Account.find_by_id(@user.account_id)
-      @drinks_per_delivery = (params[:id].to_i * @account.delivery_frequency * 1.1).round
-      # update delivery preferences
-      @delivery_preferences.update(drinks_per_week: params[:id], drinks_per_delivery: @drinks_per_delivery)
-    else
-      # update delivery preferences
-      @delivery_preferences.update(drinks_per_week: params[:id])
-    end
-    
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-    
-  end # end of drinks_weekly_getting_started action
-  
-  def drinks_large_getting_started   
-    # get User info 
-    @user = User.find_by_id(current_user.id)
-    # get User Subscription info
-    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-    
-    # update getting started step
-    if @user.getting_started_step < 9
-      @user.update_attribute(:getting_started_step, 9)
-    end
-    
-    # set sub-guide view
-    @subguide = "drink"
-    
-    #set guide view
-    @user_chosen = 'complete'
-    @drink_chosen = 'current'
-    @drink_choice_chosen = 'complete'
-    @drink_journey_chosen = 'complete'
-    @drink_likes_chosen = 'complete'
-    @drink_dislikes_chosen = 'complete'
-    @drink_per_weeks_chosen = 'complete'
-    @drink_size_chosen = 'current'
-    @current_page = 'signup'
-    
-    # get Delivery Preference info if it exists
-    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
-    # get number of drinks per week if it exists
-    if !@delivery_preferences.drinks_per_week.nil?
-      @drinks_per_week = @delivery_preferences.drinks_per_week
-    end
-    
-    # set drink category choice
-    if @delivery_preferences.drink_option_id == 1
-      @drink_preference = "beers"
-    elsif @delivery_preferences.drink_option_id == 2
-      @drink_preference = "ciders"
-    else
-      @drink_preference = "beers/ciders"
-    end
-    
-    # get number of large format drinks per week if it exists
-    if !@delivery_preferences.max_large_format.nil?
-      @drinks_per_week = @delivery_preferences.drinks_per_week
-      
-      # get small/large format estimates
-      @large_delivery_estimate = @delivery_preferences.max_large_format
-    
-      @large_format_next_button_status = "show"
-    else
-      @large_format_next_button_status = "hidden"
-    end
-    
-    # get number of large format drinks per week
-    if !@delivery_preferences.max_large_format.nil?
-      @large_format_drinks_per_week = @delivery_preferences.max_large_format
-    end
-    
-    # determine path for 'Next' button
-    if @user.role_id == 5
-      @next_step = signup_thank_you_path
-    else
-      @next_step = delivery_frequency_getting_started_path
-    end
-    
-  end # end of drinks_weekly_getting_started action
-  
-  def process_drinks_large_getting_started
-    # get data
-    @input = params[:id]
-    
-    # get User info 
-    @user = current_user
-    
-    # get Delivery Preference info if it exists
-    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
-    
-    # update format preference
-    @delivery_preferences.update(max_large_format: @input)
-      
-    # if user is an account mate, determine price estimate for mate
-    if @user.role_id == 5
-      # get delivery estimate 
-      delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
-    end
-    
-    # show 'next' button
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-    
-  end # end of drinks_weekly_getting_started action
-  
-  def delivery_frequency_getting_started
     # get User info 
     @user = User.find_by_id(current_user.id)
     # get Account info
@@ -796,8 +582,8 @@ class SignupController < ApplicationController
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # update getting started step
-    if @user.getting_started_step < 10
-      @user.update_attribute(:getting_started_step, 10)
+    if @user.getting_started_step < 8
+      @user.update_attribute(:getting_started_step, 8)
     end
     
     # set sub-guide view
@@ -807,9 +593,13 @@ class SignupController < ApplicationController
     @user_chosen = 'complete'
     @drink_chosen = 'complete'
     @delivery_chosen = 'current'
-    @delivery_frequency_chosen = 'current'
+    @delivery_numbers_chosen = 'current'
     
     @current_page = 'signup'
+    
+    # set view for delivery estimates
+    @reset_estimate_visible_status = "hidden"
+    @estimate_visible_status = "show"
     
     # get delivery preferences
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
@@ -825,21 +615,165 @@ class SignupController < ApplicationController
         @drink_preference = "beers/ciders"
       end
       
+      # get drinks per week
+      if !@delivery_preferences.drinks_per_week.nil?
+        @current_user_drinks_per_week = @delivery_preferences.drinks_per_week
+        @max_large_format_drinks = (@drinks_per_week.to_f / 2).round
+      else
+        @max_large_format_drinks = 11
+      end
+      
+      # get number of large format drinks per week if it exists
+      if !@delivery_preferences.max_large_format.nil?
+        @large_format_drinks_per_week = @delivery_preferences.max_large_format
+      end
+    
       # define drink estimates
-      @total_delivery_drinks = @delivery_preferences.drinks_per_delivery
-      @large_delivery_estimate = @delivery_preferences.max_large_format
-      @small_delivery_estimate = @delivery_preferences.drinks_per_delivery
+      if !@delivery_preferences.drinks_per_delivery.nil?
+        @total_delivery_drinks = @delivery_preferences.drinks_per_delivery
+      end
       
       # get estimated cost estimates -- rounded to nearest multiple of 5
-      @delivery_cost_estimate = @delivery_preferences.price_estimate
-      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      if !@delivery_preferences.price_estimate.nil?
+        @delivery_cost_estimate = @delivery_preferences.price_estimate
+        @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+        @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      end
       
       # make sure reset message doesn't show
       @reset_estimate_visible_status = "hidden"
-    end
+      
+      # adjust drinks per week if this person is a mate being added to account
+      if @user.role_id == 5 && !@delivery_preferences.drinks_per_week.nil?
+        @redirect_link = signup_thank_you_path
+        @account_users = User.where(account_id: @user.account_id)
+        @drinks_per_week = 0
+        @mates_drinks_per_week = 0
+        @account_users.each do |user|
+          @delivery_user_preference = DeliveryPreference.find_by_user_id(user.id)
+          if !@delivery_user_preference.drinks_per_week.nil?
+            @drinks_per_week = @drinks_per_week + @delivery_user_preference.drinks_per_week
+          end
+          if user.id != @user.id
+            @mates_drinks_per_week = @mates_drinks_per_week + @delivery_user_preference.drinks_per_week
+          end
+        end
+      else
+        @drinks_per_week = @current_user_drinks_per_week
+        @redirect_link = delivery_preferences_getting_started_path
+      end
+    
+      # determine minimum number of weeks between deliveries
+      if !@delivery_preferences.drinks_per_week.nil?
+        @number_of_weeks_first_option = 2
+        @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
+          
+        if @user.craft_stage_id == 1
+          while @total_drinks < 7
+            @number_of_weeks_first_option += 1
+            @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1).round
+          end
+        else
+          while @total_drinks < 6
+            @number_of_weeks_first_option += 1
+            @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1).round
+          end
+        end
         
-    # determine minimum number of weeks between deliveries
+        # set number of week options
+        @number_of_weeks_second_option = @number_of_weeks_first_option + 1
+        @number_of_weeks_third_option = @number_of_weeks_first_option + 2
+        # set number of drink options
+        @number_of_drinks_first_option = @total_drinks.round
+        @number_of_drinks_second_option = (@drinks_per_week * @number_of_weeks_second_option * 1.1).round
+        @number_of_drinks_third_option =  (@drinks_per_week * @number_of_weeks_third_option * 1.1).round
+      end
+      
+      # check if user has already selected a delivery frequency
+      @first_delivery_option_chosen = "hidden"
+      @second_delivery_option_chosen = "hidden"
+      @third_delivery_option_chosen = "hidden"
+      
+      # update if one is already chosen
+      if !@account.delivery_frequency.blank?  
+        # show frequency choice already made
+        @drinks_per_week_meaning_show_status = "show"
+        if @account.delivery_frequency == @number_of_weeks_first_option
+          @first_delivery_option_chosen = "show"
+        elsif @account.delivery_frequency == @number_of_weeks_second_option
+          @second_delivery_option_chosen = "show"
+        elsif @account.delivery_frequency == @number_of_weeks_third_option
+          @third_delivery_option_chosen = "show"
+        end
+      else
+        @drinks_per_week_meaning_show_status = "hidden"
+      end
+    
+    end # end of check whether delivery preferences
+    
+    #  check if "next" button can be live
+    if !@account.delivery_frequency.nil? && !@delivery_preferences.drinks_per_week.nil? && !@delivery_preferences.max_large_format.nil?
+      @show_live_button = true
+    else
+      @show_live_button = false
+    end
+  end # end of delivery_numbers_getting_started method
+  
+  def process_drinks_weekly_getting_started
+    # set current page
+    @current_page = 'signup'
+    
+    # get User info 
+    @user = current_user
+    
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    # update drinks per week
+    @delivery_preferences.update(drinks_per_week: params[:id], price_estimate: nil, drinks_per_delivery: nil)
+    # update account frequency
+    if !@account.delivery_frequency.nil?
+      # update delivery preferences
+      @account.update_attribute(:delivery_frequency, nil)
+    end
+    
+    # set number of large format for view
+    @max_large_format_drinks = (params[:id].to_f / 2).round
+    # get current large format choice if made
+    if !@delivery_preferences.max_large_format.nil?
+      if @delivery_preferences.max_large_format.between?(0,@max_large_format_drinks)
+        @large_format_drinks_per_week = @delivery_preferences.max_large_format
+      else
+        # remove current max large format that is outside of newly available range
+        @delivery_preferences.update_attribute(:max_large_format, nil)
+      end
+    end
+    
+    # determine minimum number of weeks between deliveries to show in view
+    @current_user_drinks_per_week = @delivery_preferences.drinks_per_week
+    
+    # adjust drinks per week if this person is a mate being added to account
+    if @user.role_id == 5
+      @redirect_link = signup_thank_you_path
+      @account_users = User.where(account_id: @user.account_id)
+      @drinks_per_week = 0
+      @mates_drinks_per_week = 0
+      @account_users.each do |user|
+        @delivery_user_preference = DeliveryPreference.find_by_user_id(user.id)
+        if !@delivery_user_preference.drinks_per_week.nil?
+          @drinks_per_week = @drinks_per_week + @delivery_user_preference.drinks_per_week
+        end
+        if user.id != @user.id
+          @mates_drinks_per_week = @mates_drinks_per_week + @delivery_user_preference.drinks_per_week
+        end
+      end
+    else
+      @drinks_per_week = @current_user_drinks_per_week
+      @redirect_link = delivery_preferences_getting_started_path
+    end
+      
     @number_of_weeks_first_option = 2
     @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
       
@@ -858,36 +792,93 @@ class SignupController < ApplicationController
     # set number of week options
     @number_of_weeks_second_option = @number_of_weeks_first_option + 1
     @number_of_weeks_third_option = @number_of_weeks_first_option + 2
+    
     # set number of drink options
     @number_of_drinks_first_option = @total_drinks.round
     @number_of_drinks_second_option = (@drinks_per_week * @number_of_weeks_second_option * 1.1).round
     @number_of_drinks_third_option =  (@drinks_per_week * @number_of_weeks_third_option * 1.1).round
     
-    # check if user has already selected a delivery frequency
+    # remove delivery frequency selection
     @first_delivery_option_chosen = "hidden"
     @second_delivery_option_chosen = "hidden"
     @third_delivery_option_chosen = "hidden"
     
-    # update if one is already chosen
-    if !@account.delivery_frequency.blank?
-      # set total number of possible large format drinks
-      @large_delivery_estimate = @large_delivery_estimate * @account.delivery_frequency
-      # show frequency choice already made
-      @drinks_per_week_meaning_show_status = "show"
-      if @account.delivery_frequency == @number_of_weeks_first_option
-        @first_delivery_option_chosen = "show"
-      elsif @account.delivery_frequency == @number_of_weeks_second_option
-        @second_delivery_option_chosen = "show"
-      elsif @account.delivery_frequency == @number_of_weeks_third_option
-        @third_delivery_option_chosen = "show"
-      end
+    # set view for delivery estimates
+    @reset_estimate_visible_status = "show"
+    @estimate_visible_status = "hidden"
+    @show_live_button = false
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end of process_drinks_weekly_getting_started action
+  
+  def process_drinks_large_getting_started
+    # set current page
+    @current_page = 'signup'
+    
+    # get data
+    @input = params[:id]
+    
+    # get User info 
+    @user = current_user
+    
+    if @user.role_id == 5
+      @redirect_link = signup_thank_you_path
     else
-      @drinks_per_week_meaning_show_status = "hidden"
+      @redirect_link = delivery_preferences_getting_started_path
     end
     
-  end #end of delivery_frequency_getting_started method
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    # update format preference
+    @delivery_preferences.update(max_large_format: @input)
+    
+    # get delivery estimate 
+    if !@delivery_preferences.drinks_per_week.nil? && !@delivery_preferences.max_large_format.nil?
+      delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
+      @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+      @total_delivery_drinks = @delivery_preferences.drinks_per_delivery
+      @delivery_cost_estimate = @delivery_preferences.price_estimate
+      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+    end
+    
+    # set view for delivery estimates
+    if !@account.delivery_frequency.nil?
+      @reset_estimate_visible_status = "hidden"
+      @estimate_visible_status = "show"
+    else
+      @reset_estimate_visible_status = "show"
+      @estimate_visible_status = "hidden"
+    end
+    
+    # show next button if live
+    if !@account.delivery_frequency.nil? && !@delivery_preferences.drinks_per_week.nil? && !@delivery_preferences.max_large_format.nil?
+      @show_live_button = true
+    else
+      @show_live_button = false
+    end
+    
+    # show 'next' button
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end of process_drinks_large_getting_started action
   
   def process_delivery_frequency_getting_started
+    # set current page
+    @current_page = 'signup'
+    
+    # get user info
+    @user = User.find_by_id(current_user.id)
+    
     # get selected frequency
     @delivery_info = params[:id]
     @delivery_info_split = @delivery_info.split("-")
@@ -900,17 +891,25 @@ class SignupController < ApplicationController
     
     # update Delivery Preferences with drinks per delivery
     @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    @delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery)
+    # set redirect link
+    if @user.role_id == 5
+      @redirect_link = signup_thank_you_path
+      @drinks_per_delivery = (@delivery_preferences.drinks_per_week * @delivery_frequency * 1.1).round
+      @delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery)
+    else
+      @redirect_link = delivery_preferences_getting_started_path
+      @delivery_preferences.update_attribute(:drinks_per_delivery, @drinks_per_delivery)
+    end 
     
     # get delivery estimate 
-    delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
+    if !@delivery_preferences.drinks_per_week.nil? && !@delivery_preferences.max_large_format.nil?
+      delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
+    end
     # refresh delivery preferences
     @updated_delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
     
     # define drink estimates
     @total_delivery_drinks = @updated_delivery_preferences.drinks_per_delivery
-    @large_delivery_estimate = @updated_delivery_preferences.max_large_format * @account.delivery_frequency
-    @small_delivery_estimate = @updated_delivery_preferences.drinks_per_delivery
     
     # get estimated cost estimates -- rounded to nearest multiple of 5
     @delivery_cost_estimate = @updated_delivery_preferences.price_estimate
@@ -919,7 +918,15 @@ class SignupController < ApplicationController
     
     # make sure reset message doesn't show
     @reset_estimate_visible_status = "hidden"
-      
+    @estimate_visible_status = "show"
+    
+    # show next button if live
+    if !@account.delivery_frequency.nil? && !@updated_delivery_preferences.drinks_per_week.nil? && !@updated_delivery_preferences.max_large_format.nil?
+      @show_live_button = true
+    else
+      @show_live_button = false
+    end
+    
     # show delivery cost information and 'next' button
     respond_to do |format|
       format.js
@@ -938,8 +945,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = User.find_by_id(current_user.id)
     # update getting started step
-    if @user.getting_started_step < 11
-      @user.update_attribute(:getting_started_step, 11)
+    if @user.getting_started_step < 9
+      @user.update_attribute(:getting_started_step, 9)
     end
     
     # get User Subscription info
@@ -1104,8 +1111,8 @@ class SignupController < ApplicationController
     @next_available_code.update(user_id: @user.id)
     
     # update getting started step
-    if @user.getting_started_step < 12
-      @user.update_attribute(:getting_started_step, 12)
+    if @user.getting_started_step < 10
+      @user.update_attribute(:getting_started_step, 10)
     end
     if @user.role_id == 5 || @user.role_id == 6
       @user.update(recent_addition: true)

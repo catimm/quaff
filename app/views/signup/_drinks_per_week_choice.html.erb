@@ -1,6 +1,6 @@
 <% (1..18).each do |i| %>
   <div class="col-xs-2 no-padding number-box-holder-parent">
-	  <% if @drinks_per_week == i %>
+	  <% if @current_user_drinks_per_week == i %>
 	  	<div class="number-box-holder weekly-drinks chosen" id="<%= i %>-<%= @current_page %>">
 	 		<p><%= i %></p>
 	 	</div>

@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   
   def authenticate_user!(options={})
     if user_signed_in? 
-      if current_user.getting_started_step == 12
+      if current_user.getting_started_step == 10
         super(options)
       else
         sign_out current_user
@@ -95,12 +95,8 @@ class ApplicationController < ActionController::Base
     elsif  @user.getting_started_step == 7
       @first_view = drink_style_dislikes_getting_started_path
     elsif  @user.getting_started_step == 8
-      @first_view = drinks_weekly_getting_started_path
-    elsif  @user.getting_started_step == 9
-      @first_view = drinks_large_getting_started_path
-    elsif  @user.getting_started_step == 10
-      @first_view = delivery_frequency_getting_started_path
-    elsif @user.getting_started_step == 11
+      @first_view = delivery_numbers_getting_started_path
+    elsif @user.getting_started_step == 9
       @first_view = delivery_preferences_getting_started_path
     else
       if current_user.role_id == 1

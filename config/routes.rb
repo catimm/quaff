@@ -167,14 +167,13 @@ Rails.application.routes.draw do
   get '/signup/drink_style_likes_getting_started' => 'signup#drink_style_likes_getting_started', :as => 'drink_style_likes_getting_started'
   post '/signup/process_drink_style_likes_getting_started' => 'signup#process_drink_style_likes_getting_started', :as => 'process_drink_style_likes_getting_started'
   get '/signup/drink_style_dislikes_getting_started' => 'signup#drink_style_dislikes_getting_started', :as => 'drink_style_dislikes_getting_started'
+  
+  get '/signup/delivery_numbers_getting_started' => 'signup#delivery_numbers_getting_started', :as => 'delivery_numbers_getting_started'
 
-  get '/signup/drinks_weekly_getting_started' => 'signup#drinks_weekly_getting_started', :as => 'drinks_weekly_getting_started'
   post '/signup/process_drinks_weekly_getting_started/:id' => 'signup#process_drinks_weekly_getting_started', :as => 'process_drinks_weekly_getting_started'
 
-  get '/signup/drinks_large_getting_started' => 'signup#drinks_large_getting_started', :as => 'drinks_large_getting_started'
   post '/signup/process_drinks_large_getting_started/:id' => 'signup#process_drinks_large_getting_started', :as => 'process_drinks_large_getting_started'
-  
-  get '/signup/delivery_frequency_getting_started' => 'signup#delivery_frequency_getting_started', :as => 'delivery_frequency_getting_started'
+
   post '/signup/process_delivery_frequency_getting_started/:id' => 'signup#process_delivery_frequency_getting_started', :as => 'process_delivery_frequency_getting_started'
    
   get '/signup/delivery_preferences_getting_started' => 'signup#delivery_preferences_getting_started', :as => 'delivery_preferences_getting_started'
@@ -223,6 +222,7 @@ Rails.application.routes.draw do
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
   get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
+  get 'knird_ships' => 'home#knird_ships', :as => "knird_ships"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'

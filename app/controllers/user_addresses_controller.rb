@@ -28,7 +28,7 @@ class UserAddressesController < ApplicationController
     if !@delivery_zone.blank? # keep user in signup flow
       # add delivery zone if this is a zero plan
       if session[:new_membership] == "zero" || (!@user_subscription.blank? && @user_subscription.subscription_id == 1)
-          if current_user.getting_started_step < 12
+          if current_user.getting_started_step < 10
             # update Account and Addrress info
             Account.update(current_user.account_id, delivery_location_user_address_id: @new_address.id, delivery_zone_id: @delivery_zone.id)
             @new_address.update(current_delivery_location: true, delivery_zone_id: @delivery_zone.id)

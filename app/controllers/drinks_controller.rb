@@ -29,7 +29,7 @@ class DrinksController < ApplicationController
     @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
     
     # determine if account has multiple users and add appropriate CSS class tags
-    @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 12).count
+    @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 10).count
     
     # get delivery info
     @all_deliveries = Delivery.where(account_id: @user.account_id)
@@ -132,7 +132,7 @@ class DrinksController < ApplicationController
     #Rails.logger.debug("Current User Info: #{@user.inspect}")
     
     # determine if account has multiple users and add appropriate CSS class tags
-    @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
+    @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
     @account_users_count = @account_users.count
     
     if @account_users_count == 1
@@ -223,7 +223,7 @@ class DrinksController < ApplicationController
     @user = User.find_by_id(current_user.id)
     
     # determine if account has multiple users and each user has a rating for the cellar drink
-    @account_users = User.where(account_id: @user.account_id, getting_started_step: 12)
+    @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
     @account_users_count = @account_users.count
     
     if @account_users_count > 1

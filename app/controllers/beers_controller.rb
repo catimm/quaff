@@ -47,7 +47,7 @@ class BeersController < ApplicationController
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
      #@role_ids = [1, 2, 3, 4] 
      @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
-     @active_users = User.where(account_id: @active_account_ids, getting_started_step: 12)
+     @active_users = User.where(account_id: @active_account_ids, getting_started_step: 10)
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
@@ -284,7 +284,7 @@ class BeersController < ApplicationController
       @drink_ratings = UserBeerRating.where(user_id: @user_id, beer_id: @drink_id).order('rated_on DESC')
       @most_recent_rating = @drink_ratings.first
       @number_of_ratings = @drink_ratings.count
-      if @most_recent_rating.rated_on > 1.month.ago
+      if !@most_recent_rating.blank?
         @drank_recently =  @most_recent_delivery.rated_on
       else
         @drank_recently = nil

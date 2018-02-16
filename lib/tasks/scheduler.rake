@@ -526,10 +526,10 @@ task :assess_drink_recommendations => :environment do
       if only_for_orders
         # get active users that have an outstanding order but with no recommendations
         @order_owners_account_ids = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations)').pluck(:account_id)
-        @active_users = User.where(account_id: @order_owners_account_ids, getting_started_step: 12)
+        @active_users = User.where(account_id: @order_owners_account_ids, getting_started_step: 10)
       else
         # get each user associated to this account
-        @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
+        @active_users = User.where(account_id: account.account_id, getting_started_step: 10)
       end
       
       #Rails.logger.debug("Active users: #{@active_users.inspect}")
@@ -707,7 +707,7 @@ task :assess_drink_recommendations => :environment do
           # determine whether to add this drink 
           if @add_this == true
             # determine if we've delivered this drink to the user recently
-            @recent_account_delivery_ids = Delivery.where(account_id: user.account_id).where('delivery_date > ?', 1.month.ago).pluck(:id)
+            @recent_account_delivery_ids = Delivery.where(account_id: user.account_id).pluck(:id)
             if !@recent_account_delivery_ids.blank?
               @recent_account_drink_ids = AccountDelivery.where(delivery_id: @recent_account_delivery_ids, beer_id: drink_id).pluck(:id)
             else
@@ -853,7 +853,7 @@ task :assess_total_demand_for_inventory => :environment do
       @active_subscriptions.each do |account|
   
         # get each user associated to this account
-        @active_users = User.where(account_id: account.account_id, getting_started_step: 12)
+        @active_users = User.where(account_id: account.account_id, getting_started_step: 10)
         
         @active_users.each do |user|
           # assess drink to add if user would rated highly enough
@@ -909,7 +909,7 @@ task :share_admin_prep_with_customer => :environment do
     if !@accounts_with_deliveries.blank?
       @accounts_with_deliveries.each do |account_delivery|
         # find if the account has any mates
-        @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 12).pluck(:id)
+        @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 10).pluck(:id)
         
         # find if any of these mates has drinks allocated to them
         @mates_ids_with_drinks = UserDelivery.where(user_id: @mates_ids, delivery_id: account_delivery.id).pluck(:user_id)
@@ -1014,7 +1014,7 @@ task :user_change_confirmation => :environment do
       @accounts_with_changes.each do |account_delivery|
         
         # find if the account has any other users
-        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 12).where.not(role_id: [1,4])
+        @mates = User.where(account_id: account_delivery.account_id, getting_started_step: 10).where.not(role_id: [1,4])
         
         if !@mates.blank?
           @has_mates = true
@@ -1082,7 +1082,7 @@ task :user_change_confirmation => :environment do
         @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
 
         # create customer variable for email to customer
-        @customers = User.where(account_id: @customer_next_delivery.account_id, getting_started_step: 12)
+        @customers = User.where(account_id: @customer_next_delivery.account_id, getting_started_step: 10)
        
         # send email to each customer for review
         @customers.each do |customer|
@@ -1166,7 +1166,7 @@ task :top_of_mind_reminder => :environment do
       # cycle through each delivery still in review
       @last_week_deliveries.each do |delivery|
         # get each account user
-        @account_users = User.where(account_id: account_id, getting_started_step: 12)
+        @account_users = User.where(account_id: account_id, getting_started_step: 10)
         
         # send an email to each user to remind them they only have a few hours to review the delivery
         @account_users.each do |user|

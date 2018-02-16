@@ -1,5 +1,12 @@
 $(function() {
-	if ($("#signup-drinks-weekly-next-button-holder").hasClass("hidden")) {
-		$("#signup-drinks-weekly-next-button-holder").removeClass("hidden").addClass("show");
-	}
+	$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'signup/per_delivery_estimate' ) %>");
+	$("#large_format_drinks_per_week_options").html("<%= escape_javascript(render 'large_format_per_week_choice' ) %>");	
+	$("#signup-delivery-frequency-row-holder").html("<%= escape_javascript(render 'delivery_frequency_options' ) %>");
+	$("#delivery-number-next-button").html("<%= escape_javascript(render 'signup/deliveries_numbers_next_button' ) %>");
+	$('[data-toggle="tooltip"]').tooltip();
+	$("#last_updated_holder").addClass('drinks-per-delivery-highlight-change');
+    $( ".drinks-per-delivery-highlight-change" ).fadeOut( 1000, function() {
+	    $("#last_updated_holder").removeClass('drinks-per-delivery-highlight-change');
+	  });
+	$("#last_updated_holder").fadeIn(100);
 });

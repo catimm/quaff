@@ -13,7 +13,7 @@
 			<h6 class="invitation-date">invited: <%= (mate.invitation_sent_at).strftime("%-m/%-d/%Y") %></h6>
 		</div>
 		<div class="col-xs-2 no-padding">
-			<% if mate.getting_started_step != 12 %>
+			<% if mate.getting_started_step != 10 %>
 				<div class="mate-response" >
 					<p>pending</p>
 					<%= link_to send_mate_invite_reminder_path(mate.id), :remote => true, class:"send-connection-invite pending-connection" do %>
