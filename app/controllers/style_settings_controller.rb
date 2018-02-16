@@ -5,7 +5,13 @@ class StyleSettingsController < ApplicationController
     # get list of styles
     @styles = BeerStyle.where(standard_list: true).order('style_order ASC')
     # get user style preferences
-    @user_styles = UserStylePreference.where(user_id: current_user.id)
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_styles = UserStylePreference.where(user_id: params[:format])
+    else
+      # get user info
+      @user_styles = UserStylePreference.where(user_id: current_user.id)
+    end
     #Rails.logger.debug("User style preferences: #{@user_styles.inspect}")
     # get last time user styles was updated
     if !@user_styles.blank?
