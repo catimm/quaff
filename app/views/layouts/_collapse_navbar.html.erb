@@ -9,9 +9,10 @@
 		            
 		            <li class="dropdown-header">My activity</li>
 		            <li class="dropdown-link"><%= link_to "Connections", manage_friends_path %></li>
+					<li class="dropdown-link"><%= link_to "Credits & Rewards", user_credits_path %></li>
 		            <li class="dropdown-link"><%= link_to "Drinks", user_deliveries_path %></li>
+					<li class="dropdown-link"><%= link_to "Gift Certificates", recent_user_ratings_path %></li>
 		            <li class="dropdown-link"><%= link_to "Ratings", recent_user_ratings_path %></li>
-		            <li class="dropdown-link"><%= link_to "Rewards & Credits", user_rewards_path(current_user.id) %></li>
 					
 					<li class="dropdown-header">My settings</li>
 					<li class="dropdown-link"><%= link_to "Account", account_settings_membership_user_path %></li>

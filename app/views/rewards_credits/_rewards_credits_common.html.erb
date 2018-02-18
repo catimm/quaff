@@ -1,0 +1,17 @@
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12 col-sm-12">
+			<h1 class="section-header">Your Earnings</h1>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 no-padding">
+			<div class="row">
+				<div class="col-xs-3 col-sm-2 col-md-2 col-lg-2 text-center">
+					<%= link_to "Credits", user_credits_path, class: "drink-preference-view-option #{if current_section == "Credits" then "current" else "" end}", id: "credits" %>
+				</div>
+                <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2 text-center">
+					<%= link_to "Rewards", user_rewards_path, class: "drink-preference-view-option #{if current_section == "Rewards" then "current" else "" end}", id: "rewards" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
