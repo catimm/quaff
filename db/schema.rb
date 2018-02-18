@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180217223552) do
+ActiveRecord::Schema.define(version: 20180218073508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -511,6 +511,24 @@ ActiveRecord::Schema.define(version: 20180217223552) do
   add_index "orders", ["account_id"], name: "index_orders_on_account_id", using: :btree
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
 
+  create_table "pending_credits", force: :cascade do |t|
+    t.float    "transaction_credit"
+    t.string   "transaction_type"
+    t.boolean  "is_credited"
+    t.integer  "account_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.datetime "credited_at"
+    t.integer  "delivery_id"
+    t.integer  "beer_id"
+    t.integer  "user_id"
+  end
+
+  add_index "pending_credits", ["account_id"], name: "index_pending_credits_on_account_id", using: :btree
+  add_index "pending_credits", ["beer_id"], name: "index_pending_credits_on_beer_id", using: :btree
+  add_index "pending_credits", ["delivery_id"], name: "index_pending_credits_on_delivery_id", using: :btree
+  add_index "pending_credits", ["user_id"], name: "index_pending_credits_on_user_id", using: :btree
+
   create_table "pg_search_documents", force: :cascade do |t|
     t.text     "content"
     t.integer  "searchable_id"
@@ -897,4 +915,8 @@ ActiveRecord::Schema.define(version: 20180217223552) do
   add_foreign_key "deliveries", "orders"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "users"
+  add_foreign_key "pending_credits", "accounts"
+  add_foreign_key "pending_credits", "beers"
+  add_foreign_key "pending_credits", "deliveries"
+  add_foreign_key "pending_credits", "users"
 end
