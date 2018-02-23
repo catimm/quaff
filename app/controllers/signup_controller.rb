@@ -1057,7 +1057,7 @@ class SignupController < ApplicationController
     #Rails.logger.debug("Parsed date: #{@final_delivery_date.inspect}")
     
     # update the Account info
-    Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
+    @account = Account.update(current_user.account_id, delivery_location_user_address_id: @address, delivery_zone_id: @delivery_zone)
     
     # find if user already has chosen a delivery address
     @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true)[0]
@@ -1085,7 +1085,8 @@ class SignupController < ApplicationController
                                     share_admin_prep_with_user: false)
                                         
     # and create second line in delivery table so curator has option to plan ahead
-    @next_delivery_date = @first_delivery.delivery_date + 2.weeks
+    @delivery_frequency = @account.delivery_frequency
+    @next_delivery_date = @first_delivery.delivery_date + @delivery_frequency.weeks
     Delivery.create(account_id: current_user.account_id, 
                     delivery_date: @next_delivery_date,
                     status: "admin prep",

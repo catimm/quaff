@@ -153,6 +153,17 @@ class UserMailer < ActionMailer::Base
     @review_date = (delivery_info.delivery_date - 1.day)
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
     #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
+    @user_subscription = UserSubscription.where(user_id: customer.id)[0]
+    if @user_subscription.subscription_id == 1
+      @drinks_ordered = Order.find_by_id(delivery_info.order_id).pluck(:number_of_drinks)
+      if total_quantity.to_i < @drinks_ordered
+        @no_plan_order = true
+      else
+        @no_plan_order = false
+      end
+    else
+      @no_plan_order = false
+    end
     payload  = {
       recipients: [
         {
@@ -170,7 +181,8 @@ class UserMailer < ActionMailer::Base
         drink: delivery_drinks,
         total_quantity: total_quantity,
         total_price: delivery_info.total_price,
-        mates: mates
+        mates: mates,
+        no_plan_order: @no_plan_order
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")
@@ -523,7 +535,7 @@ class UserMailer < ActionMailer::Base
     
   end # end of friend_request email
   
-  def renewing_membership(customer, new_months, end_date)
+  def renewing_membership(customer, new_deliveries)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
      
     payload  = {
@@ -537,8 +549,7 @@ class UserMailer < ActionMailer::Base
       },
       substitution_data: {
         customer_name: customer.first_name,
-        new_months: new_months,
-        new_end_date: end_date
+        new_deliveries: new_deliveries
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")

@@ -173,6 +173,7 @@ class Admin::FulfillmentController < ApplicationController
     
     # get delivery account owner info
     @account_owner = User.where(account_id: @delivery.account_id, role_id: [1,4])
+    @account = Account.find_by_id(@account_owner[0].account_id)
     
     # get account owner subscription deliveries info
     @subscription_deliveries_included = @customer_subscription.subscription.deliveries_included
@@ -187,8 +188,11 @@ class Admin::FulfillmentController < ApplicationController
         UserMailer.seven_day_membership_expiration_notice(@account_owner[0], @customer_subscription).deliver_now
       elsif @remaining_deliveries >= 2
         # start next delivery cycle
+        
+        # get account delivery frequency
+        @delivery_frequency = @account.delivery_frequency
         # get new delivery date
-        @second_delivery_date = @delivery.delivery_date + 4.weeks
+        @second_delivery_date = @delivery.delivery_date + @delivery_frequency.weeks
         # insert new line in delivery table
         @next_delivery = Delivery.create(account_id: @delivery.account_id, 
                                           delivery_date: @second_delivery_date,

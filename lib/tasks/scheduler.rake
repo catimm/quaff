@@ -1233,7 +1233,7 @@ end # end of task to find recent drink addition to DB
 desc "update customers subscriptions"
 task :update_customer_subscriptions => :environment do
   # find customers whose subscription expires today  
-    @expiring_subscriptions = UserSubscription.where(active_until: (DateTime.now.beginning_of_day)..(DateTime.now.end_of_day))
+    @expiring_subscriptions = UserSubscription.expiring_subscriptions
     #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
     
     # loop through each customer and update 
@@ -1246,27 +1246,17 @@ task :update_customer_subscriptions => :environment do
       
       else # renewal will happen  
         # determine which plan customer is being renewed into
-        if customer.auto_renew_subscription_id == 1
-          @plan_id = "one_month"
-          @new_months = "month"
-          @active_until = 1.month.from_now
-        elsif customer.auto_renew_subscription_id == 2
-          @plan_id = "three_month"
-          @new_months = "3 months"
-          @active_until = 3.months.from_now
+        if customer.auto_renew_subscription_id == 2
+          @new_deliveries = "6"
         elsif customer.auto_renew_subscription_id == 3
-          @plan_id = "twelve_month"
-          @new_months = "12 months"
-          @active_until = 12.months.from_now
+          @new_deliveries = "25"
         end
-        # set end date as text
-        @end_date = @active_until.strftime("%B %e, %Y")
         
         # determine if customer is renewing current subscription or changing subscriptions
         if customer.auto_renew_subscription_id == customer.subscription_id # if customer is renewing current subscription
           
           # update Knird DB with new active_until date & reset deliveries_this_period column
-          UserSubscription.update(customer.id, active_until: @active_until, deliveries_this_period: 0)
+          UserSubscription.update(customer.id, deliveries_this_period: 0)
           
         else # if customer is renewing to a different subscription
           
@@ -1276,13 +1266,20 @@ task :update_customer_subscriptions => :environment do
         end # end of checking for change in subscription
         
         # send customer rewnewal email
-        UserMailer.renewing_membership(customer.user, @new_months, @end_date).deliver_now
+        UserMailer.renewing_membership(customer.user, @new_deliveries).deliver_now
+        
+        # account info
+        @account = Account.find_by_id(customer.account_id)
+        
+        # get delivery frequency
+        @delivery_frequency = @account.delivery_frequency
+        @delivery_frequency_times_two = (@delivery_frequency * 2)
         
         # find last delivery date
         @last_delivery = Delivery.where(status: "delivered").order(delivery_date: :desc).last
         
         # create next two delivery dates
-        @first_delivery_date = @last_delivery.delivery_date + 2.weeks
+        @first_delivery_date = @last_delivery.delivery_date + @delivery_frequency.weeks
         Delivery.create(account_id: customer.account_id, 
                     delivery_date: @first_delivery_date,
                     status: "admin prep",
@@ -1292,7 +1289,7 @@ task :update_customer_subscriptions => :environment do
                     delivery_change_confirmation: false,
                     share_admin_prep_with_user: false)
         
-        @second_delivery_date = @last_delivery.delivery_date + 4.weeks
+        @second_delivery_date = @last_delivery.delivery_date + @delivery_frequency_times_two.weeks
         Delivery.create(account_id: customer.account_id, 
                     delivery_date: @second_delivery_date,
                     status: "admin prep",

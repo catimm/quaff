@@ -24,4 +24,10 @@ class UserSubscription < ActiveRecord::Base
   belongs_to :user
   belongs_to :subscription
   belongs_to :account
+  
+  scope :expiring_subscriptions, -> { 
+    where("currently_active = ?", true).
+    where("deliveries_this_period = ?", self.subscription.deliveries_included)
+  }
+    
 end
