@@ -133,7 +133,7 @@ class Admin::FulfillmentController < ApplicationController
         :description => @charge_description
       )
     end
-    
+
     # get drinks being delivered
     @delivery_drinks = AccountDelivery.where(delivery_id: @delivery.id)
     
@@ -204,7 +204,30 @@ class Admin::FulfillmentController < ApplicationController
                                           share_admin_prep_with_user: false)
       end
     end # end of check whether user is no plan customer
-                                      
+
+    # Add 5% cash back as pending credit for 25 delivery plan customers
+    if @customer_subscription.subscription_id == 3
+        cashback_amount = (0.05 * @delivery.subtotal).round(2)
+        PendingCredit.create(account_id: @delivery.account_id, transaction_credit: cashback_amount, transaction_type: "CASHBACK_PURCHASE", is_credited: false, delivery_id: @delivery.id)
+    end
+
+    # increment reward points only on 6, 25 delivery plans (subscription id 2, 3)
+    if @customer_subscription.subscription_id == 2 or @customer_subscription.subscription_id == 3
+      
+      # Get the last reward_points entry for this account
+      last_reward = RewardPoint.where(account_id: @delivery.account_id).sort_by(&:id).reverse[0]
+      if last_reward == nil
+          previous_reward_total = 0
+      else
+          previous_reward_total = last_reward.total_points
+      end
+
+      transaction_points = @delivery.subtotal.ceil * (if @customer_subscription.subscription_id == 2 then 1 else 1.5 end)
+
+      # Update reward_points for the account
+      RewardPoint.create(account_id: @delivery.account_id, transaction_amount: @delivery.subtotal, transaction_points: transaction_points, total_points: (previous_reward_total + transaction_points), reward_transaction_type_id: @customer_subscription.subscription_id)
+    end
+
     # redirect back to delivery page
     redirect_to admin_fulfillment_index_path
     

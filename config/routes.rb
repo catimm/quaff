@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   post '/stripe-webhooks' => 'users#stripe_webhooks'
   
   resources :users do
-    resources :drinks, :ratings, :rewards, :trackings   
+    resources :drinks, :ratings, :trackings   
   end
   
   resources :user_addresses
@@ -140,7 +140,8 @@ Rails.application.routes.draw do
   get '/ratings/unrated_drinks' => 'ratings#unrated_drinks', :as => 'unrated_drinks'
   
   # rewards routes
-  #get '/rewards/index/:id' => 'rewards#index', :as => 'user_rewards'
+  get '/rewards' => 'rewards_credits#rewards', :as => 'user_rewards'
+  get '/credits' => 'rewards_credits#credits', :as => 'user_credits'
   
   # orphan routes
   post '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'customer_delivery_date'

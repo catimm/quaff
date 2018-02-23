@@ -20,6 +20,12 @@ class Credit < ActiveRecord::Base
             "Gift certificate redeemed"
         when "DRINKS_DELIVERY"
             "Drinks & delivery charges"
+        when "CASHBACK_PURCHASE"
+            "Cashback for drink purcahses"
+        when "CASHBACK_PURCAHSED_DRINK_RATED"
+            "Cashback for drinks that are purchased and rated"
+        when "CASHBACK_PURCHASES_RATINGS"
+            "Cashback for drink purchases & ratings"
         else
             ""
         end

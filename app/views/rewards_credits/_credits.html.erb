@@ -1,0 +1,90 @@
+<%= render 'layouts/header' %> 
+    <div class="container">
+	    <div class="row no-margin">
+            <div class="col-xs-12 col-sm-8">
+            <%- flash.each do |name, msg| -%>
+                <% if msg.include?  "gift certificate" %>
+                	<%= content_tag :div, msg, class: "alert alert-success text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+            	<% end %>
+            <%- end -%>
+            </div>
+	    </div>
+        <div class="row no-margin">
+		    <% if @available_credit_value == 0 %>
+	            <div class="col-xs-12 col-sm-8">
+	                <h4 class="recent-ratings-header">You do not have any credits. You can earn credits by referring a user to Knird or ordering drinks.</h4>
+	            </div>
+            <% else %>
+                <div class="col-xs-12 col-sm-8">
+	                <h4 class="recent-ratings-header"><b>You have $<%= @available_credit_value %> in credits.</b> This will automatically be applied towards your future drink purchases.</h4>
+	            </div>
+            <% end %>
+        </div>
+        <% if @number_of_unrated_drinks >= 1 %>
+            <hr>
+            <div class="row no-margin">
+                <div class="col-sm-12">
+                    <h3 class="user-settings-header">Opportunities</h3>
+                </div>
+                    <div class="row opportunity-row">
+                        <div class="col-sm-8">
+                            <h5 class="signup-next-step-text">
+                                You have <b><%= @number_of_unrated_drinks %>
+                                unrated <%= "drink".pluralize(@number_of_unrated_drinks) %> bought in the last month
+                                worth <%= @total_reward_opportunity.round %> bottle caps</b>.  Get on it!
+                            </h5>
+                        </div>
+                        <div class="col-sm-4">
+                            <%= link_to "Rate drinks", user_deliveries_path, class: "btn btn-default btn-success thank-you-next-button" %>
+                        </div>
+                    </div>
+            </div>
+        <% end %>
+        <% if @pending_credits_value > 0%>
+            <hr>
+            <div class="row no-margin">
+                <div class="col-sm-12">
+                    <h3 class="user-settings-header">Upcoming Credits</h3>
+                </div>
+                    <div class="row opportunity-row">
+                        <div class="col-sm-8">
+                            <h5 class="signup-next-step-text">
+                                You have $<%= @pending_credits_value %> in credits that will be applied to your
+                                account at the start of next quarter, on <%= @next_quarter_start %>.
+                            </h5>
+                        </div>
+                    </div>
+            </div>
+        <% end %>
+        <% if @credits != nil and @credits.length > 0 %>
+            <hr>
+            <div class="row no-margin">
+                <div class="col-sm-12">
+                    <h3 class="user-settings-header">History</h3>
+                </div>
+		        <div class="col-xs-12 col-sm-8">
+		        	<table class="table table-striped">
+			            <thead>
+			                <tr>
+			                <th scope="col">Date</th>
+			                <th scope="col">Amount</th>
+			                <th scope="col">Reason</th>
+			                <th scope="col">Total</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <% @credits.each do |credit| %>
+			                    <tr>
+			                        <td><%= credit.created_at.strftime("%b %e, %Y") %></td>
+			                        <td> <span class="<%= if credit.transaction_credit > 0 then "positive-amount" else "negative-amount" end %>"> <%= if credit.transaction_credit > 0 then "+" else "-" end %></span> $<%= credit.transaction_credit.abs %></td>
+			                        <td><%= credit.reason_string %></td>
+			                        <td class="amount-column">$<%= credit.total_credit.round(2) %></td>
+			                    </tr>
+			                <% end %>
+			            </tbody>
+		            </table>
+		        </div>
+            </div>
+        <% end %>
+	</div>	
+<%= render 'layouts/footer' %>

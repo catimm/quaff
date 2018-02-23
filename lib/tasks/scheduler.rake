@@ -492,6 +492,31 @@ task :check_beveridge_place => :environment do
      
 end # end Beveridge Place Pub scrape
 
+desc "Apply pending credits to accounts"
+task :apply_pending_credits => :environment do
+    include DateHelper
+    start_date = current_quarter_start DateTime.now
+
+    @pending_credit_account_ids = PendingCredit.where(is_credited: false).where('created_at < ?', start_date).pluck("DISTINCT account_id")
+    @pending_credit_account_ids.each do |account_id|
+        @total_pending_credits = PendingCredit.where(is_credited: false, account_id: account_id).where('created_at < ?', start_date).sum(:transaction_credit)
+        
+        # Get the latest credit record
+        @latest_credit = Credit.where(account_id: account_id).order(updated_at: :desc).first
+        
+        @previous_credit_total = 0
+        # If there are no credits entered for this user, return the same amount
+        if @latest_credit != nil
+            @previous_credit_total = @latest_credit.total_credit
+        end
+        
+        # add credit with the new total and reduced amount
+        Credit.create(total_credit: (@total_pending_credits + @previous_credit_total), transaction_credit: @total_pending_credits, transaction_type: "CASHBACK_PURCHASES_RATINGS", account_id: account_id)
+        PendingCredit.where(is_credited: false, account_id: account_id).where('created_at < ?', start_date).update_all(is_credited: true)
+    end
+
+end # end of apply_pending_credits
+
 desc "Assess Drink Recommendations For Users" # step 1 of curation process
 task :assess_drink_recommendations => :environment do
     include UserLikesDrinkTypes
