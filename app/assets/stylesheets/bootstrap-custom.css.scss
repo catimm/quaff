@@ -830,6 +830,37 @@ label {
   color: $action-background;
   font-weight: 600;
 }
+// User Credits
+.credit-tile {
+  margin: 5px 0 ;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  position: relative;
+  text-align: center;
+}
+.credit-tile-header {
+  color: $normal-text;
+  margin: 10px 0 0 0;
+  sup {
+      font-size: 9px;
+      border: 1px solid $less-emphasized-text;
+      border-radius: 4px;
+      padding: 1px 3px;
+    }
+}
+.credit-tile-number {
+  color: $user-action;
+  margin: 15px 0 20px 0;
+}
+.unrated-drinks-text {
+  color: $normal-text;
+  margin-bottom: 0;
+  font-size: 16px;
+}
 // User Rewards
 .all-bottle-caps {
   margin: 0;
@@ -3659,12 +3690,25 @@ $beer-header-lines-to-show-fp: 1;
 .gift-redeem-submit-standalone {
   margin-top: 10px;
 }
+.credit-table > tbody > tr > td.credit-holding-column {
+  padding: 0 !important;
+}
 .positive-amount {
-  background-color: lightgreen;
+  color: $user-action;
+  font-size: 15px !important;
+  font-weight: 500;
+  span {
+    font-size: 20px !important;
+  }
 }
 
 .negative-amount {
-  background-color: $faded-red;
+  color: $bootstrap-red-button-hover-background;
+  font-size: 15px !important;
+  font-weight: 500;
+  span {
+    font-size: 24px !important;
+  }
 }
 
 .flash_success {

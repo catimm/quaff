@@ -16,6 +16,7 @@ class SignupController < ApplicationController
     
     # set user info--Note, after removing "before_filter :authenticate_user!", current_user is no longer an object, but an instance
     @user = current_user
+    @user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
     
     if @user.getting_started_step < 2
       @user.update_attribute(:getting_started_step, 2) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
@@ -29,6 +30,7 @@ class SignupController < ApplicationController
   def account_membership_getting_started
     # get User info 
     @user = current_user
+    @user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
     # update getting started step
     if @user.getting_started_step < 3
       @user.update_attribute(:getting_started_step, 3)

@@ -101,6 +101,7 @@ class UsersController < ApplicationController
   def edit
     @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
+    @user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
     
     if @user.id != current_user.id
       return head :forbidden
