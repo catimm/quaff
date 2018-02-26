@@ -10,50 +10,52 @@
             </div>
 	    </div>
         <div class="row no-margin">
-		    <% if @available_credit_value == 0 %>
-	            <div class="col-xs-12 col-sm-8">
-	                <h4 class="recent-ratings-header">You do not have any credits. You can earn credits by referring a user to Knird or ordering drinks.</h4>
+		    <div class="col-xs-12">
+                <h3 class="user-settings-header">Current Status</h3>
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-3">
+            	<div class="credit-tile">
+            		<p class="credit-tile-header">
+            			Current credit
+            			<sup  data-toggle="tooltip" title="Credits will automatically be applied towards your future drink purchases.">?</sup>
+            		</p>
+            		<h1 class="credit-tile-number"><%= number_to_currency(@available_credit_value, precision: 2) %></h1>
+            	</div>
+            </div>
+            <% if @pending_credits_value > 0%>
+	            <div class="col-xs-6 col-sm-4 col-md-3">
+	            	<div class="credit-tile">
+	            		<p class="credit-tile-header">
+	            			Pending credit
+	            			<sup  data-toggle="tooltip" title="This credit will be applied to your account on <%= @next_quarter_start %>.">?</sup>
+	            		</p>
+	            		<h1 class="credit-tile-number"><%= number_to_currency(@pending_credits_value, precision: 2) %></h1>
+	            	</div>
 	            </div>
-            <% else %>
-                <div class="col-xs-12 col-sm-8">
-	                <h4 class="recent-ratings-header"><b>You have $<%= @available_credit_value %> in credits.</b> This will automatically be applied towards your future drink purchases.</h4>
-	            </div>
-            <% end %>
+	        <% end %>
         </div>
         <% if @number_of_unrated_drinks >= 1 %>
             <hr>
             <div class="row no-margin">
-                <div class="col-sm-12">
-                    <h3 class="user-settings-header">Opportunities</h3>
+                <div class="col-xs-12">
+                    <h3 class="user-settings-header">Opportunity</h3>
                 </div>
-                    <div class="row opportunity-row">
-                        <div class="col-sm-8">
-                            <h5 class="signup-next-step-text">
-                                You have <b><%= @number_of_unrated_drinks %>
-                                unrated <%= "drink".pluralize(@number_of_unrated_drinks) %> bought in the last month
-                                worth <%= @total_reward_opportunity.round %> bottle caps</b>.  Get on it!
-                            </h5>
-                        </div>
-                        <div class="col-sm-4">
-                            <%= link_to "Rate drinks", user_deliveries_path, class: "btn btn-default btn-success thank-you-next-button" %>
-                        </div>
-                    </div>
-            </div>
-        <% end %>
-        <% if @pending_credits_value > 0%>
-            <hr>
-            <div class="row no-margin">
-                <div class="col-sm-12">
-                    <h3 class="user-settings-header">Upcoming Credits</h3>
+                <div class="col-xs-6 col-sm-4 col-md-3">
+	            	<div class="credit-tile">
+	            		<p class="credit-tile-header">
+	            			Potential credit
+	            			<sup  data-toggle="tooltip" title="Gain credits by rating your unrated drinks!">?</sup>
+	            		</p>
+	            		<h1 class="credit-tile-number"><%= number_to_currency(@total_reward_opportunity, precision: 2) %></h1>
+	            	</div>
+	            </div>
+                <div class="col-xs-6 col-sm-4 col-md-3">
+                    <h5 class="unrated-drinks-text">
+                        You have <b><%= @number_of_unrated_drinks %>
+                        unrated <%= "drink".pluralize(@number_of_unrated_drinks) %></b>!
+                    </h5>
+                    <%= link_to "Rate drinks", unrated_drinks_path, class: "btn btn-default btn-success thank-you-next-button" %>
                 </div>
-                    <div class="row opportunity-row">
-                        <div class="col-sm-8">
-                            <h5 class="signup-next-step-text">
-                                You have $<%= @pending_credits_value %> in credits that will be applied to your
-                                account at the start of next quarter, on <%= @next_quarter_start %>.
-                            </h5>
-                        </div>
-                    </div>
             </div>
         <% end %>
         <% if @credits != nil and @credits.length > 0 %>
@@ -63,7 +65,7 @@
                     <h3 class="user-settings-header">History</h3>
                 </div>
 		        <div class="col-xs-12 col-sm-8">
-		        	<table class="table table-striped">
+		        	<table class="table table-striped credit-table">
 			            <thead>
 			                <tr>
 			                <th scope="col">Date</th>
@@ -76,7 +78,7 @@
 			                <% @credits.each do |credit| %>
 			                    <tr>
 			                        <td><%= credit.created_at.strftime("%b %e, %Y") %></td>
-			                        <td> <span class="<%= if credit.transaction_credit > 0 then "positive-amount" else "negative-amount" end %>"> <%= if credit.transaction_credit > 0 then "+" else "-" end %></span> $<%= credit.transaction_credit.abs %></td>
+			                        <td class="credit-holding-column"> <span class="<%= if credit.transaction_credit > 0 then "positive-amount" else "negative-amount" end %>"> <span><%= if credit.transaction_credit > 0 then "+" else "-" end %></span> <%= number_to_currency(credit.transaction_credit.abs, precision: 2) %></span></td>
 			                        <td><%= credit.reason_string %></td>
 			                        <td class="amount-column">$<%= credit.total_credit.round(2) %></td>
 			                    </tr>

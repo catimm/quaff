@@ -18,7 +18,7 @@ class RewardsCreditsController < ApplicationController
     @next_quarter_start = (next_quarter_start DateTime.now).strftime("%B") + " 1st"
 
     # find if user has purchased drinks in the last month but not rated them
-    @unrated_drinks = AccountDelivery.where(account_id: current_user.account_id).where("quantity > times_rated").where('created_at >= ?', 1.month.ago)
+    @unrated_drinks = AccountDelivery.where(account_id: current_user.account_id).where("quantity > times_rated").where('created_at >= ?', 6.weeks.ago)
     @total_possible_to_rate = @unrated_drinks.sum(:quantity)
 
     @total_rated = @unrated_drinks.sum(:times_rated)

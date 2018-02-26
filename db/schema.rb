@@ -427,13 +427,13 @@ ActiveRecord::Schema.define(version: 20180218073508) do
   end
 
   create_table "inventories", force: :cascade do |t|
-    t.integer  "beer_id"
     t.integer  "stock"
     t.integer  "reserved"
     t.integer  "order_request"
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
     t.integer  "size_format_id"
+    t.integer  "beer_id"
     t.decimal  "drink_price",         precision: 5, scale: 2
     t.decimal  "drink_cost",          precision: 5, scale: 2
     t.integer  "limit_per"

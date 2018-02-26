@@ -11,6 +11,7 @@
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #  friend_user_id             :integer
+#  transaction_amount         :decimal(, )
 #
 
 require 'test_helper'
