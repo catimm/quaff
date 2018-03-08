@@ -1266,12 +1266,15 @@ end # end of task to find recent drink addition to DB
 
 desc "update customers subscriptions"
 task :update_customer_subscriptions => :environment do
+  require "stripe"
   # find customers whose subscription expires today  
     @expiring_subscriptions = UserSubscription.where(active_until: (Date.today.beginning_of_day)..(Date.today.end_of_day))
     #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
     
     # loop through each customer and update 
     @expiring_subscriptions.each do |expiring_subscription|
+      @user = User.find_by_id(expiring_subscription.user_id)
+      
       # get auto renew subscription info
       @auto_renew_subscription = Subscription.find_by_id(expiring_subscription.auto_renew_subscription_id)
       
@@ -1290,7 +1293,7 @@ task :update_customer_subscriptions => :environment do
           # update Knird DB with reset deliveries_this_period column
           expiring_subscription.update(deliveries_this_period: 0, active_until: nil)
           expiring_subscription.increment!(:renewals)
-          
+    
         else # if customer is renewing to a different subscription
           
           # turn current subscription off
@@ -1304,9 +1307,24 @@ task :update_customer_subscriptions => :environment do
                                 account_id: expiring_subscription.account_id,
                                 renewals: 0,
                                 currently_active: true)
-                                
+                              
         end # end of checking for change in subscription
         
+        # bill customer
+        # create subscription info
+        @total_price = (@auto_renew_subscription.subscription_cost * 100).floor
+        @charge_description = @auto_renew_subscription.subscription_name
+       
+        # retrieve customer Stripe info
+        customer = Stripe::Customer.retrieve(expiring_subscription.stripe_customer_number) 
+        # charge the customer for subscription 
+          Stripe::Charge.create(
+            :amount => @total_price, # in cents
+            :currency => "usd",
+            :customer => expiring_subscription.stripe_customer_number,
+            :description => @charge_description
+          )
+      
         # determine plan info customer is being renewed into
         @new_deliveries = @auto_renew_subscription.deliveries_included
         @plan_name = @auto_renew_subscription.subscription_name
@@ -1326,7 +1344,7 @@ task :update_customer_subscriptions => :environment do
         
         # create next two delivery dates
         @first_delivery_date = @last_delivery.delivery_date + @delivery_frequency.weeks
-        Delivery.create(account_id: customer.account_id, 
+        Delivery.create(account_id: expiring_subscription.account_id, 
                     delivery_date: @first_delivery_date,
                     status: "admin prep",
                     subtotal: 0,
@@ -1336,7 +1354,7 @@ task :update_customer_subscriptions => :environment do
                     share_admin_prep_with_user: false)
         
         @second_delivery_date = @last_delivery.delivery_date + @delivery_frequency_times_two.weeks
-        Delivery.create(account_id: customer.account_id, 
+        Delivery.create(account_id: expiring_subscription.account_id, 
                     delivery_date: @second_delivery_date,
                     status: "admin prep",
                     subtotal: 0,
