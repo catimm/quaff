@@ -117,6 +117,7 @@ class Admin::FulfillmentController < ApplicationController
   def admin_confirm_delivery
     # get delivery info
     @delivery = Delivery.find_by_id(params[:id])
+    @next_delivery = Delivery.where(account_id: @delivery.account_id, status: "admin prep").first
     @delivery_date = (@delivery.delivery_date).strftime("%B %e, %Y")
     
     # charge customer
@@ -179,20 +180,28 @@ class Admin::FulfillmentController < ApplicationController
     @subscription_deliveries_included = @customer_subscription.subscription.deliveries_included
     
     # increment delivery totals
-    @customer_subscription.increment!(:deliveries_this_period)
+    
     @customer_subscription.increment!(:total_deliveries)
-    if @customer_subscription.subscription_id != 1
+    if @customer_subscription.subscription.deliveries_included != 0
       # update account based on number of remaining deliveries in this period
       @remaining_deliveries = @subscription_deliveries_included - @customer_subscription.deliveries_this_period
       if @remaining_deliveries == 0
-        UserMailer.seven_day_membership_expiration_notice(@account_owner[0], @customer_subscription).deliver_now
+        UserMailer.three_day_membership_expiration_notice(@account_owner[0], @customer_subscription).deliver_now
+        
+      elsif @remaining_deliveries == 1
+        # set expiration/renewal date to trigger series of renewal emails and automatic renewal
+        @next_delivery_date = @next_delivery.delivery_date
+        @renewal_date = @next_delivery_date + 3.days
+        # add renewal date to user subscription
+        @customer_subscription.update_attribute(:active_until, @renewal_date)
+        
       elsif @remaining_deliveries >= 2
         # start next delivery cycle
         
         # get account delivery frequency
         @delivery_frequency = @account.delivery_frequency
         # get new delivery date
-        @second_delivery_date = @delivery.delivery_date + @delivery_frequency.weeks
+        @second_delivery_date = @next_delivery.delivery_date + @delivery_frequency.weeks
         # insert new line in delivery table
         @next_delivery = Delivery.create(account_id: @delivery.account_id, 
                                           delivery_date: @second_delivery_date,
@@ -212,7 +221,7 @@ class Admin::FulfillmentController < ApplicationController
     end
 
     # increment reward points only on 6, 25 delivery plans (subscription id 2, 3)
-    if @customer_subscription.subscription_id == 2 or @customer_subscription.subscription_id == 3
+    if @customer_subscription.subscription.deliveries_included != 0
       
       # Get the last reward_points entry for this account
       last_reward = RewardPoint.where(account_id: @delivery.account_id).sort_by(&:id).reverse[0]

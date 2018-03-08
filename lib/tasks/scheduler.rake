@@ -33,7 +33,10 @@ task :disti_import_inventory => :environment do
             # drink associated with that item # remains constant. IF they do, we'll have dirty data and will need to 
             # update this logic
             @disti_item.update(size_format_id: inventory.size_format_id, drink_cost: inventory.drink_cost, 
-                                drink_price: inventory.drink_price, disti_upc: inventory.disti_upc, 
+                                drink_price_four_five: inventory.drink_price_four_five, 
+                                drink_price_five_zero: inventory.drink_price_five_zero,
+                                drink_price_five_five: inventory.drink_price_five_five,
+                                disti_upc: inventory.disti_upc, 
                                 min_quantity: inventory.min_quantity, regular_case_cost: inventory.regular_case_cost, 
                                 current_case_cost: inventory.current_case_cost, currently_available: true)
           else # this is a new disti item, so create it
@@ -88,7 +91,9 @@ task :disti_import_inventory => :environment do
             end
             # now create new Disti Inventory row
             DistiInventory.create(beer_id: @drink_id, size_format_id: inventory.size_format_id, 
-                                  drink_cost: inventory.drink_cost, drink_price: inventory.drink_price, 
+                                  drink_cost: inventory.drink_cost, drink_price_four_five: inventory.drink_price_four_five, 
+                                  drink_price_five_zero: inventory.drink_price_five_zero,
+                                  drink_price_five_five: inventory.drink_price_five_five, 
                                   distributor_id: inventory.distributor_id, 
                                   disti_item_number: inventory.disti_item_number, disti_upc: inventory.disti_upc, 
                                   min_quantity: inventory.min_quantity, regular_case_cost: inventory.regular_case_cost, 
@@ -140,7 +145,9 @@ task :disti_change_inventory => :environment do
             # drink associated with that item # remains constant. IF they do, we'll have dirty data and will need to 
             # update this logic
             @disti_item.update(size_format_id: inventory.size_format_id, drink_cost: inventory.drink_cost, 
-                                drink_price: inventory.drink_price, disti_upc: inventory.disti_upc, 
+                                drink_price_four_five: inventory.drink_price_four_five, 
+                                drink_price_five_zero: inventory.drink_price_five_zero,
+                                drink_price_five_five: inventory.drink_price_five_five, disti_upc: inventory.disti_upc, 
                                 min_quantity: inventory.min_quantity, regular_case_cost: inventory.regular_case_cost, 
                                 current_case_cost: inventory.current_case_cost, currently_available: true)
           else # this is a new disti item, so create it
@@ -195,7 +202,9 @@ task :disti_change_inventory => :environment do
             end
             # now create new Disti Inventory row
             DistiInventory.create(beer_id: @drink_id, size_format_id: inventory.size_format_id, 
-                                  drink_cost: inventory.drink_cost, drink_price: inventory.drink_price, 
+                                  drink_cost: inventory.drink_cost, drink_price_four_five: inventory.drink_price_four_five, 
+                                  drink_price_five_zero: inventory.drink_price_five_zero,
+                                  drink_price_five_five: inventory.drink_price_five_five, 
                                   distributor_id: inventory.distributor_id, 
                                   disti_item_number: inventory.disti_item_number, disti_upc: inventory.disti_upc, 
                                   min_quantity: inventory.min_quantity, regular_case_cost: inventory.regular_case_cost, 
@@ -1258,43 +1267,55 @@ end # end of task to find recent drink addition to DB
 desc "update customers subscriptions"
 task :update_customer_subscriptions => :environment do
   # find customers whose subscription expires today  
-    @expiring_subscriptions = UserSubscription.expiring_subscriptions
+    @expiring_subscriptions = UserSubscription.where(active_until: (Date.today.beginning_of_day)..(Date.today.end_of_day))
     #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
     
     # loop through each customer and update 
-    @expiring_subscriptions.each do |customer|
-      #@customer_info = User.find_by_id(customer.user_id)
-      # if customer is not renewing, send an email to say we'll miss them
-      if customer.auto_renew_subscription_id == nil
-        # send customer email
-        UserMailer.cancelled_membership(customer.user).deliver_now
+    @expiring_subscriptions.each do |expiring_subscription|
+      # get auto renew subscription info
+      @auto_renew_subscription = Subscription.find_by_id(expiring_subscription.auto_renew_subscription_id)
       
+      # if customer is not renewing, send an email to say we'll miss them
+      if @auto_renew_subscription.deliveries_included == 0
+        # send customer email
+        UserMailer.cancelled_membership(expiring_subscription.user).deliver_now
+        # turn current subscription off
+        expiring_subscription.update(active_until: false)
+        
       else # renewal will happen  
-        # determine which plan customer is being renewed into
-        if customer.auto_renew_subscription_id == 2
-          @new_deliveries = "6"
-        elsif customer.auto_renew_subscription_id == 3
-          @new_deliveries = "25"
-        end
         
         # determine if customer is renewing current subscription or changing subscriptions
-        if customer.auto_renew_subscription_id == customer.subscription_id # if customer is renewing current subscription
+        if expiring_subscription.auto_renew_subscription_id == expiring_subscription.subscription_id # if customer is renewing current subscription
           
-          # update Knird DB with new active_until date & reset deliveries_this_period column
-          UserSubscription.update(customer.id, deliveries_this_period: 0)
+          # update Knird DB with reset deliveries_this_period column
+          expiring_subscription.update(deliveries_this_period: 0, active_until: nil)
+          expiring_subscription.increment!(:renewals)
           
         else # if customer is renewing to a different subscription
           
-          # update Knird DB with new active_until date, reset deliveries_this_period column, and update subscription id
-          UserSubscription.update(customer.id, currently_active: false)
-          
+          # turn current subscription off
+          expiring_subscription.update(active_until: false)
+          # add new subscription row
+          UserSubscription.create(user_id: expiring_subscription.user_id, 
+                                subscription_id: expiring_subscription.auto_renew_subscription_idd,
+                                auto_renew_subscription_id: expiring_subscription.auto_renew_subscription_id,
+                                deliveries_this_period: 0,
+                                total_deliveries: 0,
+                                account_id: expiring_subscription.account_id,
+                                renewals: 0,
+                                currently_active: true)
+                                
         end # end of checking for change in subscription
         
+        # determine plan info customer is being renewed into
+        @new_deliveries = @auto_renew_subscription.deliveries_included
+        @plan_name = @auto_renew_subscription.subscription_name
+        
         # send customer rewnewal email
-        UserMailer.renewing_membership(customer.user, @new_deliveries).deliver_now
+        UserMailer.renewing_membership(expiring_subscription.user, @plan_name, @new_deliveries).deliver_now
         
         # account info
-        @account = Account.find_by_id(customer.account_id)
+        @account = Account.find_by_id(expiring_subscription.account_id)
         
         # get delivery frequency
         @delivery_frequency = @account.delivery_frequency
@@ -1332,8 +1353,8 @@ end # end of update_customer_subscriptions task
 
 desc "expiring customers subscriptions"
 task :expiring_customer_subscriptions => :environment do
-  # find customers whose subscription expires in 3 days  
-    @expiring_subscriptions = UserSubscription.where(active_until: (3.days.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
+  # find customers whose subscription expires in 7 days  
+    @expiring_subscriptions = UserSubscription.where(active_until: (7.days.from_now.beginning_of_day)..(7.days.from_now.end_of_day))
     #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
     
     # check if any expiring customers exist
@@ -1344,9 +1365,9 @@ task :expiring_customer_subscriptions => :environment do
         @customer_info = User.find_by_id(subscription.user_id)
         
         # send customer rewnewal email
-        UserMailer.three_day_membership_expiration_notice(@customer_info, subscription).deliver_now
+        UserMailer.seven_day_membership_expiration_notice(@customer_info, subscription).deliver_now
          
       end # end loop through expiring customers  
     end # end of check whether expiring customers exist
     
-end # end of update_customer_subscriptions task
+end # end of expiring_customer_subscriptions task

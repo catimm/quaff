@@ -153,7 +153,7 @@ class UserMailer < ActionMailer::Base
     @review_date = (delivery_info.delivery_date - 1.day)
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
     #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
-    @user_subscription = UserSubscription.where(user_id: customer.id)[0]
+    @user_subscription = UserSubscription.where(account_id: customer.account_id)[0]
     if @user_subscription.subscription_id == 1
       @drinks_ordered = Order.find_by_id(delivery_info.order_id).pluck(:number_of_drinks)
       if total_quantity.to_i < @drinks_ordered
@@ -408,7 +408,7 @@ class UserMailer < ActionMailer::Base
     else
       @location_name = user_address_info.location_type
     end
-    if !user_address_info.address_unit.nil?
+    if !user_address_info.address_unit.blank?
       @street_address = user_address_info.address_street + ", " + user_address_info.address_unit
     else
       @street_address = user_address_info.address_street
@@ -444,6 +444,46 @@ class UserMailer < ActionMailer::Base
     
   end # end of delivery_zone_change_confirmation email 
   
+  def shipment_location_change_confirmation(customer, new_address, next_delivery)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    @next_delivery_date = next_delivery.delivery_date.strftime("%A, %B %-d")
+    if new_address.location_type == "Other"
+      @location_name = new_address.other_name
+    else
+      @location_name = new_address.location_type
+    end
+    if !new_address.address_unit.blank?
+      @street_address = new_address.address_street + ", " + user_address_info.address_unit
+    else
+      @street_address = new_address.address_street
+    end
+    @city_address = new_address.city + ", " + new_address.state + " " + new_address.zip
+
+    payload  = {
+      recipients: [
+        {
+          address: { 
+            email: customer.email 
+            },
+        }
+      ],
+      content: {
+        template_id: 'shipment-location-change-confirmation'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        next_delivery_date: @next_delivery_date,
+        location_name: @location_name,
+        street_address: @street_address,
+        city_address: @city_address
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of shipment_location_change_confirmation email 
+  
   def delivery_date_with_end_date_change_confirmation(customer, old_delivery_date, new_delivery_date)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     @user_subscription_info = UserSubscription.where(user_id: customer.id, currently_active: true).first
@@ -471,7 +511,7 @@ class UserMailer < ActionMailer::Base
     
   end # end of delivery_date_with_end_date_change_confirmation email
   
-  def welcome_email(customer, membership_name, membership_deliveries, subscription_fee, renewal_date, membership_length)
+  def welcome_email(customer, membership_name, membership_deliveries, subscription_fee, plan_type, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     
     @customer_delivery_preference = DeliveryPreference.find_by_user_id(customer.id)
@@ -499,7 +539,7 @@ class UserMailer < ActionMailer::Base
         membership_name: membership_name,
         membership_deliveries: membership_deliveries,
         subscription_fee: subscription_fee,
-        renewal_date: renewal_date,
+        plan_type: plan_type,
         membership_length: membership_length
       }
     }
@@ -535,7 +575,7 @@ class UserMailer < ActionMailer::Base
     
   end # end of friend_request email
   
-  def renewing_membership(customer, new_deliveries)
+  def renewing_membership(customer, plan_name, new_deliveries)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
      
     payload  = {
@@ -549,6 +589,7 @@ class UserMailer < ActionMailer::Base
       },
       substitution_data: {
         customer_name: customer.first_name,
+        plan_name: plan_name,
         new_deliveries: new_deliveries
       }
     }
