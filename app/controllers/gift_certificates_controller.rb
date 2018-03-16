@@ -74,7 +74,7 @@ class GiftCertificatesController < ApplicationController
     @gift_certificate = GiftCertificate.new(gift_certificate_params)
 
     token = params[:stripeToken]
-    amount = (gift_certificate_params[:amount].to_f * 100).floor
+    @total_amount = (gift_certificate_params[:amount].to_f * 100).floor
 
     # Create the gift certificate with purchase completed as false
     # will be set to true by the callback from stripe
@@ -88,16 +88,53 @@ class GiftCertificatesController < ApplicationController
 
     @gift_certificate.redeem_code = coupon_code
     @gift_certificate.save
-
-    # Make the stripe call after saving the gift certificate to make sure
-    # that when the callback comes from stripe there is already a record in the db to update
-    charge = Stripe::Charge.create(
-      :amount => amount,
-      :currency => "usd",
-      :description => "Knird Gift Certificate for #{@gift_certificate.receiver_email}",
-      :source => token,
-      :metadata => {"redeem_code" => @gift_certificate.redeem_code}
-    )
+    
+    # check for stripe customer number
+    if user_signed_in?
+      # check if user already has a subscription row
+      @current_customer = UserSubscription.where(account_id: current_user.account_id, currently_active: true).where("stripe_customer_number IS NOT NULL").first
+      
+      if !@current_customer.blank?
+        # charge the customer for their subscription 
+        Stripe::Charge.create(
+          :amount => @total_amount, # in cents
+          :currency => "usd",
+          :customer => @current_customer.stripe_customer_number,
+          :description => "Knird Gift Certificate for #{@gift_certificate.receiver_email}",
+          :metadata => {"redeem_code" => @gift_certificate.redeem_code}
+        )
+      else 
+        # create Stripe customer acct
+        customer = Stripe::Customer.create(
+                :source => params[:stripeToken],
+                :email => current_user.email
+              )
+        # charge the customer for their subscription 
+        Stripe::Charge.create(
+          :amount => @total_amount, # in cents
+          :currency => "usd",
+          :customer => customer.id,
+          :description => "Knird Gift Certificate for #{@gift_certificate.receiver_email}",
+          :metadata => {"redeem_code" => @gift_certificate.redeem_code}
+        )
+      end
+         
+   
+    else
+      # create Stripe customer acct
+        customer = Stripe::Customer.create(
+                :source => params[:stripeToken],
+                :email => @gift_certificate.giver_email
+              )
+      # charge the customer for their subscription 
+        Stripe::Charge.create(
+          :amount => @total_amount, # in cents
+          :currency => "usd",
+          :customer => customer.id,
+          :description => "Knird Gift Certificate for #{@gift_certificate.receiver_email}",
+          :metadata => {"redeem_code" => @gift_certificate.redeem_code}
+        )
+    end
     
     flash[:success] = "Thank you for ordering the gift certificate. You will receive an email at #{@gift_certificate.giver_email} with the details shortly."
     redirect_to gift_certificates_success_path()
