@@ -82,7 +82,7 @@ Rails.application.routes.draw do
   
   root :to => 'home#index'
    
-  # routes to user deliveries pages
+  # routes to user delivery settings pages
   get '/delivery_settings/index' => 'delivery_settings#index', :as => 'user_delivery_settings'
   get '/delivery_settings/delivery_location' => 'delivery_settings#delivery_location', :as => 'user_delivery_settings_location'
   get '/delivery_settings/change_delivery_time' => 'delivery_settings#change_delivery_time', :as => 'change_delivery_time'
@@ -95,6 +95,16 @@ Rails.application.routes.draw do
   post '/delivery_settings/customer_delivery_messages/' => 'delivery_settings#customer_delivery_messages', :as => 'customer_delivery_messages'
   post '/delivery_settings/customer_delivery_requests/' => 'delivery_settings#customer_delivery_requests', :as => 'customer_delivery_requests_settings'
   post '/signup/customer_delivery_requests/' => 'signup#customer_delivery_requests', :as => 'customer_delivery_requests_signup'
+  
+  # routes to user shipment settings pages
+  get '/shipment_settings/index' => 'shipment_settings#index', :as => 'user_shipment_settings'
+  patch '/shipment_settings/shipment_update_additional_requests' => 'shipment_settings#shipment_update_additional_requests', :as => 'shipment_update_additional_requests'
+  post '/shipment_settings/update_drink_choice/:id' => 'shipment_settings#update_drink_choice', :as => 'update_shipment_drink_choice'
+  post '/shipment_settings/update_frequency_choice/:id' => 'shipment_settings#update_frequency_choice', :as => 'update_shipment_frequency_choice'
+  post '/shipment_settings/next_shipment_date_change/:id' => 'shipment_settings#next_shipment_date_change', :as => 'next_shipment_date_change'
+  get '/shipment_settings/delivery_location' => 'shipment_settings#delivery_location', :as => 'user_shipping_location'
+  post '/shipment_settings/customer_shipment_requests/' => 'shipment_settings#customer_shipment_requests', :as => 'customer_shipment_requests_settings'
+  get '/shipment_settings/change_shipment_location/:id' => 'shipment_settings#change_shipment_location', :as => 'change_shipment_location'
   
   # routes to user drink preferences pages
   get '/drink_preferences/drink_profile/:id' => 'drink_preferences#drink_profile', :as => 'user_profile'
@@ -176,7 +186,11 @@ Rails.application.routes.draw do
   post '/signup/process_drinks_large_getting_started/:id' => 'signup#process_drinks_large_getting_started', :as => 'process_drinks_large_getting_started'
 
   post '/signup/process_delivery_frequency_getting_started/:id' => 'signup#process_delivery_frequency_getting_started', :as => 'process_delivery_frequency_getting_started'
-   
+  
+  post '/signup/process_shipping_frequency_getting_started/:id' => 'signup#process_shipping_frequency_getting_started', :as => 'process_shipping_frequency_getting_started'
+  
+  post '/signup/process_shipping_first_date_chosen/:id' => 'signup#process_shipping_first_date_chosen', :as => 'process_shipping_first_date_chosen'
+  
   get '/signup/delivery_preferences_getting_started' => 'signup#delivery_preferences_getting_started', :as => 'delivery_preferences_getting_started'
   get '/signup/choose_delivery_time' => 'signup#choose_delivery_time', :as => 'choose_delivery_time'
   
@@ -217,13 +231,15 @@ Rails.application.routes.draw do
   # Orders
   get '/orders/new' => 'orders#new', :as => 'orders_new'
   get '/orders/new/estimate' => 'orders#estimate', :as => 'orders_estimate'
-  post '/orders/process' => 'orders#process_order', :as => 'process_order'
+  post '/orders/process_first_order' => 'orders#process_first_order', :as => 'process_first_order'
+  post '/orders/process_subsequent_order' => 'orders#process_subsequent_order', :as => 'process_subsequent_order'
  
   # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
+  get 'about_us' => 'home#about_us', :as => "about_us"
+  get 'faqs' => 'home#faqs', :as => "faqs"
   get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
-  get 'knird_ships' => 'home#knird_ships', :as => "knird_ships"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'
