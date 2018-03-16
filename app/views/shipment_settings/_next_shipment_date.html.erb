@@ -1,0 +1,16 @@
+<div class="col-xs-12 no-padding">
+    <div class="row no-margin">
+        <div class="col-xs-12 col-sm-5 no-padding">
+            <h3 class="delivery-preference-prompt">Next shipment date: <span class="shipment-date-emphasis"><%= @next_shipment_date.strftime("%B %e, %Y") %></span></h3>
+        	<% if @change_permitted == true %>
+				<h5 class="change-shipping-date-request show" id="shipping-change-show-text">Change your next shipment date</h5>
+				<h5 class="change-shipping-date-request hidden" id="shipping-change-hide-text">Hide dates</h5>
+			<% else %>
+				<h5>It's too late to change your next shipment date. Please contact us if you need to.</h5>
+			<% end %>
+        </div>
+        <div class="col-xs-12 col-sm-7 hidden" id="shipping-date-options">
+            <%= render 'shipment_settings/shipping_date_options' %>
+        </div>
+    </div>
+</div>

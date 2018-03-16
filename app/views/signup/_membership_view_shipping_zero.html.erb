@@ -1,0 +1,36 @@
+<div class="row">
+	<div class="container">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 text-center no-padding">
+			<h2 class="signup-question membership-plan-signup">Confirm your plan</h2>
+			<h5 class="signup-question-detail">This step confirms you want The Ad Hoc Plan.</h5>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+		<div class="homepage-plan-options">
+			<%= render 'layouts/plan_shipping_zero' %>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding text-center">
+					<%= link_to "Confirm The Ad Hoc Plan", 
+								process_account_membership_getting_started_path(@subscription_level), 
+								method: :post, class: 'btn btn-success formButton-start-plan' 
+					%>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-offset-2 col-xs-8 col-sm-offset-5 col-sm-2 text-center">
+		<h6 class="membership-option-change"><i>or</i></h6>
+		<%= link_to change_membership_choice_path(@user_subscription.subscription.subscription_level_group), class: 'btn btn-success formButton-start-plan' do %>
+			<i class="fa fa-refresh" aria-hidden="true"> Change plans</i>
+		<% end %>
+	</div>
+</div>

@@ -1,8 +1,25 @@
 class OrdersController < ApplicationController
     before_filter :authenticate_user!
     include DeliveryEstimator
-
+    require "stripe"
+    
     def new
+        # get user info
+        @user = User.find_by_id(current_user.id)
+        @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+        # determine which UX
+        if @user_subscription.stripe_customer_number.nil?
+          @first_time_order = true
+        end
+        # determine number of drinks to show
+        if (1..4).include?(@user_subscription.subscription_id)
+          @max_drink_number = 29
+          @order_type = "delivery"
+        else
+          @max_drink_number = 23
+          @order_type = "shipment"
+        end
+        # instantiate new order
         @order = Order.new
         @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
         @max_large_format_drinks = 14
@@ -43,12 +60,67 @@ class OrdersController < ApplicationController
         @final_estimate = "~ $" + @delivery_cost_estimate_low.to_s + " - $" + @delivery_cost_estimate_high.to_s
         render plain: @final_estimate
     end
-
-    def process_order
+    
+    def process_first_order
         @order = Order.new(order_params)
+        # add additional attributes to order
         @order.account_id = current_user.account_id
         @order.user_id = current_user.id
-        @order.number_of_large_drinks = (@order.number_of_drinks/7.to_f).ceil
+        if !@order.number_of_drinks.nil?
+          @order.number_of_large_drinks = (@order.number_of_drinks/7.to_f).ceil
+        end
+        
+        if !@order.valid?
+            @request_length = @order.additional_requests.size
+            if @order.delivery_date.nil? && @order.number_of_drinks.nil?
+              flash[:failure] = "Please select the number of drinks and a delivery date"
+            elsif @order.delivery_date.nil?
+              flash[:failure] = "Please select a delivery date"
+            elsif @order.number_of_drinks.nil?
+              flash[:failure] = "Please select the number of drinks"
+            else
+              flash[:failure] = "Please limit the additional request to 500 characters"
+            end
+            redirect_to orders_new_path
+            return
+        else # create new Stripe customer
+          # create Stripe customer acct
+          customer = Stripe::Customer.create(
+                  :source => params[:stripeToken],
+                  :email => current_user.email
+                )
+        end
+        
+        # save order
+        @order.save
+
+        @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+        @delivery_preferences.update(drinks_per_week: @order.number_of_drinks, max_large_format: @order.number_of_large_drinks, drinks_per_delivery: @order.number_of_drinks)
+
+        Delivery.create(account_id: current_user.account_id,
+                                order_id: @order.id,
+                                delivery_date: @order.delivery_date,
+                                status: "admin prep",
+                                subtotal: 0,
+                                sales_tax: 0,
+                                total_price: 0,
+                                delivery_change_confirmation: false,
+                                share_admin_prep_with_user: false)
+
+        AdminMailer.admin_customer_order(current_user, @order).deliver_now
+        
+        redirect_to user_deliveries_path
+
+    end
+    
+    def process_subsequent_order
+        @order = Order.new(order_params)
+        # add additional attributes to order
+        @order.account_id = current_user.account_id
+        @order.user_id = current_user.id
+        if !@order.number_of_drinks.nil?
+          @order.number_of_large_drinks = (@order.number_of_drinks/7.to_f).ceil
+        end
         
         if !@order.valid?
             @request_length = @order.additional_requests.size
@@ -65,6 +137,7 @@ class OrdersController < ApplicationController
             return
         end
 
+        # save order
         @order.save
 
         @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first

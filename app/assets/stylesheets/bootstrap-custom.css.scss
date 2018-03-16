@@ -9,6 +9,8 @@
 
 // Descriptive colors for project
 $white: #fff;
+$extra-light-blue-gray: #f7fafa;
+$extra-light-soft-gray: #fafafa;
 $extra-light-gray: #e7e7e7;
 $light-gray: #f0f0f0;
 $medium-light-gray: #d9d9d9;
@@ -45,8 +47,6 @@ $extra-light-red: #FE6165;
 $faded-red: #FF8585;
 $facebook-blue-color: #3b5998;
 $twitter-blue-color: #1dcaff;
-$extra-light-blue-gray: #f7fafa;
-$extra-light-soft-gray: #fafafa;
 $button-green: #5cb85c;
 $bootstrap-info-blue: #5bc0de;
 $bootstrap-red-button-hover-background: #c9302c;
@@ -72,9 +72,9 @@ $normal-text: $dark-gray;
 $more-emphasized-text: $extra-dark-gray;
 $dark-border: $extra-dark-gray;
 $extra-dark-border: $extra-extra-dark-gray;
+$less-emphasized-text: $medium-gray;
 $combined-brewery-text: $dark-gray;
 $combined-drink-text: $bright-blue;
-$less-emphasized-text: $medium-gray;
 $special-beer: $bright-purple;
 $special-text: $bright-orange;
 $best-guess-text: $bright-orange;
@@ -193,7 +193,7 @@ $large-format-color: $bright-aqua-blue;
   font-weight: normal;
   font-style: normal;
 }
-
+ 
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
@@ -465,10 +465,11 @@ label {
   height: 8px;
   padding: 1px 3px;
 }
+.formButton-check-zip-code-button {
+  width: 100%;
+}
 .check-zip-code-button {
-  width:85%;
-  padding: 20px 7.5px;
-  
+  padding: 12px 7.5px;
 }
 .check-zip-code-button::-webkit-input-placeholder {
  font-size: 14px;
@@ -524,16 +525,75 @@ label {
 }
 .index-section-header {
   text-align: center;
-  margin: 25px 0;
+  margin: 35px 0;
   color: $header-text;
   line-height: 1.3;
+  span {
+    color: $action-background;
+  }
+}
+.index-section-header.plan-section {
+  margin-bottom: 15px;
+}
+
+.value-prop-quote {
+  color: $more-emphasized-text;
+  font-size: 22px;
+  margin: 50px 0 50px 0;
+  font-family: Georgia, serif;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.value-prop-quote:before {
+  display: block;
+  padding-left: 10px;
+  content: "\201C";
+  font-size: 80px;
+  position: absolute;
+  left: -30px;
+  top: 15px;
+  color: #7a7a7a;
+}
+.value-prop-quote:after {
+  display: block;
+  padding-left: 10px;
+  content: "\201D";
+  font-size: 80px;
+  position: absolute;
+  right: 95px;
+  bottom: -10px;
+  color: #7a7a7a;
+}
+
+.homepage-read-more-text {
+  font-size: 14px;
+  color: $header-text !important;
+  a {
+    color: $action-background;
+    text-decoration: underline;
+  }
+}
+.index-section-subheader {
+  color: $header-text;
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.25;
+  span {
+    color: $action-background;
+  }
 }
 .about-us-text {
   color: $normal-text;
   text-align: justify;
-  line-height: 2.5;
-  font-size: 20px;
-  margin-bottom: 60px;
+  line-height: 1.5;
+  font-size: 18px;
+  span {
+    color: $action-background;
+  }
+}
+.about-us-bullets-section {
+  margin-left: 30px;
 }
 .about-us-text-emphais {
   color: $action-background;
@@ -604,25 +664,28 @@ label {
   line-height: 1.5;
 }
 .how-it-works-overview {
-  margin: 0 0 30px 0;
+  margin: 0;
 }
-.how-it-works-holder-row {
-  margin-top: 10px;
-  margin-bottom: 15px;
+.how-it-works-steps-outline {
+  border: 1px solid $medium-light-gray;
+  border-radius: 6px;
+  width: 95%;
+  margin-bottom: 20px;
 }
 .how-it-works-number {
-  float: right;
+  float: left;
   background: $white;
-  border: 2px solid $action-background;
-  height: 60px;
-  width: 60px;
+  border: 1px solid $action-background;
+  height: 25px;
+  width: 25px;
   border-radius: 50%;
-  padding: 5px;
-  h1 {
-    font-size: 300%;
+  margin: 0 5px 0 0;
+  text-align: center;
+  h4 {
+    font-size: 18px;
     color: $action-background;
     font-weight: 500;
-    margin: 0 0 5px 11px;
+    margin: 2px 0;
   }
 }
 .how-it-works-icon-holder {
@@ -632,12 +695,26 @@ label {
     color: $homepage-works-icon;
   }
 }
+.how-it-works-headline {
+  color: $action-background;
+  font-size: 21px;
+  margin: 0;
+  
+}
 .how-it-works-desc {
-  float: left;
-  margin: 10px 0;
+  margin: 5px 0 10px 0;
   color: $normal-text;
-  vertical-align: middle !important;
-  font-size: 20px;
+  text-align: justify;
+  font-size: 18px;
+  line-height: 1.25;
+}
+.more-info-text-holder {
+  margin: 30px 0 30px 0;
+}
+.more-info-text {
+  color: $normal-text;
+  text-align: center;
+  font-size: 16px;
 }
 .how-it-works-desc.second-point {
   margin-bottom: 0;
@@ -698,9 +775,24 @@ label {
   border-right: 1px solid $soft-border;
   border-left: 1px solid $soft-border;
 }
+#membership_section {
+  min-height: 250px;
+}
+.check-delivery-area-text {
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+.check-local-delivery-zones-message {
+  color: $normal-text;
+  font-size: 16px;
+}
+.home-page-view-map-button-holder {
+  padding-top: 10px;
+}
 .price-example-chosen {
   background: $white;
   color: $action-background;
+  border: 1px dashed $action-background;
   text-align: center;
   h5 {
     font-size: 16px;
@@ -729,6 +821,12 @@ label {
   line-height: 1.5;
   margin-bottom: 25px;
   margin-top: 0;
+  span {
+    color: $action-background;
+  }
+}
+.example-prices-headers {
+  margin: 0 0 10px 0;
 }
 .sample-delivery-text {
   color: $more-emphasized-text;
@@ -802,6 +900,21 @@ label {
   margin-left: -35% !important;
   top: 50%;
 }
+.membership-details-row {
+  margin-bottom: 20px;
+}
+.plan-location-info-row {
+  margin-bottom: 20px;
+}
+.plan-location-info-holder {
+  padding-top: 5px;
+}
+.location-info {
+  color: $normal-text;
+  span {
+    color: $more-emphasized-text;
+  }
+}
 .membership-plan-includes {
   color: $normal-text;
   text-align: left !important;
@@ -815,7 +928,7 @@ label {
     margin-left: 2.5px;
   }
 }
-.how-it-works-section {
+.how-it-works-section, .prices_section {
   padding-bottom: 30px;
 }
 .request-invitation-row {
@@ -860,6 +973,9 @@ label {
   color: $normal-text;
   margin-bottom: 0;
   font-size: 16px;
+}
+.outside-us-message-text {
+  color: $action-background;
 }
 // User Rewards
 .all-bottle-caps {
@@ -1542,9 +1658,6 @@ p {
       }
   }
 }
-.membership-details-row {
-  margin: 20px 0;
-}
 .homepage-plan-options {
   border: 1px solid $less-emphasized-text !important;
   border-radius: 6px;
@@ -1594,6 +1707,9 @@ p {
   font-weight: 400;
   line-height: 1.3;
   margin: 0 0 15px 0;
+  span {
+    color: $action-background;
+  }
 }
 .membership-plan-feature-setup {
   text-align: right;
@@ -1610,6 +1726,9 @@ p {
       padding: 1px 3px;
       margin-right: 2px;
     }
+  }
+  .plan-cost {
+    font-size: 16px !important;
   }
 }
 .membership-plan-feature-shown {
@@ -2431,9 +2550,30 @@ $beer-header-lines-to-show-fp: 1;
 .drink-list-container {
   margin-top: 118px;
 }
+.more-info-page-header-row {
+  margin: 20px 0 0 0;
+}
+.more-info-header {
+  color: $header-text;
+}
+.faq-question {
+  color: $more-emphasized-text;
+  font-size: 20px;
+  font-weight: 500;
+}
+.faq-answer {
+  color: $normal-text;
+  font-size: 18px;
+  margin: 0 0 10px 10px;
+  line-height: 1.35;
+}
+.last-answer-paragraph {
+  margin-bottom: 30px;
+}
 .page-header {
   margin: 20px 0 0 0;
   padding: 0 0 10px 0;
+  border: none;
   .best-beer-header {
     margin-top: 5px;
     h3 {
@@ -3044,6 +3184,9 @@ $beer-header-lines-to-show-fp: 1;
 }
 
 // User Delivery Location Options
+.shipping-location-spacer-row {
+  height: 20px;
+}
 .delivery-location-help {
   float: left;
   margin: 20px 10px 20px 0;
@@ -3150,7 +3293,11 @@ $beer-header-lines-to-show-fp: 1;
 .submit-address-button {
   width: 100%;
 }
-.change-delivery-time, .change-delivery-time-and-place, .choose-delivery-time, .choose-delivery-time-and-place {
+.change-delivery-time, 
+.change-delivery-time-and-place, 
+.choose-delivery-time, 
+.choose-delivery-time-and-place,
+.initiation-change-shipment-location {
   display: block;
   padding: 2px 12px;
   color: $user-action;
@@ -3292,6 +3439,9 @@ $beer-header-lines-to-show-fp: 1;
 .membership-plan-signup {
   margin-bottom: 20px;
 }
+.membership-plan-signup.change-plan-header {
+  margin-top: 30px !important;
+}
 .signup-question-detail {
   color: $normal-text;
   font-style: italic;
@@ -3329,7 +3479,8 @@ $beer-header-lines-to-show-fp: 1;
 .signup-category-image-holder, 
 .signup-journey-image-holder, 
 .signup-plan-start-holder, 
-.signup-frequency-holder {
+.signup-frequency-holder,
+.shipping-category-image-holder {
   background: $white;
   height: 100%;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -3345,8 +3496,9 @@ $beer-header-lines-to-show-fp: 1;
 .signup-category-image-holder.left, 
 .signup-journey-image-holder.left, 
 .signup-plan-holder.left, 
-.signup-plan-start-holder.left
-.signup-frequency-holder.left {
+.signup-plan-start-holder.left,
+.signup-frequency-holder.left,
+.shipping-category-image-holder.left {
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
@@ -3354,7 +3506,8 @@ $beer-header-lines-to-show-fp: 1;
 .signup-journey-image-holder.right, 
 .signup-plan-holder.right, 
 .signup-plan-start-holder.right,
-.signup-frequency-holder.right {
+.signup-frequency-holder.right
+.shipping-category-image-holder.right {
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
 }
@@ -3362,7 +3515,8 @@ $beer-header-lines-to-show-fp: 1;
 .signup-journey-image-holder:hover, 
 .signup-plan-holder:hover, 
 .signup-plan-start-holder:hover,
-.signup-frequency-holder:hover {
+.signup-frequency-holder:hover,
+.shipping-category-image-holder:hover {
   background: $signup-category-image-background-start;
   h3, p {
     color: $white;
@@ -3372,13 +3526,15 @@ $beer-header-lines-to-show-fp: 1;
 .signup-journey-image-holder.chosen, 
 .signup-plan-holder.chosen, 
 .signup-plan-start-holder.chosen,
-.signup-frequency-holder.chosen {
+.signup-frequency-holder.chosen,
+.shipping-category-image-holder.chosen {
   background: $signup-category-image-background-chosen;
 }
 .signup-category-image-holder-chosen-cover, 
 .signup-journey-image-holder-chosen-cover, 
 .signup-plan-start-holder-chosen-cover,
-.signup-frequency-holder-chosen-cover {
+.signup-frequency-holder-chosen-cover,
+.shipping-category-image-holder-chosen-cover {
     background: rgba(0,135,203, 0.4);
     height: 100% !important;
     width: 100% !important;
@@ -3410,15 +3566,34 @@ $beer-header-lines-to-show-fp: 1;
 .signup-frequency-holder {
   padding: 10px 0;
 }
+.shipping-frequency-holder-parent {
+  margin: 2.5px 0;
+}
+.shipping-frequency-holder {
+  border-radius: 6px;
+  text-align: center;
+  background: $white;
+  height: inherit;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  width: 90%;
+}
+.shipping-frequency-holder.chosen {
+  background: rgba(0,135,203, 0.4);
+}
+.shipping-frequency-holder:hover {
+  background: rgba(0,135,203, 0.4);
+}
 .signup-frequency-first-level-text {
-  color: $action-background;
+  color: $user-action;
+  text-align: center;
   margin: 20px 0;
   font-size: 36px;
   span {
     font-size: 28px;
   }
 }
-.signup-frequency-second-level-text {
+.signup-frequency-second-level-text { 
   color: $normal-text;
   font-style: italic;
 }
@@ -3426,6 +3601,21 @@ $beer-header-lines-to-show-fp: 1;
   color: $more-emphasized-text;
   margin: 20px 0;
   font-size: 24px;
+}
+.shipping-frequency-every-text {
+  color: $normal-text;
+  font-style: italic;
+  padding-top: 10px;
+  margin: 0;
+}
+.shipping-frequency-weeks-number {
+  color: $action-background;
+  margin: 5px 0 0 0;
+}
+.shipping-frequency-weeks-text {
+  color: $action-background;
+  margin: 0;
+  padding-bottom: 5px;
 }
 .signup-category-image-first-level-text {
   color: $normal-text;
@@ -3443,6 +3633,7 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: -5px;
   text-align: center;
 }
+.shipping-frequency
 .signup-start-month, .signup-start-day {
   font-family: 'uppereastsideregular';
   font-size: 1em;
@@ -4098,7 +4289,8 @@ $beer-header-lines-to-show-fp: 1;
 .choose-delivery-time-button, 
 .remove-connection-button, 
 .add-connection-button,
-.resend-invitation-button {
+.resend-invitation-button,
+.change-shipment-location-button {
   width: 100%;
   margin: 10px 0;
 } 
@@ -4375,6 +4567,19 @@ $beer-header-lines-to-show-fp: 1;
 .change-delivery-date-button {
   margin-top: 15px;
 }
+.change-shipping-date-request {
+  color: $action-background;
+  text-decoration: underline;
+}
+.shipment-date-emphasis {
+  color: $more-emphasized-text;
+}
+.first-order-button-col {
+  padding-top: 20px;
+  button {
+    min-width: 200px;
+  }
+}
 .delivery-preference-prompt {
   color: $normal-text;
   font-size: 22px;
@@ -4604,6 +4809,11 @@ $beer-header-lines-to-show-fp: 1;
 .estimated-delivery-price-header {
   color: $normal-text;
   margin: 10px 0;
+  text-align: center;
+}
+.shipment-estimate-note {
+  color: $normal-text;
+  margin: 0 0 10px 0;
   text-align: center;
 }
 .estimation-list {
@@ -5332,7 +5542,10 @@ div.fav-drink-form-holder .twitter-typeahead {
     padding-left: 10px;
 }
 
-.col-xs-5ths {
+.col-xs-5ths,
+.col-sm-5ths,
+.col-md-5ths,
+.col-lg-5ths {
     width: 20%;
     float: left;
 }
@@ -6986,11 +7199,14 @@ $delivery-beer-header-lines-to-show: 2;
     font-weight: 400; 
     margin-bottom: 5px;
   }
-  $beer-header-font-size: 14px;
-  $beer-header-line-height: 1.1;
-  $beer-header-lines-to-show: 2;
+  
   .beer-tile-header {
-    @extend .tile-header; 
+    $beer-header-font-size: 14px;
+    $beer-header-line-height: 1.1;
+    $beer-header-lines-to-show: 2;
+    color: $header-text;
+    font-weight: 400; 
+    margin-bottom: 5px; 
     display: block; /* Fallback for non-webkit */
     display: -webkit-box;
     height: $beer-header-font-size*$beer-header-line-height*$beer-header-lines-to-show; /* Fallback for non-webkit */
@@ -7005,7 +7221,12 @@ $delivery-beer-header-lines-to-show: 2;
     float: left;
   }
   .beer-tile-header-homepage {
-    @extend .tile-header; 
+    $beer-header-font-size: 14px;
+    $beer-header-line-height: 1.1;
+    $beer-header-lines-to-show: 2;
+    color: $header-text;
+    font-weight: 400; 
+    margin-bottom: 5px;
     display: block; /* Fallback for non-webkit */
     display: -webkit-box;
     height: $beer-header-font-size*$beer-header-line-height*$beer-header-lines-to-show; /* Fallback for non-webkit */
@@ -7089,11 +7310,14 @@ $delivery-beer-header-lines-to-show: 2;
   .style-tile-container {
     padding: 5px !important;
   }
-  $style-header-font-size: 13px;
-  $style-header-line-height: 1.1;
-  $style-header-lines-to-show: 2;
+  
   .style-tile-header {
-    @extend .tile-header; 
+    $style-header-font-size: 13px;
+    $style-header-line-height: 1.1;
+    $style-header-lines-to-show: 2;
+    color: $header-text;
+    font-weight: 400; 
+    margin-bottom: 5px;
     display: block; /* Fallback for non-webkit */
     display: -webkit-box;
     height: $style-header-font-size*$style-header-line-height*$style-header-lines-to-show; /* Fallback for non-webkit */
@@ -7385,23 +7609,20 @@ header {
 .value-desc {
   font-size: 16px;
 }
-.how-it-works-number {
-  border: 1px solid $action-background;
-  height: 30px;
-  width: 30px;
-  padding: 3px 5px 5px 5px;
-  h1 {
-    font-size: 150%;
-    font-weight: 400;
-    margin: 0 0 3px 3px;
-  }
+.check-delivery-area-text {
+  font-size: 16px;
+}
+.how-it-works-steps-outline {
+  width: 100%;
 }
 .how-it-works-text-holder {
   margin-top: 3px;
   padding-left: 5px;
   padding-right: 0;
 }
-
+.formButton-check-zip-code-button {
+  margin-top: 10px;
+}
 .how-it-works-icon-holder {
   display: none;
 }
@@ -7410,7 +7631,7 @@ header {
   margin-top: 0 !important;
 }
 .how-it-works-overview {
-  margin: 0 0 10px 0;
+  margin: 0;
 }
 .vertical-dotted-line {
   height: 70px;
@@ -7975,9 +8196,6 @@ header {
     margin: 0 0 10px 25px;
   }
 
-  .how-it-works-desc {
-    width: 90%;
-  }
   .vertical-dotted-line {
     height: 25px;
   }

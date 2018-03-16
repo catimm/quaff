@@ -1,7 +1,6 @@
 $(function () {
-		// set delay function
 
-		
+		// set delay function
 		var delay_small_fade = (function(){
 		  var timer = 0;
 		  return function(callback, ms){
@@ -17,8 +16,6 @@ $(function () {
 		    timer = setTimeout(callback, ms);
 		  };
 		})();
-		
-
 		
 		$('#large_drink_format_carousel').fadeIn(1000, function(){
 		  $(this).removeClass("hidden");
@@ -44,73 +41,56 @@ $(function () {
 		  });
 		});
 		
-		$(document).on('keyup', '#check-zip-code', function () {
-		   var zipCode = $(this).val();
-		   if(zipCode.length > 4){
-		       $.ajax({
-				  type: "GET",
-				  url: "/home/zip_code_response/" + zipCode
-				});
-		   }
+		$(document).on('click', '.formButton-check-zip-code-button', function () {
+		   var zipCode = $('#check-zip-code').val();
+	       $.ajax({
+			  type: "GET",
+			  url: "/home/zip_code_response/" + zipCode
+			});
+			// prevent page from jumping to the top after click event
+			return false;
 		});  
 		
-		// show rating card in drink supply view
-		$(document).on("click", ".show-zip-search", function() {
-			
-			// send to controller to get rating card loaded 
-			$.ajax({
+		$(document).on('click', '.formButton-check-zip-code-button-deliveries', function () {
+		   var zipCode = $('#check-zip-code-deliveries').val();
+	       $.ajax({
 			  type: "GET",
-			  url: "/home/try_another_zip"
+			  url: "/home/zip_code_response/" + zipCode
 			});
-			
-			// make page not jump to top
+			// prevent page from jumping to the top after click event
 			return false;
-	
 		});
 		
+		$(document).on('click', '.formButton-check-zip-code-button-shipments', function () {
+		   var zipCode = $('#check-zip-code-shipments').val();
+
+	       $.ajax({
+			  type: "GET",
+			  url: "/home/zip_code_response/" + zipCode
+			});
+			
+
+			// prevent page from jumping to the top after click event
+			return false;
+		});
 		// change example delivery view
 		$(document).on("click", ".price-examples", function() {
 			var this_id = $(this).attr('id');
 			
-			if (this_id == "cider-explorer") {
+			if (this_id == "cider-examples") {
 				// change this button class
-				$(".cider-explorer-example").removeClass("hidden").addClass("show");
-				$("#cider-explorer").removeClass("price-example-not-chosen").addClass("price-example-chosen");
-				// determine other button that needs change
-				if ($(".beer-geek-example").hasClass("show")) {
-					$(".beer-geek-example").removeClass("show").addClass("hidden");
-					$("#beer-geek").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-				} else {
-					$(".beer-connoisseur-example").removeClass("show").addClass("hidden");
-					$("#beer-connoisseur").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-				}
-			} else if (this_id == "beer-geek") {
-				// change this button class
-				$(".beer-geek-example").removeClass("hidden").addClass("show");
-				$("#beer-geek").removeClass("price-example-not-chosen").addClass("price-example-chosen");
-				// determine other button that needs change
-				if ($(".cider-explorer-example").hasClass("show")) {
-					$(".cider-explorer-example").removeClass("show").addClass("hidden");
-					$("#cider-explorer").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-				} else {
-					$(".beer-connoisseur-example").removeClass("show").addClass("hidden");
-					$("#beer-connoisseur").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-				}
+				$(".cider-examples").removeClass("hidden").addClass("show");
+				$(".beer-examples").removeClass("show").addClass("hidden");
+				$("#cider-examples").removeClass("price-example-not-chosen").addClass("price-example-chosen");
+				$("#beer-examples").removeClass("price-example-chosen").addClass("price-example-not-chosen");
 			} else {
 				// change this button class
-				$(".beer-connoisseur-example").removeClass("hidden").addClass("show");
-				$("#beer-connoisseur").removeClass("price-example-not-chosen").addClass("price-example-chosen");
-				// determine other button that needs change
-				if ($(".beer-geek-example").hasClass("show")) {
-					$(".beer-geek-example").removeClass("show").addClass("hidden");
-					$("#beer-geek").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-				} else {
-					$(".cider-explorer-example").removeClass("show").addClass("hidden");
-					$("#cider-explorer").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-				}
+				$(".beer-examples").removeClass("hidden").addClass("show");
+				$(".cider-examples").removeClass("show").addClass("hidden");
+				$("#beer-examples").removeClass("price-example-not-chosen").addClass("price-example-chosen");
+				$("#cider-examples").removeClass("price-example-chosen").addClass("price-example-not-chosen");
 			}
 			
-	
 		});
 		
 		// set function for sticky scroller

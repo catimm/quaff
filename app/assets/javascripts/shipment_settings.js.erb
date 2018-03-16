@@ -1,0 +1,66 @@
+$(function () {
+	// add logic to change background color of image chosen and send data to controller
+	$(document).on('click', '.shipping-category-image-holder', function () {
+		$(this).siblings('.shipping-category-image-holder-chosen-cover').removeClass('hidden').addClass('show');
+		$(this).parent().siblings('.shipping-category-image-holder-parent').children('.shipping-category-image-holder-chosen-cover').removeClass('show').addClass('hidden');
+		
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var choice = id_split[0];
+		var current_page = id_split[1];
+		
+		if (choice == "beer") {
+			var new_value = 1
+		} else if (choice == "cider") {
+			var new_value = 2
+		} else {
+			var new_value = 3
+		}
+
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/shipment_settings/update_drink_choice/" + new_value
+		});
+	});
+	
+	// show or hide shipment date options
+	$(document).on("click", ".change-shipping-date-request", function() {
+		if ($("#shipping-date-options").hasClass("hidden")) {
+			$("#shipping-date-options").removeClass("hidden").addClass("show");
+			$("#shipping-change-hide-text").addClass("show").removeClass("hidden");
+			$("#shipping-change-show-text").addClass("hidden").removeClass("show");
+		} else {
+			$("#shipping-date-options").removeClass("show").addClass("hidden");
+			$("#shipping-change-show-text").addClass("show").removeClass("hidden");
+			$("#shipping-change-hide-text").addClass("hidden").removeClass("show");
+		}
+	});
+	
+	// logic to chose first shipping date
+	$(document).on('click', '.shipping-preference-date-change-row', function () {
+		$(this).addClass("chosen");
+		$(this).siblings().removeClass("chosen");
+		
+		// find which page this is from
+		var date_chosen = $(this).attr('id');
+
+		$.ajax({
+		  type: "POST",
+		  url: "/shipment_settings/next_shipment_date_change/" + date_chosen
+		});		
+	});
+	
+	// change shipment location
+	$(document).on("click", ".initiation-change-shipment-location", function() {
+		// get name of location
+		location_name = $(this).parent(".optional-delivery-time-container").attr('id');
+		$("#new_delivery_location_name").html(location_name)
+		
+		// update URL with correct IDs
+		value = $(this).attr('id');
+		$("#change_shipment_location_button").attr("href", "/shipment_settings/change_shipment_location/" + value);	
+	});
+	
+	
+});

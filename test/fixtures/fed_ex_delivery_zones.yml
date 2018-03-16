@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: fed_ex_delivery_zones
+#
+#  id          :integer          not null, primary key
+#  zip_start   :integer
+#  zip_end     :integer
+#  zone_number :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  excise_tax  :decimal(8, 6)
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  zip_start: 1
+  zip_end: 1
+  zone_number: 1
+
+two:
+  zip_start: 1
+  zip_end: 1
+  zone_number: 1

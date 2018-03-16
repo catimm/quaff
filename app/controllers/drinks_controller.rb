@@ -33,7 +33,7 @@ class DrinksController < ApplicationController
     
     # get delivery info
     @all_deliveries = Delivery.where(account_id: @user.account_id)
-    if @user_subscription.subscription_id == 1
+    if @user_subscription.subscription.deliveries_included == 0
       @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress", "admin prep"]).order(delivery_date: :asc).first
     else
       @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress"]).order(delivery_date: :asc).first

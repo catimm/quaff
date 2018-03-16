@@ -21,6 +21,12 @@ $(function() {
 	    });
 	}
 	
+	// get height of plan option rows
+	var features_setup_height = $(".membership-plan-feature-setup").height();
+	var features_shown_height = $(".membership-plan-feature-shown").height();
+	$(".membership-plan-feature-setup-holder").height(features_setup_height);
+	$(".membership-plan-feature-shown-holder").height(features_shown_height);
+	
 	// use Modernizr to add datepicker view to browsers that don't support date
 	if (!Modernizr.inputtypes.date) {
 	  $("input[type='date']").datepicker();
@@ -395,6 +401,47 @@ $(function() {
 			});
 		}
 		
+	});
+	
+	// logic to chose shipping frequency
+	$(document).on('click', '.shipping-frequency-holder', function () {
+		$(this).addClass("chosen");
+		$(this).parent().siblings().children('.shipping-frequency-holder').removeClass("chosen");
+		
+		// find which page this is from
+		var this_id = $(this).attr('id');
+		var this_id_split = this_id.split('-');
+		var this_page = this_id_split[1]
+		var id_info = $(this).children('.shipping-frequency-weeks-number').attr('id');
+		var id_split = id_info.split('-');
+		var frequency_choice = id_split[0];
+
+		if (this_page == "preferences") {
+			$.ajax({
+			  type: "POST",
+			  url: "/shipment_settings/update_frequency_choice/" + frequency_choice
+			});
+		} else {
+			$.ajax({
+			  type: "POST",
+			  url: "/signup/process_shipping_frequency_getting_started/" + frequency_choice
+			});
+		}
+				
+	});
+	
+	// logic to chose first shipping date
+	$(document).on('click', '.shipping-delivery-date-change-row', function () {
+		$(this).addClass("chosen");
+		$(this).siblings().removeClass("chosen");
+		
+		// find which page this is from
+		var date_chosen = $(this).attr('id');
+
+		$.ajax({
+		  type: "POST",
+		  url: "/signup/process_shipping_first_date_chosen/" + date_chosen
+		});		
 	});
 	
 	// keep track of how many styles have been chosen

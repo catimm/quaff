@@ -145,6 +145,12 @@ GEM
     font-awesome-sass (4.3.2.1)
       sass (~> 3.2)
     fssm (0.2.10)
+    ga_events (1.4.0)
+      rails (>= 3.1)
+    geokit (1.11.0)
+    geokit-rails (2.3.0)
+      geokit (~> 1.5)
+      rails (>= 3.0)
     get_process_mem (0.2.1)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
@@ -153,6 +159,8 @@ GEM
       json
       multi_json
       request_store (>= 1.0.5)
+    google_directions (0.1.6.2)
+      nokogiri (>= 1.4.1)
     hashie (3.4.2)
     heapy (0.1.2)
     hike (1.2.3)
@@ -393,7 +401,10 @@ DEPENDENCIES
   figaro
   filterrific
   font-awesome-sass (~> 4.3.0)
+  ga_events
+  geokit-rails
   gon
+  google_directions
   humanize_boolean
   jbuilder (~> 2.0)
   jqcloud-rails

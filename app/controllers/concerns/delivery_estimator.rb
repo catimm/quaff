@@ -2,7 +2,9 @@ module DeliveryEstimator
   extend ActiveSupport::Concern
 
   def estimate_drinks(number_of_drinks, max_large_format, craft_stage)
-
+    # get user subscription
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+    
     # determine large format percentage
     @large_percentage = (max_large_format.to_f / number_of_drinks.to_f).round(3)
 
@@ -42,31 +44,60 @@ module DeliveryEstimator
     
     # first set average drink costs
     if !@inventory_small_cooler.nil?
-      @small_cooler_cost = (@inventory_small_cooler.average(:drink_price)).to_f
+      if @user_subscription.subscription.pricing_model == "four_five"
+        @small_cooler_cost = (@inventory_small_cooler.average(:drink_price_four_five)).to_f
+      elsif @user_subscription.subscription.pricing_model == "five_zero"
+        @small_cooler_cost = (@inventory_small_cooler.average(:drink_price_five_zero)).to_f
+      else
+        @small_cooler_cost = (@inventory_small_cooler.average(:drink_price_five_five)).to_f
+      end
       if @small_cooler_cost == 0
         @small_cooler_cost = 3
       end
     else
       @small_cooler_cost = 3
     end
+    
     if !@inventory_small_cellar.nil?
-      @large_cooler_cost = (@inventory_small_cellar.average(:drink_price)).to_f
-      if @large_cooler_cost == 0
-        @large_cooler_cost = 6
+      if @user_subscription.subscription.pricing_model == "four_five"
+        @small_cellar_cost = (@inventory_small_cellar.average(:drink_price_four_five)).to_f
+      elsif @user_subscription.subscription.pricing_model == "five_zero"
+        @small_cellar_cost = (@inventory_small_cellar.average(:drink_price_five_zero)).to_f
+      else
+        @small_cellar_cost = (@inventory_small_cellar.average(:drink_price_five_five)).to_f
       end
-    else
-      @large_cooler_cost = 6
-    end
-    if !@inventory_large_cooler.nil?
-      @small_cellar_cost = (@inventory_large_cooler.average(:drink_price)).to_f
       if @small_cellar_cost == 0
-        @small_cellar_cost = 13
+        @small_cellar_cost = 6
       end
     else
-      @small_cellar_cost = 13
+      @small_cellar_cost = 6
     end
+    
+    if !@inventory_large_cooler.nil?
+      if @user_subscription.subscription.pricing_model == "four_five"
+        @large_cooler_cost = (@inventory_large_cooler.average(:drink_price_four_five)).to_f
+      elsif @user_subscription.subscription.pricing_model == "five_zero"
+        @large_cooler_cost = (@inventory_large_cooler.average(:drink_price_five_zero)).to_f
+      else
+        @large_cooler_cost = (@inventory_large_cooler.average(:drink_price_five_five)).to_f
+      end
+      
+      if @large_cooler_cost == 0
+        @large_cooler_cost = 13
+      end
+    else
+      @large_cooler_cost = 13
+    end
+    
     if !@inventory_large_cellar.nil?
-      @large_cellar_cost = (@inventory_large_cellar.average(:drink_price)).to_f
+      if @user_subscription.subscription.pricing_model == "four_five"
+        @large_cellar_cost = (@inventory_large_cellar.average(:drink_price_four_five)).to_f
+      elsif @user_subscription.subscription.pricing_model == "five_zero"
+        @large_cellar_cost = (@inventory_large_cellar.average(:drink_price_five_zero)).to_f
+      else
+        @large_cellar_cost = (@inventory_large_cellar.average(:drink_price_five_five)).to_f
+      end
+
       if @large_cellar_cost == 0
         @large_cellar_cost = 18
       end

@@ -2,25 +2,27 @@
 #
 # Table name: inventories
 #
-#  id                  :integer          not null, primary key
-#  stock               :integer
-#  reserved            :integer
-#  order_request       :integer
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  size_format_id      :integer
-#  beer_id             :integer
-#  drink_price         :decimal(5, 2)
-#  drink_cost          :decimal(5, 2)
-#  limit_per           :integer
-#  total_batch         :integer
-#  currently_available :boolean
-#  distributor_id      :integer
-#  min_quantity        :integer
-#  regular_case_cost   :decimal(5, 2)
-#  sale_case_cost      :decimal(5, 2)
-#  disti_inventory_id  :integer
-#  total_demand        :integer
+#  id                    :integer          not null, primary key
+#  stock                 :integer
+#  reserved              :integer
+#  order_request         :integer
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  size_format_id        :integer
+#  beer_id               :integer
+#  drink_price_four_five :decimal(5, 2)
+#  drink_cost            :decimal(5, 2)
+#  limit_per             :integer
+#  total_batch           :integer
+#  currently_available   :boolean
+#  distributor_id        :integer
+#  min_quantity          :integer
+#  regular_case_cost     :decimal(5, 2)
+#  sale_case_cost        :decimal(5, 2)
+#  disti_inventory_id    :integer
+#  total_demand          :integer
+#  drink_price_five_zero :decimal(5, 2)
+#  drink_price_five_five :decimal(5, 2)
 #
 
 class Inventory < ActiveRecord::Base
@@ -32,6 +34,7 @@ class Inventory < ActiveRecord::Base
   has_many :admin_account_deliveries
   has_many :disti_orders
   has_many :inventory_transactions
+  
   
   #scope small cooler drinks
   scope :small_cooler_drinks, -> { 

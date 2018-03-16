@@ -6,13 +6,19 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<%= render 'signup/signup_guide_consumer_new' %>
+		<%= render 'signup/signup_guide_consumer' %>
 	</div>
-	<% if session[:new_membership] == "zero" %>
+	<% if @user_subscription.subscription_id == 2 %>
 		<%= render 'signup/membership_view_delivery_zero' %>
-	<% elsif session[:new_membership] == "six" %>
+	<% elsif @user_subscription.subscription_id == 3 %>
 		<%= render 'signup/membership_view_delivery_six' %>
-	<% else %>
+	<% elsif @user_subscription.subscription_id == 4 %>
 		<%= render 'signup/membership_view_delivery_twenty_five' %>
+	<% elsif [5,8,11,14,17,20].include?(@user_subscription.subscription_id) %>
+		<%= render 'signup/membership_view_shipping_zero' %>
+	<% elsif [6,9,12,15,18,21].include?(@user_subscription.subscription_id) %>
+		<%= render 'signup/membership_view_shipping_three' %>
+	<% elsif [7,10,13,16,19,22].include?(@user_subscription.subscription_id) %>
+		<%= render 'signup/membership_view_shipping_nine' %>
 	<% end %>
 <%= render 'layouts/footer' %>

@@ -1,0 +1,31 @@
+<% @zone_plan_three_avg_shipment = (@zone_plan_three_cost / 3) %>
+<% @whole_test = @zone_plan_three_avg_shipment.round - @zone_plan_three_avg_shipment.round(2) %>
+<div class="row no-margin">
+	<div class="col-xs-12 no-padding">
+		<h3 class="retail-plan-header">The Prepaid 3</h3>
+		<h5 class="retail-plan-subheader"><span>This membership plan provides a "test drive"</span> for only
+			<% if @whole_test != 0 %>~<% end %>$<%=@zone_plan_three_avg_shipment.round%>/delivery.</h5>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="col-xs-7 membership-plan-feature-setup">
+		<h4 class="plan-cost">Plan cost:</h4>
+	</div>
+	<div class="col-xs-5 membership-plan-feature-shown">
+		<h4><%= number_to_currency(@zone_plan_three_cost, precision: 0) %></h4>
+	</div>
+	<div class="col-xs-7 membership-plan-feature-setup">
+		<h4>Shipments included:</h4>
+	</div>
+	<div class="col-xs-5 membership-plan-feature-shown">
+		<h4>3</h4>
+	</div>
+	<div class="col-xs-7 membership-plan-feature-setup">
+		<h4>Bottle caps
+			<sup  data-toggle="tooltip" title="Bottle caps can be earned with a prepaid membership and used to &quot;jump to the front of the line&quot; to purchase rare & limited drinks.">?</sup>:
+		</h4>
+	</div>
+	<div class="col-xs-5 membership-plan-feature-shown">
+		<h4>1 / $1</h4>
+	</div>
+</div>

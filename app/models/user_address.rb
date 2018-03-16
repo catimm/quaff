@@ -16,6 +16,7 @@
 #  other_name                :string
 #  current_delivery_location :boolean
 #  delivery_zone_id          :integer
+#  fed_ex_delivery_zone_id   :integer
 #
 
 class UserAddress < ActiveRecord::Base

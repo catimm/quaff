@@ -33,10 +33,22 @@
 						<%= inventory.input :drink_cost, input_html: { class: "form-control", id: "drink_cost_field" }, placeholder: "Drink cost", label: false, required: true %>
 					</div>
 					<div class="col-xs-4 no-padding-right">
-						<label for="drink_price_field" class="control-label">Drink price</label>
+						<label for="drink_price_four_five_field" class="control-label">Drink price 45%</label>
 					</div>
 					<div class="col-xs-8">
-						<%= inventory.input :drink_price, input_html: { class: "form-control", id: "drink_price_field" }, placeholder: "Drink price", label: false, required: true %>
+						<%= inventory.input :drink_price_four_five, input_html: { class: "form-control", id: "drink_price_four_five_field" }, placeholder: "Drink price", label: false, required: true %>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="drink_price_five_zero_field" class="control-label">Drink price 50%</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory.input :drink_price_five_zero, input_html: { class: "form-control", id: "drink_price_five_zero_field" }, placeholder: "Drink price", label: false, required: true %>
+					</div>
+					<div class="col-xs-4 no-padding-right">
+						<label for="drink_price_five_five_field" class="control-label">Drink price 55%</label>
+					</div>
+					<div class="col-xs-8">
+						<%= inventory.input :drink_price_five_five, input_html: { class: "form-control", id: "drink_price_five_five_field" }, placeholder: "Drink price", label: false, required: true %>
 					</div>
 					<div class="col-xs-4 no-padding-right">
 						<label for="limit_per_field" class="control-label">Limits?</label>

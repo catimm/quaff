@@ -9,12 +9,9 @@ class ReloadsController < ApplicationController
   
   
   def index
-    @user_deliveries = UserDelivery.all
-    @user_deliveries.each do |user_delivery|
-      @number_of_user_drink_ratings = UserBeerRating.where(user_delivery_id: user_delivery.id).count
-      user_delivery.increment!(:times_rated, @number_of_user_drink_ratings)
-      user_delivery.account_delivery.increment!(:times_rated, @number_of_user_drink_ratings) 
-    end
+    # find customers whose subscription expires today  
+    @expiring_subscriptions = UserSubscription.expiring_subscriptions
+    #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
 
   end # end of index method
   

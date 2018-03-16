@@ -1,0 +1,16 @@
+<% (3..8).each do |i| %>
+	<% if i == @account.delivery_frequency %>
+		<% @status = "chosen" %>
+	<% else %>
+		<% @status = "" %>
+	<% end %>
+	<div class="col-xs-4 col-sm-2 no-padding shipping-frequency-holder-parent">
+		<div class="shipping-frequency-holder <%= @status %>"  id="shipping_option-<%= @current_page %>">
+			<h5 class="shipping-frequency-every-text">every</h5>
+			<h3 class="shipping-frequency-weeks-number" id="<%= i %>-weeks">
+				<%= i %>
+			</h3>
+			<h4 class="shipping-frequency-weeks-text">weeks</h4>
+		</div>
+	</div>
+<% end %>

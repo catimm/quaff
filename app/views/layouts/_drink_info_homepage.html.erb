@@ -13,17 +13,20 @@
 	</div>
 </div>
 <div class="row no-margin size-price-row">
-	<div class="col-xs-3">
-		<h5 class="svg-holder" data-toggle="tooltip" title="<%= drink.size_format.format_name %>" data-placement="right">
+	<div class="col-xs-7">
+		<h5 class="svg-holder" data-toggle="tooltip" title="<%= drink.size_format.format_name %>" data-placement="top">
 			<%= svg drink.size_format.image %>
 		</h5>
 	</div>
-	<div class="col-xs-4 text-center">
-		<h5 class="order-quantity-homepage">Qty: <%= drink.quantity.round %></h5>
-	</div>
 	<div class="col-xs-5 text-right">
 		<h5 class="item-price">
-			<%= number_to_currency(drink.drink_price, precision: 2) %> each
+			<% if @four_five = true %>
+				<%= number_to_currency(drink.drink_price_four_five, precision: 2) %> each
+			<% elsif @five_zero = true %>
+				<%= number_to_currency(drink.drink_price_five_zero, precision: 2) %> each
+			<% else %>
+				<%= number_to_currency(drink.drink_price_five_five, precision: 2) %> each
+			<% end %>
 		</h5>		
 	</div>
 </div>

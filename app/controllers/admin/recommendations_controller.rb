@@ -38,10 +38,17 @@ class Admin::RecommendationsController < ApplicationController
     
     # get account delivery address
     @account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
-    @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
-    # get account tax
-    @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-    @multiply_by_tax = 1 + @account_tax
+    if !@account_delivery_address.delivery_zone_id.blank?
+      @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+      # get account tax
+      @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+      @multiply_by_tax = 1 + @account_tax
+    else
+      @account_delivery_zone_id = @account_delivery_address.fed_ex_delivery_zone_id
+      # get account tax
+      @account_tax = FedExDeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+      @multiply_by_tax = 1 + @account_tax
+    end
     # get all delivery dates for chosen account for last few months and next month--for view drop down menu
     @customer_delivery_dates = Delivery.where(account_id: @current_account_id, delivery_date: (3.months.ago)..(5.weeks.from_now)).pluck(:delivery_date)
     # find if account has wishlist items
@@ -245,6 +252,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # get account owner info
     @user = User.find_by_id(@drink_recommendation.user_id)
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # get Disti Inventory option
     @disti_inventory = DistiInventory.where(beer_id: @drink_recommendation.beer_id, 
@@ -315,7 +323,9 @@ class Admin::RecommendationsController < ApplicationController
         @inventory = Inventory.create(stock: 0, reserved: 0, order_request: @new_quantity, 
                                       size_format_id: @drink_recommendation.size_format_id,
                                       beer_id: @drink_recommendation.beer_id, 
-                                      drink_price: @disti_inventory.drink_price,
+                                      drink_price_four_five: @disti_inventory.drink_price_four_five,
+                                      drink_price_five_zero: @disti_inventory.drink_price_five_zero,
+                                      drink_price_five_five: @disti_inventory.drink_price_five_five,
                                       drink_cost: @disti_inventory.drink_cost,
                                       distributor_id: @disti_inventory.distributor_id,
                                       min_quantity: @disti_inventory.min_quantity,
@@ -349,7 +359,9 @@ class Admin::RecommendationsController < ApplicationController
               @inventory = Inventory.create(stock: 0, reserved: 0, order_request: @order_quantity_difference.abs, 
                                           size_format_id: @drink_recommendation.size_format_id,
                                           beer_id: @drink_recommendation.beer_id, 
-                                          drink_price: @disti_inventory.drink_price,
+                                          drink_price_four_five: @disti_inventory.drink_price_four_five,
+                                          drink_price_five_zero: @disti_inventory.drink_price_five_zero,
+                                          drink_price_five_five: @disti_inventory.drink_price_five_five,
                                           drink_cost: @disti_inventory.drink_cost,
                                           distributor_id: @disti_inventory.distributor_id,
                                           min_quantity: @disti_inventory.min_quantity,
@@ -421,7 +433,7 @@ class Admin::RecommendationsController < ApplicationController
           @stripe_fees = (@wholesale_cost * 0.029)
           @drink_price = (@wholesale_cost + @stripe_fees)
         else
-          @drink_price = @inventory.drink_price
+          @drink_price = @inventory. + @user_subscription.pricing_model
         end
         # create new table entry
         @next_delivery_admin_info = AccountDelivery.create(account_id: @drink_recommendation.account_id, 
@@ -711,7 +723,7 @@ class Admin::RecommendationsController < ApplicationController
     # get user subscription type
     @user_subscription = UserSubscription.where(account_id: @next_customer_delivery.account_id, currently_active: true).first
     
-    if @user_subscription.subscription_id == 1
+    if @user_subscription.subscription.deliveries_included == 0
       @delivery_fee = 6
       @grand_total = @next_customer_delivery.total_price + @delivery_fee
     else

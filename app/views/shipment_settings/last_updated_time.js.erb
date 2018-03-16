@@ -1,0 +1,15 @@
+$(function() {
+	$("#last_updated_holder").html("<%= escape_javascript(render 'layouts/preferences_last_updated' ) %>");
+    $("#last_updated_holder").addClass('drinks-per-delivery-highlight-change');
+    $( ".drinks-per-delivery-highlight-change" ).fadeOut( 1000, function() {
+	    $("#last_updated_holder").removeClass('drinks-per-delivery-highlight-change');
+	  });
+	$("#last_updated_holder").fadeIn(100);
+	<% if @disable_button == true %>
+		$("#update_delivery_request_button").attr("disabled", "disabled").removeClass('btn-success');
+	<% end %>
+	<% if @date_change == true %>
+		$("#next_shipment_date_holder").html("");
+		$("#next_shipment_date_holder").html("<%= escape_javascript(render 'shipment_settings/next_shipment_date' ) %>");
+	<% end %>
+});

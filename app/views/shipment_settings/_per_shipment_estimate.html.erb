@@ -1,0 +1,22 @@
+<h4 class="estimated-delivery-price-header delivery-estimate-information <%= @estimate_visible_status %>">
+	Shipment estimates
+</h4>
+<div class="col-xs-4 col-sm-offset-2 col-sm-3 col-md-offset-3 col-md-2 preference-estimate-holder delivery-estimate-information <%= @estimate_visible_status %>">
+	<div class="delivery-settings-info-box drinks">
+		<p>total drinks</p>
+		<% if !@total_delivery_drinks.nil? && !@account.delivery_frequency.nil? %>
+			<h4 class="delivery-preference-prompt"><span id="total_drinks"><%= @total_delivery_drinks %></span></h4>
+		<% else %>
+			<h4 class="delivery-preference-prompt"><span id="total_drinks">12 - 18</span></h4>
+		<% end %>
+	</div>	
+</div>
+<div class="col-xs-7 col-sm-5 col-md-4 preference-estimate-holder no-padding-right delivery-estimate-information <%= @estimate_visible_status %>">
+	<div class="delivery-settings-info-box total-price">
+		<p>total price <sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup></p>
+		<h4 class="delivery-preference-prompt">~<%= number_to_currency(@delivery_cost_estimate_low, precision: 0) %> - <%= number_to_currency(@delivery_cost_estimate_high, precision: 0) %></h4>
+	</div>
+</div>
+<div class="col-xs-12">
+	<h5 class="shipment-estimate-note">Note: We count large format drinks&mdash;22oz or 750ml&mdash;as two drinks.</h5>
+</div>

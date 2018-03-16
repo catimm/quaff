@@ -1,8 +1,21 @@
 $(function() {
-	<% if @covered == true %>
-	   $("#homepage-get-started-box").html("<%= escape_javascript(render 'covered_zip' ) %>");
+	$("#value_section").html("<%= escape_javascript(render 'value_prop_section' ) %>");
+	$("#works_section").html("<%= escape_javascript(render 'how_it_works_section' ) %>");
+	$("#membership_section").html("<%= escape_javascript(render 'plan_section' ) %>");
+	<% if @prices_section_view == "show" %>
+		if ($("#prices_section").hasClass("hidden")) {
+			$("#prices_section").removeClass("hidden").addClass("show");
+		}
 	<% else %>
-		$("#homepage-get-started-box").html("<%= escape_javascript(render 'not_covered_zip' ) %>");
+		if ($("#prices_section").hasClass("show")) {
+			$("#prices_section").removeClass("show").addClass("hidden");
+		}
 	<% end %>
+	$("#prices_section").html("<%= escape_javascript(render 'prices_section' ) %>");
 	$('[data-toggle="tooltip"]').tooltip();
+	// get height of plan option rows
+	var features_setup_height = $(".membership-plan-feature-setup").height();
+	var features_shown_height = $(".membership-plan-feature-shown").height();
+	$(".membership-plan-feature-setup-holder").height(features_setup_height);
+	$(".membership-plan-feature-shown-holder").height(features_shown_height);
 });

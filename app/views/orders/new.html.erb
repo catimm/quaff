@@ -7,101 +7,11 @@
 	</div>
 </div>
 <div class="container" id="user-delivery-preferences-holder">
-    <%= form_for @order, :url => {:action => "process_order"}, :remote => true do |f| %>
-            <%= f.hidden_field :delivery_date %>
-			<%= f.hidden_field :drink_option_id, :value => @delivery_preferences.drink_option_id %>
-			<%= f.hidden_field :number_of_drinks %>
-			<%= f.hidden_field :number_of_large_drinks %>
-            <%- flash.each do |name, msg| -%>
-                <% if name == "failure" %>
-                	<%= content_tag :div, msg, class: "alert alert-danger text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
-            	<% end %>
-            <%- end -%>
-    <div class="row no-margin estimate-holder" id="scroller-anchor">
-		<div class="row no-margin" id="delivery-info-row">
-			<div class="col-xs-12 col-sm-8">
-				<div class="row no-margin estimated-delivery-price-holder-signup" id="delivery-estimates-for-customer">
-					<h4 class="estimated-delivery-price-header delivery-estimate-information <%= @estimate_visible_status %>">
-						Change input below to update these delivery estimates
-					</h4>
-					<div class="col-xs-4 col-sm-offset-2 col-sm-3 col-md-offset-3 col-md-2 preference-estimate-holder delivery-estimate-information <%= @estimate_visible_status %>">
-						<div class="delivery-settings-info-box drinks">
-							<p>total drinks</p>
-							<h4 class="delivery-preference-prompt"><span id="total_drinks">TBD</span></h4>
-						</div>	
-					</div>
-					<div class="col-xs-7 col-sm-5 col-md-4 preference-estimate-holder no-padding-right delivery-estimate-information <%= @estimate_visible_status %>">
-						<div class="delivery-settings-info-box total-price">
-							<p>total price <sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup></p>
-							<h4 class="delivery-preference-prompt" id="order_price_estimate">TBD</h4>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
-				<input type="button" data-toggle="modal" data-target="#confirm-drink-order"  class="btn btn-success user-info-next-button" id="place-order-button" value="Place Order"></input>
-			</div>	
-		</div>
-	</div>
-	<hr />
-	<div class="row no-margin full-top-margin" id="second-delivery-row">
-        <div class="col-xs-12 no-padding">
-            <h3 class="delivery-preference-prompt">
-            	<span class="current-drink-choice" id="order-drink-type-text"><%= @drink_type_preference %></span> 
-            	is your current drink choice
-            		<span id="order-change-drink-type">
-            			(<a href="#" id="order-change-drink-type-text">change this</a>)
-            		</span>
-      		</h3>
-        </div>
-    </div>
-    <div class="row no-margin">
-        <div class="col-xs-offset-3 col-sm-offset-1 col-xs-6 no-padding-right hidden" id="order-drink-type">
-            <div class="row preferences-drink-category-row-holder half-top-margin">
-                <%= render 'delivery_settings/drink_category_choice' %>
-            </div>
-        </div>
-    </div>
-    <hr />
-	<div class="row no-margin">
-        <div class="col-xs-12 no-padding">
-            <div class="row no-margin">
-                <div class="col-sm-6 no-padding">
-                    <h3 class="delivery-preference-prompt">Choose a delivery date</h3>
-                </div>
-                <div class="col-sm-6 no-padding-right" id="order_large_format_drinks">
-                    <%= render 'delivery_date_options'%>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row no-margin">
-        <div class="col-xs-12 no-padding">
-            <div class="row no-margin">
-                <div class="col-sm-6 no-padding">
-                    <h3 class="delivery-preference-prompt">How many drinks are you ordering?</h3>
-                </div>
-                <div class="col-sm-6 no-padding-right">
-                    <%= render 'orders/number_of_drinks_choice'%>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row" id="order-page-last-row">
-        <div class="col-xs-12 no-padding">
-            <div class="row no-margin">
-                <div class="col-sm-6 no-padding">
-                    <h3 class="delivery-preference-prompt">Additional requests</h3>
-                </div>
-                <div class="col-sm-6 delivery-additional-request">
-                    <%= f.text_area :additional_requests, {class: 'form-control', placeholder: 'For example: "All IPAs", "Only 2 large format drinks" or "Only gluten-free drinks"'}  %>
-                </div>
-            </div>
-        </div>
-    </div>
-	<% end %>
+    <% if @first_time_order == true %>
+    	<%= render 'first_order' %>
+    <% else %>
+    	<%= render 'subsequent_orders' %>
+    <% end %>
 </div>
 <div id="confirm-drink-order" class="modal">
 	<div class="modal-header">

@@ -136,7 +136,9 @@ class Admin::DistiInventoriesController < ApplicationController
                       sale_case_cost: params[:inventory][:sale_case_cost], 
                       min_quantity: params[:inventory][:min_quantity],
                       drink_cost: params[:inventory][:drink_cost],
-                      drink_price: params[:inventory][:drink_price],
+                      drink_price_four_five: params[:inventory][:drink_price_four_five],
+                      drink_price_five_zero: params[:inventory][:drink_price_five_zero],
+                      drink_price_five_five: params[:inventory][:drink_price_five_five],
                       limit_per: params[:inventory][:limit_per],
                       total_batch: params[:inventory][:min_quantity],
                       currently_available: params[:inventory][:currently_available])
@@ -163,8 +165,9 @@ class Admin::DistiInventoriesController < ApplicationController
   
   private
   def disti_inventory_params
-      params.require(:disti_inventory).permit(:beer_id, :size_format_id, :drink_cost, :drink_price, :distributor_id, 
-      :disti_item_number, :disti_upc, :min_quantity, :regular_case_cost, :current_case_cost)
+      params.require(:disti_inventory).permit(:beer_id, :size_format_id, :drink_cost, :drink_price_four_five, 
+      :drink_price_five_zero, :drink_price_five_five, :distributor_id, :disti_item_number, :disti_upc, :min_quantity, 
+      :regular_case_cost, :current_case_cost)
   end
   
   def verify_admin

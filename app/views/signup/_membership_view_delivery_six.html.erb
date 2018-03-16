@@ -12,14 +12,14 @@
 			<%= render 'layouts/plan_delivery_six' %>
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
-					<%= form_tag process_account_membership_getting_started_path("six"), class:"plan-button" do %>
-						<input name="plan_id" type="hidden" value="six"></input>
+					<%= form_tag process_account_membership_getting_started_path("one_six"), class:"plan-button" do %>
+						<input name="plan_id" type="hidden" value="one_six"></input>
 			          	<script 
 			          		class="stripe-button" 
 			          		data-name="Knird" 
-			          		data-description="$30 for 6 Prepaid Knird Deliveries" 
+			          		data-description="$30 for The Prepaid 6" 
 			          		data-currency="USD" 
-			          		data-label="Start the 6 Deliveries Plan"
+			          		data-label="Start The Prepaid 6 Plan"
 			          		data-email="<%= @user.email %>" 
 			          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
 			          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
@@ -39,7 +39,7 @@
 <div class="row">
 	<div class="col-xs-offset-2 col-xs-8 col-sm-offset-5 col-sm-2 text-center">
 		<h6 class="membership-option-change"><i>or</i></h6>
-		<%= link_to change_membership_choice_path, class: 'btn btn-success formButton-start-plan' do %>
+		<%= link_to change_membership_choice_path(@user_subscription.subscription.subscription_level_group), class: 'btn btn-success formButton-start-plan' do %>
 			<i class="fa fa-refresh" aria-hidden="true"> Change plans</i>
 		<% end %>
 	</div>

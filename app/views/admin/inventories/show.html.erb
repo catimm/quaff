@@ -64,7 +64,9 @@
 						    <th>Stock</th>
 						    <th>Reserved</th>
 						    <th>Drink Cost</th>
-						    <th>Drink Price</th>
+						    <th>Price 45%</th>
+						    <th>Price 50%</th>
+						    <th>Price 55%</th>
 						    <th>Limit?</th>
 						    <th>Available?</th>
 						    <th></th>
@@ -78,7 +80,9 @@
 								<td><%= inventory.stock %></td>
 								<td><%= inventory.reserved %></td>
 								<td>$<%= inventory.drink_cost %></td>
-								<td>$<%= inventory.drink_price %></td>
+								<td>$<%= inventory.drink_price_four_five %></td>
+								<td>$<%= inventory.drink_price_five_zero %></td>
+								<td>$<%= inventory.drink_price_five_five %></td>
 								<td><%= inventory.limit_per %></td>
 								<td><%= inventory.currently_available %></td>
 								<td><%= link_to "Edit", edit_admin_inventory_path(inventory.id), :class => "btn btn-primary editButton" %></td>

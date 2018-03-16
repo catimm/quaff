@@ -102,7 +102,7 @@ class DeliverySettingsController < ApplicationController
       @user = User.find_by_id(current_user.id)
       
       # get account info
-      @account = Account.find_by_id(@user.account_id )
+      @account = Account.find_by_id(@user.account_id)
       
       # get account owner info
       @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
@@ -602,7 +602,6 @@ class DeliverySettingsController < ApplicationController
   def change_next_delivery_date
     @requested_delivery_date = params[:id]
     @new_delivery_date = DateTime.parse(@requested_delivery_date)
-    @second_delivery_date = @new_delivery_date + 14.days
     #Rails.logger.debug("Date chosen: #{@new_delivery_date.inspect}")
     
     # get user info
@@ -642,7 +641,19 @@ class DeliverySettingsController < ApplicationController
                           total_price: 0,
                           status: "admin prep",
                           share_admin_prep_with_user: false)
-    @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
+    if !@second_delivery.blank?
+      @account = Account.find_by_id(current_user.account_id)
+      @delivery_frequency = @account.delivery_frequency
+      @second_delivery_date = @new_delivery_date + @delivery_frequency.weeks
+      @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
+    end
+    
+    # determine if date being changed is the last set delivery for this subscription. If so, update renewal date
+    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
+    if !@user_subscription.active_until.nil?
+      @new_renewal_date = @new_delivery_date + 3.days
+      @customer_subscription.update_attribute(:active_until, @new_renewal_date)
+    end
     
     redirect_to user_delivery_settings_path
     
@@ -656,13 +667,15 @@ class DeliverySettingsController < ApplicationController
     @user_delivery_id = @data_split[1]
     
     # get User Delivery info
+    @account = Account.find_by_id(current_user.account_id)
+    @user_subscription = UserSubscriptionn.where(account_id: current_user.account_id, currently_active: true).first
     @user_delivery_info = UserDelivery.find_by_id(@user_delivery_id)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
     @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
     
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
-    @drink_price = @user_delivery_info.inventory.drink_price
+    @drink_price = @user_delivery_info.inventory. + @user_subscription.pricing_model
     @current_inventory_reserved = @inventory.reserved
     if @add_or_subtract == "add"
       # set new quantity
@@ -671,7 +684,7 @@ class DeliverySettingsController < ApplicationController
       #set new price totals
       @original_subtotal = @delivery.subtotal
       @new_subtotal = @original_subtotal + @drink_price
-      @new_sales_tax = @new_subtotal * 0.096
+      @new_sales_tax = @new_subtotal * @account.delivery_zone.excise_tax
       @new_total_price = @new_subtotal + @new_sales_tax
       
       # update reserved inventory 
@@ -688,7 +701,7 @@ class DeliverySettingsController < ApplicationController
       #set new price totals
       @original_subtotal = @delivery.subtotal
       @new_subtotal = @original_subtotal - @drink_price
-      @new_sales_tax = @new_subtotal * 0.096
+      @new_sales_tax = @new_subtotal * @account.delivery_zone.excise_tax
       @new_total_price = @new_subtotal + @new_sales_tax
       
       # update reserved inventory 
@@ -753,6 +766,8 @@ class DeliverySettingsController < ApplicationController
     @data = params[:id]
     
     # get User Delivery info
+    @account = Account.find_by_id(current_user.account_id)
+    @user_subscription = UserSubscriptionn.where(account_id: current_user.account_id, currently_active: true).first
     @user_delivery_info = UserDelivery.find_by_id(@data)
     @delivery = Delivery.find_by_id(@user_delivery_info.delivery_id)
     @inventory = Inventory.find_by_id(@user_delivery_info.inventory_id)
@@ -760,13 +775,13 @@ class DeliverySettingsController < ApplicationController
     # adjust drink quantity, price and inventory
     @original_quantity = @user_delivery_info.quantity
     @new_quantity = @original_quantity - 1
-    @drink_price = @user_delivery_info.inventory.drink_price
+    @drink_price = @user_delivery_info.inventory. + @user_subscription.pricing_model
     @current_inventory_reserved = @inventory.reserved
 
     #set new price totals
     @original_subtotal = @delivery.subtotal
     @new_subtotal = @original_subtotal - @drink_price
-    @new_sales_tax = @new_subtotal * 0.096
+    @new_sales_tax = @new_subtotal * @account.delivery_zone.excise_tax
     @new_total_price = @new_subtotal + @new_sales_tax
     
     # update delivery info and note that a confirmation email should be sent
@@ -1000,7 +1015,7 @@ class DeliverySettingsController < ApplicationController
     # get delivery zone info for confirmation email
     @user_delivery_zone = DeliveryZone.find_by_id(@delivery_zone)
       
-    if @user_subscription.subscription_id != 1
+    if @user_subscription.subscription.deliveries_included != 0
       @delivery_date = @data_split[2]
       @date_adjustment = @delivery_date.split("_") 
       @final_delivery_date = "20" + @date_adjustment[2] + "-" + @date_adjustment[0] + "-" + @date_adjustment[1] + " 13:00:00"

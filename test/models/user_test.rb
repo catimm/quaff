@@ -38,6 +38,7 @@
 #  account_id             :integer
 #  phone                  :string
 #  recent_addition        :boolean
+#  homepage_view          :string
 #
 
 require 'test_helper'

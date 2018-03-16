@@ -5,11 +5,18 @@ class RewardsCreditsController < ApplicationController
   def rewards
     @user = current_user
     @user_rewards = RewardPoint.where(account_id: @user.account_id).sort_by(&:updated_at).reverse
+    
+    # show rewards link in navigation
+    @show_rewards = true
+    
   end
 
   def credits
+    @user = current_user
+    @user_rewards = RewardPoint.where(account_id: @user.account_id).sort_by(&:updated_at).reverse
+    
     @credits = Credit.where(account_id: current_user.account_id).order(created_at: :desc)
-    @available_credit_value = 1
+    @available_credit_value = 0
     if @credits != nil and @credits.length > 0
         @available_credit_value = @credits[0].total_credit
     end
@@ -38,6 +45,16 @@ class RewardsCreditsController < ApplicationController
           @rewards_value = (@number_unrated * drink.drink_price * 0.05).round(2)
           @total_reward_opportunity = @total_reward_opportunity + @rewards_value
         end
+    end
+    
+    # determine whethe to show rewards link in navigation
+    
+    if @user_subscription.subscription.deliveries_included != 0
+      @show_rewards = true
+    elsif @user_subscription.subscription.deliveries_included == 0 && !@user_rewards.blank?
+      @show_rewards = true
+    else
+      @show_rewards = false
     end
   end
   

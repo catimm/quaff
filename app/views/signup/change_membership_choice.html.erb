@@ -2,104 +2,24 @@
 <div class="container">
 	<div class="row">
 		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6 text-center no-padding">
-			<h2 class="signup-question membership-plan-signup">Change your plan preference</h2>
+			<h2 class="signup-question membership-plan-signup change-plan-header">Change your plan preference</h2>
 		</div>
 	</div>
-	<% if @membership_type == "delivery"%>
-		<div class="row membership-details-row">
-			<div class="col-xs-12 col-sm-4">
-				<div class="homepage-plan-options">
-					<%= render 'layouts/plan_delivery_zero' %>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<%= link_to "Get started", process_change_membership_choice_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-sm-4">
-				<div class="homepage-plan-options">
-					<%= render 'layouts/plan_delivery_six' %>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<%= link_to "Get started", process_change_membership_choice_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-sm-4">
-				<div class="homepage-plan-options">
-					<%= render 'layouts/plan_delivery_twenty_five' %>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<%= link_to "Get started", process_change_membership_choice_path("twenty-five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	<% else %>
-		<div class="row membership-details-row">
-			<div class="col-xs-12 col-sm-4">
-				<div class="homepage-plan-options">
-					<%= render 'layouts/plan_shipping_a' %>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<%= link_to "Get started", process_change_membership_choice_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-sm-4">
-				<div class="homepage-plan-options">
-					<%= render 'layouts/plan_shipping_b' %>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<%= link_to "Get started", process_change_membership_choice_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-sm-4">
-				<div class="homepage-plan-options">
-					<%= render 'layouts/plan_shipping_c' %>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<%= link_to "Get started", process_change_membership_choice_path("twenty-five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-						</div>
-					</div>
-					<div class="row no-margin">
-						<div class="col-xs-12 no-padding">
-							<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-	<% end %>
+	<%- flash.each do |name, msg| -%>
+    	<% if msg.include?  "changed" %>
+			<div class="row no-margin">
+            	<div class="col-xs-12 col-sm-offset-2 col-sm-8">
+                	<%= content_tag :div, msg, class: "alert alert-success text-center" if msg.is_a?(String) %>
+            	</div>
+	    	</div>
+		<% end %>
+    <%- end -%>
+	<div class="row membership-details-row show" id="membership-details-row">
+		<% if @plan_type == "delivery" %>
+			<%= render 'change_plan_section_deliveries' %>
+		<% else %>
+			<%= render 'change_plan_section_shipments'%>
+		<% end %>
+	</div>
 </div>
 <%= render 'layouts/footer' %>

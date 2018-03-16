@@ -1,0 +1,171 @@
+<div class="container <%= @prices_section_view %>">
+	<div class="row">
+		<div class="col-xs-12">
+			<h3 class="index-section-header">You always have final approval of your delivery. No surprises!</h3> 
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+			<h4 class="expectations-statements">
+				While our plans cover both curation and delivery, the cost of drinks in each 
+				delivery varies based on <i>your</i> personal taste preferences&mdash;check out sample 
+				deliveries below for a sense of pricing and variety.
+			</h4>
+		</div>
+	</div>
+	<div class="row no-margin example-prices-headers">
+		<div class="col-xs-4 price-examples price-example-not-chosen" id="cider-explorer">
+			<h5>Cider Explorer</h5>
+		</div>
+		<div class="col-xs-4 price-examples middle-price-example price-example-chosen" id="beer-geek">
+			<h5>Beer Geek</h5>
+		</div>
+		<div class="col-xs-4 price-examples price-example-not-chosen" id="beer-connoisseur">
+			<h5>Beer Connoisseur</h5>
+		</div>
+	</div> 
+	<div class="row cider-explorer-example hidden">
+		<div class="col-xs-12 col-sm-5" id="">
+			<h4 class="sample-delivery-text">Sample delivery for a 
+				<span data-toggle="tooltip" title="Explorers enjoy good quality and seek to understand craft better.">
+					Cider Explorer <sup>?</sup>
+				</span>
+			</h4>
+		</div>
+		<div class="col-xs-12 col-sm-7 example-delivery-info-row no-padding-left">
+			<div class="delivery-info-box drinks">
+				<p>drinks</p>
+				<h4 class="delivery-preference-prompt">Y</h4>
+			</div>	
+			<div class="delivery-info-box small">
+				<p>small</p>
+				<h4 class="delivery-preference-prompt">Y</h4>
+			</div>	
+			<div class="delivery-info-box large">
+				<p>large</p>
+				<h4 class="delivery-preference-prompt">Y</h4>
+			</div>
+			<div class="delivery-info-box cellar">
+				<p>cellar</p>
+				<h4 class="delivery-preference-prompt">Y</h4>
+			</div>
+			<div class="delivery-info-box subtotal">
+				<p>subtotal</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(11.11, precision: 2) %></h4>
+			</div>	
+			<div class="delivery-info-box sales-tax">
+				<p>tax</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(1.11, precision: 2) %></h4>
+			</div>	
+			<div class="delivery-info-box total-price">
+				<p>total</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(11.11, precision: 2) %></h4>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin cider-explorer-example hidden">
+		<% @cider_explorer_drinks.each do |drink| %>
+			<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container">
+				<div class="drink-delivery-tile">
+					<%= render 'layouts/drink_info_homepage', drink: drink %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+	<div class="row beer-geek-example show">
+		<div class="col-xs-12 col-sm-4" id="">
+			<h4 class="sample-delivery-text">Sample delivery for a 
+				<span data-toggle="tooltip" title="Geeks are known to obsess over hops, barrel-type, and obscurity.">
+					Beer Geek <sup>?</sup>
+				</span>
+			</h4>
+		</div>
+		<div class="col-xs-12 col-sm-8 example-delivery-info-row no-padding-left">
+			<div class="delivery-info-box drinks">
+				<p>drinks</p>
+				<h4 class="delivery-preference-prompt">10</h4>
+			</div>	
+			<div class="delivery-info-box small">
+				<p>small</p>
+				<h4 class="delivery-preference-prompt">8</h4>
+			</div>	
+			<div class="delivery-info-box large">
+				<p>large</p>
+				<h4 class="delivery-preference-prompt">2</h4>
+			</div>
+			<div class="delivery-info-box cellar">
+				<p>cellar</p>
+				<h4 class="delivery-preference-prompt">1</h4>
+			</div>
+			<div class="delivery-info-box subtotal">
+				<p>subtotal</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(48.11, precision: 2) %></h4>
+			</div>	
+			<div class="delivery-info-box sales-tax">
+				<p>tax</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(4.86, precision: 2) %></h4>
+			</div>	
+			<div class="delivery-info-box total-price">
+				<p>total</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(52.97, precision: 2) %></h4>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin beer-geek-example show">
+		<% @beer_geek_drinks.each do |drink| %>
+			<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container">
+				<div class="drink-delivery-tile">
+					<%= render 'layouts/drink_info_homepage', drink: drink %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+	<div class="row beer-connoisseur-example hidden">
+		<div class="col-xs-12 col-sm-5" id="">
+			<h4 class="sample-delivery-text">Sample delivery for a 
+				<span data-toggle="tooltip" title="Connoisseurs tend to focus on depth and complexity of flavors.">
+					Beer Connoisseur <sup>?</sup>
+				</span>
+			</h4>
+		</div>
+		<div class="col-xs-12 col-sm-7 example-delivery-info-row no-padding-left">
+			<div class="delivery-info-box drinks">
+				<p>drinks</p>
+				<h4 class="delivery-preference-prompt">10</h4>
+			</div>	
+			<div class="delivery-info-box small">
+				<p>small</p>
+				<h4 class="delivery-preference-prompt">9</h4>
+			</div>	
+			<div class="delivery-info-box large">
+				<p>large</p>
+				<h4 class="delivery-preference-prompt">1</h4>
+			</div>
+			<div class="delivery-info-box cellar">
+				<p>cellar</p>
+				<h4 class="delivery-preference-prompt">3</h4>
+			</div>
+			<div class="delivery-info-box subtotal">
+				<p>subtotal</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(65.01, precision: 2) %></h4>
+			</div>	
+			<div class="delivery-info-box sales-tax">
+				<p>tax</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(6.57, precision: 2) %></h4>
+			</div>	
+			<div class="delivery-info-box total-price">
+				<p>total</p>
+				<h4 class="delivery-preference-prompt"><%= number_to_currency(71.58, precision: 2) %></h4>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin beer-connoisseur-example hidden">
+		<% @beer_connoisseur_drinks.each do |drink| %>
+			<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container">
+				<div class="drink-delivery-tile">
+					<%= render 'layouts/drink_info_homepage', drink: drink %>
+				</div>
+			</div>
+		<% end %>
+	</div> 
+</div>

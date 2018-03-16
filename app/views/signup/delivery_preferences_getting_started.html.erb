@@ -17,7 +17,7 @@
 	</div>
 	<div class="row no-margin">
 		<div class="col-xs-12 col-sm-offset-1 col-sm-11">
-			<h4 class="delivery-location-help">Read a few helpful hints to choosing your delivery location</h3>
+			<h4 class="delivery-location-help">Read a few helpful hints to choosing your delivery location</h4>
 			<%= link_to "#", class: 'btn btn-primary btn-inverse delivery-thoughts-text', 
 					data: {toggle: "modal", target: "#helpful_delivery_hints"} do %>
 				<i class="fa fa-star"> Read hints</i>
@@ -67,28 +67,36 @@
 							<% @delivery_time_options = DeliveryZone.where(zip_code: location.zip) %>
 							<h4 class="delivery-options-header">Delivery <span>time <%= "option".pluralize(@delivery_time_options.count) %></span> for this location</h4>
 							<% if !@delivery_time_options.blank? %>
-								<% @delivery_time_options = @delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}%>
-								<% @delivery_time_options.each do |option| %>
-									<div class="col-xs-5 optional-delivery-time-container" id="<%= @additional_delivery_location_name %>">
-										<h5 class="current-delivery-choice day-holder"><%= option.day_of_week %>s,</h5>  
-										<h5 class="current-delivery-choice time-holder">
-											<%=  (option.start_time).strftime("%l:%M%P") %> 
-											- <%= (option.end_time).strftime("%l:%M%P") %>
-										</h5>
-										<h6 class="current-delivery-next next-holder">
-											 (Starting: <%= (@delivery_time_options_hash[option.id]).strftime("%-m.%-d.%y") %>)
-										</h6>
-										<%= link_to "#", 
-											class: 'btn btn-success choose-delivery-time-and-place', data: {toggle: "modal", target: "#choose_delivery_time"},
-											id: "#{location.id}-#{option.id}" do %>
-											<i class="fa fa-check-circle"> choose</i>
-										<% end %>
+								<% if @delivery_time_options[0].currently_available == true %>
+									<% @delivery_time_options = @delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}%>
+									<% @delivery_time_options.each do |option| %>
+										<div class="col-xs-5 optional-delivery-time-container" id="<%= @additional_delivery_location_name %>">
+											<h5 class="current-delivery-choice day-holder"><%= option.day_of_week %>s,</h5>  
+											<h5 class="current-delivery-choice time-holder">
+												<%=  (option.start_time).strftime("%l:%M%P") %> 
+												- <%= (option.end_time).strftime("%l:%M%P") %>
+											</h5>
+											<h6 class="current-delivery-next next-holder">
+												 (Starting: <%= (@delivery_time_options_hash[option.id]).strftime("%-m.%-d.%y") %>)
+											</h6>
+											<%= link_to "#", 
+												class: 'btn btn-success choose-delivery-time-and-place', data: {toggle: "modal", target: "#choose_delivery_time"},
+												id: "#{location.id}-#{option.id}" do %>
+												<i class="fa fa-check-circle"> choose</i>
+											<% end %>
+										</div>
+									<% end %>
+								<% else %>
+									<div class="col-xs-12">
+										<h5 class="no-delivery">We don't currently deliver to this location.  
+											But if you leave this address in your profile, we'll try to add it soon! 
+											And when we add it, we'll let you know!</h5>
 									</div>
 								<% end %>
 							<% else %>
 								<div class="col-xs-12">
 									<h5 class="no-delivery">We don't currently deliver to this location.  
-										But if you leave this address in your profile, we'll include it ASAP. 
+										But if you leave this address in your profile, we'll try to add it soon! 
 										And when we add it, we'll let you know!</h5>
 								</div>
 							<% end %>

@@ -1,0 +1,74 @@
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Please indicate your delivery frequency.</h2>
+			<h5 class="signup-question-detail">You can update this settings on your delivery preferences page anytime after signup.</h5>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row no-margin estimate-holder">
+		<div class="row no-margin" id="delivery-info-row">
+			<div class="col-xs-12 col-sm-8">
+				<div class="row no-margin estimated-delivery-price-holder-signup" id="delivery-estimates-for-customer">
+					<%= render 'signup/per_shipment_estimate' %>
+				</div>
+			</div>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4" id="delivery-number-next-button">
+				<%= render 'signup/deliveries_numbers_next_button' %>
+			</div>	
+		</div>
+	</div>
+	<hr />
+    <div class="row no-margin">
+        <div class="col-xs-12 no-padding">
+            <div class="row no-margin">
+                <div class="col-sm-6 no-padding">
+                    <h3 class="delivery-preference-prompt">How often would you like to receive your Knird shipments?</h3>
+                </div>
+                <div class="col-sm-6 no-padding-right">
+                    <%= render 'shipping_frequency_options'%>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+	<div class="row no-margin">
+        <div class="col-xs-12 no-padding">
+            <div class="row no-margin">
+                <div class="col-sm-6 no-padding">
+                    <h3 class="delivery-preference-prompt">Choose your first shipment date:</h3>
+                    <h5 class="signup-question-detail">(this can also be changed in your delivery settings)
+                </div>
+                <div class="col-sm-6 no-padding-right">
+                    <%= render 'shipping_date_options'%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="new_plan_step_one" class="modal">
+	<div class="modal-header">
+		<div class="row no-margin">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<div class="col-sm-12">
+				<h3>Complete plan setup</h3>
+			</div>
+		</div>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="delivery-confirmation-text">
+					Please take a moment to provide input for your new plan.  Thanks!
+				</h4>
+			</div>
+		</div>
+		<div class="col-sm-offset-4 col-sm-4 add-button-holder">
+			<%= link_to "#", :class => 'text-center btn btn-success add-drink-button', :data => {:dismiss=>"modal"} do %>
+				<i class="fa fa-chevron-circle-right"></i>
+				Got it!
+			<% end %>
+		</div>
+	</div>
+</div>

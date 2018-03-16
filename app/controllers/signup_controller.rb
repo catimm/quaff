@@ -22,20 +22,34 @@ class SignupController < ApplicationController
       @user.update_attribute(:getting_started_step, 2) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
-    # create new user address instance
-    @user_address = UserAddress.new
+    # find user address
+    @user_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first
+    if @user_address.blank?
+      @user_address = UserAddress.new
+    end
     
   end # end delivery_address_getting_started method
   
   def account_membership_getting_started
     # get User info 
     @user = current_user
-    @user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
+    @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: [true, nil], total_deliveries: 0).first
     # update getting started step
     if @user.getting_started_step < 3
       @user.update_attribute(:getting_started_step, 3)
     end
     
+    # set membership data
+    @subscription_cost = @user_subscription.subscription.subscription_cost
+    @subscription_level = @user_subscription.subscription.subscription_level
+    if @user_subscription.subscription.deliveries_included == 9
+      @zone_plan_nine_cost = @user_subscription.subscription.subscription_cost
+    elsif @user_subscription.subscription.deliveries_included == 3
+      @zone_plan_three_cost = @user_subscription.subscription.subscription_cost
+    elsif @user_subscription.subscription.deliveries_included == 0
+      @zone_plan_zero_shipment_cost_low = @user_subscription.subscription.shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @user_subscription.subscription.shipping_estimate_high
+    end
     #set guide view
     @user_chosen = 'current'
     @user_personal_info_chosen = 'complete'
@@ -58,51 +72,55 @@ class SignupController < ApplicationController
     @subscription_info = Subscription.find_by_subscription_level(@plan_name)
     #Rails.logger.debug("Subscription info: #{@subscription_info.inspect}")
     
-    # create subscription info
-    @total_price = (@subscription_info.subscription_cost * 100).floor
-    @charge_description = @subscription_info.subscription_name
-    
-    # check if user already has a subscription row
-    @current_customer = UserSubscription.where(account_id: @user.account_id).where("stripe_customer_number IS NOT NULL").first
-    
-    
-    if @current_customer.blank?
-      @user_subscription = UserSubscription.where(account_id: @user.account_id, subscription_id: @subscription_info.id, currently_active: false).first
-      @user_subscription.update_attribute(:currently_active, true)
-                                
-      # create Stripe customer acct
-      customer = Stripe::Customer.create(
-              :source => params[:stripeToken],
-              :email => @user.email
-            )
-      # charge the customer for their subscription 
-      if @plan_name != "zero"
+    if @subscription_info.deliveries_included != 0
+      # create subscription info
+      @total_price = (@subscription_info.subscription_cost * 100).floor
+      @charge_description = @subscription_info.subscription_name
+      
+      # check if user already has a subscription row
+      @current_customer = UserSubscription.where(account_id: @user.account_id).where("stripe_customer_number IS NOT NULL").first
+      
+      
+      if @current_customer.blank?
+        @user_subscription = UserSubscription.where(account_id: @user.account_id, subscription_id: @subscription_info.id, currently_active: [true, nil]).first
+        @user_subscription.update_attribute(:currently_active, true)
+                                  
+        # create Stripe customer acct
+        customer = Stripe::Customer.create(
+                :source => params[:stripeToken],
+                :email => @user.email
+              )
+        # charge the customer for their subscription 
         Stripe::Charge.create(
           :amount => @total_price, # in cents
           :currency => "usd",
           :customer => customer.id,
           :description => @charge_description
         ) 
-      end # end of check whether user is buying prepaid deliveries
-    else
-      # retrieve customer Stripe info
-      customer = Stripe::Customer.retrieve(@current_customer.stripe_customer_number) 
-      # charge the customer for subscription 
-      if @plan_name != "zero"
+      else
+        # retrieve customer Stripe info
+        customer = Stripe::Customer.retrieve(@current_customer.stripe_customer_number) 
+        # charge the customer for subscription 
         Stripe::Charge.create(
           :amount => @total_price, # in cents
           :currency => "usd",
           :customer => @current_customer.stripe_customer_number,
           :description => @charge_description
         )
-      end # end of check whether user is buying prepaid deliveries
+        
+        
+      end
+    else
+      # update User Subscription to make active
+      @user_subscription = UserSubscription.where(account_id: @user.account_id, subscription_id: @subscription_info.id, currently_active: [true, nil]).first
+      @user_subscription.update_attribute(:currently_active, true)
       
-    end
+    end # end of check whether user is buying prepaid deliveries
     
     # add special line for remaining early signup customer
     if @user.email == "justinokun@gmail.com"
-      @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-      @user_subscription.update(subscription_id: 2, auto_renew_subscription_id: 2)
+      @user_subscription = UserSubscription.where(account_id: @user.account_id).first
+      @user_subscription.update(subscription_id: 3, auto_renew_subscription_id: 3)
     end
                     
     # redirect user to drink choice page
@@ -111,12 +129,82 @@ class SignupController < ApplicationController
   end # end process_account_getting_started action
   
   def change_membership_choice
-    # add logic to choose which set of plan options are displayed
+    # get subscription group level
+    @subscription_level_group = params[:format].to_i
+    
+    # get all subscriptions available
+    @subscriptions = Subscription.all
+    
+    # determine which view to show
+    if @subscription_level_group == 1
+      # set plan type
+      @plan_type = "delivery"
+    elsif @subscription_level_group == 2
+      # set plan type
+      @plan_type = "shipment"
+      # this is our "zone two" shipping plan 
+      @zone_plan_nine_cost = @subscriptions.find_by_subscription_level("two_nine").subscription_cost
+      @zone_plan_three_cost = @subscriptions.find_by_subscription_level("two_three").subscription_cost
+      @zone_plan_zero_shipment_cost_low = @subscriptions.find_by_subscription_level("two_zero").shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @subscriptions.find_by_subscription_level("two_zero").shipping_estimate_high
+      @zone_zero = "two_zero"
+      @zone_three = "two_three"
+      @zone_nine = "two_nine"
+    elsif @subscription_level_group == 3
+      # this is our "zone three" shipping plan 
+      @zone_plan_nine_cost = @subscriptions.find_by_subscription_level("three_nine").subscription_cost
+      @zone_plan_three_cost = @subscriptions.find_by_subscription_level("three_three").subscription_cost
+      @zone_plan_zero_shipment_cost_low = @subscriptions.find_by_subscription_level("three_zero").shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @subscriptions.find_by_subscription_level("three_zero").shipping_estimate_high
+      @zone_zero = "three_zero"
+      @zone_three = "three_three"
+      @zone_nine = "three_nine"
+    elsif @subscription_level_group == 4
+      # this is our "zone four" shipping plan 
+      @zone_plan_nine_cost = @subscriptions.find_by_subscription_level("four_nine").subscription_cost
+      @zone_plan_three_cost = @subscriptions.find_by_subscription_level("four_three").subscription_cost
+      @zone_plan_zero_shipment_cost_low = @subscriptions.find_by_subscription_level("four_zero").shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @subscriptions.find_by_subscription_level("four_zero").shipping_estimate_high
+      @zone_zero = "four_zero"
+      @zone_three = "four_three"
+      @zone_nine = "four_nine"
+    elsif @subscription_level_group == 5
+      # this is our "zone five" shipping plan 
+      @zone_plan_nine_cost = @subscriptions.find_by_subscription_level("five_nine").subscription_cost
+      @zone_plan_three_cost = @subscriptions.find_by_subscription_level("five_three").subscription_cost
+      @zone_plan_zero_shipment_cost_low = @subscriptions.find_by_subscription_level("five_zero").shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @subscriptions.find_by_subscription_level("five_zero").shipping_estimate_high
+      @zone_zero = "five_zero"
+      @zone_three = "five_three"
+      @zone_nine = "five_nine"
+    elsif @subscription_level_group == 6
+      # this is our "zone six" shipping plan 
+      @zone_plan_nine_cost = @subscriptions.find_by_subscription_level("six_nine").subscription_cost
+      @zone_plan_three_cost = @subscriptions.find_by_subscription_level("six_three").subscription_cost
+      @zone_plan_zero_shipment_cost_low = @subscriptions.find_by_subscription_level("six_zero").shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @subscriptions.find_by_subscription_level("six_zero").shipping_estimate_high
+      @zone_zero = "six_zero"
+      @zone_three = "six_three"
+      @zone_nine = "six_nine"
+    else
+      # this is our "zone seven" shipping plan 
+      @zone_plan_nine_cost = @subscriptions.find_by_subscription_level("seven_nine").subscription_cost
+      @zone_plan_three_cost = @subscriptions.find_by_subscription_level("seven_three").subscription_cost
+      @zone_plan_zero_shipment_cost_low = @subscriptions.find_by_subscription_level("seven_zero").shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @subscriptions.find_by_subscription_level("seven_zero").shipping_estimate_high
+      @zone_zero = "seven_zero"
+      @zone_three = "seven_three"
+      @zone_nine = "seven_nine"
+    end
+    
   end # end of change_membership_choice method
   
   def process_change_membership_choice
-    # change session variable with new membership choice
-    session[:new_membership] = params[:id]
+    # get subscription
+    @subscription = Subscription.find_by_subscription_level(params[:id])
+    # get User Subscription
+    @user_subscription = UserSubscription.where(user_id: current_user.id, currently_active: [true, nil], total_deliveries: 0).first
+    @user_subscription.update(subscription_id: @subscription.id, auto_renew_subscription_id: @subscription.id)
     
     # send user back to membership confirmation page
     redirect_to account_membership_getting_started_path
@@ -560,7 +648,7 @@ class SignupController < ApplicationController
       else
         # determine if user has a prepaid delivery plan
         @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-        if @user_subscription.subscription_id == 1
+        if @user_subscription.subscription.deliveries_included == 0
           @next_step = signup_thank_you_path
         else
           @next_step = delivery_numbers_getting_started_path
@@ -582,7 +670,7 @@ class SignupController < ApplicationController
     
     # get User Subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-    
+
     # update getting started step
     if @user.getting_started_step < 8
       @user.update_attribute(:getting_started_step, 8)
@@ -645,25 +733,45 @@ class SignupController < ApplicationController
       # make sure reset message doesn't show
       @reset_estimate_visible_status = "hidden"
       
-      # adjust drinks per week if this person is a mate being added to account
-      if @user.role_id == 5 && !@delivery_preferences.drinks_per_week.nil?
-        @redirect_link = signup_thank_you_path
-        @account_users = User.where(account_id: @user.account_id)
-        @drinks_per_week = 0
-        @mates_drinks_per_week = 0
-        @account_users.each do |user|
-          @delivery_user_preference = DeliveryPreference.find_by_user_id(user.id)
-          if !@delivery_user_preference.drinks_per_week.nil?
-            @drinks_per_week = @drinks_per_week + @delivery_user_preference.drinks_per_week
+      # set views, drinks per week, redirect, etc. based on person's role and plan 
+      if (1..4).include?(@user_subscription.subscription_id)
+        @plan_view = "delivery"
+        if @user.role_id == 5 && !@delivery_preferences.drinks_per_week.nil?
+          @redirect_link = signup_thank_you_path
+          @account_users = User.where(account_id: @user.account_id)
+          @drinks_per_week = 0
+          @mates_drinks_per_week = 0
+          @account_users.each do |user|
+            @delivery_user_preference = DeliveryPreference.find_by_user_id(user.id)
+            if !@delivery_user_preference.drinks_per_week.nil?
+              @drinks_per_week = @drinks_per_week + @delivery_user_preference.drinks_per_week
+            end
+            if user.id != @user.id
+              @mates_drinks_per_week = @mates_drinks_per_week + @delivery_user_preference.drinks_per_week
+            end
           end
-          if user.id != @user.id
-            @mates_drinks_per_week = @mates_drinks_per_week + @delivery_user_preference.drinks_per_week
-          end
+        else
+          @drinks_per_week = @current_user_drinks_per_week
+          @redirect_link = delivery_preferences_getting_started_path
         end
       else
-        @drinks_per_week = @current_user_drinks_per_week
-        @redirect_link = delivery_preferences_getting_started_path
+        # set view page
+        @plan_view = "shipment"
+        # set shipment estimates
+        if @user.craft_stage_id == 1
+          @delivery_cost_estimate_low = 50
+          @delivery_cost_estimate_high = 65
+        elsif @user.craft_stage_id == 2
+          @delivery_cost_estimate_low = 60
+          @delivery_cost_estimate_high = 75
+        else
+          @delivery_cost_estimate_low = 70
+          @delivery_cost_estimate_high = 85
+        end 
+        # set redirect link
+        @redirect_link = signup_thank_you_path
       end
+      
     
       # determine minimum number of weeks between deliveries
       if !@delivery_preferences.drinks_per_week.nil?
@@ -842,7 +950,7 @@ class SignupController < ApplicationController
     @delivery_preferences.update(max_large_format: @input)
     
     # get delivery estimate 
-    if !@delivery_preferences.drinks_per_week.nil? && !@delivery_preferences.max_large_format.nil?
+    if !@delivery_preferences.drinks_per_week.nil? && !@delivery_preferences.max_large_format.nil? && !@delivery_preferences.drinks_per_delivery.nil?
       delivery_estimator(@delivery_preferences, current_user.craft_stage_id)
       @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
       @total_delivery_drinks = @delivery_preferences.drinks_per_delivery
@@ -936,6 +1044,144 @@ class SignupController < ApplicationController
     
   end # end process_delivery_frequency_getting_started method
   
+  def process_shipping_frequency_getting_started
+    # set current page
+    @current_page = 'signup'
+    
+    # get selected frequency
+    @shipping_frequency = params[:id].to_i
+    
+    # get user info
+    @user = User.find_by_id(current_user.id)
+    
+    # update Account with delivery frequency preference
+    @account = Account.find_by_id(current_user.account_id)
+    @account.update_attribute(:delivery_frequency, @shipping_frequency)
+    
+    # set delivery preferences
+    @drinks_per_week = (18 / @shipping_frequency)
+    if @user.craft_stage_id == 1
+      @price_estimate = (13.5 * 4)
+      @max_cellar = 1
+    elsif @user.craft_stage_id == 2
+      @price_estimate = (13.5 * 5)
+      @max_cellar = 2
+    else
+      @price_estimate = (13.5 * 6)
+      @max_cellar = 3
+    end
+    
+    # update Delivery Preferences with drinks per delivery
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    @delivery_preferences.update(drinks_per_week: @drinks_per_week, 
+                                  price_estimate: @price_estimate, 
+                                  max_large_format: 3,
+                                  max_cellar: @max_cellar,
+                                  drinks_per_delivery: 15)
+    
+    # find if a delivery date has been set yet
+    @delivery = Delivery.where(account_id: current_user.account_id).order("delivery_date ASC")
+    @number_of_deliveries = @delivery.size
+    @delivery_frequency = @shipping_frequency
+    @second_delivery_date = @delivery[0].delivery_date + @delivery_frequency.weeks
+    
+    # add a second delivery date if not already done 
+    if @number_of_deliveries == 1
+      Delivery.create(account_id: current_user.account_id, 
+                      delivery_date: @second_delivery_date,
+                      status: "admin prep",
+                      subtotal: 0,
+                      sales_tax: 0,
+                      total_price: 0,
+                      delivery_change_confirmation: false,
+                      share_admin_prep_with_user: false)
+    else
+      @delivery[1].update(delivery_date: @second_delivery_date)
+    end
+    
+    # set redirect link
+    @redirect_link = signup_thank_you_path
+        
+    # show next button if live
+    if !@account.delivery_frequency.nil? && !@delivery.blank?
+      @show_live_button = true
+    else
+      @show_live_button = false
+    end
+    
+    # show delivery cost information and 'next' button
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end process_shipping_frequency_getting_started method
+  
+  def process_shipping_first_date_chosen
+    # set current page
+    @current_page = 'signup'
+    
+    # get selected frequency
+    @shipping_first_date = params[:id]
+    
+    # get user info
+    @user = User.find_by_id(current_user.id)
+    
+    # update Account with delivery frequency preference
+    @account = Account.find_by_id(current_user.account_id)
+    @delivery_frequency = @account.delivery_frequency
+    
+    # find if a delivery date has been set yet
+    @delivery = Delivery.where(account_id: current_user.account_id).order("delivery_date ASC")
+    @number_of_deliveries = @delivery.size
+    
+    if !@delivery.blank? && @number_of_deliveries >= 2
+      @delivery[0].update(delivery_date: @shipping_first_date)
+      if !@delivery_frequency.nil?
+        @second_delivery_date = @delivery[0].delivery_date + @delivery_frequency.weeks
+        @delivery[1].update(delivery_date: @second_delivery_date)
+      end
+    else
+      # create Delivery table entries 
+      @first_delivery = Delivery.create(account_id: current_user.account_id, 
+                                      delivery_date: @shipping_first_date,
+                                      status: "admin prep",
+                                      subtotal: 0,
+                                      sales_tax: 0,
+                                      total_price: 0,
+                                      delivery_change_confirmation: false,
+                                      share_admin_prep_with_user: false)
+      
+      if !@delivery_frequency.nil?                                    
+        # and create second line in delivery table so curator has option to plan ahead
+        @next_delivery_date = @first_delivery.delivery_date + @delivery_frequency.weeks
+        Delivery.create(account_id: current_user.account_id, 
+                        delivery_date: @next_delivery_date,
+                        status: "admin prep",
+                        subtotal: 0,
+                        sales_tax: 0,
+                        total_price: 0,
+                        delivery_change_confirmation: false,
+                        share_admin_prep_with_user: false)
+      end
+    end
+    
+    # set redirect link
+    @redirect_link = signup_thank_you_path
+    
+    # show next button if live
+    if !@account.delivery_frequency.nil? && !@delivery.blank?
+      @show_live_button = true
+    else
+      @show_live_button = false
+    end
+    
+    # show delivery cost information and 'next' button
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end process_first_shipping_date_chosen method
+  
   def delivery_preferences_getting_started
     # check if format exists and show message confirmation if so
     if params.has_key?(:format)
@@ -991,37 +1237,40 @@ class SignupController < ApplicationController
     # find delivery time options for additional delivery locations
     @additional_delivery_locations.each do |location|
       @delivery_time_options = DeliveryZone.where(zip_code: location.zip)
-      if !@delivery_time_options.blank?
-        @delivery_time_options.each do |option| 
-          # first determine next two options based on week alignment
-          if option.weeks_of_year == "every"
-            @first_delivery_date_option = Date.parse(option.day_of_week)
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-          elsif option.weeks_of_year == @current_week_status
-            @first_delivery_date_option = Date.parse(option.day_of_week)
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
-          else
-            @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
-          end
-            # next determine which of two options is best based on days noticed required
-            @days_between_today_and_first_option = @first_delivery_date_option - Date.today
-            if @days_between_today_and_first_option >= @days_notice_required
-              if @first_delivery_date_option < option.beginning_at
-                @delivery_time_options_hash[option.id] = option.beginning_at
-              else
-                @delivery_time_options_hash[option.id] = @first_delivery_date_option
-              end
+
+      if !@delivery_time_options.blank? 
+        if @delivery_time_options[0].currently_available == true 
+          @delivery_time_options.each do |option| 
+            # first determine next two options based on week alignment
+            if option.weeks_of_year == "every"
+              @first_delivery_date_option = Date.parse(option.day_of_week)
+              @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+            elsif option.weeks_of_year == @current_week_status
+              @first_delivery_date_option = Date.parse(option.day_of_week)
+              @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
             else
-              if @second_delivery_date_option < option.beginning_at
-                @delivery_time_options_hash[option.id] = option.beginning_at
-              else
-                @delivery_time_options_hash[option.id] = @second_delivery_date_option
-              end
+              @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+              @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
             end
-        end
-      end
-    end
+              # next determine which of two options is best based on days noticed required
+              @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+              if @days_between_today_and_first_option >= @days_notice_required
+                if @first_delivery_date_option < option.beginning_at
+                  @delivery_time_options_hash[option.id] = option.beginning_at
+                else
+                  @delivery_time_options_hash[option.id] = @first_delivery_date_option
+                end
+              else
+                if @second_delivery_date_option < option.beginning_at
+                  @delivery_time_options_hash[option.id] = option.beginning_at
+                else
+                  @delivery_time_options_hash[option.id] = @second_delivery_date_option
+                end
+              end
+          end # end of @delivery_time_options each loop
+        end # end of check whether @delivery_time_options is currently available
+      end # end of check whether @delivery_time_options is blank
+    end # end of @additional_delivery_locations each loop
     
     # get Delivery Preference info if it exists
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
@@ -1109,6 +1358,13 @@ class SignupController < ApplicationController
     # get User Subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
+    # set subscription type
+    if (1..4).include?(@user_subscription.subscription_id)
+      @plan_type = "delivery"
+    else  
+      @plan_type = "shipment"
+    end
+    
     # assign invitation code for user to share
     @next_available_code = SpecialCode.where(user_id: nil).first
     @next_available_code.update(user_id: @user.id)
@@ -1126,10 +1382,10 @@ class SignupController < ApplicationController
       @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: true).first
       @membership_name = @user_subscription.subscription.subscription_name
       @membership_deliveries = @user_subscription.subscription.deliveries_included
-      @subscription_fee = (@user_subscription.subscription.subscription_cost)
+      @subscription_fee = (@user_subscription.subscription.subscription_cost.round)
       @renewal_date = (Date.today + @user_subscription.subscription.subscription_months_length).strftime("%b %-d, %Y")
       @membership_length = @user_subscription.subscription.subscription_months_length
-      UserMailer.welcome_email(@user, @membership_name, @membership_deliveries, @subscription_fee, @renewal_date, @membership_length).deliver_now
+      UserMailer.welcome_email(@user, @membership_name, @membership_deliveries, @subscription_fee, @plan_type, @membership_length).deliver_now
     end
     
     if session[:new_membership]

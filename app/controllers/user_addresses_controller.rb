@@ -1,6 +1,9 @@
 class UserAddressesController < ApplicationController
   
   def new
+    #set user in case user navigates back during signup
+    @user = current_user
+    
     # set new form 
     @user_address = UserAddress.new
     
@@ -19,41 +22,120 @@ class UserAddressesController < ApplicationController
     # create new address
     @new_address = UserAddress.create(address_params)
     
-    # check if user has a subscription
-    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+    # get user subscription
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: [true, nil]).first
     
-    # get delivery zone
-    @delivery_zone = DeliveryZone.where(zip_code: @new_address.zip).first
+    # check for other addresses already in use
+    @other_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first
     
-    if !@delivery_zone.blank? # keep user in signup flow
-      # add delivery zone if this is a zero plan
-      if session[:new_membership] == "zero" || (!@user_subscription.blank? && @user_subscription.subscription_id == 1)
-          if current_user.getting_started_step < 10
-            # update Account and Addrress info
-            Account.update(current_user.account_id, delivery_location_user_address_id: @new_address.id, delivery_zone_id: @delivery_zone.id)
-            @new_address.update(current_delivery_location: true, delivery_zone_id: @delivery_zone.id)
-          else
-            @new_address.update(current_delivery_location: false, delivery_zone_id: @delivery_zone.id)
-          end
+    # check if address entered matches user subscription originally chosen
+    # first see if this address falls in Knird delivery zone
+    @knird_delivery_zone = DeliveryZone.where(zip_code: @new_address.zip).first
+    # if there is no Knird delivery Zone, find Fed Ex zone
+    if !@knird_delivery_zone.blank?
+      # if subscription is a local delivery plan, update accordingly
+      if (1..4).include?(@user_subscription.subscription_id)
+        if @user_subscription.subscription_id == 2
+          # update Account and Addrress info
+          Account.update(current_user.account_id, delivery_location_user_address_id: @new_address.id, delivery_zone_id: @knird_delivery_zone.id)
+        end
+        # update adress to make current  
+        if @other_address.blank?
+          @new_address.update(current_delivery_location: true, delivery_zone_id: @knird_delivery_zone.id)
+        else
+          @new_address.update(current_delivery_location: false, delivery_zone_id: @knird_delivery_zone.id)
+        end
+        # set redirect linnk
+        @redirect_link = "account"
+      else
+        @find_correct_subscription = true
       end
+    else
+      # set default
+      @subscription_match = false
+       
+      # get FedEx Delivery Zone
+      @first_three = @new_address.zip[0...3]
+      @fed_ex_zone_matching = FedExDeliveryZone.zone_match(@first_three).first
+      if !@fed_ex_zone_matching.blank?
+        @fed_ex_zone = @fed_ex_zone_matching.zone_number
+      else
+        if @redirect_link == "account"
+          # assume this is signup process
+          redirect_to account_membership_getting_started_path, alert: "Sorry, we don't recognize the zip code '"+@new_address.zip+"'! Please try another."
+          @new_address.destroy
+          return
+        else 
+          # assume this is a new address addition 
+          redirect_to new_user_address_path(current_user.account_id), alert: "Sorry, we don't recognize the zip code '"+@new_address.zip+"'! Please try another."
+          @new_address.destroy
+          return
+        end
+      end
+      
+      # if subscription matches Fed Ex Zone, update accordingly
+      if @fed_ex_zone == 2 && @user_subscription.subscription.subscription_level_group == 2
+        @subscription_match = true    
+      elsif (3..4).include?(@fed_ex_zone) && @user_subscription.subscription.subscription_level_group == 3
+        @subscription_match = true
+      elsif @fed_ex_zone == 5 && @user_subscription.subscription.subscription_level_group == 4 
+        @subscription_match = true
+      elsif @fed_ex_zone == 6 && @user_subscription.subscription.subscription_level_group == 5 
+        @subscription_match = true
+      elsif @fed_ex_zone == 7 && @user_subscription.subscription.subscription_level_group == 6 
+        @subscription_match = true
+      elsif @fed_ex_zone == 8 && @user_subscription.subscription.subscription_level_group == 7 
+        @subscription_match = true  
+      end
+      
+      # update address
+      Account.update(current_user.account_id, delivery_location_user_address_id: @new_address.id, fed_ex_delivery_zone_id: @fed_ex_zone_matching.zone_number)
+      if @other_address.blank?
+        @new_address.update(current_delivery_location: true, fed_ex_delivery_zone_id: @fed_ex_zone_matching.zone_number)
+      else
+        @new_address.update(current_delivery_location: false, fed_ex_delivery_zone_id: @fed_ex_zone_matching.zone_number)
+      end
+      
+      # set next step(s)
+      if @subscription_match == true
+        # set redirect link
+        @redirect_link = "account"
+      else
+        @find_correct_subscription = true
+      end
+    end
+    
+    # if needed, find correct subscription to match user address and redirect to change membership page
+    if @find_correct_subscription == true
+      if !@knird_delivery_zone.blank?
+        @subscription_level_group = 1 
+      else
+        if @fed_ex_zone == 2
+          @subscription_level_group = 2    
+        elsif (3..4).include?(@fed_ex_zone)
+          @subscription_level_group = 3
+        elsif @fed_ex_zone == 5 
+          @subscription_level_group = 4
+        elsif @fed_ex_zone == 6 
+          @subscription_level_group = 5
+        elsif @fed_ex_zone == 7
+          @subscription_level_group = 6
+        elsif @fed_ex_zone == 8 
+          @subscription_level_group = 7  
+        end
+      end
+      # set redirect link
+      @redirect_link = "change"
+    end
         
-      # redirect user
-      if session[:return_to]
-        # redirect back to last page before new location page
-        redirect_to session.delete(:return_to)
-      else # assume this is  coming from the signup process
-        # redirect to next step in signup process
-        redirect_to account_membership_getting_started_path
-      end
-    
-    else # get user out of signup flow since they don't live in Seattle
-        # send Admin mail
-        AdminMailer.outside_seattle_interest(current_user, @new_address).deliver_now
-        # redirect to message about Seattle focus
-        session.delete(:user_return_to)
-        sign_out(current_user)
-        redirect_to outside_seattle_path
-        return
+    # redirect user
+    if session[:return_to]
+      # redirect back to last page before new location page
+      redirect_to session.delete(:return_to)
+    elsif @redirect_link == "account"
+      redirect_to account_membership_getting_started_path
+    else  # redirect to next step in signup process
+      redirect_to change_membership_choice_path(@subscription_level_group), alert: 'Your zip code changed; please select a plan offered in your area.'
     end
     
   end # end of create method
@@ -79,16 +161,119 @@ class UserAddressesController < ApplicationController
   end # end of edit method
   
   def update
+    # check zip first
+    @zip = params[:user_address][:zip]
+    # first see if this address falls in Knird delivery zone
+    @knird_delivery_zone = DeliveryZone.where(zip_code: @zip, currently_available: true).first
+
+    if !@knird_delivery_zone.blank?
+      @local_delivery = true
+    else
+      # get FedEx Delivery Zone
+      @first_three = @zip[0...3]
+      @fed_ex_zone_matching = FedExDeliveryZone.zone_match(@first_three).first
+      if !@fed_ex_zone_matching.blank?
+        @fed_ex_zone = @fed_ex_zone_matching.zone_number
+      else
+        if @redirect_link == "account"
+          # assume this is signup process
+          redirect_to account_membership_getting_started_path, alert: "Sorry, we don't recognize the zip code '"+@zip+"'! Please try another."
+          return
+        else 
+          # assume this is a new address addition 
+          redirect_to edit_user_address_path(params[:id], current_user.account_id), alert: "Sorry, we don't recognize the zip code '"+@zip+"'! Please try another."
+          return
+        end
+      end
+    end
+
     # udpate address
     @update_address = UserAddress.find_by_id(params[:id])
     @update_address.update(address_params)
     
+    # get user subscription
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: [true, nil]).first
+    
+    # check if address entered matches user subscription originally chosen
+    
+    # if there is no Knird delivery Zone, find Fed Ex zone
+    if @local_delivery == true
+      # if subscription is a local delivery plan, update accordingly
+      if (1..4).include?(@user_subscription.subscription_id)
+        if @user_subscription.subscription_id == 2
+          # update Account and Addrress info
+          Account.update(current_user.account_id, delivery_location_user_address_id: @update_address.id, delivery_zone_id: @knird_delivery_zone.id)
+        end
+        # update adress to make current  
+        @update_address.update(delivery_zone_id: @knird_delivery_zone.id)
+        # set redirect linnk
+        @redirect_link = "account"
+      else
+        @find_correct_subscription = true
+      end
+    else
+      # set default
+      @subscription_match = false
+      
+      # if subscription matches Fed Ex Zone, update accordingly
+      if @fed_ex_zone == 2 && @user_subscription.subscription.subscription_level_group == 2
+        @subscription_match = true    
+      elsif (3..4).include?(@fed_ex_zone) && @user_subscription.subscription.subscription_level_group == 3
+        @subscription_match = true
+      elsif @fed_ex_zone == 5 && @user_subscription.subscription.subscription_level_group == 4 
+        @subscription_match = true
+      elsif @fed_ex_zone == 6 && @user_subscription.subscription.subscription_level_group == 5 
+        @subscription_match = true
+      elsif @fed_ex_zone == 7 && @user_subscription.subscription.subscription_level_group == 6 
+        @subscription_match = true
+      elsif @fed_ex_zone == 8 && @user_subscription.subscription.subscription_level_group == 7 
+        @subscription_match = true  
+      end
+      
+      # update address
+      Account.update(current_user.account_id, delivery_location_user_address_id: @update_address.id, fed_ex_delivery_zone_id: @fed_ex_zone_matching.zone_number)
+      @update_address.update(fed_ex_delivery_zone_id: @fed_ex_zone_matching.zone_number)
+      
+      # set next step(s)
+      if @subscription_match == true
+        # set redirect link
+        @redirect_link = "account"
+      else
+        @find_correct_subscription = true
+      end
+    end
+    
+    # if needed, find correct subscription to match user address and redirect to change membership page
+    if @find_correct_subscription == true
+      if !@knird_delivery_zone.blank?
+        @subscription_level_group = 1 
+      else
+        if @fed_ex_zone == 2
+          @subscription_level_group = 2    
+        elsif (3..4).include?(@fed_ex_zone)
+          @subscription_level_group = 3
+        elsif @fed_ex_zone == 5 
+          @subscription_level_group = 4
+        elsif @fed_ex_zone == 6 
+          @subscription_level_group = 5
+        elsif @fed_ex_zone == 7
+          @subscription_level_group = 6
+        elsif @fed_ex_zone == 8 
+          @subscription_level_group = 7  
+        end
+      end
+      # set redirect link
+      @redirect_link = "change"
+    end
+    
+    # redirect user
     if session[:return_to]
       # redirect back to last page before new location page
       redirect_to session.delete(:return_to)
-    else # assume this is  coming from the signup process
-      # redirect to next step in signup process
-      redirect_to delivery_preferences_getting_started_path(current_user.id)
+    elsif @redirect_link == "account"
+      redirect_to account_membership_getting_started_path
+    else  # redirect to next step in signup process
+      redirect_to change_membership_choice_path(@subscription_level_group), alert: 'Your zip code changed; please select a plan offered in your area.'
     end
     
   end # end of update method

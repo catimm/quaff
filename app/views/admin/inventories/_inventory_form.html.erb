@@ -61,22 +61,37 @@
 	</div>
 	<div class="row no-margin">
 		<div class="col-sm-1 col-xs-2 no-padding">
-			<%= label :drink_price, 'Drink Price' %>
-		</div>
-		<div class="col-sm-5 col-xs-10">
-			<%= f.text_field :drink_price, :class => "form-control", placeholder: "Price" %>
-		</div>
-		
-		<div class="col-sm-1 col-xs-2 no-padding">
 			<%= label :drink_cost, 'Drink Cost' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
 			<%= f.text_field :drink_cost, :class => "form-control", placeholder: "Cost" %>
 		</div>
+		
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :drink_price_four_five, 'Drink Price 45%' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :drink_price_four_five, :class => "form-control", placeholder: "Price 45%" %>
+		</div>
 	</div>
 	<div class="row no-margin">
 		<div class="col-sm-1 col-xs-2 no-padding">
-			<%= label :drink_price, 'Drink Format' %>
+			<%= label :drink_price_five_zero, 'Drink Price 50%' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :drink_price_five_zero, :class => "form-control", placeholder: "Price 50%" %>
+		</div>
+		
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :drink_price_five_five, 'Drink Price 55%' %>
+		</div>
+		<div class="col-sm-5 col-xs-10">
+			<%= f.text_field :drink_price_five_five, :class => "form-control", placeholder: "Price 55%" %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-1 col-xs-2 no-padding">
+			<%= label :size_format_id, 'Drink Format' %>
 		</div>
 		<div class="col-sm-5 col-xs-10">
 			<%= f.collection_select(:size_format_id, SizeFormat.all, :id, :format_name, {prompt: "Select a format"}, {class: "form-control"}) %>

@@ -37,6 +37,7 @@ class UsersController < ApplicationController
     params[:user][:role_id] = 4
     params[:user][:getting_started_step] = 1
     params[:user][:cohort] = "f_&_f"
+    params[:user][:homepage_view] = session[:homepage_view]
     # get a random color for the user
     @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
     params[:user][:user_color] = @user_color
@@ -72,7 +73,7 @@ class UsersController < ApplicationController
                                 total_deliveries: 0,
                                 account_id: @user.account_id,
                                 renewals: 0,
-                                currently_active: false)
+                                currently_active: nil)
         # set redirect link
         @redirect_link = delivery_address_getting_started_path
       end
@@ -101,15 +102,11 @@ class UsersController < ApplicationController
   def edit
     @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
-    @user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
-    
+    @user_subscription = UserSubscription.where(user_id: @user.id, deliveries_this_period: 0).first
+
     if @user.id != current_user.id
       return head :forbidden
     end
-    #Rails.logger.debug("User info: #{@user.inspect}")
-    
-    # get User Subscription info
-    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # show phone if user is account owner
     if @user.role_id == 1 || @user.role_id == 4
@@ -228,34 +225,51 @@ class UsersController < ApplicationController
   
     # get customer plan details
     @customer_plan = UserSubscription.where(account_id: @user.account_id, currently_active: true)[0]
+    @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @customer_plan.subscription.subscription_level_group)
+    @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
+    @next_plan = Subscription.find_by_id(@customer_plan.auto_renew_subscription_id)
+    
+    if (1..4).include?(@customer_plan.subscription_id)
+      @plan_type = "delivery"
+      @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
+      @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first
+      if @customer_plan.subscription.deliveries_included == 0
+        @no_plan = "current"
+      elsif @customer_plan.subscription.deliveries_included == 6
+        @test_plan = "current"
+      else
+        @committed_plan = "current"
+      end
+    else
+      @plan_type = "shipment"
+      @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 3).first
+      @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 9).first
+      @zone_plan_zero_shipment_cost_low = @zone_plan_zero.shipping_estimate_low
+      @zone_plan_zero_shipment_cost_high = @zone_plan_zero.shipping_estimate_high
+      @zone_plan_three_cost = @zone_plan_test.subscription_cost
+      @zone_plan_nine_cost = @zone_plan_committed.subscription_cost
+      if @customer_plan.subscription.deliveries_included == 0
+        @no_plan = "current"
+      elsif @customer_plan.subscription.deliveries_included == 3
+        @test_plan = "current"
+      else
+        @committed_plan = "current"
+      end
+    end
+    
     # determine remaining deliveries
-    if @customer_plan.subscription_id == 2
-      @remaining_deliveries = 6 - @customer_plan.deliveries_this_period
-    elsif @customer_plan.subscription_id == 3
-      @remaining_deliveries = 25 - @customer_plan.deliveries_this_period
+    if @customer_plan.subscription.deliveries_included != 0
+      @remaining_deliveries = @customer_plan.subscription.deliveries_included - @customer_plan.deliveries_this_period
     end
     
     # set CSS style indicator & appropriate text
-    if @customer_plan.subscription_id == 1
-      @zero = "current"
-      @current_plan_definition = "0 Prepaid Deliveries"
-    elsif @customer_plan.subscription_id == 2
-      @six = "current"
-      @current_plan_definition = "6 Prepaid Deliveries"
-    else
-      @twenty_five = "current"
-      @current_plan_definition = "25 Prepaid Deliveries"
-    end
-    if @customer_plan.auto_renew_subscription_id == 1
-      @next_plan_definition = "0 Prepaid Deliveries"
-    elsif @customer_plan.auto_renew_subscription_id == 2
-      @next_plan_definition = "6 Prepaid Deliveries"
-    else
-      @next_plan_definition = "25 Prepaid Deliveries"
-    end
+    @current_plan_name = @customer_plan.subscription.subscription_level
+    @current_plan_definition = @customer_plan.subscription.subscription_name
+    @next_plan_definition = @next_plan.subscription_name
     
     # customer's Stripe card info
-    @customer_cards = []
+    @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
+                                        all(:object => "card")
     #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
     
   end # end of account_settings_membership action
@@ -376,49 +390,23 @@ class UsersController < ApplicationController
   #  redirect_to user_path(current_user.id)
   #end
   
-  def plan
-    # find if user has a plan already
-    @customer_plan = UserSubscription.where(account_id: current_user.account_id, currently_active: true)[0]
-    
-    if !@customer_plan.blank?
-      if @customer_plan.subscription_id == 1
-        # set current style variable for CSS plan outline
-        @relish_current = "current"
-      elsif @customer_plan.subscription_id == 2
-        # set current style variable for CSS plan outline
-        @enjoy_current = "current"
-      else 
-        # set current style variable for CSS plan outline
-        @sample_current = "current"
-      end
-    end
-    
-  end # end payments method
-  
   def plan_rewewal_off
     @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true)[0]
-
+    @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @user_subscription.subscription.subscription_level_group)
+    @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
+    
     # change in Knird DB
-    @user_subscription.update_attribute(:auto_renew_subscription_id, 1)
+    @user_subscription.update_attribute(:auto_renew_subscription_id, @zone_plan_zero.id)
     
     redirect_to account_settings_membership_user_path
   end # end plan_rewewal_off method
   
   def process_user_plan_change
-    if params[:id] == "zero"
-      @update = 1
-      @plan_id = "zero"
-    elsif params[:id] == "six"
-      @update = 2
-      @plan_id = "six"
-    else
-      @update = 3
-      @plan_id = "twenty_five"
-    end
+    @new_subscription = Subscription.find_by_subscription_level(params[:id])
     
     # get current user subscription info
     @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
-    @user_subscription.update_attribute(:auto_renew_subscription_id, @update)
+    @user_subscription.update_attribute(:auto_renew_subscription_id, @new_subscription.id)
     
     # redirect back to membership page
     redirect_to account_settings_membership_user_path
@@ -460,26 +448,29 @@ class UsersController < ApplicationController
     # set new plan session cookie
     session[:start_new_plan_start_date_step] = true
     
-    # get user's current delivery address
-    @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first
-    # change current delivery location to false
-    @current_delivery_address.update_attribute(:current_delivery_location, false)
-    
-    # get user's current delivery preferences
-    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
-    # update delivery preferences to clear them so user can choose preferences specifically for new plan
-    @delivery_preferences.update_attributes(drinks_per_week: nil, 
-                                            additional: nil, 
-                                            price_estimate: nil, 
-                                            max_large_format: nil,
-                                            max_cellar: nil,
-                                            drinks_per_delivery: nil)
+    # reset these items if this is a local delivery plan
+    if @new_subscription_info.subscription_level_group == 0
+      # get user's current delivery address
+      @current_delivery_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first
+      # change current delivery location to false
+      @current_delivery_address.update_attribute(:current_delivery_location, false)
+      
+      # get user's current delivery preferences
+      @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+      # update delivery preferences to clear them so user can choose preferences specifically for new plan
+      @delivery_preferences.update_attributes(drinks_per_week: nil, 
+                                              additional: nil, 
+                                              price_estimate: nil, 
+                                              max_large_format: nil,
+                                              max_cellar: nil,
+                                              drinks_per_delivery: nil)
+    end
     
     # reset user's getting_started_step
     User.update(current_user.id, getting_started_step: 8)
     
     # redirect user to 8th step of signup--weekly drinks consumed
-    redirect_to drinks_weekly_getting_started_path
+    redirect_to delivery_numbers_getting_started_path
   
   end # end of start_new_plan method
   
@@ -769,7 +760,7 @@ class UsersController < ApplicationController
     
     # get customer Stripe account info
     @customer = Stripe::Customer.retrieve(@customer_subscription_info.stripe_customer_number)
-    Rails.logger.debug("customer: #{@customer.inspect}")
+    #Rails.logger.debug("customer: #{@customer.inspect}")
     # delete the credit  card
     @customer.sources.retrieve(params[:id]).delete
     
@@ -787,13 +778,14 @@ class UsersController < ApplicationController
   private
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone, :account_id, :getting_started_step)  
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone, 
+                                  :account_id, :getting_started_step)  
   end
   
   def new_user_params
     params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :role_id, :cohort, 
                                  :password, :password_confirmation, :special_code, :user_color, :account_id, 
-                                 :getting_started_step, :phone)  
+                                 :getting_started_step, :phone, :homepage_view)  
   end
   
 end

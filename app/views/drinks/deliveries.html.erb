@@ -17,7 +17,7 @@
 				</div>
 			</div>
 		</div>
-		<% if @user_subscription.subscription_id == 1 || @user.role_id == 1 %>
+		<% if @user_subscription.subscription.deliveries_included == 0 || @user.role_id == 1 %>
 			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
 				<%= link_to "Order drinks", orders_new_path, class: "btn btn-default btn-success order-drinks-button" %>
 			</div>
@@ -71,7 +71,7 @@
 						<% end %>
 					</div>
 					<div class="col-xs-12 col-sm-5 col-md-7 no-padding delivery-stats-holder hidden" id="delivery-stats-holder-<%= @first_delivery.id %>">
-						<% if @user_subscription.subscription_id == 1 %>
+						<% if @user_subscription.subscription.deliveries_included == 0 %>
 							<%= render(partial: 'delivery_stats_for_no_plan_customer', locals: { delivery: @first_delivery })  %>
 						<% else %>
 							<%= render(partial: 'delivery_stats_for_plan_customer', locals: { delivery: @first_delivery })  %>
@@ -111,7 +111,7 @@
 							<h6 class="hide-delivery-stats-text hidden" id="hide-delivery-stats-<%= delivery[0].id %>">&nbsp;  (<span>hide</span> stats)</h6>
 						</div>
 						<div class="col-xs-12 col-sm-7 col-md-7 no-padding delivery-stats-holder hidden" id="delivery-stats-holder-<%= delivery[0].id %>">
-							<% if @user_subscription.subscription_id == 1 %>
+							<% if @user_subscription.subscription.deliveries_included == 0 %>
 								<%= render(partial: 'delivery_stats_for_no_plan_customer', locals: { delivery: delivery[0] })  %>
 							<% else %>
 								<%= render(partial: 'delivery_stats_for_plan_customer', locals: { delivery: delivery[0] })  %>

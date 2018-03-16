@@ -1,0 +1,78 @@
+<div class="row no-margin estimate-holder">
+	<div class="row no-margin" id="delivery-info-row">
+		<div class="col-sm-8">
+			<div class="row no-margin estimated-delivery-price-holder-signup" id="delivery-estimates-for-customer">
+				<%= render 'shipment_settings/per_shipment_estimate' %>
+			</div>
+		</div>
+		<div class="col-sm-4" id="last_updated_holder">
+			<% if !@preference_updated.nil? %>
+				<%= render 'layouts/preferences_last_updated' %>
+			<% end %>
+		</div>	
+	</div>
+</div>
+<hr>
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-8 no-padding">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-4 no-padding">
+				<h3 class="delivery-preference-prompt">Preferred drink?</h3>
+			</div>
+			<div class="col-xs-12 col-sm-8">
+				<div class="row no-margin preferences-drink-category-row-holder">
+					<%= render 'shipment_settings/drink_category_choice' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>
+<div class="row no-margin" id="next_shipment_date_holder">
+    <%= render 'shipment_settings/next_shipment_date' %>
+</div>
+<hr>
+<div class="row no-margin">
+	<div class="col-xs-12 no-padding">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-3 no-padding">
+				<h3 class="delivery-preference-prompt">Delivery frequency?</h3>
+			</div>
+			<div class="col-xs-12 col-sm-9">
+				<div class="row no-margin preferences-delivery-frequency-row-holder" id="preferences-delivery-frequency-row-holder">
+					<%= render 'shipment_settings/shipping_frequency_options' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>
+<div class="row no-margin">
+	<div class="col-sm-5 no-padding">
+		<h3 class="delivery-preference-prompt">Do you drink only gluten-free drinks?</h3>
+	</div>
+	<div class="col-sm-3 no-padding-right">
+		<div class="delivery-preference-gluten-free-box">
+			<%= simple_form_for @delivery_preferences, 
+				:url => {:controller => "signup", :action => "process_drink_style_likes_getting_started"}, 
+				:remote => true, :html => { :class => 'form-horizontal' } do |f| %>
+				<label for="gluten_free_field" class="col-xs-4 col-sm-3 control-label gluten-free-label">Yes</label>
+				<%= f.check_box :gluten_free,
+						input_html: { checked: @delivery_preferences.gluten_free, class: "form-control", id: "gluten_free_field" }, 
+						:label => false %>	
+			<% end %>
+		</div>
+	</div>
+</div>
+<hr>
+<div class="row no-margin">
+	<%= form_for @delivery_preferences, :url => {:action => "shipment_update_additional_requests"}, :remote => true do |f| %>
+		<div class="col-sm-4 no-padding">
+			<h3 class="delivery-preference-prompt">Additional requests</h3>
+			<%= f.submit "Save additional requests", disabled: true, class: "btn btn-default update_delivery_request", id: "update_delivery_request_button" %>
+		</div>
+		<div class="col-sm-8 delivery-additional-request">
+			<%= f.text_area :additional, {class: 'form-control delivery-additional-request-form', placeholder: 'For example, "I always want an ISA on hand" or "I want to improve my cellar selection"'}  %>
+		</div>
+	<% end %>
+</div>

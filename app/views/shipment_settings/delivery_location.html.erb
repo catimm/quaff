@@ -1,0 +1,233 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Delivery Settings</h1>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<div class="row">
+				<% if @user_subscription.subscription.deliveries_included != 0 %>
+					<div class="col-xs-4">
+						<%= link_to "My Preferences", user_shipment_settings_path, class: "drink-preference-view-option", id: "next" %>
+					</div>
+				<% end %>
+				<div class="col-xs-4 no-padding-right">
+					<%= link_to 'Delivery Location', user_shipping_location_path, class: "drink-preference-view-option current", id: "history" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container">	
+	<div class="row no-margin shipping-location-spacer-row">
+		
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-7">
+			<div class="delivery-location-option-tile">	
+					<div class="row delivery-info-row">
+						<h4 class="delivery-options-header">Currently chosen <span>location</span></h4>
+						<div class="col-xs-12 col-sm-5 location-address-holder">
+							<div class="row no-margin">
+								<div class="col-xs-10 no-padding">
+									<h5 class="location-header"><%= @current_delivery_location_name %> </h5>
+									<h5 class="location-address">
+										<%= @current_delivery_location.address_street %>,
+										<% if !@current_delivery_location.address_unit.nil? %>
+											<%= @current_delivery_location.address_unit %>  
+										<% end %>
+									</h5>
+									<h5 class="location-address">
+										<%= @current_delivery_location.city %> <%= @current_delivery_location.state %> <%= @current_delivery_location.zip %>
+									</h5>
+									<% if !@current_delivery_location.special_instructions.blank? %>
+										<h5 class="location-instructions">
+											"<%= @current_delivery_location.special_instructions %>"
+										</h5>
+									<% end %>
+								</div>
+								<div class="col-xs-1 no-padding">
+									<%= link_to edit_user_address_path(@current_delivery_location.id, @user.account_id), class: 'edit-delivery-location-button' do %>
+										<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
+									<% end %>
+								</div>
+								<div class="col-xs-1 no-padding">
+									<%= link_to "#", class: 'remove-home-address-button', id: @current_delivery_location.id do %>
+										<i class="fa fa-times-circle" data-toggle="tooltip" title="Please choose a new delivery location before removing this option"></i>
+									<% end %>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<% if !@additional_delivery_locations.blank? %>
+					<% @additional_delivery_locations.each_with_index do |location, index| %>
+							<div class="delivery-location-option-tile">	
+								<div class="row delivery-info-row">
+									<h4 class="delivery-options-header"><%= (index + 1).ordinalize %> delivery <span>location option</span></h4>	
+									<div class="col-xs-12 col-sm-5 location-address-holder">
+										<div class="row no-margin">
+											<div class="col-xs-10 no-padding">
+												<% if location.location_type == "Other" %>
+													<% @additional_delivery_location_name = location.other_name.upcase %>
+												<% else %>
+													<% @additional_delivery_location_name = location.location_type.upcase %>
+												<% end %>
+												<h5 class="location-header"><%= @additional_delivery_location_name %></h5>
+												<h5 class="location-address">
+													<%= location.address_street %>,
+													<% if !location.address_unit.nil? %>
+														<%= location.address_unit %>  
+													<% end %>
+												</h5>
+												<h5 class="location-address">
+													<%= location.city %> <%= location.state %> <%= location.zip %>
+												</h5>
+											</div>
+											<div class="col-xs-1 no-padding">
+												<%= link_to edit_user_address_path(location.id, @user.account_id), class: 'edit-delivery-location-button' do %>
+													<i class="fa fa-pencil" data-toggle="tooltip" title="Edit this location"></i>
+												<% end %>
+											</div>
+											<div class="col-xs-1 no-padding">
+												<%= link_to "#", class: 'remove-user-address-button', id: location.id, data: {toggle: "modal", target: "#remove_user_address"} do %>
+													<i class="fa fa-times-circle" data-toggle="tooltip" title="Remove this location"></i>
+												<% end %>
+											</div>
+										</div>
+										<% if !location.special_instructions.blank? %>
+											<div class="row no-margin">
+												<h5 class="location-instructions">
+													"<%= location.special_instructions %>"
+												</h5>
+											</div>
+										<% end %>
+									</div>
+								</div>
+								<div class="row delivery-info-row">
+									<div class="col-xs-5 col-sm-4 optional-delivery-time-container" id="<%= @additional_delivery_location_name %>">
+										<%= link_to "#", 
+											class: 'btn btn-success initiation-change-shipment-location', data: {toggle: "modal", target: "#change_shipment_location"},
+											id: "#{location.id}" do %>
+											<i class="fa fa-check-circle"> choose</i>
+										<% end %>
+									</div>
+								</div>
+							</div>
+						<% end %>
+					<% end %>
+		</div>
+		<div class="col-xs-12 col-sm-5">
+			<div class="row no-margin add-delivery-location-row">
+				<div class="col-xs-12 col-sm-offset-4 col-sm-7 add-location-address-holder">
+					<h6 class="add-location-direction-text">add a new delivery location</h6>
+					<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
+						<i class="fa fa-plus"> location</i>
+					<% end %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-offset-4 col-sm-8 no-padding">
+					<h4 class="better-option-request-text">Wish we had better options for you?</h4>
+					<%= link_to "#", class: 'btn btn-default btn-success formButton-make-delivery-request', 
+							data: {toggle: "modal", target: "#shipment_request_message"} do %>
+						<i class="fa fa-envelope"> make a request</i>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="remove_user_address" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Remove address</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="auto-confirm-confirmation-text">Are you sure you want to remove this address?</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Yep, positive", user_address_path(current_user.id), method: :delete,
+					:class => 'btn btn-danger remove-location-button', :id => "remove-location-button" %>
+			</div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="change_shipment_location" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm location change</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="auto-confirm-confirmation-text">Are you sure you want to choose 
+					<span id="new_delivery_location_name"></span> as your delivery location?
+				</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Yep, positive", change_shipment_location_path(current_user.id),
+					:class => 'btn btn-success change-shipment-location-button', :id => "change_shipment_location_button" %>
+			</div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="shipment_request_message" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Make a shipment request</h3>
+	</div>
+	<div class="modal-body">
+		<%= form_for @customer_shipment_request, url: @customer_shipment_request_path, html: { method: :post } do |f| %>
+			<div class="row no-margin">
+				<div class="col-sm-12">
+					<%= f.text_area :message, :class => "form-control", placeholder: "Type your message here" %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-8">
+					<%= f.submit "Send", class: "btn btn-default btn-success formButton" %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>
+<div id="delivery_request_settings_confirmation" class="modal">
+	<div class="modal-header">
+		<div class="row no-margin">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<div class="col-sm-12">
+				<h3>Delivery request confirmation</h3>
+			</div>
+		</div>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="delivery-confirmation-text">Thanks for your message.  We'll be in touch soon!</h4>
+			</div>
+		</div>
+		<div class="col-sm-offset-4 col-sm-4 add-button-holder">
+			<%= link_to "#", :class => 'text-center btn btn-success add-drink-button', :data => {:dismiss=>"modal"} do %>
+				<i class="fa fa-chevron-circle-right"></i>
+				Got it!
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

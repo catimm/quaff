@@ -15,6 +15,7 @@
 #  beginning_at           :datetime
 #  delivery_driver_id     :integer
 #  excise_tax             :decimal(8, 6)
+#  currently_available    :boolean
 #
 
 require 'test_helper'

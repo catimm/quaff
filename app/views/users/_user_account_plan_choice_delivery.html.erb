@@ -1,16 +1,16 @@
 <div class="row user-membership-optons-row">
 	<div class="col-xs-12 col-sm-4">
-		<div class="homepage-plan-options <%= @zero %>">
+		<div class="homepage-plan-options <%= @no_plan %>">
 			<%= render 'layouts/plan_delivery_zero' %>
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
-					<% if @customer_plan.subscription_id == 1 && @customer_plan.auto_renew_subscription_id == 1 %>
+					<% if @customer_plan.subscription_id == @zone_plan_zero.id && @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
 						<h4 class="formButton-renew-plan-set">Current plan</h4>
-					<% elsif @customer_plan.auto_renew_subscription_id == 1 %>
+					<% elsif @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
 						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
 					<% else %>
 						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
-								data: {toggle: "modal", target: "#change_auto_renew_plan_to_zero"} do %>
+								data: {toggle: "modal", target: "#change_auto_renew_plan_to_#{@zone_plan_zero.subscription_level}"} do %>
 							<i class="fa fa-refresh" aria-hidden="true"> Auto renew to this plan</i>
 						<% end %>
 					<% end %>
@@ -24,20 +24,20 @@
 		</div>
 	</div>
 	<div class="col-xs-12 col-sm-4">
-		<div class="homepage-plan-options <%= @six %>">
+		<div class="homepage-plan-options <%= @test_plan %>">
 			<%= render 'layouts/plan_delivery_six' %>
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
-					<% if @customer_plan.subscription_id == 1 && @customer_plan.auto_renew_subscription_id == 1 %>
+					<% if @customer_plan.subscription_id == @zone_plan_zero.id && @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
 						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
-								data: {toggle: "modal", target: "#start_six_plan"} do %>
+								data: {toggle: "modal", target: "#start_plan_#{@zone_plan_test.subscription_level}"} do %>
 							<i class="fa fa-play" aria-hidden="true"> Start the 6 Prepaid Deliveries Plan</i>
 						<% end %>
-					<% elsif @customer_plan.auto_renew_subscription_id == 2 %>
+					<% elsif @customer_plan.auto_renew_subscription_id == @zone_plan_test.id %>
 						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
 					<% else %>
 						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
-								data: {toggle: "modal", target: "#change_auto_renew_plan_to_six"} do %>
+								data: {toggle: "modal", target: "#change_auto_renew_plan_to_#{@zone_plan_test.subscription_level}"} do %>
 							<i class="fa fa-refresh" aria-hidden="true"> Auto renew to this plan</i>
 						<% end %>
 					<% end %>
@@ -51,20 +51,20 @@
 		</div>
 	</div>
 	<div class="col-xs-12 col-sm-4">
-		<div class="homepage-plan-options <%= @twenty_five %>">
+		<div class="homepage-plan-options <%= @committed_plan %>">
 			<%= render 'layouts/plan_delivery_twenty_five' %>
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
-					<% if @customer_plan.subscription_id == 1 && @customer_plan.auto_renew_subscription_id == 1 %>
+					<% if @customer_plan.subscription_id == @zone_plan_zero.id && @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
 						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
-								data: {toggle: "modal", target: "#start_twenty_five_plan"} do %>
+								data: {toggle: "modal", target: "#start_plan_#{@zone_plan_committed.subscription_level}"} do %>
 							<i class="fa fa-play" aria-hidden="true"> Start the 25 Prepaid Deliveries Plan</i>
 						<% end %>
-					<% elsif @customer_plan.auto_renew_subscription_id == 3 %>
+					<% elsif @customer_plan.auto_renew_subscription_id == @zone_plan_committed.id %>
 						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
 					<% else %>
 						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
-								data: {toggle: "modal", target: "#change_auto_renew_plan_to_twenty_five"} do %>
+								data: {toggle: "modal", target: "#change_auto_renew_plan_to_#{@zone_plan_committed.subscription_level}"} do %>
 							<i class="fa fa-refresh" aria-hidden="true"> Auto renew to this plan</i>
 						<% end %>
 					<% end %>

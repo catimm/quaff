@@ -120,6 +120,11 @@ gem 'simple_form'
 gem 'd3-rails', '~> 3.5.11'
 # generates and validates coupon codes
 gem 'coupon_code'
+# gets geo location data for showing appropriate customer plans
+gem 'geokit-rails'
+gem 'google_directions'
+# gem to facilitate sending tracked events to Google Ananlytics
+gem 'ga_events'
 
 # Use unicorn as the app server
 # gem 'unicorn'

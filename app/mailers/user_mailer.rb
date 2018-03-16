@@ -154,7 +154,7 @@ class UserMailer < ActionMailer::Base
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
     #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
     @user_subscription = UserSubscription.where(account_id: customer.account_id)[0]
-    if @user_subscription.subscription_id == 1
+    if @user_subscription.subscription.deliveries_included == 0
       @drinks_ordered = Order.find_by_id(delivery_info.order_id).pluck(:number_of_drinks)
       if total_quantity.to_i < @drinks_ordered
         @no_plan_order = true

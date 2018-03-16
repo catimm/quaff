@@ -1,53 +1,75 @@
-<div class="container">
-	<div class="row">
-		<div class="col-xs-12">
-			<h3 class="index-section-header">Find a Knird plan that works for you</h3> 
+<div class="row plan-location-info-row">
+	<div class="col-xs-offset-1 col-xs-10 plan-location-info-holder">
+		<div class="row no-margin">
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-3 no-padding">
+				<%= text_field_tag 'delivery_area', nil, placeholder: 'Enter different zip code', class: 'form-control check-zip-code-button', id: 'check-zip-code-deliveries' %>
+			</div>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
+				<%= link_to "#", :class => 'btn btn-default btn-success formButton-check-zip-code-button-deliveries' do %>
+							<i class="fa fa-exchange">&nbsp;</i>
+							Change zip code 
+						<% end %>
+			</div>
+		</div>
+		<% if @close_to_delivery_zones == true %>
+			<div class="row no-margin">
+				<div class="col-xs-10 col-sm-9 no-padding">
+					<h4 class="check-local-delivery-zones-message">
+						Even though your zip code is just beyond our local delivery area, we can still ship to you!<br> 
+						Or, check our map to see if your home and/or work fall within our local delivery zones.
+					</h4>
+				</div>
+				<div class="col-xs-2 home-page-view-map-button-holder">
+					<%= link_to "#", class: 'btn btn-primary btn-inverse delivery-thoughts-text', 
+							data: {toggle: "modal", target: "#initial_delivery_area"} do %>
+						<i class="fa fa-map-marker"> View map</i>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>
+<div class="col-xs-12 col-sm-4">
+	<div class="homepage-plan-options">
+		<%= render 'layouts/plan_shipping_zero' %>
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding">
+				<%= link_to "Sign up for The Ad Hoc", new_user_path(@zone_zero), class: 'btn btn-default btn-primary plan-get-started-button' %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding">
+				<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
+			</div>
 		</div>
 	</div>
-	<div class="row membership-details-row">
-		<div class="col-xs-12 col-sm-4">
-			<div class="homepage-plan-options">
-				<%= render 'layouts/plan_shipping_a' %>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", new_user_path("zero"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
-					</div>
-				</div>
+</div>
+<div class="col-xs-12 col-sm-4">
+	<div class="homepage-plan-options">
+		<%= render 'layouts/plan_shipping_three' %>
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding">
+				<%= link_to "Sign up for The Prepaid 3", new_user_path(@zone_three), class: 'btn btn-default btn-primary plan-get-started-button' %>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-4">
-			<div class="homepage-plan-options">
-				<%= render 'layouts/plan_shipping_b' %>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", new_user_path("six"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
-					</div>
-				</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding">
+				<h6 class='membership-extra-info'>Change any shipment date. Cancel any time.</h6>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-4">
-			<div class="homepage-plan-options">
-				<%= render 'layouts/plan_shipping_c' %>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<%= link_to "Get started", new_user_path("twenty-five"), class: 'btn btn-default btn-primary plan-get-started-button' %>
-					</div>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-12 no-padding">
-						<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
-					</div>
-				</div>
+	</div>
+</div>
+<div class="col-xs-12 col-sm-4">
+	<div class="homepage-plan-options">
+		<%= render 'layouts/plan_shipping_nine' %>
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding">
+				<%= link_to "Sign up for The Prepaid 9", new_user_path(@zone_nine), class: 'btn btn-default btn-primary plan-get-started-button' %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding">
+				<h6 class='membership-extra-info'>Change any shipment date. Cancel any time.</h6>
 			</div>
 		</div>
 	</div>

@@ -6,7 +6,7 @@
 		</div>
 		<div class="col-xs-12 col-sm-6">
 			<div class="row">
-				<% if @user_subscription.subscription_id != 1 %>
+				<% if @user_subscription.subscription.deliveries_included != 0 %>
 					<div class="col-xs-4">
 						<%= link_to "My Preferences", user_delivery_settings_path, class: "drink-preference-view-option", id: "next" %>
 					</div>
@@ -56,7 +56,7 @@
 												"<%= @current_delivery_location.special_instructions %>"
 											</h5>
 										<% end %>
-										<% if @user_subscription.subscription_id != 1 %>
+										<% if @user_subscription.subscription.deliveries_included != 0 %>
 											<h5 class="current-delivery-choice"><%= @current_delivery_time.day_of_week %>s,</h5>  
 											<h5 class="current-delivery-choice">
 												<%=  (@current_delivery_time.start_time).strftime("%l:%M%P") %> 
@@ -80,7 +80,7 @@
 								</div>
 							</div>
 						</div>
-						<% if @user_subscription.subscription_id != 1 %>
+						<% if @user_subscription.subscription.deliveries_included != 0 %>
 							<% if !@current_delivery_time_options.blank? %>
 								<div class="row delivery-info-row">
 									<h4 class="delivery-options-header">Delivery <span>time <%= "option".pluralize(@current_delivery_time_options.count) %></span> for this location</h4>
@@ -150,7 +150,7 @@
 										<% end %>
 									</div>
 								</div>
-								<% if @user_subscription.subscription_id != 1 %>
+								<% if @user_subscription.subscription.deliveries_included != 0 %>
 									<div class="row delivery-info-row">
 										<% @delivery_time_options = DeliveryZone.where(zip_code: location.zip) %>
 										<h4 class="delivery-options-header">Delivery <span>time <%= "option".pluralize(@delivery_time_options.count) %></span> for this location</h4>

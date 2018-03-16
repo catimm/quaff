@@ -4,19 +4,37 @@
 		<%= render 'intro_section' %>
     </section>
     <!-- /.row -->	
-    <section class="background-dark value-prop-section">
+    <section class="background-dark value-prop-section" id="value_section">
 		<%= render 'value_prop_section' %>
     </section>
     <!-- /.row -->
-    <section class="background-light how-it-works-section">
-		<%= render 'how_it_works_section2' %>
+    <section class="background-light how-it-works-section" id="works_section">
+		<%= render 'how_it_works_section' %>
     </section>
     <!-- /.row -->
    	<section class="background-dark homepage-last-row" id="membership_section">
-		<%= render 'plan_section_deliveries' %>
+		<%= render 'plan_section' %>
     </section>
     <!-- /.row -->
-    <section class="background-light how-it-works-section">
-		<%= render 'prices_section' %>
+    <section class="background-light prices_section <%= @prices_section_view %>" id="prices_section">
+		
     </section>
+    <div id="initial_delivery_area" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 class="delivery-helpful-hints-text">Current delivery area</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= image_url('https://s3-us-west-2.amazonaws.com/knird/index/Knird_delivery_area.png') %>">
+					<h5 class="delivery-neighborhoods">
+						We deliver to most of Seattle as well as Downtown Bellevue and Microsoft's 
+						Redmond campus. And we're expanding quickly&mdash;let us know if you have a specific request for a 
+						delivery location not yet available.
+					</h5>
+				</div>
+			</div>
+		</div> 
+	</div>
 <%= render 'layouts/footer' %>

@@ -1340,7 +1340,7 @@ task :update_customer_subscriptions => :environment do
         @delivery_frequency_times_two = (@delivery_frequency * 2)
         
         # find last delivery date
-        @last_delivery = Delivery.where(status: "delivered").order(delivery_date: :desc).last
+        @last_delivery = Delivery.where(status: "delivered").order(delivery_date: :asc).last
         
         # create next two delivery dates
         @first_delivery_date = @last_delivery.delivery_date + @delivery_frequency.weeks

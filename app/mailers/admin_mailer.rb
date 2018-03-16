@@ -51,6 +51,32 @@ class AdminMailer < ActionMailer::Base
     
   end # end of delivery_date_change_notice email
   
+  def shipment_location_change_notice(customer, admin_email, next_delivery, old_zone, new_zone)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    @next_delivery_date = next_delivery.delivery_date.strftime("%A, %B %-d")
+    payload  = {
+      recipients: [
+        {
+          address: { email: admin_email },
+        }
+      ],
+      content: {
+        template_id: 'shipment-location-change-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        customer_username: customer.username,
+        account_id: customer.account_id,
+        next_delivery_date: @next_delivery_date,
+        old_zone: old_zone,
+        new_zone: new_zone
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of shipment_location_change_notice email
   
   def early_code_request(admin_email, requestor_name, requestor_email)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

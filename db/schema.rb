@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180218073508) do
+ActiveRecord::Schema.define(version: 20180309191327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.integer  "delivery_location_user_address_id"
     t.integer  "delivery_zone_id"
     t.integer  "delivery_frequency"
+    t.integer  "fed_ex_delivery_zone_id"
   end
 
   create_table "admin_account_deliveries", force: :cascade do |t|
@@ -312,6 +313,7 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.datetime "beginning_at"
     t.integer  "delivery_driver_id"
     t.decimal  "excise_tax",             precision: 8, scale: 6
+    t.boolean  "currently_available"
   end
 
   create_table "disti_change_temps", force: :cascade do |t|
@@ -322,14 +324,16 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.string   "format"
     t.integer  "size_format_id"
     t.decimal  "drink_cost"
-    t.decimal  "drink_price"
+    t.decimal  "drink_price_four_five"
     t.integer  "distributor_id"
     t.string   "disti_upc"
     t.integer  "min_quantity"
     t.decimal  "regular_case_cost"
     t.decimal  "current_case_cost"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.decimal  "drink_price_five_zero", precision: 5, scale: 2
+    t.decimal  "drink_price_five_five", precision: 5, scale: 2
   end
 
   create_table "disti_import_temps", force: :cascade do |t|
@@ -340,31 +344,35 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.string   "format"
     t.integer  "size_format_id"
     t.decimal  "drink_cost"
-    t.decimal  "drink_price"
+    t.decimal  "drink_price_four_five"
     t.integer  "distributor_id"
     t.string   "disti_upc"
     t.integer  "min_quantity"
     t.decimal  "regular_case_cost"
     t.decimal  "current_case_cost"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.decimal  "drink_price_five_zero", precision: 5, scale: 2
+    t.decimal  "drink_price_five_five", precision: 5, scale: 2
   end
 
   create_table "disti_inventories", force: :cascade do |t|
     t.integer  "beer_id"
     t.integer  "size_format_id"
-    t.decimal  "drink_cost",          precision: 5, scale: 2
-    t.decimal  "drink_price",         precision: 5, scale: 2
+    t.decimal  "drink_cost",            precision: 5, scale: 2
+    t.decimal  "drink_price_four_five", precision: 5, scale: 2
     t.integer  "distributor_id"
     t.integer  "disti_item_number"
     t.string   "disti_upc"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
     t.integer  "min_quantity"
-    t.decimal  "regular_case_cost",   precision: 5, scale: 2
-    t.decimal  "current_case_cost",   precision: 5, scale: 2
+    t.decimal  "regular_case_cost",     precision: 5, scale: 2
+    t.decimal  "current_case_cost",     precision: 5, scale: 2
     t.boolean  "currently_available"
     t.boolean  "curation_ready"
+    t.decimal  "drink_price_five_zero", precision: 5, scale: 2
+    t.decimal  "drink_price_five_five", precision: 5, scale: 2
   end
 
   create_table "disti_orders", force: :cascade do |t|
@@ -404,6 +412,15 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.datetime "updated_at",        null: false
   end
 
+  create_table "fed_ex_delivery_zones", force: :cascade do |t|
+    t.integer  "zone_number"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.decimal  "excise_tax",  precision: 8, scale: 6
+    t.string   "zip_start"
+    t.string   "zip_end"
+  end
+
   create_table "friends", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "friend_id"
@@ -427,24 +444,26 @@ ActiveRecord::Schema.define(version: 20180218073508) do
   end
 
   create_table "inventories", force: :cascade do |t|
+    t.integer  "beer_id"
     t.integer  "stock"
     t.integer  "reserved"
     t.integer  "order_request"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
     t.integer  "size_format_id"
-    t.integer  "beer_id"
-    t.decimal  "drink_price",         precision: 5, scale: 2
-    t.decimal  "drink_cost",          precision: 5, scale: 2
+    t.decimal  "drink_price_four_five", precision: 5, scale: 2
+    t.decimal  "drink_cost",            precision: 5, scale: 2
     t.integer  "limit_per"
     t.integer  "total_batch"
     t.boolean  "currently_available"
     t.integer  "distributor_id"
     t.integer  "min_quantity"
-    t.decimal  "regular_case_cost",   precision: 5, scale: 2
-    t.decimal  "sale_case_cost",      precision: 5, scale: 2
+    t.decimal  "regular_case_cost",     precision: 5, scale: 2
+    t.decimal  "sale_case_cost",        precision: 5, scale: 2
     t.integer  "disti_inventory_id"
     t.integer  "total_demand"
+    t.decimal  "drink_price_five_zero", precision: 5, scale: 2
+    t.decimal  "drink_price_five_five", precision: 5, scale: 2
   end
 
   create_table "inventory_transactions", force: :cascade do |t|
@@ -606,6 +625,10 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.integer  "subscription_months_length"
     t.decimal  "extra_delivery_cost",        precision: 5, scale: 2
     t.integer  "deliveries_included"
+    t.string   "pricing_model"
+    t.decimal  "shipping_estimate_low",      precision: 5, scale: 2
+    t.decimal  "shipping_estimate_high",     precision: 5, scale: 2
+    t.integer  "subscription_level_group"
   end
 
   create_table "supply_types", force: :cascade do |t|
@@ -738,6 +761,7 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.string   "other_name"
     t.boolean  "current_delivery_location"
     t.integer  "delivery_zone_id"
+    t.integer  "fed_ex_delivery_zone_id"
   end
 
   create_table "user_beer_ratings", force: :cascade do |t|
@@ -885,6 +909,7 @@ ActiveRecord::Schema.define(version: 20180218073508) do
     t.integer  "account_id"
     t.string   "phone"
     t.boolean  "recent_addition"
+    t.string   "homepage_view"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -905,10 +930,12 @@ ActiveRecord::Schema.define(version: 20180218073508) do
   create_table "zip_codes", force: :cascade do |t|
     t.string   "zip_code"
     t.boolean  "covered"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.string   "city"
     t.string   "state"
+    t.string   "homepage_view"
+    t.string   "geo_zip"
   end
 
   add_foreign_key "credits", "accounts"
