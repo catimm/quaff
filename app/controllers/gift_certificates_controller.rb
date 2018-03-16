@@ -6,6 +6,9 @@ class GiftCertificatesController < ApplicationController
   def success
   end
 
+  def index
+  end
+
   # GET /gift_certificates/new
   def new
     @gift_certificate = GiftCertificate.new
@@ -61,7 +64,7 @@ class GiftCertificatesController < ApplicationController
           session.delete(:user_return_to)
           redirect_to return_path
       else
-          redirect_to account_settings_gifts_credits_user_path()
+          redirect_to gift_certificates_index_path()
       end
   end
   

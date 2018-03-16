@@ -17,7 +17,6 @@ Rails.application.routes.draw do
   get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'
   patch '/users/process_first_password' => 'users#process_first_password', :as => 'process_first_password_user'
   get '/users/account_settings_profile' => 'users#account_settings_profile', :as => 'account_settings_profile_user' 
-  get '/users/account_settings_gifts_credits' => 'users#account_settings_gifts_credits', :as => 'account_settings_gifts_credits_user' 
   get '/users/account_settings_mates' => 'users#account_settings_mates', :as => 'account_settings_mates_user'
   get '/users/plan_rewewal_off' => 'users#plan_rewewal_off', :as => 'plan_rewewal_off_user'
   patch '/users/update_profile' => 'users#update_profile', :as => 'update_profile_user'
@@ -206,6 +205,7 @@ Rails.application.routes.draw do
   get '/early_signup/early_customer_password_response/:id' => 'early_signup#early_customer_password_response', :as => 'early_customer_password_response'
 
   # Gift certificates
+  get '/gift_certificates' => 'gift_certificates#index', :as => 'gift_certificates_index'
   get '/gift_certificates/new' => 'gift_certificates#new', :as => 'gift_certificates_new'
   get '/gift_certificates/success' => 'gift_certificates#success', :as => 'gift_certificates_success'
   post '/gift_certificates/process_new_gift_certificate' => 'gift_certificates#create', :as => 'process_new_gift_certificate'
