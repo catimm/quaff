@@ -182,6 +182,7 @@ class Admin::FulfillmentController < ApplicationController
     # increment delivery totals
     
     @customer_subscription.increment!(:total_deliveries)
+    @customer_subscription.increment!(:deliveries_this_period)
     if @customer_subscription.subscription.deliveries_included != 0
       # update account based on number of remaining deliveries in this period
       @remaining_deliveries = @subscription_deliveries_included - @customer_subscription.deliveries_this_period

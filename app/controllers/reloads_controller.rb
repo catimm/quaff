@@ -9,9 +9,65 @@ class ReloadsController < ApplicationController
   
   
   def index
-    # find customers whose subscription expires today  
-    @expiring_subscriptions = UserSubscription.expiring_subscriptions
-    #Rails.logger.debug("Expiring info: #{@expiring_subscriptions.inspect}")
+    @customer_subscription = UserSubscription.find_by_id(33)
+    @customer_subscription.increment!(:deliveries_this_period)
+    if @customer_subscription.subscription.deliveries_included != 0
+      # update account based on number of remaining deliveries in this period
+      @remaining_deliveries = @subscription_deliveries_included - @customer_subscription.deliveries_this_period
+      if @remaining_deliveries == 0
+        UserMailer.three_day_membership_expiration_notice(@account_owner[0], @customer_subscription).deliver_now
+        
+      elsif @remaining_deliveries == 1
+        # set expiration/renewal date to trigger series of renewal emails and automatic renewal
+        @next_delivery_date = @next_delivery.delivery_date
+        @renewal_date = @next_delivery_date + 3.days
+        # add renewal date to user subscription
+        @customer_subscription.update_attribute(:active_until, @renewal_date)
+        
+      elsif @remaining_deliveries >= 2
+        # start next delivery cycle
+        
+        # get account delivery frequency
+        @delivery_frequency = @account.delivery_frequency
+        # get new delivery date
+        @second_delivery_date = @next_delivery.delivery_date + @delivery_frequency.weeks
+        # insert new line in delivery table
+        @next_delivery = Delivery.create(account_id: @delivery.account_id, 
+                                          delivery_date: @second_delivery_date,
+                                          status: "admin prep",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false)
+      end
+    end # end of check whether user is no plan customer
+
+    # Add 5% cash back as pending credit for 25 delivery plan customers
+    if @customer_subscription.subscription_id == 3
+        cashback_amount = (0.05 * @delivery.subtotal).round(2)
+        PendingCredit.create(account_id: @delivery.account_id, transaction_credit: cashback_amount, transaction_type: "CASHBACK_PURCHASE", is_credited: false, delivery_id: @delivery.id)
+    end
+
+    # increment reward points only on 6, 25 delivery plans (subscription id 2, 3)
+    if @customer_subscription.subscription.deliveries_included != 0
+      
+      # Get the last reward_points entry for this account
+      last_reward = RewardPoint.where(account_id: @delivery.account_id).sort_by(&:id).reverse[0]
+      if last_reward == nil
+          previous_reward_total = 0
+      else
+          previous_reward_total = last_reward.total_points
+      end
+
+      transaction_points = @delivery.subtotal.ceil * (if @customer_subscription.subscription_id == 2 then 1 else 2 end)
+
+      # Update reward_points for the account
+      RewardPoint.create(account_id: @delivery.account_id, transaction_amount: @delivery.subtotal, transaction_points: transaction_points, total_points: (previous_reward_total + transaction_points), reward_transaction_type_id: @customer_subscription.subscription_id)
+    end
+
+    # redirect back to delivery page
+    redirect_to admin_fulfillment_index_path
 
   end # end of index method
   
