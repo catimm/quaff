@@ -9,6 +9,16 @@ class ReloadsController < ApplicationController
   
   
   def index
+    @customer_subscription = UserSubscription.find_by_id(33)
+    
+    # get delivery account owner info
+    @account_owner = User.find_by_id(42)
+    
+    UserMailer.three_day_membership_expiration_notice(@account_owner, @customer_subscription).deliver_now
+        
+      
+    # redirect back to delivery page
+    redirect_to admin_fulfillment_index_path
 
   end # end of index method
   
