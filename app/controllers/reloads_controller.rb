@@ -10,6 +10,14 @@ class ReloadsController < ApplicationController
   
   def index
     @customer_subscription = UserSubscription.find_by_id(33)
+    
+    # get delivery account owner info
+    @account_owner = User.find_by_id(42)
+    @account = Account.find_by_id(23)
+    
+    # get account owner subscription deliveries info
+    @subscription_deliveries_included = @customer_subscription.subscription.deliveries_included
+    
     @customer_subscription.increment!(:deliveries_this_period)
     if @customer_subscription.subscription.deliveries_included != 0
       # update account based on number of remaining deliveries in this period
