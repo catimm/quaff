@@ -9,17 +9,28 @@ class ReloadsController < ApplicationController
   
   
   def index
-    @customer_subscription = UserSubscription.find_by_id(33)
+    @deliveries_ids_last_year = Delivery.where("delivery_date < ?", '2018-01-01').pluck(:id)
+    @account_deliveries = AccountDelivery.where(delivery_id: @deliveries_ids_last_year)
+    @inventory_transactions = InventoryTransaction.where(account_delivery_id: @account_delivery_ids)
     
-    # get delivery account owner info
-    @account_owner = User.find_by_id(42)
+    @drinks_sold = 0
+    @cost_of_goods_sold = 0
     
-    UserMailer.three_day_membership_expiration_notice(@account_owner, @customer_subscription).deliver_now
-        
-      
-    # redirect back to delivery page
-    redirect_to admin_fulfillment_index_path
-
+    @account_deliveries.each do |account_delivery|
+      # get revenue from drink sold
+      @total_revenue_from_this_drink = account_delivery.drink_price * account_delivery.quantity
+      # add it to total
+      @drinks_sold = @drinks_sold + @total_revenue_from_this_drink
+      # get inventory transaction
+      @this_inventory_transaction = InventoryTransaction.where(account_delivery_id: account_delivery.id).first
+      # get cost of this inventory
+      @inventory = Inventory.find_by_id(@this_inventory_transaction.inventory_id)
+      # get cost of drinks sold
+      @this_cost_of_goods_sold = @inventory.drink_cost * @this_inventory_transaction.quantity
+      # add it to total
+      @cost_of_goods_sold = @cost_of_goods_sold + @this_cost_of_goods_sold
+    end
+    
   end # end of index method
   
   def data
