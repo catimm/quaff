@@ -39,7 +39,7 @@ class RewardsCreditsController < ApplicationController
     @total_reward_opportunity = 0
 
     # get total value of unrated drinks
-    if @user_subscription.subscription_id == 2 or @user_subscription.subscription_id == 3
+    if @user_subscription.subscription.deliveries_included == 6 or @user_subscription.subscription.deliveries_included == 25
         @unrated_drinks.each do |drink|
           @number_unrated = drink.quantity - drink.times_rated
           @rewards_value = (@number_unrated * drink.drink_price * 0.05).round(2)
@@ -68,7 +68,7 @@ class RewardsCreditsController < ApplicationController
     
   #   # get user subscription info
   #   @user_subscription = UserSubscription.where(user_id: @account_owner.id, currently_active: true)[0]
-  #   if @user_subscription.subscription_id == 3
+  #   if @user_subscription.subscription.deliveries_included == 25
   #     @reward_multiplier_text = "1.5 bottle caps"
   #     @reward_multiplier = 1.5
   #   else
