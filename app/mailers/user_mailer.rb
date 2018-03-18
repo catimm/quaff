@@ -713,60 +713,60 @@ class UserMailer < ActionMailer::Base
     
   end # end of admin_failed_charge_notice email
   
-  def expiring_trial_email(owner, location)
-    #Rails.logger.debug("Owner info: #{owner.first_name.inspect}")
-    #Rails.logger.debug("Location info: #{location.name.inspect}")
-    template_name = "expiring-trial-email"
-    template_content = []
-    message = {
-      to: [{email: owner.email}],
-      inline_css: true,
-      merge_vars: [
-        {rcpt: owner.email,
-         vars: [
-           {name: "owner", content: owner.first_name},
-           {name: "location", content: location.name}
-         ]}
-      ]
-    }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end
-
   def gift_certificate_created_email(gift_certificate)
-    template_name = "gift-certificate-created-email"
-    template_content = []
-    message = {
-      to: [{email: gift_certificate.receiver_email}, {email: gift_certificate.giver_email, type: "cc"}],
-      inline_css: true,
-      merge_vars: [
-        {rcpt: gift_certificate.receiver_email,
-         vars: [
-           {name: "giver_name", content: gift_certificate.giver_name},
-           {name: "receiver_name", content: gift_certificate.receiver_name},
-           {name: "amount", content: gift_certificate.amount},
-           {name: "redeem_code", content: gift_certificate.redeem_code}
-         ]}
-      ]
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: gift_certificate.receiver_email }
+        },
+        {
+          address: { email: gift_certificate.giver_email,
+                     header_to: gift_certificate.receiver_email }
+        }
+      ],
+      content: {
+        template_id: 'gift-certificate-created-email',
+        headers: { CC: gift_certificate.giver_email },
+      },
+      substitution_data: {
+        giver_name: gift_certificate.giver_name,
+        receiver_name: gift_certificate.receiver_name,
+        amount: gift_certificate.amount,
+        redeem_code: gift_certificate.redeem_code
+      }
     }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of gift_certificate_created_email email
 
   def gift_certificate_failed_email(gift_certificate)
-    template_name = "gift_certificate_failed_email"
-    template_content = []
-    message = {
-      to: [{email: gift_certificate.giver_email}],
-      inline_css: true,
-      merge_vars: [
-        {rcpt: gift_certificate.giver_email,
-         vars: [
-           {name: "giver_name", content: gift_certificate.giver_name},
-           {name: "receiver_name", content: gift_certificate.receiver_name},
-           {name: "amount", content: gift_certificate.amount}
-         ]}
-      ]
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: gift_certificate.giver_email }
+        },
+        {
+          address: { email: 'carl@drinkknird.com',
+                     header_to: gift_certificate.giver_email }
+        }
+      ],
+      content: {
+        template_id: 'gift-certificate-failed-email'
+      },
+      substitution_data: {
+        giver_name: gift_certificate.giver_name,
+        receiver_name: gift_certificate.receiver_name,
+        amount: gift_certificate.amount
+      }
     }
-    mandrill_client.messages.send_template template_name, template_content, message
-  end
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of gift_certificate_failed_email email
   
 end

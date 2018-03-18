@@ -63,6 +63,10 @@
                     <div class="row">
                         <div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6 text-center">
                             <input type="submit" class="btn btn-success user-info-next-button" id="gift-certificate-stripe-button" value="Purchase Credit"></input>
+				          	<script 
+				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+				          		src="https://checkout.stripe.com/checkout.js">
+				          	</script>
                         </div>
                     </div>
                 <% end %>

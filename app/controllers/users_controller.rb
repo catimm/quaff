@@ -225,7 +225,11 @@ class UsersController < ApplicationController
   
     # get customer plan details
     @customer_plan = UserSubscription.where(account_id: @user.account_id, currently_active: true)[0]
-    @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @customer_plan.subscription.subscription_level_group)
+    if @user.role_id == 1
+      @all_plans_subscription_level_group = Subscription.where(subscription_level_group: 1) 
+    else
+      @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @customer_plan.subscription.subscription_level_group)
+    end
     @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
     @next_plan = Subscription.find_by_id(@customer_plan.auto_renew_subscription_id)
     
