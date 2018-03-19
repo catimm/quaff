@@ -1,6 +1,17 @@
 $(function() {
+    // set delay function
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
     $('#gift-value-custom-amount').change(function(){
         $('#gift_certificate_amount').val($(this).val());
+        // update stripe button
+        update_stripe_button();
     });
 
     $('input[name=giftValue]').change(function() {
@@ -21,10 +32,23 @@ $(function() {
             $('#gift-value-custom-amount').val('');
         }
         else if (selectedValue == "custom") {
-            $('.gift-value-description > span').text('');
+            $('.gift-value-description > span').text('');   
         }
+        
+        // update stripe button
+        update_stripe_button();
+        
     });
-
+	
+	function update_stripe_button() {
+	  var amount = $("#gift_certificate_amount").val();
+	  // send to controller to change database 
+		$.ajax({
+		  type: "POST",
+		  url: "/gift_certificates/process_credit_form_changes/" + amount
+		});
+	}
+	
     $('#gift-certificate-stripe-button').click(function() {
         // If the form is not valid, do not open the stripe checkout form
         if (!$('#new_gift_certificate')[0].checkValidity()) {

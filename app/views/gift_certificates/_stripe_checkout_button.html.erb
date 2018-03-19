@@ -1,0 +1,12 @@
+<input name="knird_credit" type="hidden" value="<%= @credit_value %>"></input>
+<script 
+  class="stripe-button" 
+  data-name="Knird" 
+  data-description="<%= @data_description %>" 
+  data-currency="USD" 
+  data-label="Purchase Credit"
+  data-email="<%= @user.email %>" 
+  data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+  data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+  src="https://checkout.stripe.com/checkout.js">
+</script>

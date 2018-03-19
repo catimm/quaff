@@ -16,4 +16,9 @@
 #
 
 class GiftCertificate < ActiveRecord::Base
+  validates :amount, presence: true
+  validates :giver_name, presence: true
+  validates :giver_email, presence: true
+  validates :receiver_name, presence: true
+  validates :receiver_email, presence: true
 end

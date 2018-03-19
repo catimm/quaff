@@ -221,6 +221,7 @@ Rails.application.routes.draw do
   # Gift certificates
   get '/gift_certificates' => 'gift_certificates#index', :as => 'gift_certificates_index'
   get '/gift_certificates/new' => 'gift_certificates#new', :as => 'gift_certificates_new'
+  post '/gift_certificates/process_credit_form_changes/:id' => 'gift_certificates#process_credit_form_changes', :as => 'process_credit_form_changes'
   get '/gift_certificates/success' => 'gift_certificates#success', :as => 'gift_certificates_success'
   post '/gift_certificates/process_new_gift_certificate' => 'gift_certificates#create', :as => 'process_new_gift_certificate'
   get '/gift_certificates/redeem' => 'gift_certificates#redeem', :as => 'gift_certificates_redeem'

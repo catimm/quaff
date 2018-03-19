@@ -1,5 +1,4 @@
 <%= render 'layouts/header_no_search' %> 
-<script src="https://checkout.stripe.com/checkout.js"></script>
 <div class="row justify-content-center">
     <div class="container">
         <div class="row">
@@ -10,12 +9,12 @@
         </div>
         <div class="row">
             <div class="col-xs-offset-2 col-xs-8 col-sm-offset-4 col-sm-4 no-padding">
-                <%- flash.each do |name, msg| -%>
-				    <% if name == "failure" %>
-				    	<%= content_tag :div, msg, class: "alert alert-warning text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
-                	<% end %>
-                <%- end -%>
                 <%= simple_form_for @gift_certificate, :url => process_new_gift_certificate_path, :html => { :class => 'form-horizontal' } do |f| %>
+                    <%- flash.each do |name, msg| -%>
+			            <% if name == "failure" %>
+			            	<%= content_tag :div, msg, class: "alert alert-danger text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+			        	<% end %>
+			        <%- end -%>
                     <div class="row">
                         <label for="giver_name_field" class="control-label gift-form-label">Gift Value</label>
                     </div>
@@ -61,12 +60,8 @@
                     <%= f.hidden_field :amount, value: "50" %>
 
                     <div class="row">
-                        <div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6 text-center">
-                            <input type="submit" class="btn btn-success user-info-next-button" id="gift-certificate-stripe-button" value="Purchase Credit"></input>
-				          	<script 
-				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-				          		src="https://checkout.stripe.com/checkout.js">
-				          	</script>
+                        <div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6 text-center" id="stripe-checkout-button-holder">
+                            <%= render 'stripe_checkout_button' %>
                         </div>
                     </div>
                 <% end %>
