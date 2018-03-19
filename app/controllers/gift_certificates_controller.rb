@@ -14,7 +14,7 @@ class GiftCertificatesController < ApplicationController
     @gift_certificate = GiftCertificate.new
 
     if user_signed_in?
-        @user = current_user
+        @email = current_user.email
         @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
         @gift_certificate.giver_email = current_user.email
     end
@@ -26,26 +26,28 @@ class GiftCertificatesController < ApplicationController
   end
   
   def process_credit_form_changes
-    @credit_amount = params[:id]
+    @data = params[:id]
+    @data_split = @data.split("-")
+    @credit_amount = @data_split[0]
+    @email = @data_split[1]
     
-    if user_signed_in?
-        @user = current_user
+  if !@credit_amount.nil?
+      # set form values
+      if @credit_amount == "25"
+        @data_description = "$25 - Knird Gift Certificate"
+        @credit_value = 25
+      elsif @credit_amount == "50"
+        @data_description = "$50 - Knird Gift Certificate"
+        @credit_value = 50
+      elsif @credit_amount == "100"
+        @data_description = "$100 - Knird Gift Certificate"
+        @credit_value = 100
+      else
+        @data_description = "$" + @credit_amount + " - Knird Gift Certificate"
+        @credit_value = @credit_amount.to_i
+      end
     end
     
-    # set form values
-    if @credit_amount == "25"
-      @data_description = "$25 - Knird Gift Certificate"
-      @credit_value = 25
-    elsif @credit_amount == "50"
-      @data_description = "$50 - Knird Gift Certificate"
-      @credit_value = 50
-    elsif @credit_amount == "100"
-      @data_description = "$100 - Knird Gift Certificate"
-      @credit_value = 100
-    else
-      @data_description = "$" + @credit_amount + " - Knird Gift Certificate"
-      @credit_value = @credit_amount.to_i
-    end
     
     # update checkout button
     respond_to do |format|
