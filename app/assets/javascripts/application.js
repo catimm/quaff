@@ -22,7 +22,7 @@
 //= require chosen-defaults
 //= require filterrific/filterrific-jquery
 //= require jqcloud
-//= require jquery.scrolldepth.min
+//= require jquery.scrolldepth
 //= require jquery.tokeninput
 //= require typeahead.bundle.min
 //= require search-bloodhound-engine

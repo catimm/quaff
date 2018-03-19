@@ -1,15 +1,3 @@
-<script src="jquery.scrolldepth.min.js"></script>
-<script>
-jQuery(function() {
-  jQuery.scrollDepth();
-  jQuery.scrollDepth({
-	  minHeight: 2000,
-	  userTiming: false,
-	  pixelDepth: false,
-	  nonInteraction: false
-	});
-});
-</script>
 <%= render 'layouts/header_home_temp2' %> 
 <!-- Page Content -->
     <section class="background-light intro-section">
@@ -50,3 +38,13 @@ jQuery(function() {
 		</div> 
 	</div>
 <%= render 'layouts/footer' %>
+<script>
+$(function() {
+  $.scrollDepth({
+	  minHeight: 2000,
+	  userTiming: false,
+	  pixelDepth: false,
+	  nonInteraction: false
+	});
+});
+</script>

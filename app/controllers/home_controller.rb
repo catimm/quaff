@@ -86,7 +86,7 @@ class HomeController < ApplicationController
     @zip_code = params[:id]
     @city = @zip_code.to_region(:city => true)
     @state = @zip_code.to_region(:state => true)
-    
+    #Rails.logger.debug("State: #{@state.inspect}")
     # send to Google Analytics
     GaEvents::Event.new('Zip_code', 'submission', 'Plan Interest', @zip_code)
     
@@ -94,11 +94,10 @@ class HomeController < ApplicationController
     if !@city.blank? && !@state.blank?
       @location = @city + ", " + @state + " " + @zip_code
     end
-    @geocode_data = Geokit::Geocoders::MultiGeocoder.geocode(@zip_code)
     
     # determine messaging user sees
     @message_number = [1,2].sample
-    if @geocode_data.state_name == "Washington" || @geocode_data.state_name == "Oregon" 
+    if @state == "WA" || @state == "OR" 
       if @message_number == 1
         @homepage_view = "local_one"
       else
@@ -120,7 +119,7 @@ class HomeController < ApplicationController
       
     # set session variable to record which page user originally views
     session[:homepage_view] = @homepage_view
-    session[:geo_zip] = @geocode_data.zip
+    session[:geo_zip] = @zip_code
       
     # get Delivery Zone info
     @delivery_zone_info = DeliveryZone.find_by_zip_code(@zip_code)

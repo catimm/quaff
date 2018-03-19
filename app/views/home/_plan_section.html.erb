@@ -1,10 +1,10 @@
 <div class="container">
 	<div class="row">
 		<div class="col-xs-12 col-sm-offset-1 col-sm-10">
-			<h3 class="index-section-header plan-section">Knird offers both membership plans and ad hoc ordering</h3> 
+			<h3 class="index-section-header plan-section">Choose either a membership plan or ad hoc ordering</h3> 
 			<% if @show_plan == false %>
 				<h4 class="index-section-subheader">
-					And <span>Knird delivers locally</span> around Seattle <span>and ships</span> outside of Seattle. <br>
+					<span>Knird delivers locally</span> around Seattle <span>and ships</span> outside of Seattle. <br>
 				</h4>
 			<% else %>
 				<% if @plan_type == "delivery" %>
@@ -14,7 +14,7 @@
 							(<%= link_to "read why", faqs_path(:anchor => "plan-cost-includes-question"), :target => "_blank" %>)
 						</span>
 					</h4>
-				<% else %>
+				<% elsif @plan_type == "shipment" %>
 					<h4 class="index-section-subheader">
 						<span>Costs shown below cover both curation and shipments</span> to <%= @location %>, but not drinks. 
 						<span class="homepage-read-more-text">
@@ -26,7 +26,15 @@
 		</div>
 	</div>
 	<div class="row membership-details-row show" id="membership-details-row">
-		<% if @plan_type == "delivery" %>
+		<% if !@city.blank? && !@state.blank? %>
+			<%= render 'zip_search_box' %>	
+			<div class="col-xs-12 col-sm-offset-1 col-sm-10 hidden" id="outside-us-message">
+				<h3 class="outside-us-message-text">
+					Sorry, we currently only ship within the contiguous United States, but please check back soon for an update. 
+					We're expanding quickly!
+				</h3>
+			</div>
+		<% elsif @plan_type == "delivery" %>
 			<%= render 'plan_section_deliveries' %>
 		<% elsif  @plan_type == "shipment" %>
 			<%= render 'plan_section_shipments'%>

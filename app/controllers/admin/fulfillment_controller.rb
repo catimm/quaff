@@ -180,7 +180,6 @@ class Admin::FulfillmentController < ApplicationController
     @subscription_deliveries_included = @customer_subscription.subscription.deliveries_included
     
     # increment delivery totals
-    
     @customer_subscription.increment!(:total_deliveries)
     @customer_subscription.increment!(:deliveries_this_period)
     if @customer_subscription.subscription.deliveries_included != 0

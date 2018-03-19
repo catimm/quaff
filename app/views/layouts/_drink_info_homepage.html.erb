@@ -20,9 +20,9 @@
 	</div>
 	<div class="col-xs-5 text-right">
 		<h5 class="item-price">
-			<% if @four_five = true %>
+			<% if @four_five == true %>
 				<%= number_to_currency(drink.drink_price_four_five, precision: 2) %> each
-			<% elsif @five_zero = true %>
+			<% elsif @five_zero == true %>
 				<%= number_to_currency(drink.drink_price_five_zero, precision: 2) %> each
 			<% else %>
 				<%= number_to_currency(drink.drink_price_five_five, precision: 2) %> each
