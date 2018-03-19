@@ -20,17 +20,33 @@
 	</div>
 	<div class="col-xs-3 item-cost-holder">
 		<% if drink.inventory_id.nil? %>
+			<% if @user_subscription.subscription.pricing_model == "four_five" %>
+				<% @disti_inventory_drink_margin = drink.disti_inventory.drink_price_four_five %>
+			<% elsif @user_subscription.subscription.pricing_model == "five_zero" %>
+				<% @disti_inventory_drink_margin = drink.disti_inventory.drink_price_five_zero %>
+			<% else %>
+				<% @disti_inventory_drink_margin = drink.disti_inventory.drink_price_five_five %>
+			<% end %>
+			
 			<% if drink.disti_inventory.current_case_cost < drink.disti_inventory.regular_case_cost %>
 				<% @item_price_class = "item-price-special" %>
 			<% else %>
 				<% @item_price_class = "item-price" %>
 			<% end %>
 			<h5 class="item-price">
-				$<%= drink.disti_inventory.drink_price %>
+				$<%= @disti_inventory_drink_margin %>
 			</h5>
 		<% else %>
+			<% if @user_subscription.subscription.pricing_model == "four_five" %>
+				<% @inventory_drink_margin = drink.inventory.drink_price_four_five %>
+			<% elsif @user_subscription.subscription.pricing_model == "five_zero" %>
+				<% @inventory_drink_margin = drink.inventory.drink_price_five_zero %>
+			<% else %>
+				<% @inventory_drink_margin = drink.inventory.drink_price_five_five %>
+			<% end %>
+			
 			<% if !drink.inventory.sale_case_cost.nil? %>
-				<% if drink.inventory.drink_price > ((drink.inventory.sale_case_cost / drink.inventory.min_quantity) * 1.45) %>
+				<% if @inventory_drink_margin > ((drink.inventory.sale_case_cost / drink.inventory.min_quantity) * 1.45) %>
 					<% @item_price_class = "item-price-special" %>
 				<% else %>
 					<% @item_price_class = "item-price" %>
@@ -39,7 +55,7 @@
 				<% @item_price_class = "item-price" %>
 			<% end %>
 			<h5 class=<%= @item_price_class %>>
-				$<%= drink.inventory.drink_price %>
+				$<%= @inventory_drink_margin %>
 			</h5>
 		<% end %>
 	</div>

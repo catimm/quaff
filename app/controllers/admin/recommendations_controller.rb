@@ -33,6 +33,9 @@ class Admin::RecommendationsController < ApplicationController
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
     
+    # get user subscription info
+    @user_subscription = UserSubscription.find_by_user_id(@account_owner[0].id)
+    
     # get account info
     @account = Account.find_by_id(@account_owner[0].account_id)
     
