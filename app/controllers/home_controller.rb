@@ -93,6 +93,8 @@ class HomeController < ApplicationController
     # set location view
     if !@city.blank? && !@state.blank?
       @location = @city + ", " + @state + " " + @zip_code
+    else
+      @location_not_recognized = true
     end
     
     # determine messaging user sees
@@ -233,6 +235,7 @@ class HomeController < ApplicationController
         @show_plan = false
         @plan_type = nil
         @prices_section_view = "hidden"
+        @location_not_recognized = true
       end # end of check whether a Fed Ex zone exists
     end # end of check whether a local Knird Delivery Zone exists
     
