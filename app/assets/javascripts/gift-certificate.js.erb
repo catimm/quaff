@@ -1,14 +1,4 @@
 $(function() {
-    var handler = StripeCheckout.configure({
-	  key: '<%= Rails.configuration.stripe[:publishable_key] %>',
-	  image: 'https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg',
-	  locale: 'auto',
-	  token: function(token) {
-	    // You can access the token ID with `token.id`.
-	    // Get the token ID to your server-side code for use.
-	  }
-	});
-	
     $('#gift-value-custom-amount').change(function(){
         $('#gift_certificate_amount').val($(this).val());
     });
@@ -31,11 +21,10 @@ $(function() {
             $('#gift-value-custom-amount').val('');
         }
         else if (selectedValue == "custom") {
-            $('.gift-value-description > span').text('');   
+            $('.gift-value-description > span').text('');
         }
-
     });
-	
+
     $('#gift-certificate-stripe-button').click(function() {
         // If the form is not valid, do not open the stripe checkout form
         if (!$('#new_gift_certificate')[0].checkValidity()) {
@@ -58,8 +47,10 @@ $(function() {
         var amount = Number.parseFloat($("#gift_certificate_amount").val());
         var email = $("#gift_certificate_giver_email").val();
         StripeCheckout.open({
+            key: '<%= Rails.configuration.stripe[:publishable_key] %>',
             amount:      amount * 100, // Amount in cents
             name:        'Knird',
+            image:       'https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg',
             description: '$' + amount + ' - Knird Gift Certificate',
             panelLabel:  'Checkout',
             token:       token,

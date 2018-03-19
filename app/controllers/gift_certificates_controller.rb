@@ -14,9 +14,11 @@ class GiftCertificatesController < ApplicationController
     @gift_certificate = GiftCertificate.new
 
     if user_signed_in?
-        @email = current_user.email
-        @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
-        @gift_certificate.giver_email = current_user.email
+      @user_email = current_user.email
+      @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
+      @gift_certificate.giver_email = current_user.email
+    else
+      @user_email = ""
     end
     # set form values
     @data_description = "$50 - Knird Gift Certificate"
