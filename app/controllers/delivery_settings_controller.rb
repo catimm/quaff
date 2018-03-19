@@ -357,7 +357,9 @@ class DeliverySettingsController < ApplicationController
     
     # set current page for jquery routing--preferences vs signup settings
     @current_page = "preferences"
-      
+    # set this flag, will reset if only delivery nubers are updated
+    @delivery_numbers_updated = false
+     
     # get user info
     @user = User.find_by_id(current_user.id)
     
@@ -384,7 +386,8 @@ class DeliverySettingsController < ApplicationController
     # get drink info for estimates
     if @column == "drinks_per_week" || @column == "large_format"
       # remove delivery frequency from account so users choose new frequency
-      @account.update_attribute(:delivery_frequency, nil)
+      # @account.update_attribute(:delivery_frequency, nil)
+      @delivery_numbers_updated = true
       
       # set number of large format for view
       @max_large_format_drinks = (@data_value_one.to_i / 2).round
@@ -541,7 +544,7 @@ class DeliverySettingsController < ApplicationController
     @third_delivery_option_chosen = "hidden"
     
     # update if one is already chosen
-    if !@account.delivery_frequency.blank?
+    if @delivery_numbers_updated == false
       
       # set estimate visuals
       @reset_estimate_visible_status = "hidden"
