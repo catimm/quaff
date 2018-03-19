@@ -20,43 +20,12 @@ class GiftCertificatesController < ApplicationController
     else
       @user_email = ""
     end
-    # set form values
-    @data_description = "$50 - Knird Gift Certificate"
-    @credit_value = 50
     
+    # Stripe info to javascript
+    gon.stripe_info = Rails.configuration.stripe[:publishable_key]
+          
     @logged_in = current_user
   end
-  
-  def process_credit_form_changes
-    @data = params[:id]
-    @data_split = @data.split("-")
-    @credit_amount = @data_split[0]
-    @email = @data_split[1]
-    
-  if !@credit_amount.nil?
-      # set form values
-      if @credit_amount == "25"
-        @data_description = "$25 - Knird Gift Certificate"
-        @credit_value = 25
-      elsif @credit_amount == "50"
-        @data_description = "$50 - Knird Gift Certificate"
-        @credit_value = 50
-      elsif @credit_amount == "100"
-        @data_description = "$100 - Knird Gift Certificate"
-        @credit_value = 100
-      else
-        @data_description = "$" + @credit_amount + " - Knird Gift Certificate"
-        @credit_value = @credit_amount.to_i
-      end
-    end
-    
-    
-    # update checkout button
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-    
-  end # end of process_credit_form_changes method
   
   def redeem
       if !session[:user_return_to].nil? and session[:user_return_to].include? gift_certificates_redeem_path

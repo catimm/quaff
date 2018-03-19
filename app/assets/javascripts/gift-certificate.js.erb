@@ -1,4 +1,5 @@
 $(function() {
+    var stripe_info = gon.stripe_info
     $('#gift-value-custom-amount').change(function(){
         $('#gift_certificate_amount').val($(this).val());
     });
@@ -47,7 +48,7 @@ $(function() {
         var amount = Number.parseFloat($("#gift_certificate_amount").val());
         var email = $("#gift_certificate_giver_email").val();
         StripeCheckout.open({
-            key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+            key: stripe_info,
             amount:      amount * 100, // Amount in cents
             name:        'Knird',
             image:       'https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg',
