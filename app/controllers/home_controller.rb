@@ -24,9 +24,9 @@ class HomeController < ApplicationController
     # determine messaging user sees
     @message_number = [1,2].sample
     if @message_number == 1
-      @homepage_view = "nonlocal_one"
+      @homepage_view = "local_one"
     else
-      @homepage_view = "nonlocal_two"
+      @homepage_view = "local_two"
     end
     
     # set session variable to record which page user originally views
