@@ -15,7 +15,7 @@ class HomeController < ApplicationController
 
     # get user's geo info
     @geocode_data = Geokit::Geocoders::MultiGeocoder.geocode(@ip_address)
-    #Rails.logger.debug("Geocode: #{@geocode_data.inspect}")
+    Rails.logger.debug("Geocode: #{@geocode_data.inspect}")
     
     @city = @geocode_data.city
     @state = @geocode_data.state_code
