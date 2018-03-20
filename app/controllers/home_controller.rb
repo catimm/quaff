@@ -31,7 +31,7 @@ class HomeController < ApplicationController
     
     # set session variable to record which page user originally views
     session[:homepage_view] = @homepage_view
-    session[:geo_zip] = @geocode_data.zip
+    #session[:geo_zip] = @geocode_data.zip
     
     # set default views
     @show_plan = false
