@@ -436,7 +436,13 @@ class Admin::RecommendationsController < ApplicationController
           @stripe_fees = (@wholesale_cost * 0.029)
           @drink_price = (@wholesale_cost + @stripe_fees)
         else
-          @drink_price = @inventory. + @user_subscription.pricing_model
+          if @user_subscription.subscription.pricing_model = "four_five"
+            @drink_price = @inventory.drink_price_four_five
+          elsif @user_subscription.subscription.pricing_model = "five_zero"
+            @drink_price = @inventory.drink_price_five_zero
+          elsif @user_subscription.subscription.pricing_model = "five_five"
+            @drink_price = @inventory.drink_price_five_five
+          end
         end
         # create new table entry
         @next_delivery_admin_info = AccountDelivery.create(account_id: @drink_recommendation.account_id, 
