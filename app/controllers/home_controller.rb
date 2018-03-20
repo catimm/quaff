@@ -14,41 +14,19 @@ class HomeController < ApplicationController
     @ip_address = request.remote_ip
 
     # get user's geo info
-    @geocode_data = Geokit::Geocoders::MultiGeocoder.geocode(@ip_address)
-    Rails.logger.debug("Geocode: #{@geocode_data.inspect}")
+    #@geocode_data = Geokit::Geocoders::MultiGeocoder.geocode(@ip_address)
+    #Rails.logger.debug("Geocode: #{@geocode_data.inspect}")
     
-    @city = @geocode_data.city
-    @state = @geocode_data.state_code
-    @zip_code = @geocode_data.zip
-    
-    if @ip_address == "127.0.0.1"
-      @city = "Janesville"
-      @state = "WI"
-      @zip_code = ""
-      @geocode_data.state_name = "Washington"
-      
-    end
+    #@city = @geocode_data.city
+    #@state = @geocode_data.state_code
+    #@zip_code = @geocode_data.zip
     
     # determine messaging user sees
     @message_number = [1,2].sample
-    if @geocode_data.state_name == "Washington" || @geocode_data.state_name == "Oregon" 
-      if @message_number == 1
-        @homepage_view = "local_one"
-      else
-        @homepage_view = "local_two"
-      end
-      if !@delivery_zone_info.blank?
-        @local_delivery_view = true
-      else
-        @local_delivery_view = false
-      end
-    else  
-       if @message_number == 1
-        @homepage_view = "nonlocal_one"
-      else
-        @homepage_view = "nonlocal_two"
-      end
-       @local_delivery_view = false
+    if @message_number == 1
+      @homepage_view = "nonlocal_one"
+    else
+      @homepage_view = "nonlocal_two"
     end
     
     # set session variable to record which page user originally views
