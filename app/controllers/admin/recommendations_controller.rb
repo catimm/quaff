@@ -721,7 +721,7 @@ class Admin::RecommendationsController < ApplicationController
     end
  
     # redirect back to recommendation page                  
-    redirect_to admin_recommendation_path(@delivery.account_id)   
+    redirect_to admin_recommendations_path   
     
   end # end of admin_delivery_note method
   
