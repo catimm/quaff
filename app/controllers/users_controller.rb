@@ -160,25 +160,53 @@ class UsersController < ApplicationController
 
       
       # if user is a guest connect them as friends with account owner
-      if @user.role_id == 5 || @user.role_id == 6
+      if @user.role_id == 5 # this branch is for account mates
         # first find the account owner
         @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
         # create friend connection
         Friend.create(user_id: @account_owner.id, friend_id: @user.id, confirmed: true)
         
-        # set redirect link
-        @redirect_link = drink_choice_getting_started_path(@user.id)
-      else
-        # first check if user already has a delivery address on file
-        @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true)
-        
-        # set redirect link
-        if !@account_delivery_address.blank?
-          # send user to delivery preferences page to choose location/time
-          @redirect_link = delivery_preferences_getting_started_path
-        else
-          # if user doesn't yet have a delivery address, send to delivery address getting started page
+        # set redirect path, based on where user is in signup process
+        if  @user.getting_started_step == 4
+          @redirect_link = drink_choice_getting_started_path
+        elsif  @user.getting_started_step == 5
+          @redirect_link = drink_journey_getting_started_path
+        elsif  @user.getting_started_step == 6
+          @redirect_link = drink_style_likes_getting_started_path
+        elsif  @user.getting_started_step == 7
+          @redirect_link = drink_style_dislikes_getting_started_path
+        elsif  @user.getting_started_step == 8
+          @redirect_link = delivery_numbers_getting_started_path
+        end
+      elsif @user.role_id == 6 # this branch is for corporate guests
+        # set redirect path, based on where user is in signup process
+        if  @user.getting_started_step == 4
+          @redirect_link = drink_choice_getting_started_path
+        elsif  @user.getting_started_step == 5
+          @redirect_link = drink_journey_getting_started_path
+        elsif  @user.getting_started_step == 6
+          @redirect_link = drink_style_likes_getting_started_path
+        elsif  @user.getting_started_step == 7
+          @redirect_link = drink_style_dislikes_getting_started_path
+        end
+      else # this branch is for account owners
+        # determine redirect path, based on where user is in signup process
+        if  @user.getting_started_step == 2
           @redirect_link = delivery_address_getting_started_path
+        elsif  @user.getting_started_step == 3
+          @redirect_link = account_membership_getting_started_path
+        elsif  @user.getting_started_step == 4
+          @redirect_link = drink_choice_getting_started_path
+        elsif  @user.getting_started_step == 5
+          @redirect_link = drink_journey_getting_started_path
+        elsif  @user.getting_started_step == 6
+          @redirect_link = drink_style_likes_getting_started_path
+        elsif  @user.getting_started_step == 7
+          @redirect_link = drink_style_dislikes_getting_started_path
+        elsif  @user.getting_started_step == 8
+          @redirect_link = delivery_numbers_getting_started_path
+        elsif @user.getting_started_step == 9
+          @redirect_link = delivery_preferences_getting_started_path
         end
       end
       

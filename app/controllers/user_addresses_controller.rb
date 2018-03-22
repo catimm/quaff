@@ -161,6 +161,8 @@ class UserAddressesController < ApplicationController
   end # end of edit method
   
   def update
+    # get user info
+    @user = current_user
     # check zip first
     @zip = params[:user_address][:zip]
     # first see if this address falls in Knird delivery zone
@@ -270,10 +272,28 @@ class UserAddressesController < ApplicationController
     if session[:return_to]
       # redirect back to last page before new location page
       redirect_to session.delete(:return_to)
-    elsif @redirect_link == "account"
-      redirect_to account_membership_getting_started_path
-    else  # redirect to next step in signup process
-      redirect_to change_membership_choice_path(@subscription_level_group), alert: 'Your zip code changed; please select a plan offered in your area.'
+    # determine redirect path, based on where user is in signup process
+    elsif  @user.getting_started_step == 2
+      redirect_to delivery_address_getting_started_path
+    elsif  @user.getting_started_step == 3
+      # send user to correct account page
+      if @redirect_link == "account"
+        redirect_to account_membership_getting_started_path
+      else  # redirect to next step in signup process
+        redirect_to change_membership_choice_path(@subscription_level_group), alert: 'Your zip code changed; please select a plan offered in your area.'
+      end 
+    elsif  @user.getting_started_step == 4
+      redirect_to drink_choice_getting_started_path
+    elsif  @user.getting_started_step == 5
+      redirect_to drink_journey_getting_started_path
+    elsif  @user.getting_started_step == 6
+      redirect_to drink_style_likes_getting_started_path
+    elsif  @user.getting_started_step == 7
+      redirect_to drink_style_dislikes_getting_started_path
+    elsif  @user.getting_started_step == 8
+      redirect_to delivery_numbers_getting_started_path
+    elsif @user.getting_started_step == 9
+      redirect_to delivery_preferences_getting_started_path
     end
     
   end # end of update method
