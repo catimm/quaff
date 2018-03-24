@@ -155,7 +155,7 @@ class UserMailer < ActionMailer::Base
     #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
     @user_subscription = UserSubscription.where(account_id: customer.account_id)[0]
     if @user_subscription.subscription.deliveries_included == 0
-      @drinks_ordered = Order.find_by_id(delivery_info.order_id).pluck(:number_of_drinks)
+      @drinks_ordered = Order.where(id: delivery_info.order_id).pluck(:number_of_drinks)[0]
       if total_quantity.to_i < @drinks_ordered
         @no_plan_order = true
       else
@@ -163,6 +163,14 @@ class UserMailer < ActionMailer::Base
       end
     else
       @no_plan_order = false
+    end
+    if (1..4).include?(@user_subscription.id)
+      @local = true
+    end
+    if delivery_info.no_plan_delivery_fee > 0
+      @delivery_fee = delivery_info.no_plan_delivery_fee
+    else
+      @delivery_fee = nil
     end
     payload  = {
       recipients: [
@@ -182,7 +190,10 @@ class UserMailer < ActionMailer::Base
         total_quantity: total_quantity,
         total_price: delivery_info.total_price,
         mates: mates,
-        no_plan_order: @no_plan_order
+        no_plan_order: @no_plan_order,
+        grand_total: delivery_info.total_price, 
+        delivery_fee: @delivery_fee,
+        local_delivery: @local
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")
