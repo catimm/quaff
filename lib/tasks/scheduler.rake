@@ -942,6 +942,7 @@ task :share_admin_prep_with_customer => :environment do
     
     if !@accounts_with_deliveries.blank?
       @accounts_with_deliveries.each do |account_delivery|
+        Rails.logger.debug("Delivery ID: #{account_delivery.inspect}")
         # find if the account has any mates
         @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 10).pluck(:id)
         

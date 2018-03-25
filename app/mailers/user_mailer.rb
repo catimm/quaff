@@ -152,8 +152,9 @@ class UserMailer < ActionMailer::Base
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     @review_date = (delivery_info.delivery_date - 1.day)
     @review_date = @review_date.strftime("%A, %b #{@review_date.day.ordinalize}")
-    #Rails.logger.debug("Drink info: #{delivery_drinks.inspect}")
+    Rails.logger.debug("Delivery info: #{delivery_info.inspect}")
     @user_subscription = UserSubscription.where(account_id: customer.account_id)[0]
+    Rails.logger.debug("User Subscription: #{@user_subscription.inspect}")
     if @user_subscription.subscription.deliveries_included == 0
       @drinks_ordered = Order.where(id: delivery_info.order_id).pluck(:number_of_drinks)[0]
       if total_quantity.to_i < @drinks_ordered
