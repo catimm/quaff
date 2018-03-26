@@ -738,14 +738,18 @@ class Admin::RecommendationsController < ApplicationController
     # get user subscription type
     @user_subscription = UserSubscription.where(account_id: @next_customer_delivery.account_id, currently_active: true).first
     
+    # set delivery fee
     if @user_subscription.subscription.deliveries_included == 0
-      @delivery_fee = 6
-      @grand_total = @next_customer_delivery.total_price + @delivery_fee
+      if (1..4).include?(@user_subscription.subscription_id)
+        @delivery_fee = 6
+      else
+        @delivery_fee = Shipment.where(delivery_id: @next_customer_delivery.id).pluck(:estimated_shipping_fee).first
+      end
     else
       @delivery_fee = 0
-      @grand_total = @next_customer_delivery.total_price + @delivery_fee
     end
-    
+    # set grand total
+    @grand_total = @next_customer_delivery.total_price + @delivery_fee
     # update status
     @next_customer_delivery.update(share_admin_prep_with_user: true, no_plan_delivery_fee: @delivery_fee, grand_total: @grand_total)
     

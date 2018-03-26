@@ -43,12 +43,12 @@
 			<%= svg drink.size_format.image %>
 		</h5>
 	</div>
-	<div class="col-xs-6 no-padding">
+	<div class="col-xs-5 col-sm-6 no-padding">
 		<h5 class="item-price" data-toggle="tooltip" title="Price does not include tax">
 			<%= number_to_currency(drink.drink_price, precision: 2) %> each
 		</h5>		
 	</div>
-	<div class="col-xs-4 no-padding">
+	<div class="col-xs-5 col-sm-4 no-padding">
 		<h5 class="order-quantity">Qty: <sup data-toggle="tooltip" title="Quantity can be limited by current stock and/or high demand.">?</sup></h5>
 		<% @available_inventory = Inventory.where(beer_id: drink.beer_id).order('created_at desc').first %>
 		<% if !@available_inventory.blank? && !@available_inventory.limit_per.nil? %>

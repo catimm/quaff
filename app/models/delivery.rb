@@ -34,6 +34,8 @@ class Delivery < ActiveRecord::Base
   has_many :admin_user_deliveries
   has_many :customer_delivery_messages
   has_many :customer_delivery_changes
+  has_many :orders
+  has_many :shipments, dependent: :destroy
   
   attr_accessor :delivery_quantity # hold number of drinks to be in the delivery
   

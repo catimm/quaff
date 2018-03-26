@@ -117,7 +117,7 @@ class DrinksController < ApplicationController
         end # end of check whether first delivery exists
          
     end # end of check on @upcoming_delivery variable
-      
+     
   end # end deliveries method
 
   def cellar
@@ -195,6 +195,7 @@ class DrinksController < ApplicationController
   end # end wishlist method
   
   def customer_delivery_messages
+    
     @customer_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: params[:customer_delivery_message][:delivery_id]).first
     if !@customer_delivery_message.blank?
       @customer_delivery_message.update(message: params[:customer_delivery_message][:message], admin_notified: false)
@@ -205,8 +206,10 @@ class DrinksController < ApplicationController
                                                                   admin_notified: false)
       @new_customer_delivery_message.save!
     end
+
+    # redirect back to last page
+    redirect_to :back
     
-    redirect_to user_deliveries_path
   end #send_delivery_message method
   
   def move_drink_to_cellar
@@ -512,7 +515,11 @@ class DrinksController < ApplicationController
     # now get sales tax
     
     # first get account tax
-    @account_tax = DeliveryZone.where(id: @account.delivery_zone_id).pluck(:excise_tax)[0]
+    if !@account.delivery_zone_id.nil?
+      @account_tax = DeliveryZone.where(id: @account.delivery_zone_id).pluck(:excise_tax)[0]
+    else
+      @account_tax = FedExDeliveryZone.where(id: @account.fed_ex_delivery_zone_id).pluck(:excise_tax)[0]
+    end
     @current_sales_tax = @current_subtotal * @account_tax
     
     # and total price
@@ -535,9 +542,11 @@ class DrinksController < ApplicationController
                                   beer_id: @account_delivery_info.beer_id,
                                   change_noted: false,
                                   account_delivery_id: @account_delivery_id)
+
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
     
-    # send back to drink page
-    render js: "window.location.pathname = '#{user_deliveries_path}'"
   end # end change_supply_drink_quantity method
   
   def set_search_box_id

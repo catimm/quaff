@@ -114,6 +114,46 @@ class Admin::FulfillmentController < ApplicationController
     
   end # end of show method
   
+  def shipments
+    # get prepared shipments
+    @prepared_shipments = Shipment.where.not(shipping_company: '',
+                                              tracking_number: '').pluck(:delivery_id)
+    @in_progress_shipments = Delivery.where(id: @prepared_shipments).
+                                          where(status: "in progress")
+    @already_shipped = Delivery.where(id: @prepared_shipments).
+                                          where(status: "delivered")                                
+    #Rails.logger.debug("Upcoming deliveries: #{@in_progress_delivery_info.inspect}")
+    
+    # get list of upcoming delivery dates
+    @upcoming_shipment_dates = @in_progress_shipments.pluck(:delivery_date).uniq
+    #Rails.logger.debug("Upcoming delivery dates: #{@upcoming_delivery_dates.inspect}")
+    
+    # determine number of drinks in each delivery currently live
+    @in_progress_shipments.each do |delivery|
+      # get account delivery details
+      @account_delivery = AccountDelivery.where(delivery_id: delivery.id)
+      
+      # count number of drinks in delivery
+      @drink_count = @account_delivery.sum(:quantity)
+      
+      # attribute this drink count to the delivery
+      delivery.delivery_quantity = @drink_count
+    end
+    
+    # determine number of drinks in each delivery already delivered
+    @already_shipped.each do |delivery|
+      # get account delivery details
+      @account_delivery = AccountDelivery.where(delivery_id: delivery.id)
+      
+       # count number of drinks in delivery
+      @drink_count = @account_delivery.sum(:quantity)
+      
+      # attribute this drink count to the delivery
+      delivery.delivery_quantity = @drink_count
+    end
+    
+  end # end of shipments method
+  
   def admin_confirm_delivery
     # get delivery info
     @delivery = Delivery.find_by_id(params[:id])
@@ -211,6 +251,10 @@ class Admin::FulfillmentController < ApplicationController
                                           total_price: 0,
                                           delivery_change_confirmation: false,
                                           share_admin_prep_with_user: false)
+        if (5..22).include?(@customer_subscription.subscription_id)
+          # create related shipment
+          Shipment.create(delivery_id: @next_delivery.id)
+        end
       end
     end # end of check whether user is no plan customer
 
@@ -236,7 +280,13 @@ class Admin::FulfillmentController < ApplicationController
       # Update reward_points for the account
       RewardPoint.create(account_id: @delivery.account_id, transaction_amount: @delivery.subtotal, transaction_points: transaction_points, total_points: (previous_reward_total + transaction_points), reward_transaction_type_id: @customer_subscription.subscription_id)
     end
-
+    
+    # if this is a shipment, send shipment details email
+    if (5..22).include?(@customer_subscription.subscription_id)
+      @shipment_info = Shipment.where(delivery_id: @delivery.id).first
+      UserMailer.customer_shipping_email(@shipment_info).deliver_now
+    end
+    
     # redirect back to delivery page
     redirect_to admin_fulfillment_index_path
     

@@ -91,7 +91,7 @@ class ShipmentSettingsController < ApplicationController
   def next_shipment_date_change
     @next_date = params[:id]
     
-    @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").delete_all
+    @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").destroy_all
     @account = Account.find_by_id(current_user.account_id)
     @delivery_frequency = @account.delivery_frequency
     
@@ -104,16 +104,22 @@ class ShipmentSettingsController < ApplicationController
                                     total_price: 0,
                                     delivery_change_confirmation: false,
                                     share_admin_prep_with_user: false)
+    # create related shipment
+    Shipment.create(delivery_id: @first_delivery.id)
+        
     # and create second line in delivery table so curator has option to plan ahead
     @next_delivery_date = @first_delivery.delivery_date + @delivery_frequency.weeks
-    Delivery.create(account_id: current_user.account_id, 
-                    delivery_date: @next_delivery_date,
-                    status: "admin prep",
-                    subtotal: 0,
-                    sales_tax: 0,
-                    total_price: 0,
-                    delivery_change_confirmation: false,
-                    share_admin_prep_with_user: false)
+    @second_delivery = Delivery.create(account_id: current_user.account_id, 
+                                      delivery_date: @next_delivery_date,
+                                      status: "admin prep",
+                                      subtotal: 0,
+                                      sales_tax: 0,
+                                      total_price: 0,
+                                      delivery_change_confirmation: false,
+                                      share_admin_prep_with_user: false)
+    
+    # create related shipment
+    Shipment.create(delivery_id: @second_delivery.id)
                                                        
     # set items for update                               
     @preference_updated = @first_delivery.updated_at

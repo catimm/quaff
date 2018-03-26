@@ -2,42 +2,21 @@
 <div class="row no-margin first-row">
 	<div class="container first-row-container">
 		<div class="col-xs-12">
-			<h1 class="section-header">Order Drinks</h1>
+			<h1 class="section-header">Ad Hoc Orders</h1>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="row">
+				<div class="col-xs-6 col-sm-3 col-md-2">
+					<%= link_to "Order Status", order_status_path, class: "drink-preference-view-option" %>
+				</div>
+				<div class="col-xs-6 col-sm-3 col-md-2">
+					<%= link_to "Place Order", new_order_path, class: "drink-preference-view-option current" %>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 <div class="container" id="user-delivery-preferences-holder">
-    <% if @first_time_order == true %>
-    	<%= render 'first_order' %>
-    <% else %>
-    	<%= render 'subsequent_orders' %>
-    <% end %>
-</div>
-<div id="confirm-drink-order" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your order</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">
-					Are you sure you want to place an order for <b><span id="confirmed_total_drinks"></span> 
-					drinks</b> to be delivered on <b><span id="confirmed_order_delivery_date"></span></b>? 
-				</h4>
-				<h4 class="auto-confirm-confirmation-text">
-					This will kickstart the curation process; you'll receive an email shortly with drink details.
-				</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-6 remove-button-holder">
-				<%= link_to "Yep, do it!", "#", :id => 'submit-drink-order', :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button' %>		
-			</div>
-			<div class="col-sm-6 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
+    <%= render 'order_form' %>
 </div>
 <%= render 'layouts/footer' %>

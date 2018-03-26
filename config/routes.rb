@@ -68,7 +68,12 @@ Rails.application.routes.draw do
       get :autocomplete
     end   
   end
-
+  
+  # admin fulfillment routes
+  get 'admin/fulfillment/change_driver_view/:id' => 'admin/fulfillment#change_driver_view'
+  get 'admin/fulfillment/shipments' => 'admin/fulfillment#shipments', :as => 'admin_fulfillment_shipments'
+  post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
+  get 'admin/fulfillment/fulfillment_review_delivery/:id' => 'admin/fulfillment#fulfillment_review_delivery', :as =>'fulfillment_review_delivery'
   namespace :admin do
     resources :users, :user_beer_ratings, :recommendations, :inventories, :disti_inventories, :fulfillment
   end
@@ -230,11 +235,14 @@ Rails.application.routes.draw do
   post '/gift_certificates/redeem' => 'gift_certificates#process_redeem', :as => 'gift_certificates_process_redeem'
   
   # Orders
-  get '/orders/new' => 'orders#new', :as => 'orders_new'
+  get '/orders/status' => 'orders#status', :as => 'order_status'
   get '/orders/new/estimate' => 'orders#estimate', :as => 'orders_estimate'
-  post '/orders/process_first_order' => 'orders#process_first_order', :as => 'process_first_order'
-  post '/orders/process_subsequent_order' => 'orders#process_subsequent_order', :as => 'process_subsequent_order'
- 
+  post '/orders/process_ad_hoc_approval/:id' => 'orders#process_ad_hoc_approval', :as => 'process_ad_hoc_approval'
+  resources :orders
+  
+  # Shipments
+  resources :shipments
+  
   # privacy and terms routes
   get 'privacy' => 'home#privacy', :as => "privacy"
   get 'terms' => 'home#terms', :as => "terms"
@@ -307,9 +315,7 @@ Rails.application.routes.draw do
   get 'admin/recommendations/admin_review_wishlist/:id' => 'admin/recommendations#admin_review_wishlist', :as =>'admin_review_wishlist'
   get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
   post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
-  post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
-  get 'admin/fulfillment/fulfillment_review_delivery/:id' => 'admin/fulfillment#fulfillment_review_delivery', :as =>'fulfillment_review_delivery'
-  
+
   # admin inventory routes
   namespace :admin do
       get 'disti_inventories_change' => 'disti_inventories#disti_inventories_change', :as => 'disti_inventories_change'
@@ -326,9 +332,6 @@ Rails.application.routes.draw do
   post 'admin/disti_orders_new/disti_orders_create' => 'admin/disti_inventories#disti_orders_create', :as => 'admin_disti_orders_create'
   get 'admin/disti_inventories/change_disti_orders_view/:id' => 'admin/disti_inventories#change_disti_orders_view'
   patch 'admin/disti_inventories/process_inventory/:id' => 'admin/disti_inventories#process_inventory', :as => 'process_disti_inventory'
- 
-  # admin fulfillment routs
-  get 'admin/fulfillment/change_driver_view/:id' => 'admin/fulfillment#change_driver_view'
   
   # admin drink DB management routes
   get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"

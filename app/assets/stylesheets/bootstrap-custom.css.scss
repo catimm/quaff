@@ -4597,7 +4597,7 @@ $beer-header-lines-to-show-fp: 1;
   color: $action-background;
 }
 #order-page-last-row {
-  margin: 0 0 50px 0;
+  margin: 0 0 100px 0;
 }
 .wishlist-notification {
   color: $action-background;
@@ -5826,6 +5826,32 @@ input[type="checkbox"] {
   margin: 20px 0 0 0;
 }
 // User Next Delivery View
+.no-plan-current-status {
+  font-weight: 500;
+  text-decoration: underline;
+}
+.no-plan-review-directions {
+  color: $more-emphasized-text;
+  margin: 20px 0 !important;
+  span {
+    color: $action-background;
+  }
+}
+.delivery-stats-holder-order-page {
+  margin-bottom: 5px;
+}
+.stripe-button-holder-col {
+  padding-top: 15px;
+  button {
+    width: 100% !important;
+  }
+}
+.approve-order-button {
+  width: 95%;
+}
+.order-message-sent {
+  color: $normal-text;
+}
 .show-delivery-stats-text, .hide-delivery-stats-text {
   margin: 16px 0 0 0;
   span {
@@ -5983,7 +6009,8 @@ input[type="checkbox"] {
   color: $white;
   border: 1px solid $normal-text;
  }
-.drink-delivery-tile {
+ 
+.drink-delivery-tile, .shipping-info-holder {
   margin: 0 0 ;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -5992,6 +6019,15 @@ input[type="checkbox"] {
   background: #fff;
   width: 99%;
   position: relative;
+}
+.shipment-detail-header {
+  background: $extra-light-gray;
+  font-weight: 500;
+  div {
+    h5 {
+      font-size: 18px;
+    }
+  }
 }
 .drink-delivery-tile-past-ratings {
   margin: 5px 0;
@@ -7297,6 +7333,22 @@ $delivery-beer-header-lines-to-show: 2;
     h3 {
       font-size: 20px;
     }
+  }
+  // User Next Delivery View
+  .no-plan-current-status {
+    font-size: 18px;
+  }
+  .no-plan-review-directions {
+    font-size: 16px;
+  }
+  .delivery-stats-holder-order-page {
+    padding: 0 !important;
+  }
+  .stripe-button-holder-col {
+    padding-top: 10px;
+  }
+  .dropdown-toggle-user-change-quantity {
+    padding: 0 !important;
   }
   // Mobile Search
   .add-drink-search-holder {

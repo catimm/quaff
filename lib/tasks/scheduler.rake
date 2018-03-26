@@ -1345,25 +1345,31 @@ task :update_customer_subscriptions => :environment do
         
         # create next two delivery dates
         @first_delivery_date = @last_delivery.delivery_date + @delivery_frequency.weeks
-        Delivery.create(account_id: expiring_subscription.account_id, 
-                    delivery_date: @first_delivery_date,
-                    status: "admin prep",
-                    subtotal: 0,
-                    sales_tax: 0,
-                    total_price: 0,
-                    delivery_change_confirmation: false,
-                    share_admin_prep_with_user: false)
-        
+        @first_delivery = Delivery.create(account_id: expiring_subscription.account_id, 
+                                          delivery_date: @first_delivery_date,
+                                          status: "admin prep",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false)
+        if (5..22).include?(expiring_subscription.subscription_id)
+          # create related shipment
+          Shipment.create(delivery_id: @first_delivery.id)
+        end
         @second_delivery_date = @last_delivery.delivery_date + @delivery_frequency_times_two.weeks
-        Delivery.create(account_id: expiring_subscription.account_id, 
-                    delivery_date: @second_delivery_date,
-                    status: "admin prep",
-                    subtotal: 0,
-                    sales_tax: 0,
-                    total_price: 0,
-                    delivery_change_confirmation: false,
-                    share_admin_prep_with_user: false)
-                    
+        @second_delivery = Delivery.create(account_id: expiring_subscription.account_id, 
+                                          delivery_date: @second_delivery_date,
+                                          status: "admin prep",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false)
+        if (5..22).include?(expiring_subscription.subscription_id)
+          # create related shipment
+          Shipment.create(delivery_id: @second_delivery.id)
+        end           
       end # end of checking for renewal
        
     end # end loop through expiring customers

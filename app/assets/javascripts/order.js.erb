@@ -1,4 +1,14 @@
 $(function() {
+    // show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner-text").show();
+	});
+	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner-text").hide();
+	});
+	
     $('#order-change-drink-type').click(function() {
         if ($('#order-drink-type').hasClass('hidden')) {
             $('#order-change-drink-type a').text('hide');
@@ -27,6 +37,40 @@ $(function() {
 	        data: valuesToSubmit
 	        //dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
 	    });
-	 });	    
+	 });	
+	
+	// close delivery history views after descriptor clouds load/DOM loads
+	function hide_extra_drink_info() {
+	    $(".drink-info-universal-show-less").removeClass("show").addClass("hidden");
+		$(".drink-info-universal-show-more").removeClass("hidden").addClass("show");
+		$(".drink-info-universal-second-row").removeClass("show").addClass("hidden");
+	}
+	function hide_delivery_history() {
+		$(".delivery-second-row.history-rows").removeClass("show").addClass("hidden");
+	}
+	
+	// descriptor clouds for delivered drinks
+	 if (gon.delivered_drink_descriptor_array != undefined) {
+		 // count drinks
+		 var array_count = 0;
+		 // create word cloud and return to view
+	     for (i = 0; i < gon.delivered_drink_descriptor_array.length; i++) { 
+		    var div_id = "#account_drink_" + gon.delivered_drink_descriptor_array[i][0][0];
+		    if ( gon.delivered_drink_descriptor_array[i][1].length > 0 ) {
+			    $(div_id).jQCloud(gon.delivered_drink_descriptor_array[i][1], {
+					autoResize: true
+			     });
+			} else {
+				$(div_id).jQCloud(word_array, {
+					autoResize: true
+			     });
+			}
+			 array_count++;
+			 if(array_count == gon.delivered_drink_descriptor_array.length) {
+				setTimeout(hide_extra_drink_info, 10);
+				setTimeout(hide_delivery_history, 20);
+			}
+		 }
+	 }    
 
 });

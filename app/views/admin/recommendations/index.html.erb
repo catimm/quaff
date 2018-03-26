@@ -27,10 +27,15 @@
 					    </tr>
 						<% @upcoming_deliveries.each do |delivery| %>
 								<% @account_owner = User.where(account_id: delivery[0], role_id: [1,4]).first %>
+								<% @related_shipping_info_one = Shipment.where(delivery_id: delivery[1][0]["id"]) %>
 								<tr>
 									<td><%= @account_owner.first_name %> [<%= @account_owner.username %>; <%= delivery[0] %>]</td>
-									<td class="text-center"><%= link_to "#{delivery[1][0]["delivery_date"]}", 
-													admin_recommendation_path(delivery[0],delivery[1][0]["id"]) %>
+									<td class="text-center">
+										<%= link_to "#{delivery[1][0]["delivery_date"]}", admin_recommendation_path(delivery[0],delivery[1][0]["id"]) %>
+										<% if !@related_shipping_info_one.blank? %>
+											<br />
+											<%= link_to "shipping info", edit_shipment_path(@related_shipping_info_one[0].id) %>
+										<% end %>
 									</td>
 									<% if delivery[1][0]["share_admin_prep_with_user"] == true %>
 										<td class="text-center">Y</td>
@@ -38,8 +43,13 @@
 										<td class="text-center">N</td>
 									<% end %>
 									<% if !delivery[1][1].blank? %>
-										<td class="text-center"><%= link_to "#{delivery[1][1]["delivery_date"]}", 
-													admin_recommendation_path(delivery[0],delivery[1][1]["id"]) %>
+										<% @related_shipping_info_two = Shipment.where(delivery_id: delivery[1][1]["id"]) %>
+										<td class="text-center">
+											<%= link_to "#{delivery[1][1]["delivery_date"]}", admin_recommendation_path(delivery[0],delivery[1][1]["id"]) %>
+											<% if !@related_shipping_info_two.blank? %>
+												<br />
+												<%= link_to "shipping info", edit_shipment_path(@related_shipping_info_two[0].id) %>
+											<% end %>
 										</td>
 										<% if delivery[1][1]["share_admin_prep_with_user"] == true %>
 											<td class="text-center">Y</td>

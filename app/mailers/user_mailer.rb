@@ -3,6 +3,32 @@ class UserMailer < ActionMailer::Base
   require 'open-uri'
   @host = open('https://api.sparkpost.com')
   
+  def customer_shipping_email(shipping_info)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    @user = User.where(account_id: shipping_info.delivery.account_id, role_id: [1,4]).first
+    @estimated_arrival = shipping_info.estimated_arrival_date.strftime("%A, %b #{shipping_info.estimated_arrival_date.day.ordinalize}")
+    payload  = {
+      recipients: [
+        {
+          address: { email: @user.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-shipping-email'
+      },
+      substitution_data: {
+        customer_name: @user.first_name,
+        estimated_arrival: @estimated_arrival,
+        shipper: shipping_info.shipping_company,
+        tracking_number: shipping_info.tracking_number
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of customer_shipping_email method
+  
   def select_invite_email(invited, inviter)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
      
@@ -192,7 +218,7 @@ class UserMailer < ActionMailer::Base
         total_price: delivery_info.total_price,
         mates: mates,
         no_plan_order: @no_plan_order,
-        grand_total: delivery_info.total_price, 
+        grand_total: delivery_info.grand_total, 
         delivery_fee: @delivery_fee,
         local_delivery: @local
       }

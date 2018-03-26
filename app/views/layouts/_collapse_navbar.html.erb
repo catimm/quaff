@@ -13,6 +13,9 @@
 	            <% end %>
 	            <li class="dropdown-link"><%= link_to "Drinks", user_deliveries_path %></li>
 				<li class="dropdown-link"><%= link_to "Gift Certificates", gift_certificates_index_path %></li>
+	            <% if @user_subscription.subscription.deliveries_included == 0 %>
+					<li class="dropdown-link"><%= link_to "Orders", order_status_path %></li>
+	            <% end %>
 	            <li class="dropdown-link"><%= link_to "Ratings", recent_user_ratings_path %></li>
 				
 				<li class="dropdown-header">My settings</li>

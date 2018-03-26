@@ -114,7 +114,9 @@ class SignupController < ApplicationController
       # update User Subscription to make active
       @user_subscription = UserSubscription.where(account_id: @user.account_id, subscription_id: @subscription_info.id, currently_active: [true, nil]).first
       @user_subscription.update_attribute(:currently_active, true)
-      
+      # set account delivery frequency to 1 to avoid errors during curation
+      @account = Account.find_by_id(@user.account_id)
+      @account.update_attribute(:delivery_frequency, 1)
     end # end of check whether user is buying prepaid deliveries
     
     # add special line for remaining early signup customer
@@ -1080,23 +1082,27 @@ class SignupController < ApplicationController
                                   drinks_per_delivery: 15)
     
     # find if a delivery date has been set yet
-    @delivery = Delivery.where(account_id: current_user.account_id).order("delivery_date ASC")
-    @number_of_deliveries = @delivery.size
     @delivery_frequency = @shipping_frequency
-    @second_delivery_date = @delivery[0].delivery_date + @delivery_frequency.weeks
-    
-    # add a second delivery date if not already done 
-    if @number_of_deliveries == 1
-      Delivery.create(account_id: current_user.account_id, 
-                      delivery_date: @second_delivery_date,
-                      status: "admin prep",
-                      subtotal: 0,
-                      sales_tax: 0,
-                      total_price: 0,
-                      delivery_change_confirmation: false,
-                      share_admin_prep_with_user: false)
-    else
-      @delivery[1].update(delivery_date: @second_delivery_date)
+    @delivery = Delivery.where(account_id: current_user.account_id).order("delivery_date ASC")
+    if !@delivery.blank?
+      @number_of_deliveries = @delivery.size
+      @second_delivery_date = @delivery[0].delivery_date + @delivery_frequency.weeks
+
+      # add a second delivery date if not already done 
+      if @number_of_deliveries == 1
+        @second_delivery = Delivery.create(account_id: current_user.account_id, 
+                                          delivery_date: @second_delivery_date,
+                                          status: "admin prep",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false)
+         # create related shipment
+         Shipment.create(delivery_id: @second_delivery.id)
+      else
+        @delivery[1].update(delivery_date: @second_delivery_date)
+      end
     end
     
     # set redirect link
@@ -1150,18 +1156,21 @@ class SignupController < ApplicationController
                                       total_price: 0,
                                       delivery_change_confirmation: false,
                                       share_admin_prep_with_user: false)
-      
+      # create related shipment
+      Shipment.create(delivery_id: @first_delivery.id)
       if !@delivery_frequency.nil?                                    
         # and create second line in delivery table so curator has option to plan ahead
         @next_delivery_date = @first_delivery.delivery_date + @delivery_frequency.weeks
-        Delivery.create(account_id: current_user.account_id, 
-                        delivery_date: @next_delivery_date,
-                        status: "admin prep",
-                        subtotal: 0,
-                        sales_tax: 0,
-                        total_price: 0,
-                        delivery_change_confirmation: false,
-                        share_admin_prep_with_user: false)
+        @second_delivery = Delivery.create(account_id: current_user.account_id, 
+                                          delivery_date: @next_delivery_date,
+                                          status: "admin prep",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false)
+        # create related shipment
+        Shipment.create(delivery_id: @second_delivery.id)
       end
     end
     

@@ -288,9 +288,14 @@ class AdminMailer < ActionMailer::Base
     
   end # end of admin_message_review email
 
-  def admin_customer_order(user, order)
+  def admin_customer_order(user, order, status)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-
+    # determine subject line
+    if status == "new"
+      @subject = "New customer order!"
+    else
+      @subject = "Approved customer order!"
+    end
     payload  = {
       recipients: [
         {
@@ -301,6 +306,8 @@ class AdminMailer < ActionMailer::Base
         template_id: 'admin-customer-order'
       },
       substitution_data: {
+        status: status,
+        subject: @subject,
         user_first_name: user.first_name,
         user_username: user.username,
         order_id: order.id,

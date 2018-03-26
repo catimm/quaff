@@ -1,48 +1,40 @@
-<%= form_for @order, :url => {:action => "process_first_order"} do |f| %>
-        <%= f.hidden_field :delivery_date %>
-		<%= f.hidden_field :drink_option_id, :value => @delivery_preferences.drink_option_id %>
-		<%= f.hidden_field :number_of_drinks %>
-		<%= f.hidden_field :number_of_large_drinks %>
-        <%- flash.each do |name, msg| -%>
-            <% if name == "failure" %>
-            	<%= content_tag :div, msg, class: "alert alert-danger text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
-        	<% end %>
-        <%- end -%>
+<%= form_for @order do |f| %>
+    <%= f.hidden_field :delivery_date %>
+	<%= f.hidden_field :drink_option_id, :value => @delivery_preferences.drink_option_id %>
+	<%= f.hidden_field :number_of_drinks %>
+	<%= f.hidden_field :number_of_large_drinks %>
+    <%- flash.each do |name, msg| -%>
+        <% if name == "failure" %>
+        	<%= content_tag :div, msg, class: "alert alert-danger text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+    	<% end %>
+    <%- end -%>
 <div class="row no-margin estimate-holder" id="scroller-anchor">
 	<div class="row no-margin" id="delivery-info-row">
 		<div class="col-xs-12 col-sm-8">
 			<div class="row no-margin estimated-delivery-price-holder-signup" id="delivery-estimates-for-customer">
 				<h4 class="estimated-delivery-price-header delivery-estimate-information <%= @estimate_visible_status %>">
-					Change input below to update these <%= @order_type %> estimates
+					Change input below to update these delivery estimates
 				</h4>
 				<div class="col-xs-4 col-sm-offset-2 col-sm-3 col-md-offset-3 col-md-2 preference-estimate-holder delivery-estimate-information <%= @estimate_visible_status %>">
 					<div class="delivery-settings-info-box drinks">
 						<p>total drinks</p>
-						<h4 class="delivery-preference-prompt"><span id="total_drinks">TBD</span></h4>
+						<h4 class="delivery-preference-prompt"><span id="total_drinks"><%= @total_drinks %></span></h4>
 					</div>	
 				</div>
 				<div class="col-xs-7 col-sm-5 col-md-4 preference-estimate-holder no-padding-right delivery-estimate-information <%= @estimate_visible_status %>">
 					<div class="delivery-settings-info-box total-price">
 						<p>total price <sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup></p>
-						<h4 class="delivery-preference-prompt" id="order_price_estimate">TBD</h4>
+						<h4 class="delivery-preference-prompt" id="order_price_estimate"><%= @order_estimate %></h4>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4 first-order-button-col">
-			
-			<input name="plan_id" type="hidden" value="shipping_zero"></input>
-		          	<script 
-		          		class="stripe-button" 
-		          		data-name="Knird" 
-		          		data-description="A Knird Drink Order" 
-		          		data-currency="USD" 
-		          		data-label="Place Order"
-		          		data-email="<%= @user.email %>" 
-		          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
-		          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-		          		src="https://checkout.stripe.com/checkout.js">
-		          	</script>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
+			<% if @form == "new" %>
+				<%= f.submit "Place order", :class => "text-center btn btn-success remove-drink-button" %>
+			<% else %>
+			    <%= f.submit "Update order", :class => "text-center btn btn-success remove-drink-button" %>
+			<% end %>
 		</div>	
 	</div>
 </div>
@@ -70,7 +62,7 @@
     <div class="col-xs-12 no-padding">
         <div class="row no-margin">
             <div class="col-sm-6 no-padding">
-                <h3 class="delivery-preference-prompt">Choose a <%= @order_type %> date</h3>
+                <h3 class="delivery-preference-prompt">Choose a delivery date</h3>
             </div>
             <div class="col-sm-6 no-padding-right" id="order_large_format_drinks">
                 <%= render 'delivery_date_options'%>
