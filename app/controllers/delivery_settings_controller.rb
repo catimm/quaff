@@ -626,6 +626,14 @@ class DeliverySettingsController < ApplicationController
     # get and destroy drinks from account delivery table
     @account_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
     if !@account_delivery_drinks.blank?
+      # adjust inventory accordingly
+      @account_delivery_drinks.each do |drink|
+        @inventory_transaction = InventoryTransaction.find_by_account_delivery_id(drink.id)
+        @inventory = Inventory.find_by_id(@inventory_transaction.inventory_id)
+        @inventory.increment!(:stock, @inventory_transaction.quantity)
+        @inventory.decrement!(:reserved, @inventory_transaction.quantity)
+      end
+      # now destroy all related account delivery rows
       @account_delivery_drinks.destroy_all
       
       # get and destroy User Deliveries
