@@ -48,6 +48,15 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def require_admin
+    # depending on your auth, maybe something like...
+    if current_user && current_user.role_id == 1
+      
+    else
+      render :file => File.join(Rails.root, 'public/404'), :formats => [:html], :status => 404, :layout => false
+    end
+  end
+
   def authenticate_user!(options={})
     if user_signed_in? 
       if current_user.getting_started_step == 10

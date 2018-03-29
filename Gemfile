@@ -123,8 +123,12 @@ gem 'coupon_code'
 # gets geo location data for showing appropriate customer plans
 gem 'geokit-rails'
 gem 'google_directions'
-# gem to facilitate sending tracked events to Google Ananlytics
-gem 'ga_events'
+# gem to Track visits and events in Ruby, JavaScript, and native apps
+gem 'ahoy_matey'
+# gem to read Pure Ruby GeoIP2 MaxMind DB
+gem 'maxminddb'
+# gem to provide GUI for Business intelligence
+gem 'blazer'
 
 # Use unicorn as the app server
 # gem 'unicorn'

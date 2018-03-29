@@ -45,6 +45,15 @@ GEM
     acts-as-taggable-on (3.5.0)
       activerecord (>= 3.2, < 5)
     addressable (2.3.8)
+    ahoy_matey (2.0.2)
+      addressable
+      browser (~> 2.0)
+      geocoder (>= 1.4.5)
+      railties (>= 4.2)
+      referer-parser (>= 0.3)
+      request_store
+      safely_block (>= 0.2.1)
+      user_agent_parser
     alphabetical_paginate (2.3.1)
     annotate (2.6.5)
       activerecord (>= 2.3.0)
@@ -60,6 +69,11 @@ GEM
       json
     bcrypt (3.1.11)
     benchmark-ips (2.7.2)
+    blazer (1.8.2)
+      activerecord (>= 4)
+      chartkick
+      railties (>= 4)
+      safely_block (>= 0.1.1)
     bootstrap-datepicker-rails (1.6.4.1)
       railties (>= 3.0)
     bootstrap-modal-rails (2.2.5)
@@ -69,9 +83,11 @@ GEM
       sass (>= 3.2.19)
     bootstrap-social-rails (4.8.0)
       railties (>= 3.1)
+    browser (2.5.3)
     buftok (0.2.0)
     builder (3.2.2)
     cancancan (1.10.1)
+    chartkick (2.3.3)
     chosen-rails (1.4.1)
       coffee-rails (>= 3.2)
       compass-rails (>= 1.1.2)
@@ -127,6 +143,7 @@ GEM
     elusive-icons-sass (2.0.1)
       sass (>= 3.2)
     equalizer (0.0.10)
+    errbase (0.1.0)
     erubis (2.7.0)
     eventmachine (1.0.7)
     execjs (2.5.2)
@@ -145,8 +162,7 @@ GEM
     font-awesome-sass (4.3.2.1)
       sass (~> 3.2)
     fssm (0.2.10)
-    ga_events (1.4.0)
-      rails (>= 3.1)
+    geocoder (1.4.7)
     geokit (1.11.0)
     geokit-rails (2.3.0)
       geokit (~> 1.5)
@@ -202,6 +218,7 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    maxminddb (0.1.15)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     memory_profiler (0.9.7)
@@ -290,6 +307,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (11.2.2)
     rdoc (4.2.0)
+    referer-parser (0.3.0)
     request_store (1.1.0)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
@@ -297,6 +315,8 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
+    safely_block (0.2.1)
+      errbase
     sass (3.2.19)
     sass-rails (4.0.5)
       railties (>= 4.0.0, < 5.0)
@@ -367,6 +387,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
+    user_agent_parser (2.4.1)
     warden (1.2.6)
       rack (>= 1.0)
     wicked_pdf (1.0.3)
@@ -380,10 +401,12 @@ PLATFORMS
 
 DEPENDENCIES
   acts-as-taggable-on (~> 3.4)
+  ahoy_matey
   alphabetical_paginate
   annotate (= 2.6.5)
   area
   autonumeric-rails
+  blazer
   bootstrap-datepicker-rails
   bootstrap-modal-rails
   bootstrap-sass (= 3.3.3)
@@ -401,7 +424,6 @@ DEPENDENCIES
   figaro
   filterrific
   font-awesome-sass (~> 4.3.0)
-  ga_events
   geokit-rails
   gon
   google_directions
@@ -414,6 +436,7 @@ DEPENDENCIES
   jquery-ui-rails
   json
   koala (~> 1.8.0rc1)
+  maxminddb
   modernizr-rails
   nested_form!
   newrelic_rpm

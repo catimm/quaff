@@ -1,5 +1,8 @@
 # Add application configuration variables here, as shown below.
 
+# production database for blazer
+BLAZER_DATABASE_URL: "postgres://vulyzhnwismipv:J5yIsIaVf_R5QzThayWMf2P5qi@ec2-54-235-134-128.compute-1.amazonaws.com:5432/d8aq6lbvuppqa5"
+
 # SparkPost API
 SPARKPOST_API_KEY: ce93d6f1775ac7d88653b8bd45bbf792e2f81b29
 

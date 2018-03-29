@@ -12,6 +12,9 @@ Rails.application.routes.draw do
     post 'users/invitation/process_friend_invite' => 'invitations#process_friend_invite', :as => 'process_friend_invite'
   end
   
+  # mount Blazer
+  mount Blazer::Engine, at: "blazer"
+  
   # routes to user profile pages
   get '/users/start_account' => 'users#edit', :as => 'users_start_account'
   get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'

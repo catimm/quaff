@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180326173203) do
+ActiveRecord::Schema.define(version: 20180329214117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,42 @@ ActiveRecord::Schema.define(version: 20180326173203) do
     t.string   "likes_style"
     t.float    "projected_rating"
   end
+
+  create_table "ahoy_events", force: :cascade do |t|
+    t.integer  "visit_id"
+    t.integer  "user_id"
+    t.string   "name"
+    t.jsonb    "properties"
+    t.datetime "time"
+  end
+
+  add_index "ahoy_events", ["name", "time"], name: "index_ahoy_events_on_name_and_time", using: :btree
+
+  create_table "ahoy_visits", force: :cascade do |t|
+    t.string   "visit_token"
+    t.string   "visitor_token"
+    t.integer  "user_id"
+    t.string   "ip"
+    t.text     "user_agent"
+    t.text     "referrer"
+    t.string   "referring_domain"
+    t.string   "search_keyword"
+    t.text     "landing_page"
+    t.string   "browser"
+    t.string   "os"
+    t.string   "device_type"
+    t.string   "country"
+    t.string   "region"
+    t.string   "city"
+    t.string   "utm_source"
+    t.string   "utm_medium"
+    t.string   "utm_term"
+    t.string   "utm_content"
+    t.string   "utm_campaign"
+    t.datetime "started_at"
+  end
+
+  add_index "ahoy_visits", ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true, using: :btree
 
   create_table "alt_beer_names", force: :cascade do |t|
     t.string   "name"
@@ -189,6 +225,52 @@ ActiveRecord::Schema.define(version: 20180326173203) do
     t.integer  "touched_by_location"
     t.text     "cellar_note"
     t.boolean  "gluten_free"
+  end
+
+  create_table "blazer_audits", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "query_id"
+    t.text     "statement"
+    t.string   "data_source"
+    t.datetime "created_at"
+  end
+
+  create_table "blazer_checks", force: :cascade do |t|
+    t.integer  "creator_id"
+    t.integer  "query_id"
+    t.string   "state"
+    t.string   "schedule"
+    t.text     "emails"
+    t.string   "check_type"
+    t.text     "message"
+    t.datetime "last_run_at"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "blazer_dashboard_queries", force: :cascade do |t|
+    t.integer  "dashboard_id"
+    t.integer  "query_id"
+    t.integer  "position"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "blazer_dashboards", force: :cascade do |t|
+    t.integer  "creator_id"
+    t.text     "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "blazer_queries", force: :cascade do |t|
+    t.integer  "creator_id"
+    t.string   "name"
+    t.text     "description"
+    t.text     "statement"
+    t.string   "data_source"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "breweries", force: :cascade do |t|

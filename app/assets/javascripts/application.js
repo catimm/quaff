@@ -12,7 +12,7 @@
 //
 //= require jquery
 // require jquery.turbolinks
-//= require ga_events.js
+//= require ahoy
 //= require jquery_ujs
 //= require jquery.countdown
 //= require modernizr

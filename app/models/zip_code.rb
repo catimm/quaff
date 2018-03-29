@@ -14,4 +14,5 @@
 #
 
 class ZipCode < ActiveRecord::Base
+  Visitable
 end

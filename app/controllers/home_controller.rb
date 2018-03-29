@@ -64,9 +64,8 @@ class HomeController < ApplicationController
     @zip_code = params[:id]
     @city = @zip_code.to_region(:city => true)
     @state = @zip_code.to_region(:state => true)
+    #Rails.logger.debug("City: #{@city.inspect}")
     #Rails.logger.debug("State: #{@state.inspect}")
-    # send to Google Analytics
-    GaEvents::Event.new('Zip_code', 'submission', 'Plan Interest', @zip_code)
     
     # set location view
     if !@city.blank? && !@state.blank?
@@ -129,7 +128,7 @@ class HomeController < ApplicationController
         @zone_nine = "two_nine"
       end
       # add zip to our zip code list
-      ZipCode.create(zip_code: @zip_code, city: @city, state: @state, covered: true, homepage_view: session[:homepage_view], geo_zip: session[:geo_zip])
+      @new_zip_check = ZipCode.create(zip_code: @zip_code, city: @city, state: @state, covered: true, homepage_view: session[:homepage_view], geo_zip: session[:geo_zip])
 
       # get delivery example drinks
       @price_examples = "four_five"
@@ -139,7 +138,7 @@ class HomeController < ApplicationController
       @plan_type = "shipment"
       
       # add zip to our zip code list
-      ZipCode.create(zip_code: @zip_code, city: @city, state: @state, covered: false, homepage_view: session[:homepage_view], geo_zip: session[:geo_zip])
+      @new_zip_check = ZipCode.create(zip_code: @zip_code, city: @city, state: @state, covered: false, homepage_view: session[:homepage_view], geo_zip: session[:geo_zip])
 
       # get FedEx Delivery Zone
       @first_three = @zip_code[0...3]
@@ -216,6 +215,9 @@ class HomeController < ApplicationController
         @location_not_recognized = true
       end # end of check whether a Fed Ex zone exists
     end # end of check whether a local Knird Delivery Zone exists
+    
+    # send event to Ahoy table
+    ahoy.track "zip code", {zip_code_id: @new_zip_check.id, zip_code: @new_zip_check.zip_code}
     
     # get all recent drink ids that have been delivered
     @recent_drink_ids = AccountDelivery.where("created_at > ?", 3.months.ago).where("drink_price > ?", 0).uniq.pluck(:beer_id)
