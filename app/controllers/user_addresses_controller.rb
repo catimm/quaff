@@ -27,6 +27,11 @@ class UserAddressesController < ApplicationController
     
     # check for other addresses already in use
     @other_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first
+
+    if current_user.account.is_corporate
+      redirect_to drink_choice_getting_started_path
+      return
+    end
     
     # check if address entered matches user subscription originally chosen
     # first see if this address falls in Knird delivery zone

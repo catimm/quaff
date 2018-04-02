@@ -28,6 +28,9 @@ class Account < ApplicationRecord
   belongs_to :fed_ex_delivery_zone, optional: true
   
   attr_accessor :user_id # to hold current user id
+
+  ACCOUNT_TYPE_CONSUMER = "consumer"
+  ACCOUNT_TYPE_CORPORATE = "corporate"
     
   # create view in admin recommendation drop down
   def recommendation_account_drop_down_view
@@ -53,5 +56,9 @@ class Account < ApplicationRecord
     joins(:users).merge(User.account_owner).
     joins(:deliveries).merge(Delivery.already_delivered)
   }
+
+  def is_corporate
+    return self[:account_type] == Account::ACCOUNT_TYPE_CORPORATE
+  end
   
 end

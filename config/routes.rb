@@ -208,6 +208,9 @@ Rails.application.routes.draw do
   post '/signup/process_style_input/:id' => 'signup#process_style_input'
   post '/signup/process_user_plan_choice/:id' => 'signup#process_user_plan_choice', :as => 'process_user_plan_choice'  
   patch '/signup/account_info_process' => 'signup#account_info_process', :as => 'account_info_process'
+
+  # corp signup
+  get '/signup/corporate' => 'signup#corporate', :as => 'corporate_signup'
   
   # user early signup process
   get '/early_signup/invitation_code/:id' => 'early_signup#invitation_code', :as => 'invitation_code'

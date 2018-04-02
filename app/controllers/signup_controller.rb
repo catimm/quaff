@@ -16,6 +16,7 @@ class SignupController < ApplicationController
     
     # set user info--Note, after removing "before_action :authenticate_user!", current_user is no longer an object, but an instance
     @user = current_user
+    @is_corporate = @user.account.is_corporate
     @user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
     
     if @user.getting_started_step < 2
@@ -234,6 +235,7 @@ class SignupController < ApplicationController
     @user = current_user
     # get User Subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    @is_corporate = @user.account.is_corporate
     
     # update getting started step
     if @user.getting_started_step < 4
@@ -356,6 +358,12 @@ class SignupController < ApplicationController
         @geek_chosen = "hidden"
         @conn_chosen = "hidden"
       end
+
+      # for corporate users, we can skip the drink journey selection step
+      if @user.account.is_corporate
+        @user.update_attribute(:craft_stage_id, 1)
+        redirect_to drink_style_likes_getting_started_path()
+      end
       
   end # end of drink_journey_getting_started action
   
@@ -381,6 +389,7 @@ class SignupController < ApplicationController
     @user = current_user
     # get User Subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    @is_corporate = @user.account.is_corporate
     
     # update getting started step
     if @user.getting_started_step < 6
@@ -526,6 +535,7 @@ class SignupController < ApplicationController
     @user = current_user
     # get User Subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    @is_corporate = @user.account.is_corporate
     
     # update getting started step
     if @user.getting_started_step < 7
@@ -1561,6 +1571,13 @@ class SignupController < ApplicationController
     render :nothing => true
     
   end # end of process_sytle_input method
+
+  def corporate
+    @user = User.new
+    session[:new_membership] = "corporate_plan"
+    @subguide = "user"
+    @user_personal_info_chosen = "current"
+  end
   
   private
 

@@ -6,7 +6,11 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<%= render 'signup/signup_guide_consumer' %>
+		<% if @is_corporate == true %>
+			<%= render 'signup/signup_guide_corporate' %>
+		<% else %>
+			<%= render 'signup/signup_guide_consumer' %>
+		<% end %>
 	</div>
 	<div class="row">
 		<div class="container" id="user-drinks-per-week-signup">
