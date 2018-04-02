@@ -10,7 +10,7 @@
 #  drink_rank :integer
 #
 
-class UserFavDrink < ActiveRecord::Base
+class UserFavDrink < ApplicationRecord
   belongs_to :user
   belongs_to :beer
   

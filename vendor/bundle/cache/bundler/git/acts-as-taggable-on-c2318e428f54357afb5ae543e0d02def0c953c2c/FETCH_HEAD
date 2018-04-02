@@ -1,0 +1,52 @@
+f6103cb04f568735fa1441e444030e153473539f		branch '2-4-stable' of https://github.com/F3pix/acts-as-taggable-on
+f084720a546d420952ff7e638ac929c85ea10b96		branch '3-0-stable' of https://github.com/F3pix/acts-as-taggable-on
+32bcc210249e5dcbc01c9c67c70f3341ca6627cf		branch '3.1-stable' of https://github.com/F3pix/acts-as-taggable-on
+1bb4da754c5e0627d8670c934de8d71c3fdc239b		branch 'centralize_rails_extensions' of https://github.com/F3pix/acts-as-taggable-on
+7570774835cb9e391d0efb0c0dcbb971a55132c1		branch 'master' of https://github.com/F3pix/acts-as-taggable-on
+ecbedae42222ce73d7066812bcd1d60b9fe36c60	not-for-merge	tag 'fork-v3.0.0.rc1' of https://github.com/F3pix/acts-as-taggable-on
+6e18f039b16f33408975037373045afe833835dd	not-for-merge	tag 'fork-v3.0.0.rc2' of https://github.com/F3pix/acts-as-taggable-on
+bb4d53d40fba0d6f69f3a362053826ef0918c470	not-for-merge	tag 'v0.0.0' of https://github.com/F3pix/acts-as-taggable-on
+5e8de78c28b1fadbfc419c8e991f121c1ad7e91d	not-for-merge	tag 'v1.0.11' of https://github.com/F3pix/acts-as-taggable-on
+1f36cb554d87a407ddb36e224d872e332b25eb3d	not-for-merge	tag 'v1.0.12' of https://github.com/F3pix/acts-as-taggable-on
+37c0fa2c80fdcea08631803b0a3f9dccc9008013	not-for-merge	tag 'v1.0.15' of https://github.com/F3pix/acts-as-taggable-on
+b696a726dc7a5133d13b98f9c82797d48faffa27	not-for-merge	tag 'v1.0.16' of https://github.com/F3pix/acts-as-taggable-on
+1b742ddfa90d5a203d7405c8aa5d70015c4fea8b	not-for-merge	tag 'v1.0.17' of https://github.com/F3pix/acts-as-taggable-on
+3f9b6387088ff344145d731e2742ab55e50e8b48	not-for-merge	tag 'v1.0.18' of https://github.com/F3pix/acts-as-taggable-on
+2030b5f8bf22d39015a021d0643da295c36099ee	not-for-merge	tag 'v1.0.19' of https://github.com/F3pix/acts-as-taggable-on
+d42c3dacb6afa8438d4122ca5af92527e1030b7b	not-for-merge	tag 'v1.0.6' of https://github.com/F3pix/acts-as-taggable-on
+23e0add656780e4906fa6930b9d6378608efd621	not-for-merge	tag 'v1.0.7' of https://github.com/F3pix/acts-as-taggable-on
+dbfd275b962077d32179af1873cae64b92ad2b6f	not-for-merge	tag 'v1.0.9' of https://github.com/F3pix/acts-as-taggable-on
+432067e7656a08cadf9aa281e4a6b7f77f7b335f	not-for-merge	tag 'v1.1.7' of https://github.com/F3pix/acts-as-taggable-on
+11d8599f8da0929961338b7d41738bc3986a8244	not-for-merge	tag 'v2.0.0.pre1' of https://github.com/F3pix/acts-as-taggable-on
+ce689bfcf6a0595b97724ea0bd460e94a238fbf0	not-for-merge	tag 'v2.0.6' of https://github.com/F3pix/acts-as-taggable-on
+70014d61b25143915c19183ac83bd915a9c06f80	not-for-merge	tag 'v2.1.0' of https://github.com/F3pix/acts-as-taggable-on
+2c3f7ab072a6c2a5d9d4777dd8212cff8aa3319f	not-for-merge	tag 'v2.1.1' of https://github.com/F3pix/acts-as-taggable-on
+ba038660e5f87f770b5a409531ff147efcb2f93f	not-for-merge	tag 'v2.2.0' of https://github.com/F3pix/acts-as-taggable-on
+8146afd76e73210ebbe04f5bd1e0a81f7b076e65	not-for-merge	tag 'v2.2.1' of https://github.com/F3pix/acts-as-taggable-on
+96d9580baafff4682a3924041dcb57e2e9f4992f	not-for-merge	tag 'v2.2.2' of https://github.com/F3pix/acts-as-taggable-on
+a3c80dbf45da4e140911279a5c5275923d8275bc	not-for-merge	tag 'v2.3.0' of https://github.com/F3pix/acts-as-taggable-on
+94c1bbddcd042507a6ea775c5e4fdced55274775	not-for-merge	tag 'v2.3.1' of https://github.com/F3pix/acts-as-taggable-on
+eed8f782d36d6714dc505c32ff34d08be94da7eb	not-for-merge	tag 'v2.3.2' of https://github.com/F3pix/acts-as-taggable-on
+20e7382aa913d3aa4352ae7300a2a3ece1d091c9	not-for-merge	tag 'v2.3.3' of https://github.com/F3pix/acts-as-taggable-on
+1c92ab39fc8f16d45c18446afc680504dea13a00	not-for-merge	tag 'v2.4.0' of https://github.com/F3pix/acts-as-taggable-on
+40c1f3c6c756b77c699049dfc2ca691d5c3e6423	not-for-merge	tag 'v2.4.0.beta' of https://github.com/F3pix/acts-as-taggable-on
+484e421817960688ef1b5508977c827f6c88294e	not-for-merge	tag 'v2.4.1' of https://github.com/F3pix/acts-as-taggable-on
+b9f296078c2066cba7334b323df1eeacbac5f55a	not-for-merge	tag 'v3.0.0' of https://github.com/F3pix/acts-as-taggable-on
+54d63fcc13360b03be83fb2cdad733d146ccb92f	not-for-merge	tag 'v3.0.1' of https://github.com/F3pix/acts-as-taggable-on
+779f4e13e3c69254c18ac27f548c76a8d1689153	not-for-merge	tag 'v3.0.2' of https://github.com/F3pix/acts-as-taggable-on
+7690e9acf085688695dd0a566743c55138e65c46	not-for-merge	tag 'v3.1.0' of https://github.com/F3pix/acts-as-taggable-on
+68a97cdd8b5acc1e1b48f1541f44bb1d51deec6e	not-for-merge	tag 'v3.1.0.rc1' of https://github.com/F3pix/acts-as-taggable-on
+9e03099e67d6970293563c751fcfe2eb978bcf40	not-for-merge	tag 'v3.2.0' of https://github.com/F3pix/acts-as-taggable-on
+356b7580de6c0c2cd038ac345ae54ee86b1e3933	not-for-merge	tag 'v3.2.1' of https://github.com/F3pix/acts-as-taggable-on
+2ee00eef74e94460818314d755bf23f12a1dfe49	not-for-merge	tag 'v3.2.2' of https://github.com/F3pix/acts-as-taggable-on
+306fd7ea241dc01cdc6143209fca22c94c9f506f	not-for-merge	tag 'v3.2.3' of https://github.com/F3pix/acts-as-taggable-on
+d9d6025b7b7a878e2617acefa92ea88f09b34fcd	not-for-merge	tag 'v3.2.4' of https://github.com/F3pix/acts-as-taggable-on
+09828c0eacff03711df7d7e49f5b584deb16397e	not-for-merge	tag 'v3.2.5' of https://github.com/F3pix/acts-as-taggable-on
+164e6fa8ff35d4882307e03fb12ad8ce5f359c9f	not-for-merge	tag 'v3.2.6' of https://github.com/F3pix/acts-as-taggable-on
+297d5e0a4a63dabfe85fad94169a3bda925d9025	not-for-merge	tag 'v3.3.0' of https://github.com/F3pix/acts-as-taggable-on
+19826a35559a6e34ce55671fe19688e1af91bad6	not-for-merge	tag 'v3.4.0' of https://github.com/F3pix/acts-as-taggable-on
+b51ef54de935f2c48bb4aa5e755d433602528317	not-for-merge	tag 'v3.4.1' of https://github.com/F3pix/acts-as-taggable-on
+45df196b66b52087f59b1b6b03f17bbdec40a782	not-for-merge	tag 'v3.4.2' of https://github.com/F3pix/acts-as-taggable-on
+b97577457b51dba752ed27ef049f981fb5da3f7b	not-for-merge	tag 'v3.4.3' of https://github.com/F3pix/acts-as-taggable-on
+de2efb519fdfe11de8749b07fa7c681e0f284804	not-for-merge	tag 'v3.4.4' of https://github.com/F3pix/acts-as-taggable-on
+87c22c99f7cb235cbd4265fb8419dd8d32a10ca6	not-for-merge	tag 'v3.5.0' of https://github.com/F3pix/acts-as-taggable-on

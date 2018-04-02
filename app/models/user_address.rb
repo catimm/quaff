@@ -19,11 +19,12 @@
 #  fed_ex_delivery_zone_id   :integer
 #
 
-class UserAddress < ActiveRecord::Base
+class UserAddress < ApplicationRecord
   after_save :check_delivery_zone_sum, if: :delivery_zone_id_changed?
   
   belongs_to :account
-  belongs_to :delivery_zone
+  belongs_to :delivery_zone, optional: true
+  belongs_to :fed_ex_delivery_zone, optional: true
   
   attr_accessor :user_id # to hold current user id
   

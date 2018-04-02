@@ -18,7 +18,7 @@
 #  drank_recently     :date
 #
 
-class UserDrinkRecommendation < ActiveRecord::Base
+class UserDrinkRecommendation < ApplicationRecord
   belongs_to :account
   belongs_to :user
   belongs_to :beer

@@ -1,5 +1,5 @@
 class Admin::BreweriesController < ApplicationController
-  before_filter :verify_admin
+  before_action :verify_admin
   
   def index
     # grab all Breweries

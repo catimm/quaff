@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-    before_filter :authenticate_user!
+    before_action :authenticate_user!
     include DeliveryEstimator
     include DeliveredDrinkDescriptorCloud
     require "stripe"
@@ -60,6 +60,12 @@ class OrdersController < ApplicationController
       else
         @order_type = "shipment"
       end
+      
+      # if there is not an order placed, redirect to the new order page
+      if @next_delivery.blank?
+        redirect_to new_order_path
+      end
+      
     end # end of status method
     
     def new
@@ -133,7 +139,7 @@ class OrdersController < ApplicationController
             else
               flash[:failure] = "Please limit the additional request to 500 characters"
             end
-            render js: "window.location = '#{orders_new_path}'"
+            render js: "window.location = '#{new_order_path}'"
             return
         end
 
@@ -283,6 +289,9 @@ class OrdersController < ApplicationController
         number_of_drinks = params[:number_of_drinks].to_i
         number_of_large_drinks = (number_of_drinks/7.to_f).ceil
         price_estimate = estimate_drinks(number_of_drinks, number_of_large_drinks, current_user.craft_stage_id)
+        #Rails.logger.debug("Price estimate: #{price_estimate.inspect}")
+        @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+        @delivery_preferences.update(price_estimate: price_estimate)
         # set high and low estimate
         @delivery_cost_estimate_low = (((price_estimate.to_f) *0.9).floor / 5).round * 5
         @delivery_cost_estimate_high = ((((price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5

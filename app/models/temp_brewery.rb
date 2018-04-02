@@ -19,7 +19,7 @@
 #  twitter_url         :string
 #
 
-class TempBrewery < ActiveRecord::Base
+class TempBrewery < ApplicationRecord
 
   
 end

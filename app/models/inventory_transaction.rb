@@ -10,7 +10,7 @@
 #  updated_at          :datetime         not null
 #
 
-class InventoryTransaction < ActiveRecord::Base
+class InventoryTransaction < ApplicationRecord
   belongs_to :account_delivery
   belongs_to :inventory
   

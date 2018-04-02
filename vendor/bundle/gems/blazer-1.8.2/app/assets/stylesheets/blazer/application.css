@@ -1,0 +1,198 @@
+/*
+ *= require ./bootstrap
+ *= require ./selectize.default
+ *= require ./github
+ *= require ./daterangepicker-bs3
+ *= require_self
+ */
+
+pre {
+  border: none;
+  border-radius: 0;
+}
+
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.results-table th {
+  cursor: pointer;
+}
+
+.results-table thead {
+  background-color: #fff;
+}
+
+.results-table img {
+  max-width: 200px;
+  max-height: 200px;
+}
+
+input.search {
+  border: none;
+  box-shadow: none;
+}
+
+input.search:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.button_to {
+  display: inline-block;
+}
+
+.button_to input:focus {
+  outline: none;
+}
+
+.form-inline .selectize-control, .text-right .selectize-control {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 5px;
+  margin-right: 20px;
+  text-align: left;
+}
+
+#statement-box .selectize-control {
+  margin-right: 0;
+}
+
+#editor-container {
+  background-color: #141414;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#editor {
+  height: 160px;
+}
+
+.ace_print-margin-layer {
+  display: none;
+}
+
+.ace_gutter-cell.error {
+  background-color: red;
+}
+
+.chart {
+  height: 300px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.chart > .results-container {
+  height: 300px;
+  border: solid 1px #ddd;
+  overflow: scroll;
+  text-align: left;
+}
+
+.dashboard {
+  font-weight: bold;
+}
+
+#search-item {
+  display: none;
+}
+
+.creator {
+  text-align: right;
+  color: #999;
+}
+
+.vars {
+  color: #ccc;
+}
+
+.check-state {
+  font-weight: bold;
+}
+
+.check-state a {
+  color: inherit;
+}
+
+.check-state.failing {
+  color: red;
+}
+
+.check-state.passing {
+  color: #5cb85c;
+}
+
+.check-state.error {
+  color: #666;
+}
+
+.check-state.timed_out {
+  color: orange;
+}
+
+.check-state.disabled {
+  color: #000;
+}
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: whitesmoke;
+  height: 60px;
+  z-index: 1001;
+}
+
+.glyphicon-remove {
+  cursor: pointer;
+  color: #d9534f;
+  display: none;
+  float: right;
+  margin-top: 3px;
+}
+
+.list-group li:hover .glyphicon-remove {
+  display: inline;
+}
+
+.list-group {
+  cursor: move;
+}
+
+#header a.active {
+  color: #999;
+}
+
+#code {
+  max-height: 236px;
+  overflow: hidden;
+}
+
+#code.expanded {
+  max-height: none;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.chart-container {
+  padding-top: 10px;
+  clear: both;
+}
+
+.chart-container h4 {
+  text-align: center;
+}
+
+.chart-container h4 a {
+  color: inherit;
+}
+
+.query-error {
+  color: red;
+}

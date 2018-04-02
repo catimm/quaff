@@ -11,6 +11,6 @@
 #  mate       :boolean
 #
 
-class Friend < ActiveRecord::Base
+class Friend < ApplicationRecord
   belongs_to :user
 end

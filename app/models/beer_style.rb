@@ -14,7 +14,7 @@
 #  style_order       :integer
 #
 
-class BeerStyle < ActiveRecord::Base
+class BeerStyle < ApplicationRecord
   has_many :beer_types
   has_many :user_style_preferences
   

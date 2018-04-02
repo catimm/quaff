@@ -15,7 +15,7 @@
 #  redeemed           :boolean
 #
 
-class GiftCertificate < ActiveRecord::Base
+class GiftCertificate < ApplicationRecord
   validates :amount, presence: true
   validates :giver_name, presence: true
   validates :giver_email, presence: true

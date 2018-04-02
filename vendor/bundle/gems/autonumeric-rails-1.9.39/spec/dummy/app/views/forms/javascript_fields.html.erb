@@ -1,0 +1,13 @@
+<%= form_for @record do |f| %>
+    <%= f.text_field :field2, data: {autonumeric: {aSign: 'USD ', mDec: 1}} %>
+    <%= f.submit 'Go' %>
+<% end %>
+
+<script>
+    jQuery(function() {
+        var new_field = '<input id="record_field1" name="record[field1]" data-autonumeric="true" value="<%= @record.field1.to_s %>">';
+        $('form').prepend(new_field);
+
+        $(document).trigger('refresh_autonumeric');
+    });
+</script>

@@ -13,7 +13,7 @@
 #  account_delivery_id :integer
 #
 
-class UserCellarSupply < ActiveRecord::Base
+class UserCellarSupply < ApplicationRecord
   searchkick word_middle: [:beer_name]
   
   belongs_to :user

@@ -8,7 +8,7 @@
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
-#  sign_in_count          :integer          default("0"), not null
+#  sign_in_count          :integer          default(0), not null
 #  current_sign_in_at     :datetime
 #  last_sign_in_at        :datetime
 #  current_sign_in_ip     :inet
@@ -24,7 +24,7 @@
 #  invitation_limit       :integer
 #  invited_by_id          :integer
 #  invited_by_type        :string
-#  invitations_count      :integer          default("0")
+#  invitations_count      :integer          default(0)
 #  first_name             :string
 #  craft_stage_id         :integer
 #  last_name              :string
@@ -41,7 +41,7 @@
 #  homepage_view          :string
 #
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :registerable
   devise :invitable, :database_authenticatable, :omniauthable,

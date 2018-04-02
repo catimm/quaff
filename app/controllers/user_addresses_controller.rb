@@ -20,7 +20,7 @@ class UserAddressesController < ApplicationController
   
   def create
     # create new address
-    @new_address = UserAddress.create(address_params)
+    @new_address = UserAddress.create!(address_params)
     
     # get user subscription
     @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: [true, nil]).first

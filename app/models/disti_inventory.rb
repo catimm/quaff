@@ -21,7 +21,7 @@
 #  drink_price_five_five :decimal(5, 2)
 #
 
-class DistiInventory < ActiveRecord::Base
+class DistiInventory < ApplicationRecord
   belongs_to :beer
   belongs_to :size_format
   belongs_to :distributor

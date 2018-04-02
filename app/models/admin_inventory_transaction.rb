@@ -10,7 +10,7 @@
 #  updated_at                :datetime         not null
 #
 
-class AdminInventoryTransaction < ActiveRecord::Base
+class AdminInventoryTransaction < ApplicationRecord
   belongs_to :admin_account_delivery
   belongs_to :inventory
 end

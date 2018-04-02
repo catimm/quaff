@@ -29,9 +29,26 @@
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
 					<% if @customer_plan.subscription_id == @zone_plan_zero.id && @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
-						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
-								data: {toggle: "modal", target: "#start_plan_#{@zone_plan_test.subscription_level}"} do %>
-							<i class="fa fa-play" aria-hidden="true"> Start the 6 Prepaid Deliveries Plan</i>
+						<% if !@customer_cards.blank? %>
+							<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
+									data: {toggle: "modal", target: "#start_plan_#{@zone_plan_test.subscription_level}"} do %>
+								<i class="fa fa-play" aria-hidden="true"> Start The Prepaid 6</i>
+							<% end %>
+						<% else %>
+							<%= form_tag start_new_plan_path(@zone_plan_test.subscription_level), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_six"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="$30 for The Prepaid 6" 
+					          		data-currency="USD" 
+					          		data-label="Start The Prepaid 6 Plan"
+					          		data-email="<%= @user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
 						<% end %>
 					<% elsif @customer_plan.auto_renew_subscription_id == @zone_plan_test.id %>
 						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>
@@ -56,9 +73,26 @@
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
 					<% if @customer_plan.subscription_id == @zone_plan_zero.id && @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
-						<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
-								data: {toggle: "modal", target: "#start_plan_#{@zone_plan_committed.subscription_level}"} do %>
-							<i class="fa fa-play" aria-hidden="true"> Start the 25 Prepaid Deliveries Plan</i>
+						<% if !@customer_cards.blank? %>
+							<%= link_to "#", class: 'btn btn-primary plan-get-started-button', 
+									data: {toggle: "modal", target: "#start_plan_#{@zone_plan_committed.subscription_level}"} do %>
+								<i class="fa fa-play" aria-hidden="true"> Start The Prepaid 25</i>
+							<% end %>
+						<% else %>
+							<%= form_tag start_new_plan_path(@zone_plan_committed.subscription_level), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_twenty_five"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="$100 for The Prepaid 25" 
+					          		data-currency="USD" 
+					          		data-label="Start The Prepaid 25 Plan"
+					          		data-email="<%= @user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
 						<% end %>
 					<% elsif @customer_plan.auto_renew_subscription_id == @zone_plan_committed.id %>
 						<h4 class="formButton-renew-plan-set">Set to auto renew</h4>

@@ -8,6 +8,6 @@
 #  updated_at :datetime         not null
 #
 
-class CraftStage < ActiveRecord::Base
+class CraftStage < ApplicationRecord
   belongs_to :user
 end

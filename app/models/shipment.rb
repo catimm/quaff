@@ -14,7 +14,7 @@
 #  updated_at             :datetime         not null
 #
 
-class Shipment < ActiveRecord::Base
+class Shipment < ApplicationRecord
   belongs_to :delivery
   
   #after_save :send_customer_shipment_email

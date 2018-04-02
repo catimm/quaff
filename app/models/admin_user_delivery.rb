@@ -14,7 +14,7 @@
 #  projected_rating          :float
 #
 
-class AdminUserDelivery < ActiveRecord::Base
+class AdminUserDelivery < ApplicationRecord
   belongs_to :user
   belongs_to :admin_account_delivery
   belongs_to :delivery

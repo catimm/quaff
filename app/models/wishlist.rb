@@ -11,7 +11,7 @@
 #  account_id :integer
 #
 
-class Wishlist < ActiveRecord::Base
+class Wishlist < ApplicationRecord
   belongs_to :user
   belongs_to :beer
 

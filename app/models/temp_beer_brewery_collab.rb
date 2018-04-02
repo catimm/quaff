@@ -9,6 +9,6 @@
 #  updated_at :datetime         not null
 #
 
-class TempBeerBreweryCollab < ActiveRecord::Base
+class TempBeerBreweryCollab < ApplicationRecord
   
 end

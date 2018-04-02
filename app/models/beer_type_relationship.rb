@@ -12,6 +12,6 @@
 #  updated_at         :datetime         not null
 #
 
-class BeerTypeRelationship < ActiveRecord::Base
+class BeerTypeRelationship < ApplicationRecord
   belongs_to :beer_types
 end

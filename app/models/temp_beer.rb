@@ -35,6 +35,6 @@
 #  cellar_note          :text
 #
 
-class TempBeer < ActiveRecord::Base
+class TempBeer < ApplicationRecord
 
 end

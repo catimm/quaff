@@ -1,4 +1,4 @@
-class AdminMailer < ActionMailer::Base
+class AdminMailer < ApplicationMailer
   require 'sparkpost'
   require 'open-uri'
   @host = open('https://api.sparkpost.com')

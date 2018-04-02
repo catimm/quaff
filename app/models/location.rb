@@ -29,7 +29,7 @@
 #  image_holder    :string
 #
 
-class Location < ActiveRecord::Base
+class Location < ApplicationRecord
   has_many :beer_locations
   has_many :beers, -> { order(beer_rating: :desc, number_ratings: :desc) }, through: :beer_locations
   has_one :draft_board

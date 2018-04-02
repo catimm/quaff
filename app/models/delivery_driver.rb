@@ -8,7 +8,7 @@
 #  updated_at :datetime         not null
 #
 
-class DeliveryDriver < ActiveRecord::Base
+class DeliveryDriver < ApplicationRecord
   belongs_to :user
   has_many :delivery_zones
 

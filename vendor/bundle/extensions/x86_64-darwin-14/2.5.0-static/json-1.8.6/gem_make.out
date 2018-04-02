@@ -1,0 +1,13 @@
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/json-1.8.6/ext/json
+/Users/carltimm/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180329-1540-1alczrv.rb extconf.rb
+creating Makefile
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/json-1.8.6/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/json-1.8.6/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/json-1.8.6/ext/json
+make "DESTDIR=" install

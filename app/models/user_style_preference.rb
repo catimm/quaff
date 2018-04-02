@@ -10,7 +10,7 @@
 #  updated_at      :datetime         not null
 #
 
-class UserStylePreference < ActiveRecord::Base
+class UserStylePreference < ApplicationRecord
   belongs_to :user
   belongs_to :beer_style
 end

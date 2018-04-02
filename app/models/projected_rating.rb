@@ -10,7 +10,7 @@
 #  updated_at       :datetime         not null
 #
 
-class ProjectedRating < ActiveRecord::Base
+class ProjectedRating < ApplicationRecord
   belongs_to :user
   belongs_to :beer
 end

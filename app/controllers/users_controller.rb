@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, :except => [:stripe_webhooks, :new, :create, :edit, :update, :first_password, :process_first_password]
+  before_action :authenticate_user!, :except => [:stripe_webhooks, :new, :create, :edit, :update, :first_password, :process_first_password]
   include DrinkTypeDescriptorCloud
   include DrinkDescriptorCloud
   include DrinkDescriptors
@@ -30,7 +30,7 @@ class UsersController < ApplicationController
   
   def create 
     # create a new account for the new user
-    @account = Account.create(account_type: "consumer", number_of_users: 1)
+    @account = Account.create!(account_type: "consumer", number_of_users: 1)
     
     # fill in other miscelaneous user info
     params[:user][:account_id] = @account.id
@@ -300,8 +300,10 @@ class UsersController < ApplicationController
     @next_plan_definition = @next_plan.subscription_name
     
     # customer's Stripe card info
-    @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
-                                        all(:object => "card")
+    if !@customer_plan.stripe_customer_number.nil?
+      @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
+                                          all(:object => "card")
+    end
     #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
     
   end # end of account_settings_membership action
@@ -454,14 +456,28 @@ class UsersController < ApplicationController
     # get current subscription
     @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
     
-    # charge the customer for subscription 
-    Stripe::Charge.create(
-      :amount => @total_price, # in cents
-      :currency => "usd",
-      :customer => @user_subscription.stripe_customer_number,
-      :description => @charge_description
-    )
-    
+    if !@user_subscription.stripe_customer_number.nil?
+      # charge the customer for subscription 
+      Stripe::Charge.create(
+        :amount => @total_price, # in cents
+        :currency => "usd",
+        :customer => @user_subscription.stripe_customer_number,
+        :description => @charge_description
+      )
+    else
+      # create Stripe customer acct
+        customer = Stripe::Customer.create(
+                :source => params[:stripeToken],
+                :email => current_user.email
+              )
+        # charge the customer for their subscription 
+        Stripe::Charge.create(
+          :amount => @total_price, # in cents
+          :currency => "usd",
+          :customer => customer.id,
+          :description => @charge_description
+        ) 
+    end
     # update user subscription info
     @user_subscription.update_attribute(:currently_active, false)
     # create a new user_subscription row

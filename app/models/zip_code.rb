@@ -13,6 +13,6 @@
 #  geo_zip       :string
 #
 
-class ZipCode < ActiveRecord::Base
+class ZipCode < ApplicationRecord
 
 end

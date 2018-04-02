@@ -22,7 +22,7 @@
 #  drink_price_five_five :decimal(5, 2)
 #
 
-class DistiChangeTemp < ActiveRecord::Base
+class DistiChangeTemp < ApplicationRecord
   require 'csv'
   
   # method to quickly upload CSV file

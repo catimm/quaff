@@ -15,9 +15,9 @@
 #  user_id                :integer
 #
 
-class Order < ActiveRecord::Base
+class Order < ApplicationRecord
   belongs_to :account
-  belongs_to :delivery
+  has_many :deliveries
   validates :delivery_date, presence: { message: 'Please select a date for your delivery.'}
   validates :number_of_drinks, presence: { message: 'Please select the number of drinks you would like to order.'}
   validates :number_of_large_drinks, presence: { message: 'Please select the max large format drinks you would like to include in your order.'}

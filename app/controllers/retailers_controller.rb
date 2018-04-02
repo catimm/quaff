@@ -1,5 +1,5 @@
 class RetailersController < ApplicationController
-  before_filter :verify_admin, :except => [:index, :create, :stripe_webhooks]
+  before_action :verify_admin, :except => [:index, :create, :stripe_webhooks]
   respond_to :html, :json, :js
   require "stripe"
   require 'json'

@@ -11,7 +11,7 @@
 #  zip_end     :string
 #
 
-class FedExDeliveryZone < ActiveRecord::Base
+class FedExDeliveryZone < ApplicationRecord
 
   # scope delivery zones
   scope :zone_match, ->(zip) {

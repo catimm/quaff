@@ -15,5 +15,5 @@
 #  birthday    :datetime
 #
 
-class InvitationRequest < ActiveRecord::Base
+class InvitationRequest < ApplicationRecord
 end

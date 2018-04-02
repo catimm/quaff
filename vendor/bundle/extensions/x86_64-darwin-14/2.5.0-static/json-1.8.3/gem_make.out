@@ -1,0 +1,20 @@
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/json-1.8.3/ext/json/ext/generator
+/Users/carltimm/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180329-1281-wdqquk.rb extconf.rb
+creating Makefile
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/json-1.8.3/ext/json/ext/generator
+make "DESTDIR=" clean
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/json-1.8.3/ext/json/ext/generator
+make "DESTDIR="
+compiling generator.c
+generator.c:861:25: error: use of undeclared identifier 'rb_cFixnum'
+    } else if (klass == rb_cFixnum) {
+                        ^
+generator.c:863:25: error: use of undeclared identifier 'rb_cBignum'
+    } else if (klass == rb_cBignum) {
+                        ^
+2 errors generated.
+make: *** [generator.o] Error 1
+
+make failed, exit code 2

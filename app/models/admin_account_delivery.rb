@@ -14,7 +14,7 @@
 #  drink_price  :decimal(5, 2)
 #
 
-class AdminAccountDelivery < ActiveRecord::Base
+class AdminAccountDelivery < ApplicationRecord
   belongs_to :account
   belongs_to :beer
   belongs_to :delivery   

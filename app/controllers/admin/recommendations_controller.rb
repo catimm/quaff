@@ -1,5 +1,5 @@
 class Admin::RecommendationsController < ApplicationController
-  before_filter :verify_admin
+  before_action :verify_admin
   helper_method :sort_column, :sort_direction
   require 'json'
   #require 'date'

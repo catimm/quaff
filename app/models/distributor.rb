@@ -11,7 +11,7 @@
 #  updated_at    :datetime         not null
 #
 
-class Distributor < ActiveRecord::Base
+class Distributor < ApplicationRecord
   has_many :disti_inventories 
   has_many :disti_orders
   

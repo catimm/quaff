@@ -1,6 +1,6 @@
 class BeersController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :find_descriptor_tags, only: [:show]
+  before_action :authenticate_user!
+  before_action :find_descriptor_tags, only: [:show]
   include BestGuess
   include BestGuessCellar
   include QuerySearch

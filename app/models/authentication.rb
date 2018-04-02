@@ -14,7 +14,7 @@
 #  auto_tweet   :boolean
 #
 
-class Authentication < ActiveRecord::Base
+class Authentication < ApplicationRecord
   belongs_to :user
   
 end

@@ -39,10 +39,11 @@
 <div class="form-group">
 	<label for="birthdate_field" class="col-xs-4 col-sm-3 control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label>
 	<div class="col-xs-8 col-sm-9">
-		<%= f.input :birthday, as: :string, 
-			input_html: { type: :date, 
-						  class: "form-control", 
-						  id: "birthdate_field"}, 
-			placeholder: "Birthdate", label: false, required: true %>
+		<%= f.input :birthday, as: :date, start_year: Date.today.year - 18,
+                              end_year: Date.today.year - 90,
+                              order: [:month, :day, :year],
+                              input_html: { class: "form-control", 
+											id: "birthdate_field"}, 
+							  label: false, required: true %>
 	</div>
 </div>		

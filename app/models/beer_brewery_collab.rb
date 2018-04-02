@@ -9,7 +9,7 @@
 #  updated_at :datetime         not null
 #
 
-class BeerBreweryCollab < ActiveRecord::Base
+class BeerBreweryCollab < ApplicationRecord
   belongs_to :brewery
   belongs_to :beer
   

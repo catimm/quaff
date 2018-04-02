@@ -18,7 +18,7 @@
 #  currently_available    :boolean
 #
 
-class DeliveryZone < ActiveRecord::Base
+class DeliveryZone < ApplicationRecord
   attr_accessor :next_available_delivery_date # to hold temp variable for next available delivery date
   
   belongs_to :delivery_driver

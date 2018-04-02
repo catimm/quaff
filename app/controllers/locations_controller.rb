@@ -1,5 +1,5 @@
 class LocationsController < ApplicationController
-  before_filter :verify_super_admin
+  before_action :verify_super_admin
   include BestGuess
   include LocationRating
   

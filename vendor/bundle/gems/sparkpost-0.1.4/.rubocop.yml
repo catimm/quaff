@@ -1,0 +1,13 @@
+Style/FirstParameterIndentation:
+    Enabled: false
+Documentation:
+    Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Exclude:
+    - spec/**/*
+AllCops:
+  Exclude:
+    - _examples/**/*

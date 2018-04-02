@@ -11,7 +11,7 @@
 #  admin_notified :boolean
 #
 
-class CustomerDeliveryMessage < ActiveRecord::Base
+class CustomerDeliveryMessage < ApplicationRecord
   belongs_to :user
   belongs_to :delivery
 end

@@ -10,7 +10,7 @@
 #  packaged    :boolean
 #
 
-class SizeFormat < ActiveRecord::Base
+class SizeFormat < ApplicationRecord
   has_many :inventories
   has_many :beers, through: :inventories
   has_many :beer_formats

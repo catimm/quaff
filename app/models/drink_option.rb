@@ -8,7 +8,7 @@
 #  updated_at        :datetime         not null
 #
 
-class DrinkOption < ActiveRecord::Base
+class DrinkOption < ApplicationRecord
   has_many :delivery_preferences
   
 end

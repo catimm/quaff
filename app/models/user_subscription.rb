@@ -20,7 +20,7 @@
 #  currently_active           :boolean
 #
 
-class UserSubscription < ActiveRecord::Base
+class UserSubscription < ApplicationRecord
   belongs_to :user
   belongs_to :subscription
   belongs_to :account

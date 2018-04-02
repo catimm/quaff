@@ -1,6 +1,6 @@
 class Admin::BeersController < ApplicationController
-  before_filter :verify_admin
-  before_filter :find_descriptor_tags, only: [:new, :create, :edit, :update]
+  before_action :verify_admin
+  before_action :find_descriptor_tags, only: [:new, :create, :edit, :update]
   
   def index
     # find non-collab beers produced by brewery

@@ -14,7 +14,7 @@ class SignupController < ApplicationController
     # set subguide view
     @subguide = "user"
     
-    # set user info--Note, after removing "before_filter :authenticate_user!", current_user is no longer an object, but an instance
+    # set user info--Note, after removing "before_action :authenticate_user!", current_user is no longer an object, but an instance
     @user = current_user
     @user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
     

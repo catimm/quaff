@@ -1,5 +1,5 @@
 class DrinkPreferencesController < ApplicationController
-  before_filter :authenticate_user!, :except => [:stripe_webhooks]
+  before_action :authenticate_user!, :except => [:stripe_webhooks]
   include DrinkTypeDescriptorCloud
   include DrinkDescriptorCloud
   include DrinkDescriptors

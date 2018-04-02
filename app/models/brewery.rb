@@ -19,10 +19,10 @@
 #  twitter_url         :string
 #
 
-class Brewery < ActiveRecord::Base
+class Brewery < ApplicationRecord
   #include Elasticsearch::Model
   strip_attributes
-  searchkick word_middle: [:beer_name], autocomplete: [:brewery_name, :beer_name]
+  searchkick word_middle: [:beer_name]#, autocomplete: [:brewery_name, :beer_name]
   
   has_many :beers
   has_many :alt_brewery_names

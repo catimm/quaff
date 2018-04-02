@@ -15,6 +15,6 @@
 #  user_id            :integer
 #
 
-class PendingCredit < ActiveRecord::Base
+class PendingCredit < ApplicationRecord
   belongs_to :account
 end

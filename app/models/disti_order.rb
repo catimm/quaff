@@ -10,7 +10,7 @@
 #  updated_at            :datetime         not null
 #
 
-class DistiOrder < ActiveRecord::Base
+class DistiOrder < ApplicationRecord
   belongs_to :distributor
   belongs_to :inventory
   

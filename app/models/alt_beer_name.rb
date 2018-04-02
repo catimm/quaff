@@ -9,6 +9,6 @@
 #  updated_at :datetime         not null
 #
 
-class AltBeerName < ActiveRecord::Base
+class AltBeerName < ApplicationRecord
   belongs_to :beer
 end

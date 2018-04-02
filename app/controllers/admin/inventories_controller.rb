@@ -1,5 +1,5 @@
 class Admin::InventoriesController < ApplicationController
-  before_filter :verify_admin
+  before_action :verify_admin
   
   def show
     # get url/id info

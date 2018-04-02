@@ -1,5 +1,5 @@
 class DrinksController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   include DrinkTypeDescriptorCloud
   include DeliveredDrinkDescriptorCloud
   include DrinkDescriptorCloud

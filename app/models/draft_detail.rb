@@ -10,6 +10,6 @@
 #  beer_location_id :integer
 #
 
-class DraftDetail < ActiveRecord::Base
+class DraftDetail < ApplicationRecord
   belongs_to :beer_location
 end

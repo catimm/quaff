@@ -14,7 +14,7 @@
 #  cellarable_info        :text
 #
 
-class BeerType < ActiveRecord::Base
+class BeerType < ApplicationRecord
   belongs_to :beer_style
   has_many :beer_type_relationships
   has_many :beers

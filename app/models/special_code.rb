@@ -9,6 +9,6 @@
 #  updated_at   :datetime         not null
 #
 
-class SpecialCode < ActiveRecord::Base
+class SpecialCode < ApplicationRecord
   belongs_to :user
 end

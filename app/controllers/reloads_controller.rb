@@ -1,5 +1,5 @@
 class ReloadsController < ApplicationController
-  before_filter :verify_admin
+  before_action :verify_admin
   include UserLikesDrinkTypes
   include TypeBasedGuess
   include BestGuess

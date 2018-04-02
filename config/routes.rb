@@ -337,7 +337,7 @@ Rails.application.routes.draw do
   patch 'admin/disti_inventories/process_inventory/:id' => 'admin/disti_inventories#process_inventory', :as => 'process_disti_inventory'
   
   # admin drink DB management routes
-  get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers', :path => "/currentbeers"
+  get 'admin/beers/current_beers' => 'admin/beers#current_beers', :as => 'admin_current_beers'
   post 'admin/beers/remove_multiple_drinks/:id' => 'admin/beers#remove_multiple_drinks'
   put 'admin/breweries/update' => 'admin/breweries#update'
   get 'admin/breweries/alt_names/:id' => 'admin/breweries#alt_brewery_name', :as => 'admin_alt_brewery_names'

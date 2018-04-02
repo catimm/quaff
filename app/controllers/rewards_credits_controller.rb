@@ -1,6 +1,6 @@
 class RewardsCreditsController < ApplicationController
   include DateHelper
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   def rewards
     @user = current_user

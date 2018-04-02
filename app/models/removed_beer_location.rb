@@ -10,7 +10,7 @@
 #  removed_at  :datetime
 #
 
-class RemovedBeerLocation < ActiveRecord::Base
+class RemovedBeerLocation < ApplicationRecord
   belongs_to :beer
   belongs_to :location
 

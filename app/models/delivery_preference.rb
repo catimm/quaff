@@ -18,7 +18,7 @@
 #  drinks_per_delivery :integer
 #
 
-class DeliveryPreference < ActiveRecord::Base
+class DeliveryPreference < ApplicationRecord
   belongs_to :user
   belongs_to :drink_option
   

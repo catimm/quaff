@@ -11,6 +11,6 @@
 #  reward_amount      :integer
 #
 
-class RewardTransactionType < ActiveRecord::Base
+class RewardTransactionType < ApplicationRecord
   has_many :reward_points 
 end

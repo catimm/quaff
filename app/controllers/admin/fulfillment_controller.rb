@@ -1,6 +1,6 @@
 class Admin::FulfillmentController < ApplicationController
   include CreditsUse
-  before_filter :verify_admin
+  before_action :verify_admin
   require "stripe"
  
   def index

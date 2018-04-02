@@ -1,0 +1,16 @@
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+/Users/carltimm/.rbenv/versions/2.5.1/bin/ruby -r ./siteconf20180329-1540-lf49i4.rb extconf.rb
+creating Makefile
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+make "DESTDIR=" clean
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+make "DESTDIR="
+compiling ruby_http_parser.c
+compiling ryah_http_parser.c
+linking shared-object ruby_http_parser.bundle
+
+current directory: /Users/carltimm/quaff/vendor/bundle/gems/http_parser.rb-0.6.0/ext/ruby_http_parser
+make "DESTDIR=" install
+/usr/local/bin/ginstall -c -m 0755 ruby_http_parser.bundle ./.gem.20180329-1540-nmgfcw

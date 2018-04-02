@@ -11,7 +11,7 @@
 #  updated_at         :datetime         not null
 #
 
-class Credit < ActiveRecord::Base
+class Credit < ApplicationRecord
   belongs_to :account
 
   def reason_string

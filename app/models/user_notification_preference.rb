@@ -14,7 +14,7 @@
 #  threshold_two    :float
 #
 
-class UserNotificationPreference < ActiveRecord::Base
+class UserNotificationPreference < ApplicationRecord
   belongs_to :user
 
 end

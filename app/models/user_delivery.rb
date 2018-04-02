@@ -15,7 +15,7 @@
 #  times_rated         :integer
 #
 
-class UserDelivery < ActiveRecord::Base
+class UserDelivery < ApplicationRecord
   belongs_to :user
   belongs_to :account_delivery
   belongs_to :delivery

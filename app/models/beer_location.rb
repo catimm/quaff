@@ -11,7 +11,7 @@
 #  updated_at     :datetime         not null
 #
 
-class BeerLocation < ActiveRecord::Base
+class BeerLocation < ApplicationRecord
   belongs_to :beer
   belongs_to :location
   belongs_to :draft_board

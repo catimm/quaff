@@ -22,7 +22,11 @@
 				<% if current_user.role_id != 6 %>
 					<li class="dropdown-link"><%= link_to "Account", account_settings_membership_user_path %></li>
 					<% if (1..4).include?(@user_subscription.subscription_id) %>
-						<li class="dropdown-link"><%= link_to "Deliveries", user_delivery_settings_path %></li>
+						<% if @user_subscription.subscription.deliveries_included == 0 %>
+							<li class="dropdown-link"><%= link_to "Deliveries", user_delivery_settings_location_path %></li>
+						<% else %>
+							<li class="dropdown-link"><%= link_to "Deliveries", user_delivery_settings_path %></li>
+						<% end %>
 					<% else %>
 						<li class="dropdown-link"><%= link_to "Shipments", user_shipment_settings_path %></li>
 					<% end %>

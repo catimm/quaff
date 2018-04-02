@@ -17,7 +17,7 @@
 #  size_format_id         :integer
 #
 
-class AccountDelivery < ActiveRecord::Base
+class AccountDelivery < ApplicationRecord
   belongs_to :user
   belongs_to :size_format
   belongs_to :beer

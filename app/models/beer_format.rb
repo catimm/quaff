@@ -9,7 +9,7 @@
 #  updated_at     :datetime         not null
 #
 
-class BeerFormat < ActiveRecord::Base
+class BeerFormat < ApplicationRecord
   belongs_to :beer
   belongs_to :size_format
   

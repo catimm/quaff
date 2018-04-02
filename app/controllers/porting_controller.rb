@@ -1,5 +1,5 @@
 class PortingController < ApplicationController
-  before_filter :verify_super_admin
+  before_action :verify_super_admin
   require 'date'
   
   def index

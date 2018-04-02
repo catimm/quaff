@@ -10,7 +10,7 @@
 #  owner       :boolean
 #
 
-class UserLocation < ActiveRecord::Base
+class UserLocation < ApplicationRecord
   belongs_to :user
   belongs_to :location
 end

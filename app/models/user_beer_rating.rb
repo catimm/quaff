@@ -17,7 +17,7 @@
 #  user_delivery_id    :integer
 #
 
-class UserBeerRating < ActiveRecord::Base
+class UserBeerRating < ApplicationRecord
   belongs_to :user
   belongs_to :beer
   belongs_to :beer_type

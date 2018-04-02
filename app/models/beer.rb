@@ -36,7 +36,7 @@
 #  gluten_free          :boolean
 #
 
-class Beer < ActiveRecord::Base
+class Beer < ApplicationRecord
   #include PgSearch
   # searchkick word_middle: [:full_beer_name]
   include DescriptorExtend

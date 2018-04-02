@@ -9,6 +9,6 @@
 #  updated_at :datetime         not null
 #
 
-class CustomerDeliveryRequest < ActiveRecord::Base
+class CustomerDeliveryRequest < ApplicationRecord
   belongs_to :user
 end

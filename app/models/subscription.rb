@@ -17,6 +17,6 @@
 #  subscription_level_group   :integer
 #
 
-class Subscription < ActiveRecord::Base
+class Subscription < ApplicationRecord
   has_many :user_subscriptions
 end

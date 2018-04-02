@@ -14,7 +14,7 @@
 #  transaction_amount         :decimal(, )
 #
 
-class RewardPoint < ActiveRecord::Base
+class RewardPoint < ApplicationRecord
   belongs_to :account 
   belongs_to :beer
   belongs_to :reward_transaction_type
