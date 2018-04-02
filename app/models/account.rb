@@ -14,7 +14,6 @@
 #
 
 class Account < ActiveRecord::Base
-  
   has_many :account_deliveries
   has_many :admin_account_deliveries
   has_many :deliveries
@@ -27,6 +26,9 @@ class Account < ActiveRecord::Base
   belongs_to :delivery_zone
   
   attr_accessor :user_id # to hold current user id
+
+  ACCOUNT_TYPE_CONSUMER = "consumer"
+  ACCOUNT_TYPE_CORPORATE = "corporate"
     
   # create view in admin recommendation drop down
   def recommendation_account_drop_down_view
@@ -52,5 +54,9 @@ class Account < ActiveRecord::Base
     joins(:users).merge(User.account_owner).
     joins(:deliveries).merge(Delivery.already_delivered)
   }
+
+  def is_corporate
+    return self[:account_type] == Account::ACCOUNT_TYPE_CORPORATE
+  end
   
 end

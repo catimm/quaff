@@ -6,12 +6,20 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<%= render 'signup/signup_guide_consumer' %>
+		<% if @is_corporate == true %>
+			<%= render 'signup/signup_guide_corporate' %>
+		<% else %>
+			<%= render 'signup/signup_guide_consumer' %>
+		<% end %>
 	</div>
 	<div class="row">
 		<div class="container" id="user-drink-preference-signup">
 			<div class="col-xs-12 text-center">
+				<% if @is_corporate == true %>
+				<h2 class="signup-question">What do you and your colleagues primarily drink?</h2>
+				<% else %>
 				<h2 class="signup-question">What do you primarily drink?</h2>
+				<% end %>
 				<h5 class="signup-question-detail">You can update this answer on your delivery preference page at any time.</h5>
 			</div>
 		</div>
