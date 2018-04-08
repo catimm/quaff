@@ -4,6 +4,10 @@ $(function() {
         $('#gift_certificate_amount').val($(this).val());
     });
 
+    $('#gift-value-custom-label').focus(function() {
+        setTimeout(function() { $('#gift-value-custom-amount').focus(); }, 10);
+    });
+
     $('input[name=giftValue]').change(function() {
         var selectedValue = $(this).val();
         if (selectedValue == "25") {
@@ -46,6 +50,12 @@ $(function() {
 
         // Open the stripe checkout form
         var amount = Number.parseFloat($("#gift_certificate_amount").val());
+
+        if (!(amount > 0)) {
+            $('#gift-certificate-stripe-button').removeAttr("disabled");
+            return true;
+        }
+
         var email = $("#gift_certificate_giver_email").val();
         StripeCheckout.open({
             key: stripe_info,
