@@ -30,7 +30,7 @@ class UserAddressesController < ApplicationController
     
     # check if address entered matches user subscription originally chosen
     # first see if this address falls in Knird delivery zone
-    @knird_delivery_zone = DeliveryZone.where(zip_code: @new_address.zip).first
+    @knird_delivery_zone = DeliveryZone.where(zip_code: @new_address.zip, currently_available: true).first
     # if there is no Knird delivery Zone, find Fed Ex zone
     if !@knird_delivery_zone.blank?
       # if subscription is a local delivery plan, update accordingly

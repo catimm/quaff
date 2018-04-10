@@ -1,6 +1,6 @@
 <div class="row no-margin">
 	<% @user_preferences = DeliveryPreference.where(user_id: user.id)[0] %>
-	<% @user_drinks_per_week = (@user_preferences.drinks_per_week * 2.2).round %>
+	<% @user_drinks_per_week = @user_preferences.drinks_per_delivery %>
 	<% @delivery_cost_estimate_low = (((@user_preferences.price_estimate.to_f) *0.9).floor / 5).round * 5 %>
     <% @delivery_cost_estimate_high = ((((@user_preferences.price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5 %>
 	<% @user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id, user_id: user.id) %>

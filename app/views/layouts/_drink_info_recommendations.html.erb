@@ -18,7 +18,7 @@
 			<%= svg drink.size_format.image %>
 		</h5>
 	</div>
-	<div class="col-xs-3 item-cost-holder">
+	<div class="col-xs-2 item-cost-holder no-padding-left">
 		<% if drink.inventory_id.nil? %>
 			<% if @user_subscription.subscription.pricing_model == "four_five" %>
 				<% @disti_inventory_drink_margin = drink.disti_inventory.drink_price_four_five %>
@@ -59,16 +59,26 @@
 			</h5>
 		<% end %>
 	</div>
-	<div class="col-xs-3 no-padding text-right">
-		<% if !drink.inventory_id.nil? %>
+	<% if !drink.inventory_id.nil? %>
+		<div class="col-xs-5 no-padding text-right">
+			<h5 class="packaged-on">Best by:
+				<% if !drink.inventory.best_by.nil? %> 
+					<span><%= drink.inventory.best_by.strftime("%m/%d/%y") %></span>
+				<% else %>
+					N/A
+				<% end %>
+			</h5>
+		</div>
+		<div class="col-xs-3 no-padding text-right">
 			<h5 class="order-quantity">Stock: 
 				<span id="user-delivery"><%= drink.inventory.stock %></span>
 			</h5>
-		<% end %>
-	</div>
-	<div class="col-xs-4 no-padding text-right">
-		<h5 class="order-quantity">Limited to: 
-			<span id="user-delivery"><%= drink.limited_quantity %></span>
-		</h5>
-	</div>
+		</div>
+	<% else %>
+		<div class="col-xs-offset-3 col-xs-4 no-padding text-right">
+			<h5 class="order-quantity">Limited to: 
+				<span id="user-delivery"><%= drink.limited_quantity %></span>
+			</h5>
+		</div>
+	<% end %>
 </div>

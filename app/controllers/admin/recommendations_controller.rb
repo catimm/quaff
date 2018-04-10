@@ -32,7 +32,7 @@ class Admin::RecommendationsController < ApplicationController
     #Rails.logger.debug("Current Account Id: #{@current_account_id.inspect}")
     # get account owner info
     @account_owner = User.where(account_id: @current_account_id, role_id: [1,4])
-    
+    #Rails.logger.debug("Account Owner: #{@account_owner.inspect}")
     # get user subscription info
     @user_subscription = UserSubscription.find_by_user_id(@account_owner[0].id)
     

@@ -2,6 +2,15 @@
 <%= render 'user_account_settings_common', current_section: "Profile" %>
 <div class="row">
 	<div class="container" id="user-delivery-preferences-holder">
+	     <div class="row no-margin">
+            <div class="col-xs-12 col-sm-8">
+            <%- flash.each do |name, msg| -%>
+                <% if msg.include?("password") || msg.include?("passwords") %>
+                	<%= content_tag :div, msg, class: "alert alert-success text-center" %>
+            	<% end %>
+            <%- end -%>
+            </div>
+	    </div>
 	    <%= render 'user_account_info' %>
 	</div>
 </div>
