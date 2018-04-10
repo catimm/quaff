@@ -3,13 +3,13 @@
 # Table name: inventories
 #
 #  id                    :integer          not null, primary key
+#  beer_id               :integer
 #  stock                 :integer
 #  reserved              :integer
 #  order_request         :integer
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  size_format_id        :integer
-#  beer_id               :integer
 #  drink_price_four_five :decimal(5, 2)
 #  drink_cost            :decimal(5, 2)
 #  limit_per             :integer
@@ -23,6 +23,8 @@
 #  total_demand          :integer
 #  drink_price_five_zero :decimal(5, 2)
 #  drink_price_five_five :decimal(5, 2)
+#  packaged_on           :date
+#  best_by               :date
 #
 
 require 'test_helper'

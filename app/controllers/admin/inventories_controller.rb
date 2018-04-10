@@ -156,7 +156,7 @@ class Admin::InventoriesController < ApplicationController
       params.require(:inventory).permit(:stock, :reserved, :order_request, :size_format_id, :beer_id, 
       :drink_price_four_five, :drink_price_five_zero, :drink_price_five_five, :drink_cost, :limit_per, 
       :total_batch, :currently_available, :distributor_id, :min_quantity, :regular_case_cost, :sale_case_cost, 
-      :disti_inventory_id)
+      :disti_inventory_id, :packaged_on, :best_by)
   end
  
   def verify_admin

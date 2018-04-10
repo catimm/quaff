@@ -826,8 +826,8 @@ class UsersController < ApplicationController
   private
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone, 
-                                  :account_id, :getting_started_step)  
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone, :current_password,
+                                  :password, :password_confirmation, :account_id, :getting_started_step)  
   end
   
   def new_user_params

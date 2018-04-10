@@ -6102,6 +6102,18 @@ $delivery-beer-header-lines-to-show: 2;
     padding: 1px 2px;
   }
 }
+.packaged-on {
+  color: $normal-text;
+  font-weight: 500;
+  margin: 10px 10px 0 0;
+  font-size: 13px;
+  float: left;
+  sup {
+    border: 1px solid $less-emphasized-text;
+    border-radius: 4px;
+    padding: 1px 2px;
+  }
+}
 .item-price-special {
   color: $user-action;
   font-weight: 500;

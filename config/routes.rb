@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   end
   
   # mount Blazer
-  mount Blazer::Engine, at: "blazer"
+  mount Blazer::Engine, at: "admin/blazer"
   
   # routes to user profile pages
   get '/users/start_account' => 'users#edit', :as => 'users_start_account'
