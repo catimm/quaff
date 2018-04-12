@@ -1,7 +1,6 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "bootstrap-social";
-@import "font-awesome-sprockets";
 @import "font-awesome";
 @import "elusive-icons-sprockets";
 @import "elusive-icons";
@@ -1014,6 +1013,11 @@ label {
 .opportunity-row {
   margin: 10px 0;
 }
+// User Create Drinnk Profile
+.create-drink-profile-navbar-header {
+  color: $white;
+}
+
 // Retailer index page
 .banner-retail {
     background: url("https://s3-us-west-2.amazonaws.com/knird/index/craft-beer-bar-adj.jpg") no-repeat fixed center center / cover transparent;

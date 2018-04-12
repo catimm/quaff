@@ -42,7 +42,8 @@ gem 'bootstrap-sass'
 gem 'bootstrap-social-rails'
 gem 'bootstrap-modal-rails'
 gem 'bootstrap-datepicker-rails'
-gem 'font-awesome-sass'
+#gem 'font-awesome-sass'
+gem 'font-awesome-rails'
 gem 'elusive-icons-sass'
 
 # run on thin client
