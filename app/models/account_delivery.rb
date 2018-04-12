@@ -18,10 +18,10 @@
 #
 
 class AccountDelivery < ApplicationRecord
-  belongs_to :user
-  belongs_to :size_format
+  belongs_to :account
   belongs_to :beer
   belongs_to :delivery
+  belongs_to :size_format
   
   has_many :user_deliveries    
   has_many :inventory_transactions
