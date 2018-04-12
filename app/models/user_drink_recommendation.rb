@@ -22,9 +22,9 @@ class UserDrinkRecommendation < ApplicationRecord
   belongs_to :account
   belongs_to :user
   belongs_to :beer
-  belongs_to :inventory
-  belongs_to :disti_inventory
-  belongs_to :size_format
+  belongs_to :inventory, optional: true
+  belongs_to :disti_inventory, optional: true
+  belongs_to :size_format, optional: true
   
   attr_accessor :within_month # to hold whether customer had drink delivered within last month
   attr_accessor :limited_quantity # to hold whether a drink has a limited quantity available for ordering
