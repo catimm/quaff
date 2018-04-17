@@ -48,7 +48,7 @@ class Beer < ApplicationRecord
   attr_reader :descriptor_list_tokens
 
   belongs_to :brewery
-  belongs_to :beer_type
+  belongs_to :beer_type, optional: true
   
   has_many :alt_beer_names
   has_many :beer_locations
@@ -356,6 +356,15 @@ class Beer < ApplicationRecord
     # provide final result
     @ready
   end
+  
+  # scope beers that have descriptors
+  scope :drinks_with_descriptors, -> {
+    drink_ids = []
+    if !self.descriptors.blank?
+      drink_ids << self.id
+    end
+    drink_ids
+  }
   
   # scope beers that have partial related info in the DB
   scope :usable_incomplete_beers, -> {

@@ -178,14 +178,14 @@ class BeersController < ApplicationController
       
     # add beer to user tracking and location tracking tables if user wants to track  beer
     if @wishlist == "1"
-      Wishlist.create(user_id: current_user.id, beer_id: @new_drink.id)
+      Wishlist.create(user_id: current_user.id, beer_id: @new_drink.id, account_id: current_user.account_id)
     end
       
     #redirect at end of action
     if @rate_beer_now == "1"
-      redirect_to new_user_rating_path(current_user.id, @new_drink.id)
+      redirect_to new_drink_rating_path(current_user.id, @new_drink.id)
     elsif @wishlist == "1"
-      redirect_to user_supply_path(current_user.id, 'wishlist')
+      redirect_to user_wishlist_path
     else 
       # now redirect back to previous page
       redirect_to session.delete(:return_to)

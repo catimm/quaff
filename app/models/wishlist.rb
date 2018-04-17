@@ -14,6 +14,7 @@
 class Wishlist < ApplicationRecord
   belongs_to :user
   belongs_to :beer
+  belongs_to :account
 
   
 end
