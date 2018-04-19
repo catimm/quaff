@@ -116,7 +116,7 @@ class Admin::RecommendationsController < ApplicationController
         @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
         @next_account_delivery_small_drinks = @next_account_delivery.where(large_format: false).sum(:quantity)
         @next_account_delivery_large_drinks = @next_account_delivery.where(large_format: true).sum(:quantity)
-        @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * @account.delivery_frequency)
+        @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * 2)
         
         # get price estimate
         @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
