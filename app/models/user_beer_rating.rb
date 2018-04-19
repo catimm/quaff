@@ -20,8 +20,8 @@
 class UserBeerRating < ApplicationRecord
   belongs_to :user
   belongs_to :beer
-  belongs_to :beer_type
-  belongs_to :user_delivery
+  belongs_to :beer_type, optional: true
+  belongs_to :user_delivery, optional: true
   
   accepts_nested_attributes_for :beer
   

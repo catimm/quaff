@@ -21,7 +21,7 @@
 class DeliveryZone < ApplicationRecord
   attr_accessor :next_available_delivery_date # to hold temp variable for next available delivery date
   
-  belongs_to :delivery_driver
+  belongs_to :delivery_driver, optional: true
   
   has_many :user_addresses
   has_many :accounts

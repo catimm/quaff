@@ -19,6 +19,6 @@ class UserCellarSupply < ApplicationRecord
   belongs_to :user
   belongs_to :account
   belongs_to :beer
-  belongs_to :supply_type
+  belongs_to :account_delivery, optional: true
 
 end
