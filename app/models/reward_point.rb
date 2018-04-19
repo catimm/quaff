@@ -15,7 +15,8 @@
 #
 
 class RewardPoint < ApplicationRecord
-  belongs_to :account 
-  belongs_to :beer
+  belongs_to :account
+  belongs_to :account_delivery, optional: true
+  belongs_to :beer, optional: true
   belongs_to :reward_transaction_type
 end
