@@ -50,7 +50,7 @@
 	<div class="col-xs-1 col-sm-1 preference-estimate-holder-admin">
 		<div class="delivery-settings-info-box new">
 			<p>new</p>
-			<h4 class="delivery-preference-prompt"><%= @user_drinks.count(:conditions => { :new_drink => true }) %></h4>
+			<h4 class="delivery-preference-prompt"><%= @user_drinks.where(new_drink: true).count %></h4>
 		</div>	
 	</div>
 	<div class="col-xs-1 col-sm-1 preference-estimate-holder-admin">
