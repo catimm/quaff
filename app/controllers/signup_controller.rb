@@ -687,6 +687,8 @@ class SignupController < ApplicationController
   end # end of delivery_frequency_getting_started method
 
   def process_delivery_frequency_getting_started
+    # set referring page
+    @referring_url = request.referrer
     # set current page
     @current_page = 'signup'
     
