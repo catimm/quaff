@@ -10,7 +10,7 @@
 #  delivery_location_user_address_id :integer
 #  delivery_zone_id                  :integer
 #  delivery_frequency                :integer
-#  fed_ex_delivery_zone_id           :integer
+#  shipping_zone_id                  :integer
 #
 
 class Account < ApplicationRecord
@@ -25,7 +25,7 @@ class Account < ApplicationRecord
   accepts_nested_attributes_for :users, :allow_destroy => true
   
   belongs_to :delivery_zone, optional: true
-  belongs_to :fed_ex_delivery_zone, optional: true
+  belongs_to :shipping_zone, optional: true
   
   attr_accessor :user_id # to hold current user id
     

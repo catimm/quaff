@@ -1,0 +1,314 @@
+$(function () {
+	// hide spinner
+	$(".spinner").hide();
+	
+	// show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner").show();
+	});
+	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner").hide();
+	});
+	
+	// show welcome modal before starting signup process
+	if (gon.getting_started_step == 0) {
+		$(window).load(function(){
+	        $('#drink_profile_welcome').modal('show');
+	    });
+	}
+	
+	// set height and width of drink style holders
+	var drink_style_tile_height = $('.drink-profile-style-tile').height();
+	$('.drink-profile-style-tile-chosen').height(drink_style_tile_height);
+	var chosen_drink_style_tile_width = $('.style-image-column-holder').outerWidth();
+	$('.chosen-style-like-cover').height(drink_style_tile_height);
+	$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
+	
+	// set height of drink cost holder
+	var drink_cost_holder_height = $('#beer-response-higher').height();
+	$('.drink-text-holder').height(drink_cost_holder_height);
+	
+	// get height of category image holder
+	var  cat_holder_height = $(".drink-profile-category-image-holder").height();
+	$(".drink-profile-category-image-holder-chosen-cover").height(cat_holder_height);
+	
+	// capture customer drink category addition
+	$(document).on('click', '.drink-profile-category-image-holder', function () {
+		var this_category = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_categories/add-" + this_category
+		});
+	});
+	
+	// capture customer drink category removal
+	$(document).on('click', '.drink-profile-category-image-holder-chosen-cover', function () {
+		var this_category = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_categories/remove-" + this_category
+		});
+	});
+	$(document).on('click', '.category-chosen-indicator', function () {
+		var this_category = $(this).parent().attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_categories/remove-" + this_category
+		});
+	});
+	
+	// set height to be half width of weekly/monthly tile
+	var timeframe_tile_width = $(".week-or-month-holder").width();
+	var timeframe_tile_height = timeframe_tile_width/2
+	$(".week-or-month-holder").height(timeframe_tile_height);
+	var timeframe_text_height = $('.drinks-per-text').height();
+	var timeframe_top_margin = (timeframe_tile_height - timeframe_text_height)/2;
+	$('.week-or-month-holder').css('padding-top', timeframe_top_margin);
+	
+	// capture week/month timeframe
+	$(document).on('click', '.week-or-month-holder', function () {
+		var category_timeframe = $(this).attr('id');
+		$(this).parent('.week-or-month-holder-parent').siblings('.week-or-month-holder-parent').children('.week-or-month-holder').removeClass('chosen');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drinks_per_week/" + category_timeframe
+		});
+	});
+	
+	// capture number of drinks per timeframe
+	$(document).on('click', '.create-profile-number-box-holder', function () {
+		var category_number = $(this).attr('id');
+		$(this).parent('.number-box-holder-parent').siblings('.number-box-holder-parent').children('.create-profile-number-box-holder').removeClass('chosen');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drinks_per_week/" + category_number
+		});
+	});
+	
+	// get journey stage data from controller
+	var beer_journey_stage = gon.beer_journey_stage
+	var cider_journey_stage = gon.cider_journey_stage
+	var wine_journey_stage = gon.wine_journey_stage
+	
+	// for rating sliders
+	$("#beer-journey").slider({
+		value: beer_journey_stage
+	});
+	
+	$("#beer-journey").on("change", function(data) {
+		var journey_value = data.value.newValue;
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_journey/beer-" + journey_value
+		});
+	});
+	
+	$("#cider-journey").slider({
+		value: cider_journey_stage
+	});
+	
+	$("#cider-journey").on("change", function(data) {
+		var journey_value = data.value.newValue;
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_journey/cider-" + journey_value
+		});
+	});
+	
+	$("#wine-journey").slider({
+		value: wine_journey_stage
+	});
+	
+	$("#wine-journey").on("change", function(data) {
+		var journey_value = data.value.newValue;
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_journey/wine-" + journey_value
+		});
+	});
+		
+	// add logic to add or remove a liked style and send data to controller
+	$(document).on('click', '.like-style', function () {
+		
+		var style_info = $(this).parent().attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_styles/like-" + style_info
+		});
+
+	});
+	
+	// add logic to add or remove a liked style and send data to controller
+	$(document).on('click', '.dislike-style', function () {
+		
+		var style_info = $(this).parent().attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_styles/dislike-" + style_info
+		});
+
+	});
+	
+	// send chosen descriptors to controller
+	$(document).on('click', '.drink-profile-descriptor', function () {
+		
+		var data = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_chosen_descriptors/add-" + data
+		});
+	}); 
+	$(document).on('click', '.drink-profile-chosen-descriptor', function () {
+		if($(this).hasClass('chosen')) {
+			var action = "remove"
+		} else {
+			var action = "add"
+		}
+		var data = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_chosen_descriptors/" + action + "-" + data
+		});
+	});
+	
+	// add logic to send chosen priorities to stack rank list
+	$(document).on('click', '.priority-question-chosen', function () {
+		var this_value = $(this).val();
+		var category = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_priority_questions/" + category + "-" + this_value
+		});
+	});
+	
+	$( "#sortable" ).on( "sortstart", function( event, ui ) {
+		// creates a temporary attribute on the element with the old index
+        $(this).attr('data-previndex', ui.item.index());
+	} );
+	$( "#sortable" ).on( "sortupdate", function( event, ui ) {
+		// gets the new and old index then removes the temporary attribute
+        var oldIndex = $(this).attr('data-previndex');
+        var newIndex = ui.item.index();
+        var original_id = ui.item[0].id;
+        // update # seen by user
+        $("#"+original_id).children("span").empty();
+        $("#"+original_id).children("span").html(newIndex);
+        // update ID of moved element
+        var split_original_id = original_id.split("-");
+        var new_id = split_original_id[0] + "-" + split_original_id[1] + "-" + newIndex;
+        var element = $(this).children("#"+original_id);
+        element.attr("id",new_id);
+        // update sibling elements
+        var nextAll = element.nextAll();
+        var starting_number = newIndex
+        nextAll.each(function(index){
+		    // increment number
+		    starting_number = starting_number + 1
+		    // get this element ID
+		    var sibling_original_id = $(this).attr('id');
+		    // update # seen by user
+	        $("#"+sibling_original_id).children("span").empty();
+	        $("#"+sibling_original_id).children("span").html(starting_number);
+		    // update ID
+		    var split_sibling_original_id = sibling_original_id.split("-");
+		    var sibling_new_id = split_sibling_original_id[0] + "-" + split_sibling_original_id[1] + "-" + starting_number;
+		    $(this).attr("id",sibling_new_id);
+		    
+		});
+        $(this).removeAttr('data-previndex');
+        
+        // send new ranking data to controller
+        var rank_data = $('#sortable > li').map(function(){
+             return this.id
+        }).toArray();
+
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_rank_priority_questions/data",
+		  data: JSON.stringify(rank_data),
+          contentType: 'application/json; charset=utf-8'
+		});
+	} );
+
+	// get drink max data from controller
+	var beer_price_limit = gon.beer_price_limit;
+	var cider_price_limit = gon.cider_price_limit;
+	
+	if (beer_price_limit != null) {
+		$("#chosen-beer-rare-cost-max").text("$"+beer_price_limit).addClass('chosen-drink-rare-cost-max');
+	}
+	
+	if (cider_price_limit != null) {
+		$("#chosen-cider-rare-cost-max").text("$"+cider_price_limit).addClass('chosen-drink-rare-cost-max');
+	}
+	
+	// for drink price sliders
+	$("#beer-rare-cost-max").slider({
+		value: beer_price_limit,
+		formatter: function(value) {
+			return "$" + value;
+		}
+	});
+	$("#beer-rare-cost-max").on("slide", function(slideEvt) {
+		$("#chosen-beer-rare-cost-max").text("$"+slideEvt.value).addClass('chosen-drink-rare-cost-max');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_cost_estimates/beer-limit-" + slideEvt.value
+		});
+	});
+	$("#cider-rare-cost-max").slider({
+		value: cider_price_limit,
+		formatter: function(value) {
+			return "$" + value;
+		}
+	});
+	$("#cider-rare-cost-max").on("slide", function(slideEvt) {
+		$("#chosen-cider-rare-cost-max").text("$"+slideEvt.value).addClass('chosen-drink-rare-cost-max');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_cost_estimates/cider-limit-" + slideEvt.value
+		});
+	});
+	
+	// send cost estimate input to controller
+	$(document).on('click', '.drink-text-holder', function () {
+		
+		var data = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/create_drink_profile/process_drink_cost_estimates/" + data
+		});
+	}); 
+	
+});

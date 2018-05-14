@@ -1,6 +1,8 @@
 $(function() {
-	// temporarily highlight this change
-	$("#drinks-frequency-meaning").removeClass('hidden').addClass('show');
-	$("#delivery-estimates-for-customer").html("<%= escape_javascript(render 'signup/per_delivery_estimate' ) %>");
-	$("#delivery-number-next-button").html("<%= escape_javascript(render 'signup/deliveries_numbers_next_button' ) %>");
+	console.log("gets here");
+	// show estimate impact
+	$("#drinks-frequency-meaning").html("<%= escape_javascript(render 'layouts/per_delivery_estimate' ) %>");
+	// highlight number chosen
+	$("#<%= @delivery_frequency%>).addClass("chosen");
+	$("#<%= @delivery_frequency%>).siblings().removeClass("chosen")
 });

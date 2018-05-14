@@ -1,0 +1,50 @@
+<div class="row no-margin">
+	<div class="col-xs-4 col-md-offset-3 col-md-2 no-padding signup-guide-column-holder <%= @types_chosen %>">
+		<%= link_to "types", drink_profile_categories_path, class: "guide-header #{@types_chosen}" %>
+		<div class="fa fa-chevron-right"></div>
+	</div>
+	<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @journey_chosen %>">
+		<% if @user.getting_started_step >= 4 %>
+			<%= link_to "journey", drink_profile_journey_path, class: "guide-header #{@journey_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">journey</h5>
+		<% end %>
+		<div class="fa fa-chevron-right"></div>
+	</div>
+	<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @numbers_chosen %>">
+		<% if @user.getting_started_step >= 8 %>
+			<%= link_to "numbers", drink_profile_drinks_per_week_path, class: "guide-header #{@numbers_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">numbers</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @likes_chosen %>">
+		<% if @user.getting_started_step >= 8 %>
+			<%= link_to "likes", drink_profile_beer_likes_path, class: "guide-header #{@likes_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">likes</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @dislikes_chosen %>">
+		<% if @user.getting_started_step >= 8 %>
+			<%= link_to "dislikes", drink_profile_beer_dislikes_path, class: "guide-header #{@dislikes_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">dislikes</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @priorities_chosen %>">
+		<% if @user.getting_started_step >= 8 %>
+			<%= link_to "choices", drink_profile_priorities_path, class: "guide-header #{@priorities_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">choices</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @estimates_chosen %>">
+		<% if @user.getting_started_step >= 8 %>
+			<%= link_to "estimates", drink_profile_estimates_path, class: "guide-header #{@estimates_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">estimates</h5>
+		<% end %>
+	</div>
+</div>
+

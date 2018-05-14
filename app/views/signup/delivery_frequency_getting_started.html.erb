@@ -1,97 +1,16 @@
 <%= render 'layouts/header_early_signup' %> 
-	<div class="row no-margin spinner-signup text-center">
-		<div class="spinner-text">
-			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
-			<h4>Processing...</h4>
-		</div>
-	</div>
+	<%= render 'layouts/updating_spinner' %>
 	<div class="row no-margin first-row-signup">
 		<%= render 'signup/signup_guide_consumer' %>
 	</div>
-	<div class="row">
-		<div class="container" id="user-drinks-per-week-signup">
-			<div class="col-xs-12 text-center">
-				<h2 class="signup-question">Choose which delivery option works best for you.</h2>
-				<h5 class="signup-question-detail">You can update this on your delivery preferences page anytime after signup.</h5>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="container" id="user-drinks-per-week-signup">
-			<div class="col-xs-12 col-sm-offset-1 col-sm-10">
-				<div class="row">
-					<%= render 'delivery_frequency_options' %>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row <%= @drinks_per_week_meaning_show_status %> " id="drinks-frequency-meaning">
-		<div class="container hidden-xs">
-			<div class="row">
-				<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
-					<% if !@delivery_preferences.max_large_format.nil? %>
-						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-<%= @current_page %>">
-							<%= render 'layouts/per_delivery_estimate' %>
-						</div>
-					<% else %>
-						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-<%= @current_page %>">
-							
-						</div>
-					<% end %>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12 col-sm-offset-3 col-sm-6 large-format-meaning-parent">
-					<div class="row no-margin drinks-per-week-meaning-first-row">
-						<div class="col-xs-12">
-							<h4 class="drinks-per-week-meaning-text">
-								You can adjust these estimates by changing your chosen preferences now or after signup in your delivery 
-								settings.
-							</h4>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row no-margin text-center">
-				<div class="col-xs-0 col-sm-4"></div>
-				<div class="col-xs-12 col-sm-4">
-						<%= link_to "Next", delivery_preferences_getting_started_path, class: "btn btn-default btn-success signup-styles-next-step" %>
-				</div>
-			</div>
-		</div>
-		<div class="container hidden-sm hidden-md hidden-lg hidden-xl">
-			<div class="row">
-				<div class="col-xs-1"></div>
-				<div class="col-xs-10">
-					<% if !@delivery_preferences.max_large_format.nil? %>
-						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-<%= @current_page %>">
-							<%= render 'layouts/per_delivery_estimate' %>
-						</div>
-					<% else %>
-						<div class="row no-margin estimated-delivery-price-holder-signup" id="estimated-delivery-price-holder-<%= @current_page %>">
-							
-						</div>
-					<% end %>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-1"></div>
-				<div class="col-xs-10 large-format-meaning-parent">
-					<div class="row no-margin drinks-per-week-meaning-first-row">
-						<div class="col-xs-12">
-							<h4 class="drinks-per-week-meaning-text">
-								You can adjust these estimates by changing your chosen preferences now or after signup in your delivery 
-								settings.
-							</h4>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row no-margin text-center">
-				<div class="col-xs-12 col-sm-offset-4 col-sm-4">
-					<%= link_to "Next", delivery_preferences_getting_started_path, class: "btn btn-default btn-success signup-styles-next-step", id: "liked_styles_next_step_button" %>
-				</div>
-			</div>
+	<%= render 'delivery_settings/delivery_frequency_options' %>
+	<div class="row no-margin text-center">
+		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+			<% if !@account.delivery_frequency.nil? %>
+				<%= link_to "Next", signup_thank_you_path, class: "btn btn-success signup-frequency-next-button", id: "signup_frequency_next_button" %>
+			<% else %>
+				<%= link_to "Next", signup_thank_you_path, disabled: true, class: "btn btn-default signup-frequency-next-button", id: "signup_frequency_next_button" %>
+			<% end %>
 		</div>
 	</div>
 <%= render 'layouts/footer' %>

@@ -47,9 +47,9 @@ class Admin::RecommendationsController < ApplicationController
       @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
       @multiply_by_tax = 1 + @account_tax
     else
-      @account_delivery_zone_id = @account_delivery_address.fed_ex_delivery_zone_id
+      @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
       # get account tax
-      @account_tax = FedExDeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+      @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
       @multiply_by_tax = 1 + @account_tax
     end
     # get all delivery dates for chosen account for last few months and next month--for view drop down menu
@@ -505,8 +505,8 @@ class Admin::RecommendationsController < ApplicationController
       @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
       @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
     else
-      @account_delivery_zone_id = @account_delivery_address.fed_ex_delivery_zone_id
-      @account_tax = FedExDeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+      @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
+      @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
     end
     @current_sales_tax = @current_subtotal * @account_tax
     # and total price

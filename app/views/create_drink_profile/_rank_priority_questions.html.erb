@@ -1,0 +1,4 @@
+<script> $(function() { $('#sortable').sortable(); }); </script>
+<% @user_priorities.each.with_index do |priority, index| %>
+    <li class="ui-state-default" id="question-<%= priority.priority_id %>-<%= index + 1 %>"><i class="fa fa-arrows-v" aria-hidden="true"></i><span><%= index + 1 %></span> <%= priority.priority.description %></li>
+<% end %>

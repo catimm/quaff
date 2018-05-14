@@ -1,0 +1,37 @@
+<div class="row">
+	<div class="container" id="user-craft-journey-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Where you are in your <%= drink %> journey?</h2>
+			<% if @create_drink_profile %>
+				<h5 class="signup-question-detail">You can update this answer in your <%= drink %> settings anytime after signup.</h5>
+			<% end %>
+		</div>
+		<%- flash.each do |name, msg| -%>
+            <% if name.include?  "error" %>
+                <div class="col-xs-12 col-sm-offset-4 col-sm-4 show" id="category-error-holder">
+                	<%= content_tag :div, msg, class: "alert alert-danger text-center" %>
+            	</div>
+        	<% end %>
+        <%- end -%>
+	</div>
+</div>
+<div class="row signup-drink-category-row-holder">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center" id="<%= drink %>-journey-choice">
+				<input id="<%= drink %>-journey"
+					type="text"  
+					class="span2" 
+					value="" 
+					data-slider-min="1" 
+					data-slider-max="5" 
+					data-slider-step="1" 
+					data-slider-value="1"
+				    data-slider-ticks="[1, 2, 3, 4, 5]"
+				    data-slider-ticks-labels='["beginner", "", "aficionado", "", "connoisseur"]'
+					data-slider-orientation="horizontal"
+					data-slider-tooltip="hide" >
+			</div>
+		</div>
+	</div>
+</div>

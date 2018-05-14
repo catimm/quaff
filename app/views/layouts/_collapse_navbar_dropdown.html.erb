@@ -1,0 +1,92 @@
+<% if user_signed_in? %>
+	<% @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id) %>
+	<% @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first %>
+	<% if !@user_subscription.blank? %>
+		<li class="navLinks dropdown">
+	      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+	      <ul class="dropdown-menu">
+	        
+	        <li class="dropdown-header">Activity</li>
+	        <li class="dropdown-link"><%= link_to "Connections", manage_friends_path %></li>
+			<% if current_user.role_id != 6 %>
+				<li class="dropdown-link"><%= link_to "Credits & Rewards", user_credits_path %></li>
+	        <% end %>
+	        <li class="dropdown-link"><%= link_to "Drinks", user_deliveries_path %></li>
+			<li class="dropdown-link"><%= link_to "Gift Certificates", gift_certificates_index_path %></li>
+	        <% if @user_subscription.subscription.deliveries_included == 0 %>
+				<li class="dropdown-link"><%= link_to "Orders", order_status_path %></li>
+	        <% end %>
+	        <li class="dropdown-link"><%= link_to "Ratings", recent_user_ratings_path %></li>
+			
+			<li class="dropdown-header">Settings</li>
+			<% if current_user.role_id != 6 %>
+				<li class="dropdown-link"><%= link_to "Account", account_settings_membership_user_path %></li>
+				<% if (1..4).include?(@user_subscription.subscription_id) %>
+					<% if @user_subscription.subscription.deliveries_included == 0 %>
+						<li class="dropdown-link"><%= link_to "Deliveries", user_delivery_settings_location_path %></li>
+					<% else %>
+						<li class="dropdown-link"><%= link_to "Deliveries", user_delivery_settings_path %></li>
+					<% end %>
+				<% else %>
+					<li class="dropdown-link"><%= link_to "Shipments", user_shipment_settings_path %></li>
+				<% end %>
+			<% end %>
+			<% if @user_delivery_preference.beer_chosen == true %>
+				<li class="dropdown-link"><%= link_to "Beer", settings_beer_styles_path %></li>
+			<% end %>
+			<% if @user_delivery_preference.cider_chosen == true %>
+				<li class="dropdown-link"><%= link_to "Cider", settings_cider_styles_path %></li>
+			<% end %>
+			<% if @user_delivery_preference.wine_chosen == true %>
+				<li class="dropdown-link"><%= link_to "Wine", settings_wine_styles_path %></li>
+			<% end %>
+			
+	        <% if current_user.role_id == 1 %>
+	            <li class="dropdown-header">Admin links</li>
+	            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+	            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
+	            <li class="dropdown-link"><%= link_to "Knird Inventory", admin_inventory_path(0) %></li>
+	            <li class="dropdown-link"><%= link_to "Disti Inventory", admin_disti_inventory_path(1) %></li>
+				<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
+	            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendations_path %></li> 
+		    <% elsif current_user.role_id == 2 %>
+		    	<li class="dropdown-header">Admin links</li>
+	            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+	            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_path(current_user.id) %></li>
+		    <% end %>
+		    
+		    <li role="separator" class="divider"></li>
+		    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
+	      </ul>
+	    </li>
+	<% else %>
+		<li class="navLinks dropdown">
+	      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+	      <ul class="dropdown-menu">
+	        
+	        <li class="dropdown-header">Activity</li>
+	        <li class="dropdown-link"><%= link_to "Drinks", user_deliveries_path %></li>
+			<li class="dropdown-link"><%= link_to "Gift Certificates", gift_certificates_index_path %></li>
+	        <li class="dropdown-link"><%= link_to "Ratings", recent_user_ratings_path %></li>
+			
+			<li class="dropdown-header">Settings</li>
+			<li class="dropdown-link"><%= link_to "Account", account_settings_membership_user_path %></li>
+			<li class="dropdown-link"><%= link_to "Deliveries", drink_categories_path %></li>
+			<% if @user_delivery_preference.beer_chosen == true %>
+				<li class="dropdown-link"><%= link_to "Beer", settings_beer_styles_path %></li>
+			<% end %>
+			<% if @user_delivery_preference.cider_chosen == true %>
+				<li class="dropdown-link"><%= link_to "Cider", settings_cider_styles_path %></li>
+			<% end %>
+			<% if @user_delivery_preference.wine_chosen == true %>
+				<li class="dropdown-link"><%= link_to "Wine", settings_wine_styles_path %></li>
+			<% end %>
+		    
+		    <li role="separator" class="divider"></li>
+		    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
+	      </ul>
+	    </li>
+	<% end %>
+<% else %>
+	<li class="navLinks"> <%= link_to "Log in", new_user_session_path %></li>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180410193341) do
+ActiveRecord::Schema.define(version: 20180513182430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.integer "delivery_location_user_address_id"
     t.integer "delivery_zone_id"
     t.integer "delivery_frequency"
-    t.integer "fed_ex_delivery_zone_id"
+    t.integer "shipping_zone_id"
   end
 
   create_table "admin_account_deliveries", id: :serial, force: :cascade do |t|
@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.boolean "signup_beer_cider"
     t.boolean "standard_list"
     t.integer "style_order"
+    t.integer "master_style_id"
   end
 
   create_table "beer_type_relationships", id: :serial, force: :cascade do |t|
@@ -375,6 +376,9 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.boolean "gluten_free"
     t.text "admin_comments"
     t.integer "drinks_per_delivery"
+    t.boolean "beer_chosen"
+    t.boolean "cider_chosen"
+    t.boolean "wine_chosen"
   end
 
   create_table "delivery_zones", id: :serial, force: :cascade do |t|
@@ -391,6 +395,7 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.integer "delivery_driver_id"
     t.decimal "excise_tax", precision: 8, scale: 6
     t.boolean "currently_available"
+    t.integer "subscription_level_group"
   end
 
   create_table "disti_change_temps", id: :serial, force: :cascade do |t|
@@ -489,13 +494,13 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "fed_ex_delivery_zones", id: :serial, force: :cascade do |t|
-    t.integer "zone_number"
+  create_table "drink_style_top_descriptors", force: :cascade do |t|
+    t.integer "beer_style_id"
+    t.string "descriptor_name"
+    t.integer "descriptor_tally"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "excise_tax", precision: 8, scale: 6
-    t.string "zip_start"
-    t.string "zip_end"
+    t.integer "tag_id"
   end
 
   create_table "friends", id: :serial, force: :cascade do |t|
@@ -634,6 +639,15 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
   end
 
+  create_table "priorities", force: :cascade do |t|
+    t.string "description"
+    t.boolean "beer_relevant"
+    t.boolean "cider_relevant"
+    t.boolean "wine_relevant"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "projected_ratings", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "beer_id"
@@ -687,6 +701,17 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.decimal "actual_shipping_fee", precision: 5, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "shipping_zones", id: :serial, force: :cascade do |t|
+    t.integer "zone_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "excise_tax", precision: 8, scale: 6
+    t.string "zip_start"
+    t.string "zip_end"
+    t.integer "subscription_level_group"
+    t.boolean "currently_available"
   end
 
   create_table "size_formats", id: :serial, force: :cascade do |t|
@@ -854,7 +879,7 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.string "other_name"
     t.boolean "current_delivery_location"
     t.integer "delivery_zone_id"
-    t.integer "fed_ex_delivery_zone_id"
+    t.integer "shipping_zone_id"
   end
 
   create_table "user_beer_ratings", id: :serial, force: :cascade do |t|
@@ -894,6 +919,15 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.string "likes_style"
     t.float "projected_rating"
     t.integer "times_rated"
+  end
+
+  create_table "user_descriptor_preferences", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "beer_style_id"
+    t.integer "tag_id"
+    t.string "descriptor_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_drink_recommendations", id: :serial, force: :cascade do |t|
@@ -938,6 +972,65 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.string "notification_two"
     t.boolean "preference_two"
     t.float "threshold_two"
+  end
+
+  create_table "user_preference_beers", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "delivery_preference_id"
+    t.decimal "beers_per_week", precision: 4, scale: 2
+    t.integer "beers_per_delivery"
+    t.decimal "beer_price_estimate", precision: 5, scale: 2
+    t.integer "max_large_format"
+    t.integer "max_cellar"
+    t.boolean "gluten_free"
+    t.text "additional"
+    t.text "admin_comments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "journey_stage"
+    t.string "beer_price_response"
+    t.decimal "beer_price_limit", precision: 5, scale: 2
+  end
+
+  create_table "user_preference_ciders", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "delivery_preference_id"
+    t.decimal "ciders_per_week", precision: 4, scale: 2
+    t.integer "ciders_per_delivery"
+    t.decimal "cider_price_estimate", precision: 5, scale: 2
+    t.integer "max_large_format"
+    t.integer "max_cellar"
+    t.text "additional"
+    t.text "admin_comments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "journey_stage"
+    t.string "cider_price_response"
+    t.decimal "cider_price_limit", precision: 5, scale: 2
+  end
+
+  create_table "user_preference_wines", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "delivery_preference_id"
+    t.decimal "glasses_per_week", precision: 4, scale: 2
+    t.integer "glasses_per_delivery"
+    t.decimal "wine_price_estimate", precision: 5, scale: 2
+    t.integer "max_cellar"
+    t.text "additional"
+    t.text "admin_comments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "journey_stage"
+  end
+
+  create_table "user_priorities", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "priority_id"
+    t.integer "priority_rank"
+    t.integer "total_priorities"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "category"
   end
 
   create_table "user_style_preferences", id: :serial, force: :cascade do |t|
@@ -1003,6 +1096,7 @@ ActiveRecord::Schema.define(version: 20180410193341) do
     t.string "phone"
     t.boolean "recent_addition"
     t.string "homepage_view"
+    t.boolean "unregistered"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"

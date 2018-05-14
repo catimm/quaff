@@ -319,6 +319,28 @@ class AdminMailer < ApplicationMailer
     response = sp.transmission.send_payload(payload)
     p response
   end
+  
+  def admin_customer_free_curation_request(user)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: "carl@drinkknird.com" },
+        }
+      ],
+      content: {
+        template_id: 'admin-free-curation-request'
+      },
+      substitution_data: {
+        user_first_name: user.first_name,
+        user_email: user.email
+      }
+    }
+
+    response = sp.transmission.send_payload(payload)
+    p response
+  end # end admin_customer_free_curation_request method
     
   def admin_customer_delivery_request(admin_email, user, message)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

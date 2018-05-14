@@ -1,0 +1,56 @@
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Set your cost parameters.</h2>
+			<% if @create_drink_profile %>
+				<h5 class="signup-question-detail">You can update this info in your <%= @category %> settings at any time after signup.</h5>
+			<% end %>
+		</div>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row no-margin">
+        	<div class="col-xs-12 col-md-offset-1 col-md-10">
+                <h3 class="delivery-numbers-prompt">Your preferences indicate your <u>average cost per <%= @category %></u> will be <span class="price-estimate-highlight">~ <%= number_to_currency(@drink_estimate, precision: 2) %></span>. Thoughts?</h3>
+            </div>
+            <div class="col-xs12 col-md-offset-1 col-md-10">
+                <div class="col-xs-12 col-sm-4 no-padding">
+					<div class="drink-text-holder <%= @option_lower %>" id="beer-response-lower">
+						<h4 class="drink-cost-text">I'd prefer it to be less</h4>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-4 no-padding">
+					<div class="drink-text-holder <%= @option_middle %>" id="beer-response-middle">
+						<h4 class="drink-cost-text">Seems about right</h4>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-4 no-padding">
+					<div class="drink-text-holder <%= @option_higher %>" id="beer-response-higher">
+						<h4 class="drink-cost-text">I'd pay even more for awesomeness</h4>
+					</div>
+				</div>
+            </div>
+        </div>
+       <div class="row no-margin">
+            <div class="col-xs-12 col-md-offset-1 col-md-10">
+                <h3 class="delivery-numbers-prompt cost-max">What is the most you'd pay for a limited/rare/seasonal <%= @category %>?<br /> 
+                <span class="reminder-text">(Remember, you get to review each delivery. No suprises!)</span></h3>
+            </div>
+            <div class="col-xs-10 col-md-offset-1 col-md-8 text-center" id="<%= drink %>-rare-cost-max-holder">
+                <b>$5 </b><input id="<%= drink %>-rare-cost-max"
+					type="text"  
+					class="span2" 
+					value="" 
+					data-slider-min="5" 
+					data-slider-max="50" 
+					data-slider-step="5" 
+					data-slider-value="5"
+					data-slider-orientation="horizontal" /><b> $50</b>
+            </div>
+            <div class="col-xs-2 col-sm-1 no-padding text-center">
+            	<h3 class="" id="chosen-<%= drink %>-rare-cost-max"></h3>
+            </div>
+	    </div>
+	</div>
+</div>

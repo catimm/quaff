@@ -1,0 +1,14 @@
+$(function() {
+
+	// add logic to filter inventory by Maker 
+	$(document).on('change', '.style-list-for-descriptors', function () {
+		var maker_id = $(this).val();
+		
+		$.ajax({
+		  type: "GET",
+		  url: "admin/descriptors/change_style_view/" + maker_id
+		});
+	});
+	
+
+});

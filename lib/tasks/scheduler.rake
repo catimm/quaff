@@ -730,7 +730,7 @@ task :assess_drink_recommendations => :environment do
               @add_this = true
               @new_drink_status = true
               @final_projection = @drink.best_guess
-            elsif @drink.best_guess >= 7.5 # if customer has not had it, make sure it is still a high recommendation
+            elsif @drink.best_guess >= 7.0 # if customer has not had it, make sure it is still a high recommendation
               # define drink status
               @add_this = true
               @new_drink_status = true

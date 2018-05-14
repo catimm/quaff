@@ -1,0 +1,22 @@
+$(function() {
+	$("#sortable").html("<%= escape_javascript(render 'rank_priority_questions' ) %>");
+	<% if @priority_count > 0 %>
+		if ($('#stack-rank-statement').hasClass('hidden')) {
+			$('#stack-rank-statement').removeClass('hidden').addClass('show');
+		}
+	<% else %>
+		if ($('#stack-rank-statement').hasClass('show')) {
+			$('#stack-rank-statement').removeClass('show').addClass('hidden');
+		}
+	<% end %>
+	
+	<% if !@referring_url.include?("create_drink_profile") %>
+		// code for changing setting after login
+		$("#settings-last-saved").html("<%= escape_javascript(render 'layouts/last_saved' ) %>");
+		$(".last-saved").addClass('notice');
+	    $( ".notice" ).fadeOut( 2000, function() {
+		    $(".last-saved").removeClass('notice');
+		  });
+		$(".last-saved").fadeIn(100);
+	<% end %>
+});

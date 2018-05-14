@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: user_preference_wines
+#
+#  id                     :integer          not null, primary key
+#  user_id                :integer
+#  delivery_preference_id :integer
+#  glasses_per_week       :decimal(4, 2)
+#  glasses_per_delivery   :integer
+#  wine_price_estimate    :decimal(5, 2)
+#  max_cellar             :integer
+#  additional             :text
+#  admin_comments         :text
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  journey_stage          :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value

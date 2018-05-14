@@ -1,4 +1,5 @@
-<%= render 'layouts/header_early_signup' %> 
+<%= render 'layouts/header_choose_plan' %> 
+<div class="container">
 	<div class="row no-margin spinner-signup text-center">
 		<div class="spinner-text">
 			<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
@@ -8,17 +9,22 @@
 	<div class="row no-margin first-row-signup">
 		<%= render 'signup/signup_guide_consumer' %>
 	</div>
-	<% if @user_subscription.subscription_id == 2 %>
-		<%= render 'signup/membership_view_delivery_zero' %>
-	<% elsif @user_subscription.subscription_id == 3 %>
-		<%= render 'signup/membership_view_delivery_six' %>
-	<% elsif @user_subscription.subscription_id == 4 %>
-		<%= render 'signup/membership_view_delivery_twenty_five' %>
-	<% elsif [5,8,11,14,17,20].include?(@user_subscription.subscription_id) %>
-		<%= render 'signup/membership_view_shipping_zero' %>
-	<% elsif [6,9,12,15,18,21].include?(@user_subscription.subscription_id) %>
-		<%= render 'signup/membership_view_shipping_three' %>
-	<% elsif [7,10,13,16,19,22].include?(@user_subscription.subscription_id) %>
-		<%= render 'signup/membership_view_shipping_nine' %>
-	<% end %>
+	<div class="row">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Choose either a membership plan or ad hoc ordering.</h2>
+			<h5 class="signup-question-detail">Knird currently delivers locally around Seattle and ships to the rest of Washington.</h5>
+		</div>
+	</div>
+	<div class="row col-xs-12 choose-a-plan-row-holder" id="signup-membership-details-row">
+		<% if @plan_type == nil %>
+			<%= render 'layouts/zip_search_box' %>	
+		<% elsif @plan_type == "delivery" %>
+			<%= render 'layouts/plan_section_deliveries' %>
+		<% elsif  @plan_type == "shipping" && @user_address.shipping_zone_id == 1000 %>
+			<%= render 'layouts/no_plan_currently_available'%>
+		<% else %>
+			<%= render 'layouts/plan_section_shipments'%>
+		<% end %>
+	</div>
+</div>
 <%= render 'layouts/footer' %>

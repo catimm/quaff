@@ -10,6 +10,56 @@ class DeliverySettingsController < ApplicationController
   require "stripe"
   require 'json'
   
+  def delivery_frequency
+    # get User info 
+    @user = User.find_by_id(current_user.id)
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    @delivery_frequency = @account.delivery_frequency
+    
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    
+    # get delivery preferences
+    @total_drinks_per_week = 0
+    @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
+    if !@delivery_preferences.blank?
+      # get user's drink preference
+      if @delivery_preferences.beer_chosen
+        @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+        @beers_per_week = @user_beer_preferences.beers_per_week
+        @total_drinks_per_week = @total_drinks_per_week + @beers_per_week
+        # get beer estimates if they exist
+        @beers_per_delivery = @user_beer_preferences.beers_per_delivery
+        @beer_delivery_estimate = @user_beer_preferences.beers_per_delivery * @user_beer_preferences.beer_price_estimate
+        @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+        @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      end
+      if @delivery_preferences.cider_chosen
+        @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+        @ciders_per_week = @user_cider_preferences.ciders_per_week
+        @total_drinks_per_week = @total_drinks_per_week + @ciders_per_week
+        # get cider estimates if they exist
+        @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
+        @cider_delivery_estimate = @user_cider_preferences.ciders_per_delivery * @user_cider_preferences.cider_price_estimate
+        @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+        @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      end
+    
+      # determine minimum number of weeks between deliveries
+      @start_week = 2
+      @total_drinks_per_week = (@start_week * @total_drinks_per_week)
+
+      while @total_drinks_per_week < 7
+        @start_week += 1
+        @total_drinks_per_week = (@start_week * @total_drinks_per_week).round
+      end
+      # set end week
+      @end_week = @start_week + 5
+
+    end # end of check whether delivery preferences
+  end # end delivery_frequency method
+  
   def deliveries   
     # get view chosen
     @delivery_view = params[:id]
@@ -1149,5 +1199,33 @@ class DeliverySettingsController < ApplicationController
     end
     
   end # end of total_estimate method
+  
+  def drink_categories
+    # find if user has already chosen categories
+    @user_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    
+    # see if user has chosen a delivery address yet (for customers w/o a subscription)
+    
+    
+    # set defaults
+    @beer_chosen = 'hidden'
+    @cider_chosen = 'hidden'
+    @wine_chosen = 'hidden'
+    if !@user_preferences.blank?
+      if @user_preferences.beer_chosen == true
+        @beer_chosen = 'show'
+      end
+      if @user_preferences.cider_chosen == true
+        @cider_chosen = 'show'
+      end
+      if @user_preferences.wine_chosen == true
+        @wine_chosen = 'show'
+      end  
+    end
+  
+  # set last saved
+  @last_saved = @user_preferences.updated_at
+  
+  end # end of drink_categories method
   
 end # end of controller

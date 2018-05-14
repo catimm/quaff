@@ -1,0 +1,57 @@
+$(function() {
+	<% if @need_at_least_one_style == true %>
+		// show modal
+	    $('#need_one_style_message').modal('show');
+	<% else %>
+		<% if @action == "remove" %>
+			$("#<%= @drink_style_id %>-parent").html("text");
+			$("#<%= @drink_style_id %>-parent").html("<%= escape_javascript(render 'layouts/style_holder_standard', style: @style_info ) %>");
+			<% if @preference == "like" %>
+				$("#<%= @drink_style_id %>-parent").removeClass('col-xs-12').removeClass('col-sm-9').removeClass('col-md-6');
+				$("#<%= @drink_style_id %>-parent").addClass('col-xs-6').addClass('col-sm-3').addClass('col-md-2');
+			<% end %>
+			<% if @referring_url.include?("create_drink_profile") && @total_count <= 1 %>
+				// make next button inactive
+				if ($("#profile_styles_next_button").attr('disabled') == 'disabled' ) {
+					$('#profile_styles_next_button').removeClass('btn-success').addClass('btn-default');
+					$('#profile_styles_next_button').attr("disabled", true);
+				}
+			<% end %>
+		<% end %>
+		<% if @action == "add" %>
+			<% if @preference == "like" %>
+				$("#<%= @drink_style_id %>-parent").empty();
+				$("#<%= @drink_style_id %>-parent").html("<%= escape_javascript(render 'layouts/style_holder_chosen_like', style: @style_info ) %>");
+				$("#<%= @drink_style_id %>-parent").removeClass('col-xs-6').removeClass('col-sm-3').removeClass('col-md-2');
+				$("#<%= @drink_style_id %>-parent").addClass('col-xs-12').addClass('col-sm-9').addClass('col-md-6');
+				// set height and width of drink style holders
+				var drink_style_tile_height = $('.drink-profile-style-tile').outerHeight();
+				$('.drink-profile-style-tile-chosen').height(drink_style_tile_height);
+				var chosen_drink_style_tile_width = $('.style-image-column-holder').outerWidth();
+				$('.chosen-style-like-cover').height(drink_style_tile_height);
+				$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
+			<% end %>
+			<% if @preference == "dislike" %>
+				$("#<%= @drink_style_id %>-parent").empty();
+				$("#<%= @drink_style_id %>-parent").html("<%= escape_javascript(render 'layouts/style_holder_chosen_dislike', style: @style_info ) %>");
+			<% end %>
+			// make next button active
+			if ($("#profile_styles_next_button").attr("disabled", true)) {
+				$('#profile_styles_next_button').removeClass('btn-default').addClass('btn-success');
+				$('#profile_styles_next_button').attr("disabled", false);
+			}
+		<% end %>
+		
+		<% if !@referring_url.include?("create_drink_profile") %>
+			// code for changing setting after login
+			$("#settings-last-saved").html("<%= escape_javascript(render 'layouts/last_saved' ) %>");
+			$(".last-saved").addClass('notice');
+		    $( ".notice" ).fadeOut( 2000, function() {
+			    $(".last-saved").removeClass('notice');
+			  });
+			$(".last-saved").fadeIn(100);
+		<% end %>
+		
+	<% end %>
+	
+});

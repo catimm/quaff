@@ -41,7 +41,8 @@ $(function () {
 		  });
 		});
 		
-		$(document).on('click', '.formButton-check-zip-code-button', function () {
+		// check plans associated with zip code
+		$(document).on('click', '.find-plans-zip-code-button.homepage', function () {
 		   var zipCode = $('#check-zip-code').val();
 	       $.ajax({
 			  type: "GET",

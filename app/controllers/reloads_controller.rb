@@ -7,107 +7,55 @@ class ReloadsController < ApplicationController
   require "date"
   require "stripe"
   
-  def index
-    # get customers who have drinks slated for delivery this week
-    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (1.day.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
+  def index  
+    # get this drink from DB for the Type Based Guess Concern
+    @drink = Beer.find_by_id(35411)
     
-    if !@accounts_with_deliveries.blank?
-      @accounts_with_deliveries.each do |account_delivery|
-        #Rails.logger.debug("Delivery ID: #{account_delivery.inspect}")
-        # find if the account has any mates
-        @mates_ids = User.where(account_id: account_delivery.account_id, getting_started_step: 10).pluck(:id)
-        
-        # find if any of these mates has drinks allocated to them
-        @mates_ids_with_drinks = UserDelivery.where(user_id: @mates_ids, delivery_id: account_delivery.id).pluck(:user_id)
-        @unique_mates_ids = @mates_ids_with_drinks.uniq
-        if @unique_mates_ids.count > 1
-          @has_mates_with_drinks = true
-        else
-          @has_mates_with_drinks = false
-        end
-        
-        @next_delivery_plans = AccountDelivery.where(delivery_id: account_delivery.id)
-        
-        # get total quantity of next delivery
-        @total_quantity = @next_delivery_plans.sum(:quantity)
-        
-        # create array of drinks for email
-        @email_drink_array = Array.new
-        
-        # put drinks in user_delivery table to share with customer
-        @next_delivery_plans.each_with_index do |drink, index|
-          # find if drinks is odd/even
-          if index.odd?
-            @odd = false # easier to make this backwards than change sparkpost email logic....
-          else  
-            @odd = true
-          end
-          # find if drink is cellarable
-            if drink.cellar == true
-              @cellarable = "Yes"
-            else
-              @cellarable = "No"
-            end
-            
-          if @has_mates_with_drinks == false
-            @user_delivery = UserDelivery.where(account_delivery_id: drink.id)
-            # add drink data to array for customer review email
-            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                            :drink => drink.beer.beer_name,
-                            :drink_type => drink.beer.beer_type.beer_type_short_name,
-                            :format => drink.size_format.format_name,
-                            :projected_rating => @user_delivery[0].projected_rating,
-                            :quantity => drink.quantity,
-                            :odd => @odd}).as_json
-          else
-            @designated_users = UserDelivery.where(account_delivery_id: drink.id)
-            @drink_user_data = Array.new
-            @designated_users.each do |user|
-              @user_data = { :name => user.user.first_name,
-                                :projected_rating => user.projected_rating,
-                                :quantity => user.quantity
-                              }
-              # push array into user drink array
-              @drink_user_data << @user_data
-            end
-            # add drink data to array for customer review email
-            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
-                            :drink => drink.beer.beer_name,
-                            :drink_type => drink.beer.beer_type.beer_type_short_name,
-                            :format => drink.size_format.format_name,
-                            :users => @drink_user_data,
-                            :odd => @odd}).as_json
-          end # end of test whether multiple users in account have drinks
-          
-          # push this array into overall email array
-          @email_drink_array << @drink_account_data
-          
-        end # end of loop to create drink table for email
-        
-        # get next delivery info
-        @customer_next_delivery = Delivery.find_by_id(account_delivery.id)
-       
-        # get user information for those with drinks
-        @users_with_drinks = User.where(id: @unique_mates_ids)
-        
-        # send customer email(s) for review
-        if @has_mates_with_drinks == false
-          # send email to single user with drinks
-          UserMailer.customer_delivery_review(@users_with_drinks[0], @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates_with_drinks).deliver_now
-        else
-          # send email to all customers with drinks
-          @users_with_drinks.each do |user_with_drinks|
-            UserMailer.customer_delivery_review(user_with_drinks, @customer_next_delivery, @email_drink_array, @total_quantity, @has_mates_with_drinks).deliver_now
-          end
-        end # end of test of who to send emails to
-
-        # update delivery status
-        @customer_next_delivery.update(status: "user review", delivery_change_confirmation: true)
-        
-      end # end of loop through each account 
-      
-    end # end of check whether any customers need notice
+    # find the drink best_guess for the user
+    type_based_guess(@drink, 1)
+    @final_projection = @drink.best_guess
+   #Rails.logger.debug("Final projection: #{@final_projection.inspect}")
   end
+  
+  def top_style_descriptors
+    # clear current descriptor list
+    @current_descriptors = DrinkStyleTopDescriptor.all
+    @current_descriptors.destroy_all
+    
+    # get drink styles
+    @all_drink_styles = BeerStyle.all
+    
+    @all_drink_styles.each do |style|
+      # get style descriptors
+      @style_descriptors = []
+      @drinks_of_style = style.beers
+      @drinks_of_style.each do |drink|
+        @descriptors = drink.descriptor_list
+        #Rails.logger.debug("descriptor list: #{@descriptors.inspect}")
+        @descriptors.each do |descriptor|
+          @style_descriptors << descriptor
+        end
+      end
+      #Rails.logger.debug("style descriptor list: #{@style_descriptors.inspect}")
+      # attach count to each descriptor type to find the drink's most common descriptors
+      @this_style_descriptor_count = @style_descriptors.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
+      # put descriptors in descending order of importance
+      @this_style_descriptor_count = Hash[@this_style_descriptor_count.sort_by{ |_, v| -v }]
+      #Rails.logger.debug("style descriptor list with count: #{@this_style_descriptor_count.inspect}")
+      @this_style_descriptor_count_final = @this_style_descriptor_count.first(20)
+      #Rails.logger.debug("final style descriptor list with count: #{@this_style_descriptor_count_final.inspect}")
+      # insert top descriptors into table
+      @this_style_descriptor_count_final.each do |this_descriptor|
+        @tag_info = ActsAsTaggableOn::Tag.where(name: this_descriptor).first
+        # insert top descriptors into table
+        DrinkStyleTopDescriptor.create(beer_style_id: style.id, 
+                                        descriptor_name: this_descriptor[0], 
+                                        descriptor_tally: this_descriptor[1],
+                                        tag_id: @tag_info.id)
+      end
+    end # end of loop through styles
+    
+  end # end of top_style_descriptors
   
   def save_stats_for_later
     @deliveries_ids_last_year = Delivery.where("delivery_date < ?", '2018-01-01').pluck(:id)

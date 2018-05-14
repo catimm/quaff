@@ -1,0 +1,12 @@
+<%= render 'layouts/header' %> 
+<%= render 'layouts/updating_spinner' %>
+<%= render 'beer_settings_common', current_section: "Priorities" %>
+<%= render 'layouts/settings_drink_priorities', drink: @category %>
+<% if !@last_saved.nil? %>
+	<div class="row">
+		<div class="container" id="settings-last-saved">
+			<%= render 'layouts/last_saved' %>
+		</div>
+	</div>
+<% end %>
+<%= render 'layouts/footer' %>

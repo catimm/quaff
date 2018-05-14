@@ -224,7 +224,7 @@ class ShipmentSettingsController < ApplicationController
 
     # send confirmation email to customer with admin bcc'd
     UserMailer.shipment_location_change_confirmation(@customer, @new_delivery_address, @next_delivery).deliver_now
-    AdminMailer.shipment_location_change_notice(@customer, @admin_email, @next_delivery, @original_delivery_address.fed_ex_delivery_zone_id, @new_delivery_address.fed_ex_delivery_zone_id).deliver_now
+    AdminMailer.shipment_location_change_notice(@customer, @admin_email, @next_delivery, @original_delivery_address.shipping_zone_id, @new_delivery_address.shipping_zone_id).deliver_now
     
     # redirect back to next logical view, depending if this is a person starting a new plan
     redirect_to user_shipping_location_path

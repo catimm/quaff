@@ -39,6 +39,7 @@
 #  phone                  :string
 #  recent_addition        :boolean
 #  homepage_view          :string
+#  unregistered           :boolean
 #
 
 class User < ApplicationRecord
@@ -79,7 +80,11 @@ class User < ApplicationRecord
   has_many :projected_ratings
   has_many :customer_delivery_requests
   has_many :orders
+  has_many :user_preference_beers
+  has_many :user_preference_ciders
+  has_many :user_preference_wines
   
+  attr_accessor :zip # to hold zip for customers signing up for a free curation
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
   attr_accessor :valid_special_code # to hold special code
   attr_accessor :password_confirmation # to confirm password

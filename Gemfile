@@ -33,6 +33,8 @@ gem 'sdoc',          group: :doc
 # enable jquery & json functionality
 gem 'jquery-ui-rails'
 gem 'json', '~> 1.8.6'
+# touchpunch-rails enables touch drag and drop for jquery sortable via a vendor assets gem
+gem 'touchpunch-rails'
 # note model setup in rb files
 gem 'annotate'
 # enable environment variables to be stored in hidden yml file
@@ -42,7 +44,6 @@ gem 'bootstrap-sass'
 gem 'bootstrap-social-rails'
 gem 'bootstrap-modal-rails'
 gem 'bootstrap-datepicker-rails'
-#gem 'font-awesome-sass'
 gem 'font-awesome-rails'
 gem 'elusive-icons-sass'
 
@@ -80,7 +81,7 @@ gem 'rails_12factor', group: :production
 # StripAttributes is an ActiveModel extension that automatically strips all attributes of leading and trailing whitespace before validation. If the attribute is blank, it strips the value to nil.
 gem 'strip_attributes'
 # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
-gem 'acts-as-taggable-on', :git => 'https://github.com/F3pix/acts-as-taggable-on'
+gem 'acts-as-taggable-on', '~> 5.0' #, :git => 'https://github.com/F3pix/acts-as-taggable-on'
 # Tokeninput is a jQuery plugin to select multiple items from a predefined list, using autocompletion
 # gem 'jquery-tokeninput-rails'
 # PgSearch builds named scopes that take advantage of PostgreSQL's full text search
@@ -122,6 +123,8 @@ gem 'blazer'
 gem 'redis-rails'
 # gem to facilitate A/B split tests
 gem 'split', require: 'split/dashboard'
+# gem to auto generate fake user data
+gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
 
 # Use unicorn as the app server
 # gem 'unicorn'

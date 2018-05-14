@@ -1,0 +1,32 @@
+<% @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first %>
+<% @current_delivery_location = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first %>
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Delivery Settings</h1>
+		</div>
+		<div class="col-xs-12 no-padding">
+			<div class="row no-margin">
+				<% if !@user_subscription.blank? %>
+					<div class="col-xs-6 col-sm-3 no-padding-right">
+						<%= link_to "Estimates & Frequency", delivery_frequency_path, class: "drink-preference-view-option #{if current_section == "Frequency" then "current" else "" end}" %>
+					</div>
+				<% end %>
+				<div class="col-xs-6 col-sm-3">
+					<%= link_to "Drink Categories", drink_categories_path, class: "drink-preference-view-option #{if current_section == "Categories" then "current" else "" end}" %>
+				</div>
+				
+				<% if !@current_delivery_location.location_type.nil? %>
+					<div class="col-xs-6 col-sm-3">
+						<%= link_to "Delivery Location", user_delivery_settings_location_path, class: "drink-preference-view-option #{if current_section == "Location" then "current" else "" end}" %>
+					</div>
+				<% end %>
+				<% if !@user_subscription.blank? %>
+					<div class="col-xs-6 col-sm-3 no-padding-right">
+						<%= link_to "Next Delivery Date", change_delivery_date_path, class: "drink-preference-view-option #{if current_section == "Changes" then "current" else "" end}" %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

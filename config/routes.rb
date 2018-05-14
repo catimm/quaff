@@ -78,7 +78,7 @@ Rails.application.routes.draw do
   post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
   get 'admin/fulfillment/fulfillment_review_delivery/:id' => 'admin/fulfillment#fulfillment_review_delivery', :as =>'fulfillment_review_delivery'
   namespace :admin do
-    resources :users, :user_beer_ratings, :recommendations, :inventories, :disti_inventories, :fulfillment
+    resources :users, :user_beer_ratings, :recommendations, :inventories, :disti_inventories, :fulfillment, :descriptors
   end
   
   namespace :admin do
@@ -102,7 +102,10 @@ Rails.application.routes.draw do
   post '/delivery_settings/customer_delivery_messages/' => 'delivery_settings#customer_delivery_messages', :as => 'customer_delivery_messages'
   post '/delivery_settings/customer_delivery_requests/' => 'delivery_settings#customer_delivery_requests', :as => 'customer_delivery_requests_settings'
   post '/signup/customer_delivery_requests/' => 'signup#customer_delivery_requests', :as => 'customer_delivery_requests_signup'
-  
+  get '/delivery_settings/drink_categories' => 'delivery_settings#drink_categories', :as => 'drink_categories'
+  get '/delivery_settings/delivery_frequency' => 'delivery_settings#delivery_frequency', :as => 'delivery_frequency'
+  get '/delivery_settings/change_delivery_date' => 'delivery_settings#change_delivery_date', :as => 'change_delivery_date'
+ 
   # routes to user shipment settings pages
   get '/shipment_settings/index' => 'shipment_settings#index', :as => 'user_shipment_settings'
   patch '/shipment_settings/shipment_update_additional_requests' => 'shipment_settings#shipment_update_additional_requests', :as => 'shipment_update_additional_requests'
@@ -119,7 +122,8 @@ Rails.application.routes.draw do
   post '/drink_preferences/profile/:id' => 'drink_preferences#create_drink_descriptors', :as => 'create_drink_descriptors'
   
   # routes to user style settings pages
-  get '/style_settings/index/:id' => 'style_settings#index', :as => 'user_style_settings'
+  get '/style_settings/index/' => 'style_settings#index', :as => 'user_style_settings'
+  get '/style_settings/show/' => 'style_settings#show', :as => 'user_style_settings_show'
   post '/style_settings/update_styles_preferences/:id' => 'style_settings#update_styles_preferences', :as => 'user_style_preference'
   
   # routes to connections pages
@@ -164,13 +168,81 @@ Rails.application.routes.draw do
   post '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'customer_delivery_date'
   patch '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'reset_customer_delivery_date'
   
+  # beer settings routes
+  get '/settings_beer/beer_journey' => 'settings_beer#beer_journey', :as => 'settings_beer_journey'
+  get '/settings_beer/beer_numbers' => 'settings_beer#beer_numbers', :as => 'settings_beer_numbers'
+  get '/settings_beer/beer_styles' => 'settings_beer#beer_styles', :as => 'settings_beer_styles'
+  get '/settings_beer/beer_priorities' => 'settings_beer#beer_priorities', :as => 'settings_beer_priorities'
+  get '/settings_beer/beer_costs' => 'settings_beer#beer_costs', :as => 'settings_beer_costs'
+  get '/settings_beer/beer_extras' => 'settings_beer#beer_extras', :as => 'settings_beer_extras'
+  patch '/settings_beer/process_beer_extras' => 'settings_beer#process_beer_extras', :as => 'process_beer_extras'
+  
+  # cider settings routes
+  get '/settings_cider/cider_journey' => 'settings_cider#cider_journey', :as => 'settings_cider_journey'
+  get '/settings_cider/cider_numbers' => 'settings_cider#cider_numbers', :as => 'settings_cider_numbers'
+  get '/settings_cider/cider_styles' => 'settings_cider#cider_styles', :as => 'settings_cider_styles'
+  get '/settings_cider/cider_priorities' => 'settings_cider#cider_priorities', :as => 'settings_cider_priorities'
+  get '/settings_cider/cider_costs' => 'settings_cider#cider_costs', :as => 'settings_cider_costs'
+  get '/settings_cider/cider_extras' => 'settings_cider#cider_extras', :as => 'settings_cider_extras'
+  patch '/settings_cider/process_cider_extras' => 'settings_cider#process_cider_extras', :as => 'process_cider_extras'
+  
+  # wine settings routes
+  get '/settings_wine/wine_journey' => 'settings_wine#wine_journey', :as => 'settings_wine_journey'
+  get '/settings_wine/wine_numbers' => 'settings_wine#wine_numbers', :as => 'settings_wine_numbers'
+  get '/settings_wine/wine_styles' => 'settings_wine#wine_styles', :as => 'settings_wine_styles'
+  get '/settings_wine/wine_extras' => 'settings_wine#wine_extras', :as => 'settings_wine_extras'
+  patch '/settings_wine/process_wine_extras' => 'settings_wine#process_wine_extras', :as => 'process_wine_extras'
+  
+  # create drink profile
+  get '/create_drink_profile/temp_start' => 'create_drink_profile#temp_start', :as => 'temp_start'
+  
+  get '/create_drink_profile/start_consumer_drink_profile' => 'create_drink_profile#start_consumer_drink_profile', :as => 'start_consumer_drink_profile'
+  
+  get '/create_drink_profile/drink_categories' => 'create_drink_profile#drink_categories', :as => 'drink_profile_categories'
+  post '/create_drink_profile/process_drink_categories/:id' => 'create_drink_profile#process_drink_categories'
+
+  get '/create_drink_profile/beer_journey' => 'create_drink_profile#beer_journey', :as => 'drink_profile_beer_journey'
+  get '/create_drink_profile/cider_journey' => 'create_drink_profile#cider_journey', :as => 'drink_profile_cider_journey'
+  get '/create_drink_profile/wine_journey' => 'create_drink_profile#wine_journey', :as => 'drink_profile_wine_journey'
+  post '/create_drink_profile/process_drink_journey/:id' => 'create_drink_profile#process_drink_journey'
+
+  get '/create_drink_profile/beer_numbers' => 'create_drink_profile#beer_numbers', :as => 'drink_profile_beer_numbers'
+  get '/create_drink_profile/cider_numbers' => 'create_drink_profile#cider_numbers', :as => 'drink_profile_cider_numbers'
+  get '/create_drink_profile/wine_numbers' => 'create_drink_profile#wine_numbers', :as => 'drink_profile_wine_numbers'
+  post '/create_drink_profile/process_drinks_per_week/:id' => 'create_drink_profile#process_drinks_per_week'
+  
+  get '/create_drink_profile/beer_styles' => 'create_drink_profile#beer_styles', :as => 'drink_profile_beer_styles'
+  get '/create_drink_profile/cider_styles' => 'create_drink_profile#cider_styles', :as => 'drink_profile_cider_styles'
+  get '/create_drink_profile/wine_styles' => 'create_drink_profile#wine_styles', :as => 'drink_profile_wine_styles'
+  post '/create_drink_profile/process_styles/:id' => 'create_drink_profile#process_styles'
+  post '/create_drink_profile/process_chosen_descriptors/:id' => 'create_drink_profile#process_chosen_descriptors'
+
+  get '/create_drink_profile/beer_priorities' => 'create_drink_profile#beer_priorities', :as => 'drink_profile_beer_priorities'
+  get '/create_drink_profile/cider_priorities' => 'create_drink_profile#cider_priorities', :as => 'drink_profile_cider_priorities'
+  #get '/create_drink_profile/wine_priorities' => 'create_drink_profile#wine_priorities', :as => 'drink_profile_wine_priorities'
+  post '/create_drink_profile/process_priority_questions/:id' => 'create_drink_profile#process_priority_questions', :as => 'process_priority_questions'
+  
+  get '/create_drink_profile/rank_priority_questions' => 'create_drink_profile#rank_priority_questions', :as => 'rank_priority_questions'
+  post '/create_drink_profile/process_rank_priority_questions/:id' => 'create_drink_profile#process_rank_priority_questions'
+
+  get '/create_drink_profile/beer_costs' => 'create_drink_profile#beer_costs', :as => 'drink_profile_beer_costs'
+  get '/create_drink_profile/cider_costs' => 'create_drink_profile#cider_costs', :as => 'drink_profile_cider_costs'
+  #get '/create_drink_profile/wine_costs' => 'create_drink_profile#wine_costs', :as => 'drink_profile_wine_costs'
+  post '/create_drink_profile/process_drink_cost_estimates/:id' => 'create_drink_profile#process_drink_cost_estimates'
+  
   # user signup process
+  get '/signup/process_final_drink_profile_step' => 'signup#process_final_drink_profile_step', :as => 'process_final_drink_profile_step'
+  get '/signup/choose_signup' => 'signup#choose_signup', :as => 'choose_signup'
+  post '/signup/process_free_curation_signup' => 'signup#process_free_curation_signup', :as => 'process_free_curation_signup'
+  get '/signup/confirm_free_curation_signup' => 'signup#confirm_free_curation_signup', :as => 'confirm_free_curation_signup'
+  
   get '/signup/home_address_getting_started' => 'signup#home_address_getting_started', :as => 'home_address_getting_started'
   post '/signup/process_home_address_getting_started' => 'signup#process_home_address_getting_started', :as => 'process_home_address_getting_started'
 
   get '/signup/delivery_address_getting_started' => 'signup#delivery_address_getting_started', :as => 'delivery_address_getting_started'
   
   get '/signup/account_membership_getting_started' => 'signup#account_membership_getting_started', :as => 'account_membership_getting_started'
+  get 'signup/process_zip_code_response/:id' => 'signup#process_zip_code_response', :as => 'signup_zipcode_search'
   post '/signup/process_account_membership_getting_started/:id' => 'signup#process_account_membership_getting_started', :as => 'process_account_membership_getting_started'
   
   get '/signup/change_membership_choice' => 'signup#change_membership_choice', :as => 'change_membership_choice'
@@ -186,7 +258,7 @@ Rails.application.routes.draw do
   post '/signup/process_drink_style_likes_getting_started' => 'signup#process_drink_style_likes_getting_started', :as => 'process_drink_style_likes_getting_started'
   get '/signup/drink_style_dislikes_getting_started' => 'signup#drink_style_dislikes_getting_started', :as => 'drink_style_dislikes_getting_started'
   
-  get '/signup/delivery_numbers_getting_started' => 'signup#delivery_numbers_getting_started', :as => 'delivery_numbers_getting_started'
+  get '/signup/delivery_frequency_getting_started' => 'signup#delivery_frequency_getting_started', :as => 'delivery_frequency_getting_started'
 
   post '/signup/process_drinks_weekly_getting_started/:id' => 'signup#process_drinks_weekly_getting_started', :as => 'process_drinks_weekly_getting_started'
 
@@ -287,7 +359,7 @@ Rails.application.routes.draw do
   resources :retailers
   
   get 'home/try_another_zip' => 'home#try_another_zip', :as => 'try_another_zip'
-  get 'home/zip_code_response/:id' => 'home#zip_code_response'
+  get 'home/zip_code_response/:id' => 'home#zip_code_response', :as => 'homepage_zipcode_search'
   post 'home/create' => 'home#create', :as => 'invitation_request'
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
@@ -319,6 +391,12 @@ Rails.application.routes.draw do
   get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
   post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
 
+  # admin descriptors routes
+  #get 'admin/descriptors/show/:id' => 'admin/descriptors#show', :as =>'admin_descriptors'
+  get '/admin/descriptors/admin/descriptors/change_style_view/:id' => 'admin/descriptors#change_style_view'
+  get 'admin/descriptors/merge_descriptors_prep/:id' => 'admin/descriptors#merge_descriptors_prep', :as =>'admin_merge_descriptors_prep'
+  patch 'admin/descriptors/merge_descriptors/:id' => 'admin/descriptors#merge_descriptors', :as => 'admin_merge_descriptors'
+   
   # admin inventory routes
   namespace :admin do
       get 'disti_inventories_change' => 'disti_inventories#disti_inventories_change', :as => 'disti_inventories_change'

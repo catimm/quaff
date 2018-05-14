@@ -16,7 +16,7 @@
 #  other_name                :string
 #  current_delivery_location :boolean
 #  delivery_zone_id          :integer
-#  fed_ex_delivery_zone_id   :integer
+#  shipping_zone_id          :integer
 #
 
 class UserAddress < ApplicationRecord
@@ -24,7 +24,7 @@ class UserAddress < ApplicationRecord
   
   belongs_to :account
   belongs_to :delivery_zone, optional: true
-  belongs_to :fed_ex_delivery_zone, optional: true
+  belongs_to :shipping_zone, optional: true
   
   attr_accessor :user_id # to hold current user id
   

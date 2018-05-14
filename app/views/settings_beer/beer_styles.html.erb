@@ -1,0 +1,37 @@
+<%= render 'layouts/header' %> 
+<%= render 'layouts/updating_spinner' %>
+<%= render 'beer_settings_common', current_section: "Styles" %>
+<%= render 'layouts/settings_drink_styles', drink: @category %>
+<% if !@last_saved.nil? %>
+	<div class="row">
+		<div class="container" id="settings-last-saved">
+			<%= render 'layouts/last_saved' %>
+		</div>
+	</div>
+<% end %>
+<div id="need_one_style_message" class="modal">
+	<div class="modal-header">
+		<div class="row no-margin">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<div class="col-sm-12">
+				<h3 class="oops-header">Oops!</h3>
+			</div>
+		</div>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="delivery-confirmation-text">
+					You need at least one style preference in your profile. Please add another one before deleting this one.
+				</h4>
+			</div>
+		</div>
+		<div class="col-sm-offset-4 col-sm-4 add-button-holder">
+			<%= link_to "#", :class => 'text-center btn btn-success add-drink-button', :data => {:dismiss=>"modal"} do %>
+				<i class="fa fa-chevron-circle-right"></i>
+				Got it!
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

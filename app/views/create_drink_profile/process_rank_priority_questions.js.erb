@@ -1,0 +1,11 @@
+$(function() {
+	<% if !@referring_url.include?("create_drink_profile") %>
+		// code for changing setting after login
+		$("#settings-last-saved").html("<%= escape_javascript(render 'layouts/last_saved' ) %>");
+		$(".last-saved").addClass('notice');
+	    $( ".notice" ).fadeOut( 2000, function() {
+		    $(".last-saved").removeClass('notice');
+		  });
+		$(".last-saved").fadeIn(100);
+	<% end %>
+});

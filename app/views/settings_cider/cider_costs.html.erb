@@ -1,0 +1,11 @@
+<%= render 'layouts/header' %> 
+<%= render 'cider_settings_common', current_section: "Costs" %>
+<%= render 'layouts/settings_drink_costs', drink: @category %>
+<% if !@last_saved.nil? %>
+	<div class="row">
+		<div class="container" id="settings-last-saved">
+			<%= render 'layouts/last_saved' %>
+		</div>
+	</div>
+<% end %>
+<%= render 'layouts/footer' %>

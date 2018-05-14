@@ -16,6 +16,9 @@
 #  gluten_free         :boolean
 #  admin_comments      :text
 #  drinks_per_delivery :integer
+#  beer_chosen         :boolean
+#  cider_chosen        :boolean
+#  wine_chosen         :boolean
 #
 
 require 'test_helper'

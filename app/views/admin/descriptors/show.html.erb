@@ -1,0 +1,39 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row style-header-row">
+		<div class="col-xs-12 col-sm-6">
+			<h3><%= @number_of_descriptors %> Descriptors for <%= @this_style.style_name %></h3>
+		</div>
+		<div class="col-xs-12 col-sm-3">
+			<%= collection_select(nil, "style_list", @all_styles, :id, :style_name, {prompt: "Change style"}, {class: "form-control style-list-for-descriptors"}) %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<table class="table table-striped">
+			    <tr>
+			    	<th>Descriptor</th>
+				    <th>Tally</th>
+				    <th></th>
+				    <th></th>
+			    </tr>
+				<% @this_style_descriptor_count.each do |descriptor| %>
+					<tr>
+						<td><%= descriptor[0] %></td>
+						<td><%= descriptor[1] %></td>
+						<td><%= link_to "Merge", admin_merge_descriptors_prep_path(descriptor[0], @this_style.id), class: "btn btn-warning delete-descriptor-info", data: {toggle: "modal", target: "#merge_descriptor"} %></td>
+						<td><%= link_to "Edit", "#", :class => "btn btn-success editButton" %></td>
+					</tr>
+				<% end %>
+			</table>
+		</div>
+	</div>
+</div>
+<div id="merge_descriptor" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Merge descriptor</h3>
+	</div>
+	<div class="modal-body"></div>
+</div>
+<%= render 'layouts/footer' %>

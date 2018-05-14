@@ -1,64 +1,22 @@
-<% if @user_subscription.subscription.deliveries_included != 0 %>
-	<% if current_user.role_id == 1 || current_user.role_id == 4 || current_user.role_id == 5 %>
-		<div class="row no-margin">
-			<div class="col-xs-4 col-md-offset-3 col-md-2 no-padding signup-guide-column-holder <%= @user_chosen %>">
-				<%= link_to "user", edit_user_path(@user.id), class: "guide-header #{@user_chosen}" %>
-				<div class="fas fa-chevron-right"></div>
-			</div>
-			<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @drink_chosen %>">
-				<% if @user.getting_started_step >= 4 %>
-					<%= link_to "drinks", drink_choice_getting_started_path, class: "guide-header #{@drink_chosen}" %>
-				<% else %>
-					<h5 class="guide-header">drinks</h5>
-				<% end %>
-				<div class="fas fa-chevron-right"></div>
-			</div>
-			<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @delivery_chosen %>">
-				<% if @user.getting_started_step >= 8 %>
-					<%= link_to "deliveries", delivery_numbers_getting_started_path, class: "guide-header #{@delivery_chosen}" %>
-				<% else %>
-					<h5 class="guide-header">deliveries</h5>
-				<% end %>
-			</div>
-		</div>
-	<% end %>
-	<% if current_user.role_id == 6 || current_user.role_id == 8 || current_user.role_id == 9 %>
-		<div class="row no-margin">
-			<div class="col-xs-4 col-md-offset-3 col-md-3 no-padding signup-guide-column-holder <%= @user_chosen %>">
-				<%= link_to "user", edit_user_path(@user.id), class: "guide-header #{@user_chosen}" %>
-				<div class="fas fa-chevron-right"></div>
-			</div>
-			<div class="col-xs-4 col-md-3 no-padding signup-guide-column-holder <%= @drink_chosen %>">
-				<% if @user.getting_started_step >= 3 %>
-					<%= link_to "drinks", drink_choice_getting_started_path(@user.id), class: "guide-header #{@drink_chosen}" %>
-				<% else %>
-					<h5 class="guide-header">drinks</h5>
-				<% end %>
-			</div>
-		</div>
-	<% end %>
-<% else %>
-	<div class="row no-margin">
-		<div class="col-xs-6 col-md-offset-3 col-md-3 no-padding signup-guide-column-holder <%= @user_chosen %>">
-			<h5 class="guide-header new-user-signup-special">user</h5>
-			<div class="fas fa-chevron-right"></div>
-		</div>
-		<div class="col-xs-6 col-md-3 no-padding signup-guide-column-holder <%= @drink_chosen %>">
-			<h5 class="guide-header">drinks</h5>
-		</div>
-	</div>
-<% end %>
 <div class="row no-margin">
+	<div class="col-xs-6 col-sm-offset-4 col-sm-2 no-padding signup-guide-column-holder <%= @user_chosen %>">
+		<%= link_to "account", edit_user_path(@user.id), class: "guide-header #{@user_chosen}" %>
+		<div class="fa fa-chevron-right"></div>
+	</div>
 	<% if current_user.role_id == 1 || current_user.role_id == 4 %>
-		<% if @subguide == "user" %>
-			<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
-				<%= render 'signup/subguide_consumer_user' %>
-			</div>
-		<% end %>
+		<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @delivery_chosen %>">
+			<% if @user.getting_started_step >= 8 %>
+				<%= link_to "deliveries", delivery_address_getting_started_path, class: "guide-header #{@delivery_chosen}" %>
+			<% else %>
+				<h5 class="guide-header">deliveries</h5>
+			<% end %>
+		</div>
 	<% end %>
-	<% if @subguide == "drink" %>
+</div>
+<div class="row no-margin">
+	<% if @subguide == "user" %>
 		<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
-			<%= render 'signup/subguide_consumer_drink' %>
+			<%= render 'signup/subguide_consumer_user' %>
 		</div>
 	<% end %>
 	<% if @subguide == "delivery" %>

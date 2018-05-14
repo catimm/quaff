@@ -1,0 +1,28 @@
+<%= render 'layouts/header' %>
+<%= render 'wine_settings_common', current_section: "Styles" %>
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Wine styles...coming soon!</h2>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="row">
+			<div class="col-sm-offset-1 col-sm-10 text-center wine-message">
+				<h4>We're getting very close to adding Wine to our deliveries! We've noted your interest and will notify you as soon as we're ready to curate amazing wines for you.</h4>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container">
+		<div class="row no-margin text-center">
+			<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+				<%= link_to "Bummer, but next", "#", class: "btn btn-success user-info-next-button", id: "profile_styles_next_step_button" %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

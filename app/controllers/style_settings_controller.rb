@@ -66,4 +66,128 @@ class StyleSettingsController < ApplicationController
 
   end
   
+  def show
+    # get User info 
+    @user = current_user
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    
+    # update getting started step
+    if @user.getting_started_step < 6
+      @user.update_attribute(:getting_started_step, 6)
+    end
+    
+    # set sub-guide view
+    if current_user.role_id == 6 || current_user.role_id == 8 || current_user.role_id == 9
+      @subguide = "drink_event"
+    else
+      @subguide = "drink"
+    end 
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'current'
+    @drink_choice_chosen = 'complete'
+    @drink_journey_chosen = 'complete'
+    @drink_likes_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get Delivery Preference info if it exists
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+     # set style list for like list
+      if @delivery_preferences.drink_option_id == 1
+        @styles_for_like = BeerStyle.where(signup_beer: true).order('style_order ASC')
+      elsif @delivery_preferences.drink_option_id == 2
+        @styles_for_like = BeerStyle.where(signup_cider: true).order('style_order ASC')
+      else
+        @styles_for_like = BeerStyle.where(signup_beer_cider: true).order('style_order ASC')
+      end
+      
+      # find if user has already liked/disliked styles
+      @user_style_preferences = UserStylePreference.where(user_id: current_user.id)
+      
+      if !@user_style_preferences.blank?
+        # get specific likes/dislikes
+        @user_style_likes = @user_style_preferences.where(user_preference: "like")
+        @user_style_dislikes = @user_style_preferences.where(user_preference: "dislike")
+        
+        if !@user_style_likes.nil?
+          @user_likes = Array.new
+          @user_style_likes.each do |style|
+            if style.beer_style_id == 3 || style.beer_style_id == 4 || style.beer_style_id == 5
+              @user_likes << 1
+            elsif style.beer_style_id == 6 || style.beer_style_id == 16
+              @user_likes << 32
+            elsif style.beer_style_id == 7 || style.beer_style_id == 9
+              @user_likes << 33
+            elsif style.beer_style_id == 10
+              @user_likes << 34
+            elsif style.beer_style_id == 11 || style.beer_style_id == 12
+              @user_likes << 35
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 26 || style.beer_style_id == 30 || style.beer_style_id == 31)
+              @user_likes << 36
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 25 || style.beer_style_id == 28 || style.beer_style_id == 29)
+              @user_likes << 37
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 13 || style.beer_style_id == 14)
+              @user_likes << 38
+            else
+              @user_likes << style.beer_style_id
+            end
+          end
+          @user_likes = @user_likes.uniq
+          @number_of_liked_styles = @user_likes.count
+          # send number_of_liked_styles to javascript
+          gon.number_of_liked_styles = @number_of_liked_styles
+        else
+          @number_of_liked_styles = 0
+          # send number_of_liked_styles to javascript
+          gon.number_of_liked_styles = @number_of_liked_styles
+        end
+        
+        if !@user_style_dislikes.nil?
+          @user_dislikes = Array.new
+          @user_style_dislikes.each do |style|
+            if style.beer_style_id == 3 || style.beer_style_id == 4 || style.beer_style_id == 5
+              @user_dislikes << 1
+            elsif style.beer_style_id == 6 || style.beer_style_id == 16
+              @user_dislikes << 32
+            elsif style.beer_style_id == 7 || style.beer_style_id == 9
+              @user_dislikes << 33
+            elsif style.beer_style_id == 10
+              @user_dislikes << 34
+            elsif style.beer_style_id == 11 || style.beer_style_id == 12
+              @user_dislikes << 35
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 26 || style.beer_style_id == 30 || style.beer_style_id == 31)
+              @user_dislikes << 36
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 25 || style.beer_style_id == 28 || style.beer_style_id == 29)
+              @user_dislikes << 37
+            elsif @delivery_preferences.drink_option_id == 3 && (style.beer_style_id == 13 || style.beer_style_id == 14)
+              @user_dislikes << 38
+            else
+              @user_dislikes << style.beer_style_id
+            end
+          end
+          @user_dislikes = @user_dislikes.uniq
+          @number_of_disliked_styles = @user_dislikes.count
+          # send number_of_liked_styles to javascript
+          gon.number_of_disliked_styles = @number_of_disliked_styles
+        else
+          @number_of_disliked_styles = 0
+          # send number_of_liked_styles to javascript
+          gon.number_of_disliked_styles = @number_of_disliked_styles
+        end
+      else
+        @number_of_liked_styles = 0
+        @number_of_disliked_styles = 0
+        # send number_of_liked_styles to javascript
+        gon.number_of_liked_styles = @number_of_liked_styles
+        gon.number_of_disliked_styles = @number_of_disliked_styles
+      end
+      
+      # set style list for dislike list, removing styles already liked
+      @styles_for_dislike = @styles_for_like.where.not(id: @user_likes).order('style_order ASC')
+      
+  end # end show action
+  
 end # end of controller

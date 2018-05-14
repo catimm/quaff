@@ -16,11 +16,18 @@
 #  gluten_free         :boolean
 #  admin_comments      :text
 #  drinks_per_delivery :integer
+#  beer_chosen         :boolean
+#  cider_chosen        :boolean
+#  wine_chosen         :boolean
 #
 
 class DeliveryPreference < ApplicationRecord
   belongs_to :user
-  belongs_to :drink_option
+  belongs_to :drink_option, optional: true
+  
+  has_many :user_preference_beers
+  has_many :user_preference_ciders
+  has_many :user_preference_wines
   
   attr_accessor :temp_max_cellar # to hold temp # of max cellar drinks
   attr_accessor :temp_cost_estimate # to hold temp cost estimate

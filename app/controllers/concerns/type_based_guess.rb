@@ -8,14 +8,14 @@ module TypeBasedGuess
     this_beer.recommendation_rationale = "type"
     # set baseline projected rating for this beer
     this_beer.best_guess = this_beer.beer_rating
-    #Rails.logger.debug("Beer best guess: #{this_beer.best_guess.inspect}")
+    Rails.logger.debug("Beer best guess: #{this_beer.best_guess.inspect}")
     #find this drink's beer type id
     this_beer_type_id = this_beer.beer_type_id
     # find all drinks of same type rated by user
     @same_type_rated_by_user = UserBeerRating.where(user_id: user_id, beer_type_id: this_beer_type_id)
     # create empty array to hold top descriptors list for beer being rated
     @this_drink_top_descriptors = drink_descriptors(this_beer, 5)
-    #Rails.logger.debug("top descriptors: #{@this_drink_top_descriptors.inspect}")
+    Rails.logger.debug("top descriptors: #{@this_drink_top_descriptors.inspect}")
     # find top 3 qualities for drinks of this type rated by this user as >=8
     @same_type_rated_by_user_good = @same_type_rated_by_user.where("user_beer_rating >= ?", 8)
     # create empty array to hold list of descriptors from highly rated drinks
@@ -28,22 +28,33 @@ module TypeBasedGuess
         @good_drinks_descriptors << descriptor["name"]
       end
     end
-   #Rails.logger.debug("good drink descriptors: #{@good_drinks_descriptors.inspect}")
+    # get style descriptors picked by user at signup/from profile
+    @user_chosen_descriptors = UserDescriptorPreference.where(beer_style_id: this_beer.beer_type.beer_style_id,
+                                                              user_id: user_id).
+                                                              pluck(:descriptor_name)
+    if !@user_chosen_descriptors.blank?
+      @user_chosen_descriptors.each do |descriptor|
+        10.times do
+          @good_drinks_descriptors << descriptor
+        end
+      end
+    end
+    #Rails.logger.debug("good drink descriptors: #{@good_drinks_descriptors.inspect}")
     # attach count to each descriptor type to find the user's most commonly liked descriptors
     @good_descriptor_count = @good_drinks_descriptors.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
     # put descriptors in descending order of importance
     @good_descriptor_count = Hash[@good_descriptor_count.sort_by{ |_, v| -v }]
     # grab top 7 of user's most liked descriptors for this drink type
     @good_descriptors_final_hash = @good_descriptor_count.first(7)
-   #Rails.logger.debug("good descriptor counts: #{@descriptor_count.inspect}")
-   #Rails.logger.debug("good descriptors: #{@descriptors_final_hash.inspect}")
+    #Rails.logger.debug("good descriptor counts: #{@good_descriptor_count.inspect}")
+    #Rails.logger.debug("good descriptors: #{@good_descriptors_final_hash.inspect}")
     # create empty array to hold final list of top liked descriptors
     @good_descriptors_final_list = Array.new
     # fill array with user's most liked descriptors
     @good_descriptors_final_hash.each do |key, value|
       @good_descriptors_final_list << key
     end
-   #Rails.logger.debug("good descriptors final list: #{@good_descriptors_final_list.inspect}")
+    #Rails.logger.debug("good descriptors final list: #{@good_descriptors_final_list.inspect}")
     # create array for matching descriptors
     @matching_descriptors_likes = Array.new
     # create counter to boost this drink's rating if descriptors match user's preference
@@ -55,7 +66,7 @@ module TypeBasedGuess
         @matching_descriptors_likes << descriptor_check
       end
     end
-   #Rails.logger.debug("rating boost #{@good_rating_boost.inspect}")
+    #Rails.logger.debug("rating boost #{@good_rating_boost.inspect}")
     # finally, adjust projected rating based on number of descriptor matches
     if @good_rating_boost == 5
       this_beer.best_guess = (((this_beer.best_guess + 1.5)*2).ceil.to_f / 2)

@@ -1,0 +1,18 @@
+<%= render 'layouts/header_create_drink_profile' %>
+<%= render 'layouts/updating_spinner' %>
+<%= render 'drink_profile_guide' %>
+<%= render 'layouts/settings_drink_styles', drink: @category %>
+<div class="row">
+	<div class="container">
+		<div class="row drink-profile-next-row">
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+				<% if !@user_style_likes.blank? %>
+					<%= link_to "Next", drink_profile_beer_priorities_path, disabled: false, class: "btn btn-success user-info-next-button", id: "profile_styles_next_button" %>
+				<% else %>
+					<%= link_to "Next", drink_profile_beer_priorities_path, disabled: true, class: "btn btn-default user-info-next-button", id: "profile_styles_next_button" %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

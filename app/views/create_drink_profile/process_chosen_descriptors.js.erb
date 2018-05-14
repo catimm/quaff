@@ -1,0 +1,22 @@
+$(function() {
+	<% if @action == "remove" %>
+		$("li[id='<%= @drink_style_top_descriptor_id %>']").removeClass('chosen');
+		$("li[id='<%= @drink_style_top_descriptor_id %>']").children('.drink-profile-chosen-descriptor').empty();
+		$("li[id='<%= @drink_style_top_descriptor_id %>']").children('.drink-profile-chosen-descriptor').html('+');
+	<% end %>
+	<% if @action == "add" %>
+		$("li[id='<%= @drink_style_top_descriptor_id %>']").addClass('chosen');
+		$("li[id='<%= @drink_style_top_descriptor_id %>']").children('.drink-profile-chosen-descriptor').empty();
+		$("li[id='<%= @drink_style_top_descriptor_id %>']").children('.drink-profile-chosen-descriptor').html('-');
+	<% end %>
+	
+	<% if !@referring_url.include?("create_drink_profile") %>
+	// code for changing setting after login
+		$("#settings-last-saved").html("<%= escape_javascript(render 'layouts/last_saved' ) %>");
+		$(".last-saved").addClass('notice');
+	    $( ".notice" ).fadeOut( 2000, function() {
+		    $(".last-saved").removeClass('notice');
+		  });
+		$(".last-saved").fadeIn(100);
+	<% end %>
+});

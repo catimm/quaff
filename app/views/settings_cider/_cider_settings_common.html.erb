@@ -1,0 +1,29 @@
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Cider Settings</h1>
+		</div>
+		<div class="col-xs-12 no-padding">
+			<div class="row no-margin">
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Journey", settings_cider_journey_path, class: "drink-preference-view-option #{if current_section == "Journey" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Numbers", settings_cider_numbers_path, class: "drink-preference-view-option #{if current_section == "Numbers" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Styles", settings_cider_styles_path, class: "drink-preference-view-option #{if current_section == "Styles" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Priorities", settings_cider_priorities_path, class: "drink-preference-view-option #{if current_section == "Priorities" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Costs", settings_cider_costs_path, class: "drink-preference-view-option #{if current_section == "Costs" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Extras", settings_cider_extras_path, class: "drink-preference-view-option #{if current_section == "Extras" then "current" else "" end}" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

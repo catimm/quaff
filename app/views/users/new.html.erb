@@ -20,27 +20,7 @@
 			<%= simple_form_for @user, :html => { :class => 'form-horizontal' } do |f| %>
 				<%= f.hidden_field :special_code, :value => @code %>
 				<%= render 'user_personal_info', f: f  %>
-				<div class="form-group">
-					<label for="special_code_field" class="col-xs-4 col-sm-3 control-label">Special code</label>
-					<div class="col-xs-8 col-sm-9">
-						<%= f.input :special_code, as: :string, 
-								input_html: { class: "form-control", id: "special_code" }, 
-									placeholder: "Enter signup or invitation code here if you have one", 
-									label: false, required: false %>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="first_name_field" class="col-xs-4 col-sm-3 control-label">Password</label>
-					<div class="col-xs-8 col-sm-9">
-						<%= f.input :password, input_html: { class: "form-control", id: "password" }, label: false, required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="first_name_field" class="col-xs-4 col-sm-3 control-label">Confirm password</label>
-					<div class="col-xs-8 col-sm-9">
-						<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password (8 characters min)" %>
-					</div>
-				</div>
+				<%= render 'user_personal_additional_info', f: f  %>
 				<div class="form-group">
 					<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-10 text-center">
 						<%= f.submit "Next", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>

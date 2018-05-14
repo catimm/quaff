@@ -1,0 +1,41 @@
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Choose which <%= @category %> styles you really like and really dislike.</h2>
+			<h5>Choose 
+				<span class="tiny-style-indicator tiny-like-style text-center">
+					<i class="fa fa-check"></i>
+				</span>&nbsp;&nbsp;&nbsp;&nbsp; if you like a style or 
+				<span class="tiny-style-indicator tiny-dislike-style text-center">
+					<i class="fa fa-times"></i>
+				</span> &nbsp;&nbsp;&nbsp;&nbsp; if you don't. 
+				<span class="style-choose-neither">
+					<span>Choose neither</span> if you don't have a strong preference either way.
+				</span>
+			</h5>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="row">
+			<div class="col-sm-offset-1 col-sm-10">
+				<% @styles_for_like.each do |style| %>
+					<% if !@all_user_styles.blank? && @user_likes.include?(style.id) %>
+						<div class="col-xs-12 col-sm-9 col-md-6 padding-5" id="<%= style.id %>-parent">
+							<%= render 'layouts/style_holder_chosen_like', style: style %>
+						</div>
+					<% elsif !@all_user_styles.blank? && @user_dislikes.include?(style.id) %>
+						<div class="col-xs-6 col-sm-3 col-md-2 padding-5" id="<%= style.id %>-parent">
+							<%= render 'layouts/style_holder_chosen_dislike', style: style %>
+						</div>
+					<% else %>
+						<div class="col-xs-6 col-sm-3 col-md-2 padding-5" id="<%= style.id %>-parent">
+							<%= render 'layouts/style_holder_standard', style: style %>
+						</div>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

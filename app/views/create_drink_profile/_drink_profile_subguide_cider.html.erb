@@ -1,0 +1,35 @@
+<div class="col-xs-5ths no-padding signup-guide-column-holder <%= @journey_chosen %>">
+	<%= link_to "journey", drink_profile_cider_journey_path, class: "guide-header #{@journey_chosen}" %>
+	<div class="fa fa-chevron-right"></div>
+</div>
+<div class="col-xs-5ths no-padding signup-guide-column-holder <%= @numbers_chosen %>">
+	<% if current_user.getting_started_step >= 7 %>
+		<%= link_to "numbers", drink_profile_cider_numbers_path, class: "guide-header #{@numbers_chosen}" %>
+	<% else %>
+		<h5 class="guide-header">numbers</h5>
+	<% end %>
+	<div class="fa fa-chevron-right"></div>
+</div>
+<div class="col-xs-5ths no-padding signup-guide-column-holder <%= @styles_chosen %>">
+	<% if current_user.getting_started_step >= 8 %>
+		<%= link_to "styles", drink_profile_cider_styles_path, class: "guide-header #{@styles_chosen}" %>
+	<% else %>
+		<h5 class="guide-header">styles</h5>
+	<% end %>
+	<div class="fa fa-chevron-right"></div>
+</div>
+<div class="col-xs-5ths no-padding signup-guide-column-holder <%= @priorities_chosen %>">
+	<% if current_user.getting_started_step >= 9 %>
+		<%= link_to "priorities", drink_profile_cider_priorities_path, class: "guide-header #{@priorities_chosen}" %>
+	<% else %>
+		<h5 class="guide-header">priorities</h5>
+	<% end %>
+	<div class="fa fa-chevron-right"></div>
+</div>
+<div class="col-xs-5ths no-padding signup-guide-column-holder <%= @costs_chosen %>">
+	<% if current_user.getting_started_step >= 10 %>
+		<%= link_to "costs", drink_profile_cider_costs_path, class: "guide-header #{@costs_chosen}" %>
+	<% else %>
+		<h5 class="guide-header">costs</h5>
+	<% end %>
+</div>

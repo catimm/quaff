@@ -1,0 +1,14 @@
+<%= render 'layouts/header_create_drink_profile' %> 
+<%= render 'layouts/updating_spinner' %> 
+<%= render 'drink_profile_guide' %>
+<%= render 'layouts/settings_drink_priorities', drink: @category %>
+<div class="row">
+	<div class="container">
+		<div class="row drink-profile-next-row">
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+				<%= link_to "Next", drink_profile_beer_costs_path, class: "btn btn-success signup-styles-next-step", id: "profile_priorities_next_button" %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

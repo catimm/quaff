@@ -10,7 +10,7 @@
 #  delivery_location_user_address_id :integer
 #  delivery_zone_id                  :integer
 #  delivery_frequency                :integer
-#  fed_ex_delivery_zone_id           :integer
+#  shipping_zone_id                  :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

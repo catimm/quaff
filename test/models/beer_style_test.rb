@@ -12,6 +12,7 @@
 #  signup_beer_cider :boolean
 #  standard_list     :boolean
 #  style_order       :integer
+#  master_style_id   :integer
 #
 
 require 'test_helper'

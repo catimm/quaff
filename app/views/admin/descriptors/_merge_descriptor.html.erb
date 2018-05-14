@@ -1,0 +1,9 @@
+<%= form_for [:admin, @descriptor], :url => {:action => 'merge_descriptors'} do |g| %>
+	<%= g.hidden_field :style_id, :value => @this_style.id %>
+	<h5>Deleting:</h5>
+	<h5 class="brewery-name-with-id"><%= @descriptor.name %>&nbsp;</h5>
+	<h5>Merge with this descriptor:</h5>
+	<% options = options_from_collection_for_select(@all_descriptors, :id, :name) %>
+	<%= g.select :id,  options %>
+	<%= g.submit "Merge descriptor", class: "btn btn-default btn-warning formButton" %>			
+<% end %>

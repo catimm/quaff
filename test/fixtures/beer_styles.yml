@@ -12,6 +12,7 @@
 #  signup_beer_cider :boolean
 #  standard_list     :boolean
 #  style_order       :integer
+#  master_style_id   :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

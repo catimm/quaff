@@ -1,0 +1,23 @@
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Wine Settings</h1>
+		</div>
+		<div class="col-xs-12 no-padding">
+			<div class="row no-margin">
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Journey", settings_wine_journey_path, class: "drink-preference-view-option #{if current_section == "Journey" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Numbers", settings_wine_numbers_path, class: "drink-preference-view-option #{if current_section == "Numbers" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Styles", settings_wine_styles_path, class: "drink-preference-view-option #{if current_section == "Styles" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-2">
+					<%= link_to "Extras", settings_wine_extras_path, class: "drink-preference-view-option #{if current_section == "Extras" then "current" else "" end}" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

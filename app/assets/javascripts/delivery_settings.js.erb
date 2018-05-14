@@ -93,6 +93,17 @@ $(function () {
 		return false;
 	});
 	
+	// add logic to change delivery frequency
+	$(document).on('click', '.delivery-frequency-holder', function () {
+		var week_number = $(this).attr('id');
+		
+		// send to controller to change database 
+		$.ajax({
+		  type: "POST",
+		  url: "/signup/process_delivery_frequency_getting_started/" + week_number
+		});
+	});
+	
 	// allow user to save additional delivery preferences info once they start typing
 	$(document).on("keyup", ".delivery-additional-request-form", function() {
 		$("#update_delivery_request_button").removeAttr('disabled');

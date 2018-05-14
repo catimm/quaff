@@ -39,6 +39,7 @@
 #  phone                  :string
 #  recent_addition        :boolean
 #  homepage_view          :string
+#  unregistered           :boolean
 #
 
 require 'test_helper'

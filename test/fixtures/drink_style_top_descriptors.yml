@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: drink_style_top_descriptors
+#
+#  id               :integer          not null, primary key
+#  beer_style_id    :integer
+#  descriptor_name  :string
+#  descriptor_tally :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  tag_id           :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  style_id: 1
+  descriptor_name: MyString
+  descriptor_tally: 1
+
+two:
+  style_id: 1
+  descriptor_name: MyString
+  descriptor_tally: 1

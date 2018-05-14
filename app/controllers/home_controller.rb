@@ -142,7 +142,7 @@ class HomeController < ApplicationController
 
       # get FedEx Delivery Zone
       @first_three = @zip_code[0...3]
-      @fed_ex_zone_matching = FedExDeliveryZone.zone_match(@first_three).first
+      @fed_ex_zone_matching = ShippingZone.zone_match(@first_three).first
 
       # get shipping zone
       if !@fed_ex_zone_matching.blank?

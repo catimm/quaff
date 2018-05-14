@@ -48,7 +48,7 @@ class UsersController < ApplicationController
     # if user saved properly, redirect. else show errors
     if @user.save
       # Sign in the new user by passing validation
-      sign_in @user, :bypass => true
+      bypass_sign_in(@user)
       
       # if user is a guest connect them as friends with account owner
       if @user.role_id == 5 || @user.role_id == 6
@@ -100,12 +100,18 @@ class UsersController < ApplicationController
   end # end create action
   
   def edit
+    @user_path = params[:id]
     @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
     @user_subscription = UserSubscription.where(user_id: @user.id, deliveries_this_period: 0).first
 
     if @user.id != current_user.id
       return head :forbidden
+    end
+    
+    # don't show fake email if user is not yet registered
+    if @user.unregistered == true 
+      @user.email = nil
     end
     
     # show phone if user is account owner
@@ -126,7 +132,7 @@ class UsersController < ApplicationController
     gon.getting_started_step = @user.getting_started_step
     
     # update user's getting started step
-    if @user.getting_started_step < 1
+    if @user.getting_started_step.nil? || @user.getting_started_step < 1
       User.update(@user.id, getting_started_step: 1)
     end
     
@@ -136,7 +142,6 @@ class UsersController < ApplicationController
     @user = User.find_by_id(current_user.id)
     #Rails.logger.debug("User info: #{@user.inspect}")
     if @user.id != current_user.id
-      #Rails.logger.debug("Forbidden runs")
       return head :forbidden
     end
     
@@ -149,15 +154,18 @@ class UsersController < ApplicationController
       params[:user][:account_id] = @account.id
     end
     
-    if @user.getting_started_step.nil?
-      params[:user][:getting_started_step] = 1
+    if @user.getting_started_step < 15
+      params[:user][:getting_started_step] = 15
     end
+    
+    # get a random color for the user
+    @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+    params[:user][:user_color] = @user_color
     
     if @user.update(user_params)
       #Rails.logger.debug("User updated")
       # Sign in the user by passing validation in case their password changed
-      sign_in @user, :bypass => true
-
+      bypass_sign_in(@user)
       
       # if user is a guest connect them as friends with account owner
       if @user.role_id == 5 # this branch is for account mates
@@ -176,7 +184,7 @@ class UsersController < ApplicationController
         elsif  @user.getting_started_step == 7
           @redirect_link = drink_style_dislikes_getting_started_path
         elsif  @user.getting_started_step == 8
-          @redirect_link = delivery_numbers_getting_started_path
+          @redirect_link = delivery_frequency_getting_started_path
         end
       elsif @user.role_id == 6 # this branch is for corporate guests
         # set redirect path, based on where user is in signup process
@@ -191,25 +199,17 @@ class UsersController < ApplicationController
         end
       else # this branch is for account owners
         # determine redirect path, based on where user is in signup process
-        if  @user.getting_started_step == 2
+        if  @user.getting_started_step == 15
+          @redirect_link = account_membership_getting_started_path 
+        elsif  @user.getting_started_step == 16
           @redirect_link = delivery_address_getting_started_path
-        elsif  @user.getting_started_step == 3
-          @redirect_link = account_membership_getting_started_path
-        elsif  @user.getting_started_step == 4
-          @redirect_link = drink_choice_getting_started_path
-        elsif  @user.getting_started_step == 5
-          @redirect_link = drink_journey_getting_started_path
-        elsif  @user.getting_started_step == 6
-          @redirect_link = drink_style_likes_getting_started_path
-        elsif  @user.getting_started_step == 7
-          @redirect_link = drink_style_dislikes_getting_started_path
-        elsif  @user.getting_started_step == 8
-          @redirect_link = delivery_numbers_getting_started_path
-        elsif @user.getting_started_step == 9
+        elsif  @user.getting_started_step == 17
+          @redirect_link = delivery_frequency_getting_started_path
+        elsif @user.getting_started_step == 18
           @redirect_link = delivery_preferences_getting_started_path
         end
       end
-      
+
       # redirect to next step in signup process
       redirect_to @redirect_link
   else
@@ -253,59 +253,81 @@ class UsersController < ApplicationController
   
     # get customer plan details
     @customer_plan = UserSubscription.where(account_id: @user.account_id, currently_active: true)[0]
-    if @user.role_id == 1
-      @all_plans_subscription_level_group = Subscription.where(subscription_level_group: 1) 
-    else
-      @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @customer_plan.subscription.subscription_level_group)
-    end
-    @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
-    @next_plan = Subscription.find_by_id(@customer_plan.auto_renew_subscription_id)
-    
-    if (1..4).include?(@customer_plan.subscription_id)
-      @plan_type = "delivery"
-      @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
-      @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first
-      if @customer_plan.subscription.deliveries_included == 0
-        @no_plan = "current"
-      elsif @customer_plan.subscription.deliveries_included == 6
-        @test_plan = "current"
+    if !@customer_plan.blank?
+      if @user.role_id == 1
+        @all_plans_subscription_level_group = Subscription.where(subscription_level_group: 1) 
       else
-        @committed_plan = "current"
+        @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @customer_plan.subscription.subscription_level_group)
       end
-    else
-      @plan_type = "shipment"
-      @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 3).first
-      @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 9).first
-      @zone_plan_zero_shipment_cost_low = @zone_plan_zero.shipping_estimate_low
-      @zone_plan_zero_shipment_cost_high = @zone_plan_zero.shipping_estimate_high
-      @zone_plan_three_cost = @zone_plan_test.subscription_cost
-      @zone_plan_nine_cost = @zone_plan_committed.subscription_cost
-      if @customer_plan.subscription.deliveries_included == 0
-        @no_plan = "current"
-      elsif @customer_plan.subscription.deliveries_included == 3
-        @test_plan = "current"
+      @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
+      @next_plan = Subscription.find_by_id(@customer_plan.auto_renew_subscription_id)
+    
+      if (1..4).include?(@customer_plan.subscription_id)
+        @plan_type = "delivery"
+        @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
+        @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first
+        if @customer_plan.subscription.deliveries_included == 0
+          @no_plan = "current"
+        elsif @customer_plan.subscription.deliveries_included == 6
+          @test_plan = "current"
+        else
+          @committed_plan = "current"
+        end
       else
-        @committed_plan = "current"
+        @plan_type = "shipment"
+        @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 3).first
+        @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 9).first
+        @zone_plan_zero_shipment_cost_low = @zone_plan_zero.shipping_estimate_low
+        @zone_plan_zero_shipment_cost_high = @zone_plan_zero.shipping_estimate_high
+        @zone_plan_three_cost = @zone_plan_test.subscription_cost
+        @zone_plan_nine_cost = @zone_plan_committed.subscription_cost
+        if @customer_plan.subscription.deliveries_included == 0
+          @no_plan = "current"
+        elsif @customer_plan.subscription.deliveries_included == 3
+          @test_plan = "current"
+        else
+          @committed_plan = "current"
+        end
       end
+      
+      # determine remaining deliveries
+      if @customer_plan.subscription.deliveries_included != 0
+        @remaining_deliveries = @customer_plan.subscription.deliveries_included - @customer_plan.deliveries_this_period
+      end
+      
+      # set CSS style indicator & appropriate text
+      @current_plan_name = @customer_plan.subscription.subscription_level
+      @current_plan_definition = @customer_plan.subscription.subscription_name
+      @next_plan_definition = @next_plan.subscription_name
+      
+      # customer's Stripe card info
+      if !@customer_plan.stripe_customer_number.nil?
+        @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
+                                            all(:object => "card")
+      end
+      #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
+    else # user hasn't signed up for a plan yet
+      @user_address = UserAddress.where(account_id: @user.account_id).first
+      if !@user_address.delivery_zone_id.nil?
+        @plan_type = "delivery"
+        @delivery_zone_info = DeliveryZone.find_by_id(@user_address.delivery_zone_id)
+        @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @delivery_zone_info.subscription_level_group)
+        @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
+        @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first
+      else
+        @plan_type = "shipment"
+        @shipping_zone_info = ShippingZone.find_by_id(@user_address.shipping_zone_id)
+        @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @shipping_zone_info.subscription_level_group)
+        @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 3).first
+        @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 9).first
+        @zone_plan_zero_shipment_cost_low = @zone_plan_zero.shipping_estimate_low
+        @zone_plan_zero_shipment_cost_high = @zone_plan_zero.shipping_estimate_high
+        @zone_plan_three_cost = @zone_plan_test.subscription_cost
+        @zone_plan_nine_cost = @zone_plan_committed.subscription_cost
+      end
+      @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
     end
-    
-    # determine remaining deliveries
-    if @customer_plan.subscription.deliveries_included != 0
-      @remaining_deliveries = @customer_plan.subscription.deliveries_included - @customer_plan.deliveries_this_period
-    end
-    
-    # set CSS style indicator & appropriate text
-    @current_plan_name = @customer_plan.subscription.subscription_level
-    @current_plan_definition = @customer_plan.subscription.subscription_name
-    @next_plan_definition = @next_plan.subscription_name
-    
-    # customer's Stripe card info
-    if !@customer_plan.stripe_customer_number.nil?
-      @customer_cards = Stripe::Customer.retrieve(@customer_plan.stripe_customer_number).sources.
-                                          all(:object => "card")
-    end
-    #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
-    
+
   end # end of account_settings_membership action
   
   def account_settings_profile
@@ -518,7 +540,7 @@ class UsersController < ApplicationController
     User.update(current_user.id, getting_started_step: 8)
     
     # redirect user to 8th step of signup--weekly drinks consumed
-    redirect_to delivery_numbers_getting_started_path
+    redirect_to delivery_frequency_getting_started_path
   
   end # end of start_new_plan method
   
@@ -826,8 +848,9 @@ class UsersController < ApplicationController
   private
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone, :current_password,
-                                  :password, :password_confirmation, :account_id, :getting_started_step)  
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone,
+                                  :password, :password_confirmation, :special_code, :user_color, :account_id, 
+                                  :getting_started_step, :unregistered)  
   end
   
   def new_user_params

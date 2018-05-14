@@ -32,6 +32,10 @@
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
 //= require bootstrap-datepicker/core
+//= require jquery-ui/widgets/mouse
+//= require jquery-ui/widgets/draggable
+//= require jquery-ui/widgets/sortable
+//= require jquery.ui.touch-punch
 //= require d3
 //= require_tree .
 jQuery( function($) {

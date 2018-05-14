@@ -1,0 +1,12 @@
+<%= render 'layouts/header_early_signup' %> 
+<%= render 'layouts/updating_spinner' %>
+<%= render 'delivery_settings_common', current_section: "Frequency" %>
+<%= render 'delivery_settings/delivery_frequency_options' %>		
+<% if !@last_saved.nil? %>
+	<div class="row">
+		<div class="container" id="settings-last-saved">
+			<%= render 'layouts/last_saved' %>
+		</div>
+	</div>
+<% end %>
+<%= render 'layouts/footer' %>

@@ -59,17 +59,10 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!(options={})
     if user_signed_in? 
-      if current_user.getting_started_step == 10
-        super(options)
-      else
-        sign_out current_user
-        redirect_to new_user_session_path, :notice => 'Please log in first!'
-      end
+      super(options)
     else
       session[:user_return_to] = request.fullpath
       redirect_to new_user_session_path, :notice => 'Please log in first!'
-      ## if you want render 404 page
-      ## render :file => File.join(Rails.root, 'public/404'), :formats => [:html], :status => 404, :layout => false
     end
   end
   
@@ -79,45 +72,62 @@ class ApplicationController < ActionController::Base
   end
   
   def after_sign_in_path_for(resource)
-    #Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
+    Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
     @user = current_user
-    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-    if !session[:user_return_to].nil?
-      session[:user_subscription_id] = @user_subscription.subscription_id
-    end
-    
-    # set a different first view based on the user type
-    if !session[:user_return_to].nil?
-      @first_view = session[:user_return_to]
-    elsif  @user.getting_started_step < 2
-      @first_view = edit_user_path(@user.id)
-    elsif  @user.getting_started_step == 2
-      @first_view = delivery_address_getting_started_path
-    elsif  @user.getting_started_step == 3
-      @first_view = account_membership_getting_started_path
-    elsif  @user.getting_started_step == 4
-      @first_view = drink_choice_getting_started_path
-    elsif  @user.getting_started_step == 5
-      @first_view = drink_journey_getting_started_path
-    elsif  @user.getting_started_step == 6
-      @first_view = drink_style_likes_getting_started_path
-    elsif  @user.getting_started_step == 7
-      @first_view = drink_style_dislikes_getting_started_path
-    elsif  @user.getting_started_step == 8
-      @first_view = delivery_numbers_getting_started_path
-    elsif @user.getting_started_step == 9
-      @first_view = delivery_preferences_getting_started_path
-    else
-      if current_user.role_id == 1
+    if current_user.role_id == 1
+        # admin route
         @first_view = admin_breweries_path
-      else
-        @first_view = user_deliveries_path
+    else # non-admin logic
+      @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+      if !session[:user_return_to].nil? && !@user_subscription.blank?
+        session[:user_subscription_id] = @user_subscription.subscription_id
       end
-    end
+      
+      # set a different first view based on the user type
+      if !session[:user_return_to].nil? && @user.getting_started_step >= 14
+        @first_view = session[:user_return_to]
+      else
+        # if user hasn't moved beyond picking a drink category
+        if @user.getting_started_step == 0
+          @first_view = drink_profile_categories_path
+        end
+        if @user.getting_started_step >= 14
+          @first_view = user_deliveries_path
+        elsif  @user.getting_started_step == 1
+          @first_view = drink_profile_beer_journey_path
+        elsif  @user.getting_started_step == 2
+          @first_view = drink_profile_beer_numbers_path
+        elsif  @user.getting_started_step == 3
+          @first_view = drink_profile_beer_styles_path
+        elsif  @user.getting_started_step == 4
+          @first_view = drink_profile_beer_priorities_path
+        elsif  @user.getting_started_step == 5
+          @first_view = drink_profile_beer_costs_path
+        elsif  @user.getting_started_step == 6
+          @first_view = drink_profile_cider_journey_path
+        elsif  @user.getting_started_step == 7
+          @first_view = drink_profile_cider_numbers_path
+        elsif  @user.getting_started_step == 8
+          @first_view = drink_profile_cider_styles_path
+        elsif @user.getting_started_step == 9
+          @first_view = drink_profile_cider_priorities_path
+        elsif @user.getting_started_step == 10
+          @first_view = drink_profile_cider_costs_path
+        elsif @user.getting_started_step == 11
+          @first_view = drink_profile_wine_journey_path
+        elsif @user.getting_started_step == 12
+          @first_view = drink_profile_wine_numbers_path
+        elsif @user.getting_started_step == 13
+          @first_view = drink_profile_wine_styles_path
+        end
+      end # end of selecting path
+      
+    end # end of check whether user is admin
     return @first_view
   end
   
   def after_sign_out_path_for(resource_or_scope)
+    Rails.logger.debug("Signout hit")
     session.delete(:user_return_to)
     root_path
   end

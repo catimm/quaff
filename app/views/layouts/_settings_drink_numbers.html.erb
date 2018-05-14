@@ -1,0 +1,48 @@
+<div class="row">
+	<div class="container" id="user-drink-preference-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">How many <%= @category_choice %> do you drink at home on average each week?</h2>
+			<% if @create_drink_profile %>
+				<h5 class="signup-question-detail">You can update this answer in your <%= @category %> settings at any time.</h5>
+			<% end %>
+		</div>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row no-margin <%= @chosen_drinks_per_week %>" id="chosen-drinks-per-week-row">
+			<%= render 'layouts/chosen_drinks_per_week' %>
+		</div>
+		<div class="row no-margin">
+            <div class="col-xs-12 col-sm-6" id="<%= drink %>">
+                <h4>Choose number of drinks:</h4>
+                <% (1..12).each do |i| %>
+				  <div class="col-xs-2 no-padding number-box-holder-parent">
+					  <% if @drinks_per_week == i %>
+					  	<div class="create-profile-number-box-holder weekly-drinks chosen" id="<%= drink %>-number-<%= i %>">
+					 		<p><%= i %></p>
+					 	</div>
+					 <% else %>
+					  	<div class="create-profile-number-box-holder weekly-drinks" id="<%= drink %>-number-<%= i %>">
+					 		<p><%= i %></p>
+					 	</div>
+					 <% end %>
+				  </div>    
+				<% end %>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-5">
+                <h4>Choose time frame:</h4>
+                <div class="col-xs-6 no-padding week-or-month-holder-parent">
+					<div class="week-or-month-holder <%= @week_chosen %>" id="<%= drink %>-timeframe-week">
+						<h3 class="drinks-per-text">week</h3>
+					</div>
+				</div>
+				<div class="col-xs-6 no-padding week-or-month-holder-parent">
+					<div class="week-or-month-holder <%= @month_chosen %>" id="<%= drink %>-timeframe-month">
+						<h3 class="drinks-per-text">month</h3>
+					</div>
+				</div>
+            </div>
+	    </div>
+	</div>
+</div>

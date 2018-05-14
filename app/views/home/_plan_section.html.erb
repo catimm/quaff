@@ -27,7 +27,7 @@
 	</div>
 	<div class="row membership-details-row show" id="membership-details-row">
 		<% if @city.blank? && @state.blank? %>
-			<%= render 'zip_search_box' %>	
+			<%= render 'layouts/zip_search_box' %>	
 			<div class="col-xs-12 col-sm-offset-1 col-sm-10" id="outside-us-message">
 				<h4 class="outside-us-message-text hidden">
 					Sorry, we only ship to recognized zip codes within the contiguous United States, but please check back soon for an update. 
@@ -35,11 +35,11 @@
 				</h4>
 			</div>
 		<% elsif @plan_type == "delivery" %>
-			<%= render 'plan_section_deliveries' %>
+			<%= render 'layouts/plan_section_deliveries' %>
 		<% elsif  @plan_type == "shipment" %>
-			<%= render 'plan_section_shipments'%>
+			<%= render 'layouts/plan_section_shipments'%>
 		<% else %>
-			<%= render 'zip_search_box' %>	
+			<%= render 'layouts/zip_search_box' %>	
 			<div class="col-xs-12 col-sm-offset-1 col-sm-10" id="outside-us-message">
 				<h4 class="outside-us-message-text hidden">
 					Sorry, we only ship to recognized zip codes within the contiguous United States, but please check back soon for an update. 

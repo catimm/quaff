@@ -1,0 +1,46 @@
+<div class="row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">What matters to you when buying <%= @category %>?</h2>
+			<% if @create_drink_profile %>
+				<h5 class="signup-question-detail">You can update this info in your <%= @category %> settings at any time.</h5>
+			<% end %>
+		</div>
+	</div>
+</div>
+<div class="row user-priorities-holder-row">
+	<div class="container" id="user-drinks-per-week-signup">
+		<div class="row">
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6 col-md-offset-1 col-md-5 no-padding">
+				<h4 class="drink-settings-extra-directions">1. Choose each statement that is important to you.</h4>
+				<% @priorties.each do |priority| %>
+					<% if !@user_priorities.blank? %>
+						<% if @chosen_priorities.include?(priority.id) %>
+							<% @checkbox_status = true %>
+						<% else %>
+							<% @checkbox_status = false %>
+						<% end %>
+					<% else %>
+						<% @checkbox_status = false %>
+					<% end %>
+					<div class="form-group">
+						<div class="col-xs-2 col-sm-1 text-center no-padding">
+							<%= check_box_tag "priority-#{priority.id}".to_sym, "#{priority.id}".to_sym, @checkbox_status, class: "priority-question-chosen", id: drink %>
+						</div>
+						<div class="col-xs-10 col-sm-11 no-padding">
+							<h4 class="priority-question-asked"><%= priority.description %></h4>
+						</div>
+					</div>
+				<% end %>
+			</div>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6 col-md-offset-1 col-md-5 no-padding">
+				<h4 class="<%= @priority_choice_header %>" id="stack-rank-statement">2. Stack rank your chosen statements.</h4>
+				<ul id="sortable" class="ui-sortable">
+					<% if !@user_priorities.blank? %>
+						<%= render 'create_drink_profile/rank_priority_questions' %>
+					<% end %>
+		    	</ul>
+			</div>
+		</div>
+	</div>
+</div>

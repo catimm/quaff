@@ -1,0 +1,51 @@
+<div class="row first-row-signup">
+	<div class="container" id="user-drink-preference-signup">
+		<div class="col-xs-12 text-center">
+			<h2 class="signup-question">Choose each drink type you'd like us to curate for you.</h2>
+			<% if @create_drink_profile %>
+				<h5 class="signup-question-detail">You can update this answer in your delivery settings at any time.</h5>
+			<% end %>
+		</div>
+	</div>
+</div>
+<div class="row signup-drink-category-row-holder">
+	<div class="container">
+		<div class="col-xs-12 col-sm-offset-2 col-sm-8">
+			<div class="row">
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4 no-padding drink-profile-category-image-holder-parent">
+					<div class="drink-profile-category-image-holder" id="beer">
+						<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/Beer.png">
+						<h3 class="signup-category-image-first-level-text">Beer</h3>
+					</div>
+					<div class="drink-profile-category-image-holder-chosen-cover <%= @beer_chosen %>" id="beer">
+						<div class="category-chosen-indicator">
+							<i class="fa fa-check"></i>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4 no-padding drink-profile-category-image-holder-parent">
+					<div class="drink-profile-category-image-holder middle-option" id="cider">
+						<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/ciders.png">
+						<h3 class="signup-category-image-first-level-text">Cider</h3>
+					</div>
+					<div class="drink-profile-category-image-holder-chosen-cover <%= @cider_chosen %>" id="cider">
+						<div class="category-chosen-indicator">
+							<i class="fa fa-check"></i>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4 no-padding drink-profile-category-image-holder-parent">
+					<div class="drink-profile-category-image-holder" id="wine">
+						<img class="img-responsive center-block" alt="Responsive image" src="https://s3-us-west-2.amazonaws.com/knird/signup/Red-and-white-wine.gif">
+						<h3 class="signup-category-image-first-level-text">Wine</h3>
+					</div>
+					<div class="drink-profile-category-image-holder-chosen-cover <%= @wine_chosen %>" id="wine">
+						<div class="category-chosen-indicator">
+							<i class="fa fa-check"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
