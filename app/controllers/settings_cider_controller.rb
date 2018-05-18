@@ -67,18 +67,26 @@ class SettingsCiderController < ApplicationController
     @cider_style_ids = @styles_for_like.pluck(:id)
     
     # find if user has already liked styles
-    @all_user_styles = UserStylePreference.where(user_id: current_user.id)
-    @styles_updated_order = @all_user_styles.order('updated_at DESC')
-    @last_saved = @styles_updated_order.first.updated_at
-    @user_style_likes = @all_user_styles.where(user_preference: "like",
-                                                  beer_style_id: @cider_style_ids).
-                                                  pluck(:beer_style_id)
-    @user_likes = @styles_for_like.where(master_style_id: @user_style_likes).pluck(:id)
-    @user_style_dislikes = @all_user_styles.where(user_preference: "dislike",
-                                                  beer_style_id: @cider_style_ids).
-                                                  pluck(:beer_style_id)
-    @user_dislikes = @styles_for_like.where(master_style_id: @user_style_dislikes).pluck(:id)
-     
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @all_user_styles = UserStylePreference.where(user_id: params[:format])
+    else
+      # get user info
+      @all_user_styles = UserStylePreference.where(user_id: current_user.id)
+    end
+    if !@all_user_styles.blank?
+      @styles_updated_order = @all_user_styles.order('updated_at DESC')
+      @last_saved = @styles_updated_order.first.updated_at
+      @user_style_likes = @all_user_styles.where(user_preference: "like",
+                                                    beer_style_id: @cider_style_ids).
+                                                    pluck(:beer_style_id)
+      @user_likes = @styles_for_like.where(master_style_id: @user_style_likes).pluck(:id)
+      @user_style_dislikes = @all_user_styles.where(user_preference: "dislike",
+                                                    beer_style_id: @cider_style_ids).
+                                                    pluck(:beer_style_id)
+      @user_dislikes = @styles_for_like.where(master_style_id: @user_style_dislikes).pluck(:id)
+    end
+       
   end # end of cider_style_likes method
   
   def cider_priorities

@@ -6,80 +6,150 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="container">
-			<div class="row no-margin">
-            	<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
-                    <h3 class="choose-signup-prompt">Now, sign up for a membership plan or wait to check out your free curation?</h3>
-                </div>
-	         </div>
-	         <div class="row no-margin">
-	         	<div class="col-xs-12 col-sm-offset-1 col-sm-5 col-md-4 left-signup-option">
-	         		<h4 class="signup-option-header">Option 1: Sign up for a plan</h4>
-	         		<h4 class="signup-option-subheader">I've heard enough good things about Knird. Let's do it!</h4>
-	         		<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-next-step-button" do %>
-	         			<i class="fa fa-play">&nbsp;</i>
-	         			Choose a membership plan
-	         		<% end %>
-	         	</div>
-	         	
-	         	<div class="col-xs-12 col-sm-6 col-md-5 right-signup-option">
-	         		<h4 class="signup-option-header">Option 2: Provide info for free curation</h4>
-	         		<h4 class="signup-option-subheader option-two">I'll wait&mdash;I'm curious to see how this works.</h4>
-	         		<%= simple_form_for :user, :url => process_free_curation_signup_path, :html => { :class => 'form-horizontal' } do |f| %>
-						<%= f.hidden_field :unregistered, :value => nil %>
-						<div class="form-group">
-							<label for="first_name_field" class="col-xs-3 padding-5 control-label">First name</label>
-							<div class="col-xs-8 col-sm-9">
-								<%= f.input :first_name, input_html: { class: "form-control", id: "first_name_field" }, placeholder: "First name", label: false, required: true %>
+	<% if @user_delivery_preferences.beer_chosen || @user_delivery_preferences.cider_chosen %>
+		<div class="row">
+			<div class="container">
+				<div class="row no-margin">
+	            	<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
+	                    <h3 class="choose-signup-prompt">Now, sign up for a membership plan or wait to check out your free curation?</h3>
+	                </div>
+		         </div>
+		         <div class="row no-margin">
+		         	<div class="col-xs-12 col-sm-offset-1 col-sm-5 col-md-4 left-signup-option">
+		         		<h4 class="signup-option-header">Option 1: Sign up for a plan</h4>
+		         		<h4 class="signup-option-subheader">I've heard enough good things about Knird. Let's do it!</h4>
+		         		<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-next-step-button" do %>
+		         			<i class="fa fa-play">&nbsp;</i>
+		         			Choose a membership plan
+		         		<% end %>
+		         	</div>
+		         	
+		         	<div class="col-xs-12 col-sm-6 col-md-5 right-signup-option">
+		         		<h4 class="signup-option-header">Option 2: Provide info for free curation</h4>
+		         		<h4 class="signup-option-subheader option-two">I'll wait&mdash;I'm curious to see how this works.</h4>
+		         		<%= simple_form_for :user, :url => process_free_curation_signup_path, :html => { :class => 'form-horizontal' } do |f| %>
+							<%= f.hidden_field :unregistered, :value => nil %>
+							<div class="form-group">
+								<label for="first_name_field" class="col-xs-3 padding-5 control-label">First name</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :first_name, input_html: { class: "form-control", id: "first_name_field" }, placeholder: "First name", label: false, required: true %>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="email_field" class="col-xs-3 control-label">Email</label>
-							<div class="col-xs-8 col-sm-9">
-								<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+							<div class="form-group">
+								<label for="email_field" class="col-xs-3 control-label">Email</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="birthdate_field" class="col-xs-3 control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label>
-							<div class="col-xs-8 col-sm-9">
-								<%= f.input :birthday, as: :date, start_year: Date.today.year - 18,
-						                              end_year: Date.today.year - 90,
-						                              order: [:month, :day, :year],
-						                              input_html: { class: "form-control", 
-																	id: "birthdate_field"}, 
-													  label: false, required: true %>
+							<div class="form-group">
+								<label for="birthdate_field" class="col-xs-3 control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :birthday, as: :date, start_year: Date.today.year - 18,
+							                              end_year: Date.today.year - 90,
+							                              order: [:month, :day, :year],
+							                              input_html: { class: "form-control", 
+																		id: "birthdate_field"}, 
+														  label: false, required: true %>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="zip_field" class="col-xs-3 control-label">Zip code</label>
-							<div class="col-xs-8 col-sm-9">
-								<%= f.input :zip, input_html: { class: "form-control", id: "zip_code" }, placeholder: "Zip code", label: false, required: true %>
+							<div class="form-group">
+								<label for="zip_field" class="col-xs-3 control-label">Zip code</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :zip, input_html: { class: "form-control", id: "zip_code" }, placeholder: "Zip code", label: false, required: true %>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="password_field" class="col-xs-3 control-label">Password</label>
-							<div class="col-xs-8 col-sm-9">
-								<%= f.input :password, input_html: { class: "form-control", id: "password" }, label: false, required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+							<div class="form-group">
+								<label for="password_field" class="col-xs-3 control-label">Password</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :password, input_html: { class: "form-control", id: "password" }, label: false, required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="password_confirmation_field" class="col-xs-3 control-label">Confirm</label>
-							<div class="col-xs-8 col-sm-9">
-								<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password (8 characters min)" %>
+							<div class="form-group">
+								<label for="password_confirmation_field" class="col-xs-3 control-label">Confirm</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password (8 characters min)" %>
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-xs-12 col-sm-offset-2 col-sm-10 text-center">
-								<%= f.submit "Get my free curation", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
-								<h5 class="terms-and-conditions-text">By clicking 'Get my free curation', you agree to our 
-									<%= link_to "terms", terms_path, target: :_blank %> and <%= link_to "privacy policy", privacy_path, target: :_blank %>.
-								</h5>
+							<div class="form-group">
+								<div class="col-xs-12 col-sm-offset-2 col-sm-10 text-center">
+									<%= f.submit "Get my free curation", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+									<h5 class="terms-and-conditions-text">By clicking 'Get my free curation', you agree to our 
+										<%= link_to "terms", terms_path, target: :_blank %> and <%= link_to "privacy policy", privacy_path, target: :_blank %>.
+									</h5>
+								</div>
 							</div>
-						</div>
-					<% end %>
-	         	</div>
-	         </div>
+						<% end %>
+		         	</div>
+		         </div>
+			</div>
 		</div>
-	</div>
+	<% else %>
+		<div class="row">
+			<div class="container">
+				<div class="row no-margin">
+	            	<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
+	                    <h3 class="choose-signup-prompt">Now, let's get you set up for your free curation.</h3>
+	                </div>
+		         </div>
+		         <div class="row no-margin">
+		         	<div class="col-xs-12 col-sm-offset-3 col-sm-6">
+		         		<h4 class="signup-option-header">Although we are not yet deliverying wine, you can provide your info for a free curation. 
+		         											We'll send you your free curation as soon as we start delivering wine.</h4>
+		         		<%= simple_form_for :user, :url => process_free_curation_signup_path, :html => { :class => 'form-horizontal' } do |f| %>
+							<%= f.hidden_field :unregistered, :value => nil %>
+							<div class="form-group">
+								<label for="first_name_field" class="col-xs-3 padding-5 control-label">First name</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :first_name, input_html: { class: "form-control", id: "first_name_field" }, placeholder: "First name", label: false, required: true %>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="email_field" class="col-xs-3 control-label">Email</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="birthdate_field" class="col-xs-3 control-label">Birthdate <sup  id="signup_birthdate_note" data-toggle="tooltip" title="You must be 21 to use the Knird service.">?</sup></label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :birthday, as: :date, start_year: Date.today.year - 18,
+							                              end_year: Date.today.year - 90,
+							                              order: [:month, :day, :year],
+							                              input_html: { class: "form-control", 
+																		id: "birthdate_field"}, 
+														  label: false, required: true %>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="zip_field" class="col-xs-3 control-label">Zip code</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :zip, input_html: { class: "form-control", id: "zip_code" }, placeholder: "Zip code", label: false, required: true %>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="password_field" class="col-xs-3 control-label">Password</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :password, input_html: { class: "form-control", id: "password" }, label: false, required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="password_confirmation_field" class="col-xs-3 control-label">Confirm</label>
+								<div class="col-xs-8 col-sm-9">
+									<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password (8 characters min)" %>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-xs-12 col-sm-offset-2 col-sm-10 text-center">
+									<%= f.submit "Get my free curation", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+									<h5 class="terms-and-conditions-text">By clicking 'Get my free curation', you agree to our 
+										<%= link_to "terms", terms_path, target: :_blank %> and <%= link_to "privacy policy", privacy_path, target: :_blank %>.
+									</h5>
+								</div>
+							</div>
+						<% end %>
+		         	</div>
+		         </div>
+			</div>
+		</div>
+	<% end %>
 <%= render 'layouts/footer' %>

@@ -1,10 +1,28 @@
 <div class="col-xs-12 text-center">
-	<h4 class="estimated-delivery-price-header delivery-estimate-information">
-		You can change these estimates by adjusting your drink profile inputs.
-	</h4>	
+	<% if @referring_url.include?("signup") %>
+		<h4 class="estimated-delivery-price-header delivery-estimate-information">
+			You can change these estimates by adjusting your drink profile inputs.
+		</h4>
+	<% else %>	
+		<% if @delivery_preferences.beer_chosen %>
+			<h4 class="estimated-delivery-price-header delivery-estimate-information">
+				You can change these estimates by adjusting either your 
+				<%= link_to "drink journey", settings_beer_journey_path %>
+				or 
+				<%= link_to "cost inputs", settings_beer_costs_path %>.
+			</h4>
+		<% elsif @delivery_preferences.cider_chosen %>
+			<h4 class="estimated-delivery-price-header delivery-estimate-information">
+				You can change these estimates by adjusting either your 
+				<%= link_to "drink journey", settings_cider_journey_path %>
+				or 
+				<%= link_to "cost inputs", settings_cider_costs_path %>.
+			</h4>
+		<% end %>
+	<% end %>
 </div>
 <% if @delivery_preferences.beer_chosen %>
-	<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+	<div class="<%= @delivery_price_holder_beer_column %>">
 		<div class="row no-margin estimated-delivery-price-holder-signup">
 			<div class="row no-margin">
 				<h5 class="drink-estimate-header">Beer estimates for a delivery every <%= @delivery_frequency %> weeks.</h5>
@@ -25,7 +43,7 @@
 	</div>
 <% end %>
 <% if @delivery_preferences.cider_chosen %>
-	<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+	<div class="<%= @delivery_price_holder_cider_column %>">
 		<div class="row no-margin estimated-delivery-price-holder-signup">
 			<div class="row no-margin">
 				<h5 class="drink-estimate-header">Cider estimates for a delivery every <%= @delivery_frequency %> weeks.</h5>

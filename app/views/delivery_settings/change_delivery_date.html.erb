@@ -1,0 +1,45 @@
+<%= render 'layouts/header' %>
+<%= render 'layouts/updating_spinner' %>
+<%= render 'delivery_settings_common', current_section: "Date" %>
+<div class="container">
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h3 class="next-delivery-header">Your next delivery will be on <%= (@delivery.delivery_date).strftime("%a, %b %-d %Y") %></h3>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<h4 class="change-delivery-directions">Choose one of the dates below to change your next delivery to that date.</h4>
+		<%= render 'delivery_date_change_options' %>
+	</div>
+</div>
+<% if !@last_saved.nil? %>
+	<div class="row">
+		<div class="container" id="settings-last-saved">
+			<%= render 'layouts/last_saved' %>
+		</div>
+	</div>
+<% end %>
+<div id="change_date_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm your date change</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="auto-confirm-confirmation-text">
+					Are you sure you want to change your next delivery date to <span id="new_delivery_date"></span> ? 
+				</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-6 remove-button-holder">
+				<%= link_to "Yep, do it!", process_delivery_date_change_path("temp"), :class => 'change-delivery-date-confirmation text-center btn btn-success remove-drink-button', method: :post %>		
+			</div>
+			<div class="col-sm-6 remove-button-holder">
+				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

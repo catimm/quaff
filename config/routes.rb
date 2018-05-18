@@ -105,7 +105,8 @@ Rails.application.routes.draw do
   get '/delivery_settings/drink_categories' => 'delivery_settings#drink_categories', :as => 'drink_categories'
   get '/delivery_settings/delivery_frequency' => 'delivery_settings#delivery_frequency', :as => 'delivery_frequency'
   get '/delivery_settings/change_delivery_date' => 'delivery_settings#change_delivery_date', :as => 'change_delivery_date'
- 
+  post '/delivery_settings/process_delivery_date_change/:id' => 'delivery_settings#process_delivery_date_change', :as => 'process_delivery_date_change'
+
   # routes to user shipment settings pages
   get '/shipment_settings/index' => 'shipment_settings#index', :as => 'user_shipment_settings'
   patch '/shipment_settings/shipment_update_additional_requests' => 'shipment_settings#shipment_update_additional_requests', :as => 'shipment_update_additional_requests'
@@ -324,6 +325,7 @@ Rails.application.routes.draw do
   get 'about_us' => 'home#about_us', :as => "about_us"
   get 'faqs' => 'home#faqs', :as => "faqs"
   get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
+  get 'membership_plans' => 'home#membership_plans', :as => "membership_plans"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'

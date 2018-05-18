@@ -1,24 +1,21 @@
-<%= render 'layouts/header_home_temp2' %> 
+<%= render 'layouts/header_home_temp' %> 
 <!-- Page Content -->
     <section class="background-light intro-section">
-		<%= render 'intro_section' %>
+		<%= render 'section_intro' %>
     </section>
     <!-- /.row -->	
     <section class="background-dark value-prop-section" id="value_section">
-		<%= render 'value_prop_section' %>
+		<%= render 'section_value_prop' %>
     </section>
     <!-- /.row -->
     <section class="background-light how-it-works-section" id="works_section">
-		<%= render 'how_it_works_section' %>
+		<%= render 'section_how_it_works' %>
     </section>
     <!-- /.row -->
-   	<section class="background-dark homepage-last-row" id="membership_section">
-		<%= render 'plan_section' %>
+   	<section class="background-dark homepage-last-row" id="get_started">
+		<%= render 'section_get_started' %>
     </section>
-    <!-- /.row -->
-    <section class="background-light prices_section <%= @prices_section_view %>" id="prices_section">
-		
-    </section>
+   
     <div id="initial_delivery_area" class="modal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

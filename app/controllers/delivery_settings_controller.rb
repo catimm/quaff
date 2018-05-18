@@ -11,52 +11,88 @@ class DeliverySettingsController < ApplicationController
   require 'json'
   
   def delivery_frequency
+    # set referring page
+    @referring_url = request.referrer
+    
     # get User info 
     @user = User.find_by_id(current_user.id)
     # get Account info
     @account = Account.find_by_id(@user.account_id)
     @delivery_frequency = @account.delivery_frequency
+    @last_saved = @account.updated_at
     
     # get User Subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # get delivery preferences
-    @total_drinks_per_week = 0
+    @estimated_delivery_price = 0
+    @total_categories = 0
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
     if !@delivery_preferences.blank?
       # get user's drink preference
       if @delivery_preferences.beer_chosen
+        # get user input
         @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
         @beers_per_week = @user_beer_preferences.beers_per_week
-        @total_drinks_per_week = @total_drinks_per_week + @beers_per_week
+        @estimated_beer_cost_per_week = @beers_per_week * @user_beer_preferences.beer_price_estimate
+        if @user_beer_preferences.beer_price_response == "lower"
+          @estimated_beer_cost_per_week = (@estimated_beer_cost_per_week * 0.9)
+        end
+        # increment totals
+        @total_categories += 1
+        @estimated_delivery_price = @estimated_delivery_price + @estimated_beer_cost_per_week
         # get beer estimates if they exist
-        @beers_per_delivery = @user_beer_preferences.beers_per_delivery
-        @beer_delivery_estimate = @user_beer_preferences.beers_per_delivery * @user_beer_preferences.beer_price_estimate
-        @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-        @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        if !@user_beer_preferences.beers_per_delivery.nil?
+          @beers_per_delivery = @user_beer_preferences.beers_per_delivery
+          @beer_delivery_estimate = @user_beer_preferences.beers_per_delivery * @user_beer_preferences.beer_price_estimate
+          if @user_beer_preferences.beer_price_response == "lower"
+            @beer_delivery_estimate = (@beer_delivery_estimate * 0.9)
+          end
+          @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+          @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        end
       end
       if @delivery_preferences.cider_chosen
+        # get user inputs
         @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
         @ciders_per_week = @user_cider_preferences.ciders_per_week
-        @total_drinks_per_week = @total_drinks_per_week + @ciders_per_week
+        @estimated_cider_cost_per_week = @ciders_per_week * @user_cider_preferences.cider_price_estimate
+        if @user_cider_preferences.cider_price_response == "lower"
+          @estimated_cider_cost_per_week = (@estimated_cider_cost_per_week * 0.9)
+        end
+        # increment totals
+        @total_categories += 1
+        @estimated_delivery_price = @estimated_delivery_price + @estimated_cider_cost_per_week
         # get cider estimates if they exist
-        @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
-        @cider_delivery_estimate = @user_cider_preferences.ciders_per_delivery * @user_cider_preferences.cider_price_estimate
-        @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-        @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        if !@user_cider_preferences.ciders_per_delivery.nil?
+          @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
+          @cider_delivery_estimate = @user_cider_preferences.ciders_per_delivery * @user_cider_preferences.cider_price_estimate
+          if @user_cider_preferences.cider_price_response == "lower"
+            @cider_delivery_estimate = (@cider_delivery_estimate * 0.9)
+          end
+          @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+          @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        end
       end
     
       # determine minimum number of weeks between deliveries
-      @start_week = 2
-      @total_drinks_per_week = (@start_week * @total_drinks_per_week)
+      @start_week = 1
+      @estimated_delivery_price = (@start_week * @estimated_delivery_price)
 
-      while @total_drinks_per_week < 7
+      while @estimated_delivery_price < 28
         @start_week += 1
-        @total_drinks_per_week = (@start_week * @total_drinks_per_week).round
+        @estimated_delivery_price = (@start_week * @estimated_delivery_price).round
       end
       # set end week
       @end_week = @start_week + 5
-
+      # set class for estimate holder, depending on number of categories chosen
+      if @total_categories == 1
+        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+        @delivery_price_holder_cider_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+      else
+        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-2 col-sm-4"
+        @delivery_price_holder_cider_column = "col-xs-12 col-sm-4"
+      end
     end # end of check whether delivery preferences
   end # end delivery_frequency method
   
@@ -176,54 +212,7 @@ class DeliverySettingsController < ApplicationController
       # update time of last save
       @preference_updated = @delivery_preferences.updated_at
       
-      # set option for changing the next delivery date
-      @today = Date.today
-      #Rails.logger.debug("Today: #{@today.inspect}")
-      # get user's delivery zone
-      @user_delivery_zone = current_user.account.delivery_zone_id
-      # get delivery zone info
-      @delivery_zone_info = DeliveryZone.find_by_id(@user_delivery_zone)
       
-      # determine number of days needed before allowing change in delivery date
-      if @today < @delivery.delivery_date
-        @change_permitted = true
-      else
-        @change_permitted = false       
-      end
-      #Rails.logger.debug("Change permitted: #{@change_permitted.inspect}")
-      
-      # determine current week status
-      @current_week_number = Date.today.strftime("%U").to_i
-      if @current_week_number.even?
-        @current_week_status = "even"
-      else
-        @current_week_status = "odd"
-      end
-      
-      # first determine next two options based on week alignment
-      if @delivery_zone_info.weeks_of_year == "every"
-        @number_of_days = 7
-        @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
-        @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
-      elsif @delivery_zone_info.weeks_of_year == @current_week_status
-        @number_of_days = 14
-        @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
-        @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 14.days
-      else
-        @number_of_days = 14
-        @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
-        @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 21.days
-      end
-   
-      # next determine which of two options is best based on days noticed required
-      @days_between_today_and_first_option = @first_delivery_date_option - Date.today
-  
-      if @change_permitted == true
-        @first_change_date_option = @first_delivery_date_option
-      else
-        @first_change_date_option = @second_delivery_date_option
-      end
-      @first_change_date_option_id = @first_change_date_option.strftime("%Y-%m-%d")
     
       # set drink category choice
       if @delivery_preferences.drink_option_id == 1
@@ -652,7 +641,80 @@ class DeliverySettingsController < ApplicationController
 
   end # end of deliveries_update_preferences
   
-  def change_next_delivery_date
+  def change_delivery_date
+    # get user info
+    @user = User.find_by_id(current_user.id)
+    
+    # get account info
+    @account = Account.find_by_id(@user.account_id)
+    
+    # get account owner info
+    @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
+    
+    # set current page for jquery routing--preferences vs signup settings
+    @current_page = "preferences"
+    
+    # get drink options
+    @drink_options = DrinkOption.all
+    
+    # get delivery preferences info
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    
+    # get user's delivery info
+    @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").order("delivery_date ASC").first 
+
+    # set option for changing the next delivery date
+    @today = Date.today
+    #Rails.logger.debug("Today: #{@today.inspect}")
+    # get user's delivery zone
+    @user_delivery_zone = current_user.account.delivery_zone_id
+    # get delivery zone info
+    @delivery_zone_info = DeliveryZone.find_by_id(@user_delivery_zone)
+    
+    # determine number of days needed before allowing change in delivery date
+    if @today < @delivery.delivery_date
+      @change_permitted = true
+    else
+      @change_permitted = false       
+    end
+    #Rails.logger.debug("Change permitted: #{@change_permitted.inspect}")
+    
+    # determine current week status
+    @current_week_number = Date.today.strftime("%U").to_i
+    if @current_week_number.even?
+      @current_week_status = "even"
+    else
+      @current_week_status = "odd"
+    end
+    
+    # first determine next two options based on week alignment
+    if @delivery_zone_info.weeks_of_year == "every"
+      @number_of_days = 7
+      @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
+      @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
+    elsif @delivery_zone_info.weeks_of_year == @current_week_status
+      @number_of_days = 14
+      @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week)
+      @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 14.days
+    else
+      @number_of_days = 14
+      @first_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 7.days
+      @second_delivery_date_option = Date.parse(@delivery_zone_info.day_of_week) + 21.days
+    end
+ 
+    # next determine which of two options is best based on days noticed required
+    @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+
+    if @change_permitted == true && @first_delivery_date_option != Date.today
+      @first_change_date_option = @first_delivery_date_option
+    else
+      @first_change_date_option = @second_delivery_date_option
+    end
+    @first_change_date_option_id = @first_change_date_option.strftime("%Y-%m-%d")
+    
+  end # end of change_next_delivery_date method
+  
+  def process_delivery_date_change
     @requested_delivery_date = params[:id]
     @new_delivery_date = DateTime.parse(@requested_delivery_date)
     #Rails.logger.debug("Date chosen: #{@new_delivery_date.inspect}")
@@ -709,16 +771,9 @@ class DeliverySettingsController < ApplicationController
       @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
     end
     
-    # determine if date being changed is the last set delivery for this subscription. If so, update renewal date
-    @user_subscription = UserSubscription.find_by_user_id(current_user.id)
-    if !@user_subscription.active_until.nil?
-      @new_renewal_date = @new_delivery_date + 3.days
-      @customer_subscription.update_attribute(:active_until, @new_renewal_date)
-    end
+    redirect_to change_delivery_date_path
     
-    redirect_to user_delivery_settings_path
-    
-  end # end of change_next_delivery_date method
+  end # end of process_delivery_date_change method
   
   def change_delivery_drink_quantity
     # get data to add/update

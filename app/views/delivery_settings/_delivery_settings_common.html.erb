@@ -23,7 +23,7 @@
 				<% end %>
 				<% if !@user_subscription.blank? %>
 					<div class="col-xs-6 col-sm-3 no-padding-right">
-						<%= link_to "Next Delivery Date", change_delivery_date_path, class: "drink-preference-view-option #{if current_section == "Changes" then "current" else "" end}" %>
+						<%= link_to "Next Delivery Date", change_delivery_date_path, class: "drink-preference-view-option #{if current_section == "Date" then "current" else "" end}" %>
 					</div>
 				<% end %>
 			</div>

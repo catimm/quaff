@@ -7,10 +7,10 @@
 		</div>
 		<div class="row no-margin">
 			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-3 no-padding">
-				<%= text_field_tag 'delivery_area', nil, placeholder: 'Enter different zip code', class: 'form-control check-zip-code-button', id: 'check-zip-code-deliveries' %>
+				<%= text_field_tag 'delivery_area', nil, placeholder: 'Enter different zip code', class: 'form-control check-zip-code-button', id: 'check-zip-code' %>
 			</div>
 			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
-				<%= link_to "#", :class => 'btn btn-success find-plans-zip-code-button #{@page_source}' do %>
+				<%= link_to "#", :class => "btn btn-success find-plans-zip-code-button #{@page_source}" do %>
 							<i class="fa fa-exchange">&nbsp;</i>
 							Change zip code 
 						<% end %>
@@ -22,14 +22,16 @@
 	<div class="col-xs-12 col-sm-4">
 		<div class="homepage-plan-options">
 			<%= render 'layouts/plan_delivery_zero' %>
-			<div class="row no-margin">
-				<div class="col-xs-12 no-padding">
-					<%= link_to "Confirm The Ad Hoc Plan", 
-								process_account_membership_getting_started_path("one_zero"), 
-								method: :post, class: 'btn btn-primary plan-get-started-button' 
-					%>
+			<% if @page_source != "homepage" %>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<%= link_to "Confirm The Ad Hoc Plan", 
+									process_account_membership_getting_started_path("one_zero"), 
+									method: :post, class: 'btn btn-primary plan-get-started-button' 
+						%>
+					</div>
 				</div>
-			</div>
+			<% end %>
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
 					<h6 class='membership-extra-info'>Order when you like; 6 drink minimum order.</h6>
@@ -40,24 +42,26 @@
 	<div class="col-xs-12 col-sm-4">
 		<div class="homepage-plan-options">
 			<%= render 'layouts/plan_delivery_six' %>
-			<div class="row no-margin">
-				<div class="col-xs-12 no-padding">
-					<%= form_tag process_account_membership_getting_started_path("one_six"), class:"plan-button" do %>
-						<input name="plan_id" type="hidden" value="one_six"></input>
-			          	<script 
-			          		class="stripe-button" 
-			          		data-name="Knird" 
-			          		data-description="$30 for The Prepaid 6" 
-			          		data-currency="USD" 
-			          		data-label="Start The Prepaid 6 Plan"
-			          		data-email="<%= @user.email %>" 
-			          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
-			          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-			          		src="https://checkout.stripe.com/checkout.js">
-			          	</script>
-					<% end %>
+			<% if @page_source != "homepage" %>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<%= form_tag process_account_membership_getting_started_path("one_six"), class:"plan-button" do %>
+							<input name="plan_id" type="hidden" value="one_six"></input>
+				          	<script 
+				          		class="stripe-button" 
+				          		data-name="Knird" 
+				          		data-description="$30 for The Prepaid 6" 
+				          		data-currency="USD" 
+				          		data-label="Start The Prepaid 6 Plan"
+				          		data-email="<%= @user.email %>" 
+				          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+				          		src="https://checkout.stripe.com/checkout.js">
+				          	</script>
+						<% end %>
+					</div>
 				</div>
-			</div>
+			<% end %>
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
 					<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>
@@ -68,24 +72,26 @@
 	<div class="col-xs-12 col-sm-4">
 		<div class="homepage-plan-options">
 			<%= render 'layouts/plan_delivery_twenty_five' %>
-			<div class="row no-margin">
-				<div class="col-xs-12 no-padding">
-					<%= form_tag process_account_membership_getting_started_path("one_twenty_five"), class:"plan-button" do %>
-							<input name="plan_id" type="hidden" value="one_twenty_five"></input>
-				          	<script 
-				          		class="stripe-button" 
-				          		data-name="Knird" 
-				          		data-description="$100 for The Prepaid 25" 
-				          		data-currency="USD" 
-				          		data-label="Start The Prepaid 25 Plan"
-				          		data-email="<%= @user.email %>" 
-				          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
-				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-				          		src="https://checkout.stripe.com/checkout.js">
-				          	</script>
-						<% end %>
+			<% if @page_source != "homepage" %>
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<%= form_tag process_account_membership_getting_started_path("one_twenty_five"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_twenty_five"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="$100 for The Prepaid 25" 
+					          		data-currency="USD" 
+					          		data-label="Start The Prepaid 25 Plan"
+					          		data-email="<%= @user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+					</div>
 				</div>
-			</div>
+			<% end %>
 			<div class="row no-margin">
 				<div class="col-xs-12 no-padding">
 					<h6 class='membership-extra-info'>Change any delivery date. Cancel any time.</h6>

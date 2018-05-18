@@ -3160,9 +3160,13 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
 }
-.btn.formButton-home-get-started-button {
-  width: 40%;
+.formButton-home-get-started-button {
+  width: 50%;
   margin: 20px 0 0 0px !important;
+}
+.lower-get-started-button {
+  width: 100%;
+  margin: 0 0 20px 0;
 }
 .home-gift-certificate-button {
   margin: 12px 0 0 20px;
@@ -5138,6 +5142,14 @@ $beer-header-lines-to-show-fp: 1;
 .drink-estimate-header {
   color: $more-emphasized-text;
   text-align: center;
+}
+.next-delivery-header {
+  color: $more-emphasized-text;
+}
+.change-delivery-directions {
+  color: $normal-text;
+  padding-left: 15px;
+  margin-top: 20px;
 }
 .preference-estimate-holder-admin {
   padding: 0 5px !important;
@@ -7994,9 +8006,9 @@ header {
     }
   }
 }
-.btn.formButton-home-get-started-button {
-  width: 40%;
-  margin: 20px 0 0 0px !important;
+.formButton-home-get-started-button {
+  width: 50%;
+  margin: 10px 0 5px 0 !important;
 }
 .example-drink-holder {
   padding: 5px 0 0 75px;

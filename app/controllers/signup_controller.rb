@@ -15,6 +15,8 @@ class SignupController < ApplicationController
   end # end process_final_drink_profile_step
   
   def choose_signup
+    # get user delivery preferences - determine if non-subscription user should see subscription signup button
+    @user_delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
     
   end # end of choose_signup method
   
@@ -597,6 +599,9 @@ class SignupController < ApplicationController
       end
     end
     
+    # set referring page
+    @referring_url = request.referrer
+    
     # set sub-guide view
     @subguide = "delivery"
     
@@ -612,6 +617,7 @@ class SignupController < ApplicationController
     # get Account info
     @account = Account.find_by_id(@user.account_id)
     @delivery_frequency = @account.delivery_frequency
+    @last_saved = @account.updated_at
     
     # get User Subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
@@ -626,62 +632,74 @@ class SignupController < ApplicationController
     @estimate_visible_status = "show"
     
     # get delivery preferences
-    @total_drinks_per_week = 0
+    @estimated_delivery_price = 0
+    @total_categories = 0
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
     if !@delivery_preferences.blank?
       # get user's drink preference
       if @delivery_preferences.beer_chosen
+        # get user input
         @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
         @beers_per_week = @user_beer_preferences.beers_per_week
-        @total_drinks_per_week = @total_drinks_per_week + @beers_per_week
+        @estimated_beer_cost_per_week = @beers_per_week * @user_beer_preferences.beer_price_estimate
+        if @user_beer_preferences.beer_price_response == "lower"
+          @estimated_beer_cost_per_week = (@estimated_beer_cost_per_week * 0.9)
+        end
+        # increment totals
+        @total_categories += 1
+        @estimated_delivery_price = @estimated_delivery_price + @estimated_beer_cost_per_week
         # get beer estimates if they exist
-        @beers_per_delivery = @user_beer_preferences.beers_per_delivery
-        @beer_delivery_estimate = @user_beer_preferences.beers_per_delivery * @user_beer_preferences.beer_price_estimate
-        @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-        @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        if !@user_beer_preferences.beers_per_delivery.nil?
+          @beers_per_delivery = @user_beer_preferences.beers_per_delivery
+          @beer_delivery_estimate = @user_beer_preferences.beers_per_delivery * @user_beer_preferences.beer_price_estimate
+          if @user_beer_preferences.beer_price_response == "lower"
+            @beer_delivery_estimate = (@beer_delivery_estimate * 0.9)
+          end
+          @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+          @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        end
       end
       if @delivery_preferences.cider_chosen
+        # get user inputs
         @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
         @ciders_per_week = @user_cider_preferences.ciders_per_week
-        @total_drinks_per_week = @total_drinks_per_week + @ciders_per_week
+        @estimated_cider_cost_per_week = @ciders_per_week * @user_cider_preferences.cider_price_estimate
+        if @user_cider_preferences.cider_price_response == "lower"
+          @estimated_cider_cost_per_week = (@estimated_cider_cost_per_week * 0.9)
+        end
+        # increment totals
+        @total_categories += 1
+        @estimated_delivery_price = @estimated_delivery_price + @estimated_cider_cost_per_week
         # get cider estimates if they exist
-        @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
-        @cider_delivery_estimate = @user_cider_preferences.ciders_per_delivery * @user_cider_preferences.cider_price_estimate
-        @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-        @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        if !@user_cider_preferences.ciders_per_delivery.nil?
+          @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
+          @cider_delivery_estimate = @user_cider_preferences.ciders_per_delivery * @user_cider_preferences.cider_price_estimate
+          if @user_cider_preferences.cider_price_response == "lower"
+            @cider_delivery_estimate = (@cider_delivery_estimate * 0.9)
+          end
+          @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+          @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        end
       end
     
       # determine minimum number of weeks between deliveries
-      @start_week = 2
-      @total_drinks_per_week = (@start_week * @total_drinks_per_week)
+      @start_week = 1
+      @estimated_delivery_price = (@start_week * @estimated_delivery_price)
 
-      while @total_drinks_per_week < 7
+      while @estimated_delivery_price < 28
         @start_week += 1
-        @total_drinks_per_week = (@start_week * @total_drinks_per_week).round
+        @estimated_delivery_price = (@start_week * @estimated_delivery_price).round
       end
       # set end week
       @end_week = @start_week + 5
-      
-      # check if user has already selected a delivery frequency
-      @first_delivery_option_chosen = "hidden"
-      @second_delivery_option_chosen = "hidden"
-      @third_delivery_option_chosen = "hidden"
-      
-      # update if one is already chosen
-      if !@account.delivery_frequency.blank?  
-        # show frequency choice already made
-        @drinks_per_week_meaning_show_status = "show"
-        if @account.delivery_frequency == @number_of_weeks_first_option
-          @first_delivery_option_chosen = "show"
-        elsif @account.delivery_frequency == @number_of_weeks_second_option
-          @second_delivery_option_chosen = "show"
-        elsif @account.delivery_frequency == @number_of_weeks_third_option
-          @third_delivery_option_chosen = "show"
-        end
+      # set class for estimate holder, depending on number of categories chosen
+      if @total_categories == 1
+        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+        @delivery_price_holder_cider_column = "col-xs-12 col-sm-offset-4 col-sm-4"
       else
-        @drinks_per_week_meaning_show_status = "hidden"
+        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-2 col-sm-4"
+        @delivery_price_holder_cider_column = "col-xs-12 col-sm-4"
       end
-    
     end # end of check whether delivery preferences
     
   end # end of delivery_frequency_getting_started method
@@ -701,6 +719,7 @@ class SignupController < ApplicationController
     # update Account with delivery frequency preference
     @account = Account.find_by_id(current_user.account_id)
     @account.update_attribute(:delivery_frequency, @delivery_frequency)
+    @last_saved = @account.updated_at
     
     # create/update second line in delivery table
     @user_deliveries = Delivery.where(account_id: current_user.account_id)
@@ -717,6 +736,8 @@ class SignupController < ApplicationController
                       share_admin_prep_with_user: false)
     end
     
+    # get delivery preferences
+    @total_categories = 0
     # get Delivery Preferences
     @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
     if @delivery_preferences.beer_chosen
@@ -724,18 +745,36 @@ class SignupController < ApplicationController
       @beers_per_delivery = (@user_beer_preferences.beers_per_week * @delivery_frequency).ceil
       @user_beer_preferences.update(beers_per_delivery: @beers_per_delivery)
       @beer_delivery_estimate = @user_beer_preferences.beers_per_week * @delivery_frequency * @user_beer_preferences.beer_price_estimate
+      if @user_beer_preferences.beer_price_response == "lower"
+        @beer_delivery_estimate = (@beer_delivery_estimate * 0.9)
+      end
       @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
       @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      # increment totals
+      @total_categories += 1
     end
     if @delivery_preferences.cider_chosen
       @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
       @ciders_per_delivery = (@user_cider_preferences.ciders_per_week * @delivery_frequency).ceil
       @user_cider_preferences.update(ciders_per_delivery: @ciders_per_delivery)
       @cider_delivery_estimate = @user_cider_preferences.ciders_per_week * @delivery_frequency * @user_cider_preferences.cider_price_estimate
+      if @user_cider_preferences.cider_price_response == "lower"
+        @cider_delivery_estimate = (@cider_delivery_estimate * 0.9)
+      end
       @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
       @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      # increment totals
+      @total_categories += 1
     end
-
+    
+    # set class for estimate holder, depending on number of categories chosen
+    if @total_categories == 1
+      @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+      @delivery_price_holder_cider_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+    else
+      @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-2 col-sm-4"
+      @delivery_price_holder_cider_column = "col-xs-12 col-sm-4"
+    end
     
   end # end process_delivery_frequency_getting_started method
   

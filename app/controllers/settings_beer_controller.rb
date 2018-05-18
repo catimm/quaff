@@ -67,7 +67,13 @@ class SettingsBeerController < ApplicationController
     @beer_style_ids = @styles_for_like.pluck(:id)
     
     # find if user has already liked styles
-    @all_user_styles = UserStylePreference.where(user_id: current_user.id)
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @all_user_styles = UserStylePreference.where(user_id: params[:format])
+    else
+      # get user info
+      @all_user_styles = UserStylePreference.where(user_id: current_user.id)
+    end
     if !@all_user_styles.blank?
       @styles_updated_order = @all_user_styles.order('updated_at DESC')
       @last_saved = @styles_updated_order.first.updated_at

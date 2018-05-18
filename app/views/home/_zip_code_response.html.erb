@@ -1,0 +1,40 @@
+<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+	<% if @plan_type == "delivery" %>
+		<h4 class="index-section-subheader">
+			<span>Costs shown below cover both curation and delivery</span> in <%= @location %>, but not drinks. 
+			<span class="homepage-read-more-text">
+				(<%= link_to "read why", faqs_path(:anchor => "plan-cost-includes-question"), :target => "_blank" %>)
+			</span>
+		</h4>
+	<% elsif @plan_type == "shipment" %>
+		<h4 class="index-section-subheader">
+			<span>Costs shown below cover both curation and shipments</span> to <%= @location %>, but not drinks. 
+			<span class="homepage-read-more-text">
+				(<%= link_to "read why", faqs_path(:anchor => "plan-cost-includes-question"), :target => "_blank" %>)
+			</span>
+		</h4>
+	<% else %>
+		<h4 class="index-section-subheader">
+			<span>Knird delivers locally</span> around Seattle <span>and ships</span> outside of Seattle. <br>
+		</h4>
+	<% end %>
+</div>
+<% if @show_plan == false %>
+	<%= render 'layouts/no_plan_currently_available'%>	
+<% elsif @plan_type == "delivery" %>
+	<%= render 'layouts/plan_section_deliveries' %>
+<% elsif @plan_type == "shipping"  %>
+	<%= render 'layouts/plan_section_shipments'%>
+<% else %>
+	<%= render 'layouts/zip_search_box' %>
+<% end %>
+<% if @plan_type == "delivery" || @plan_type == "shipment" %>
+	<div class="row no-margin">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
+			<%= link_to drink_profile_categories_path, :class => 'btn btn-success lower-get-started-button' do %>
+				<i class="fa fa-play">&nbsp;</i>
+				Get started for free 
+			<% end %>
+		</div>
+	</div>
+<% end %>

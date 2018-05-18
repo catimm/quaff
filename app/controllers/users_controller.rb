@@ -245,8 +245,8 @@ class UsersController < ApplicationController
     @user = current_user
     #Rails.logger.debug("User info: #{@user.inspect}")
 
-    # set link as chosen
-    @membership_chosen = "chosen"
+    # get user delivery preferences - determine if non-subscription user should see subscription signup button
+    @user_delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
     
     # set current page for user view
     @current_page = "user"

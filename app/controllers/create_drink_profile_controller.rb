@@ -22,7 +22,7 @@ class CreateDrinkProfileController < ApplicationController
     
     if @user.save
       # Sign in the new user by passing validation
-      sign_in @user, :bypass => true
+      bypass_sign_in(@user)
     end     
                   
     # redirect
@@ -34,32 +34,63 @@ class CreateDrinkProfileController < ApplicationController
     # indicate this is coming from signup
     @create_drink_profile = true
     
-    # get user info
-    @user = User.find_by_id(current_user.id)
-    # send getting started step to jquery
-    gon.getting_started_step = @user.getting_started_step
-    
-    # find if user has already chosen categories
-    @user_preferences = DeliveryPreference.find_by_user_id(current_user.id)
     # set defaults
     @beer_chosen = 'hidden'
     @cider_chosen = 'hidden'
     @wine_chosen = 'hidden'
-    if !@user_preferences.blank?
-      if @user_preferences.beer_chosen == true
-        @beer_chosen = 'show'
-      end
-      if @user_preferences.cider_chosen == true
-        @cider_chosen = 'show'
-      end
-      if @user_preferences.wine_chosen == true
-        @wine_chosen = 'show'
-      end  
-    end
     
+    if user_signed_in?
+      # get user info
+      @user = User.find_by_id(current_user.id)
+      # send getting started step to jquery
+      gon.getting_started_step = @user.getting_started_step
+      
+      # find if user has already chosen categories
+      @user_preferences = DeliveryPreference.find_by_user_id(@user.id)
+      
+      if !@user_preferences.blank?
+        if @user_preferences.beer_chosen == true
+          @beer_chosen = 'show'
+        end
+        if @user_preferences.cider_chosen == true
+          @cider_chosen = 'show'
+        end
+        if @user_preferences.wine_chosen == true
+          @wine_chosen = 'show'
+        end  
+      end
+    else
+      gon.getting_started_step = 0
+    end
+
   end # end of drink_categories method
   
   def process_drink_categories
+    if !user_signed_in?
+      # first create an account
+      @account = Account.create!(account_type: "consumer", number_of_users: 1)
+      
+      # next create fake user profile
+      @fake_user_email = Faker::Internet.unique.email
+      @generated_password = Devise.friendly_token.first(8)
+      
+      # create new user
+      @user = User.create(account_id: @account.id, 
+                          email: @fake_user_email, 
+                          password: @generated_password,
+                          password_confirmation: @generated_password,
+                          role_id: 4,
+                          getting_started_step: 0,
+                          unregistered: true)
+      
+      if @user.save
+        # Sign in the new user by passing validation
+        bypass_sign_in(@user)
+      end 
+    else
+      @user = current_user
+    end # end of creating using acct
+      
     # set referring page
     @referring_url = request.referrer
     
@@ -70,7 +101,7 @@ class CreateDrinkProfileController < ApplicationController
     @category = @split_data[1]
     
     # check if user already has a delivery preference entry
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+    @user_delivery_preference = DeliveryPreference.find_by_user_id(@user.id)
     
     if @referring_url.include?("delivery_settings") && @action == "remove"
       @number_chosen = 0
@@ -91,7 +122,7 @@ class CreateDrinkProfileController < ApplicationController
         if @category == "beer" 
           if @action == "add"
             if @user_delivery_preference.update(beer_chosen: true)
-              @user_beer_preference = UserPreferenceBeer.create(user_id: current_user.id,
+              @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
                                                               journey_stage: 1)
               if @user_beer_preference.save
@@ -103,7 +134,7 @@ class CreateDrinkProfileController < ApplicationController
             end
           else
             if @user_delivery_preference.update(beer_chosen: nil)
-              @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
+              @user_beer_preference = UserPreferenceBeer.find_by_user_id(@user.id)
               if @user_beer_preference.destroy
                 @choice_saved = true
                 @beer_category = false
@@ -117,7 +148,7 @@ class CreateDrinkProfileController < ApplicationController
         if @category == "cider" 
           if @action == "add"
             if @user_delivery_preference.update(cider_chosen: true)
-              @user_cider_preference = UserPreferenceCider.create(user_id: current_user.id,
+              @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
                                                             delivery_preference_id: @user_delivery_preference.id,
                                                             journey_stage: 1)
               if @user_cider_preference.save
@@ -129,7 +160,7 @@ class CreateDrinkProfileController < ApplicationController
             end
           else
             if @user_delivery_preference.update(cider_chosen: nil)
-              @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
+              @user_cider_preference = UserPreferenceCider.find_by_user_id(@user.id)
               if @user_cider_preference.destroy
                 @choice_saved = true
                 @cider_category = false
@@ -143,7 +174,7 @@ class CreateDrinkProfileController < ApplicationController
         if @category == "wine" 
           if @action == "add"
             if @user_delivery_preference.update(wine_chosen: true)
-              @user_wine_preference = UserPreferenceWine.create(user_id: current_user.id,
+              @user_wine_preference = UserPreferenceWine.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
                                                               journey_stage: 1)
               if @user_wine_preference.save
@@ -155,7 +186,7 @@ class CreateDrinkProfileController < ApplicationController
             end
           else
             if @user_delivery_preference.update(wine_chosen: nil)
-              @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
+              @user_wine_preference = UserPreferenceWine.find_by_user_id(@user.id)
               if @user_wine_preference.destroy
                 @choice_saved = true
                 @wine_category = false
@@ -169,10 +200,10 @@ class CreateDrinkProfileController < ApplicationController
       else # if user delivery preference doesn't exist
         if @category == "beer"
           # create delivery preference and chosen drink preference
-          @user_delivery_preference = DeliveryPreference.create(user_id: current_user.id,
+          @user_delivery_preference = DeliveryPreference.create(user_id: @user.id,
                                                                   beer_chosen: true)
           if @user_delivery_preference.save
-            @user_beer_preference = UserPreferenceBeer.create(user_id: current_user.id,
+            @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
                                                               journey_stage: 1)
             if @user_beer_preference.save
@@ -184,10 +215,10 @@ class CreateDrinkProfileController < ApplicationController
         
         if @category == "cider"
           # create delivery preference and chosen drink preference
-          @user_delivery_preference = DeliveryPreference.create(user_id: current_user.id,
+          @user_delivery_preference = DeliveryPreference.create(user_id: @user.id,
                                                                   cider_chosen: true)
           if @user_delivery_preference.save
-            @user_cider_preference = UserPreferenceCider.create(user_id: current_user.id,
+            @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
                                                               journey_stage: 1)
             if @user_cider_preference.save
@@ -199,10 +230,10 @@ class CreateDrinkProfileController < ApplicationController
         
         if @category == "wine"
           # create delivery preference and chosen drink preference
-          @user_delivery_preference = DeliveryPreference.create(user_id: current_user.id,
+          @user_delivery_preference = DeliveryPreference.create(user_id: @user.id,
                                                                   wine_chosen: true)
           if @user_delivery_preference.save
-            @user_wine_preference = UserPreferenceWine.create(user_id: current_user.id,
+            @user_wine_preference = UserPreferenceWine.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
                                                               journey_stage: 1)
             if @user_wine_preference.save
