@@ -12,7 +12,9 @@
 		<div class="row no-margin">
 			<%= simple_form_for @user_beer_preferences, :url => {:action => "process_beer_extras"} do |f| %>
 				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 delivery-additional-request">
-					<%= f.input :additional, placeholder: 'For example, "I always want an ISA on hand" or "I want to improve my cellar selection"', label: false %>
+					<%= f.input :additional, 
+								placeholder: 'For example, "I always want an ISA on hand" or "I want to improve my cellar selection" or "I prefer a 6-pack for ~$10 and then fill in the rest with speciality beers"', 
+								label: false %>
 				</div>
 				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 no-padding text-center">
 					<% if @user_beer_preferences.additional.nil? %>

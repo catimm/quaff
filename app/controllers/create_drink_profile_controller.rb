@@ -85,7 +85,7 @@ class CreateDrinkProfileController < ApplicationController
       
       if @user.save
         # Sign in the new user by passing validation
-        bypass_sign_in(@user)
+        bypass_sign_in @user
       end 
     else
       @user = current_user
@@ -115,8 +115,9 @@ class CreateDrinkProfileController < ApplicationController
         @number_chosen = @number_chosen + 1
       end
     end
-      
-    if @referring_url.include?("create_drink_profile") || @action == "add" || (@action == "remove" && @number_chosen > 1)
+    #Rails.logger.debug("Number chosen: #{@number_chosen.inspect}")  
+    if @referring_url.include?("create_drink_profile") || @action == "add" || (@action == "remove" && @number_chosen >= 2)
+     #Rails.logger.debug("Hits first option") 
       # create table entries where needed
       if !@user_delivery_preference.blank?
         if @category == "beer" 
@@ -124,7 +125,8 @@ class CreateDrinkProfileController < ApplicationController
             if @user_delivery_preference.update(beer_chosen: true)
               @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1)
+                                                              journey_stage: 1,
+                                                              beer_price_estimate: 3.5)
               if @user_beer_preference.save
                 @choice_saved = true
                 @beer_category = true
@@ -150,7 +152,8 @@ class CreateDrinkProfileController < ApplicationController
             if @user_delivery_preference.update(cider_chosen: true)
               @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
                                                             delivery_preference_id: @user_delivery_preference.id,
-                                                            journey_stage: 1)
+                                                            journey_stage: 1,
+                                                            cider_price_estimate: 4)
               if @user_cider_preference.save
                 @choice_saved = true
                 @cider_category = true
@@ -205,7 +208,8 @@ class CreateDrinkProfileController < ApplicationController
           if @user_delivery_preference.save
             @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1)
+                                                              journey_stage: 1,
+                                                              beer_price_estimate: 3.50)
             if @user_beer_preference.save
               @choice_saved = true
               @beer_category = true
@@ -220,7 +224,8 @@ class CreateDrinkProfileController < ApplicationController
           if @user_delivery_preference.save
             @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
                                                               delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1)
+                                                              journey_stage: 1,
+                                                              cider_price_estimate: 4)
             if @user_cider_preference.save
               @choice_saved = true
               @cider_category = true
@@ -245,6 +250,7 @@ class CreateDrinkProfileController < ApplicationController
         
       end # end of check whether user already has a delivery preference entry 
     else # making sure at least 1 category is chosen
+      #Rails.logger.debug("Hits second option") 
       @need_at_least_one_category = true
     end
     # check how many categories are currently chosen for 'next' button
@@ -284,10 +290,9 @@ class CreateDrinkProfileController < ApplicationController
     
     # get user beer preferences
     @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
-    if !@user_beer_preference.journey_stage.blank?
-      # send beer_journey_stage data to js to show what is currently chosen
-      gon.beer_journey_stage = @user_beer_preference.journey_stage
-    end
+    # send beer_journey_stage data to js to show what is currently chosen
+    gon.beer_journey_stage = @user_beer_preference.journey_stage
+    
     @last_saved = @user_beer_preference.updated_at
   
   end # end of beer_journey method
@@ -313,10 +318,9 @@ class CreateDrinkProfileController < ApplicationController
     
     # get user cider preferences
     @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
-    if !@user_cider_preference.journey_stage.blank?
-      # send beer_journey_stage data to js to show what is currently chosen
-      gon.cider_journey_stage = @user_cider_preference.journey_stage
-    end
+    # send beer_journey_stage data to js to show what is currently chosen
+    gon.cider_journey_stage = @user_cider_preference.journey_stage
+
     @last_saved = @user_cider_preference.updated_at
   
   end # end of cider_journey method
@@ -343,10 +347,9 @@ class CreateDrinkProfileController < ApplicationController
     
     # get user wine preferences
     @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
-    if !@user_wine_preference.journey_stage.blank?
-      # send beer_journey_stage data to js to show what is currently chosen
-      gon.wine_journey_stage = @user_wine_preference.journey_stage
-    end
+    # send beer_journey_stage data to js to show what is currently chosen
+    gon.wine_journey_stage = @user_wine_preference.journey_stage
+
     @last_saved = @user_wine_preference.updated_at
   
   end # end of wine_journey method
@@ -598,6 +601,9 @@ class CreateDrinkProfileController < ApplicationController
     @category = @split_data[0]
     @type = @split_data[1]
     @input = @split_data[2]
+    
+    # set default time saved
+    @last_saved = Time.now
     
     if @type == "timeframe"
       @timeframe_saved = true

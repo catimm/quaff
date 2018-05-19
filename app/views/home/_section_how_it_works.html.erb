@@ -66,9 +66,17 @@
 				</div>
 			</div>
 		</div>
-	</div>   	
+	</div>   
+	<div class="row no-margin">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to drink_profile_categories_path, :class => 'btn btn-success lower-get-started-button' do %>
+				<i class="fa fa-play">&nbsp;</i>
+				Get started for free 
+			<% end %>
+		</div>
+	</div>	
 	<div class="row more-info-text-holder">
-		<div class="col-xs-12 col-sm-offset-2 col-sm-8">
+		<div class="col-xs-12 col-sm-offset-2 col-sm-8 text-center">
 			<h5 class="more-info-text">
 				For more detail about how Knird works, check out our
 				<span class="homepage-read-more-text"><%= link_to "FAQs", faqs_path(:anchor => "faq-section"), :target => "_blank" %></span>.

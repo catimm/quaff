@@ -22,20 +22,16 @@ class HomeController < ApplicationController
     #@zip_code = @geocode_data.zip
     
     # determine messaging user sees
-    @message_number = [1,2].sample
-    if @message_number == 1
-      @homepage_view = "local_one"
-    else
-      @homepage_view = "local_two"
-    end
+    #@message_number = [1,2].sample
+    #if @message_number == 1
+    #  @homepage_view = "local_one"
+    #else
+    #  @homepage_view = "local_two"
+    #end
     
     # set session variable to record which page user originally views
-    session[:homepage_view] = @homepage_view
-    #session[:geo_zip] = @geocode_data.zip
-    
-    # set default views
-    @show_plan = false
-    @prices_section_view = "hidden"  
+    #session[:homepage_view] = @homepage_view
+    #session[:geo_zip] = @geocode_data.zip 
     
   end # end index action
   

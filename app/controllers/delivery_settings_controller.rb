@@ -81,8 +81,12 @@ class DeliverySettingsController < ApplicationController
 
       while @estimated_delivery_price < 28
         @start_week += 1
-        @estimated_delivery_price = (@start_week * @estimated_delivery_price).round
+        @temp_estimated_delivery_price = (@start_week * @estimated_delivery_price).round
+        if @temp_estimated_delivery_price > 28
+          @estimated_delivery_price = @temp_estimated_delivery_price
+        end
       end
+      
       # set end week
       @end_week = @start_week + 5
       # set class for estimate holder, depending on number of categories chosen
@@ -1258,9 +1262,6 @@ class DeliverySettingsController < ApplicationController
   def drink_categories
     # find if user has already chosen categories
     @user_preferences = DeliveryPreference.find_by_user_id(current_user.id)
-    
-    # see if user has chosen a delivery address yet (for customers w/o a subscription)
-    
     
     # set defaults
     @beer_chosen = 'hidden'

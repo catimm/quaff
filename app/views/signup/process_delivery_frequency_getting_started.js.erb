@@ -1,10 +1,16 @@
 $(function() {
-	$("#drinks-frequency-meaning").html("<%= escape_javascript(render 'layouts/per_delivery_estimate' ) %>");
+	$("#drinks-frequency-meaning").html("<%= escape_javascript(render 'delivery_settings/per_delivery_estimate' ) %>");
 	// highlight number chosen
 	$("#<%= @delivery_frequency %>").addClass("chosen").parent(".delivery-frequency-holder-parent").
 			siblings(".delivery-frequency-holder-parent").
 			children(".delivery-frequency-holder").
 			removeClass("chosen");
+	
+	// code for changing setting during initial drink profile creation
+	if ($("#signup_frequency_next_button").attr('disabled') == 'disabled' ) {
+		$('#signup_frequency_next_button').removeAttr('disabled');
+		$('#signup_frequency_next_button').removeClass('btn-default').addClass('btn-success');
+	}
 	
 	<% if !@referring_url.include?("signup") %>
 		// code for changing setting after login

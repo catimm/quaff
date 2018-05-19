@@ -27,7 +27,11 @@ $(function () {
 	$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
 	
 	// set height of drink cost holder
-	var drink_cost_holder_height = $('#beer-response-higher').height();
+	if ($('#beer-response-higher').length != 0) {
+		var drink_cost_holder_height = $('#beer-response-higher').height();
+	} else {
+		drink_cost_holder_height = $('#cider-response-higher').height();
+	}
 	$('.drink-text-holder').height(drink_cost_holder_height);
 	
 	// get height of category image holder

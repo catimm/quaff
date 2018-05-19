@@ -561,6 +561,15 @@ label {
     text-decoration: underline;
   }
 }
+.current-knird-area {
+  color: $header-text;
+  text-align: center;
+  margin: 0 0 20px 0;
+  line-height: 1.25;
+  span {
+    color: $action-background;
+  }
+}
 .index-section-subheader {
   color: $header-text;
   text-align: center;
@@ -3166,7 +3175,7 @@ $beer-header-lines-to-show-fp: 1;
 }
 .lower-get-started-button {
   width: 100%;
-  margin: 0 0 20px 0;
+  margin: 20px 0 0 0;
 }
 .home-gift-certificate-button {
   margin: 12px 0 0 20px;
@@ -3721,6 +3730,9 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 22px !important;
   font-weight: 500;
   margin-bottom: 10px;
+}
+.signup-question-styles-explained {
+  margin-bottom: 20px;
 }
 .membership-option-change {
   color: $normal-text;
@@ -4912,12 +4924,15 @@ $beer-header-lines-to-show-fp: 1;
 .delivery-preference-prompt {
   color: $normal-text;
   font-size: 22px;
-  margin: 0;
+  margin: 0 0 30px 0;
   .current-drink-choice {
     color: $action-background;
   }
-  #order-change-drink-type {
+  .change-categories {
     font-size: 16px;
+    a {
+      color: $action-background;
+    }
   }
 }
 #last-row-in-delivery-numbers-signup {
@@ -4957,7 +4972,7 @@ $beer-header-lines-to-show-fp: 1;
 .delivery-date-change-row-holder {
   margin: 2.5px 0;
 }
-.delivery-date-change-row {
+.delivery-date-change-row, .order-delivery-date-change-row {
   border-radius: 6px;
   background: $white;
   height: inherit;
@@ -4983,10 +4998,10 @@ $beer-header-lines-to-show-fp: 1;
   width: 100%;
   margin-top: 10px;
 }
-.delivery-date-change-row.chosen {
+.delivery-date-change-row.chosen, .order-delivery-date-change-row.chosen {
   background: rgba(0,135,203, 0.4);
 }
-.delivery-date-change-row:hover {
+.delivery-date-change-row:hover, .order-delivery-date-change-row:hover {
   background: rgba(0,135,203, 0.4);
 }
 .delivery-detail {

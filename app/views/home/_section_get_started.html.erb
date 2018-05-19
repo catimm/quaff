@@ -6,17 +6,9 @@
 	</div>
 	<div class="row no-margin">
 		<div class="col-xs-12">
-			<h4 class="index-section-subheader">
+			<h4 class="current-knird-area">
 				<span>Knird delivers locally</span> around Seattle <span>and ships</span> to the rest of Washington.
 			</h4>
-		</div>
-	</div>
-	<div class="row no-margin">
-		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
-			<%= link_to drink_profile_categories_path, :class => 'btn btn-success lower-get-started-button' do %>
-				<i class="fa fa-play">&nbsp;</i>
-				Get started for free 
-			<% end %>
 		</div>
 	</div>
 	<div class="row no-margin">
@@ -25,11 +17,23 @@
 				Experience first-hand how easy Knird makes it to get great drinks&mdash;complete your 
 				drink profile to get a free curation and delivery.  
 			</h4>
-			<h4 class="how-it-works-desc">
-				If you like our curated recommendations, check out 
-				<%= link_to "our delivery options", membership_plans_path, :target => "_blank" %>
-				that provide flexibility and the opportunity to save money on drinks. 
-			</h4>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to drink_profile_categories_path, :class => 'btn btn-success lower-get-started-button' do %>
+				<i class="fa fa-play">&nbsp;</i>
+				Get started for free 
+			<% end %>
+		</div>
+	</div>
+	<div class="row more-info-text-holder">
+		<div class="col-xs-12 col-sm-offset-2 col-sm-8 text-center">
+			<h5 class="more-info-text">
+				Read about
+				<span class="homepage-read-more-text"><%= link_to "our delivery options", membership_plans_path, :target => "_blank" %></span>
+				to learn how to save money and get access to limited drinks.
+			</h5>
 		</div>
 	</div>
 </div>

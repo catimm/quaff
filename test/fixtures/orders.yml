@@ -5,7 +5,7 @@
 #  id                     :integer          not null, primary key
 #  account_id             :integer
 #  drink_type             :string
-#  number_of_drinks       :integer
+#  number_of_beers        :integer
 #  number_of_large_drinks :integer
 #  delivery_date          :datetime
 #  additional_requests    :string
@@ -13,6 +13,8 @@
 #  updated_at             :datetime         not null
 #  drink_option_id        :integer
 #  user_id                :integer
+#  number_of_ciders       :integer
+#  number_of_glasses      :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

@@ -1,5 +1,5 @@
 class SignupController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, :except => [:process_free_curation_signup]
   include DeliveryEstimator
   require "stripe"
   
@@ -28,9 +28,10 @@ class SignupController < ApplicationController
     @state = @zip_code.to_region(:state => true)
     
     if @user.update(free_curation_params)
-      bypass_sign_in(@user)
+      bypass_sign_in @user
+      
       # first see if this address falls in Knird delivery zone
-      @knird_delivery_zone = DeliveryZone.where(zip_code: @zip, currently_available: true).first
+      @knird_delivery_zone = DeliveryZone.where(zip_code: @zip_code, currently_available: true).first
       # if there is no Knird delivery Zone, find Fed Ex zone
       if !@knird_delivery_zone.blank?
         UserAddress.create(account_id: @user.account_id, 
@@ -41,7 +42,7 @@ class SignupController < ApplicationController
                             delivery_zone_id: @knird_delivery_zone.id)
       else
         # get Shipping Zone
-        @first_three = @zip[0...3]
+        @first_three = @zip_code[0...3]
         @shipping_zone = ShippingZone.zone_match(@first_three, currently_available: true).first
         if !@shipping_zone.blank?
           UserAddress.create(account_id: @user.account_id, 
@@ -281,7 +282,6 @@ class SignupController < ApplicationController
       # check if user already has a subscription row
       @current_customer = UserSubscription.where(account_id: @user.account_id).where("stripe_customer_number IS NOT NULL").first
       
-      
       if @current_customer.blank?
         # create user subscription
         @user_subscription = UserSubscription.create(user_id: current_user.id, 
@@ -315,16 +315,21 @@ class SignupController < ApplicationController
           :customer => @current_customer.stripe_customer_number,
           :description => @charge_description
         )
-        
-        
+
       end
     else
-      # update User Subscription to make active
-      @user_subscription = UserSubscription.where(account_id: @user.account_id, subscription_id: @subscription_info.id, currently_active: [true, nil]).first
-      @user_subscription.update_attribute(:currently_active, true)
+      # create user subscription
+      @user_subscription = UserSubscription.create(user_id: current_user.id, 
+                                                    account_id: current_user.account_id, 
+                                                    subscription_id: @subscription_info.id,
+                                                    auto_renew_subscription_id: @subscription_info.id,
+                                                    deliveries_this_period: 0,
+                                                    total_deliveries: 0,
+                                                    renewals: 0, 
+                                                    currently_active: true)
       # set account delivery frequency to 1 to avoid errors during curation
       @account = Account.find_by_id(@user.account_id)
-      @account.update_attribute(:delivery_frequency, 1)
+      @account.update_attribute(:delivery_frequency, 100)
     end # end of check whether user is buying prepaid deliveries
     
     # add special line for remaining early signup customer
@@ -633,6 +638,7 @@ class SignupController < ApplicationController
     
     # get delivery preferences
     @estimated_delivery_price = 0
+    Rails.logger.debug("Delivery estimate 1: #{@estimated_delivery_price.inspect}")
     @total_categories = 0
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
     if !@delivery_preferences.blank?
@@ -667,9 +673,11 @@ class SignupController < ApplicationController
         if @user_cider_preferences.cider_price_response == "lower"
           @estimated_cider_cost_per_week = (@estimated_cider_cost_per_week * 0.9)
         end
+        Rails.logger.debug("Delivery estimate 2: #{@estimated_delivery_price.inspect}")
         # increment totals
         @total_categories += 1
         @estimated_delivery_price = @estimated_delivery_price + @estimated_cider_cost_per_week
+        Rails.logger.debug("Delivery estimate 3: #{@estimated_delivery_price.inspect}")
         # get cider estimates if they exist
         if !@user_cider_preferences.ciders_per_delivery.nil?
           @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
@@ -685,11 +693,15 @@ class SignupController < ApplicationController
       # determine minimum number of weeks between deliveries
       @start_week = 1
       @estimated_delivery_price = (@start_week * @estimated_delivery_price)
-
+      
       while @estimated_delivery_price < 28
         @start_week += 1
-        @estimated_delivery_price = (@start_week * @estimated_delivery_price).round
+        @temp_estimated_delivery_price = (@start_week * @estimated_delivery_price).round
+        if @temp_estimated_delivery_price > 28
+          @estimated_delivery_price = @temp_estimated_delivery_price
+        end
       end
+      
       # set end week
       @end_week = @start_week + 5
       # set class for estimate holder, depending on number of categories chosen

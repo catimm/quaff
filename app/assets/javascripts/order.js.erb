@@ -26,6 +26,8 @@ $(function() {
         var date_pieces = selectedDate.split('-');
         var confirmed_date = date_pieces[1] + "-" + date_pieces[2] + "-" + date_pieces[0];
         $("#confirmed_order_delivery_date").text(confirmed_date);
+        $(this).addClass('chosen');
+        $(this).parent('.delivery-date-change-row-holder').siblings('.delivery-date-change-row-holder').children('.order-delivery-date-change-row').removeClass('chosen');
     });
     
     // submit form upon confirmation
@@ -73,4 +75,41 @@ $(function() {
 		 }
 	 }    
 
+	// Gets the order estimate field by making an Ajax query and sets it in the UI
+	setOrderEstimate = function() {
+		var number_of_beers = $('#order_number_of_beers').val();
+		var number_of_ciders = $('#order_number_of_ciders').val(); 
+
+		$.ajax({
+		  type: "GET",
+		  url: "/orders/update_order_estimate",
+		  data: { 
+		    number_of_beers: number_of_beers, 
+		    number_of_ciders: number_of_ciders
+		  }
+		});
+	}
+	
+	// add logic to change background color of number boxes and send data to controller
+	$(document).on('click', '.number-box-holder.weekly-drinks', function () {
+		$(this).addClass('chosen');
+		$(this).parent().siblings('.number-box-holder-parent').children('.number-box-holder').removeClass('chosen');
+		
+		var id_info = $(this).attr('id');
+		var id_split = id_info.split('-');
+		var number_of_drinks = id_split[0];
+		var category = id_split[1];
+		
+		if(category=="beer"){
+			$('#order_number_of_beers').val(number_of_drinks);
+		}
+		if(category=="cider"){
+			$('#order_number_of_ciders').val(number_of_drinks);
+		}
+		
+		$('#total_drinks').text(number_of_drinks);
+		$('#confirmed_total_drinks').text(number_of_drinks);
+		setOrderEstimate();
+	
+	});
 });

@@ -39,6 +39,17 @@ $(function() {
 			    $(".last-saved").removeClass('notice');
 			  });
 			$(".last-saved").fadeIn(100);
+			<% if @action == "add" %>
+				<% if @category == "beer" %>
+					$('#start_new_beer_category').modal('show');
+				<% end %>
+				<% if @category == "cider" %>
+					$('#start_new_cider_category').modal('show');
+				<% end %>
+				<% if @category == "wine" %>
+					$('#start_new_wine_category').modal('show');
+				<% end %>
+			<% end %>
 		<% end %>
 		
 	<% end %>

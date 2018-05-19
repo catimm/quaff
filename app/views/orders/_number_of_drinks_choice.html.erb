@@ -1,11 +1,15 @@
-<% (6..@max_drink_number).each do |i| %>
+<% (0..@max_drink_number).each do |i| %>
   <div class="col-xs-2 no-padding number-box-holder-parent">
-	  <% if @total_drinks == i %>
-	  	<div class="number-box-holder weekly-drinks chosen" id="<%= i %>-<%= @current_page %>">
+	  <% if category == "beer" && @number_of_beers == i %>
+	  	<div class="number-box-holder weekly-drinks chosen" id="<%= i %>-<%= category %>">
+	 		<p><%= i %></p>
+	 	</div>
+	  <% elsif category == "cider" && @number_of_ciders == i %>
+	  	<div class="number-box-holder weekly-drinks chosen" id="<%= i %>-<%= category %>">
 	 		<p><%= i %></p>
 	 	</div>
 	  <% else %>
-	  	<div class="number-box-holder weekly-drinks" id="<%= i %>-<%= @current_page %>">
+	  	<div class="number-box-holder weekly-drinks" id="<%= i %>-<%= category %>">
 	 		<p><%= i %></p>
 	 	</div>
 	 <% end %>

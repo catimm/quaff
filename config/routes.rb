@@ -312,7 +312,7 @@ Rails.application.routes.draw do
   
   # Orders
   get '/orders/status' => 'orders#status', :as => 'order_status'
-  get '/orders/new/estimate' => 'orders#estimate', :as => 'orders_estimate'
+  get '/orders/update_order_estimate' => 'orders#update_order_estimate', :as => 'update_order_estimate'
   post '/orders/process_ad_hoc_approval/:id' => 'orders#process_ad_hoc_approval', :as => 'process_ad_hoc_approval'
   resources :orders
   

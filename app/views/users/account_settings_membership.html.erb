@@ -61,7 +61,10 @@
 							<h3 class="recent-ratings-header">My plan</h3>
 						</div>
 						<div class="col-xs-12">
-							<h4 class="auto-renew-info">You haven't signed up for a membership plan yet, but we're ready when you are!</h4>
+							<h4 class="auto-renew-info">
+								You haven't signed up for a delivery plan yet, but we're ready when you are!  
+								<%= link_to "Review our delivery options", membership_plans_path, :target => "_blank" %>.
+							</h4>
 						</div>	
 					</div>
 				</div>
@@ -69,7 +72,7 @@
 					<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
 		         		<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-next-step-button" do %>
 		         			<i class="fa fa-play">&nbsp;</i>
-		         			Choose a membership plan
+		         			Sign up for a delivery plan
 		         		<% end %>
 		         	</div>
 				</div>			

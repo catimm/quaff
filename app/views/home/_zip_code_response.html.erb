@@ -28,7 +28,16 @@
 <% else %>
 	<%= render 'layouts/zip_search_box' %>
 <% end %>
-<% if @plan_type == "delivery" || @plan_type == "shipment" %>
+<% if user_signed_in? && (@plan_type == "delivery" || @plan_type == "shipment") %>
+	<div class="row no-margin">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
+			<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-next-step-button" do %>
+     			<i class="fa fa-play">&nbsp;</i>
+     			Sign up for a delivery plan
+     		<% end %>
+		</div>
+	</div>
+<% elsif @plan_type == "delivery" || @plan_type == "shipment" %>
 	<div class="row no-margin">
 		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
 			<%= link_to drink_profile_categories_path, :class => 'btn btn-success lower-get-started-button' do %>

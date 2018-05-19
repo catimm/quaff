@@ -144,22 +144,6 @@ $(function() {
 	var dislike_tile_width = $('.signup-style-tile.dislike-style-tile').width();
 	$('.signup-style-tile.dislike-style-tile.chosen').width(dislike_tile_width);
 
-	// Gets the order estimate field by making an Ajax query and sets
-	// it in the UI
-	setOrderEstimate = function() {
-		var number_of_drinks = $('#order_number_of_drinks').val(); 
-			// should_remove number_of_large_drinks = $("#order_number_of_large_drinks").val();
-
-		// should_remove if (number_of_drinks != '' && number_of_large_drinks != '') {
-			$.ajax({
-			  type: "GET",
-			  url: "/orders/new/estimate?number_of_drinks=" + number_of_drinks, // should_remove + "&number_of_large_drinks=" + number_of_large_drinks,
-			  success: function(data) {
-				  $('#order_price_estimate').text(data);
-			  }
-			});
-		// should_remove }
-	}
 	
 	// add logic to change background color of image chosen and send data to controller
 	$(document).on('click', '.signup-category-image-holder', function () {
@@ -257,65 +241,6 @@ $(function() {
 		  type: "POST",
 		  url: "/signup/process_drink_style_likes_getting_started." + new_value
 		});
-	});
-	
-	// add logic to change background color of number boxes and send data to controller
-	$(document).on('click', '.number-box-holder.weekly-drinks', function () {
-		$(this).addClass('chosen');
-		$(this).parent().siblings('.number-box-holder-parent').children('.number-box-holder').removeClass('chosen');
-		
-		var id_info = $(this).attr('id');
-		var id_split = id_info.split('-');
-		var drinks_per_week = id_split[0];
-		var current_page = id_split[1];
-
-		var large_format_original = $(".number-box-holder.large-format.chosen").attr('id');
-		if(large_format_original != undefined) {
-			var split_original = large_format_original.split('-');
-			var large_format = split_original[0];
-		}
-		
-		if(current_page == "signup") {
-			var controller_url = "/signup/process_drinks_weekly_getting_started/" + drinks_per_week
-		} 
-		else if (current_page == "orders") {
-			var controller_url = "";
-			// should_remove var currently_selected_large_format_drinks = parseInt($('#order_number_of_large_drinks').val() | "0");
-			// should_remove var max_large_format_drink = Math.ceil(drinks_per_week/2.0);
-			// should_remove for (var i = 0; i <= 14; i++) {
-			// should_remove	if( i <= max_large_format_drink) {
-			// should_remove		$('.number-box-holder.large-format:eq(' + i + ')').removeClass('hidden').addClass('show');
-			// should_remove	}
-			// should_remove	else {
-			// should_remove		$('.number-box-holder.large-format:eq(' + i + ')').removeClass('show').addClass('hidden');
-			// should_remove	}
-			// should_remove }
-
-			// should_remove if (currently_selected_large_format_drinks > max_large_format_drink) {
-			// should_remove	$('.number-box-holder.large-format:eq(' + max_large_format_drink + ')').addClass('chosen');
-			// should_remove	$('.number-box-holder.large-format:eq(' + currently_selected_large_format_drinks + ')').removeClass('chosen');
-			// should_remove	$("#order_number_of_large_drinks").val(large_format);
-			// should_remove }
-
-			$('#order_number_of_drinks').val(drinks_per_week);
-			$('#total_drinks').text(drinks_per_week);
-			$('#confirmed_total_drinks').text(drinks_per_week);
-			setOrderEstimate();
-		}
-		else {
-			$("#delivery_preference_drinks_per_week").val(drinks_per_week);
-			var controller_url = "/delivery_settings/deliveries_update_estimates/drinks_per_week-" + drinks_per_week + "-" + large_format
-		}
-		
-		// send data to controller to update delivery preferences
-		// only for signup and delivery preferences page.
-		if (controller_url != "") {
-			$.ajax({
-				type: "POST",
-				url: controller_url
-			});
-		}
-	
 	});
 	
 	$(document).on('click', '.signup-plan-start-holder', function () {

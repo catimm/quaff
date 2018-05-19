@@ -1,0 +1,37 @@
+<% if !@total_number_of_drinks.nil? %>
+	<div class="row no-margin estimated-delivery-price-holder-signup">
+		<h4 class="estimated-delivery-price-header delivery-estimate-information">
+			Change input below to update these delivery estimates
+		</h4>
+		<div class="col-xs-4 preference-estimate-holder delivery-estimate-information">
+			<div class="delivery-settings-info-box drinks">
+				<p>total drinks</p>
+				<h4 class="delivery-preference-prompt"><span id="total_drinks"><%= @total_number_of_drinks %></span></h4>
+			</div>	
+		</div>
+		<div class="col-xs-7 preference-estimate-holder no-padding-right delivery-estimate-information">
+			<div class="delivery-settings-info-box total-price">
+				<p>total price <sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup></p>
+				<h4 class="delivery-preference-prompt"><%= @final_estimate %></h4>
+			</div>
+		</div>
+	</div>
+<% else %>
+	<div class="row no-margin estimated-delivery-price-holder-signup">
+		<h4 class="estimated-delivery-price-header delivery-estimate-information">
+			Indicate how many drinks you'd like to order to see delivery estimates
+		</h4>
+		<div class="col-xs-4 preference-estimate-holder delivery-estimate-information">
+			<div class="delivery-settings-info-box drinks">
+				<p>total drinks</p>
+				<h4 class="delivery-preference-prompt"><span id="total_drinks">TBD</span></h4>
+			</div>	
+		</div>
+		<div class="col-xs-7 preference-estimate-holder no-padding-right delivery-estimate-information">
+			<div class="delivery-settings-info-box total-price">
+				<p>total price <sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup></p>
+				<h4 class="delivery-preference-prompt" id="order_price_estimate">TBD</h4>
+			</div>
+		</div>
+	</div>
+<% end %>

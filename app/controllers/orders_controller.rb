@@ -85,33 +85,30 @@ class OrdersController < ApplicationController
         end
         # instantiate new order
         @order = Order.new
-        @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+        @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
         @max_large_format_drinks = 14
         @current_page = "orders"
         @form = "new"
         @order.drink_option_id = @delivery_preferences.drink_option_id
 
         # set drink category choice
-        if @delivery_preferences.drink_option_id == 1
-            @drink_type_preference = "Beer"
-            @beer_chosen = "show"
-            @cider_chosen = "hidden"
-            @beer_and_cider_chosen = "hidden"
-        elsif @delivery_preferences.drink_option_id == 2
-            @drink_type_preference = "Cider"
-            @beer_chosen = "hidden"
-            @cider_chosen = "show"
-            @beer_and_cider_chosen = "hidden"
-        elsif @delivery_preferences.drink_option_id == 3
-            @drink_type_preference = "Beer & Cider"
-            @beer_chosen = "hidden"
-            @cider_chosen = "hidden"
-            @beer_and_cider_chosen = "show"
-        else
-            @beer_chosen = "hidden"
-            @cider_chosen = "hidden"
-            @beer_and_cider_chosen = "hidden"
+        @number_chosen = 0
+        @drink_categories = Array.new
+        if @delivery_preferences.beer_chosen
+            @beer_chosen = true
+            @number_chosen = @number_chosen + 1
+            @drink_categories << "beer"
         end
+        if @delivery_preferences.cider_chosen
+            @cider_chosen = true
+            @number_chosen = @number_chosen + 1
+            @drink_categories << "cider"
+        end
+        #if @delivery_preferences.wine_chosen
+        #    @wine_chosen = true
+        #    @number_chosen = @number_chosen + 1
+        #    @drink_categories << "wine"
+        #end
         
         # set defaults
         @total_drinks = "TBD"
@@ -124,17 +121,14 @@ class OrdersController < ApplicationController
         # add additional attributes to order
         @order.account_id = current_user.account_id
         @order.user_id = current_user.id
-        if !@order.number_of_drinks.nil?
-          @order.number_of_large_drinks = (@order.number_of_drinks/7.to_f).ceil
-        end
         
         if !@order.valid?
             @request_length = @order.additional_requests.size
-            if @order.delivery_date.nil? && @order.number_of_drinks.nil?
+            if @order.delivery_date.nil? || (@order.number_of_beers == 0 && @order.number_of_ciders == 0)
               flash[:failure] = "Please select the number of drinks and a delivery date"
             elsif @order.delivery_date.nil?
               flash[:failure] = "Please select a delivery date"
-            elsif @order.number_of_drinks.nil?
+            elsif @order.number_of_beers == 0 && @order.number_of_ciders == 0
               flash[:failure] = "Please select the number of drinks"
             else
               flash[:failure] = "Please limit the additional request to 500 characters"
@@ -147,7 +141,7 @@ class OrdersController < ApplicationController
         @order.save
 
         @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-        @delivery_preferences.update(drinks_per_week: @order.number_of_drinks, max_large_format: @order.number_of_large_drinks, drinks_per_delivery: @order.number_of_drinks)
+        #@delivery_preferences.update(drinks_per_week: @order.number_of_drinks, max_large_format: @order.number_of_large_drinks, drinks_per_delivery: @order.number_of_drinks)
 
         @new_delivery = Delivery.create(account_id: current_user.account_id,
                                 order_id: @order.id,
@@ -174,16 +168,15 @@ class OrdersController < ApplicationController
       # get user subscription
       @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
       # get user delivery preferences
-      @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
+      @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
       # get order info
       @order = Order.find_by_id(params[:id])
+      @order_date = DateTime.parse(@order.delivery_date.to_s)
       # get delivery info
-      @next_delivery = Delivery.where(order_id: params[:id]).first
-      
-      @max_large_format_drinks = 14
+      @next_delivery = Delivery.find_by_order_id(params[:id])
+
       @current_page = "orders"
       @form = "edit"
-      @order.drink_option_id = @delivery_preferences.drink_option_id
       
       # determine number of drinks to show
       if (1..4).include?(@user_subscription.subscription_id)
@@ -195,33 +188,52 @@ class OrdersController < ApplicationController
       end
         
       # set drink category choice
-      if @delivery_preferences.drink_option_id == 1
-          @drink_type_preference = "Beer"
-          @beer_chosen = "show"
-          @cider_chosen = "hidden"
-          @beer_and_cider_chosen = "hidden"
-      elsif @delivery_preferences.drink_option_id == 2
-          @drink_type_preference = "Cider"
-          @beer_chosen = "hidden"
-          @cider_chosen = "show"
-          @beer_and_cider_chosen = "hidden"
-      elsif @delivery_preferences.drink_option_id == 3
-          @drink_type_preference = "Beer & Cider"
-          @beer_chosen = "hidden"
-          @cider_chosen = "hidden"
-          @beer_and_cider_chosen = "show"
-      else
-          @beer_chosen = "hidden"
-          @cider_chosen = "hidden"
-          @beer_and_cider_chosen = "hidden"
-      end
+        @number_chosen = 0
+        @drink_categories = Array.new
+        if @delivery_preferences.beer_chosen
+            @beer_chosen = true
+            @number_chosen = @number_chosen + 1
+            @drink_categories << "beer"
+            @number_of_beers = @order.number_of_beers
+        end
+        if @delivery_preferences.cider_chosen
+            @cider_chosen = true
+            @number_chosen = @number_chosen + 1
+            @drink_categories << "cider"
+            @number_of_ciders = @order.number_of_ciders
+        end
+        #if @delivery_preferences.wine_chosen
+        #    @wine_chosen = true
+        #    @number_chosen = @number_chosen + 1
+        #    @drink_categories << "wine"
+        #end
       
-      # set current order settings
-      @total_drinks = @order.number_of_drinks
-      @lower_price_estimate = (@delivery_preferences.price_estimate * 0.9).ceil
-      @upper_price_estimate = (@delivery_preferences.price_estimate * 1.1).round
-      @order_date = DateTime.parse(@order.delivery_date.to_s)
-      @order_estimate = "$" + @lower_price_estimate.to_s + "- $" + @upper_price_estimate.to_s
+        # get number of drinks
+        @total_number_of_drinks = @number_of_beers + @number_of_ciders
+        # set default price estimate
+        @estimated_delivery_price = 0
+        # find if beer price needs to be added
+        if !@number_of_beers.nil?
+          @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+          @estimated_beer_price = @number_of_beers * @user_beer_preferences.beer_price_estimate
+          if @user_beer_preferences.beer_price_response == "lower"
+            @estimated_beer_price = (@estimated_beer_price * 0.9)
+          end
+          @estimated_delivery_price = @estimated_delivery_price + @estimated_beer_price
+        end
+        # find if cider price needs to be added
+        if !@number_of_ciders.nil?
+          @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+          @estimated_cider_price = @number_of_ciders * @user_cider_preferences.cider_price_estimate
+          if @user_cider_preferences.cider_price_response == "lower"
+            @estimated_cider_price = (@estimated_cider_price * 0.9)
+          end
+          @estimated_delivery_price = @estimated_delivery_price + @estimated_cider_price
+        end
+        # set high and low estimate
+        @delivery_cost_estimate_low = (((@estimated_delivery_price.to_f) *0.9).floor / 5).round * 5
+        @delivery_cost_estimate_high = ((((@estimated_delivery_price.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        @final_estimate = "~ $" + @delivery_cost_estimate_low.to_s + " - $" + @delivery_cost_estimate_high.to_s
         
     end # end of edit method
     
@@ -230,28 +242,27 @@ class OrdersController < ApplicationController
       # add additional attributes to order
       @order.account_id = current_user.account_id
       @order.user_id = current_user.id
-      @order.number_of_large_drinks = (@order.number_of_drinks/7.to_f).ceil
         
       if !@order.valid?
           @request_length = @order.additional_requests.size
-          if @order.delivery_date.nil? && @order.number_of_drinks.nil?
+          if @order.delivery_date.nil? || (@order.number_of_beers == 0 && @order.number_of_ciders == 0)
             flash[:failure] = "Please select the number of drinks and a delivery date"
           elsif @order.delivery_date.nil?
             flash[:failure] = "Please select a delivery date"
-          elsif @order.number_of_drinks.nil?
+          elsif @order.number_of_beers == 0 && @order.number_of_ciders == 0
             flash[:failure] = "Please select the number of drinks"
           else
             flash[:failure] = "Please limit the additional request to 500 characters"
           end
-          render js: "window.location = '#{orders_new_path}'"
+          render js: "window.location = '#{new_order_path}'"
           return
       end
 
       # save order
       @order.save
 
-      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-      @delivery_preferences.update(drinks_per_week: @order.number_of_drinks, max_large_format: @order.number_of_large_drinks, drinks_per_delivery: @order.number_of_drinks)
+      @related_delivery = Delivery.find_by_order_id(@order.id)
+      @related_delivery.update(delivery_date: @order.delivery_date)
 
       # set redirect
       redirect_to order_status_path
@@ -285,21 +296,40 @@ class OrdersController < ApplicationController
       
     end # process_ad_hoc_approval method
     
-    def estimate
-        number_of_drinks = params[:number_of_drinks].to_i
-        number_of_large_drinks = (number_of_drinks/7.to_f).ceil
-        price_estimate = estimate_drinks(number_of_drinks, number_of_large_drinks, current_user.craft_stage_id)
-        #Rails.logger.debug("Price estimate: #{price_estimate.inspect}")
-        @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
-        @delivery_preferences.update(price_estimate: price_estimate)
+    def update_order_estimate
+        # get number of drinks
+        @number_of_beers = params[:number_of_beers].to_i
+        @number_of_ciders = params[:number_of_ciders].to_i
+        @total_number_of_drinks = @number_of_beers + @number_of_ciders
+        # set default price estimate
+        @estimated_delivery_price = 0
+        # find if beer price needs to be added
+        if !@number_of_beers.nil?
+          @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+          @estimated_beer_price = @number_of_beers * @user_beer_preferences.beer_price_estimate
+          if @user_beer_preferences.beer_price_response == "lower"
+            @estimated_beer_price = (@estimated_beer_price * 0.9)
+          end
+          @estimated_delivery_price = @estimated_delivery_price + @estimated_beer_price
+        end
+        # find if cider price needs to be added
+        if !@number_of_ciders.nil?
+          @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+          @estimated_cider_price = @number_of_ciders * @user_cider_preferences.cider_price_estimate
+          if @user_cider_preferences.cider_price_response == "lower"
+            @estimated_cider_price = (@estimated_cider_price * 0.9)
+          end
+          @estimated_delivery_price = @estimated_delivery_price + @estimated_cider_price
+        end
         # set high and low estimate
-        @delivery_cost_estimate_low = (((price_estimate.to_f) *0.9).floor / 5).round * 5
-        @delivery_cost_estimate_high = ((((price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        @delivery_cost_estimate_low = (((@estimated_delivery_price.to_f) *0.9).floor / 5).round * 5
+        @delivery_cost_estimate_high = ((((@estimated_delivery_price.to_f) *0.9).ceil * 1.1) / 5).round * 5
         @final_estimate = "~ $" + @delivery_cost_estimate_low.to_s + " - $" + @delivery_cost_estimate_high.to_s
-        render plain: @final_estimate
-    end # end of estimate method
+        
+    end # end of update_order_estimate method
     
     def order_params
-      params.require(:order).permit(:delivery_date, :drink_option_id, :number_of_drinks, :number_of_large_drinks, :additional_requests)
+      params.require(:order).permit(:delivery_date, :drink_option_id, :number_of_beers, 
+                                     :number_of_ciders, :number_of_glasses, :number_of_large_drinks, :additional_requests)
     end
 end
