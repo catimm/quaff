@@ -5,8 +5,8 @@ class SignupController < ApplicationController
   
   def process_final_drink_profile_step
     # set getting started step
-    if current_user.getting_started_step < 14
-      current_user.update_attribute(:getting_started_step, 14) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if current_user.getting_started_step < 6
+      current_user.update_attribute(:getting_started_step, 6) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # redirect
@@ -30,6 +30,22 @@ class SignupController < ApplicationController
     if @user.update(free_curation_params)
       bypass_sign_in @user
       
+      # get a random color for the user
+      @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+      
+      # set flag so drink recommendations are created
+      @user.update(recent_addition: true, user_color: @user_color)
+      
+      # add account to free curation table
+      FreeCuration.create(account_id: @user.account_id, 
+                            requested_date: DateTime.now, 
+                            status: "admin prep",
+                            share_admin_prep: false)
+      
+      # assign special code to user--for invites, etc.
+      @next_available_code = SpecialCode.where(user_id: nil).first
+      @next_available_code.update(user_id: @user.id)
+    
       # first see if this address falls in Knird delivery zone
       @knird_delivery_zone = DeliveryZone.where(zip_code: @zip_code, currently_available: true).first
       # if there is no Knird delivery Zone, find Fed Ex zone
@@ -77,6 +93,11 @@ class SignupController < ApplicationController
     # get user delivery preferences
     @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     
+    # set getting started step
+    if current_user.getting_started_step < 7
+      current_user.update_attribute(:getting_started_step, 7) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    end
+    
     # notify admin               
     AdminMailer.admin_customer_free_curation_request(current_user).deliver_now
       
@@ -98,8 +119,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = current_user
     # update getting started step
-    if @user.getting_started_step < 16
-      @user.update_attribute(:getting_started_step, 16)
+    if @user.getting_started_step < 9
+      @user.update_attribute(:getting_started_step, 9)
     end
     # check if user subscription exists
     @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: [true, nil], total_deliveries: 0).first
@@ -141,11 +162,116 @@ class SignupController < ApplicationController
         end
       end
     end
-    
+
     # set route for zipcode search
     @page_source = "signup"
     
   end # end account_getting_started action
+  
+  def process_account_membership_getting_started
+    #get user info
+    @user = current_user
+    
+    # get data
+    @plan_name = params[:id]
+    
+    # find subscription level id
+    @subscription_info = Subscription.find_by_subscription_level(@plan_name)
+    #Rails.logger.debug("Subscription info: #{@subscription_info.inspect}")
+    
+    if @subscription_info.deliveries_included != 0
+      # create subscription info
+      @total_price = (@subscription_info.subscription_cost * 100).floor
+      @charge_description = @subscription_info.subscription_name
+      
+      # check if user already has a subscription row
+      @current_customer = UserSubscription.where(account_id: @user.account_id).where("stripe_customer_number IS NOT NULL").first
+      
+      if @current_customer.blank?
+        # create user subscription
+        @user_subscription = UserSubscription.create(user_id: current_user.id, 
+                                                      account_id: current_user.account_id, 
+                                                      subscription_id: @subscription_info.id,
+                                                      auto_renew_subscription_id: @subscription_info.id,
+                                                      deliveries_this_period: 0,
+                                                      total_deliveries: 0,
+                                                      renewals: 0, 
+                                                      currently_active: true)
+                                  
+        # create Stripe customer acct
+        customer = Stripe::Customer.create(
+                :source => params[:stripeToken],
+                :email => @user.email
+              )
+        # charge the customer for their subscription 
+        Stripe::Charge.create(
+          :amount => @total_price, # in cents
+          :currency => "usd",
+          :customer => customer.id,
+          :description => @charge_description
+        ) 
+      else
+        # retrieve customer Stripe info
+        customer = Stripe::Customer.retrieve(@current_customer.stripe_customer_number) 
+        # charge the customer for subscription 
+        Stripe::Charge.create(
+          :amount => @total_price, # in cents
+          :currency => "usd",
+          :customer => @current_customer.stripe_customer_number,
+          :description => @charge_description
+        )
+
+      end
+      
+      # get user delivery preferences
+      @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+      if @user_delivery_preference.beer_chosen
+        @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
+        if @user_beer_preference.beers_per_week.nil?
+          session[:need_beers_per_week] = true
+          @redirect = drink_profile_beer_numbers_path
+          session[:drink_path] = drink_profile_beer_numbers_path
+        end
+      end
+      if @user_delivery_preference.cider_chosen
+        @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
+        if @user_cider_preference.ciders_per_week.nil?
+          session[:need_ciders_per_week] = true
+          @redirect = drink_profile_cider_numbers_path
+          session[:drink_path] = drink_profile_cider_numbers_path
+        end
+      end
+    
+    else # user chose the Ad Hoc plan
+      # create user subscription
+      @user_subscription = UserSubscription.create(user_id: current_user.id, 
+                                                    account_id: current_user.account_id, 
+                                                    subscription_id: @subscription_info.id,
+                                                    auto_renew_subscription_id: @subscription_info.id,
+                                                    deliveries_this_period: 0,
+                                                    total_deliveries: 0,
+                                                    renewals: 0, 
+                                                    currently_active: true)
+      # if nil, set account delivery frequency to 100 to avoid errors during curation
+      @account = Account.find_by_id(@user.account_id)
+      if @account.delivery_frequency.nil?
+        @account.update_attribute(:delivery_frequency, 100)
+      end
+      
+      @redirect = delivery_address_getting_started_path
+      
+    end # end of check whether user is buying prepaid deliveries
+    
+    # add special line for remaining early signup customer
+    if @user.email == "justinokun@gmail.com"
+      @user_subscription = UserSubscription.where(account_id: @user.account_id).first
+      @user_subscription.update(subscription_id: 3, auto_renew_subscription_id: 3)
+    end
+                    
+    # redirect user to drink choice page
+    redirect_to @redirect
+    
+  end # end process_account_getting_started action
   
   def process_zip_code_response
     # get User info 
@@ -216,8 +342,12 @@ class SignupController < ApplicationController
     # add zip code to user address (in case user stops sign up process before adding a delivery address)
     @user_address = UserAddress.where(account_id: current_user.account_id, 
                                         current_delivery_location: true).first
-    # remove old data
-    @user_address.update(delivery_zone_id: nil, shipping_zone_id: nil)                                  
+    
+    # remove old data to ensure extra info isn't left in delivery/shipping zone field if the other is chosen
+    if !@user_address.blank?
+      @user_address.update(delivery_zone_id: nil, shipping_zone_id: nil)                                  
+    end
+    
     # add new data
     if @plan_type == "delivery"
       if @user_address.blank?
@@ -263,85 +393,260 @@ class SignupController < ApplicationController
     
   end # end of process_zip_code_response method
   
-  def process_account_membership_getting_started
-    #get user info
+  def delivery_frequency_getting_started
+    # check if format exists and show message confirmation if so
+    if params.has_key?(:format)
+      if params[:format] == "confirm"
+        gon.request = true
+      end
+    end
+    
+    # set referring page
+    @referring_url = request.referrer
+    
+    # set sub-guide view
+    @subguide = "delivery"
+    
+    #set guide view
+    @user_chosen = 'complete'
+    @drink_chosen = 'complete'
+    @delivery_chosen = 'current'
+    @delivery_frequency_chosen = 'current'
+    @current_page = 'signup'
+    
+    # get User info 
+    @user = User.find_by_id(current_user.id)
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    @delivery_frequency = @account.delivery_frequency
+    @last_saved = @account.updated_at
+    
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+
+    # update getting started step
+    if @user.getting_started_step < 12
+      @user.update_attribute(:getting_started_step, 12)
+    end
+    
+    # set view for delivery estimates
+    @reset_estimate_visible_status = "hidden"
+    @estimate_visible_status = "show"
+    
+    # get delivery preferences
+    @estimated_delivery_price = 0
+    #Rails.logger.debug("Delivery estimate 1: #{@estimated_delivery_price.inspect}")
+    @total_categories = 0
+    @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
+    if !@delivery_preferences.blank?
+      # get user's drink preference
+      if @delivery_preferences.beer_chosen
+        # get user input
+        @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+        @beers_per_week = @user_beer_preferences.beers_per_week
+        @estimated_beer_cost_per_week = @beers_per_week * @user_beer_preferences.beer_price_estimate
+        if @user_beer_preferences.beer_price_response == "lower"
+          @estimated_beer_cost_per_week = (@estimated_beer_cost_per_week * 0.9)
+        end
+        # increment totals
+        @total_categories += 1
+        @estimated_delivery_price = @estimated_delivery_price + @estimated_beer_cost_per_week
+        # get beer estimates if they exist
+        if !@user_beer_preferences.beers_per_delivery.nil?
+          @beers_per_delivery = @user_beer_preferences.beers_per_delivery
+          @beer_delivery_estimate = @user_beer_preferences.beers_per_delivery * @user_beer_preferences.beer_price_estimate
+          if @user_beer_preferences.beer_price_response == "lower"
+            @beer_delivery_estimate = (@beer_delivery_estimate * 0.9)
+          end
+          @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+          @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        end
+      end
+      if @delivery_preferences.cider_chosen
+        # get user inputs
+        @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+        @ciders_per_week = @user_cider_preferences.ciders_per_week
+        @estimated_cider_cost_per_week = @ciders_per_week * @user_cider_preferences.cider_price_estimate
+        if @user_cider_preferences.cider_price_response == "lower"
+          @estimated_cider_cost_per_week = (@estimated_cider_cost_per_week * 0.9)
+        end
+        #Rails.logger.debug("Delivery estimate 2: #{@estimated_delivery_price.inspect}")
+        # increment totals
+        @total_categories += 1
+        @estimated_delivery_price = @estimated_delivery_price + @estimated_cider_cost_per_week
+        #Rails.logger.debug("Delivery estimate 3: #{@estimated_delivery_price.inspect}")
+        # get cider estimates if they exist
+        if !@user_cider_preferences.ciders_per_delivery.nil?
+          @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
+          @cider_delivery_estimate = @user_cider_preferences.ciders_per_delivery * @user_cider_preferences.cider_price_estimate
+          if @user_cider_preferences.cider_price_response == "lower"
+            @cider_delivery_estimate = (@cider_delivery_estimate * 0.9)
+          end
+          @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+          @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        end
+      end
+    
+      # determine minimum number of weeks between deliveries
+      @start_week = 1
+      @estimated_delivery_price = (@start_week * @estimated_delivery_price)
+      
+      while @estimated_delivery_price < 28
+        @start_week += 1
+        @temp_estimated_delivery_price = (@start_week * @estimated_delivery_price).round
+        if @temp_estimated_delivery_price > 28
+          @estimated_delivery_price = @temp_estimated_delivery_price
+        end
+      end
+      
+      # set end week
+      @end_week = @start_week + 5
+      # set class for estimate holder, depending on number of categories chosen
+      if @total_categories == 1
+        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+        @delivery_price_holder_cider_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+      else
+        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-2 col-sm-4"
+        @delivery_price_holder_cider_column = "col-xs-12 col-sm-4"
+      end
+    end # end of check whether delivery preferences
+    
+  end # end of delivery_frequency_getting_started method
+
+  def process_delivery_frequency_getting_started
+    # set referring page
+    @referring_url = request.referrer
+    # set current page
+    @current_page = 'signup'
+    
+    # get user info
     @user = current_user
     
-    # get data
-    @plan_name = params[:id]
+    # get selected frequency
+    @delivery_frequency = params[:id].to_i
     
-    # find subscription level id
-    @subscription_info = Subscription.find_by_subscription_level(@plan_name)
-    #Rails.logger.debug("Subscription info: #{@subscription_info.inspect}")
+    # update Account with delivery frequency preference
+    @account = Account.find_by_id(current_user.account_id)
+    @account.update_attribute(:delivery_frequency, @delivery_frequency)
+    @last_saved = @account.updated_at
     
-    if @subscription_info.deliveries_included != 0
-      # create subscription info
-      @total_price = (@subscription_info.subscription_cost * 100).floor
-      @charge_description = @subscription_info.subscription_name
-      
-      # check if user already has a subscription row
-      @current_customer = UserSubscription.where(account_id: @user.account_id).where("stripe_customer_number IS NOT NULL").first
-      
-      if @current_customer.blank?
-        # create user subscription
-        @user_subscription = UserSubscription.create(user_id: current_user.id, 
-                                                      account_id: current_user.account_id, 
-                                                      subscription_id: @subscription_info.id,
-                                                      auto_renew_subscription_id: @subscription_info.id,
-                                                      deliveries_this_period: 0,
-                                                      total_deliveries: 0,
-                                                      renewals: 0, 
-                                                      currently_active: true)
-                                  
-        # create Stripe customer acct
-        customer = Stripe::Customer.create(
-                :source => params[:stripeToken],
-                :email => @user.email
-              )
-        # charge the customer for their subscription 
-        Stripe::Charge.create(
-          :amount => @total_price, # in cents
-          :currency => "usd",
-          :customer => customer.id,
-          :description => @charge_description
-        ) 
-      else
-        # retrieve customer Stripe info
-        customer = Stripe::Customer.retrieve(@current_customer.stripe_customer_number) 
-        # charge the customer for subscription 
-        Stripe::Charge.create(
-          :amount => @total_price, # in cents
-          :currency => "usd",
-          :customer => @current_customer.stripe_customer_number,
-          :description => @charge_description
-        )
-
+    # get delivery preferences
+    @total_categories = 0
+    # get Delivery Preferences
+    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    if @delivery_preferences.beer_chosen
+      @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+      @beers_per_delivery = (@user_beer_preferences.beers_per_week * @delivery_frequency).ceil
+      @user_beer_preferences.update(beers_per_delivery: @beers_per_delivery)
+      @beer_delivery_estimate = @user_beer_preferences.beers_per_week * @delivery_frequency * @user_beer_preferences.beer_price_estimate
+      if @user_beer_preferences.beer_price_response == "lower"
+        @beer_delivery_estimate = (@beer_delivery_estimate * 0.9)
       end
-    else
-      # create user subscription
-      @user_subscription = UserSubscription.create(user_id: current_user.id, 
-                                                    account_id: current_user.account_id, 
-                                                    subscription_id: @subscription_info.id,
-                                                    auto_renew_subscription_id: @subscription_info.id,
-                                                    deliveries_this_period: 0,
-                                                    total_deliveries: 0,
-                                                    renewals: 0, 
-                                                    currently_active: true)
-      # set account delivery frequency to 1 to avoid errors during curation
-      @account = Account.find_by_id(@user.account_id)
-      @account.update_attribute(:delivery_frequency, 100)
-    end # end of check whether user is buying prepaid deliveries
-    
-    # add special line for remaining early signup customer
-    if @user.email == "justinokun@gmail.com"
-      @user_subscription = UserSubscription.where(account_id: @user.account_id).first
-      @user_subscription.update(subscription_id: 3, auto_renew_subscription_id: 3)
+      @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+      @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      # increment totals
+      @total_categories += 1
     end
-                    
-    # redirect user to drink choice page
-    redirect_to delivery_address_getting_started_path
+    if @delivery_preferences.cider_chosen
+      @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+      @ciders_per_delivery = (@user_cider_preferences.ciders_per_week * @delivery_frequency).ceil
+      @user_cider_preferences.update(ciders_per_delivery: @ciders_per_delivery)
+      @cider_delivery_estimate = @user_cider_preferences.ciders_per_week * @delivery_frequency * @user_cider_preferences.cider_price_estimate
+      if @user_cider_preferences.cider_price_response == "lower"
+        @cider_delivery_estimate = (@cider_delivery_estimate * 0.9)
+      end
+      @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
+      @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      # increment totals
+      @total_categories += 1
+    end
     
-  end # end process_account_getting_started action
+    # set class for estimate holder, depending on number of categories chosen
+    if @total_categories == 1
+      @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+      @delivery_price_holder_cider_column = "col-xs-12 col-sm-offset-4 col-sm-4"
+    else
+      @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-2 col-sm-4"
+      @delivery_price_holder_cider_column = "col-xs-12 col-sm-4"
+    end
+    
+  end # end process_delivery_frequency_getting_started method
+  
+  def process_shipping_frequency_getting_started
+    # set current page
+    @current_page = 'signup'
+    
+    # get selected frequency
+    @shipping_frequency = params[:id].to_i
+    
+    # get user info
+    @user = User.find_by_id(current_user.id)
+    
+    # update Account with delivery frequency preference
+    @account = Account.find_by_id(current_user.account_id)
+    @account.update_attribute(:delivery_frequency, @shipping_frequency)
+    
+    # set delivery preferences
+    @drinks_per_week = (18 / @shipping_frequency)
+    if @user.craft_stage_id == 1
+      @price_estimate = (13.5 * 4)
+      @max_cellar = 1
+    elsif @user.craft_stage_id == 2
+      @price_estimate = (13.5 * 5)
+      @max_cellar = 2
+    else
+      @price_estimate = (13.5 * 6)
+      @max_cellar = 3
+    end
+    
+    # update Delivery Preferences with drinks per delivery
+    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
+    @delivery_preferences.update(drinks_per_week: @drinks_per_week, 
+                                  price_estimate: @price_estimate, 
+                                  max_large_format: 3,
+                                  max_cellar: @max_cellar,
+                                  drinks_per_delivery: 15)
+    
+    # find if a delivery date has been set yet
+    @delivery_frequency = @shipping_frequency
+    @delivery = Delivery.where(account_id: current_user.account_id).order("delivery_date ASC")
+    if !@delivery.blank?
+      @number_of_deliveries = @delivery.size
+      @second_delivery_date = @delivery[0].delivery_date + @delivery_frequency.weeks
+
+      # add a second delivery date if not already done 
+      if @number_of_deliveries == 1
+        @second_delivery = Delivery.create(account_id: current_user.account_id, 
+                                          delivery_date: @second_delivery_date,
+                                          status: "admin prep",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false)
+         # create related shipment
+         Shipment.create(delivery_id: @second_delivery.id)
+      else
+        @delivery[1].update(delivery_date: @second_delivery_date)
+      end
+    end
+    
+    # set redirect link
+    @redirect_link = delivery_address_getting_started_path
+        
+    # show next button if live
+    if !@account.delivery_frequency.nil? && !@delivery.blank?
+      @show_live_button = true
+    else
+      @show_live_button = false
+    end
+    
+    # show delivery cost information and 'next' button
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end process_shipping_frequency_getting_started method
   
   def delivery_address_getting_started
     # set sub-guide view
@@ -364,8 +669,11 @@ class SignupController < ApplicationController
     #Rails.logger.debug("User info: #{@user.inspect}")
     #@user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
     
-    if @user.getting_started_step < 17
-      @user.update_attribute(:getting_started_step, 17) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    # check user subscription
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+      
+    if @user.getting_started_step < 13
+      @user.update_attribute(:getting_started_step, 13) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # find user address
@@ -457,8 +765,8 @@ class SignupController < ApplicationController
     # get User info 
     @user = User.find_by_id(current_user.id)
     # update getting started step
-    if @user.getting_started_step < 18
-      @user.update_attribute(:getting_started_step, 18)
+    if @user.getting_started_step < 14
+      @user.update_attribute(:getting_started_step, 14)
     end
     
     # get User Subscription info
@@ -588,283 +896,21 @@ class SignupController < ApplicationController
                                     delivery_change_confirmation: false,
                                     share_admin_prep_with_user: false)
                    
-    # redirect to first drink preference page
-    if @user_subscription.subscription.deliveries_included == 0
-      redirect_to signup_thank_you_path
-    else
-      redirect_to delivery_frequency_getting_started_path
-    end
-  end # end of choose_delivery_time method
-  
-  def delivery_frequency_getting_started
-    # check if format exists and show message confirmation if so
-    if params.has_key?(:format)
-      if params[:format] == "confirm"
-        gon.request = true
-      end
-    end
-    
-    # set referring page
-    @referring_url = request.referrer
-    
-    # set sub-guide view
-    @subguide = "delivery"
-    
-    #set guide view
-    @user_chosen = 'complete'
-    @drink_chosen = 'complete'
-    @delivery_chosen = 'current'
-    @delivery_frequency_chosen = 'current'
-    @current_page = 'signup'
-    
-    # get User info 
-    @user = User.find_by_id(current_user.id)
-    # get Account info
-    @account = Account.find_by_id(@user.account_id)
-    @delivery_frequency = @account.delivery_frequency
-    @last_saved = @account.updated_at
-    
-    # get User Subscription info
-    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-
-    # update getting started step
-    if @user.getting_started_step < 19
-      @user.update_attribute(:getting_started_step, 19)
-    end
-    
-    # set view for delivery estimates
-    @reset_estimate_visible_status = "hidden"
-    @estimate_visible_status = "show"
-    
-    # get delivery preferences
-    @estimated_delivery_price = 0
-    Rails.logger.debug("Delivery estimate 1: #{@estimated_delivery_price.inspect}")
-    @total_categories = 0
-    @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
-    if !@delivery_preferences.blank?
-      # get user's drink preference
-      if @delivery_preferences.beer_chosen
-        # get user input
-        @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
-        @beers_per_week = @user_beer_preferences.beers_per_week
-        @estimated_beer_cost_per_week = @beers_per_week * @user_beer_preferences.beer_price_estimate
-        if @user_beer_preferences.beer_price_response == "lower"
-          @estimated_beer_cost_per_week = (@estimated_beer_cost_per_week * 0.9)
-        end
-        # increment totals
-        @total_categories += 1
-        @estimated_delivery_price = @estimated_delivery_price + @estimated_beer_cost_per_week
-        # get beer estimates if they exist
-        if !@user_beer_preferences.beers_per_delivery.nil?
-          @beers_per_delivery = @user_beer_preferences.beers_per_delivery
-          @beer_delivery_estimate = @user_beer_preferences.beers_per_delivery * @user_beer_preferences.beer_price_estimate
-          if @user_beer_preferences.beer_price_response == "lower"
-            @beer_delivery_estimate = (@beer_delivery_estimate * 0.9)
-          end
-          @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-          @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-        end
-      end
-      if @delivery_preferences.cider_chosen
-        # get user inputs
-        @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
-        @ciders_per_week = @user_cider_preferences.ciders_per_week
-        @estimated_cider_cost_per_week = @ciders_per_week * @user_cider_preferences.cider_price_estimate
-        if @user_cider_preferences.cider_price_response == "lower"
-          @estimated_cider_cost_per_week = (@estimated_cider_cost_per_week * 0.9)
-        end
-        Rails.logger.debug("Delivery estimate 2: #{@estimated_delivery_price.inspect}")
-        # increment totals
-        @total_categories += 1
-        @estimated_delivery_price = @estimated_delivery_price + @estimated_cider_cost_per_week
-        Rails.logger.debug("Delivery estimate 3: #{@estimated_delivery_price.inspect}")
-        # get cider estimates if they exist
-        if !@user_cider_preferences.ciders_per_delivery.nil?
-          @ciders_per_delivery = @user_cider_preferences.ciders_per_delivery
-          @cider_delivery_estimate = @user_cider_preferences.ciders_per_delivery * @user_cider_preferences.cider_price_estimate
-          if @user_cider_preferences.cider_price_response == "lower"
-            @cider_delivery_estimate = (@cider_delivery_estimate * 0.9)
-          end
-          @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-          @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-        end
-      end
-    
-      # determine minimum number of weeks between deliveries
-      @start_week = 1
-      @estimated_delivery_price = (@start_week * @estimated_delivery_price)
-      
-      while @estimated_delivery_price < 28
-        @start_week += 1
-        @temp_estimated_delivery_price = (@start_week * @estimated_delivery_price).round
-        if @temp_estimated_delivery_price > 28
-          @estimated_delivery_price = @temp_estimated_delivery_price
-        end
-      end
-      
-      # set end week
-      @end_week = @start_week + 5
-      # set class for estimate holder, depending on number of categories chosen
-      if @total_categories == 1
-        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-4 col-sm-4"
-        @delivery_price_holder_cider_column = "col-xs-12 col-sm-offset-4 col-sm-4"
-      else
-        @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-2 col-sm-4"
-        @delivery_price_holder_cider_column = "col-xs-12 col-sm-4"
-      end
-    end # end of check whether delivery preferences
-    
-  end # end of delivery_frequency_getting_started method
-
-  def process_delivery_frequency_getting_started
-    # set referring page
-    @referring_url = request.referrer
-    # set current page
-    @current_page = 'signup'
-    
-    # get user info
-    @user = current_user
-    
-    # get selected frequency
-    @delivery_frequency = params[:id].to_i
-    
-    # update Account with delivery frequency preference
-    @account = Account.find_by_id(current_user.account_id)
-    @account.update_attribute(:delivery_frequency, @delivery_frequency)
-    @last_saved = @account.updated_at
-    
     # create/update second line in delivery table
-    @user_deliveries = Delivery.where(account_id: current_user.account_id)
-    @delivery_count = @user_deliveries.count
-    if @delivery_count < 2
-      @next_delivery_date = @user_deliveries.first.delivery_date + @delivery_frequency.weeks
-      Delivery.create(account_id: current_user.account_id, 
-                      delivery_date: @next_delivery_date,
-                      status: "admin prep",
-                      subtotal: 0,
-                      sales_tax: 0,
-                      total_price: 0,
-                      delivery_change_confirmation: false,
-                      share_admin_prep_with_user: false)
-    end
+    @next_delivery_date = @final_delivery_date + @account.delivery_frequency.weeks
+    Delivery.create(account_id: current_user.account_id, 
+                    delivery_date: @next_delivery_date,
+                    status: "admin prep",
+                    subtotal: 0,
+                    sales_tax: 0,
+                    total_price: 0,
+                    delivery_change_confirmation: false,
+                    share_admin_prep_with_user: false)
+                    
+    # redirect 
+    redirect_to signup_thank_you_path
     
-    # get delivery preferences
-    @total_categories = 0
-    # get Delivery Preferences
-    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
-    if @delivery_preferences.beer_chosen
-      @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
-      @beers_per_delivery = (@user_beer_preferences.beers_per_week * @delivery_frequency).ceil
-      @user_beer_preferences.update(beers_per_delivery: @beers_per_delivery)
-      @beer_delivery_estimate = @user_beer_preferences.beers_per_week * @delivery_frequency * @user_beer_preferences.beer_price_estimate
-      if @user_beer_preferences.beer_price_response == "lower"
-        @beer_delivery_estimate = (@beer_delivery_estimate * 0.9)
-      end
-      @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-      @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-      # increment totals
-      @total_categories += 1
-    end
-    if @delivery_preferences.cider_chosen
-      @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
-      @ciders_per_delivery = (@user_cider_preferences.ciders_per_week * @delivery_frequency).ceil
-      @user_cider_preferences.update(ciders_per_delivery: @ciders_per_delivery)
-      @cider_delivery_estimate = @user_cider_preferences.ciders_per_week * @delivery_frequency * @user_cider_preferences.cider_price_estimate
-      if @user_cider_preferences.cider_price_response == "lower"
-        @cider_delivery_estimate = (@cider_delivery_estimate * 0.9)
-      end
-      @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
-      @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-      # increment totals
-      @total_categories += 1
-    end
-    
-    # set class for estimate holder, depending on number of categories chosen
-    if @total_categories == 1
-      @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-4 col-sm-4"
-      @delivery_price_holder_cider_column = "col-xs-12 col-sm-offset-4 col-sm-4"
-    else
-      @delivery_price_holder_beer_column = "col-xs-12 col-sm-offset-2 col-sm-4"
-      @delivery_price_holder_cider_column = "col-xs-12 col-sm-4"
-    end
-    
-  end # end process_delivery_frequency_getting_started method
-  
-  def process_shipping_frequency_getting_started
-    # set current page
-    @current_page = 'signup'
-    
-    # get selected frequency
-    @shipping_frequency = params[:id].to_i
-    
-    # get user info
-    @user = User.find_by_id(current_user.id)
-    
-    # update Account with delivery frequency preference
-    @account = Account.find_by_id(current_user.account_id)
-    @account.update_attribute(:delivery_frequency, @shipping_frequency)
-    
-    # set delivery preferences
-    @drinks_per_week = (18 / @shipping_frequency)
-    if @user.craft_stage_id == 1
-      @price_estimate = (13.5 * 4)
-      @max_cellar = 1
-    elsif @user.craft_stage_id == 2
-      @price_estimate = (13.5 * 5)
-      @max_cellar = 2
-    else
-      @price_estimate = (13.5 * 6)
-      @max_cellar = 3
-    end
-    
-    # update Delivery Preferences with drinks per delivery
-    @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-    @delivery_preferences.update(drinks_per_week: @drinks_per_week, 
-                                  price_estimate: @price_estimate, 
-                                  max_large_format: 3,
-                                  max_cellar: @max_cellar,
-                                  drinks_per_delivery: 15)
-    
-    # find if a delivery date has been set yet
-    @delivery_frequency = @shipping_frequency
-    @delivery = Delivery.where(account_id: current_user.account_id).order("delivery_date ASC")
-    if !@delivery.blank?
-      @number_of_deliveries = @delivery.size
-      @second_delivery_date = @delivery[0].delivery_date + @delivery_frequency.weeks
-
-      # add a second delivery date if not already done 
-      if @number_of_deliveries == 1
-        @second_delivery = Delivery.create(account_id: current_user.account_id, 
-                                          delivery_date: @second_delivery_date,
-                                          status: "admin prep",
-                                          subtotal: 0,
-                                          sales_tax: 0,
-                                          total_price: 0,
-                                          delivery_change_confirmation: false,
-                                          share_admin_prep_with_user: false)
-         # create related shipment
-         Shipment.create(delivery_id: @second_delivery.id)
-      else
-        @delivery[1].update(delivery_date: @second_delivery_date)
-      end
-    end
-    
-    # set redirect link
-    @redirect_link = signup_thank_you_path
-        
-    # show next button if live
-    if !@account.delivery_frequency.nil? && !@delivery.blank?
-      @show_live_button = true
-    else
-      @show_live_button = false
-    end
-    
-    # show delivery cost information and 'next' button
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
-    
-  end # end process_shipping_frequency_getting_started method
+  end # end of choose_delivery_time method
   
   def signup_thank_you
     # get user info
@@ -879,13 +925,9 @@ class SignupController < ApplicationController
       @plan_type = "shipping"
     end
     
-    # assign invitation code for user to share
-    @next_available_code = SpecialCode.where(user_id: nil).first
-    @next_available_code.update(user_id: @user.id)
-    
     # update getting started step
-    if @user.getting_started_step < 20
-      @user.update_attribute(:getting_started_step, 20)
+    if @user.getting_started_step < 15
+      @user.update_attribute(:getting_started_step, 15)
     end
     if @user.role_id == 5 || @user.role_id == 6
       @user.update(recent_addition: true)

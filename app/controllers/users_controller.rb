@@ -125,17 +125,8 @@ class UsersController < ApplicationController
     @subguide = "user"
     
     #set guide view
-    @user_chosen = 'current'
     @user_personal_info_chosen = 'current'
-    
-    # send getting_started_step data to js to show welcome modal if needed
-    gon.getting_started_step = @user.getting_started_step
-    
-    # update user's getting started step
-    if @user.getting_started_step.nil? || @user.getting_started_step < 1
-      User.update(@user.id, getting_started_step: 1)
-    end
-    
+
   end # end edit action
   
   def update 
@@ -154,59 +145,74 @@ class UsersController < ApplicationController
       params[:user][:account_id] = @account.id
     end
     
-    if @user.getting_started_step < 15
-      params[:user][:getting_started_step] = 15
+    if @user.getting_started_step < 8
+      params[:user][:getting_started_step] = 8
     end
     
-    # get a random color for the user
-    @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
-    params[:user][:user_color] = @user_color
+    if @user.user_color.nil?
+      # get a random color for the user
+      @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+      params[:user][:user_color] = @user_color
+    end
     
-    if @user.update(user_params)
+    if @user.update!(user_params)
       #Rails.logger.debug("User updated")
       # Sign in the user by passing validation in case their password changed
       bypass_sign_in(@user)
       
+      # assign special code to user--for invites, etc.
+      @user_special_code = SpecialCode.find_by_user_id(@user.id)
+      if @user_special_code.blank?
+        @next_available_code = SpecialCode.where(user_id: nil).first
+        @next_available_code.update(user_id: @user.id)
+      end
       # if user is a guest connect them as friends with account owner
       if @user.role_id == 5 # this branch is for account mates
+        # find subscription info
+        @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
         # first find the account owner
         @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
         # create friend connection
         Friend.create(user_id: @account_owner.id, friend_id: @user.id, confirmed: true)
         
         # set redirect path, based on where user is in signup process
-        if  @user.getting_started_step == 4
-          @redirect_link = drink_choice_getting_started_path
-        elsif  @user.getting_started_step == 5
-          @redirect_link = drink_journey_getting_started_path
-        elsif  @user.getting_started_step == 6
-          @redirect_link = drink_style_likes_getting_started_path
-        elsif  @user.getting_started_step == 7
-          @redirect_link = drink_style_dislikes_getting_started_path
-        elsif  @user.getting_started_step == 8
-          @redirect_link = delivery_frequency_getting_started_path
+        if  @user_subscription.subscription.deliveries_included != 0
+          @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+          if @delivery_preferences.beer_chosen
+            @redirect_link = drink_profile_beer_numbers_path
+          elsif @delivery_preferences.cider_chosen
+            @redirect_link = drink_profile_cider_numbers_path
+          end
+        else
+          @redirect_link = signup_thank_you_path
         end
       elsif @user.role_id == 6 # this branch is for corporate guests
         # set redirect path, based on where user is in signup process
-        if  @user.getting_started_step == 4
-          @redirect_link = drink_choice_getting_started_path
-        elsif  @user.getting_started_step == 5
-          @redirect_link = drink_journey_getting_started_path
-        elsif  @user.getting_started_step == 6
-          @redirect_link = drink_style_likes_getting_started_path
-        elsif  @user.getting_started_step == 7
-          @redirect_link = drink_style_dislikes_getting_started_path
-        end
+        @redirect_link = signup_thank_you_path
       else # this branch is for account owners
+        # find subscription info
+        @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+        
         # determine redirect path, based on where user is in signup process
-        if  @user.getting_started_step == 15
+        if @user_subscription.blank?
           @redirect_link = account_membership_getting_started_path 
-        elsif  @user.getting_started_step == 16
-          @redirect_link = delivery_address_getting_started_path
-        elsif  @user.getting_started_step == 17
-          @redirect_link = delivery_frequency_getting_started_path
-        elsif @user.getting_started_step == 18
-          @redirect_link = delivery_preferences_getting_started_path
+        else
+          if  @user_subscription.subscription.deliveries_included != 0
+            @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+            if @delivery_preferences.beer_chosen && @user.getting_started_step == 10
+              @redirect_link = drink_profile_beer_numbers_path
+            elsif @delivery_preferences.cider_chosen && @user.getting_started_step == 11
+              @redirect_link = drink_profile_cider_numbers_path
+            elsif  @user.getting_started_step == 12
+              @redirect_link = delivery_frequency_getting_started_path
+            elsif  @user.getting_started_step == 13
+              @redirect_link = delivery_address_getting_started_path
+            elsif @user.getting_started_step == 14
+              @redirect_link = delivery_preferences_getting_started_path
+            end
+          else
+            @redirect_link = delivery_address_getting_started_path
+          end
         end
       end
 
@@ -536,11 +542,31 @@ class UsersController < ApplicationController
                                               drinks_per_delivery: nil)
     end
     
+    # set default
+    @redirect_link = nil
+    
     # reset user's getting_started_step
-    User.update(current_user.id, getting_started_step: 8)
+    if @delivery_preferences.cider_chosen
+      @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+      if @user_cider_preferences.ciders_per_week.nil?
+        User.update(current_user.id, getting_started_step: 9)
+        @redirect_link = drink_profile_cider_numbers_path
+      end
+    end
+    if @delivery_preferences.beer_chosen
+      @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+      if @user_beer_preferences.beers_per_week.nil?
+        User.update(current_user.id, getting_started_step: 8)
+        @redirect_link = drink_profile_beer_numbers_path
+      end
+    end
+    if @redirect_link == nil
+      User.update(current_user.id, getting_started_step: 10)
+      @redirect_link = delivery_frequency_getting_started_path
+    end
     
     # redirect user to 8th step of signup--weekly drinks consumed
-    redirect_to delivery_frequency_getting_started_path
+    redirect_to @redirect_link
   
   end # end of start_new_plan method
   

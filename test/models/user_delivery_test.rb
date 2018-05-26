@@ -13,6 +13,7 @@
 #  likes_style         :string
 #  projected_rating    :float
 #  times_rated         :integer
+#  drink_category      :string
 #
 
 require 'test_helper'

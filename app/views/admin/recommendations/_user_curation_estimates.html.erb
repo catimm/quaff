@@ -1,0 +1,102 @@
+<% Rails.logger.debug("Drink category: #{category.inspect}") %>
+<div class="row no-margin">
+	<% if category == "Beer" %>
+		<% @user_drink_preferences = UserPreferenceBeer.find_by_user_id(user.id) %>
+		<% if !@user_drink_preferences.beers_per_week.nil? %>
+			<% @drinks_per_week = @user_drink_preferences.beers_per_week %>
+		<% else %>
+			<% @drinks_per_week = "N/A" %>
+		<% end %>
+		<% @user_price_average = @user_drink_preferences.beer_price_estimate %>
+		<% @user_drinks = FreeCurationUser.where(free_curation_id: @curation_id, user_id: user.id, drink_category: "beer") %>
+	<% end %>
+	<% if category == "Cider" %>
+		<% @user_drink_preferences = UserPreferenceCider.find_by_user_id(user.id) %>
+		<% if !@user_drink_preferences.ciders_per_week.nil? %>
+			<% @drinks_per_week = @user_drink_preferences.ciders_per_week %>
+		<% else %>
+			<% @drinks_per_week = "N/A" %>
+		<% end %>
+		<% @user_price_average = @user_drink_preferences.cider_price_estimate %>
+		<% @user_drinks = FreeCurationUser.where(free_curation_id: @curation_id, user_id: user.id, drink_category: "cider") %>
+	<% end %>
+	<% Rails.logger.debug("User Drinks: #{@user_drinks.inspect}") %>
+	<% @curated_cellar_drinks = 0 %>
+	<% @curated_small_drinks = 0 %>
+	<% @curated_large_drinks = 0 %>
+	<% @curated_total_drinks = 0 %>
+	<% @curated_total_drink_price = 0 %>
+
+	<% @user_drinks.each do |drink| %>
+		<% if drink.free_curation_account.cellar == true %>
+	 		<% @this_cellar = 1 * drink.quantity %>
+	 		<% @curated_cellar_drinks = @curated_cellar_drinks + @this_cellar %>
+	 	<% end %>
+	 	<% if drink.free_curation_account.large_format == false %>
+	 		<% @this_small_format = 1 * drink.quantity %>
+	 		<% @curated_small_drinks = @curated_small_drinks + @this_small_format %>
+	 	<% end %>
+	 	<% if drink.free_curation_account.large_format == true %>
+	 		<% @this_large_format = drink.quantity %>
+	 		<% @curated_large_drinks = @curated_large_drinks + @this_large_format %>
+	 	<% end %>
+	 	<% @this_drink_price = drink.free_curation_account.drink_price * drink.quantity %>
+	 	<% @curated_total_drink_price = @curated_total_drink_price + @this_drink_price %>
+		<% @curated_total_drinks = @curated_total_drinks + drink.quantity %>
+	<% end %>
+	<% if @curated_total_drinks != 0 %>
+		<% @curation_drink_average = @curated_total_drink_price / @curated_total_drinks %>
+	<% else %>
+		<% @curation_drink_average = 0 %>
+	<% end %>
+	<div class="col-xs-2 col-sm-1 admin-user-identity">
+		<% if user.user_graphic.nil? %>
+			<%= render 'layouts/user_initials_small', friend: user %>
+		<% else %>
+			<%= render 'layouts/user_graphic_small', friend: user %>
+		<% end %>
+		<h5><b><%= category + "-" + @user_drink_preferences.journey_stage.to_s %></b></h5>
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box drinks">
+			<p>total</p>
+			<h4 class="delivery-preference-prompt"><%= @curated_total_drinks %></h4>
+		</div>	
+	</div>
+	<div class="col-xs-1 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box new">
+			<p>drinks/week</p>
+			<h4 class="delivery-preference-prompt"><%= @drinks_per_week %></h4>
+		</div>	
+	</div>
+	<div class="col-xs-1 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box new">
+			<p>cellar</p>
+			<h4 class="delivery-preference-prompt"><%= @curated_cellar_drinks %></h4>
+		</div>	
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box small">
+			<p>small</p>
+			<h4 class="delivery-preference-prompt"><span><%= @curated_small_drinks %></span></h4>
+		</div>	
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box large">
+			<p>large</p>
+			<h4 class="delivery-preference-prompt"><%= @curated_large_drinks %></span></h4>
+		</div>	
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box total-price">
+			<p>avg price</p>
+			<h4 class="delivery-preference-prompt"><%= number_to_currency(@user_price_average, precision: 0) %></h4>
+		</div>
+	</div>
+	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
+		<div class="delivery-settings-info-box total-price">
+			<p>current avg</p>
+			<h4 class="delivery-preference-prompt"><%= number_to_currency(@curation_drink_average, precision: 2) %></h4>
+		</div>
+	</div>
+</div>

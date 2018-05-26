@@ -124,9 +124,7 @@ class CreateDrinkProfileController < ApplicationController
           if @action == "add"
             if @user_delivery_preference.update(beer_chosen: true)
               @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
-                                                              delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1,
-                                                              beer_price_estimate: 3.5)
+                                                              delivery_preference_id: @user_delivery_preference.id)
               if @user_beer_preference.save
                 @choice_saved = true
                 @beer_category = true
@@ -151,9 +149,7 @@ class CreateDrinkProfileController < ApplicationController
           if @action == "add"
             if @user_delivery_preference.update(cider_chosen: true)
               @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
-                                                            delivery_preference_id: @user_delivery_preference.id,
-                                                            journey_stage: 1,
-                                                            cider_price_estimate: 4)
+                                                            delivery_preference_id: @user_delivery_preference.id)
               if @user_cider_preference.save
                 @choice_saved = true
                 @cider_category = true
@@ -178,8 +174,7 @@ class CreateDrinkProfileController < ApplicationController
           if @action == "add"
             if @user_delivery_preference.update(wine_chosen: true)
               @user_wine_preference = UserPreferenceWine.create(user_id: @user.id,
-                                                              delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1)
+                                                              delivery_preference_id: @user_delivery_preference.id)
               if @user_wine_preference.save
                 @choice_saved = true
                 @wine_category = true
@@ -207,9 +202,7 @@ class CreateDrinkProfileController < ApplicationController
                                                                   beer_chosen: true)
           if @user_delivery_preference.save
             @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
-                                                              delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1,
-                                                              beer_price_estimate: 3.50)
+                                                              delivery_preference_id: @user_delivery_preference.id)
             if @user_beer_preference.save
               @choice_saved = true
               @beer_category = true
@@ -223,9 +216,7 @@ class CreateDrinkProfileController < ApplicationController
                                                                   cider_chosen: true)
           if @user_delivery_preference.save
             @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
-                                                              delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1,
-                                                              cider_price_estimate: 4)
+                                                              delivery_preference_id: @user_delivery_preference.id)
             if @user_cider_preference.save
               @choice_saved = true
               @cider_category = true
@@ -239,8 +230,7 @@ class CreateDrinkProfileController < ApplicationController
                                                                   wine_chosen: true)
           if @user_delivery_preference.save
             @user_wine_preference = UserPreferenceWine.create(user_id: @user.id,
-                                                              delivery_preference_id: @user_delivery_preference.id,
-                                                              journey_stage: 1)
+                                                              delivery_preference_id: @user_delivery_preference.id)
             if @user_wine_preference.save
               @choice_saved = true
               @wine_category = true
@@ -270,89 +260,89 @@ class CreateDrinkProfileController < ApplicationController
     
   end # end of process_drink_categories
   
-  def beer_journey
-    # set getting started step
-    @user = current_user
-    if @user.getting_started_step < 1
-      @user.update_attribute(:getting_started_step, 1) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
-    end
-    
+  #def beer_journey
+  #  # set getting started step
+  #  @user = current_user
+  #  if @user.getting_started_step < 1
+  #    @user.update_attribute(:getting_started_step, 1) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+  #  end
+  #  
     # set UX variables
-    @category = "beer"
-    @beer_chosen = "current"
-    @journey_chosen = "current"
-    
+  #  @category = "beer"
+  #  @beer_chosen = "current"
+  #  @journey_chosen = "current"
+  #  
     # indicate this is coming from signup
-    @create_drink_profile = true
-    
+  #  @create_drink_profile = true
+  #  
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+  #  @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     
     # get user beer preferences
-    @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
+  #  @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
     # send beer_journey_stage data to js to show what is currently chosen
-    gon.beer_journey_stage = @user_beer_preference.journey_stage
+  #  gon.beer_journey_stage = @user_beer_preference.journey_stage
     
-    @last_saved = @user_beer_preference.updated_at
+  #  @last_saved = @user_beer_preference.updated_at
   
-  end # end of beer_journey method
+ # end # end of beer_journey method
   
-  def cider_journey
-    # set getting started step
-    @user = current_user
-    if @user.getting_started_step < 6
-      @user.update_attribute(:getting_started_step, 6) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
-    end
+  #def cider_journey
+  #  # set getting started step
+  #  @user = current_user
+  #  if @user.getting_started_step < 6
+  #    @user.update_attribute(:getting_started_step, 6) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+  #  end
     
     # set UX variables
-    @category = "cider"
-    @beer_chosen = "complete"
-    @cider_chosen = "current"
-    @journey_chosen = "current"
+  #  @category = "cider"
+  #  @beer_chosen = "complete"
+  #  @cider_chosen = "current"
+  #  @journey_chosen = "current"
     
     # indicate this is coming from signup
-    @create_drink_profile = true
+  #  @create_drink_profile = true
     
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+  #  @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     
     # get user cider preferences
-    @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
+  #  @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
     # send beer_journey_stage data to js to show what is currently chosen
-    gon.cider_journey_stage = @user_cider_preference.journey_stage
+  #  gon.cider_journey_stage = @user_cider_preference.journey_stage
 
-    @last_saved = @user_cider_preference.updated_at
+  #  @last_saved = @user_cider_preference.updated_at
   
-  end # end of cider_journey method
+  #end # end of cider_journey method
   
-  def wine_journey
+  #def wine_journey
     # set getting started step
-    @user = current_user
-    if @user.getting_started_step < 11
-      @user.update_attribute(:getting_started_step, 11) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
-    end
+  #  @user = current_user
+  #  if @user.getting_started_step < 11
+  #    @user.update_attribute(:getting_started_step, 11) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+  #  end
     
     # set UX variables
-    @category = "wine"
-    @beer_chosen = "complete"
-    @cider_chosen = "complete"
-    @wine_chosen = "current"
-    @journey_chosen = "current"
+  #  @category = "wine"
+  #  @beer_chosen = "complete"
+  #  @cider_chosen = "complete"
+  #  @wine_chosen = "current"
+  #  @journey_chosen = "current"
     
     # indicate this is coming from signup
-    @create_drink_profile = true
+  #  @create_drink_profile = true
     
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+  #  @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     
     # get user wine preferences
-    @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
+  #  @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
     # send beer_journey_stage data to js to show what is currently chosen
-    gon.wine_journey_stage = @user_wine_preference.journey_stage
+  #  gon.wine_journey_stage = @user_wine_preference.journey_stage
 
-    @last_saved = @user_wine_preference.updated_at
+  #  @last_saved = @user_wine_preference.updated_at
   
-  end # end of wine_journey method
+  #end # end of wine_journey method
   
   def process_drink_journey
     # set referring page
@@ -365,36 +355,14 @@ class CreateDrinkProfileController < ApplicationController
     @journey_stage = @split_data[1].to_i
 
     if @category == "beer"
-      if @journey_stage == 1 
-        @drink_estimate = 3.5
-      elsif @journey_stage == 2
-        @drink_estimate = 4
-      elsif @journey_stage == 3
-        @drink_estimate = 4.5
-      elsif @journey_stage == 4
-        @drink_estimate = 5
-      elsif @journey_stage == 5
-        @drink_estimate = 6
-      end
       @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
-      if @user_beer_preference.update(journey_stage: @journey_stage, beer_price_estimate: @drink_estimate)
+      if @user_beer_preference.update(journey_stage: @journey_stage)
         @choice_saved = true
       end
       @last_saved = @user_beer_preference.updated_at
     elsif @category == "cider"
-      if @journey_stage == 1 
-        @drink_estimate = 4
-      elsif @journey_stage == 2
-        @drink_estimate = 4.5
-      elsif @journey_stage == 3
-        @drink_estimate = 5
-      elsif @journey_stage == 4
-        @drink_estimate = 5.5
-      elsif @journey_stage == 5
-        @drink_estimate = 6.5
-      end
       @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
-      if @user_cider_preference.update(journey_stage: @journey_stage, cider_price_estimate: @drink_estimate)
+      if @user_cider_preference.update(journey_stage: @journey_stage)
         @choice_saved = true
       end
       @last_saved = @user_cider_preference.updated_at
@@ -415,16 +383,17 @@ class CreateDrinkProfileController < ApplicationController
   def beer_numbers
     # set getting started step
     @user = current_user
-    if @user.getting_started_step < 2
-      @user.update_attribute(:getting_started_step, 2) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if @user.getting_started_step < 10
+      @user.update_attribute(:getting_started_step, 10) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     # set UX variables
     @category = "beer"
     @category_choice = "beers"
     @chosen_drinks_per_week = "hidden"
+    @user_chosen = "complete"
+    @drink_chosen = "current"
     @beer_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'current'
+    @subguide = "drink"
     
     # indicate this is coming from signup
     @create_drink_profile = true
@@ -473,8 +442,8 @@ class CreateDrinkProfileController < ApplicationController
   def cider_numbers
     # set getting started step
     @user = current_user
-    if @user.getting_started_step < 7
-      @user.update_attribute(:getting_started_step, 7) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if @user.getting_started_step < 11
+      @user.update_attribute(:getting_started_step, 11) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # set UX variables
@@ -483,8 +452,9 @@ class CreateDrinkProfileController < ApplicationController
     @chosen_drinks_per_week = "hidden"
     @beer_chosen = "complete"
     @cider_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'current'
+    @user_chosen = "complete"
+    @drink_chosen = "current"
+    @subguide = "drink"
     
     # indicate this is coming from signup
     @create_drink_profile = true
@@ -504,7 +474,7 @@ class CreateDrinkProfileController < ApplicationController
         @month_chosen = nil
         if @user_cider_preference.ciders_per_week > 1
           @drinks_per_week_text = @drinks_per_week.to_s + " ciders/week"
-        else
+       else
           @drinks_per_week_text = @drinks_per_week.to_s + " cider/week" 
         end
       else
@@ -530,66 +500,66 @@ class CreateDrinkProfileController < ApplicationController
     
   end # end of cider_numbers method
   
-  def wine_numbers
+  #def wine_numbers
     # set getting started step
-    @user = current_user
-    if @user.getting_started_step < 12
-      @user.update_attribute(:getting_started_step, 12) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
-    end
+  #  @user = current_user
+  #  if @user.getting_started_step < 12
+  #    @user.update_attribute(:getting_started_step, 12) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+  #  end
     
     # set UX variables
-    @category = "wine"
-    @category_choice = "glasses of wine"
-    @chosen_drinks_per_week = "hidden"
-    @beer_chosen = "complete"
-    @cider_chosen = "complete"
-    @wine_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'current'
+  #  @category = "wine"
+  #  @category_choice = "glasses of wine"
+  #  @chosen_drinks_per_week = "hidden"
+  #  @beer_chosen = "complete"
+  #  @cider_chosen = "complete"
+  #  @wine_chosen = "current"
+  #  @journey_chosen = 'complete'
+  #  @numbers_chosen = 'current'
     
     # indicate this is coming from signup
-    @create_drink_profile = true
+  #  @create_drink_profile = true
     
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+  #  @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     
     # find user chosen categories
-    @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
-    if !@user_wine_preference.glasses_per_week.nil?
-      @chosen_drinks_per_week = "show"
+  #  @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
+  #  if !@user_wine_preference.glasses_per_week.nil?
+  #    @chosen_drinks_per_week = "show"
       
-      if (@user_wine_preference.glasses_per_week % 1).zero?
-        @drinks_per_week = @user_wine_preference.glasses_per_week.round
-        @chosen_timeframe = "week"
-        @week_chosen = "chosen"
-        @month_chosen = nil
-        if @user_wine_preference.glasses_per_week > 1
-          @drinks_per_week_text = @drinks_per_week.to_s + " glasses/week"
-        else
-          @drinks_per_week_text = @drinks_per_week.to_s + " glass/week" 
-        end
-      else
-        @drinks_per_week = @user_wine_preference.glasses_per_week * 4
-        @chosen_timeframe = "month"
-        @week_chosen = nil
-        @month_chosen = "chosen"
-        if @user_wine_preference.glasses_per_week > 1
-          @drinks_per_week_text = @drinks_per_week.to_s + " glasses/week"
-        else
-          @drinks_per_week_text = @drinks_per_week.to_s + " glass/week" 
-        end
-      end
+  #    if (@user_wine_preference.glasses_per_week % 1).zero?
+  #      @drinks_per_week = @user_wine_preference.glasses_per_week.round
+  #      @chosen_timeframe = "week"
+  #      @week_chosen = "chosen"
+  #      @month_chosen = nil
+  #      if @user_wine_preference.glasses_per_week > 1
+  #        @drinks_per_week_text = @drinks_per_week.to_s + " glasses/week"
+  #      else
+  #        @drinks_per_week_text = @drinks_per_week.to_s + " glass/week" 
+  #      end
+  #    else
+  #      @drinks_per_week = @user_wine_preference.glasses_per_week * 4
+  #      @chosen_timeframe = "month"
+  #      @week_chosen = nil
+  #      @month_chosen = "chosen"
+  #      if @user_wine_preference.glasses_per_week > 1
+  #        @drinks_per_week_text = @drinks_per_week.to_s + " glasses/week"
+  #      else
+  #        @drinks_per_week_text = @drinks_per_week.to_s + " glass/week" 
+  #      end
+  #    end
       
-      if @drinks_per_week != 0
-        session[:wine_number] = @drinks_per_week
-      end
-      session[:wine_timeframe] = @chosen_timeframe
-    end
+  #    if @drinks_per_week != 0
+  #      session[:wine_number] = @drinks_per_week
+  #    end
+  #    session[:wine_timeframe] = @chosen_timeframe
+  #  end
     
     # set last saved
-    @last_saved = @user_wine_preference.updated_at
+  #  @last_saved = @user_wine_preference.updated_at
     
-  end # end of wine_numbers method
+  #end # end of wine_numbers method
   
   def process_drinks_per_week
     # set referring page
@@ -601,6 +571,9 @@ class CreateDrinkProfileController < ApplicationController
     @category = @split_data[0]
     @type = @split_data[1]
     @input = @split_data[2]
+    
+    # get user account info to check for chosen frequency
+    @account = Account.find_by_id(current_user.account_id)
     
     # set default time saved
     @last_saved = Time.now
@@ -636,59 +609,76 @@ class CreateDrinkProfileController < ApplicationController
     # add data to table if ready
     @drinks_per_week = nil
     
-    if session[:beer_timeframe] && session[:beer_number]
-      if session[:beer_timeframe] == "week"
-        @beer_drinks_per_week = session[:beer_number].to_i
-      else
-        @beer_drinks_per_week = session[:beer_number].to_f / 4
-      end
-      @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
-      if @user_beer_preference.update(beers_per_week: @beer_drinks_per_week.to_f)
-        @chosen_drinks_per_week = "show"
-        if @beer_drinks_per_week > 1
-          @drinks_per_week_text = @beer_drinks_per_week.to_s + " beers/week"
+    if @category == "beer"
+      if session[:beer_timeframe] && session[:beer_number]
+        if session[:beer_timeframe] == "week"
+          @beer_drinks_per_week = session[:beer_number].to_i
         else
-          @drinks_per_week_text = @beer_drinks_per_week.to_s + " beer/week" 
+          @beer_drinks_per_week = session[:beer_number].to_f / 4
         end
-        @last_saved = @user_beer_preference.updated_at
+        @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
+        if @account.delivery_frequency.nil?
+          @beers_per_delivery = nil
+        else
+          @beers_per_delivery = @beer_drinks_per_week * @account.delivery_frequency.to_i
+        end
+        if @user_beer_preference.update(beers_per_week: @beer_drinks_per_week.to_f, beers_per_delivery: @beers_per_delivery)
+          @chosen_drinks_per_week = "show"
+          if @beer_drinks_per_week > 1
+            @drinks_per_week_text = @beer_drinks_per_week.to_s + " beers/week"
+          else
+            @drinks_per_week_text = @beer_drinks_per_week.to_s + " beer/week" 
+          end
+          @last_saved = @user_beer_preference.updated_at
+        end
       end
-    end
+    end # end of beer category check
     
-    if session[:cider_timeframe] && session[:cider_number]
-      if session[:cider_timeframe] == "week"
-        @cider_drinks_per_week = session[:cider_number].to_i
-      else
-        @cider_drinks_per_week = session[:cider_number].to_f / 4
-      end
-      @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
-      if @user_cider_preference.update(ciders_per_week: @cider_drinks_per_week.to_f)
-        @chosen_drinks_per_week = "show"
-        if @cider_drinks_per_week > 1
-          @drinks_per_week_text = @cider_drinks_per_week.to_s + " ciders/week"
+    if @category == "cider"
+      if session[:cider_timeframe] && session[:cider_number]
+        if session[:cider_timeframe] == "week"
+          @cider_drinks_per_week = session[:cider_number].to_i
         else
-           @drinks_per_week_text = @cider_drinks_per_week.to_s + " cider/week" 
+          @cider_drinks_per_week = session[:cider_number].to_f / 4
         end
-        @last_saved = @user_cider_preference.updated_at
+        @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
+        if @account.delivery_frequency.nil?
+          @ciders_per_delivery = nil
+        else
+          @ciders_per_delivery = @cider_drinks_per_week * @account.delivery_frequency.to_i
+        end
+        if @user_cider_preference.update(ciders_per_week: @cider_drinks_per_week.to_f, ciders_per_delivery: @ciders_per_delivery)
+          @chosen_drinks_per_week = "show"
+          if @cider_drinks_per_week > 1
+            @drinks_per_week_text = @cider_drinks_per_week.to_s + " ciders/week"
+          else
+             @drinks_per_week_text = @cider_drinks_per_week.to_s + " cider/week" 
+          end
+          @last_saved = @user_cider_preference.updated_at
+        end
       end
-    end
+    end # end of cider category check
     
-    if session[:wine_timeframe] && session[:wine_number]
-      if session[:wine_timeframe] == "week"
-        @wine_drinks_per_week = session[:wine_number].to_i
-      else
-        @wine_drinks_per_week = session[:wine_number].to_f / 4
-      end
-      @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
-      if @user_wine_preference.update(glasses_per_week: @wine_drinks_per_week.to_f)
-        @chosen_drinks_per_week = "show"
-        if @wine_drinks_per_week > 1
-          @drinks_per_week_text = @wine_drinks_per_week.to_s + " glasses/week"
+    if @category == "wine"
+      if session[:wine_timeframe] && session[:wine_number]
+        if session[:wine_timeframe] == "week"
+          @wine_drinks_per_week = session[:wine_number].to_i
         else
-           @drinks_per_week_text = @wine_drinks_per_week.to_s + " glass/week" 
+          @wine_drinks_per_week = session[:wine_number].to_f / 4
         end
-        @last_saved = @user_wine_preference.updated_at
+        @user_wine_preference = UserPreferenceWine.find_by_user_id(current_user.id)
+        if @user_wine_preference.update(glasses_per_week: @wine_drinks_per_week.to_f)
+          @chosen_drinks_per_week = "show"
+          if @wine_drinks_per_week > 1
+            @drinks_per_week_text = @wine_drinks_per_week.to_s + " glasses/week"
+          else
+             @drinks_per_week_text = @wine_drinks_per_week.to_s + " glass/week" 
+          end
+          @last_saved = @user_wine_preference.updated_at
+        end
       end
-    end
+    end # end of wine category check
+      
     # Rails.logger.debug("Text: #{@drinks_per_week_text.inspect}")
     respond_to do |format|
       format.js
@@ -703,15 +693,13 @@ class CreateDrinkProfileController < ApplicationController
     
     # set getting started step
     @user = current_user
-    if @user.getting_started_step < 3
-      @user.update_attribute(:getting_started_step, 3) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if @user.getting_started_step < 1
+      @user.update_attribute(:getting_started_step, 1) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # set UX variables
     @category = "beer"
     @beer_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'complete'
     @styles_chosen = 'current'
     
     # indicate this is coming from signup
@@ -748,16 +736,14 @@ class CreateDrinkProfileController < ApplicationController
     
     # set getting started step
     @user = current_user
-    if @user.getting_started_step < 8
-      @user.update_attribute(:getting_started_step, 8) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if @user.getting_started_step < 3
+      @user.update_attribute(:getting_started_step, 3) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # set UX variables
     @category = "cider"
     @beer_chosen = "complete"
     @cider_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'complete'
     @styles_chosen = 'current'
     
     # indicate this is coming from signup
@@ -794,8 +780,8 @@ class CreateDrinkProfileController < ApplicationController
     
     # set getting started step
     @user = current_user
-    if @user.getting_started_step < 13
-      @user.update_attribute(:getting_started_step, 13) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if @user.getting_started_step < 5
+      @user.update_attribute(:getting_started_step, 5) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # get user delivery preferences
@@ -806,8 +792,6 @@ class CreateDrinkProfileController < ApplicationController
     @beer_chosen = "complete"
     @cider_chosen = "complete"
     @wine_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'complete'
     @styles_chosen = 'current'
     
   end # end of wine_styles method
@@ -935,84 +919,84 @@ class CreateDrinkProfileController < ApplicationController
     end
   end # end of process_chosen_descriptors method
   
-  def beer_priorities
+  #def beer_priorities
     # set getting started step
-    @user = current_user
-    if @user.getting_started_step < 4
-      @user.update_attribute(:getting_started_step, 4) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
-    end
+  #  @user = current_user
+  #  if @user.getting_started_step < 4
+  #    @user.update_attribute(:getting_started_step, 4) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+  #  end
     
     # set UX variables
-    @category = "beer"
-    @beer_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'complete'
-    @styles_chosen = 'complete'
-    @priorities_chosen = 'current'
+  #  @category = "beer"
+  #  @beer_chosen = "current"
+  #  @journey_chosen = 'complete'
+  #  @numbers_chosen = 'complete'
+  #  @styles_chosen = 'complete'
+  #  @priorities_chosen = 'current'
     
     # indicate this is coming from signup
-    @create_drink_profile = true
+  #  @create_drink_profile = true
     
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+  #  @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     
     #@user_priorities = UserPriority.new
-    @priorties = Priority.where(beer_relevant: true)
+  #  @priorties = Priority.where(beer_relevant: true)
     
     #check if user has already chosen this question
-    @priority_list = UserPriority.where(user_id: current_user.id, category: "beer")
-    if !@priority_list.blank?
-      @user_priorities = @priority_list.order('priority_rank ASC')
-      @updated_order = @priority_list.order('updated_at DESC')
-    end
+  #  @priority_list = UserPriority.where(user_id: current_user.id, category: "beer")
+  #  if !@priority_list.blank?
+  #    @user_priorities = @priority_list.order('priority_rank ASC')
+  #    @updated_order = @priority_list.order('updated_at DESC')
+  #  end
     
-    if !@user_priorities.blank?
-      @priority_choice_header = "show"
-      @chosen_priorities = @user_priorities.pluck(:priority_id)
-    else
-      @priority_choice_header = "hidden"
-    end
-  end # end beer_priorities method
+  #  if !@user_priorities.blank?
+  #    @priority_choice_header = "show"
+  #    @chosen_priorities = @user_priorities.pluck(:priority_id)
+  #  else
+  #    @priority_choice_header = "hidden"
+  #  end
+  #end # end beer_priorities method
   
-  def cider_priorities
-    # set getting started step
-    @user = current_user
-    if @user.getting_started_step < 9
-      @user.update_attribute(:getting_started_step, 9) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
-    end
+  #def cider_priorities
+  #  # set getting started step
+  #  @user = current_user
+  #  if @user.getting_started_step < 9
+  #    @user.update_attribute(:getting_started_step, 9) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+  #  end
     
     # set UX variables
-    @category = "cider"
-    @beer_chosen = "complete"
-    @cider_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'complete'
-    @styles_chosen = 'complete'
-    @priorities_chosen = 'current'
+  #  @category = "cider"
+  #  @beer_chosen = "complete"
+  #  @cider_chosen = "current"
+  #  @journey_chosen = 'complete'
+  #  @numbers_chosen = 'complete'
+  #  @styles_chosen = 'complete'
+  #  @priorities_chosen = 'current'
     
     # indicate this is coming from signup
-    @create_drink_profile = true
+  #  @create_drink_profile = true
     
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+  #  @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     
     #@user_priorities = UserPriority.new
-    @priorties = Priority.where(cider_relevant: true)
+  #  @priorties = Priority.where(cider_relevant: true)
     
     #check if user has already chosen this question
-    @priority_list = UserPriority.where(user_id: current_user.id, category: "cider")
-    if !@priority_list.blank?
-      @user_priorities = @priority_list.order('priority_rank ASC')
-      @updated_order = @priority_list.order('updated_at DESC')
-    end
+  #  @priority_list = UserPriority.where(user_id: current_user.id, category: "cider")
+  #  if !@priority_list.blank?
+  #    @user_priorities = @priority_list.order('priority_rank ASC')
+  #    @updated_order = @priority_list.order('updated_at DESC')
+  #  end
     
-    if !@user_priorities.blank?
-      @priority_choice_header = "show"
-      @chosen_priorities = @user_priorities.pluck(:priority_id)
-    else
-      @priority_choice_header = "hidden"
-    end
-  end # end cider_priorities method
+  #  if !@user_priorities.blank?
+  #    @priority_choice_header = "show"
+  #    @chosen_priorities = @user_priorities.pluck(:priority_id)
+  #  else
+  #    @priority_choice_header = "hidden"
+  #  end
+  #end # end cider_priorities method
   
   def process_priority_questions
     # set referring page
@@ -1115,19 +1099,19 @@ class CreateDrinkProfileController < ApplicationController
   end # end process_rank_priority_questions method
   
   def beer_costs 
+    # set referring page
+    @referring_url = request.referrer
+    
     # set getting started step
     @user = current_user
-    if @user.getting_started_step < 5
-      @user.update_attribute(:getting_started_step, 5) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if @user.getting_started_step < 2
+      @user.update_attribute(:getting_started_step, 2) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # set UX variables
     @category = "beer"
     @beer_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'complete'
     @styles_chosen = 'complete'
-    @priorities_chosen = 'complete'
     @costs_chosen = 'current'
     
     # indicate this is coming from signup
@@ -1138,9 +1122,9 @@ class CreateDrinkProfileController < ApplicationController
     
     # determine next step in drink profile creation
     if @user_delivery_preference.cider_chosen == true
-      @next_step = drink_profile_cider_journey_path
+      @next_step = drink_profile_cider_styles_path
     elsif @user_delivery_preference.wine_chosen == true
-      @next_step = drink_profile_wine_journey_path
+      @next_step = drink_profile_wine_styles_path
     else
       @next_step = process_final_drink_profile_step_path
     end
@@ -1148,38 +1132,28 @@ class CreateDrinkProfileController < ApplicationController
     # determine if beer price preferences exist
     @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
     @last_saved = @user_beer_preferences.updated_at
-    @drink_estimate = @user_beer_preferences.beer_price_estimate
-    if !@user_beer_preferences.beer_price_response.nil?
-      if @user_beer_preferences.beer_price_response == "lower"
-        @option_lower = "chosen"
-      elsif @user_beer_preferences.beer_price_response == "middle"
-        @option_middle = "chosen"
-      else
-        @option_higher = "chosen"
-      end
-    end
-    if !@user_beer_preferences.beer_price_limit.nil?
-      # send beer_price_limit data to js to show what is currently chosen
-      gon.beer_price_limit = @user_beer_preferences.beer_price_limit.round
-    end
     
+    if !@user_beer_preferences.beer_price_estimate.nil?
+      @drink_estimate = @user_beer_preferences.beer_price_estimate.round
+    end
+    #Rails.logger.debug("Estimate: #{@drink_estimate.inspect}")
   end # end of beer_costs method
   
   def cider_costs 
+    # set referring page
+    @referring_url = request.referrer
+    
     # set getting started step
     @user = current_user
-    if @user.getting_started_step < 10
-      @user.update_attribute(:getting_started_step, 10) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
+    if @user.getting_started_step < 4
+      @user.update_attribute(:getting_started_step, 4) # because current_user is not an object, "update_attributes" needs to be used instead of just "update"
     end
     
     # set UX variables
     @category = "cider"
     @beer_chosen = "complete"
     @cider_chosen = "current"
-    @journey_chosen = 'complete'
-    @numbers_chosen = 'complete'
     @styles_chosen = 'complete'
-    @priorities_chosen = 'complete'
     @costs_chosen = 'current'
     
     # indicate this is coming from signup
@@ -1189,7 +1163,7 @@ class CreateDrinkProfileController < ApplicationController
     @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
     # determine next step in drink profile creation
     if @user_delivery_preference.wine_chosen == true
-      @next_step = drink_profile_wine_journey_path
+      @next_step = drink_profile_wine_styles_path
     else
       @next_step = process_final_drink_profile_step_path
     end
@@ -1197,19 +1171,9 @@ class CreateDrinkProfileController < ApplicationController
     # determine if cider price preferences exist
     @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
     @last_saved = @user_cider_preferences.updated_at
-    @drink_estimate = @user_cider_preferences.cider_price_estimate
-    if !@user_cider_preferences.cider_price_response.nil?
-      if @user_cider_preferences.cider_price_response == "lower"
-        @option_lower = "chosen"
-      elsif @user_cider_preferences.cider_price_response == "middle"
-        @option_middle = "chosen"
-      else
-        @option_higher = "chosen"
-      end
-    end
-    if !@user_cider_preferences.cider_price_limit.nil?
-      # send cider_price_limit data to js to show what is currently chosen
-      gon.cider_price_limit = @user_cider_preferences.cider_price_limit.round
+    
+    if !@user_cider_preferences.cider_price_estimate.nil?
+      @drink_estimate = @user_cider_preferences.cider_price_estimate.round
     end
     
   end # end of cider_costs method
@@ -1230,8 +1194,8 @@ class CreateDrinkProfileController < ApplicationController
     
     if @category == "beer"
       @user_drink_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
-      if @action == "response"
-        @user_drink_preferences.update(beer_price_response: @input)
+      if @action == "average"
+        @user_drink_preferences.update(beer_price_estimate: @input)
       end
       
       if @action == "limit"
@@ -1243,8 +1207,8 @@ class CreateDrinkProfileController < ApplicationController
     
     if @category == "cider" 
       @user_drink_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
-      if @action == "response"
-        @user_drink_preferences.update(cider_price_response: @input)
+      if @action == "average"
+        @user_drink_preferences.update(cider_price_estimate: @input)
       end
       
       if @action == "limit"

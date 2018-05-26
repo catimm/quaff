@@ -1,16 +1,14 @@
 $(function() {
-	<% if @action == "response" %>
-		$('#beer-response-<%= @input %>').addClass('chosen');
-		if ($('#<%= @category %>-response-<%= @input %>').parent('.col-xs-12.col-sm-4.no-padding').siblings('.col-xs-12.col-sm-4.no-padding').children('.drink-text-holder').hasClass('chosen')) {
-			$('#<%= @category %>-response-<%= @input %>').parent('.col-xs-12.col-sm-4.no-padding').siblings('.col-xs-12.col-sm-4.no-padding').children('.drink-text-holder').removeClass('chosen');
+	<% if @action == "average" %>
+		$('#<%= @data %>').addClass('chosen');
+		if ($('#<%= @data %>').parent('.average-drink-cost-row-holder').siblings('.average-drink-cost-row-holder').children('.average-drink-cost-row').hasClass('chosen')) {
+			$('#<%= @data %>').parent('.average-drink-cost-row-holder').siblings('.average-drink-cost-row-holder').children('.average-drink-cost-row').removeClass('chosen');
 		}
 	<% end %>
-	<% if !@price_response.nil? && !@price_limit.nil? %>
-		if ($("#profile_costs_next_button").attr('disabled') == 'disabled' ) {
-			$('#profile_costs_next_button').removeAttr('disabled');
-			$('#profile_costs_next_button').removeClass('btn-default').addClass('btn-success');
-		}
-	<% end %>
+	if ($("#profile_costs_next_button").attr('disabled') == 'disabled' ) {
+		$('#profile_costs_next_button').removeAttr('disabled');
+		$('#profile_costs_next_button').removeClass('btn-default').addClass('btn-success');
+	}
 	
 	<% if !@referring_url.include?("create_drink_profile") %>
 		// code for changing setting after login

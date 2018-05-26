@@ -31,7 +31,7 @@
 	</div>
 </div>
 <div class="row no-margin" id="drinks-frequency-meaning">
-	<% if !@account.delivery_frequency.nil? %>
+	<% if !@account.delivery_frequency.nil? && @account.delivery_frequency != 100 %>
 		<%= render 'delivery_settings/per_delivery_estimate' %>
 	<% end %>
 </div>

@@ -6,10 +6,10 @@
 	<%= render 'delivery_settings/delivery_frequency_options' %>
 	<div class="row no-margin text-center">
 		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
-			<% if !@account.delivery_frequency.nil? %>
-				<%= link_to "Next", signup_thank_you_path, class: "btn btn-success signup-frequency-next-button", id: "signup_frequency_next_button" %>
+			<% if !@account.delivery_frequency.nil? && @account.delivery_frequency != 100 %>
+				<%= link_to "Next", delivery_address_getting_started_path, class: "btn btn-success signup-frequency-next-button", id: "signup_frequency_next_button" %>
 			<% else %>
-				<%= link_to "Next", signup_thank_you_path, disabled: true, class: "btn btn-default signup-frequency-next-button", id: "signup_frequency_next_button" %>
+				<%= link_to "Next", delivery_address_getting_started_path, disabled: true, class: "btn btn-default signup-frequency-next-button", id: "signup_frequency_next_button" %>
 			<% end %>
 		</div>
 	</div>

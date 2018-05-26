@@ -1,15 +1,6 @@
 <div class="row no-margin">
 	<div class="col-xs-2 col-sm-1 admin-user-identity">
-		<% if @mates.blank? %>
-			<% if @account_owner[0].user_graphic.nil? %>
-				<%= render 'layouts/user_initials_small', friend: @account_owner[0] %>
-			<% else %>
-				<%= render 'layouts/user_graphic_small', friend: @account_owner[0] %>
-			<% end %>
-			<h5><b><%= @user_identification_array[0]["identity"] %> </b></h5>
-		<% else %>
-			<h5><b>Account overview</b></h5>
-		<% end %>
+		<h5><b>Account overview</b></h5>
 	</div>
 	<div class="col-xs-2 col-sm-1 preference-estimate-holder-admin">
 		<div class="delivery-settings-info-box drinks">
@@ -65,17 +56,21 @@
 			<h4 class="delivery-preference-prompt"><%= number_to_currency(@next_account_delivery_drink_price, precision: 2) %></h4>
 		</div>
 	</div>
-	<% if !@account_wishlist_items.blank? %>
-		<div class="col-xs-6 col-sm-3 preference-estimate-holder-admin">
-			<h5 class="wishlist-notification">*  
-				<u><%= link_to "Account has Wishlist Items", admin_review_wishlist_path(@account_id),
-				data: {toggle: "modal", target: "#admin_review_wishlist"} %></u>
-			</h5>
-		</div>
-	<% end %>
 </div>
-<% if !@mates.blank? %>
-	<% @users.each do |user| %>
-		<%= render 'user_delivery_estimates', user: user %>
+<% @users.each do |user| %>
+	<% @user_preferences = DeliveryPreference.find_by_user_id(user.id) %>
+	<% if @user_preferences.beer_chosen %>
+		<%= render 'user_delivery_estimates', user: user, category: 'Beer' %>
 	<% end %>
+	<% if @user_preferences.cider_chosen %>
+		<%= render 'user_delivery_estimates', user: user, category: 'Cider' %>
+	<% end %>
+<% end %>
+<% if !@account_wishlist_items.blank? %>
+	<div class="col-xs-6 col-sm-3 preference-estimate-holder-admin">
+		<h5 class="wishlist-notification">*  
+			<u><%= link_to "Account has Wishlist Items", admin_review_wishlist_path(@account_id),
+			data: {toggle: "modal", target: "#admin_review_wishlist"} %></u>
+		</h5>
+	</div>
 <% end %>

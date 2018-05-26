@@ -1,0 +1,23 @@
+<% @user_count = drink.free_curation_users.count %>
+<% if @user_count == 1 %>
+	<% @number_of_users = "" %>
+<% elsif @user_count == 2 %>
+	<% @number_of_users = "-two" %>
+<% else %>
+	<% @number_of_users = "-multiple" %>
+<% end %>
+
+<% drink.free_curation_users.each do |user_curation| %>
+	<% @user_rating = user_curation.user.user_drink_rating(drink.beer.id) %>
+	<div class="row user-ratings-row-holder<%= @number_of_users %>">
+		<% if !@user_rating.nil? %>
+			<%= render 'layouts/user_initials_xsmall', friend: user_curation.user %>
+			<p class="delivery-user-rating-acknowledged<%= @number_of_users %>">rated this:&nbsp </p>
+			<h1 class="delivery-user-rating<%= @number_of_users %>"> <%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
+		<% else %>
+			<%= render 'layouts/user_initials_xsmall', friend: user_curation.user %>
+			<p class="delivery-best-guess-minimized<%= @number_of_users %>">predicted:&nbsp </p>
+			<h1 class="delivery-best-guess<%= @number_of_users %>"> <%= user_curation.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
+		<% end %>
+	</div>
+<% end %>

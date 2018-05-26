@@ -30,7 +30,7 @@ class DrinksController < ApplicationController
       @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
       
       # determine if account has multiple users and add appropriate CSS class tags
-      @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 10).count
+      @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 14).count
       
       # get delivery info
       @all_deliveries = Delivery.where(account_id: @user.account_id)
@@ -118,7 +118,67 @@ class DrinksController < ApplicationController
     end # end of check whether use has a subscription
     
   end # end deliveries method
+  
+  def free_curation
+    # get user info 
+    @user = current_user
+    # determine if account has multiple users
+    @account_users = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 7)
+    @account_users_count = @account_users.count
+    
+    # get free curation info
+    @free_curation = FreeCuration.find_by_account_id(@user.account_id)
+    if !@free_curation.blank?
+      # get free curation drinks
+      @free_curation_drinks = FreeCurationAccount.where(account_id: @user.account_id, free_curation_id: @free_curation.id) 
 
+      # get curation info
+      if !@free_curation_drinks.blank?
+        # set cellar drinks in account delivery
+        @curated_cellar_drinks = @free_curation_drinks.where(cellar: true).sum(:quantity).round
+        
+        # set total number of small curated drinks
+        @curated_small_drinks = @free_curation_drinks.where(large_format: false).sum(:quantity).round
+        
+        # set total number of large curated drinks
+        @curated_large_drinks = @free_curation_drinks.where(large_format: true).sum(:quantity).round
+      
+        # set total number of curated drinks
+        @curated_total_count = @curated_small_drinks + (@curated_large_drinks * 2)
+        
+        # get average drink cost
+        @average_drink_cost = @free_curation.subtotal / (@curated_small_drinks + @curated_large_drinks)
+      
+        # indicate user has reviewed drinks
+        @free_curation_drink_ids = @free_curation_drinks.pluck(:id)
+        @all_user_drinks = FreeCurationUser.where(user_id: current_user.id, 
+                                                  free_curation_account_id: @free_curation_drink_ids,
+                                                  user_reviewed: false)
+        if !@all_user_drinks.blank?
+          @all_user_drinks.each do |drink|
+            drink.update(user_reviewed: true)
+          end
+        end
+        
+      end # end of check on free curation drinks data      
+      
+      # create array to hold descriptors cloud
+      @final_descriptors_cloud = Array.new
+      
+      # get top descriptors for curation drinks
+      @free_curation_drinks.each do |drink|
+        @drink_id_array = Array.new
+        @drink_type_descriptors = delivered_drink_descriptor_cloud(drink)
+        @final_descriptors_cloud << @drink_type_descriptors
+      end
+      
+      # send full array to JQCloud
+      gon.free_curation_drink_descriptor_array = @final_descriptors_cloud
+              
+    end # end of check on free curation data
+    
+  end # end of free_curation method
+  
   def cellar
     if current_user.role_id == 1 && params.has_key?(:format)
       # get user info
@@ -131,7 +191,7 @@ class DrinksController < ApplicationController
     #Rails.logger.debug("Current User Info: #{@user.inspect}")
     
     # determine if account has multiple users and add appropriate CSS class tags
-    @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
+    @account_users = User.where(account_id: @user.account_id, getting_started_step: 14)
     @account_users_count = @account_users.count
     
     if @account_users_count == 1
@@ -225,7 +285,7 @@ class DrinksController < ApplicationController
     @user = User.find_by_id(current_user.id)
     
     # determine if account has multiple users and each user has a rating for the cellar drink
-    @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
+    @account_users = User.where(account_id: @user.account_id, getting_started_step: 14)
     @account_users_count = @account_users.count
     
     if @account_users_count > 1

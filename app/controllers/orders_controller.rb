@@ -11,7 +11,7 @@ class OrdersController < ApplicationController
       # get user subscription
       @user_subscription = UserSubscription.find_by_user_id(@user.id)
       # determine if account has multiple users and add appropriate CSS class tags
-      @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 10).count
+      @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 14).count
       
       # get delivery info
       @all_delivieries = Delivery.where(account_id: @user.account_id).order(delivery_date: :desc)

@@ -1,0 +1,39 @@
+<%= render 'layouts/header' %> 
+<%= render 'recommendations_common', current_section: "Free" %>
+<div class="row no-margin">
+	<div class="container">
+		<div class="row no-margin">
+			<div class="col-xs-12 no-padding-right">
+				<div class="col-xs-12 col-sm-6 text-left no-padding">
+					<h3>Requested curations</h3>
+				</div>
+			</div>
+		</div>
+		<div class="row no-margin">
+				<div class="col-xs-12 col-sm-8 col-md-6">
+					<table class="table table-bordered">
+					    <tr>
+					    	<th>Account</th>
+						    <th>Requested</th>
+						    <th>Curated?</th>
+					    </tr>
+						<% @requested_curations.each do |curation| %>
+								<% @account_owner = User.where(account_id: curation.account_id, role_id: [1,4]).first %>
+								<tr>
+									<td><%= @account_owner.first_name %> [<%= curation.account_id %>]</td>
+									<td class="text-center">
+										<%= link_to curation.requested_date, customer_curation_path(curation.account_id,curation.id) %>
+									</td>
+									<% if curation.share_admin_prep == true %>
+										<td class="text-center">Y</td>
+									<% else %>
+										<td class="text-center">N</td>
+									<% end %>
+								</tr>
+						<% end %>
+					</table>
+				</div>
+			</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

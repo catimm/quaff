@@ -549,6 +549,28 @@ class UserMailer < ApplicationMailer
     
   end # end of delivery_date_with_end_date_change_confirmation email
   
+  def customer_curation_notice(customer)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-curation-notice'
+      },
+      substitution_data: {
+        customer_name: customer.first_name
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+          
+  end # end of customer_curation_notice email
+  
   def welcome_email(customer, membership_name, membership_deliveries, subscription_fee, plan_type, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     

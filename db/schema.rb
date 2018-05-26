@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180519010031) do
+ActiveRecord::Schema.define(version: 20180526191512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,36 +41,12 @@ ActiveRecord::Schema.define(version: 20180519010031) do
     t.integer "shipping_zone_id"
   end
 
-  create_table "admin_account_deliveries", id: :serial, force: :cascade do |t|
-    t.integer "account_id"
-    t.integer "beer_id"
-    t.integer "quantity"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "cellar"
-    t.boolean "large_format"
-    t.integer "delivery_id"
-    t.decimal "drink_price", precision: 5, scale: 2
-  end
-
   create_table "admin_inventory_transactions", id: :serial, force: :cascade do |t|
     t.integer "admin_account_delivery_id"
     t.integer "inventory_id"
     t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "admin_user_deliveries", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "admin_account_delivery_id"
-    t.integer "delivery_id"
-    t.float "quantity"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "new_drink"
-    t.string "likes_style"
-    t.float "projected_rating"
   end
 
   create_table "ahoy_events", id: :serial, force: :cascade do |t|
@@ -503,6 +479,46 @@ ActiveRecord::Schema.define(version: 20180519010031) do
     t.integer "tag_id"
   end
 
+  create_table "free_curation_accounts", id: :serial, force: :cascade do |t|
+    t.integer "account_id"
+    t.integer "beer_id"
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "cellar"
+    t.boolean "large_format"
+    t.integer "free_curation_id"
+    t.decimal "drink_price", precision: 5, scale: 2
+    t.integer "size_format_id"
+  end
+
+  create_table "free_curation_users", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "free_curation_account_id"
+    t.integer "free_curation_id"
+    t.float "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "new_drink"
+    t.string "likes_style"
+    t.float "projected_rating"
+    t.string "drink_category"
+    t.boolean "user_reviewed"
+  end
+
+  create_table "free_curations", force: :cascade do |t|
+    t.integer "account_id"
+    t.date "requested_date"
+    t.decimal "subtotal", precision: 6, scale: 2
+    t.decimal "sales_tax", precision: 6, scale: 2
+    t.decimal "total_price", precision: 6, scale: 2
+    t.string "status"
+    t.text "admin_curation_note"
+    t.boolean "share_admin_prep"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "friends", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "friend_id"
@@ -921,6 +937,7 @@ ActiveRecord::Schema.define(version: 20180519010031) do
     t.string "likes_style"
     t.float "projected_rating"
     t.integer "times_rated"
+    t.string "drink_category"
   end
 
   create_table "user_descriptor_preferences", force: :cascade do |t|

@@ -99,7 +99,29 @@ $(function () {
 		 }
 	 }
 	
-	 
+	// descriptor clouds for free curation drinks
+	 if (gon.free_curation_drink_descriptor_array != undefined) {
+		 // count drinks
+		 var array_count = 0;
+		 // create word cloud and return to view
+	     for (i = 0; i < gon.free_curation_drink_descriptor_array.length; i++) { 
+		    var div_id = "#account_drink_" + gon.free_curation_drink_descriptor_array[i][0][0];
+		    if ( gon.free_curation_drink_descriptor_array[i][1].length > 0 ) {
+			    $(div_id).jQCloud(gon.free_curation_drink_descriptor_array[i][1], {
+					autoResize: true
+			     });
+			} else {
+				$(div_id).jQCloud(word_array, {
+					autoResize: true
+			     });
+			}
+			 array_count++;
+			 if(array_count == gon.free_curation_drink_descriptor_array.length) {
+				setTimeout(hide_extra_drink_info, 10);
+			}
+		 }
+	 }
+	
 	// set height of first row of drink information
 	drink_info_row_height = $(".drink-name-and-info-holder-universal").height();
 	$(".brewery-image-holder-universal").height(drink_info_row_height - 10);

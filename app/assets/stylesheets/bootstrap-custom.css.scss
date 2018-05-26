@@ -1277,6 +1277,14 @@ label {
   width: 100%;
   margin: 30px 0 0 0;
 }
+.curation-overview-header {
+  color: $normal-text;
+  float: left;
+  margin: 10px;
+}
+.signup-option-free-curation-button {
+  margin-top: -20px;
+}
 // Retailer index page
 .banner-retail {
     background: url("https://s3-us-west-2.amazonaws.com/knird/index/craft-beer-bar-adj.jpg") no-repeat fixed center center / cover transparent;
@@ -4969,10 +4977,10 @@ $beer-header-lines-to-show-fp: 1;
   width: 60%;
   margin: 20px 0;
 }
-.delivery-date-change-row-holder {
+.delivery-date-change-row-holder, .average-drink-cost-row-holder {
   margin: 2.5px 0;
 }
-.delivery-date-change-row, .order-delivery-date-change-row {
+.delivery-date-change-row, .order-delivery-date-change-row, .average-drink-cost-row {
   border-radius: 6px;
   background: $white;
   height: inherit;
@@ -4998,11 +5006,15 @@ $beer-header-lines-to-show-fp: 1;
   width: 100%;
   margin-top: 10px;
 }
-.delivery-date-change-row.chosen, .order-delivery-date-change-row.chosen {
+.delivery-date-change-row.chosen, .order-delivery-date-change-row.chosen, .average-drink-cost-row.chosen {
   background: rgba(0,135,203, 0.4);
 }
-.delivery-date-change-row:hover, .order-delivery-date-change-row:hover {
+.delivery-date-change-row:hover, .order-delivery-date-change-row:hover, .average-drink-cost-row:hover {
   background: rgba(0,135,203, 0.4);
+}
+.average-drink-cost {
+   color: $more-emphasized-text;
+   margin: 15px 0;
 }
 .delivery-detail {
   color: $action-background;
@@ -6488,6 +6500,30 @@ $delivery-beer-header-lines-to-show: 2;
     padding: 1px 2px;
   }
 }
+.curation-quantity {
+  color: $normal-text;
+  font-weight: 500;
+  margin: 10px 10px 0 0;
+  font-size: 15px;
+  sup {
+    border: 1px solid $less-emphasized-text;
+    border-radius: 4px;
+    padding: 1px 2px;
+  }
+}
+.free-curation-message {
+  color: $more-emphasized-text;
+  font-size: 16px;
+  line-height: 1.25;
+}
+.curation-admin-note {
+  color: $action-background;
+  font-size: 16px;
+  line-height: 1.25;
+  span {
+    color: $normal-text;
+  }
+}
 .packaged-on {
   color: $normal-text;
   font-weight: 500;
@@ -6705,7 +6741,7 @@ $delivery-beer-header-lines-to-show: 2;
   }
   h5 {
     float: left;
-    width: 40%;
+    width: 60%;
     margin-left: 3px;
   }
 }
@@ -7377,7 +7413,7 @@ $delivery-beer-header-lines-to-show: 2;
 .dropdown-toggle.drink-size {
   height: 34px !important;
 }
-.dropdown-toggle-admin-add-quantity {
+.dropdown-toggle-admin-add-quantity, .curation-admin-add-quantity {
   height: 34px !important;
 }
 
@@ -7553,6 +7589,7 @@ $delivery-beer-header-lines-to-show: 2;
     border-left: none;
     border-top: 1px solid $soft-border;
   }
+  
   // Mobile Drink page
   .section-header {
     font-weight: 400;
@@ -7577,6 +7614,10 @@ $delivery-beer-header-lines-to-show: 2;
   .recent-ratings-header {
     font-size: 18px;
     margin: 10px 0 5px 0;
+  }
+  .curation-header {
+    font-size: 18px;
+    font-weight: 500;
   }
   .formButton-send-note {
     margin: 5px 0 !important;
@@ -7755,7 +7796,11 @@ $delivery-beer-header-lines-to-show: 2;
       font-size: 20px;
     }
   }
-  // User Next Delivery View
+  .signup-option-free-curation-button {
+    width: 100%;
+    margin: 0 0 10px 0 !important;
+  }
+  // Mobile User Next Delivery View
   .no-plan-current-status {
     font-size: 18px;
   }
@@ -8090,12 +8135,12 @@ header {
 
 .value-prop-quote:before {
   font-size: 70px;
-  left: -10px;
+  left: -15px;
   top: -30px;
 }
 .value-prop-quote:after {
   font-size: 70px;
-  right: 55px;
+  right: 35px;
   bottom: -60px;
 }
 .check-delivery-area-text {
@@ -8272,6 +8317,9 @@ header {
   margin-top: 10px;
 }
 // Mobile Signup
+.create-drink-profile-navbar-header {
+  font-size: 20px;
+}
 .signup-category-image-holder {
   padding: 0 25px 25px 25px;
   img {
@@ -8713,8 +8761,9 @@ header {
     }
   }
  .homepage-plan-options.current {
-  border: 3px solid $user-rating-text !important;
-}
+    border: 3px solid $user-rating-text !important;
+  }
+  
   // Early signup
   .guide-header {
     margin-top: 10px;
@@ -8827,7 +8876,10 @@ body.modal-open,
   left: 0;
   z-index: 1040;
 }
-div#admin_user_delivery.modal.in, div#admin_user_feedback.modal.in, div#admin_review_delivery.modal.in {
+div#admin_user_delivery.modal.in, 
+div#admin_user_feedback.modal.in, 
+div#admin_review_delivery.modal.in,
+div#admin_review_curation.modal.in {
   width: 80%;
   margin: 0 auto;
   left: 10%;

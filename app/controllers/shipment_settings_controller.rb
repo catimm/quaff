@@ -193,7 +193,7 @@ class ShipmentSettingsController < ApplicationController
     end
    
     # find if the account has any other users (for menu links)
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
     
     # create new CustomerDeliveryRequest instance
     @customer_shipment_request = CustomerDeliveryRequest.new

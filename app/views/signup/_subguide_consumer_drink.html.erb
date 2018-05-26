@@ -1,28 +1,13 @@
-<div class="col-xs-4 col-sm-offset-2 col-sm-2 no-padding signup-guide-column-holder <%= @drink_choice_chosen %>">
-	<%= link_to "choice", drink_choice_getting_started_path, class: "guide-header #{@drink_choice_chosen}" %>
-	<h5 class="pipe-separator">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_journey_chosen %>">
-	<% if @user.getting_started_step >= 5 %>
-		<%= link_to "journey", drink_journey_getting_started_path, class: "guide-header #{@drink_journey_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">journey</h5>
-	<% end %>
-	<h5 class="pipe-separator">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder last-column <%= @drink_likes_chosen %>">
-	<% if @user.getting_started_step >= 6 %>
-		<%= link_to "likes", drink_style_likes_getting_started_path, class: "guide-header #{@drink_likes_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">likes</h5>
-	<% end %>
-	<h5 class="pipe-separator hidden-xs">&#124;</h5>
-</div>
-<div class="col-xs-4 col-sm-2 no-padding signup-guide-column-holder <%= @drink_dislikes_chosen %>">
-	<% if @user.getting_started_step >= 7 %>
-		<%= link_to "dislikes", drink_style_dislikes_getting_started_path, class: "guide-header #{@drink_dislikes_chosen}" %>
-	<% else %>
-		<h5 class="guide-header">dislikes</h5>
-	<% end %>
-</div>
-
+<% if @user_delivery_preference.beer_chosen && @user_delivery_preference.cider_chosen %>
+	<div class="col-xs-6 col-sm-offset-2 col-sm-4 no-padding signup-guide-column-holder <%= @beer_chosen %>">
+		<%= link_to "beer numbers", drink_profile_beer_numbers_path, class: "guide-header #{@beer_chosen}" %>
+		<h5 class="pipe-separator">&#124;</h5>
+	</div>
+	<div class="col-xs-6 col-sm-4 no-padding signup-guide-column-holder <%= @cider_chosen %>">
+		<% if @user.getting_started_step >= 9 %>
+			<%= link_to "cider numbers", drink_profile_cider_numbers_path, class: "guide-header #{@cider_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">cider numbers</h5>
+		<% end %>
+	</div>
+<% end %>	

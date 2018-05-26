@@ -1,0 +1,41 @@
+<% @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first %>
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12">
+			<h1 class="section-header">Drinks</h1>
+		</div>
+		<div class="col-xs-12 col-sm-7 no-padding">
+			<div class="row no-margin">
+				<% if @user_subscription.blank? %>
+					<div class="col-xs-5 col-md-4 no-padding-right">
+						<%= link_to "Recommendations", free_curation_path, class: "drink-preference-view-option #{if current_section == "Recommended" then "current" else "" end}" %>
+					</div>
+				<% else %>
+					<div class="col-xs-4 col-sm-3">
+						<%= link_to "Deliveries", user_deliveries_path, class: "drink-preference-view-option #{if current_section == "Deliveries" then "current" else "" end}" %>
+					</div>
+				<% end %>
+				<div class="col-xs-3">
+					<%= link_to "Cellar", user_cellar_path, class: "drink-preference-view-option #{if current_section == "Cellar" then "current" else "" end}" %>
+				</div>
+				<div class="col-xs-4 col-sm-3 no-padding-right">
+					<%= link_to "Wishlist", user_wishlist_path, class: "drink-preference-view-option #{if current_section == "Wishlist" then "current" else "" end}" %>
+				</div>
+			</div>
+		</div>
+		<% if (!@user_subscription.blank? && @user_subscription.subscription.deliveries_included == 0) || @user.role_id == 1 %>
+			<% if @first_delivery.blank? || @first_delivery.status == "delivered" %>
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
+					<%= link_to "Order drinks", new_order_path, class: "btn btn-default btn-success order-drinks-button" %>
+				</div>
+			<% end %>
+		<% elsif !@free_curation.blank? && @free_curation.status == "user review" %>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
+				<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-free-curation-button" do %>
+         			<i class="fa fa-play">&nbsp;</i>
+         			Sign up for a delivery plan
+         		<% end %>
+			</div>
+		<% end %>
+	</div>
+</div>

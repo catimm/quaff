@@ -9,7 +9,7 @@ class DeliverySettingsController < ApplicationController
   include QuerySearch
   require "stripe"
   require 'json'
-  
+
   def delivery_frequency
     # set referring page
     @referring_url = request.referrer
@@ -100,296 +100,6 @@ class DeliverySettingsController < ApplicationController
     end # end of check whether delivery preferences
   end # end delivery_frequency method
   
-  def deliveries   
-    # get view chosen
-    @delivery_view = params[:id]
-    
-    if @delivery_view == "next" # logic if showing the next view
-      # set CSS for chosen link
-      @next_chosen = "chosen"
-      
-      # get user's delivery info
-      @user = User.find_by_id(current_user.id)
-      @delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
-      
-      # get delivery date info
-      if !@delivery.blank?
-        @time_now = Time.now
-        @next_delivery_date = @delivery.delivery_date
-        @next_delivery_review_start_date = @next_delivery_date - 3.days
-        @next_delivery_review_end_date = @next_delivery_date - 1.day
-        if @time_now > @next_delivery_review_start_date && @time_now < @next_delivery_review_end_date
-          @current_review_time = true
-        end
-        @time_left = @next_delivery_review_end_date.to_i - Time.now.to_i
-        #Rails.logger.debug("Time to Delivery end date: #{@time_left.inspect}")
-        gon.review_period_ends = @time_left
-      
-        # get next delivery drink info for view
-        if @delivery.status == "user review" || @delivery.status == "in progress"
-          # get next delivery drink info
-          @next_delivery = UserDelivery.where(delivery_id: @delivery.id)
-  
-          # count number of drinks in delivery
-          @drink_count = @next_delivery.sum(:quantity)
-          # count number of drinks that are new to user
-          @next_delivery_cooler = 0
-          @next_delivery_cellar = 0
-          @next_delivery_small = 0
-          @next_delivery_large = 0
-          # cycle through next delivery drinks to get delivery counts
-          @next_delivery.each do |drink|
-            @quantity = drink.quantity
-            if drink.cellar == true
-              @next_delivery_cellar += (1 * @quantity)
-            else
-              @next_delivery_cooler += (1 * @quantity)
-            end
-            if drink.large_format == true
-              @next_delivery_large += (1 * @quantity) 
-            else
-              @next_delivery_small += (1 * @quantity)
-            end
-          end     
-        
-          # create array to hold descriptors cloud
-          @final_descriptors_cloud = Array.new
-          
-          # get top descriptors for drink types the user likes
-          @next_delivery.each do |drink|
-            @drink_id_array = Array.new
-            @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
-            @final_descriptors_cloud << @drink_type_descriptors
-          end
-          # send full array to JQCloud
-          gon.drink_descriptor_array = @final_descriptors_cloud
-          
-          # allow customer to send message
-          @user_delivery_message = CustomerDeliveryMessage.where(user_id: current_user.id, delivery_id: @delivery.id).first
-          #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
-          if @user_delivery_message.blank?
-            @user_delivery_message = CustomerDeliveryMessage.new
-          end
-        
-        end # end of check whether @delivery has data
-        
-      end # end of check whether delivery is currently under "user review"     
-      
-    else # logic if showing the history view
-      # set CSS for chosen link
-      @history_chosen = "chosen"
-      
-      # get past delivery info
-      @past_deliveries = Delivery.where(user_id: current_user.id, status: "delivered").order('delivery_date DESC')
-      
-    end # end of choosing which view to show
-    
-  end # end deliveries method
- 
-  def index
-    # get data to use on page
-      # get user info
-      @user = User.find_by_id(current_user.id)
-      
-      # get account info
-      @account = Account.find_by_id(@user.account_id)
-      
-      # get account owner info
-      @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
-      
-      # set current page for jquery routing--preferences vs signup settings
-      @current_page = "preferences"
-      
-      # get drink options
-      @drink_options = DrinkOption.all
-      
-      # get delivery preferences info
-      @delivery_preferences = DeliveryPreference.where(user_id: current_user.id).first
-      
-      # get user's delivery info
-      @delivery = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered").order("delivery_date ASC").first 
-      
-      # find if the account has any other users who have completed their profile
-      @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
-      
-    # set universal data for page, regardless of mates status
-      # update time of last save
-      @preference_updated = @delivery_preferences.updated_at
-      
-      
-    
-      # set drink category choice
-      if @delivery_preferences.drink_option_id == 1
-        @drink_type_preference = "beers"
-        @beer_chosen = "show"
-        @cider_chosen = "hidden"
-        @beer_and_cider_chosen = "hidden"
-      elsif @delivery_preferences.drink_option_id == 2
-        @drink_type_preference = "ciders"
-        @beer_chosen = "hidden"
-        @cider_chosen = "show"
-        @beer_and_cider_chosen = "hidden"
-      elsif @delivery_preferences.drink_option_id == 3
-        @drink_type_preference = "beers/ciders"
-        @beer_chosen = "hidden"
-        @cider_chosen = "hidden"
-        @beer_and_cider_chosen = "show"
-      else
-        @beer_chosen = "hidden"
-        @cider_chosen = "hidden"
-        @beer_and_cider_chosen = "hidden"
-      end
-    
-      # get current user's drink preferences
-      @current_user_drinks_per_week = @delivery_preferences.drinks_per_week
-      @current_user_large_format_drinks_per_week = @delivery_preferences.max_large_format
-      @current_user_price_estimate = @delivery_preferences.price_estimate
-      # set large format view
-      @max_large_format_drinks = (@current_user_drinks_per_week / 2).round
-        if @max_large_format_drinks < 1
-          @max_large_format_drinks = 1
-        end
-      
-    # get page data, depending on whether the account has mates
-    if !@mates.blank?
-      @mate_count = @mates.size
-      @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
-      # create an array to hold the mates drink preferences
-      @account_mates_preferences = Array.new
-      # set account variables
-      @account_drinks_per_week = 0
-      @account_drinks_per_delivery = 0
-      @account_large_format_drinks_per_week = 0
-      @account_price_estimate = 0
-      # loop through account users to get total account needs
-      @account_users.each do |account_user|
-        # create both Array and Hash to hold this mate's info
-        @account_user_info = Array.new
-        @account_user_specifics = Hash.new
-        # get this user's delivery preferences
-        @user_delivery_preferences = DeliveryPreference.where(user_id: account_user.id).first
-        # push user_id into Array
-        @account_user_info << account_user.id
-        # determine user's cost estimate
-        @user_delivery_cost_estimate = @user_delivery_preferences.price_estimate
-        @user_delivery_cost_estimate_low = (((@user_delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-        @user_delivery_cost_estimate_high = ((((@user_delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-        # push user preferences into Hash
-        if account_user.id == current_user.id
-          @this_name = "Your"
-        else
-          @this_name = account_user.first_name + "'s"
-        end
-        @account_user_specifics["name"] = @this_name
-        @account_user_specifics["color"] = account_user.user_color + "-text"
-        @account_user_specifics["drinks_per_delivery"] = @user_delivery_preferences.drinks_per_delivery
-        @account_user_specifics["max_large"] = @user_delivery_preferences.max_large_format
-        @account_user_specifics["cost_estimate_low"] = @user_delivery_cost_estimate_low
-        @account_user_specifics["cost_estimate_high"] = @user_delivery_cost_estimate_high
-        # push Hash into Array
-        @account_user_info << @account_user_specifics
-        # push Array into larger Array
-        @account_mates_preferences << @account_user_info
-        # add user's info to total account info
-        @account_drinks_per_week = @account_drinks_per_week + @user_delivery_preferences.drinks_per_week
-        @account_drinks_per_delivery = @account_drinks_per_delivery + @user_delivery_preferences.drinks_per_delivery
-        @account_large_format_drinks_per_week = @account_large_format_drinks_per_week + @user_delivery_preferences.max_large_format
-        @account_price_estimate = @account_price_estimate + @user_delivery_cost_estimate
-      end # end of loop through each mate/account user
-      
-      # set total drinks to account info
-      @drinks_per_week = @account_drinks_per_week
-      @max_large = @account_large_format_drinks_per_week
-      @price_estimate = @account_price_estimate
-      @account_delivery_cost_estimate_low = (((@price_estimate.to_f) *0.9).floor / 5).round * 5
-      @account_delivery_cost_estimate_high = ((((@price_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-      # push account info into array
-      @total_account_preferences = ["account",
-                                      {"name"=>"Account",
-                                        "color"=>"action-background-text",
-                                        "drinks_per_delivery"=>@account_drinks_per_delivery,
-                                        "max_large"=>@max_large,
-                                        "cost_estimate_low"=>@account_delivery_cost_estimate_low,
-                                        "cost_estimate_high"=>@account_delivery_cost_estimate_high}]    
-      @account_mates_preferences << @total_account_preferences
-    else
-      # set total drinks to individual user info
-      @drinks_per_week = @current_user_drinks_per_week
-      @max_large = @current_user_large_format_drinks_per_week
-      @price_estimate = @current_user_price_estimate
-    end # end of mates check/branch
-    #Rails.logger.debug("Compiled user preferences: #{@account_mates_preferences.inspect}")
-    # get current delivery frequency preferences
-      
-    # determine minimum number of weeks between deliveries
-    @number_of_weeks_first_option = 2
-    @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1)
-      
-    if @account_owner.craft_stage_id == 1
-      while @total_drinks < 7
-        @number_of_weeks_first_option += 1
-        @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1).round
-      end
-    else
-      while @total_drinks < 6
-        @number_of_weeks_first_option += 1
-        @total_drinks = (@number_of_weeks_first_option * @drinks_per_week * 1.1).round
-      end
-    end
-    
-    # set number of week options
-    @number_of_weeks_second_option = @number_of_weeks_first_option + 1
-    @number_of_weeks_third_option = @number_of_weeks_first_option + 2
-    # set number of drink options
-    @number_of_current_users_drinks_first_option = (@current_user_drinks_per_week * @number_of_weeks_first_option * 1.1).round
-    @number_of_current_users_drinks_second_option = (@current_user_drinks_per_week * @number_of_weeks_second_option * 1.1).round
-    @number_of_current_users_drinks_third_option = (@current_user_drinks_per_week * @number_of_weeks_third_option * 1.1).round
-    @number_of_drinks_first_option = @total_drinks.round
-    @number_of_drinks_second_option = (@drinks_per_week * @number_of_weeks_second_option * 1.1).round
-    @number_of_drinks_third_option =  (@drinks_per_week * @number_of_weeks_third_option * 1.1).round
-    
-    # check if account has already selected a delivery frequency
-    @first_delivery_option_chosen = "hidden"
-    @second_delivery_option_chosen = "hidden"
-    @third_delivery_option_chosen = "hidden"
-    
-    # update if one is already chosen
-    if !@account.delivery_frequency.blank?
-      # set estimate visuals
-      @reset_estimate_visible_status = "hidden"
-      @estimate_visible_status = "show"
-      
-      # set estimate values
-      @total_delivery_drinks = (@drinks_per_week * @account.delivery_frequency * 1.1).round
-      @drink_delivery_estimate = @drink_per_delivery_calculation
-  
-      # set small/large format drink estimates
-      @large_delivery_estimate = (@max_large * @account.delivery_frequency)
-      @small_delivery_estimate = @total_delivery_drinks
-      
-      # get estimated cost estimates -- rounded to nearest multiple of 5
-      @delivery_cost_estimate = @price_estimate
-      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
-      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-    
-      # show frequency choice already made
-      @drinks_per_week_meaning_show_status = "show"
-      if @account.delivery_frequency == @number_of_weeks_first_option
-        @first_delivery_option_chosen = "show"
-      elsif @account.delivery_frequency == @number_of_weeks_second_option
-        @second_delivery_option_chosen = "show"
-      elsif @account.delivery_frequency == @number_of_weeks_third_option
-        @third_delivery_option_chosen = "show"
-      end
-    else
-      @drinks_per_week_meaning_show_status = "hidden"
-      # set estimate visuals
-      @reset_estimate_visible_status = "show"
-      @estimate_visible_status = "hidden"
-    end
-    
-  end # end of index method
-  
   def deliveries_update_estimates
     # get data to add/update
     @data = params[:id]
@@ -415,7 +125,7 @@ class DeliverySettingsController < ApplicationController
     @customer_next_delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
     
     # find if the account has any other users who have completed their profile
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
     
     # update customer drink choice if needed
     if @column == "drink_choice"
@@ -474,7 +184,7 @@ class DeliverySettingsController < ApplicationController
     # get page data, depending on whether the account has mates
     if !@mates.blank?
       @mate_count = @mates.size
-      @account_users = User.where(account_id: @user.account_id, getting_started_step: 10)
+      @account_users = User.where(account_id: @user.account_id, getting_started_step: 14)
       # create an array to hold the mates drink preferences
       @account_mates_preferences = Array.new
       # set account variables
@@ -1018,16 +728,14 @@ class DeliverySettingsController < ApplicationController
    
     # get user's delivery info
     @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
-    # get next planned delivery
-    @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
+    if !@all_upcoming_deliveries.blank?
+      # get next planned delivery
+      @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
+    end 
     
-    # determine number of days needed before allowing change in delivery date
-    if @next_delivery.status == "user review"
-      @days_notice_required = 1
-    else
-      @days_notice_required = 3
-    end
-  
+    # set number of days needed before allowing change in delivery date
+    @days_notice_required = 1
+    
     # get next delivery date(s) of current delivery alternatives 
     @current_delivery_time_options.each do |option|
       # first determine next two options based on week alignment
@@ -1105,7 +813,7 @@ class DeliverySettingsController < ApplicationController
     end
     
     # find if the account has any other users (for menu links)
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
     
     # create new CustomerDeliveryRequest instance
     @customer_delivery_request = CustomerDeliveryRequest.new
@@ -1221,10 +929,10 @@ class DeliverySettingsController < ApplicationController
     @user = User.find(current_user.id)
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 10).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
     
     # get all users on account
-    @users = User.where(account_id: @user.account_id, getting_started_step: 10)
+    @users = User.where(account_id: @user.account_id, getting_started_step: 14)
     @drink_per_delivery_calculation = 0
     @large_delivery_estimate = 0
     @small_delivery_estimate = 0

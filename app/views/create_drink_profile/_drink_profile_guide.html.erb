@@ -1,20 +1,20 @@
 <% if @user_delivery_preference.beer_chosen && @user_delivery_preference.cider_chosen && @user_delivery_preference.wine_chosen %>
 	<div class="row no-margin first-row-signup">
 		<div class="col-xs-4 col-md-offset-3 col-md-2 no-padding signup-guide-column-holder <%= @beer_chosen %>">
-			<%= link_to "beer", drink_profile_beer_journey_path, class: "guide-header #{@beer_chosen}" %>
+			<%= link_to "beer", drink_profile_beer_styles_path, class: "guide-header #{@beer_chosen}" %>
 			<h5 class="pipe-separator">&#124;</h5>
 		</div>
 		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @cider_chosen %>">
-			<% if current_user.getting_started_step >= 6 %>
-				<%= link_to "cider", drink_profile_cider_journey_path, class: "guide-header #{@cider_chosen}" %>
+			<% if current_user.getting_started_step >= 3 %>
+				<%= link_to "cider", drink_profile_cider_styles_path, class: "guide-header #{@cider_chosen}" %>
 			<% else %>
 				<h5 class="guide-header">cider</h5>
 			<% end %>
 			<h5 class="pipe-separator">&#124;</h5>
 		</div>
 		<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @wine_chosen %>">
-			<% if current_user.getting_started_step >= 11 %>
-				<%= link_to "wine", drink_profile_wine_journey_path, class: "guide-header #{@wine_chosen}" %>
+			<% if current_user.getting_started_step >= 5 %>
+				<%= link_to "wine", drink_profile_wine_styles_path, class: "guide-header #{@wine_chosen}" %>
 			<% else %>
 				<h5 class="guide-header">wine</h5>
 			<% end %>
@@ -23,12 +23,12 @@
 <% elsif @user_delivery_preference.beer_chosen && @user_delivery_preference.cider_chosen %>
 	<div class="row no-margin first-row-signup">
 		<div class="col-xs-6 col-md-offset-4 col-md-2 no-padding signup-guide-column-holder <%= @beer_chosen %>">
-			<%= link_to "beer", drink_profile_beer_journey_path, class: "guide-header #{@beer_chosen}" %>
+			<%= link_to "beer", drink_profile_beer_styles_path, class: "guide-header #{@beer_chosen}" %>
 			<h5 class="pipe-separator">&#124;</h5>
 		</div>
 		<div class="col-xs-6 col-md-2 no-padding signup-guide-column-holder <%= @cider_chosen %>">
-			<% if current_user.getting_started_step >= 6 %>
-				<%= link_to "cider", drink_profile_cider_journey_path, class: "guide-header #{@cider_chosen}" %>
+			<% if current_user.getting_started_step >= 3 %>
+				<%= link_to "cider", drink_profile_cider_styles_path, class: "guide-header #{@cider_chosen}" %>
 			<% else %>
 				<h5 class="guide-header">cider</h5>
 			<% end %>
@@ -37,12 +37,12 @@
 <% elsif @user_delivery_preference.beer_chosen && @user_delivery_preference.wine_chosen %>
 	<div class="row no-margin first-row-signup">
 		<div class="col-xs-6 col-md-offset-4 col-md-2 no-padding signup-guide-column-holder <%= @beer_chosen %>">
-			<%= link_to "beer", drink_profile_beer_journey_path, class: "guide-header #{@beer_chosen}" %>
+			<%= link_to "beer", drink_profile_beer_styles_path, class: "guide-header #{@beer_chosen}" %>
 			<h5 class="pipe-separator">&#124;</h5>
 		</div>
 		<div class="col-xs-6 col-md-2 no-padding signup-guide-column-holder <%= @wine_chosen %>">
-			<% if current_user.getting_started_step >= 11 %>
-				<%= link_to "wine", drink_profile_wine_journey_path, class: "guide-header #{@wine_chosen}" %>
+			<% if current_user.getting_started_step >= 5 %>
+				<%= link_to "wine", drink_profile_wine_styles_path, class: "guide-header #{@wine_chosen}" %>
 			<% else %>
 				<h5 class="guide-header">wine</h5>
 			<% end %>
@@ -51,12 +51,12 @@
 <% elsif @user_delivery_preference.cider_chosen && @user_delivery_preference.wine_chosen %>
 	<div class="row no-margin first-row-signup">
 		<div class="col-xs-6 col-md-offset-4 col-md-2 no-padding signup-guide-column-holder <%= @cider_chosen %>">
-			<%= link_to "cider", drink_profile_cider_journey_path, class: "guide-header #{@cider_chosen}" %>
+			<%= link_to "cider", drink_profile_cider_styles_path, class: "guide-header #{@cider_chosen}" %>
 			<h5 class="pipe-separator">&#124;</h5>
 		</div>
 		<div class="col-xs-6 col-md-2 no-padding signup-guide-column-holder <%= @wine_chosen %>">
-			<% if current_user.getting_started_step >= 11 %>
-				<%= link_to "wine", drink_profile_wine_journey_path, class: "guide-header #{@wine_chosen}" %>
+			<% if current_user.getting_started_step >= 5 %>
+				<%= link_to "wine", drink_profile_wine_styles_path, class: "guide-header #{@wine_chosen}" %>
 			<% else %>
 				<h5 class="guide-header">wine</h5>
 			<% end %>
@@ -65,19 +65,19 @@
 <% elsif @user_delivery_preference.beer_chosen %>
 	<div class="row no-margin first-row-signup">
 		<div class="col-xs-12 no-padding signup-guide-column-holder <%= @beer_chosen %>">
-			<%= link_to "beer", drink_profile_beer_journey_path, class: "guide-header #{@beer_chosen}" %>
+			<%= link_to "beer", drink_profile_beer_styles_path, class: "guide-header #{@beer_chosen}" %>
 		</div>
 	</div>
 <% elsif @user_delivery_preference.cider_chosen %>
 	<div class="row no-margin first-row-signup">
 		<div class="col-xs-12 no-padding signup-guide-column-holder <%= @cider_chosen %>">
-			<%= link_to "cider", drink_profile_cider_journey_path, class: "guide-header #{@cider_chosen}" %>
+			<%= link_to "cider", drink_profile_cider_styles_path, class: "guide-header #{@cider_chosen}" %>
 		</div>
 	</div>
 <% elsif @user_delivery_preference.wine_chosen %>
 	<div class="row no-margin first-row-signup">
 		<div class="col-xs-12 no-padding signup-guide-column-holder <%= @wine_chosen %>">
-			<%= link_to "wine", drink_profile_wine_journey_path, class: "guide-header #{@wine_chosen}" %>
+			<%= link_to "wine", drink_profile_wine_styles_path, class: "guide-header #{@wine_chosen}" %>
 		</div>
 	</div>
 <% end %>
@@ -90,11 +90,6 @@
 	<% if @category == "cider" %>
 		<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center no-padding">
 			<%= render 'create_drink_profile/drink_profile_subguide_cider' %>
-		</div>
-	<% end %>
-	<% if @category == "wine" %>
-		<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
-			<%= render 'create_drink_profile/drink_profile_subguide_wine' %>
 		</div>
 	<% end %>
 </div>

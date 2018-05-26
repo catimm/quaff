@@ -1,31 +1,5 @@
 <%= render 'layouts/header' %> 
-<div class="row no-margin first-row">
-	<div class="container first-row-container">
-		<div class="col-xs-12">
-			<h1 class="section-header">Drinks</h1>
-		</div>
-		<div class="col-xs-12 col-sm-7">
-			<div class="row">
-				<div class="col-xs-4">
-					<%= link_to "Deliveries", user_deliveries_path, class: "drink-preference-view-option current" %>
-				</div>
-				<div class="col-xs-4">
-					<%= link_to "Cellar", user_cellar_path, class: "drink-preference-view-option" %>
-				</div>
-				<div class="col-xs-4">
-					<%= link_to "Wishlist", user_wishlist_path, class: "drink-preference-view-option" %>
-				</div>
-			</div>
-		</div>
-		<% if (!@user_subscription.blank? && @user_subscription.subscription.deliveries_included == 0) || @user.role_id == 1 %>
-			<% if @first_delivery.blank? || @first_delivery.status == "delivered" %>
-				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
-					<%= link_to "Order drinks", new_order_path, class: "btn btn-default btn-success order-drinks-button" %>
-				</div>
-			<% end %>
-		<% end %>
-	</div>
-</div>
+<%= render 'drinks_common', current_section: "Deliveries" %>
 <% if !@user_subscription.blank? && (!@all_deliveries.blank? || !@first_delivery.blank?) %>
 	<div class="row">
 		<div class="row no-margin spinner text-center">

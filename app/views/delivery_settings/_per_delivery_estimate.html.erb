@@ -1,20 +1,20 @@
 <div class="col-xs-12 text-center">
-	<% if @referring_url.include?("signup") %>
+	<% if !@referring_url.include?("delivery_settings") %>
 		<h4 class="estimated-delivery-price-header delivery-estimate-information">
-			You can change these estimates by adjusting your drink profile inputs.
+			You can change these estimates by adjusting your drink number or cost inputs after signup.
 		</h4>
 	<% else %>	
 		<% if @delivery_preferences.beer_chosen %>
 			<h4 class="estimated-delivery-price-header delivery-estimate-information">
 				You can change these estimates by adjusting either your 
-				<%= link_to "drink journey", settings_beer_journey_path %>
+				<%= link_to "drink numbers", settings_beer_numbers_path %>
 				or 
 				<%= link_to "cost inputs", settings_beer_costs_path %>.
 			</h4>
 		<% elsif @delivery_preferences.cider_chosen %>
 			<h4 class="estimated-delivery-price-header delivery-estimate-information">
 				You can change these estimates by adjusting either your 
-				<%= link_to "drink journey", settings_cider_journey_path %>
+				<%= link_to "drink numbers", settings_cider_numbers_path %>
 				or 
 				<%= link_to "cost inputs", settings_cider_costs_path %>.
 			</h4>

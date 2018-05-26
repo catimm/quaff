@@ -1,0 +1,113 @@
+<% @drink_recommendations_with_disti.each do |drink_group| %>
+	<% drink_group[1].each do |drink| %>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="drink-tile-<%= drink[1][0].id %>">
+				<div class="drink-delivery-tile">
+					<%= render 'layouts/drink_info_recommendations', drink: drink[1][0] %>
+				</div>
+			</div>
+			<div class="col-xs-10 col-sm-5 col-md-7">
+				<table class="table table-striped admin-recommendation-table">
+				    <tr>
+				    	<th>User</th>
+					    <th class="text-center">New</th>
+					    <th class="text-center">#</th>
+					    <th class="text-center">Rating</th>
+					    <th class="text-center">Delivered?</th>
+					    <th class="text-center">Drank?</th>
+					   	<% if @account_wishlist_items.map{|a|a.beer_id}.include?(drink[1][0].beer_id)%>
+					    	<th class="text-center">Wishlist</th>
+					    <% end %>
+					   	<% if drink[1].count > 1 %>
+					    	<th class="text-center">Designate</th>
+					    <% end %>
+				    </tr>
+				    <% drink[1].each do |individual_drink| %>
+				    	<tr>
+							<td>
+								<% if individual_drink.user.user_graphic.nil? %>
+									<%= render 'layouts/user_initials_xsmall', friend: individual_drink.user %>
+								<% else %>
+									<%= render 'layouts/user_graphic_small', friend: individual_drink.user %>
+								<% end %>
+							</td>
+							<td class="text-center"><%= individual_drink.new_drink.humanize %></td>
+							<td class="text-center"><%= individual_drink.number_of_ratings %></td>
+							<td class="text-center"><%= individual_drink.projected_rating %></td>
+							<% if !individual_drink.delivered_recently.nil? %>	
+								<td class="text-center"><%= individual_drink.delivered_recently.strftime("%m/%d/%y") %></td>
+							<% else %>
+								<td class="text-center">No</td>
+							<% end %>
+							<% if !individual_drink.drank_recently.nil? %>
+								<td class="text-center"><%= individual_drink.drank_recently.strftime("%m/%d/%y") %></td>
+							<% else %>
+								<td class="text-center">No</td>
+							<% end %>
+							<% @user_wishlist_item = @account_wishlist_items.where(user_id: individual_drink.user_id, beer_id: individual_drink.beer_id) %>
+							<% if !@user_wishlist_item.blank? %>
+								<td class="text-center">Yes</td>
+							<% end %>
+							<% if drink[1].count > 1 %>
+								<% @curation_account_drink = @free_curation_account.where(beer_id: individual_drink.beer_id, size_format_id: individual_drink.size_format_id)[0] %>
+								<% if !@curation_account_drink.nil? %>
+									<% @curation_user_drink = FreeCurationUser.where(free_curation_account_id: @curation_account_drink.id, user_id: individual_drink.user_id) %>
+									<% if @curation_user_drink.blank? %>
+										<td class="text-center"><%= check_box_tag "inventory_ids[]", individual_drink.id, false, :id => "#{individual_drink.id}-#{@curation_account_drink.id}", :class => "add_to_delivery" %></td>
+									<% else %>
+										<td class="text-center"><%= check_box_tag "inventory_ids[]", individual_drink.id, {checked: true}, :id => "#{individual_drink.id}-#{@curation_account_drink.id}", :class => "add_to_delivery" %></td>
+									<% end %>
+								<% else %>
+									<td class="text-center"><%= check_box_tag "inventory_ids[]", individual_drink.id, false, disabled: true, :id => "#{individual_drink.id}", :class => "add_to_delivery-#{individual_drink[0]}" %></td>
+								<% end %>
+							<% end %>
+						</tr>
+				    <% end %>
+				  </table>
+			</div>
+			<div class="col-xs-2 col-sm-1 col-md-1 no-padding">
+				<h5 class="admin-add-quantity-header">Quantity</h5>
+				<% if @free_curation_account.exists?(beer_id: drink[1][0].beer_id, size_format_id: drink[1][0].size_format_id) %>
+					<% @this_current_quantity = FreeCurationAccount.where(account_id: @account_id, free_curation_id: @curation_id, beer_id: drink[1][0].beer_id )[0] %>
+					<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
+						<% @end_quantity = drink[1][0].inventory.limit_per %>
+					<% else %>
+						<% if drink[1][0].disti_inventory_id != nil %>
+							<% @currently_available = DistiInventory.find_by_id(drink[1][0].disti_inventory_id) %>
+							<% if @currently_available.currently_available == true %>
+								<% @end_quantity = 24 %>
+							<% else %>
+								<% @end_quantity = (drink[1][0].inventory.stock + @this_current_quantity.quantity) %>
+							<% end %>
+						<% else %>
+							<% @end_quantity = (drink[1][0].inventory.stock + @this_current_quantity.quantity) %>
+						<% end %>
+					<% end %>
+					<% @quantity_available = [*0..@end_quantity] %>
+					<%= select_tag('curator_quantity_add', 
+									options_for_select(@quantity_available.map { |num| [num, num] }, @this_current_quantity.quantity),
+									class:"btn btn-success curation-admin-add-quantity", 
+									id: "#{@curation_id}-#{drink[1][0].id}-#{drink[1].count}-#{drink[0]}", 
+									prompt: "Edit" ) %>
+				<% else %>
+					<% if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil? %>
+						<% @end_quantity = drink[1][0].inventory.limit_per %>
+					<% else %>
+						<% if drink[1][0].disti_inventory_id != nil %>
+							<% @end_quantity = 24 %>
+						<% else %>
+							<% @end_quantity = drink[1][0].inventory.stock %>
+						<% end %>
+					<% end %>
+					<% @quantity_available = [*1..@end_quantity] %>
+					<%= select_tag('curator_quantity_add', 
+									options_for_select(@quantity_available.map { |num| [num, num] }), 
+									class:"btn btn-success curation-admin-add-quantity", 
+									id: "#{@curation_id}-#{drink[1][0].id}-#{drink[1].count}-#{drink[0]}", 
+									prompt: "Add" ) %>
+				<% end %>
+			</div>
+		</div>
+		<hr>
+	<% end %>
+<% end %>

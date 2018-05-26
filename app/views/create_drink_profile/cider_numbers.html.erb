@@ -1,15 +1,17 @@
 <%= render 'layouts/header_create_drink_profile' %> 
 <%= render 'layouts/updating_spinner' %> 
-<%= render 'drink_profile_guide' %>
+<div class="row no-margin first-row-signup">
+	<%= render 'signup/signup_guide_consumer' %>
+</div>
 <%= render 'layouts/settings_drink_numbers', drink: @category %>
 <div class="row">
 	<div class="container">
 		<div class="row drink-profile-next-row">
 			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
 				<% if !@user_cider_preference.ciders_per_week.blank? %>
-					<%= link_to "Next", drink_profile_cider_styles_path, class: "btn btn-success user-info-next-button", id: "profile_numbers_next_button" %>
+					<%= link_to "Next", delivery_frequency_getting_started_path, class: "btn btn-success user-info-next-button", id: "profile_numbers_next_button" %>
 				<% else %>
-					<%= link_to "Next", drink_profile_cider_styles_path, disabled: true, class: "btn btn-default user-info-next-button", id: "profile_numbers_next_button" %>
+					<%= link_to "Next", delivery_frequency_getting_started_path, disabled: true, class: "btn btn-default user-info-next-button", id: "profile_numbers_next_button" %>
 				<% end %>
 			</div>
 		</div>

@@ -30,9 +30,7 @@ class Delivery < ApplicationRecord
   
   has_many :delivery_zones
   has_many :account_deliveries
-  has_many :admin_account_deliveries
-  has_many :user_deliveries    
-  has_many :admin_user_deliveries
+  has_many :user_deliveries
   has_many :customer_delivery_messages
   has_many :customer_delivery_changes
   has_many :shipments, dependent: :destroy

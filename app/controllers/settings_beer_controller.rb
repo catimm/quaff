@@ -113,6 +113,9 @@ class SettingsBeerController < ApplicationController
   end # end beer_priorities method
   
   def beer_costs
+    # set referring page
+    @referring_url = request.referrer
+    
     @category = "beer"
     
     # get current user input

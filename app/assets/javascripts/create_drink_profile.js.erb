@@ -26,14 +26,6 @@ $(function () {
 	$('.chosen-style-like-cover').height(drink_style_tile_height);
 	$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
 	
-	// set height of drink cost holder
-	if ($('#beer-response-higher').length != 0) {
-		var drink_cost_holder_height = $('#beer-response-higher').height();
-	} else {
-		drink_cost_holder_height = $('#cider-response-higher').height();
-	}
-	$('.drink-text-holder').height(drink_cost_holder_height);
-	
 	// get height of category image holder
 	var  cat_holder_height = $(".drink-profile-category-image-holder").height();
 	$(".drink-profile-category-image-holder-chosen-cover").height(cat_holder_height);
@@ -304,7 +296,7 @@ $(function () {
 	});
 	
 	// send cost estimate input to controller
-	$(document).on('click', '.drink-text-holder', function () {
+	$(document).on('click', '.average-drink-cost-row', function () {
 		
 		var data = $(this).attr('id');
 		

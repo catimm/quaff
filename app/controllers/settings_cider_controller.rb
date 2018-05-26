@@ -114,6 +114,9 @@ class SettingsCiderController < ApplicationController
   end # end cider_priorities method
   
   def cider_costs
+    # set referring page
+    @referring_url = request.referrer
+    
     @category = "cider"
     
     # get current user input
@@ -139,9 +142,13 @@ class SettingsCiderController < ApplicationController
   end # end cider_costs method
   
   def cider_extras
-    @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
-    if !@user_cider_preferences.additional.nil?
-      @last_saved = @user_cider_preferences.updated_at
+    # set referring page
+    @referring_url = request.referrer
+    # set category
+    @category = "cider"
+    @user_drink_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+    if !@user_drink_preferences.additional.nil?
+      @last_saved = @user_drink_preferences.updated_at
     end
   end # end cider_extras method
   

@@ -1,0 +1,50 @@
+<% if !@curation.blank? %>
+	<table class="table table-striped admin-recommendation-table">
+		<tr>
+		  <th>Drink</th>
+		  <th>Drink Type</th>
+		  <th>Cellarable</th>
+		  <th>Format</th>
+		  <th>User &nbsp;
+		  		New &nbsp;
+		  		Rating &nbsp;
+		  		Quantity
+		  </th>
+		</tr>
+		<% @curation.each_with_index do |drink, index| %>
+		  <% @free_curation_users = FreeCurationUser.where(free_curation_account_id: drink.id) %>
+	      <tr>
+	        <td><%= drink.beer.brewery.short_brewery_name + " " + drink.beer.beer_name %></td>
+	        <td><%= drink.beer.beer_type.beer_type_name %></td>
+	        <td><%= drink.beer.beer_type.cellarable.humanize %></td>
+	        <td><%= drink.size_format.format_name %></td>
+	        <td>
+		        <table>
+			        <% @free_curation_users.each do |user| %>
+		        		<tr>
+		        			<td class="second-table-column">
+				        		<% if user.user.user_graphic.nil? %>
+									<%= render 'layouts/user_initials_xsmall', friend: user.user %>
+								<% else %>
+									<%= render 'layouts/user_graphic_small', friend: user.user %>
+								<% end %>
+								&nbsp;
+							</td>
+							<td class="second-table-column"><%= user.new_drink.humanize %> &nbsp;</td>
+			        	 	<% if user.new_drink == true %>
+					        	<td class="second-table-column"><%= user.projected_rating %> &nbsp;</td>
+					        <% else %>
+					        	<% @avg_rating = UserBeerRating.where(user_id: user.user_id, beer_id: drink.beer_id).average(:user_beer_rating) %>
+					        	<td class="second-table-column"><%= @avg_rating.round(2) %> &nbsp;</td>
+					        <% end %>
+					        <td class="second-table-column"><%= user.quantity %> &nbsp;</td>
+		        		</tr>
+		        	 <% end %>
+		    	</table>
+	        </td>
+	      </tr>
+		<% end %>
+	</table>
+<% else %>
+<h4>Um, there's nothing to review yet....Get crackin'!</h4>
+<% end %>

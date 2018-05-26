@@ -56,15 +56,19 @@ class UserAddressesController < ApplicationController
     @update_address.update(address_params)
     
     # get user subscription
-    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: [true, nil]).first
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true ).first
     
     # redirect user
     if !session[:return_to].nil?
       # redirect back to last page before new location page
       redirect_to session.delete(:return_to)
     # determine redirect path, based on where user is in signup process
-    elsif  @user.getting_started_step >= 17
-      redirect_to delivery_preferences_getting_started_path
+    elsif  @user.getting_started_step >= 12
+      if @user_subscription.subscription.deliveries_included != 0
+        redirect_to delivery_preferences_getting_started_path
+      else
+        redirect_to signup_thank_you_path
+      end
     end
     
   end # end of update method

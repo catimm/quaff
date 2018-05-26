@@ -73,4 +73,55 @@ $(function() {
 		});
 	});
 	
+	// send number of drinks to free curation account table
+	$(document).on('change', '.curation-admin-add-quantity', function () {
+		var this_id = $(this).attr('id');
+		var order_quantity = $(this).val();
+		var split_id = this_id.split("-");
+		var delivery_id = split_id[0];
+		var user_recommendation_id = split_id[1];
+		var number_of_users = split_id[2];
+		var drink_id = split_id[3];
+		
+		// enable checkboxes for each user if more than one user
+		if (number_of_users > 1) {
+			$('.add_to_delivery-' + drink_id).removeAttr("disabled");
+		}
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/admin_account_curation/" + order_quantity + "-" + delivery_id + "-" + user_recommendation_id
+		});
+	});
+	
+	// send drink to free curation user table
+	$(document).on('change', '.add_to_curation', function () {
+		var this_id = $(this).attr('id');
+		if($(this).is(":checked")) {
+		      var this_action = "add"
+		   } else {
+			var this_action = "remove"
+		}
+		
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/admin_user_curation/" + this_action + "-" + this_id
+		});
+	});
+	
+	// change status of delivery ready to share with customer
+	$(document).on('change', '#share_curation_with_customer', function () {
+		var this_curation_id = $(this).parent().attr('id');
+		
+		if ($(this).is(':checked')) {
+		    var this_value = true;
+		} else {
+		    var this_value = false;
+		}
+
+		$.ajax({
+		  type: "GET",
+		  url: "/admin/recommendations/admin_share_curation_with_customer/" + this_curation_id + "-" + this_value
+		});
+	});
 });

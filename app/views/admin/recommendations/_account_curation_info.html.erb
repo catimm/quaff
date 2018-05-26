@@ -1,0 +1,35 @@
+<div class="col-xs-4 col-sm-2 no-padding">
+	<h5>Requested: <b><%= @free_curation.requested_date.strftime("%m/%d/%y") %></b></h5>
+	<h5>Status: <%= @free_curation.status %></h5>
+</div>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<%= link_to "Acct requests", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#account_requests"} %>
+</div>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<%= link_to "Acct comments", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#account_comments"} %>
+</div>
+<% if @free_curation.status == "admin prep" || @free_curation.status == "user review"%>
+	<div class="col-xs-4 col-sm-2 no-padding">
+		<%= link_to "Review curation", admin_review_curation_path(@curation_id), :class => "btn btn-primary admin-check-button",
+					data: {toggle: "modal", target: "#admin_review_curation"} %>
+	</div>
+	<div class="col-xs-4 col-sm-2 no-padding">
+		<% if @free_curation.admin_curation_note.nil? %>
+			<%= link_to "Add note", "#", :class => "btn btn-primary admin-check-button",
+					data: {toggle: "modal", target: "#admin_curation_note"} %>
+		<% else %>
+			<%= link_to "Update note", "#", :class => "btn btn-primary admin-check-button",
+					data: {toggle: "modal", target: "#admin_curation_note"} %>
+		<% end %>
+	</div>
+<% end %>
+<div class="col-xs-4 col-sm-2 no-padding">
+	<% if @free_curation.share_admin_prep == false %>
+		<%= link_to "Share delivery", "#", :class => "btn btn-primary admin-check-button",
+				data: {toggle: "modal", target: "#confirm_sharing_curation"} %>
+	<% else %>
+		<%= link_to "Shared", "#", :class => "btn btn-primary admin-check-button" %>
+	<% end %>
+</div>

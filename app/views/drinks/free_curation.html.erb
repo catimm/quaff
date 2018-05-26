@@ -1,0 +1,55 @@
+<%= render 'layouts/header' %> 
+<%= render 'drinks_common', current_section: "Recommendations" %>
+<% if !@free_curation.blank? && @free_curation.status == "user review" %>
+	<div class="row">
+		<div class="container" id="deliveries-view">
+			<div class="row no-margin">
+				<div class="col-xs-12 col-sm-8"> 
+					<div class="col-xs-12 no-padding">
+						<h3 class="curation-header">Get either a free 6-pack or a free delivery!</h3>
+					</div>
+					<h4 class="free-curation-message"> 
+								<u><%= link_to "Sign up", edit_user_path("membership") %></u>
+								for a membership plan now and get a free six-pack. Or, <u><%= link_to "sign up", edit_user_path("membership") %></u> 
+								for our Ad Hoc option for a free, one-time delivery.</h4>
+					<% if !@free_curation.admin_curation_note.nil? %>
+						<h4 class="curation-admin-note">Curator note: <span><%= @free_curation.admin_curation_note %></span></h4>
+					<% end %>
+				</div>
+			</div>	
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding-right">
+					<h3 class="recent-ratings-header">My free curation</h3>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="row no-margin delivery-first-row" id="delivery-first-row-<%= @free_curation.id %>">
+					<div class="col-xs-12">
+						<%= render(partial: 'delivery_stats_for_free_curation', locals: { curation: @free_curation })  %>
+					</div>
+				</div>
+				<div class="row no-margin delivery-second-row show" id="delivery-second-row-<%= @free_curation.id %>">
+					<% @free_curation_drinks.each do |drink| %>
+						<%= render(partial: 'drink_card_curation', locals: { drink: drink }) %>
+					<% end %>
+				</div>
+			</div>
+		</div>	
+	</div>		
+<% else %>
+	<div class="row">
+		<div class="container" id="deliveries-view">
+			<div class="row no-margin">
+				<div class="col-xs-5 col-sm-3 no-padding-right">
+					<h3 class="recent-ratings-header">My free curation</h3>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4>We'll send you an email as soon as your free curation is ready!</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>
+<%= render 'layouts/footer' %>

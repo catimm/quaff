@@ -72,6 +72,25 @@ Rails.application.routes.draw do
     end   
   end
   
+  # admin recommendation routes
+  get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
+  get 'admin/recommendations/change_user_view/:id' => 'admin/recommendations#change_user_view'
+  get 'admin/recommendations/change_delivery_view/:id' => 'admin/recommendations#change_delivery_view'
+  get 'admin/recommendations/change_delivery_drink_quantity/:id' => 'admin/recommendations#change_delivery_drink_quantity', :as => 'admin_change_delivery_drink_quantity'
+  get 'admin/recommendations/admin_user_delivery/:id' => 'admin/recommendations#admin_user_delivery', :as =>'admin_user_delivery'
+  get 'admin/recommendations/admin_user_feedback/:id' => 'admin/recommendations#admin_user_feedback', :as =>'admin_user_feedback'
+  get 'admin/recommendations/admin_review_delivery/:id' => 'admin/recommendations#admin_review_delivery', :as =>'admin_review_delivery'
+  get 'admin/recommendations/admin_review_wishlist/:id' => 'admin/recommendations#admin_review_wishlist', :as =>'admin_review_wishlist'
+  get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
+  post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
+  post 'admin/recommendations/admin_curation_note/:id' => 'admin/recommendations#admin_curation_note', :as =>'admin_curation_note'
+  get 'admin/recommendations/free_curations' => 'admin/recommendations#free_curations', :as =>'free_curations'
+  get 'admin/recommendations/customer_curation/:id' => 'admin/recommendations#customer_curation', :as =>'customer_curation'
+  get 'admin/recommendations/admin_review_curation/:id' => 'admin/recommendations#admin_review_curation', :as =>'admin_review_curation'
+  get 'admin/recommendations/admin_account_curation/:id' => 'admin/recommendations#admin_account_curation'
+  get 'admin/recommendations/admin_user_curation/:id' => 'admin/recommendations#admin_user_curation', :as =>'admin_user_curation'
+  get 'admin/recommendations/admin_share_curation_with_customer/:id' => 'admin/recommendations#admin_share_curation_with_customer', :as =>'admin_share_curation_with_customer'
+  
   # admin fulfillment routes
   get 'admin/fulfillment/change_driver_view/:id' => 'admin/fulfillment#change_driver_view'
   get 'admin/fulfillment/shipments' => 'admin/fulfillment#shipments', :as => 'admin_fulfillment_shipments'
@@ -138,6 +157,7 @@ Rails.application.routes.draw do
   
   # routes to drink pages
   get '/drinks/deliveries' => 'drinks#deliveries', :as => 'user_deliveries'
+  get '/drinks/free_curation' => 'drinks#free_curation', :as => 'free_curation'
   get '/drinks/cellar' => 'drinks#cellar', :as => 'user_cellar'
   get '/drinks/wishlist' => 'drinks#wishlist', :as => 'user_wishlist'
   get '/drinks/supply/:id' => 'drinks#supply', :as => 'user_supply'
@@ -381,18 +401,6 @@ Rails.application.routes.draw do
   get 'reloads' => 'reloads#index'
   get 'reloads/data', :defaults => { :format => 'json' }
   
-  # admin recommendation routes
-  get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
-  get 'admin/recommendations/change_user_view/:id' => 'admin/recommendations#change_user_view'
-  get 'admin/recommendations/change_delivery_view/:id' => 'admin/recommendations#change_delivery_view'
-  get 'admin/recommendations/change_delivery_drink_quantity/:id' => 'admin/recommendations#change_delivery_drink_quantity', :as => 'admin_change_delivery_drink_quantity'
-  get 'admin/recommendations/admin_user_delivery/:id' => 'admin/recommendations#admin_user_delivery', :as =>'admin_user_delivery'
-  get 'admin/recommendations/admin_user_feedback/:id' => 'admin/recommendations#admin_user_feedback', :as =>'admin_user_feedback'
-  get 'admin/recommendations/admin_review_delivery/:id' => 'admin/recommendations#admin_review_delivery', :as =>'admin_review_delivery'
-  get 'admin/recommendations/admin_review_wishlist/:id' => 'admin/recommendations#admin_review_wishlist', :as =>'admin_review_wishlist'
-  get 'admin/recommendations/admin_share_delivery_with_customer/:id' => 'admin/recommendations#admin_share_delivery_with_customer', :as =>'admin_share_delivery_with_customer'
-  post 'admin/recommendations/admin_delivery_note/:id' => 'admin/recommendations#admin_delivery_note', :as =>'admin_delivery_note'
-
   # admin descriptors routes
   #get 'admin/descriptors/show/:id' => 'admin/descriptors#show', :as =>'admin_descriptors'
   get '/admin/descriptors/admin/descriptors/change_style_view/:id' => 'admin/descriptors#change_style_view'
