@@ -1396,3 +1396,44 @@ task :expiring_customer_subscriptions => :environment do
     end # end of check whether expiring customers exist
     
 end # end of expiring_customer_subscriptions task
+
+desc "Find and update top style descriptors"
+task :top_style_descriptors => :environment do
+  # clear current descriptor list
+    @current_descriptors = DrinkStyleTopDescriptor.all
+    @current_descriptors.destroy_all
+    
+    # get drink styles
+    @all_drink_styles = BeerStyle.all
+    
+    @all_drink_styles.each do |style|
+      # get style descriptors
+      @style_descriptors = []
+      @drinks_of_style = style.beers
+      @drinks_of_style.each do |drink|
+        @descriptors = drink.descriptor_list
+        #Rails.logger.debug("descriptor list: #{@descriptors.inspect}")
+        @descriptors.each do |descriptor|
+          @style_descriptors << descriptor
+        end
+      end
+      #Rails.logger.debug("style descriptor list: #{@style_descriptors.inspect}")
+      # attach count to each descriptor type to find the drink's most common descriptors
+      @this_style_descriptor_count = @style_descriptors.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
+      # put descriptors in descending order of importance
+      @this_style_descriptor_count = Hash[@this_style_descriptor_count.sort_by{ |_, v| -v }]
+      #Rails.logger.debug("style descriptor list with count: #{@this_style_descriptor_count.inspect}")
+      @this_style_descriptor_count_final = @this_style_descriptor_count.first(20)
+      #Rails.logger.debug("final style descriptor list with count: #{@this_style_descriptor_count_final.inspect}")
+      # insert top descriptors into table
+      @this_style_descriptor_count_final.each do |this_descriptor|
+        @tag_info = ActsAsTaggableOn::Tag.where(name: this_descriptor).first
+        # insert top descriptors into table
+        DrinkStyleTopDescriptor.create(beer_style_id: style.id, 
+                                        descriptor_name: this_descriptor[0], 
+                                        descriptor_tally: this_descriptor[1],
+                                        tag_id: @tag_info.id)
+      end
+    end # end of loop through styles
+    
+end # end top_style_descriptors
