@@ -3,19 +3,20 @@ module TypeBasedGuess
   include DrinkDescriptors
 
   def type_based_guess(this_beer, user_id)
+    Rails.logger.debug("This drink: #{this_beer.inspect}")
     #Rails.logger.debug("type based guess is being used")
     # to note that this drink recommendation is based on type input
     this_beer.recommendation_rationale = "type"
     # set baseline projected rating for this beer
     this_beer.best_guess = this_beer.beer_rating
-    Rails.logger.debug("Beer best guess: #{this_beer.best_guess.inspect}")
+    #Rails.logger.debug("Beer best guess: #{this_beer.best_guess.inspect}")
     #find this drink's beer type id
     this_beer_type_id = this_beer.beer_type_id
     # find all drinks of same type rated by user
     @same_type_rated_by_user = UserBeerRating.where(user_id: user_id, beer_type_id: this_beer_type_id)
     # create empty array to hold top descriptors list for beer being rated
     @this_drink_top_descriptors = drink_descriptors(this_beer, 5)
-    Rails.logger.debug("top descriptors: #{@this_drink_top_descriptors.inspect}")
+    #Rails.logger.debug("top descriptors: #{@this_drink_top_descriptors.inspect}")
     # find top 3 qualities for drinks of this type rated by this user as >=8
     @same_type_rated_by_user_good = @same_type_rated_by_user.where("user_beer_rating >= ?", 8)
     # create empty array to hold list of descriptors from highly rated drinks
