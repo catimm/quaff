@@ -538,7 +538,7 @@ label {
   content: "\201C";
   font-size: 80px;
   position: absolute;
-  left: -30px;
+  left: -5px;
   top: 15px;
   color: #7a7a7a;
 }
@@ -548,7 +548,7 @@ label {
   content: "\201D";
   font-size: 80px;
   position: absolute;
-  right: 95px;
+  right: 65px;
   bottom: -10px;
   color: #7a7a7a;
 }
@@ -702,6 +702,9 @@ label {
   text-align: justify;
   font-size: 18px;
   line-height: 1.25;
+}
+.how-it-works-holder {
+  padding: 0 10px;
 }
 .more-info-text-holder {
   margin: 30px 0 30px 0;
@@ -8763,7 +8766,12 @@ header {
  .homepage-plan-options.current {
     border: 3px solid $user-rating-text !important;
   }
-  
+  .value-prop-quote:before {
+    left: -20px;
+  }
+  .value-prop-quote:after {
+    right: 0;
+  }
   // Early signup
   .guide-header {
     margin-top: 10px;
