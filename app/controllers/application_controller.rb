@@ -124,7 +124,7 @@ class ApplicationController < ActionController::Base
   end
   
   def after_sign_out_path_for(resource_or_scope)
-    Rails.logger.debug("Signout hit")
+    #Rails.logger.debug("Signout hit")
     session.delete(:user_return_to)
     root_path
   end

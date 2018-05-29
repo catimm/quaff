@@ -552,7 +552,7 @@ task :assess_drink_recommendations => :environment do
     
     # get list of all currently_active subscriptions
     @active_subscriptions = UserSubscription.where(currently_active: true)
-    #Rails.logger.debug("Active subscriptions: #{@active_subscriptions.inspect}")
+    Rails.logger.debug("Active subscriptions: #{@active_subscriptions.inspect}")
     
     # determine viable drinks for each active account
     @active_subscriptions.each do |account|
@@ -566,7 +566,7 @@ task :assess_drink_recommendations => :environment do
         @active_users = User.where(account_id: account.account_id).where('getting_started_step >= ?', 7)
       end
       
-      #Rails.logger.debug("Active users: #{@active_users.inspect}")
+      Rails.logger.debug("Active users: #{@active_users.inspect}")
       
       @active_users.each do |user|
         # find if user has wishlist drinks

@@ -1,4 +1,3 @@
-<% Rails.logger.debug("Drink category: #{category.inspect}") %>
 <div class="row no-margin">
 	<% if category == "Beer" %>
 		<% @user_drink_preferences = UserPreferenceBeer.find_by_user_id(user.id) %>
@@ -20,7 +19,6 @@
 		<% @user_price_average = @user_drink_preferences.cider_price_estimate %>
 		<% @user_drinks = FreeCurationUser.where(free_curation_id: @curation_id, user_id: user.id, drink_category: "cider") %>
 	<% end %>
-	<% Rails.logger.debug("User Drinks: #{@user_drinks.inspect}") %>
 	<% @curated_cellar_drinks = 0 %>
 	<% @curated_small_drinks = 0 %>
 	<% @curated_large_drinks = 0 %>

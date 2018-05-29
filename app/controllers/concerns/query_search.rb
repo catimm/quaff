@@ -26,6 +26,6 @@ module QuerySearch
         @final_search_results = search_result_beers.index_by(&:id).values_at(*search_result_ids)
       end
       
-      Rails.logger.debug("======================== Search results in order before returning = : #{@final_search_results.inspect}")
+      #Rails.logger.debug("======================== Search results in order before returning = : #{@final_search_results.inspect}")
   end
 end
