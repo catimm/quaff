@@ -551,24 +551,22 @@ task :assess_drink_recommendations => :environment do
     end
     
     # get list of all currently_active subscriptions
-    @active_subscriptions = UserSubscription.where(currently_active: true)
-    Rails.logger.debug("Active subscriptions: #{@active_subscriptions.inspect}")
+    @active_subscriptions = UserSubscription.where(subscription_id: [1,2,3,4,5,6,7], currently_active: true)
+    #Rails.logger.debug("Active subscriptions: #{@active_subscriptions.inspect}")
     
     # determine viable drinks for each active account
     @active_subscriptions.each do |account|
 
       if only_for_orders
-        Rails.logger.debug("Hits only for orders")
         # get active users that have an outstanding order but with no recommendations
         @order_owners_account_ids = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations)').pluck(:account_id)
         @active_users = User.where(account_id: @order_owners_account_ids).where('getting_started_step >= ?', 7)
       else
-        Rails.logger.debug("Hits ALL")
         # get each user associated to this account
         @active_users = User.where(account_id: account.account_id).where('getting_started_step >= ?', 7)
       end
       
-      Rails.logger.debug("Active users: #{@active_users.inspect}")
+      #Rails.logger.debug("Active users: #{@active_users.inspect}")
       
       @active_users.each do |user|
         # find if user has wishlist drinks
