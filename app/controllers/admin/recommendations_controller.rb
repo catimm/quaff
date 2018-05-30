@@ -77,7 +77,7 @@ class Admin::RecommendationsController < ApplicationController
       @users = @account_owner
     end
     #Rails.logger.debug("Account users: #{@users.inspect}")
-    
+
     # get all drinks included in next Account Delivery
     @next_account_delivery = AccountDelivery.where(account_id: @current_account_id, 
                                                         delivery_id: @customer_next_delivery.id)
@@ -96,9 +96,18 @@ class Admin::RecommendationsController < ApplicationController
       if !@delivery_preferences.blank?
         # get all User drinks included in next Account Delivery
         @next_account_user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id) 
-                                                                
-        # set estimate values
-        @drink_per_delivery_estimate = @drink_per_delivery_estimate + @delivery_preferences.drinks_per_delivery
+        
+        if @delivery_preferences.beer_chosen
+          @user_beer_preferences = UserPreferenceBeer.find_by_user_id(user.id)
+          # set estimate values
+          @drink_per_delivery_estimate = @drink_per_delivery_estimate + (@user_beer_preferences.beers_per_week * @account.delivery_frequency)
+        end                                                 
+        
+        if @delivery_preferences.cider_chosen
+          @user_cider_preferences = UserPreferenceCider.find_by_user_id(user.id)
+          # set estimate values
+          @drink_per_delivery_estimate = @drink_per_delivery_estimate + (@user_cider_preferences.ciders_per_week * @account.delivery_frequency)
+        end
         
         # set new drinks in account delivery
         @next_account_delivery_new_drinks = @next_account_user_drinks.where(new_drink: true).sum(:quantity).round
