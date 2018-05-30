@@ -1,0 +1,6 @@
+$(function() {	
+	// render partials to update account delivery estimates
+	$('#account-delivery-info-row').html('<%=  escape_javascript(render :partial => 'account_delivery_info') %>');
+	$('#account-delivery-estimates-row').html('<%=  escape_javascript(render :partial => 'account_delivery_estimates') %>');
+	$('#<%= @user_recommendation_id %>-drink-recommendation-holder-row').html("<%=  escape_javascript(render 'drink_row_template', drink: @account_drink_recommendation) %>");
+});

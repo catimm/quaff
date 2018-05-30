@@ -156,19 +156,19 @@ class Admin::RecommendationsController < ApplicationController
                               where.not(inventory_id: nil).
                               group_by(&:beer_id).
                               each_with_object({}) {|(k, v), h| h[k] = v.group_by(&:size_format_id) }
-    
+                             
     @drink_recommendations_with_disti = UserDrinkRecommendation.where(account_id: @current_account_id, 
                               inventory_id: nil).
                               where('projected_rating >= ?', 7).
                               where.not(disti_inventory_id: nil).
                               group_by(&:beer_id).
                               each_with_object({}) {|(k, v), h| h[k] = v.group_by(&:size_format_id) }
-                              
+                          
     # find if drink has order limitations and if so what they are
     @drink_recommendations_in_stock.each do |drink_group|
+      #Rails.logger.debug("Drink group info: #{drink_group.inspect}")
       #Rails.logger.debug("Drink group info: #{drink_group[1].inspect}")
       drink_group[1].each do |drink|
-        #Rails.logger.debug("Drink info: #{drink.inspect}")
         if !drink[1][0].inventory_id.nil? && !drink[1][0].inventory.limit_per.nil?
           drink[1][0].limited_quantity = drink[1][0].inventory.limit_per
         else
@@ -207,7 +207,7 @@ class Admin::RecommendationsController < ApplicationController
         end # end of inventory limit check
       end # end of each drink
     end # end of drink group
-    
+     
   end # end of show action
   
   def change_user_view
@@ -235,11 +235,30 @@ class Admin::RecommendationsController < ApplicationController
         
     # get drink recommendation info
     @user_drink_recommendation = UserDrinkRecommendation.find_by_id(@user_recommendation_id)
-    
+    @account_drink_recommendation = UserDrinkRecommendation.where(account_id: @user_drink_recommendation.account_id,
+                                                                    beer_id: @user_drink_recommendation.beer_id,
+                                                                    size_format_id: @user_drink_recommendation.size_format_id)
     # get account owner info
     @user = User.find_by_id(@user_drink_recommendation.user_id)
     @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
+    @account = Account.find_by_id(@user.account_id)
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    # find if account has wishlist items
+    @account_wishlist_items = Wishlist.where(account_id: @account_owner.account_id)
+    
+    # set parameters for template refresh
+    @chosen_delivery_id = @delivery_id
+    @account_id = @user.account_id
+    
+    # find if the account has any other users
+    @mates = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14).where.not(id: @user.id)
+    
+    # set users to get relevant delivery info
+    if !@mates.blank?
+      @users = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14)
+    else
+      @users = @user
+    end
     
     # get Disti Inventory option
     @disti_inventory = DistiInventory.where(beer_id: @user_drink_recommendation.beer_id, 
@@ -518,8 +537,77 @@ class Admin::RecommendationsController < ApplicationController
                                     total_price: @current_total_price, grand_total: @grand_total,
                                     delivery_change_confirmation: false)
     
+    # get all drinks included in next Account Delivery
+    @next_account_delivery = AccountDelivery.where(account_id: @user_drink_recommendation.account_id, 
+                                                        delivery_id: @customer_next_delivery.id)
+                                                            
+    # get relevant delivery info
+    @drink_per_delivery_estimate = 0
+    @large_delivery_estimate = 0
+    @small_delivery_estimate = 0
+    @delivery_cost_estimate = 0   
+ 
+    @users.each do |user|
+      #Rails.logger.debug("User Info: #{user.inspect}")
+      # get delivery preferences info
+      @delivery_preferences = DeliveryPreference.where(user_id: user.id).first
+      #Rails.logger.debug("User Delivery Preference: #{@delivery_preferences.inspect}")
+      if !@delivery_preferences.blank?
+        # get all User drinks included in next Account Delivery
+        @next_account_user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id) 
+                                                                
+        if @delivery_preferences.beer_chosen
+          @user_beer_preferences = UserPreferenceBeer.find_by_user_id(user.id)
+          # set estimate values
+          @drink_per_delivery_estimate = @drink_per_delivery_estimate + (@user_beer_preferences.beers_per_week * @account.delivery_frequency)
+        end                                                 
+        
+        if @delivery_preferences.cider_chosen
+          @user_cider_preferences = UserPreferenceCider.find_by_user_id(user.id)
+          # set estimate values
+          @drink_per_delivery_estimate = @drink_per_delivery_estimate + (@user_cider_preferences.ciders_per_week * @account.delivery_frequency)
+        end
+        
+        # set new drinks in account delivery
+        @next_account_delivery_new_drinks = @next_account_user_drinks.where(new_drink: true).sum(:quantity).round
+        
+        # set cellar drinks in account delivery
+        @next_account_delivery_cellar_drinks = @next_account_delivery.where(cellar: true).sum(:quantity).round
+        
+        # set small/large format drink estimates
+        @individual_large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
+        @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
+        @individual_small_delivery_estimate = @drink_per_delivery_estimate
+        @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
+        @next_account_delivery_small_drinks = @next_account_delivery.where(large_format: false).sum(:quantity)
+        @next_account_delivery_large_drinks = @next_account_delivery.where(large_format: true).sum(:quantity)
+        @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * @account.delivery_frequency)
+        
+        # get price estimate
+        @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
+        @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
+        #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
+      end
+      
+      # completing total cost estimate
+      @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
+      @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+      if !@customer_next_delivery.total_price.nil?
+        @next_account_delivery_subtotal = @customer_next_delivery.subtotal
+        @next_account_delivery_tax = @customer_next_delivery.sales_tax
+        @next_account_delivery_drink_price = @customer_next_delivery.total_price
+      else
+        @next_account_delivery_drink_price = 0
+      end
+      
+    end
+    
     # redirect back to recommendation page                                             
-    render js: "window.location = '#{admin_recommendation_path(@user.account_id, @delivery_id)}'"
+    #render js: "window.location = '#{admin_recommendation_path(@user.account_id, @delivery_id)}'"
+    # update Account/User delivery info
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
     
   end # end admin_account_delivery method
   
@@ -645,8 +733,17 @@ class Admin::RecommendationsController < ApplicationController
         # get all User drinks included in next Account Delivery
         @next_account_user_drinks = UserDelivery.where(delivery_id: @customer_next_delivery.id) 
                                                                 
-        # set estimate values
-        @drink_per_delivery_estimate = @drink_per_delivery_estimate + @delivery_preferences.drinks_per_delivery
+        if @delivery_preferences.beer_chosen
+          @user_beer_preferences = UserPreferenceBeer.find_by_user_id(user.id)
+          # set estimate values
+          @drink_per_delivery_estimate = @drink_per_delivery_estimate + (@user_beer_preferences.beers_per_week * @account.delivery_frequency)
+        end                                                 
+        
+        if @delivery_preferences.cider_chosen
+          @user_cider_preferences = UserPreferenceCider.find_by_user_id(user.id)
+          # set estimate values
+          @drink_per_delivery_estimate = @drink_per_delivery_estimate + (@user_cider_preferences.ciders_per_week * @account.delivery_frequency)
+        end
         
         # set new drinks in account delivery
         @next_account_delivery_new_drinks = @next_account_user_drinks.where(new_drink: true).sum(:quantity).round

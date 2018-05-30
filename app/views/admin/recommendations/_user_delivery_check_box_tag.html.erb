@@ -1,0 +1,11 @@
+<% @next_account_delivery_drink = @next_account_delivery.where(beer_id: individual_drink.beer_id, size_format_id: individual_drink.size_format_id)[0] %>
+<% if !@next_account_delivery_drink.nil? %>
+	<% @user_delivery_drink = UserDelivery.where(account_delivery_id: @next_account_delivery_drink.id, user_id: individual_drink.user_id) %>
+	<% if @user_delivery_drink.blank? %>
+		<%= check_box_tag "inventory_ids[]", individual_drink.id, false, :id => "#{individual_drink.id}-#{@next_account_delivery_drink.id}", :class => "add_to_delivery" %>
+	<% else %>
+		<%= check_box_tag "inventory_ids[]", individual_drink.id, {checked: true}, :id => "#{individual_drink.id}-#{@next_account_delivery_drink.id}", :class => "add_to_delivery" %>
+	<% end %>
+<% else %>
+	<%= check_box_tag "inventory_ids[]", individual_drink.id, false, disabled: true, :id => "#{individual_drink.id}", :class => "add_to_delivery-#{individual_drink[0]}" %>
+<% end %>
