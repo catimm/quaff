@@ -343,11 +343,6 @@ class SignupController < ApplicationController
     @user_address = UserAddress.where(account_id: current_user.account_id, 
                                         current_delivery_location: true).first
     
-    # remove old data to ensure extra info isn't left in delivery/shipping zone field if the other is chosen
-    if !@user_address.blank?
-      @user_address.update(delivery_zone_id: nil, shipping_zone_id: nil)                                  
-    end
-    
     # add new data
     if @plan_type == "delivery"
       if @user_address.blank?
@@ -356,9 +351,10 @@ class SignupController < ApplicationController
                               state: @state,
                               zip: @zip_code, 
                               current_delivery_location: true,
-                              delivery_zone_id: @delivery_zone_info.id)
+                              delivery_zone_id: @delivery_zone_info.id,
+                              shipping_zone_id: nil)
       else
-        @user_address.update(zip: @zip_code, delivery_zone_id: @delivery_zone_info.id)
+        @user_address.update(zip: @zip_code, delivery_zone_id: @delivery_zone_info.id, shipping_zone_id: nil)
       end
     elsif @plan_type == "shipping"
       if @user_address.blank?
@@ -367,9 +363,10 @@ class SignupController < ApplicationController
                               state: @state,
                               zip: @zip, 
                               current_delivery_location: true,
+                              delivery_zone_id: nil,
                               shipping_zone_id: 2)
       else
-        @user_address.update(zip: @zip_code, shipping_zone_id: 2)
+        @user_address.update(zip: @zip_code, delivery_zone_id: nil, shipping_zone_id: 2)
       end
     else
       if @user_address.blank?

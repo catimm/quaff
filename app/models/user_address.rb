@@ -31,7 +31,7 @@ class UserAddress < ApplicationRecord
   private 
     
     def check_delivery_zone_sum
-      if current_delivery_location == true
+      if current_delivery_location == true && !delivery_zone_id.nil?
         # get count of number of accounts in new/chosen delivery zone
         @new_delivery_zone_sum = UserAddress.where(delivery_zone_id: self.delivery_zone_id).size
         
