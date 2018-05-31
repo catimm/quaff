@@ -115,7 +115,10 @@ class SignupController < ApplicationController
     
     # set default plan type
     @plan_type = nil
-          
+    
+    # get subscription info
+    @subscriptions = Subscription.all
+        
     # get User info 
     @user = current_user
     # update getting started step
@@ -128,7 +131,7 @@ class SignupController < ApplicationController
       if (1..4).include?(@user_subscription.subscription_id)
         @plan_type = "delivery"
       else
-        @related_plans = Subscription.where(subscription_level_group: @user_subscription.subscription.subscription_level_group)
+        @related_plans = @subscriptions.where(subscription_level_group: @user_subscription.subscription.subscription_level_group)
         @plan_type = "shipping"
         @zone_zero = @related_plans.where(deliveries_included: 0).pluck(:subscription_level)
         @zone_three = @related_plans.where(deliveries_included: 3).pluck(:subscription_level)
@@ -151,6 +154,7 @@ class SignupController < ApplicationController
           # set plan type
           @plan_type = "shipping"
           @close_to_delivery_zones = true
+          
           # this is our "zone one" shipping plan 
           @zone_plan_nine_cost = @subscriptions.find_by_subscription_level("two_nine").subscription_cost
           @zone_plan_three_cost = @subscriptions.find_by_subscription_level("two_three").subscription_cost
