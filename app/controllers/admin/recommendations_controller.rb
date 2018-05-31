@@ -254,11 +254,7 @@ class Admin::RecommendationsController < ApplicationController
     @mates = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    if !@mates.blank?
-      @users = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14)
-    else
-      @users = @user
-    end
+    @users = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14)
     
     # get Disti Inventory option
     @disti_inventory = DistiInventory.where(beer_id: @user_drink_recommendation.beer_id, 
@@ -707,11 +703,7 @@ class Admin::RecommendationsController < ApplicationController
     @mates = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    if !@mates.blank?
-      @users = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14)
-    else
-      @users = @user
-    end
+    @users = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14)
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
@@ -1275,11 +1267,7 @@ class Admin::RecommendationsController < ApplicationController
     @mates = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 7).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    if !@mates.blank?
-      @users = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 7)
-    else
-      @users = @user
-    end
+    @users = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 7)
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
