@@ -550,21 +550,30 @@ task :assess_drink_recommendations => :environment do
       @old_data = UserDrinkRecommendation.delete_all
     end
     
-    # get list of all currently_active subscriptions
-    @active_subscriptions = UserSubscription.where(subscription_id: [1,2,3,4,5,6,7], currently_active: true)
-    #Rails.logger.debug("Active subscriptions: #{@active_subscriptions.inspect}")
+    # set up new array for account ids
+    @account_id_list = Array.new
     
-    # determine viable drinks for each active account
-    @active_subscriptions.each do |account|
-
-      if only_for_orders
+    if only_for_orders
         # get active users that have an outstanding order but with no recommendations
         @order_owners_account_ids = User.where('id IN (SELECT DISTINCT(user_id) FROM orders) AND id NOT IN (SELECT DISTINCT(user_id) FROM user_drink_recommendations)').pluck(:account_id)
-        @active_users = User.where(account_id: @order_owners_account_ids).where('getting_started_step >= ?', 7)
+        # merge all account ids
+        @account_id_list << @order_owners_account_ids
       else
-        # get each user associated to this account
-        @active_users = User.where(account_id: account.account_id).where('getting_started_step >= ?', 7)
+        # get list of all currently_active subscriptions
+        @active_subscription_account_ids = UserSubscription.where(subscription_id: [1,2,3,4,5,6,7], currently_active: true).pluck(:account_id)
+        #Rails.logger.debug("Active subscriptions: #{@active_subscriptions.inspect}")
+        # get list of those who requested a free curation
+        @free_curation_account_ids = FreeCuration.where(status: "admin prep").pluck(:account_id)
+        # merge all account ids
+        @account_id_list << @active_subscription_account_ids
+        @account_id_list << @free_curation_account_ids
       end
+    
+    # determine viable drinks for each active account
+    @account_id_list.each do |account_id|
+
+      # get each user associated to this account
+      @active_users = User.where(account_id: account_id).where('getting_started_step >= ?', 7)
       
       #Rails.logger.debug("Active users: #{@active_users.inspect}")
       

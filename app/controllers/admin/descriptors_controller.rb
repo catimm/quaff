@@ -49,7 +49,7 @@ class Admin::DescriptorsController < ApplicationController
       @tagging.update(tag_id: params[:acts_as_taggable_on_tag][:id])
     end
     
-    redirect_to admin_descriptors_path(@this_style.id)
+    redirect_to admin_descriptor_path(@this_style.id)
      
   end # end of merge_descriptors method
   
