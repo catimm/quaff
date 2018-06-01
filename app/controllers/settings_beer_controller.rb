@@ -2,12 +2,21 @@ class SettingsBeerController < ApplicationController
   include StyleDescriptors
   
   def beer_journey
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     @category = "beer"
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+    @user_delivery_preference = DeliveryPreference.find_by_user_id(@user_id)
     
     # get user beer preferences
-    @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
+    @user_beer_preference = UserPreferenceBeer.find_by_user_id(@user_id)
     if !@user_beer_preference.journey_stage.blank?
       # send beer_journey_stage data to js to show what is currently chosen
       gon.beer_journey_stage = @user_beer_preference.journey_stage
@@ -17,12 +26,21 @@ class SettingsBeerController < ApplicationController
   end # end of beer_journey method
   
   def beer_numbers
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     @category = "beer"
     @category_choice = "beers"
     @chosen_drinks_per_week = "hidden"
     
     # find user chosen categories
-    @user_beer_preference = UserPreferenceBeer.find_by_user_id(current_user.id)
+    @user_beer_preference = UserPreferenceBeer.find_by_user_id(@user_id)
     if !@user_beer_preference.beers_per_week.nil?
       @chosen_drinks_per_week = "show"
       
@@ -66,7 +84,7 @@ class SettingsBeerController < ApplicationController
     @styles_for_like = BeerStyle.where(signup_beer: true).order('style_order ASC')
     @beer_style_ids = @styles_for_like.pluck(:id)
     
-    # find if user has already liked styles
+    # find if user has already liked styles & give admin a view
     if current_user.role_id == 1 && params.has_key?(:format)
       # get user info
       @all_user_styles = UserStylePreference.where(user_id: params[:format])
@@ -89,15 +107,24 @@ class SettingsBeerController < ApplicationController
   end # end of beer_style_likes method
   
   def beer_priorities
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     @category = "beer"
 
-    @user_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    @user_preferences = DeliveryPreference.find_by_user_id(@user_id)
     
     #@user_priorities = UserPriority.new
     @priorties = Priority.where(beer_relevant: true)
     
     #check if user has already chosen this question
-    @priority_list = UserPriority.where(user_id: current_user.id, category: "beer")
+    @priority_list = UserPriority.where(user_id: @user_id, category: "beer")
     if !@priority_list.blank?
       @user_priorities = @priority_list.order('priority_rank ASC')
       @updated_order = @priority_list.order('updated_at DESC')
@@ -113,15 +140,24 @@ class SettingsBeerController < ApplicationController
   end # end beer_priorities method
   
   def beer_costs
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     # set referring page
-    @referring_url = request.referrer
+    @referring_url = "/settings_beer/beer_costs"
     
     @category = "beer"
     
     # get current user input
-    @user_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    @user_preferences = DeliveryPreference.find_by_user_id(@user_id)
     
-    @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+    @user_beer_preferences = UserPreferenceBeer.find_by_user_id(@user_id)
     @last_saved = @user_beer_preferences.updated_at
     @drink_estimate = @user_beer_preferences.beer_price_estimate
     if !@user_beer_preferences.beer_price_response.nil?
@@ -141,7 +177,16 @@ class SettingsBeerController < ApplicationController
   end # end beer_costs method
   
   def beer_extras
-    @user_beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
+    @user_beer_preferences = UserPreferenceBeer.find_by_user_id(@user_id)
     if !@user_beer_preferences.additional.nil?
       @last_saved = @user_beer_preferences.updated_at
     end

@@ -17,6 +17,7 @@ class ShippingZone < ApplicationRecord
 
   # scope delivery zones
   scope :zone_match, ->(zip) {
-    where("zip_start <= ? AND zip_end >= ?", zip, zip)
+    where("zip_start <= ? AND zip_end >= ?", zip, zip).
+    where(currently_available: true)
   }
 end

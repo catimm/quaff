@@ -59,7 +59,7 @@ class SignupController < ApplicationController
       else
         # get Shipping Zone
         @first_three = @zip_code[0...3]
-        @shipping_zone = ShippingZone.zone_match(@first_three, currently_available: true).first
+        @shipping_zone = ShippingZone.zone_match(@first_three).first
         if !@shipping_zone.blank?
           UserAddress.create(account_id: @user.account_id, 
                               city: @city,

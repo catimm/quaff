@@ -2,12 +2,21 @@ class SettingsCiderController < ApplicationController
   include StyleDescriptors
   
   def cider_journey
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     @category = "cider"
     # get user delivery preferences
-    @user_delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+    @user_delivery_preference = DeliveryPreference.find_by_user_id(@user_id)
     
     # get user cider preferences
-    @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
+    @user_cider_preference = UserPreferenceCider.find_by_user_id(@user_id)
     if !@user_cider_preference.journey_stage.blank?
       # send cider_journey_stage data to js to show what is currently chosen
       gon.cider_journey_stage = @user_cider_preference.journey_stage
@@ -17,12 +26,21 @@ class SettingsCiderController < ApplicationController
   end # end of cider_journey method
   
   def cider_numbers
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     @category = "cider"
     @category_choice = "ciders"
     @chosen_drinks_per_week = "hidden"
     
     # find user chosen categories
-    @user_cider_preference = UserPreferenceCider.find_by_user_id(current_user.id)
+    @user_cider_preference = UserPreferenceCider.find_by_user_id(@user_id)
     if !@user_cider_preference.ciders_per_week.nil?
       @chosen_drinks_per_week = "show"
       
@@ -90,15 +108,24 @@ class SettingsCiderController < ApplicationController
   end # end of cider_style_likes method
   
   def cider_priorities
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     @category = "cider"
 
-    @user_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    @user_preferences = DeliveryPreference.find_by_user_id(@user_id)
     
     #@user_priorities = UserPriority.new
     @priorties = Priority.where(cider_relevant: true)
     
     #check if user has already chosen this question
-    @priority_list = UserPriority.where(user_id: current_user.id, category: "cider")
+    @priority_list = UserPriority.where(user_id: @user_id, category: "cider")
     if !@priority_list.blank?
       @user_priorities = @priority_list.order('priority_rank ASC')
       @updated_order = @priority_list.order('updated_at DESC')
@@ -114,15 +141,24 @@ class SettingsCiderController < ApplicationController
   end # end cider_priorities method
   
   def cider_costs
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     # set referring page
     @referring_url = request.referrer
     
     @category = "cider"
     
     # get current user input
-    @user_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    @user_preferences = DeliveryPreference.find_by_user_id(@user_id)
     
-    @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+    @user_cider_preferences = UserPreferenceCider.find_by_user_id(@user_id)
     @last_saved = @user_cider_preferences.updated_at
     @drink_estimate = @user_cider_preferences.cider_price_estimate
     if !@user_cider_preferences.cider_price_response.nil?
@@ -142,11 +178,20 @@ class SettingsCiderController < ApplicationController
   end # end cider_costs method
   
   def cider_extras
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @user_id = params[:format]
+    else
+      # get user info
+      @user_id = current_user.id
+    end
+    
     # set referring page
     @referring_url = request.referrer
     # set category
     @category = "cider"
-    @user_drink_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+    @user_drink_preferences = UserPreferenceCider.find_by_user_id(@user_id)
     if !@user_drink_preferences.additional.nil?
       @last_saved = @user_drink_preferences.updated_at
     end
