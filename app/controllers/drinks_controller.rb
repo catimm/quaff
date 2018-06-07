@@ -19,6 +19,9 @@ class DrinksController < ApplicationController
       @user = User.find_by_id(current_user.id)
     end
     
+    # set cellarable data
+    @cellar_page_source = "deliveries-page"
+    
     # get user subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
@@ -120,8 +123,15 @@ class DrinksController < ApplicationController
   end # end deliveries method
   
   def free_curation
-    # get user info 
-    @user = current_user
+    # give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info 
+      @user = User.find_by_id(params[:format])
+    else
+      # get user info 
+      @user = current_user
+    end
+
     # determine if account has multiple users
     @account_users = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 7)
     @account_users_count = @account_users.count
@@ -151,7 +161,7 @@ class DrinksController < ApplicationController
       
         # indicate user has reviewed drinks
         @free_curation_drink_ids = @free_curation_drinks.pluck(:id)
-        @all_user_drinks = FreeCurationUser.where(user_id: current_user.id, 
+        @all_user_drinks = FreeCurationUser.where(user_id: @user.id, 
                                                   free_curation_account_id: @free_curation_drink_ids,
                                                   user_reviewed: false)
         if !@all_user_drinks.blank?
@@ -219,6 +229,9 @@ class DrinksController < ApplicationController
     # send full array to JQCloud
     gon.universal_drink_descriptor_array = @final_descriptors_cloud
     #Rails.logger.debug("Descriptors array: #{gon.cellar_drink_descriptor_array.inspect}")
+    
+    # set cellar parameter required by shared partial
+    @cellar = "true"
     
   end # end cellar method
   
@@ -326,7 +339,7 @@ class DrinksController < ApplicationController
       # now create or update the projected rating for this user
       if @projected_rating.blank?
         # create new project rating DB entry
-        ProjectedRating.create(user_id: user.id, beer_id: @new_cellar_drink.beer_id, projected_rating: @user_delivery[0].projected_rating)
+        ProjectedRating.create(user_id: @user.id, beer_id: @new_cellar_drink.beer_id, projected_rating: @user_delivery[0].projected_rating)
       else
         ProjectedRating.update(@projected_rating[0].id, projected_rating: @user_delivery[0].projected_rating)
       end # end of creating/updating projected rating DB

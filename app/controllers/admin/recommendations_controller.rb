@@ -1329,7 +1329,7 @@ class Admin::RecommendationsController < ApplicationController
     @free_curation = FreeCuration.find_by_id(params[:id])
 
     # update status
-    @free_curation.update(share_admin_prep: true)
+    @free_curation.update(status: "user review", share_admin_prep: true)
     
     # get customer info to notify them
     @customers = User.where(account_id: @free_curation.account_id)
