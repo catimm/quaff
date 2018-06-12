@@ -62,6 +62,11 @@ class Inventory < ApplicationRecord
     joins(:beer).merge(Beer.cellar_drinks)
   }
   
+  # scope all inventory ever in stock 
+  scope :ever_in_stock, -> { 
+    where("stock >= ?", 0)
+  }
+  
   # scope all inventory stock 
   scope :in_stock, -> { 
     where("stock > ?", 0)

@@ -17,6 +17,9 @@
 #  brewery_state_long  :string
 #  facebook_url        :string
 #  twitter_url         :string
+#  brewery_description :text
+#  founded             :string
+#  slug                :string
 #
 
 class Brewery < ApplicationRecord
@@ -24,7 +27,11 @@ class Brewery < ApplicationRecord
   strip_attributes
   searchkick word_middle: [:beer_name]#, autocomplete: [:brewery_name, :beer_name]
   
+  # include friendly id
+  extend FriendlyId
   has_many :beers
+  friendly_id :brewery_name, use: :slugged
+  
   has_many :alt_brewery_names
   has_many :beer_brewery_collabs
   

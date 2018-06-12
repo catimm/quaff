@@ -1,4 +1,4 @@
-<%= link_to brewery_beer_path(drink.beer.brewery.id, drink.beer.id) do %>
+<%= link_to drink_path(drink.beer.slug) do %>
 	<div class="fav-drink-tile">
 		<% if drink.beer.collab == true %>
 			<h5 class="fav-drink-brewery"><%= drink.beer.collab_brewery_name(beer.id) %></h5>

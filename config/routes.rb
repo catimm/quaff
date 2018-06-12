@@ -64,13 +64,16 @@ Rails.application.routes.draw do
  end 
   
   resources :locations
-  
+  get 'breweries/:brewery_name/beers/:beer_name/:id' => 'beers#show'
+  get 'artisan/:id' => "breweries#show", :as => 'artisan'
+  get 'drink/:id' => "beers#show", :as => 'drink'
   resources :breweries do
     resources :beers
     collection do
       get :autocomplete
     end   
   end
+  
   
   # admin recommendation routes
   get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
@@ -392,7 +395,7 @@ Rails.application.routes.draw do
   get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
   get 'users/:user_id/ratings/new(.:format)/:id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
-  post 'beers/change_cellar_setting/:id' => 'beers#change_cellar_setting', :as => 'change_cellar_setting'
+  post 'breweries/:brewery_id/beers/beers/change_cellar_setting/:id' => 'beers#change_cellar_setting', :as => 'change_cellar_setting'
   get 'breweries/:brewery_id/beers/beers/data' => 'beers#data', :defaults => { :format => 'json'}
   #get '/users/:user_id/ratings/new(.:format)' => 'ratings#new', :as => 'new_user_rating'
   

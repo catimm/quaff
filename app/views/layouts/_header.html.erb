@@ -2,14 +2,13 @@
         
         <div class="container no-padding">
 	         <div class="row no-margin">   
-	            <div class="navbar-header col-xs-12 col-sm-10" id="home-navbar">
+	            <div class="navbar-header col-xs-12 col-sm-9 col-md-10" id="home-navbar">
 	                <div class="row no-margin">
 		                <div class="col-xs-1 col-sm-2 text-left mobile-logo-holder">
 			                <%= link_to "Knird", root_path, id: "logo", class:"navbar-brand brand visible-sm visible-md visible-lg brand-font" %>
 			                <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
 		            	</div>
-		            	<div class="col-xs-0 col-sm-2"></div>
-		            	<div class="col-xs-9 col-sm-6 mobile-search-holder">
+		            	<div class="col-xs-9 col-sm-offset-2 col-sm-8 col-md-6 mobile-search-holder">
 						  <%= form_tag autocomplete_breweries_path, method: :get, :id => "header-navbar", class: 'navbar-form', role: 'search' do %>
 						    <div class="input-group">
 						      <%= text_field_tag :query, params[:query], size: 30, placeholder: "Search beers or breweries", class: "form-control typeahead", :html => {:id => "beer_search", :name => "beer_search" } %>

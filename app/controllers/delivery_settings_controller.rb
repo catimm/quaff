@@ -662,7 +662,7 @@ class DeliverySettingsController < ApplicationController
     # and update admin_notified field
     @customer_delivery_message.update(admin_notified: true)
     
-    redirect_to :back #user_deliveries_path
+    redirect_to user_deliveries_path
   end # end of customer_delivery_messages method
   
   def customer_delivery_requests

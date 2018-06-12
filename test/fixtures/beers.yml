@@ -34,6 +34,7 @@
 #  touched_by_location  :integer
 #  cellar_note          :text
 #  gluten_free          :boolean
+#  slug                 :string
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

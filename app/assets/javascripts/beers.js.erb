@@ -27,20 +27,18 @@ $(function() {
 		if ( gon.beer_array.length > 0 ) {
 			$(".cloud-holder-full-page").jQCloud(gon.beer_array, {
 		  		autoResize: true,
-  				height: 85,
-  				width: 100
+		  		height: 75
 		     });
 		 } else {
 			$(".cloud-holder-full-page").jQCloud(word_array, {
 		  		autoResize: true,
-  				height: 85,
-  				width: 100
+		  		height: 75
 		     });
 		 }
 	 } else {
 	 	return;
 	 }
-	
+		
 	 // show/hide full brewer description
 	 $("#more-brewer-description").on("click", function(){
 		$("#brewer-description").removeClass("small-brewer-description").addClass("big-brewer-description");
@@ -86,14 +84,22 @@ $(function() {
 		return false;
 	  });
 	 
-	 // remove drink from cellar
-	 $(document).on("click", ".cellar-remove-drink", function() {
-		var this_drink_id = $(this).parent().attr('id');
-		$.ajax({
-		  type: "POST",
-		  url: "/beers/change_cellar_setting/remove-" + this_drink_id
-		});
-		// prevent page from jumping to the top after click event
-		return false;
-	  });
+	 // move drink to cellar
+	
+	$(document).on("click", ".cellar-this-drink.drink-page", function() {
+		// get id of button
+		var this_id = $(this).attr('id');
+		var drink_info = this_id.replace('cellar-drink-','');
+		var drink_info_split = drink_info.split("-");
+		var drink_id = drink_info_split[0];
+		var drink_number = drink_info_split[1];
+
+		// attach href
+		$("#move-to-cellar-button-drink-page").attr('href', 'beers/change_cellar_setting/'+drink_id+'-1')
+		
+		// show modal
+	    $('#confirm_drink_cellar_move').modal('show');
+
+		
+	});
 });

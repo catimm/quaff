@@ -69,7 +69,7 @@ class RatingsController < ApplicationController
     
     # now redirect back to previous page
     redirect_to session.delete(:return_to)
-    #redirect_to brewery_beer_path(@beer.brewery.id, @beer)
+    
   end # end of create method
   
   def edit

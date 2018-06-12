@@ -15,5 +15,55 @@ $(function() {
 	    		$("#edit-brewery-info").removeClass("show").addClass("hidden");
 	    	}
 	});
+	
+	// show/hide full brewery description
+	 $("#more-brewery-description").on("click", function(){
+		$("#brewery-description").removeClass("small-brewery-description").addClass("big-brewery-description");
+		$(this).removeClass("show").addClass("hidden");
+		$("#less-brewery-description").removeClass("hidden").addClass("show");
+	 });
+	 $("#less-brewery-description").on("click", function(){
+		$("#brewery-description").removeClass("big-brewery-description").addClass("small-brewery-description");
+		$(this).removeClass("show").addClass("hidden");
+		$("#more-brewery-description").removeClass("hidden").addClass("show");
+	 });
+	 
+	// close delivery history views after descriptor clouds load/DOM loads
+	function hide_extra_drink_info() {
+	    $(".drink-info-universal-show-less").removeClass("show").addClass("hidden");
+		$(".drink-info-universal-show-more").removeClass("hidden").addClass("show");
+		$(".drink-info-universal-second-row").removeClass("show").addClass("hidden");
+	}
+	
+	// default word cloud if no descriptors exist 
+	var word_array = [
+          {text: "descriptors", weight: 15},
+          {text: "no", weight: 7},
+          {text: "yet", weight: 4},
+          // ...as many words as you want
+      ];
+      
+	// descriptor clouds for brewery drinks
+	 if (gon.brewery_drink_descriptor_array != undefined) {
+		 // count drinks
+		 var array_count = 0;
+		 // create word cloud and return to view
+	     for (i = 0; i < gon.brewery_drink_descriptor_array.length; i++) { 
+		    var div_id = "#brewery_drink_" + gon.brewery_drink_descriptor_array[i][0][0];
+		    if ( gon.brewery_drink_descriptor_array[i][1].length > 0 ) {
+			    $(div_id).jQCloud(gon.brewery_drink_descriptor_array[i][1], {
+					autoResize: true
+			     });
+			} else {
+				$(div_id).jQCloud(word_array, {
+					autoResize: true
+			     });
+			}
+			 array_count++;
+			 if(array_count == gon.brewery_drink_descriptor_array.length) {
+				setTimeout(hide_extra_drink_info, 10);
+			}
+		 }
+	 }
 
 });

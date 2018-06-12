@@ -7,7 +7,14 @@ class ReloadsController < ApplicationController
   require "date"
   require "stripe"
   
-  def index  
+  def index
+    Beer.all.each do |beer|
+      beer.slug = nil
+      beer.save!
+    end
+  end
+  
+  def old_index  
     # get this drink from DB for the Type Based Guess Concern
     @drink = Beer.find_by_id(35411)
     

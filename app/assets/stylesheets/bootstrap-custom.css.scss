@@ -57,6 +57,8 @@ $bootstrap-success-green-hover: #449d44;
 $bootstrap-success-green-border-hover: #398439;
 $inverse-primary: #337ab7;
 $bootstrap-warning-yellow: #ffc107;
+$facebook-blue: #4267b2;
+$twitter-blue: #1da1f2;
 
 // Functional use of colors for project
 $gray-body-background: $light-gray;
@@ -328,6 +330,10 @@ label {
 .combined-drink-text {
   color: $combined-drink-text !important;
 }
+.combined-drink-text-drink-page {
+  color: $combined-drink-text !important;
+  text-decoration: none !important;
+}
 .beer-type-info {
   float: left;
 }
@@ -339,7 +345,22 @@ label {
   float: left;
   padding: 1px 2.5px 1.5px 2.5px;
   font-size: 10px;
-  margin: -6px 0 0 5px;
+  margin: -6px 0 0 2.5px;
+  i {
+    font-size: 11px;
+    margin: 0 0 -5px 3.5px;
+  }
+}
+.cellar-this-drink {
+  background: $cellar-color;
+  color: $white;
+  border: 1px solid $cellar-color;
+  border-radius: 4px;
+  display: block;
+  float: left;
+  padding: 2px 2.5px 0 0;
+  font-size: 10px;
+  margin: -6px 0 0 2.5px;
   i {
     font-size: 11px;
     margin: 0 0 -5px 3.5px;
@@ -1446,9 +1467,89 @@ hr {
     margin: 15px 0 0 0 !important;
   }
 }
+// Brewery info page
+.brewery-header {
+  color: $more-emphasized-text;
+  margin: 10px 0 0 0;
+  font-size: 28px;
+}
+.brewery-subheader {
+  color: $normal-text;
+  margin: 5px 0;
+}
+.brewery-info-second-row {
+  margin: 5px 0 0 0;
+}
+.log-in-message-brewery-page {
+  padding: 15px 10px;
+  margin: 0;
+  color: $normal-text;
+  border: 1px solid $normal-text;
+  border-radius: 6px;
+  text-align: center;
+}
+.brewery-extra-info-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 4px;
+  color: $white;
+  text-align: center;
+  padding-top: 4px;
+  float: left;
+  margin: 10px 5px 0 5px;
+}
+.facebook-icon {
+  background: $facebook-blue;
+}
+.twitter-icon {
+  background: $twitter-blue;
+}
+.website-icon {
+  background: $medium-light-gray;
+}
+.brewery-stats-header {
+  color: $more-emphasized-text;
+  float: left;
+  margin: 15px 5px 10px 0;
+}
+.brewery-stats {
+  color: $more-emphasized-text;
+  font-size: 42px;
+  float: left;
+}
+
 // Drink info page
 .drink-info-container {
   margin-top: 25px;
+}
+.drink-page-header {
+  color: $more-emphasized-text;
+  font-size: 24px;
+  padding-right: 5px;
+  a {
+    text-decoration: underline;
+  }
+}
+.drink-page-drink-info-holder {
+  margin: 5px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+.in-stock-message {
+  color: $action-background;
+  text-align: center;
+  margin: 20px 0;
+  height: 26px; 
+}
+.log-in-message {
+  padding: 15px 10px;
+  color: $normal-text;
+  border: 1px solid $normal-text;
+  border-radius: 6px;
+  text-align: center;
 }
 .for-account-users-header{
   color: $normal-text;
@@ -1457,8 +1558,9 @@ hr {
 .brewery-image-holder-universal {
   padding: 5px 0 0 1px;
 }
-.cloud-descriptor-holder-universal {
-  height: 70px;
+.cloud-descriptor-holder-universal, .cloud-descriptor-drink-page {
+  height: 85px;
+  width: 125px;
 }
 .cloud-descriptor-holder-rating {
    height: 65px;
@@ -1491,7 +1593,7 @@ hr {
 $brewer-description-font-size-fp: 14px;
 $brewer-description-line-height-fp: 1.2;
 $brewer-description-lines-to-show-fp: 2;
-.small-brewer-description {
+.small-brewer-description, .small-brewery-description {
   color: $normal-text;
   margin-bottom: 0;
   display: block; /* Fallback for non-webkit */ 
@@ -1504,12 +1606,12 @@ $brewer-description-lines-to-show-fp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.big-brewer-description {
+.big-brewer-description, .big-brewery-description {
   color: $normal-text;
   margin-bottom: 0;
   line-height: $brewer-description-line-height-fp;
 }
-.more-brewer-description, .less-brewer-description {
+.more-brewer-description, .less-brewer-description, .more-brewery-description, .less-brewery-description {
   float: right;
   font-size: 13px;
 }
@@ -1519,7 +1621,7 @@ $brewer-description-lines-to-show-fp: 2;
 .cloud-holder-full-page {
   margin-top: 10px;
   height: 100px !important;
-  width: 100% !important;
+  width: 125px !important;
   display: inline;
   position: inherit;
   padding: 0;
@@ -1588,7 +1690,7 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 12px;
   color: $less-emphasized-text;
   text-align: center;
-  margin: -12.5px 0 0 0;
+  margin: 5px 0 0 0;
 }
 .beer-tracking-status {
   margin-top: 30px;
@@ -1596,10 +1698,13 @@ $beer-header-lines-to-show-fp: 1;
   line-height: 1.2;
 }
 .cellar-add-drink, .cellar-remove-drink, .wishlist-add-drink {
-  width: 100%;
-  margin: 15px 0 20px 0;
+  background: $step-background;
+  border-color: #4cae4c !important;
 }
-
+.the-wishlist-button {
+  width: 100%;
+  margin: 0;
+}
 .formButton-track-beer-stop {
   width: 100%;
   margin: 15px 0 20px 0;
@@ -1611,6 +1716,15 @@ $beer-header-lines-to-show-fp: 1;
 }
 .user-rating-section {
   margin-bottom: 15px !important;
+  span {
+    color: $action-background;
+  }
+}
+.user-projected-rating-section {
+  margin-bottom: 15px !important;
+  span {
+    color: $best-guess-text;
+  }
 }
 #admin-user-data-drink-table {
   th, td {
@@ -1765,6 +1879,24 @@ $beer-header-lines-to-show: 2;
   float: left;
 }
 .beer-tile-header-homepage {
+  @extend .tile-header; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $beer-header-font-size*$beer-header-line-height*$beer-header-lines-to-show; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: $beer-header-font-size;
+  line-height: $beer-header-line-height;
+  -webkit-line-clamp: $beer-header-lines-to-show;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  float: left;
+}
+.brewery-name-drink-page {
+  text-decoration: underline;
+}
+.beer-tile-header-drink-page {
   @extend .tile-header; 
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
@@ -3217,6 +3349,17 @@ $beer-header-lines-to-show-fp: 1;
       }
     }
   }
+.navLinks.signup {
+  border: 1px solid $white;
+  border-radius: 4px;
+  margin-top: 10px;
+    a {
+      padding: 5px 15px !important;
+    }
+} 
+.navLinks.signup:hover {
+  background: $user-action;
+}
 .dropdown-menu {
   padding: 10px 0 !important;
   li {
@@ -4730,6 +4873,7 @@ $beer-header-lines-to-show-fp: 1;
   color: #4cae4c !important;
   text-align: center;
 }
+
 // Favorite drink tile
 .fav-drink-col {
   padding: 0 7.5px !important;
@@ -7593,6 +7737,26 @@ $delivery-beer-header-lines-to-show: 2;
     border-top: 1px solid $soft-border;
   }
   
+  // Brewery info page
+  .brewery-header {
+    margin: 10px 0 0 0;
+    font-size: 22px;
+  }
+  .brewery-extra-info-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    margin: 10px 5px 5px 5px;
+    i {
+      font-size: 1.25em !important;
+    }
+  }
+  .facebook-icon {
+    margin-left: 15px;
+  }
+  .brewery-stats {
+    font-size: 36px;
+  }
   // Mobile Drink page
   .section-header {
     font-weight: 400;
@@ -7786,7 +7950,16 @@ $delivery-beer-header-lines-to-show: 2;
     font-weight: 400;
   }
   .cloud-descriptor-holder-universal, .cloud-descriptors {
-    height: 70px;
+    height: 75px;
+  }
+  .cloud-descriptor-drink-page {
+    height: 75px;
+    width: 200px;
+  }
+  .cloud-holder-full-page {
+    height: 75px !important;
+    width: 200px !important;
+    margin-left: 45px;
   }
   .cloud-descriptor-row p {
     font-size: 10px;
@@ -8674,9 +8847,7 @@ header {
       font-size: 32px;
     }
   }
-  .cloud-holder-full-page {
-    height: 75px;
-  }
+  
   // User account page
   .user-account-header {
     font-size: 28px;

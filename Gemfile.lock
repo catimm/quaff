@@ -151,6 +151,8 @@ GEM
     filterrific (5.0.1)
     font-awesome-rails (4.7.0.4)
       railties (>= 3.2, < 6.0)
+    friendly_id (5.2.4)
+      activerecord (>= 4.0.0)
     geocoder (1.4.7)
     geokit (1.11.0)
     geokit-rails (2.3.0)
@@ -397,6 +399,7 @@ DEPENDENCIES
   figaro
   filterrific
   font-awesome-rails
+  friendly_id (~> 5.2.0)
   geokit-rails
   gon
   google_directions

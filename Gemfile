@@ -125,6 +125,8 @@ gem 'redis-rails'
 gem 'split', require: 'split/dashboard'
 # gem to auto generate fake user data
 gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
+# gem to FriendlyId is the “Swiss Army bulldozer” of slugging and permalink plugins for ActiveRecord
+gem 'friendly_id', '~> 5.2.0'
 
 # Use unicorn as the app server
 # gem 'unicorn'

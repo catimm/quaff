@@ -27,7 +27,7 @@
 	</div>
 	<div class="row no-margin">
 		<div class="col-sm-12 padding-10">
-			<%= link_to @drink_info.beer_name, brewery_beer_path(@drink_info.brewery.id, drink.beer.id), :class => 'fav-drink-type-drink-name' %>
+			<%= link_to @drink_info.beer_name, drink_path(@drink_info.slug), :class => 'fav-drink-type-drink-name' %>
 		</div>
 	</div>
 	<div class="row no-margin bottom-row-top-drink-type">

@@ -18,6 +18,7 @@ ready = function() {
 	                    beer_id: beer.beer_id,
 	                    brewery: beer.brewery_name,
 	                    brewery_id: beer.brewery_id,
+	                    slug: beer.slug,
 	                    source: beer.source,
 	                    type: beer.type,
 	                   	ibu: beer.ibu,
@@ -71,7 +72,7 @@ ready = function() {
 				    	} else if((window.location.href.indexOf("drink_settings") > -1 ) && ($(document.activeElement).hasClass('fav-drink-field')) ) {
 				    		return '<p>' + data.beer +'</p>';   	
 						} else {
-							return '<p><a href="'+ BASE_URL +'breweries/'+ data.brewery_id +'/beers/'+ data.beer_id +'">' + data.beer + '</a></p>';
+							return '<p><a href="'+ BASE_URL +'drink/' + data.slug +'">' + data.beer + '</a></p>';
 						}
 					},
 					footer: function() {
@@ -106,7 +107,6 @@ ready = function() {
 					        data : { chosen_drink: JSON.stringify(datum) }
 					    });
 					} else {
-						console.log(datum.form);
 						if(datum.form == "edit") {
 							$.ajax({
 						        url : "/draft_boards/edit",
