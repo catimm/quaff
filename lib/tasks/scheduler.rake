@@ -1450,11 +1450,20 @@ end # end top_style_descriptors
 desc "Clean Brewery and Beer tables for slugging"
 task :clean_db => :environment do
   Beer.all.each do |beer|
-      if beer.brewery.nil?
-        beer.destroy
-      end
+    if beer.brewery.nil?
+      beer.destroy
     end
-    
+  end
+  UserBeerRating.all.each do |beer|
+    if beer.beer.nil?
+      beer.destroy
+    end
+  end
+  DistiInventory.all.each do |beer|
+    if beer.beer.nil?
+      beer.destroy
+    end
+  end
 end # end clean_db
 
 desc "Slug Brewery and Beer tables"
