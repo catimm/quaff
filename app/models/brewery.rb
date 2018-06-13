@@ -25,7 +25,7 @@
 class Brewery < ApplicationRecord
   #include Elasticsearch::Model
   strip_attributes
-  #searchkick word_middle: [:beer_name]#, autocomplete: [:brewery_name, :beer_name]
+  searchkick word_middle: [:beer_name]#, autocomplete: [:brewery_name, :beer_name]
   
   # include friendly id
   extend FriendlyId
