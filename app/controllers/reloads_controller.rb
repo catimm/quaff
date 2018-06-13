@@ -9,8 +9,9 @@ class ReloadsController < ApplicationController
   
   def index
     Beer.all.each do |beer|
-      beer.slug = nil
-      beer.save!
+      if beer.brewery.nil?
+        beer.destroy
+      end
     end
   end
   

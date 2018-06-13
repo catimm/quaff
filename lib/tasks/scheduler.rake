@@ -1446,3 +1446,20 @@ task :top_style_descriptors => :environment do
     end # end of loop through styles
     
 end # end top_style_descriptors
+
+desc "Clean Brewery and Beer tables for slugging"
+task :clean_db => :environment do
+  Beer.all.each do |beer|
+      if beer.brewery.nil?
+        beer.destroy
+      end
+    end
+    
+end # end clean_db
+
+desc "Slug Brewery and Beer tables"
+task :slug_db => :environment do
+  Brewery.find_each(&:save)
+  Beer.find_each(&:save)
+    
+end # end slug_db

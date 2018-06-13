@@ -259,7 +259,7 @@ class Admin::FulfillmentController < ApplicationController
     end # end of check whether user is no plan customer
 
     # Add 5% cash back as pending credit for 25 delivery plan customers
-    if @customer_subscription.subscription_id == 3
+    if @customer_subscription.subscription.deliveries_included == 25
         cashback_amount = (0.05 * @delivery.subtotal).round(2)
         PendingCredit.create(account_id: @delivery.account_id, transaction_credit: cashback_amount, transaction_type: "CASHBACK_PURCHASE", is_credited: false, delivery_id: @delivery.id)
     end

@@ -1235,17 +1235,21 @@ label {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     width: 95%;
-    height: 35px;
+    min-height: 35px;
     margin: 5px 0;
     font-size: 18px;
     padding-top: 4px;
     i {
       color: $action-background;
       padding: 0 10px;
+      float: left;
+      margin-top: 5px;
     }
     span {
       color: $action-background;
       font-weight: 500;
+      float: left;
+      margin-top: 5px
     }
 }
 .delivery-numbers-prompt {
