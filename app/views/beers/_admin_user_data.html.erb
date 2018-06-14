@@ -16,7 +16,13 @@
 					<% @list_of_customers_who_not_had.each do |customer| %>
 						<% @user_recommendation = @current_recommendtions.where(user_id: customer.id) %>
 						<tr>
-							<td><%= customer.username %></td>
+							<td>
+								<% if !customer.username.nil? %>
+									 <%= customer.username %>
+								<% else %>
+									<%= customer.first_name %>
+								<% end %>
+							</td>
 							<td><%= customer.id %></td>
 							<td><%= customer.specific_drink_best_guess %></td>
 							<% if !@user_recommendation.blank? %>
@@ -48,7 +54,13 @@
 					<% @list_of_customers_who_had.each do |customer| %>
 						<% @customer_rating = customer.user_drink_rating(@drink.id) %>
 						<tr>
-							<td><%= customer.username %></td>
+							<td>
+								<% if !customer.username.nil? %>
+									 <%= customer.username %>
+								<% else %>
+									<%= customer.first_name %>
+								<% end %>
+							</td>
 							<td><%= customer.id %></td>
 							<td><%= @customer_rating %></td>
 							<% if !@user_recommendation.blank? %>

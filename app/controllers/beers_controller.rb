@@ -47,6 +47,9 @@ class BeersController < ApplicationController
      #@role_ids = [1, 2, 3, 4] 
      @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
      @active_users = User.where(account_id: @active_account_ids, getting_started_step: 14)
+     @free_curations = User.where(getting_started_step: 7).where("created_at <= ?", 1.week.ago.utc)
+     Rails.logger.debug("FC: #{@free_curations.inspect}")
+     @active_users = @active_users + @free_curations
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
