@@ -130,7 +130,45 @@ class Beer < ApplicationRecord
 
   # searchkick word_middle: [:beer_name], autocomplete: [:brewery_name, :beer_name]
 
-  
+  searchkick mappings: {
+    beer: {
+      properties: {
+        brewery_name: {type: "string", analyzer: "standard"},
+        short_brewery_name: {type: "string", analyzer: "standard"},
+        beer_name: {type: "string", analyzer: "standard"},
+        brewery_name_special: {type: "string", analyzer: "start_text_analyzer"},
+        short_brewery_name_special: {type: "string", analyzer: "start_text_analyzer"},
+        beer_name_special: {type: "string", analyzer: "middle_text_analyzer"}
+      }
+    }
+  }, settings: {
+    analysis: {
+      analyzer: {
+        "middle_text_analyzer": {
+          type: "custom",
+          tokenizer: "keyword",
+          filter: ["lowercase", "ngram"]
+        },
+        "start_text_analyzer": {
+          type: "custom",
+          tokenizer: "keyword",
+          filter: ["lowercase", "edgeNGram"]
+        }
+      },
+    },
+    filter: {
+      edge_ngram: {
+          type: "edgeNGram",
+          min_gram: 1,
+          max_gram: 15
+      },
+      ngram: {
+          type: "ngram",
+          min_gram: 3,
+          max_gram: 10
+      },
+    }
+  }
 
   def search_data
     {
