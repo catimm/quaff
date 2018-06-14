@@ -39,6 +39,11 @@ class Brewery < ApplicationRecord
   attr_accessor :beer_name
   attr_accessor :source
   
+  # update slug
+  def should_generate_new_friendly_id?
+    new_record? || slug.blank? || brewery_name_changed? || slug.nil?
+  end
+  
   def connect_deleted_brewery
     "#{brewery_name} [id: #{id}]"
   end

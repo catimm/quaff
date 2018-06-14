@@ -99,6 +99,11 @@ class Beer < ApplicationRecord
   #                :associated_against => { :brewery => :brewery_name },
   #                :using => { :tsearch => {:prefix => true} }
   
+  # update slug
+  def should_generate_new_friendly_id?
+    new_record? || slug.blank? || beer_name_changed? || slug.nil?
+  end
+  
   # define slug
   def brewery_and_beer_name
       "#{brewery.brewery_name} #{beer_name}"
