@@ -1,0 +1,34 @@
+<div class="row no-margin">
+	<div class="col-xs-4 col-md-offset-3 col-md-2 no-padding signup-guide-column-holder <%= @user_chosen %>">
+		<%= link_to "basic", edit_user_path("membership"), class: "guide-header #{@user_chosen}" %>
+		<div class="fa fa-chevron-right"></div>
+	</div>
+	<div class="col-xs-4 col-md-2 no-padding signup-guide-column-holder <%= @drink_chosen %>">
+		<% if @user.getting_started_step >= 4 %>
+			<%= link_to "drinks", drink_choice_getting_started_path, class: "guide-header #{@drink_chosen}" %>
+		<% else %>
+			<h5 class="guide-header">drinks</h5>
+		<% end %>
+	</div>
+</div>
+<div class="row no-margin">
+	<% if @subguide == "user" %>
+		<div class="col-xs-4 col-md-offset-1 no-padding signup-guide-column-holder <%= @user_personal_info_chosen %>">
+			<%= link_to "admin user info", edit_user_path("membership"), class: "guide-header #{@user_personal_info_chosen}" %>
+			<h5 class="pipe-separator">&#124;</h5>
+		</div>
+		<div class="col-xs-4 no-padding signup-guide-column-holder <%= @user_delivery_address_chosen %>">
+			<% if @user.getting_started_step >= 2 %>
+				<%= link_to "delivery address", delivery_address_getting_started_path, class: "guide-header #{@user_delivery_address_chosen}" %>
+			<% else %>
+				<h5 class="guide-header">delivery address</h5>
+			<% end %>
+		</div>
+	<% end %>
+
+	<% if @subguide == "drink" %>
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
+			<%= render 'signup/subguide_corporate_drink' %>
+		</div>
+	<% end %>
+</div>

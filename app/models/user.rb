@@ -89,6 +89,7 @@ class User < ApplicationRecord
   attr_accessor :valid_special_code # to hold special code
   attr_accessor :password_confirmation # to confirm password
   attr_accessor :specific_drink_best_guess # to hold temp drink best guess
+  attr_accessor :account_name # to hold account name for corp signup process
   
   # set user roles for cancancan
   def super_admin?

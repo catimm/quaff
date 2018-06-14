@@ -29,8 +29,19 @@ class UsersController < ApplicationController
   end # end new action
   
   def create 
+
+    account_type = (params[:corporate] == "true") ? Account::ACCOUNT_TYPE_CORPORATE : Account::ACCOUNT_TYPE_CONSUMER
+    @delivery_frequency = nil
+    @currently_active = nil
+
+    # pre-select attibutes for corporate accounts
+    if account_type == Account::ACCOUNT_TYPE_CORPORATE
+      @delivery_frequency = 1
+      @currently_active = true
+    end
+
     # create a new account for the new user
-    @account = Account.create!(account_type: "consumer", number_of_users: 1)
+    @account = Account.create!(account_type: account_type, number_of_users: 1)
     
     # fill in other miscelaneous user info
     params[:user][:account_id] = @account.id
@@ -73,7 +84,7 @@ class UsersController < ApplicationController
                                 total_deliveries: 0,
                                 account_id: @user.account_id,
                                 renewals: 0,
-                                currently_active: nil)
+                                currently_active: @currently_active)
         # set redirect link
         @redirect_link = delivery_address_getting_started_path
       end
@@ -876,13 +887,13 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :phone,
                                   :password, :password_confirmation, :special_code, :user_color, :account_id, 
-                                  :getting_started_step, :unregistered)  
+                                  :getting_started_step, :unregistered)
   end
   
   def new_user_params
     params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :role_id, :cohort, 
                                  :password, :password_confirmation, :special_code, :user_color, :account_id, 
-                                 :getting_started_step, :phone, :homepage_view)  
+                                 :getting_started_step, :phone, :homepage_view, :account_name)  
   end
   
 end

@@ -1,5 +1,5 @@
 class SignupController < ApplicationController
-  before_action :authenticate_user!, :except => [:process_free_curation_signup]
+  before_action :authenticate_user!, :except => [:process_free_curation_signup, :corporate]
   include DeliveryEstimator
   require "stripe"
   
@@ -667,6 +667,7 @@ class SignupController < ApplicationController
     
     # set user info--Note, after removing "before_action :authenticate_user!", current_user is no longer an object, but an instance
     @user = User.find_by_id(current_user.id)
+    @is_corporate = @user.account.is_corporate
     #Rails.logger.debug("User info: #{@user.inspect}")
     #@user_subscription = UserSubscription.where(user_id: @user.id, total_deliveries: 0).first
     
@@ -1013,6 +1014,17 @@ class SignupController < ApplicationController
     end
     
   end # end username_verification method
+  
+  def corporate
+      @user = User.new
+      @user.getting_started_step = 0
+      session[:new_membership] = "corporate_plan"
+      @subguide = "user"
+      @user_personal_info_chosen = "current"
+  end
+
+  def corporate_details
+  end
   
   private
 

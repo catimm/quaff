@@ -22,8 +22,12 @@ class UserAddressesController < ApplicationController
     # create new address
     @new_address = UserAddress.create!(address_params)
 
-    # redirect back to last page before new location page
-    redirect_to session.delete(:return_to)
+    if current_user.account.is_corporate
+      redirect_to drink_profile_categories_path
+    else
+      # redirect back to last page before new location page
+      redirect_to session.delete(:return_to)
+    end
     
   end # end of create method
   

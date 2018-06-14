@@ -28,6 +28,9 @@ class Account < ApplicationRecord
   belongs_to :shipping_zone, optional: true
   
   attr_accessor :user_id # to hold current user id
+
+  ACCOUNT_TYPE_CONSUMER = "consumer"
+  ACCOUNT_TYPE_CORPORATE = "corporate"
     
   # create view in admin recommendation drop down
   def recommendation_account_drop_down_view
@@ -40,6 +43,10 @@ class Account < ApplicationRecord
     else
       "#{@account_owner.first_name} [#{@account_owner.username} is not scheduled"
     end
+  end
+
+  def is_corporate
+    return self[:account_type] == Account::ACCOUNT_TYPE_CORPORATE
   end
   
   # scope not yet delivered to account owners

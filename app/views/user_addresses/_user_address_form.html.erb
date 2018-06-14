@@ -3,6 +3,7 @@
 	<%= f.hidden_field :current_delivery_location %>
 	<div class="row no-margin">
 		<div class="col-xs-12 col-sm-6">
+			<% if @is_corporate == false%>
 			<div class="row no-margin">
 				<div class="col-xs-4 col-sm-3 no-padding">
 					<%= label :location_type, 'Location Type' %>
@@ -11,6 +12,7 @@
 					<%= f.input :location_type, priority: [ "Office" ], :collection => ["Home", "Office", "Other"], selected: @location_type, :class => "form-control new-address-field", required: true, label: false %>
 				</div>
 			</div>
+			<% end %>
 			<div class="row no-margin other-name-row-holder <%= @row_status %>">
 				<div class="col-xs-4 col-sm-3 no-padding">
 					<%= label :other_name, 'Other Name' %>

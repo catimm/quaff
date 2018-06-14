@@ -7,7 +7,11 @@
 		</div>
 	</div>
 	<div class="row no-margin first-row-signup">
-		<%= render 'signup/signup_guide_consumer' %>
+		<% if @is_corporate == true %>
+			<%= render 'signup/signup_guide_corporate' %>
+		<% else %>
+			<%= render 'signup/signup_guide_consumer' %>
+		<% end %>
 	</div>
 	<div class="row">
 		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-8 container">
