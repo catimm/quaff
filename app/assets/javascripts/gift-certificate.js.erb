@@ -11,22 +11,19 @@ $(function() {
     $('input[name=giftValue]').change(function() {
         var selectedValue = $(this).val();
         if (selectedValue == "25") {
-            $('.gift-value-description > span').text('$25 covers ~10 drinks');
             $('#gift_certificate_amount').val(25);
             $('#gift-value-custom-amount').val('');
         }
         else if (selectedValue == "50") {
-            $('.gift-value-description > span').text('$50 covers a 3-mo membership & ~10 drinks');
             $('#gift_certificate_amount').val(50);
             $('#gift-value-custom-amount').val('');
         }
         else if (selectedValue == "100") {
-            $('.gift-value-description > span').text('$100 covers a 12-mo subscription OR a 3-mo membership & ~30 drinks');
             $('#gift_certificate_amount').val(100);
             $('#gift-value-custom-amount').val('');
         }
         else if (selectedValue == "custom") {
-            $('.gift-value-description > span').text('');
+
         }
     });
 
@@ -54,6 +51,7 @@ $(function() {
 
                 $('#gift-certificate-coupon-response').html(responseMessage);
                 $('#gift-certificate-coupon-response').addClass("alert-success");
+                $('#gift-certificate-coupon-response').after( "<h5 class='extra-email-note'>Note: Your recipient will receive an email with the base gift card code but <u>only you</u> will receive an email with a code for the additional amount.</h5>" );
             }
             else {
                 $('#gift-certificate-coupon-response').text(result.error_message);

@@ -4420,13 +4420,31 @@ $beer-header-lines-to-show-fp: 1;
 }
 .gift-form-control .form-group{
   margin-left: 0px !important;
+  width: 99%;
 }
-
+.gift-code-row-holder {
+  margin: 10px 0;
+}
+#gift-certificate-coupon-code {
+  border: 1px solid $medium-light-gray;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+#gift-certificate-coupon-response {
+  margin: 10px 0;
+  padding: 5px !important;
+  color: $more-emphasized-text;
+}
 .gift-value-description {
   margin-top: 10px;
   margin-bottom: 10px;
   color: $normal-text;
   white-space: nowrap;
+  min-height: 18px;
+}
+.extra-email-note {
+  color: $more-emphasized-text;
+  font-size: 16px;
 }
 
 .gift-form-label {

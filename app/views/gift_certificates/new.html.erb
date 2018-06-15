@@ -1,5 +1,5 @@
 <%= render 'layouts/header_no_search' %> 
-<div class="row justify-content-center">
+<div class="row no-margin">
     <div class="container">
         <div class="row">
             <div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 text-center knird-credit-header">
@@ -7,18 +7,19 @@
                 <h5 class="signup-question-detail">Note: We'll send an email to the recipient when transaction completes.</h5>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-offset-2 col-xs-8 col-sm-offset-4 col-sm-4 no-padding">
+		<div class="row no-margin">
+        	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 no-padding">
                 <%- flash.each do |name, msg| -%>
 				    <% if name == "failure" %>
 				    	<%= content_tag :div, msg, class: "alert alert-warning text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
                 	<% end %>
                 <%- end -%>
                 <%= simple_form_for @gift_certificate, :url => process_new_gift_certificate_path, :html => { :class => 'form-horizontal' } do |f| %>
-                    <div class="row">
+                    <%= f.hidden_field :amount, value: "50" %>
+                    <div class="row no-margin">
                         <label for="giver_name_field" class="control-label gift-form-label">Gift Value</label>
                     </div>
-                    <div class="row btn-group" role="group" data-toggle="buttons">
+                    <div class="row no-margin btn-group" role="group" data-toggle="buttons">
                         <label class="gift-value btn btn-primary btn-lg">
                             <input type="radio" name="giftValue" value="25">$25</input>
                         </label>
@@ -34,55 +35,59 @@
                             </input>
                         </label>
                     </div>
-                    <div class="row gift-value-description">
-                        <span>$50 covers a 3-mo membership &amp; ~10 drinks</span>
+                    <div class="row no-margin gift-value-description">
+                        
                     </div>
-                    <div class="row">
+                    <div class="row no-margin">
                         <label for="giver_name_field" class="control-label gift-form-label">From</label>
                     </div>
-                    <div class="row gift-form-control">
+                    <div class="row no-margin gift-form-control">
                         <%= f.input :giver_name, label: false, required: true, placeholder: "Your Name" %>
                     </div>
-                    <div class="row gift-form-control">
+                    <div class="row no-margin gift-form-control">
                         <%= f.input :giver_email, label: false, required: true, type: "email", placeholder: "Your Email" %>
                     </div>
-
-                    <div class="row">
-                        <label for="receiver_name_field" class="control-label gift-form-label">To</label>
+	                <div class="row no-margin">
+	                    <label for="receiver_name_field" class="control-label gift-form-label">To</label>
+	                </div>
+	                <div class="row no-margin gift-form-control">
+	                    <%= f.input :receiver_name, label: false, required: true, placeholder: "Recipient's Name" %>
+	                </div>
+	                <div class="row no-margin gift-form-control">
+	                    <%= f.input :receiver_email, label: false, required: true, type: "email", placeholder: "Recipient's Email" %>
+	                </div>
+			</div>
+		</div>
+		<div class="row gift-code-row-holder">
+        	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 no-padding">
+				<div class="row no-margin gift-form-control text-center">
+                    <a href="#" id="gift-certificate-coupon-expand">Enter a coupon or promotion code</a>
+                </div>
+                <div class="row no-margin gift-form-control hidden text-center" id="gift-certificate-coupon-controls">
+                    <input type=text placeholder="Enter code" id="gift-certificate-coupon-code" name="coupon_code">
+                    <input type=button value="Check" class="btn btn-default btn-primary" id="gift-certificate-apply-coupon">
+                </div>
+                <div id="gift-certificate-coupon-response" class="gift-form-control alert text-center">
+                </div>
+			</div>
+		</div> 
+        <div class="row no-margin">
+        	<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 no-padding">            
+                <div class="row no-margin">
+                    <div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6 text-center">
+                        <input type="submit" class="btn btn-success user-info-next-button" id="gift-certificate-stripe-button" value="Purchase Credit"></input>
+                    	<script
+			          		data-name="Knird" 
+			          		data-description="$50 - Knird Gift Certificate" 
+			          		data-currency="USD"
+			          		data-email="<%= @user_email %>"
+			          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+			          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+			          		src="https://checkout.stripe.com/checkout.js">
+			          	</script>
                     </div>
-                    <div class="row gift-form-control">
-                        <%= f.input :receiver_name, label: false, required: true, placeholder: "Recipient's Name" %>
-                    </div>
-                    <div class="row gift-form-control">
-                        <%= f.input :receiver_email, label: false, required: true, type: "email", placeholder: "Recipient's Email" %>
-                    </div>
-                    <div class="row gift-form-control text-center">
-                        <a href="#" id="gift-certificate-coupon-expand">Enter a coupon or promotion code</a>
-                    </div>
-                    <div class="row gift-form-control hidden text-center" id="gift-certificate-coupon-controls">
-                        <input type=text placeholder="Enter code" id="gift-certificate-coupon-code" name="coupon_code">
-                        <input type=button value="Check" class="btn btn-default btn-primary" id="gift-certificate-apply-coupon">
-                    </div>
-                    <div id="gift-certificate-coupon-response" class="gift-form-control alert text-center">
-                    </div>
-                    
-                    <%= f.hidden_field :amount, value: "50" %>
-
-                    <div class="row">
-                        <div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6 text-center">
-                            <input type="submit" class="btn btn-success user-info-next-button" id="gift-certificate-stripe-button" value="Purchase Credit"></input>
-                        	<script
-				          		data-name="Knird" 
-				          		data-description="$50 - Knird Gift Certificate" 
-				          		data-currency="USD"
-				          		data-email="<%= @user_email %>"
-				          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
-				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-				          		src="https://checkout.stripe.com/checkout.js">
-				          	</script>
-                        </div>
-                    </div>
-                <% end %>
+                </div>
+            <% end %>
             </div>
         </div>
     </div>
