@@ -53,7 +53,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :username, if: "!username.nil?"
   
   # add searchkick to find other users (friends)
-  searchkick
+  #searchkick
   
   # for ActsAsTaggableOn gem
   acts_as_tagger
@@ -89,6 +89,17 @@ class User < ApplicationRecord
   attr_accessor :valid_special_code # to hold special code
   attr_accessor :password_confirmation # to confirm password
   attr_accessor :specific_drink_best_guess # to hold temp drink best guess
+  
+  searchkick mappings: {
+    user: {
+      properties: {
+        email: {type: "string", analyzer: "standard"},
+        username: {type: "string", analyzer: "standard"},
+        first_name: {type: "string", analyzer: "standard"},
+        last_name: {type: "string", analyzer: "standard"}
+      }
+    }
+  }
   
   # for searchkick
   def search_data

@@ -140,14 +140,6 @@ class Beer < ApplicationRecord
         short_brewery_name_special: {type: "string", analyzer: "start_text_analyzer"},
         beer_name_special: {type: "string", analyzer: "middle_text_analyzer"}
       }
-    },
-    user: {
-      properties: {
-        email: {type: "string", analyzer: "standard"},
-        username: {type: "string", analyzer: "standard"},
-        first_name: {type: "string", analyzer: "standard"},
-        last_name: {type: "string", analyzer: "standard"}
-      }
     }
   }, settings: {
     analysis: {
