@@ -90,6 +90,16 @@ class User < ApplicationRecord
   attr_accessor :password_confirmation # to confirm password
   attr_accessor :specific_drink_best_guess # to hold temp drink best guess
   
+  # for searchkick
+  def search_data
+    {
+      email: email,
+      first_name: first_name,
+      last_name: last_name,
+      username: username
+    }
+  end
+  
   # set user roles for cancancan
   def super_admin?
     self.role.role_name == "super_admin"

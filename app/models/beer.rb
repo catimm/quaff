@@ -146,7 +146,7 @@ class Beer < ApplicationRecord
         email: {type: "string", analyzer: "standard"},
         username: {type: "string", analyzer: "standard"},
         first_name: {type: "string", analyzer: "standard"},
-        last_name: {type: "string", analyzer: "start_text_analyzer"}
+        last_name: {type: "string", analyzer: "standard"}
       }
     }
   }, settings: {
