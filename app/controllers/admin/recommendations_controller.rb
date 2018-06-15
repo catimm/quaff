@@ -815,7 +815,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # set delivery fee
     if @user_subscription.subscription.deliveries_included == 0
-      if (1..4).include?(@user_subscription.subscription_id)
+      if (1..5).include?(@user_subscription.subscription_id)
         @delivery_fee = 6
       else
         @delivery_fee = Shipment.where(delivery_id: @next_customer_delivery.id).pluck(:estimated_shipping_fee).first

@@ -71,18 +71,18 @@
 	</div>
 	<div class="col-xs-12 col-sm-4">
 		<div class="homepage-plan-options">
-			<%= render 'layouts/plan_delivery_twenty_five' %>
+			<%= render 'layouts/plan_delivery_fifteen' %>
 			<% if @page_source != "homepage" %>
 				<div class="row no-margin">
 					<div class="col-xs-12 no-padding">
-						<%= form_tag process_account_membership_getting_started_path("one_twenty_five"), class:"plan-button" do %>
-								<input name="plan_id" type="hidden" value="one_twenty_five"></input>
+						<%= form_tag process_account_membership_getting_started_path("one_fifteen"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_fifteen"></input>
 					          	<script 
 					          		class="stripe-button" 
 					          		data-name="Knird" 
-					          		data-description="$100 for The Prepaid 25" 
+					          		data-description="$60 for The Prepaid 15" 
 					          		data-currency="USD" 
-					          		data-label="Start The Prepaid 25 Plan"
+					          		data-label="Start The Prepaid 15 Plan"
 					          		data-email="<%= @user.email %>" 
 					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
 					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 

@@ -3,6 +3,17 @@
 		<h4 class="estimated-delivery-price-header delivery-estimate-information">
 			You can change these estimates by adjusting your drink number or cost inputs after signup.
 		</h4>
+		<% if @user_subscription.subscription_id == 4 || @user_subscription.subscription_id == 5 %>
+			<% if @total_low_estimate < 40 %>
+				<h4 class="message-about-free-delivery">
+					Don't forget you can earn free delivery if you choose a delivery frequency that estimates a drink total price > $40! 
+				</h4>
+			<% else %>
+				<h4 class="message-about-free-delivery">
+					Congrats, this delivery frequency estimates a drink total price > $40, making you eligible to earn free delivery!
+				</h4>
+			<% end %>
+		<% end %>
 	<% else %>	
 		<% if @delivery_preferences.beer_chosen %>
 			<h4 class="estimated-delivery-price-header delivery-estimate-information">
@@ -18,6 +29,17 @@
 				or 
 				<%= link_to "cost inputs", settings_cider_costs_path %>.
 			</h4>
+		<% end %>
+		<% if @user_subscription.subscription_id == 4 || @user_subscription.subscription_id == 23 %>
+			<% if @total_low_estimate < 40 %>
+				<h4 class="message-about-free-delivery">
+					Don't forget you can earn free delivery if you choose a delivery frequency that estimates a drink total price > $40! 
+				</h4>
+			<% else %>
+				<h4 class="message-about-free-delivery">
+					Congrats, this delivery frequency estimates a drink total price > $40, making you eligible to earn free delivery!
+				</h4>
+			<% end %>
 		<% end %>
 	<% end %>
 </div>

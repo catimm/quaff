@@ -268,7 +268,7 @@ class UsersController < ApplicationController
       @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
       @next_plan = Subscription.find_by_id(@customer_plan.auto_renew_subscription_id)
     
-      if (1..4).include?(@customer_plan.subscription_id)
+      if (1..5).include?(@customer_plan.subscription_id)
         @plan_type = "delivery"
         @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
         @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first

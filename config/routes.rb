@@ -349,6 +349,7 @@ Rails.application.routes.draw do
   get 'faqs' => 'home#faqs', :as => "faqs"
   get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
   get 'membership_plans' => 'home#membership_plans', :as => "membership_plans"
+  get 'amplify_summer' => 'home#amplify_summer', :as => "amplify_summer"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'

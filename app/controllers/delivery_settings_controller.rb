@@ -27,6 +27,7 @@ class DeliverySettingsController < ApplicationController
     # get delivery preferences
     @estimated_delivery_price = 0
     @total_categories = 0
+    @total_low_estimate = 0
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
     if !@delivery_preferences.blank?
       # get user's drink preference
@@ -50,6 +51,8 @@ class DeliverySettingsController < ApplicationController
           end
           @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
           @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+          # set low estimate total
+          @total_low_estimate = @total_low_estimate + @beer_cost_estimate_low
         end
       end
       if @delivery_preferences.cider_chosen
@@ -72,6 +75,8 @@ class DeliverySettingsController < ApplicationController
           end
           @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
           @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+          # set low estimate total
+          @total_low_estimate = @total_low_estimate + @cider_cost_estimate_low
         end
       end
     

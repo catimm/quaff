@@ -21,7 +21,7 @@
 			<li class="dropdown-header">Settings</li>
 			<% if current_user.role_id != 6 %>
 				<li class="dropdown-link"><%= link_to "Account", account_settings_membership_user_path %></li>
-				<% if (1..4).include?(@user_subscription.subscription_id) %>
+				<% if (1..5).include?(@user_subscription.subscription_id) %>
 					<% if @user_subscription.subscription.deliveries_included == 0 %>
 						<li class="dropdown-link"><%= link_to "Deliveries", drink_categories_path %></li>
 					<% else %>

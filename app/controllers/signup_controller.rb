@@ -128,7 +128,7 @@ class SignupController < ApplicationController
     # check if user subscription exists
     @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: [true, nil], total_deliveries: 0).first
     if !@user_subscription.blank?
-      if (1..4).include?(@user_subscription.subscription_id)
+      if (1..5).include?(@user_subscription.subscription_id)
         @plan_type = "delivery"
       else
         @related_plans = @subscriptions.where(subscription_level_group: @user_subscription.subscription.subscription_level_group)
@@ -436,6 +436,7 @@ class SignupController < ApplicationController
     
     # get delivery preferences
     @estimated_delivery_price = 0
+    @total_low_estimate = 0
     #Rails.logger.debug("Delivery estimate 1: #{@estimated_delivery_price.inspect}")
     @total_categories = 0
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
@@ -462,6 +463,8 @@ class SignupController < ApplicationController
           @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
           @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
         end
+        # set low estimate total
+        @total_low_estimate = @total_low_estimate + @beer_cost_estimate_low
       end
       if @delivery_preferences.cider_chosen
         # get user inputs
@@ -486,6 +489,8 @@ class SignupController < ApplicationController
           @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
           @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
         end
+        # set low estimate total
+        @total_low_estimate = @total_low_estimate + @cider_cost_estimate_low
       end
     
       # determine minimum number of weeks between deliveries
@@ -523,6 +528,9 @@ class SignupController < ApplicationController
     # get user info
     @user = current_user
     
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+
     # get selected frequency
     @delivery_frequency = params[:id].to_i
     
@@ -533,6 +541,7 @@ class SignupController < ApplicationController
     
     # get delivery preferences
     @total_categories = 0
+    @total_low_estimate = 0
     # get Delivery Preferences
     @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
     if @delivery_preferences.beer_chosen
@@ -547,6 +556,8 @@ class SignupController < ApplicationController
       @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
       # increment totals
       @total_categories += 1
+      # set low estimate total
+      @total_low_estimate = @total_low_estimate + @beer_cost_estimate_low
     end
     if @delivery_preferences.cider_chosen
       @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
@@ -560,6 +571,8 @@ class SignupController < ApplicationController
       @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
       # increment totals
       @total_categories += 1
+      # set low estimate total
+      @total_low_estimate = @total_low_estimate + @cider_cost_estimate_low
     end
     
     # set class for estimate holder, depending on number of categories chosen
@@ -920,7 +933,7 @@ class SignupController < ApplicationController
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # set subscription type
-    if (1..4).include?(@user_subscription.subscription_id)
+    if (1..5).include?(@user_subscription.subscription_id)
       @plan_type = "delivery"
     else  
       @plan_type = "shipping"

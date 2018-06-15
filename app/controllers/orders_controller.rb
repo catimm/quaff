@@ -55,7 +55,7 @@ class OrdersController < ApplicationController
       end # end of code for shipped orders
       
       # determine order type
-      if (1..4).include?(@user_subscription.subscription_id)
+      if (1..5).include?(@user_subscription.subscription_id)
         @order_type = "delivery"
       else
         @order_type = "shipment"
@@ -74,7 +74,7 @@ class OrdersController < ApplicationController
         @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
 
         # determine number of drinks to show
-        if (1..4).include?(@user_subscription.subscription_id)
+        if (1..5).include?(@user_subscription.subscription_id)
           @max_drink_number = 29
           @order_type = "delivery"
           @order_type_two = "delivered"
@@ -179,7 +179,7 @@ class OrdersController < ApplicationController
       @form = "edit"
       
       # determine number of drinks to show
-      if (1..4).include?(@user_subscription.subscription_id)
+      if (1..5).include?(@user_subscription.subscription_id)
         @max_drink_number = 29
         @order_type = "delivery"
       else

@@ -191,7 +191,7 @@ class UserMailer < ApplicationMailer
     else
       @no_plan_order = false
     end
-    if (1..4).include?(@user_subscription.id)
+    if (1..5).include?(@user_subscription.id)
       @local = true
     end
     if delivery_info.no_plan_delivery_fee > 0
