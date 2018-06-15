@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180611211908) do
+ActiveRecord::Schema.define(version: 20180615083418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -268,6 +268,27 @@ ActiveRecord::Schema.define(version: 20180611211908) do
     t.string "founded"
     t.string "slug"
     t.index ["slug"], name: "index_breweries_on_slug", unique: true
+  end
+
+  create_table "coupon_rules", force: :cascade do |t|
+    t.bigint "coupon_id"
+    t.decimal "original_value_start"
+    t.decimal "original_value_end"
+    t.float "add_value_percent"
+    t.decimal "add_value_amount"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coupon_id"], name: "index_coupon_rules_on_coupon_id"
+  end
+
+  create_table "coupons", force: :cascade do |t|
+    t.string "code"
+    t.datetime "valid_from"
+    t.datetime "valid_till"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "craft_stages", id: :serial, force: :cascade do |t|
@@ -544,6 +565,14 @@ ActiveRecord::Schema.define(version: 20180611211908) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "mate"
+  end
+
+  create_table "gift_certificate_promotions", force: :cascade do |t|
+    t.bigint "gift_certificate_id"
+    t.integer "promotion_gift_certificate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gift_certificate_id"], name: "index_gift_certificate_promotions_on_gift_certificate_id"
   end
 
   create_table "gift_certificates", id: :serial, force: :cascade do |t|
@@ -1161,8 +1190,10 @@ ActiveRecord::Schema.define(version: 20180611211908) do
     t.string "geo_zip"
   end
 
+  add_foreign_key "coupon_rules", "coupons"
   add_foreign_key "credits", "accounts"
   add_foreign_key "deliveries", "orders"
+  add_foreign_key "gift_certificate_promotions", "gift_certificates"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "users"
   add_foreign_key "pending_credits", "accounts"

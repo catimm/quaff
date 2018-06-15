@@ -59,9 +59,11 @@
                     <div class="row gift-form-control text-center">
                         <a href="#" id="gift-certificate-coupon-expand">Enter a coupon or promotion code</a>
                     </div>
-                    <div class="row gift-form-control hidden  text-center" id="gift-certificate-coupon-expand-1">
-                        <input type=text placeholder="Enter code">
-                        <input type=button value="Apply" class="btn btn-default btn-primary">
+                    <div class="row gift-form-control hidden text-center" id="gift-certificate-coupon-controls">
+                        <input type=text placeholder="Enter code" id="gift-certificate-coupon-code" name="coupon_code">
+                        <input type=button value="Check" class="btn btn-default btn-primary" id="gift-certificate-apply-coupon">
+                    </div>
+                    <div id="gift-certificate-coupon-response" class="gift-form-control alert text-center">
                     </div>
                     
                     <%= f.hidden_field :amount, value: "50" %>

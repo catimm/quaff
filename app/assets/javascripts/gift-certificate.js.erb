@@ -31,8 +31,35 @@ $(function() {
     });
 
     $('#gift-certificate-coupon-expand').click(function() {
-        $('#gift-certificate-coupon-expand-1').toggleClass('hidden');
+        $('#gift-certificate-coupon-controls').toggleClass('hidden');
         $(this).toggle();
+    });
+
+    $('#gift-certificate-apply-coupon').click(function() {
+        var couponCode = $('#gift-certificate-coupon-code').val();
+        $.ajax({
+		  type: "GET",
+		  url: "/coupons/" + couponCode,
+		}).done(function(result) {
+            $('#gift-certificate-coupon-response').removeClass("alert-success");
+            $('#gift-certificate-coupon-response').removeClass("alert-warning");
+
+            if (result.status == "success") {
+                var responseMessage = result.description;
+                responseMessage += "<br/>";
+
+                for(var rule in result.rules) {
+                    responseMessage += (result.rules[rule] + "<br>");
+                }
+
+                $('#gift-certificate-coupon-response').html(responseMessage);
+                $('#gift-certificate-coupon-response').addClass("alert-success");
+            }
+            else {
+                $('#gift-certificate-coupon-response').text(result.error_message);
+                $('#gift-certificate-coupon-response').addClass("alert-warning");
+            }
+        });
     });
 
     $('#gift-certificate-stripe-button').click(function() {

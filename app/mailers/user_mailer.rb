@@ -802,6 +802,29 @@ class UserMailer < ApplicationMailer
     
   end # end of gift_certificate_created_email email
 
+  def gift_certificate_promotion_created_email(gift_certificate)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: gift_certificate.giver_email }
+        }
+      ],
+      content: {
+        template_id: 'gift_certificate_promotion_created_email'
+      },
+      substitution_data: {
+        giver_name: gift_certificate.giver_name,
+        amount: gift_certificate.amount,
+        redeem_code: gift_certificate.redeem_code
+      }
+    }
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of gift_certificate_promotion_created_email email
+
   def gift_certificate_failed_email(gift_certificate)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
     

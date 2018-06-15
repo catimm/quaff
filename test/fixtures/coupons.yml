@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyString
+  valid_from: 2018-06-14 22:21:02
+  valid_till: 2018-06-14 22:21:02
+  description: MyText
+
+two:
+  code: MyString
+  valid_from: 2018-06-14 22:21:02
+  valid_till: 2018-06-14 22:21:02
+  description: MyText
