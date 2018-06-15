@@ -333,6 +333,9 @@ Rails.application.routes.draw do
   get '/gift_certificates/signup_and_redeem' => 'gift_certificates#signup_and_redeem', :as => 'gift_certificates_signup_and_redeem'
   post '/gift_certificates/redeem' => 'gift_certificates#process_redeem', :as => 'gift_certificates_process_redeem'
   
+  # Coupons
+  get '/coupons/:coupon_code' => 'coupon#check_coupon', :as => 'check_coupon'
+
   # Orders
   get '/orders/status' => 'orders#status', :as => 'order_status'
   get '/orders/update_order_estimate' => 'orders#update_order_estimate', :as => 'update_order_estimate'

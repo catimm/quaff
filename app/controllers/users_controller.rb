@@ -642,6 +642,16 @@ class UsersController < ApplicationController
             gift_certificate.purchase_completed = true
             gift_certificate.save
             UserMailer.gift_certificate_created_email(gift_certificate).deliver_now
+
+            gift_certificate_promotions = GiftCertificatePromotion.where(gift_certificate_id: gift_certificate.id)
+            if gift_certificate_promotions != nil
+              for gift_certificate_promotion in gift_certificate_promotions
+                additional_gift_certificate = GiftCertificate.find_by id: gift_certificate_promotion.promotion_gift_certificate_id
+                additional_gift_certificate.purchase_completed = true
+                additional_gift_certificate.save
+                UserMailer.gift_certificate_promotion_created_email(additional_gift_certificate).deliver_now
+              end
+            end
           end
         when 'charge.failed'
           #Rails.logger.debug("Failed charge event")

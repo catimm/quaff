@@ -21,4 +21,5 @@ class GiftCertificate < ApplicationRecord
   validates :giver_email, presence: true
   validates :receiver_name, presence: true
   validates :receiver_email, presence: true
+  attr_accessor :coupon_code
 end
