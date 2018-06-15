@@ -30,6 +30,11 @@ $(function() {
         }
     });
 
+    $('#gift-certificate-coupon-expand').click(function() {
+        $('#gift-certificate-coupon-expand-1').toggleClass('hidden');
+        $(this).toggle();
+    });
+
     $('#gift-certificate-stripe-button').click(function() {
         // If the form is not valid, do not open the stripe checkout form
         if (!$('#new_gift_certificate')[0].checkValidity()) {
