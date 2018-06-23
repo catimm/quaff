@@ -1,0 +1,15 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12 col-sm-12">
+			<h1 class="section-header">Blog</h1>
+		</div>
+		<div class="col-xs-12">
+			<%= link_to "Recent posts", blog_posts_path, class: "drink-preference-view-option current" %>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<%= render 'blog_template' %> 
+</div>
+<%= render 'layouts/footer' %>

@@ -39,7 +39,8 @@ Rails.application.routes.draw do
     resources :drinks, :ratings, :trackings   
   end
   
-  resources :user_addresses
+  get 'blog/:id' => "blog_posts#show", :as => 'blog'
+  resources :user_addresses, :blog_posts
   
   # for Knird admins to add/edit breweries and drinks
   namespace :admin do

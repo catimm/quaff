@@ -11,7 +11,7 @@ class Admin::BeersController < ApplicationController
     #@brewery_beers = Beer.where(brewery_id: params[:brewery_id]).order(:beer_name)
     # find collab beers produced by brewery
     #@collab_brewery_beer_ids = BeerBreweryCollab.where(brewery_id: params[:brewery_id]).pluck(:beer_id)
-    #@collab_beers = Beer.find(@collab_brewery_beer_ids)
+    #@collab_beers = Beer.friendly.find(@collab_brewery_beer_ids)
     # add collab beers to beer non-call beer list
     #@brewery_beers << @collab_beers
     # grab brewery info
@@ -91,7 +91,7 @@ class Admin::BeersController < ApplicationController
   
   def edit
     # find the beer to edit
-    @beer = Beer.find(params[:id]) 
+    @beer = Beer.friendly.find(params[:id]) 
     @beer_format = BeerFormat.where(beer_id: @beer.id)
     @size_formats = SizeFormat.all
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
@@ -104,7 +104,7 @@ class Admin::BeersController < ApplicationController
   
   def update
     # find correct beer
-    @beer = Beer.find(params[:id])
+    @beer = Beer.friendly.find(params[:id])
 
     # update beer attributes
       @beer.update(beer_name: params[:beer][:beer_name], beer_rating_one: params[:beer][:beer_rating_one], 
@@ -152,7 +152,7 @@ class Admin::BeersController < ApplicationController
   def alt_beer_name
     @alt_beer_names = AltBeerName.where(beer_id:params[:id])
     @beer_alt_names = AltBeerName.new
-    @beer_info = Beer.find(params[:id])
+    @beer_info = Beer.friendly.find(params[:id])
     render :partial => 'admin/beers/alt_names'
   end
   
@@ -163,7 +163,7 @@ class Admin::BeersController < ApplicationController
   
   def delete_beer_prep
     # find the beer to edit
-    @beer = Beer.find(params[:id]) 
+    @beer = Beer.friendly.find(params[:id]) 
     # the brewery info isn't needed for this method/action, but it is requested by the shared form partial . . .
     @this_brewery = Brewery.find_by_id(params[:brewery_id])
     # pull full list of beers--for delete option
@@ -173,7 +173,7 @@ class Admin::BeersController < ApplicationController
   
   def delete_beer
     # find beer being deleted
-    @beer = Beer.find(params[:id])
+    @beer = Beer.friendly.find(params[:id])
     
     # add name of beer being deleted to alt beer name table
     AltBeerName.create(name: @beer.beer_name, beer_id: params[:beer][:id])
@@ -243,7 +243,7 @@ class Admin::BeersController < ApplicationController
   def delete_temp_beer
     if (params[:id] < "14324")
       # find beer being deleted
-      @beer = Beer.find(params[:id])
+      @beer = Beer.friendly.find(params[:id])
       # get drink name
       @drink_name = AltBeerName.where(name: @beer.beer_name)
       
@@ -268,7 +268,7 @@ class Admin::BeersController < ApplicationController
     @multiple_drinks.each do |drink_id|
       if (drink_id < 14324)
         # find beer being deleted
-        @drink = Beer.find(drink_id)
+        @drink = Beer.friendly.find(drink_id)
         @brewery_id = @drink.brewery_id
         
         # get drink name
@@ -283,7 +283,7 @@ class Admin::BeersController < ApplicationController
         @drink.destroy
       else
         # find beer being deleted
-        @drink = TempBeer.find(drink_id)
+        @drink = TempBeer.friendly.find(drink_id)
         @brewery_id = @drink.brewery_id
         # get drink name
         @drink_name = AltBeerName.where(name: @drink.beer_name)
@@ -314,7 +314,7 @@ class Admin::BeersController < ApplicationController
     # create new instance for form
     @cleaning = BeerLocation.new
     # find the beer to edit
-    @beer = Beer.find(params[:beer_id]) 
+    @beer = Beer.friendly.find(params[:beer_id]) 
     # pull full list of beers--for delete option
     @locations = Location.all.order(:name)
     render :partial => 'admin/beers/clean_location'
@@ -323,11 +323,11 @@ class Admin::BeersController < ApplicationController
   def add_drink_to_brewery
     # find beer being deleted
     if (params[:id] < "14324")
-      @temp_drink = Beer.find(params[:id])
+      @temp_drink = Beer.friendly.find(params[:id])
       @temp_drink.update_attributes(vetted: true)
       @perm_drink = @temp_drink
     else
-      @temp_drink = TempBeer.find(params[:id])
+      @temp_drink = TempBeer.friendly.find(params[:id])
       # add data to permanent drink table
       @perm_drink = Beer.create(@temp_drink.attributes.merge({:vetted => nil}))
     end
@@ -377,9 +377,9 @@ class Admin::BeersController < ApplicationController
     
     # find whether it is an old or new drink
     if (params[:id] < "14324")
-      @temp_drink = Beer.find(params[:id])
+      @temp_drink = Beer.friendly.find(params[:id])
     else
-      @temp_drink = TempBeer.find(params[:id])
+      @temp_drink = TempBeer.friendly.find(params[:id])
     end
     
     # to create a new beer instance
@@ -391,9 +391,9 @@ class Admin::BeersController < ApplicationController
   def delete_drink_from_brewery
     # find beer being deleted
     if (params[:id] < "14324")
-      @beer = Beer.find(params[:id])
+      @beer = Beer.friendly.find(params[:id])
     else
-      @beer = TempBeer.find(params[:id])
+      @beer = TempBeer.friendly.find(params[:id])
     end
     
     @brewery_id = @beer.brewery_id
@@ -449,7 +449,7 @@ class Admin::BeersController < ApplicationController
     # collect existing beer descriptors
     def find_descriptor_tags
       @params_info = params[:id]
-      @beer_descriptors = params[:id].present? ? Beer.find(params[:id]).descriptors.map{|t| {id: t.name, name: t.name }} : []
+      @beer_descriptors = params[:id].present? ? Beer.friendly.find(params[:id]).descriptors.map{|t| {id: t.name, name: t.name }} : []
       #Rails.logger.debug("beer descriptor info: #{@beer_descriptors.inspect}")
      end
     

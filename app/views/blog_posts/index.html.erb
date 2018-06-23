@@ -1,0 +1,38 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12 col-sm-12">
+			<h1 class="section-header">Blog</h1>
+		</div>
+		<div class="col-xs-12">
+			<%= link_to "Recent posts", blog_posts_path, class: "drink-preference-view-option current" %>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row no-margin">
+		<% if current_user.role_id == 1 %>
+			<div class="col-xs-12 col-sm-9">
+				<h1>Drink Reviews</h1>
+			</div>
+			<div class="col-xs-12 col-sm-2">
+				<%= link_to "Add post", new_blog_post_path, class: 'btn btn-primary add-blog-post-button' %>
+			</div>
+		<% else %>
+			<div class="col-xs-12">
+				<h1>Drink Reviews</h1>
+			</div>
+		<% end %>
+	</div>
+	<div class="row no-margin">
+		<div class="col-sm-10">
+			<% @blog_posts.each do |post| %>
+				<%= render 'blog_overview', post: post %> 
+			<% end %>
+		</div>
+		<div class="col-sm-2">
+			
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

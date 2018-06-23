@@ -1,0 +1,62 @@
+<%= simple_form_for @blog_post do |f| %>
+	<%= f.hidden_field :user_id, :value => current_user.id %>
+	<%= f.hidden_field :status, :value => "draft" %>
+	<div class="form-group">
+		<label for="title_field" class="col-xs-3 col-sm-2 control-label">Title</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :title, input_html: { class: "form-control", id: "title_field" }, placeholder: "Title", label: false, required: true %>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="subtitle_field" class="col-xs-3 col-sm-2 control-label">Subtitle</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :subtitle, input_html: { class: "form-control", id: "subtitle_field" }, placeholder: "Subtitle", label: false %>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="content_field" class="col-xs-3 col-sm-2 control-label">Content</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :content, input_html: { class: "form-control", id: "content_field" }, placeholder: "Content", label: false, required: true %>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="image_url_field" class="col-xs-3 col-sm-2 control-label">Image URL</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :image_url, input_html: { class: "form-control", id: "image_url_field" }, placeholder: "Image URL", label: false, required: true %>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="beer_id_field" class="col-xs-3 col-sm-2 control-label">Drink ID</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :beer_id, input_html: { class: "form-control", id: "beer_id_field" }, placeholder: "Drink ID", label: false %>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="untappd_url_field" class="col-xs-3 col-sm-2 control-label">Untappd URL</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :untappd_url, input_html: { class: "form-control", id: "untappd_url_field" }, placeholder: "Untappd URL", label: false %>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="ba_url_field" class="col-xs-3 col-sm-2 control-label">BA URL</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :ba_url, input_html: { class: "form-control", id: "ba_url_field" }, placeholder: "BA URL", label: false %>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="published_at_field" class="col-xs-3 col-sm-2 control-label">Publish</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :published_at, as: :datetime, start_year: Date.today.year,
+	                              end_year: Date.today.year + 1, minute_step: 10,
+	                              order: [:month, :day, :year, :hour, :minute],
+	                              input_html: { class: "form-control", 
+												id: "published_at_field"}, 
+								  label: false, required: true %>
+		</div>
+	</div>			
+	<div class="form-group">
+		<div class="col-xs-offset-4 col-xs-4 text-center">
+			<%= f.submit "Submit", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+		</div>
+	</div>			
+<% end %>

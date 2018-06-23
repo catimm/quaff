@@ -61,6 +61,7 @@ class Beer < ApplicationRecord
   has_many :inventories
   has_many :size_formats, through: :inventories
   
+  has_many :blog_posts
   has_many :beer_formats
   has_many :size_formats, through: :beer_formats
   accepts_nested_attributes_for :beer_formats, :allow_destroy => true  

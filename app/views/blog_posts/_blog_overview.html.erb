@@ -1,0 +1,31 @@
+<div class="row blog-overview-holder-row">
+	<div class="col-md-offset-2 col-md-10">
+		<div class="row blog-first-row">
+			<% if !post.beer_id.nil? %>
+				<% @picture_title = post.beer.brewery_and_beer_name %>
+			<% end %>
+			<div class="col-xs-12 col-sm-3">
+				<img class="img-responsive center-block" alt="<%= @picture_title %> poured" src="<%= post.image_url %>">
+			</div>
+			<div class="col-xs-12 col-sm-9">
+				<h2 class="blog-overview-title"><%= post.title %></h2>
+				<h6 class="blog-published-time"><%= post.published_at.strftime("%B %-d, %Y") %></h6>
+				<%=raw post.content_opening %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<% if current_user.role_id == 1 %>
+				<div class="col-md-2">
+					<%= link_to "Edit", edit_blog_post_path(post.id), class: 'btn btn-primary add-blog-post-button' %>
+				</div>
+				<div class="col-md-8">
+					<%= link_to "Read more", blog_post_path(post.id), class: 'btn btn-default blog-post-details-button' %>
+				</div>
+			<% else %>
+				<div class="col-md-offset-2 col-md-8">
+					<%= link_to "Read more", blog_post_path(post.id), class: 'btn btn-default blog-post-details-button' %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

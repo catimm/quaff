@@ -61,6 +61,7 @@ class User < ApplicationRecord
   belongs_to :role 
   belongs_to :account
   
+  has_many :blog_posts
   has_many :user_deliveries
   has_many :delivery_drivers    
   has_many :admin_user_deliveries   
