@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180623205622) do
+ActiveRecord::Schema.define(version: 20180703000012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -603,6 +603,7 @@ ActiveRecord::Schema.define(version: 20180623205622) do
     t.string "receiver_name"
     t.boolean "purchase_completed"
     t.boolean "redeemed"
+    t.bigint "visit_id"
   end
 
   create_table "inventories", id: :serial, force: :cascade do |t|

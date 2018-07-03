@@ -13,6 +13,7 @@
 #  receiver_name      :string
 #  purchase_completed :boolean
 #  redeemed           :boolean
+#  visit_id           :integer
 #
 
 require 'test_helper'

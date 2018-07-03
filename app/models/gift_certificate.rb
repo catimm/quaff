@@ -13,9 +13,12 @@
 #  receiver_name      :string
 #  purchase_completed :boolean
 #  redeemed           :boolean
+#  visit_id           :integer
 #
 
 class GiftCertificate < ApplicationRecord
+  visitable
+  
   validates :amount, presence: true
   validates :giver_name, presence: true
   validates :giver_email, presence: true

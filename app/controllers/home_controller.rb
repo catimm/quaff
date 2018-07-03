@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   include UserLikesDrinkTypes
   include TypeBasedGuess
   include BestGuess
-    
+
   def index
     # instantiate invitation request 
     @view = "original"
