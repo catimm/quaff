@@ -20,6 +20,12 @@
 		</div>
 	</div>
 	<div class="form-group">
+		<label for="content_opening_field" class="col-xs-3 col-sm-2 control-label">Content Opening</label>
+		<div class="col-xs-9 col-sm-10">
+			<%= f.input :content_opening, input_html: { class: "form-control", id: "content_opening_field" }, placeholder: "Content Opening", label: false, required: true %>
+		</div>
+	</div>
+	<div class="form-group">
 		<label for="image_url_field" class="col-xs-3 col-sm-2 control-label">Image URL</label>
 		<div class="col-xs-9 col-sm-10">
 			<%= f.input :image_url, input_html: { class: "form-control", id: "image_url_field" }, placeholder: "Image URL", label: false, required: true %>
