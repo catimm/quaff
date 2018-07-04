@@ -58,13 +58,13 @@ class RatingsController < ApplicationController
 
       # Add 5% cash back as pending credit for 6, 25 delivery plan customers if they rated a delivered drink
       # if the user hasn't already rated this drink in this delivery before
-      if previous_rated_times == 0
-          @customer_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
-          if @customer_subscription.subscription.deliveries_included == 6 or @customer_subscription.subscription.deliveries_included == 25
-                cashback_amount = (0.05 * @account_delivery.drink_price * @account_delivery.quantity).round(2)
-                PendingCredit.create(account_id: current_user.account_id, user_id: current_user.id, transaction_credit: cashback_amount, transaction_type: "CASHBACK_PURCAHSED_DRINK_RATED", is_credited: false, delivery_id: @account_delivery.delivery_id)
-          end
-      end
+      #if previous_rated_times == 0
+      #    @customer_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+      #    if @customer_subscription.subscription.deliveries_included == 6 or @customer_subscription.subscription.deliveries_included == 25
+      #          cashback_amount = (0.05 * @account_delivery.drink_price * @account_delivery.quantity).round(2)
+      #          PendingCredit.create(account_id: current_user.account_id, user_id: current_user.id, transaction_credit: cashback_amount, transaction_type: "CASHBACK_PURCAHSED_DRINK_RATED", is_credited: false, delivery_id: @account_delivery.delivery_id)
+      #    end
+      #end
     end
     
     # now redirect back to previous page

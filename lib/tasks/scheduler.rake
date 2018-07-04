@@ -1196,6 +1196,14 @@ task :end_user_review_period => :environment do
     @tomorrow_deliveries.each do |delivery|
       # now change the delivery status for the user
       delivery.update(status: "in progress")
+      # add credit for customers with appropriate plan and > $40 subtotal for delivery
+      # get account subscription
+      @customer_subscription = UserSubscription.where(account_id: delivery.account_id, currently_active: true).first
+      if @customer_subscription.subscription.deliveries_included == 25 || @customer_subscription.subscription.deliveries_included == 15
+        if delivery.subtotal > 40
+          PendingCredit.create(account_id: delivery.account_id, transaction_credit: 4, transaction_type: "DELIVERY_CREDIT", is_credited: false, delivery_id: delivery.id)
+        end
+      end
     end
     
   end # end of looping through each delivery in review
