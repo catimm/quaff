@@ -52,7 +52,8 @@ class BlogPostsController < ApplicationController
   
   private
     def blog_post_params
-      params.require(:blog_post).permit(:title, :subtitle, :status, :content, :image_url, :user_id, :published_at,
+      params.require(:blog_post).permit(:title, :subtitle, :status, :content, :content_opening, 
+                                        :image_url, :brewers_image_url, :user_id, :published_at,
                                         :beer_id, :untappd_url, :ba_url)
     end
     

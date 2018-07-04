@@ -16,6 +16,23 @@
 	</div>
 </div>
 <div class="container">
-	<%= render 'blog_template' %> 
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-9">
+			<%= render 'blog_template' %>
+		</div>
+		<div class="col-xs-12 col-sm-3">
+			<h4 class="follow-us-text">FOLLOW US</h4>
+			<hr />
+			<%= link_to "https://www.facebook.com/drinkknird/", class: 'social-media-follow facebook-follow', :target => "_blank" do %>
+				<i class="fa fa-facebook"></i>
+			<% end %>
+			<%= link_to "https://twitter.com/drink_knird", class: 'social-media-follow twitter-follow', :target => "_blank" do %>
+				<i class="fa fa-twitter"></i>
+			<% end %>
+			<%= link_to "https://www.instagram.com/drinkknird/", class: 'social-media-follow instagram-follow', :target => "_blank" do %>
+				<i class="fa fa-instagram"></i>
+			<% end %>
+		</div>
+	</div>
 </div>
 <%= render 'layouts/footer' %>

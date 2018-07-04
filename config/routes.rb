@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   end
   
   get 'blog/:id' => "blog_posts#show", :as => 'blog'
+  get 'blog' => "blog_posts#index", :as => 'blogs'
   resources :user_addresses, :blog_posts
   
   # for Knird admins to add/edit breweries and drinks
