@@ -506,7 +506,7 @@ task :apply_pending_credits => :environment do
     include DateHelper
     start_date = current_quarter_start DateTime.now
 
-    @pending_credit_account_ids = PendingCredit.where(is_credited: false).where('created_at < ?', start_date).pluck("DISTINCT account_id")
+    @pending_credit_account_ids = PendingCredit.where(is_credited: false).pluck("DISTINCT account_id")
     @pending_credit_account_ids.each do |account_id|
         @total_pending_credits = PendingCredit.where(is_credited: false, account_id: account_id).where('created_at < ?', start_date).sum(:transaction_credit)
         
@@ -521,7 +521,7 @@ task :apply_pending_credits => :environment do
         
         # add credit with the new total and reduced amount
         Credit.create(total_credit: (@total_pending_credits + @previous_credit_total), transaction_credit: @total_pending_credits, transaction_type: "CASHBACK_PURCHASES_RATINGS", account_id: account_id)
-        PendingCredit.where(is_credited: false, account_id: account_id).where('created_at < ?', start_date).update_all(is_credited: true)
+        PendingCredit.where(is_credited: false, account_id: account_id).update_all(is_credited: true)
     end
 
 end # end of apply_pending_credits
