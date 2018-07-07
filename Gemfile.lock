@@ -316,6 +316,8 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.1)
       tilt (~> 2.0)
+    sitemap_generator (6.0.1)
+      builder (~> 3.0)
     sorted (2.0.3)
     sorted-actionview (0.0.2)
       sorted (~> 2.0.0)
@@ -426,6 +428,7 @@ DEPENDENCIES
   sdoc
   searchkick
   simple_form
+  sitemap_generator
   sorted-actionview
   sorted-activerecord
   sparkpost
