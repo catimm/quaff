@@ -44,7 +44,7 @@ class BlogPostsController < ApplicationController
   
   def update
     # get params and create
-    @blog_post = BlogPost.friendly_find(params[:id])
+    @blog_post = BlogPost.friendly.find(params[:id])
     @blog_post.update(blog_post_params)
     
     # redirect
