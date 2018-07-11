@@ -44,7 +44,8 @@ class BlogPostsController < ApplicationController
   
   def update
     # get params and create
-    @blog_post = BlogPost.update(blog_post_params)
+    @blog_post = BlogPost.find(params[:id])
+    @blog_post.update(blog_post_params)
     
     # redirect
     redirect_to blog_path(@blog_post[0].slug)
