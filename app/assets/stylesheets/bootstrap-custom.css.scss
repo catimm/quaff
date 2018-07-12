@@ -3856,9 +3856,14 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-option-subheader {
   color: $normal-text;
+  line-height: 1.2;
 }
 .signup-option-subheader.option-two {
   margin-bottom: 30px;
+  span {
+    font-size: 14px;
+    color: $more-emphasized-text;
+  }
 }
 .getting-started-header {
   color: $action-background;
@@ -4400,6 +4405,9 @@ $beer-header-lines-to-show-fp: 1;
 .user-info-next-button {
   margin: 15px 0 !important;
   width: 95% !important;
+}
+.add-delivery-zip {
+  margin: 15px 0 !important;
 }
 .knird-credit-header {
   margin-top: 10px;

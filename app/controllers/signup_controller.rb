@@ -23,9 +23,9 @@ class SignupController < ApplicationController
   def process_free_curation_signup
     # get current user info
     @user = User.find_by_id(current_user.id)
-    @zip_code = params[:user][:zip]
-    @city = @zip_code.to_region(:city => true)
-    @state = @zip_code.to_region(:state => true)
+    #@zip_code = params[:user][:zip]
+    #@city = @zip_code.to_region(:city => true)
+    #@state = @zip_code.to_region(:state => true)
     
     if @user.update(free_curation_params)
       bypass_sign_in @user
@@ -47,42 +47,42 @@ class SignupController < ApplicationController
       @next_available_code.update(user_id: @user.id)
     
       # first see if this address falls in Knird delivery zone
-      @knird_delivery_zone = DeliveryZone.where(zip_code: @zip_code, currently_available: true).first
+      #@knird_delivery_zone = DeliveryZone.where(zip_code: @zip_code, currently_available: true).first
       # if there is no Knird delivery Zone, find Fed Ex zone
-      if !@knird_delivery_zone.blank?
-        UserAddress.create(account_id: @user.account_id, 
-                            city: @city,
-                            state: @state,
-                            zip: @zip_code, 
-                            current_delivery_location: true,
-                            delivery_zone_id: @knird_delivery_zone.id)
-      else
+      #if !@knird_delivery_zone.blank?
+      #  UserAddress.create(account_id: @user.account_id, 
+      #                      city: @city,
+      #                      state: @state,
+      #                      zip: @zip_code, 
+      #                      current_delivery_location: true,
+      #                      delivery_zone_id: @knird_delivery_zone.id)
+      #else
         # get Shipping Zone
-        @first_three = @zip_code[0...3]
-        @shipping_zone = ShippingZone.zone_match(@first_three).first
-        if !@shipping_zone.blank?
-          UserAddress.create(account_id: @user.account_id, 
-                              city: @city,
-                              state: @state,
-                              zip: @zip_code, 
-                              current_delivery_location: true,
-                              shipping_zone_id: @shipping_zone.id)
-        else
-          UserAddress.create(account_id: @user.account_id, 
-                              city: @city,
-                              state: @state,
-                              zip: @zip_code, 
-                              current_delivery_location: true,
-                              shipping_zone_id: 1000)
-        end
-      end
+      #  @first_three = @zip_code[0...3]
+      #  @shipping_zone = ShippingZone.zone_match(@first_three).first
+      #  if !@shipping_zone.blank?
+      #    UserAddress.create(account_id: @user.account_id, 
+      #                        city: @city,
+      #                        state: @state,
+      #                        zip: @zip_code, 
+      #                        current_delivery_location: true,
+      #                        shipping_zone_id: @shipping_zone.id)
+      #  else
+      #    UserAddress.create(account_id: @user.account_id, 
+      #                        city: @city,
+      #                        state: @state,
+      #                        zip: @zip_code, 
+      #                        current_delivery_location: true,
+      #                        shipping_zone_id: 1000)
+      #  end
+      #end
       
       # redirect to next step in signup process
       redirect_to confirm_free_curation_signup_path
     else
       #Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
       # set saved message
-      flash[:error] = @user.errors.full_messages[0]
+      flash[:error] = "Looks like that email is already registered. Try another!"
 
       # redirect back to user account page
       redirect_to choose_signup_path

@@ -21,24 +21,26 @@
 	<hr>
 	</div>
 </div>
-<div class="row no-margin">
-	<div class="col-xs-12 col-sm-8">
-		<h3 class="user-settings-header">My home address</h3>
+<% if !@user_address.blank? %>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-8">
+			<h3 class="user-settings-header">My home address</h3>
+		</div>
 	</div>
-</div>
-<div class="row no-margin">
-	<div class="col-xs-12 col-sm-6" id="account-settings-home-address-holder">
-		<%= simple_form_for @home_address, :html => { :class => 'form-horizontal' } do |address| %>
-			<%= render 'users/user_home_address_info', address: address  %>
-			<div class="form-group">
-				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-9 text-center">
-					<%= address.submit "Save home address", class: "btn btn-success user-info-save-button", id: "user-info-save-button" %>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-6" id="account-settings-home-address-holder">
+			<%= simple_form_for @home_address, :html => { :class => 'form-horizontal' } do |address| %>
+				<%= render 'users/user_home_address_info', address: address  %>
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-9 text-center">
+						<%= address.submit "Save home address", class: "btn btn-success user-info-save-button", id: "user-info-save-button" %>
+					</div>
 				</div>
-			</div>
-		<% end %>
-		<hr>
+			<% end %>
+			<hr>
+		</div>
 	</div>
-</div>
+<% end %>
 <div class="row no-margin">
 	<div class="col-xs-12 col-sm-8">
 		<h3 class="user-settings-header">My password</h3>

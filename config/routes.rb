@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   get '/users/delete_credit_card/:id' => 'users#delete_credit_card', :as => 'delete_credit_card_user'
   get '/users/send_mate_invite_reminder/:id' => 'users#send_mate_invite_reminder', :as => 'send_mate_invite_reminder'
   get '/users/drop_mate/:id' => 'users#drop_mate'
+  post '/users/add_delivery_zip' => 'users#add_delivery_zip', :as => 'add_delivery_zip'
   post '/users/process_user_plan_change/:id' => 'users#process_user_plan_change', :as => 'process_user_plan_change'
   post '/users/start_new_plan/:id' => 'users#start_new_plan', :as => 'start_new_plan'
   post '/users/update_home_address/:id' => 'users#update_home_address'

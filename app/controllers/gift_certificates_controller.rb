@@ -17,7 +17,11 @@ class GiftCertificatesController < ApplicationController
 
     if user_signed_in?
       @user_email = current_user.email
-      @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
+      if !current_user.first_name.nil?
+        @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
+      else
+        @gift_certificate.giver_name = "Your friend"
+      end
       @gift_certificate.giver_email = current_user.email
     else
       @user_email = ""

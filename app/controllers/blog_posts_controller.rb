@@ -48,7 +48,7 @@ class BlogPostsController < ApplicationController
     @blog_post.update(blog_post_params)
     
     # redirect
-    redirect_to blog_path(@blog_post[0].slug)
+    redirect_to blog_path(@blog_post.slug)
   end # end of update method
   
   private
