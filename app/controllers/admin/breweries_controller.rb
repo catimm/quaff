@@ -87,7 +87,9 @@ class Admin::BreweriesController < ApplicationController
                       brewery_city: params[:brewery][:brewery_city], brewery_state_short: params[:brewery][:brewery_state_short],
                       brewery_state_long: params[:brewery][:brewery_state_long],brewery_url: params[:brewery][:brewery_url],
                       facebook_url: params[:brewery][:facebook_url],twitter_url: params[:brewery][:twitter_url], 
-                      brewery_beers: params[:brewery][:brewery_beers], image: params[:brewery][:image])
+                      brewery_beers: params[:brewery][:brewery_beers], image: params[:brewery][:image],
+                      instagram_url: params[:brewery][:instagram_url], founded: params[:brewery][:founded],
+                      brewery_description: params[:brewery][:brewery_description])
       @brewery.save
     elsif params[:brewery][:form_type] == "delete"
       # get id of brewery to delete
