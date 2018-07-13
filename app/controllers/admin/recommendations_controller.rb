@@ -878,19 +878,19 @@ class Admin::RecommendationsController < ApplicationController
     @account = Account.find_by_id(@account_owner[0].account_id)
     
     # get account delivery address
-    @account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
-    if !@account_delivery_address.delivery_zone_id.blank?
-      @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
-      # get account tax
-      @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-      @multiply_by_tax = 1 + @account_tax
-    else
-      @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
-      # get account tax
-      @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-      @multiply_by_tax = 1 + @account_tax
-    end
-
+    #@account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
+    #if !@account_delivery_address.delivery_zone_id.blank?
+    #  @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    #  # get account tax
+    #  @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #  @multiply_by_tax = 1 + @account_tax
+    #else
+    #  @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
+    #  # get account tax
+    #  @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #  @multiply_by_tax = 1 + @account_tax
+    #end
+    @multiply_by_tax = 1 + 0.101
     # find if account has wishlist items
     @account_wishlist_items = Wishlist.where(account_id: @account_owner[0].account_id)
 
