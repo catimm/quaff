@@ -46,7 +46,11 @@
 				</div>
 				<div class="col-xs-7 col-sm-4 col-md-3 no-padding">
 					<h4 class="brewery-stats-header">Avg rating: </h4>
-					<h4 class="brewery-stats"><%= @average_rating %><span class="recent-user-rating-context">/10</span></h4>
+					<% if !@average_rating.blank? %>
+						<h4 class="brewery-stats"><%= @average_rating.round(2) %><span class="recent-user-rating-context">/10</span></h4>
+					<% else %>
+						<h4 class="brewery-stats">n/a</h4>
+					<% end %>
 				</div>
 			</div>
 			<div class="row no-margin">

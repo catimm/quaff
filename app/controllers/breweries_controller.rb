@@ -52,7 +52,10 @@ class BreweriesController < ApplicationController
     
     # get average rating of all brewery drinks
     @brewery_drink_ids = @brewery_drinks.pluck(:id)
-    @average_rating = UserBeerRating.where(beer_id: @brewery_drink_ids).average(:user_beer_rating).round(2)
+    @average_rating = UserBeerRating.where(beer_id: @brewery_drink_ids).average(:user_beer_rating)
+    if !@average_rating.blank?
+      
+    end
     # create descriptor cloud for each drink
     @drink_descriptors_cloud = Array.new
     
