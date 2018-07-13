@@ -20,6 +20,7 @@
 #  brewery_description :text
 #  founded             :string
 #  slug                :string
+#  instagram_url       :string
 #
 
 class Brewery < ApplicationRecord

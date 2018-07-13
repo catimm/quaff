@@ -80,7 +80,7 @@ class Admin::BreweriesController < ApplicationController
   
   def update
     if params[:brewery][:form_type] == "edit"
-      @brewery = Brewery.find(params[:id])
+      @brewery = Brewery.friendly.find(params[:id])
       @letter = @brewery.brewery_name.chars.first
       @brewery.update(brewery_name: params[:brewery][:brewery_name], short_brewery_name: params[:brewery][:short_brewery_name], 
                       collab: params[:brewery][:collab], vetted: params[:brewery][:vetted],
