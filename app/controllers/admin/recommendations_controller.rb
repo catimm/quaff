@@ -1145,14 +1145,14 @@ class Admin::RecommendationsController < ApplicationController
     @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
     
     # get account tax
-    if !@account_delivery_address.delivery_zone_id.nil?
-      @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
-      @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-    else
-      @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
-      @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-    end
-    @current_sales_tax = @current_subtotal * @account_tax
+    #if !@account_delivery_address.delivery_zone_id.nil?
+    #  @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    #  @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #else
+    #  @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
+    #  @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #end
+    @current_sales_tax = @current_subtotal * 0.101 #@account_tax
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
 
