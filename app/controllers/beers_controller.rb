@@ -47,9 +47,8 @@ class BeersController < ApplicationController
      #@role_ids = [1, 2, 3, 4] 
      @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
      @active_users = User.where(account_id: @active_account_ids, getting_started_step: 14)
-     @free_curations = User.where(getting_started_step: 7).where("created_at <= ?", 1.week.ago.utc)
-     #Rails.logger.debug("FC: #{@free_curations.inspect}")
-     @active_users = @active_users + @free_curations
+     @free_curations = FreeCuration.where(viewed: false)
+
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
      @users_would_like = 0
@@ -57,6 +56,7 @@ class BeersController < ApplicationController
      @list_of_customers_who_like = Array.new
      @list_of_customers_who_had = Array.new
      @list_of_customers_who_not_had = Array.new
+     @list_of_free_curations_who_not_had = Array.new
      
      @active_users.each do |customer|
        if customer.user_drink_rating(@drink.id) == nil
@@ -72,7 +72,13 @@ class BeersController < ApplicationController
      end # end of loop through customers
       
      @users_have_not_had = @users_would_like - @users_have_had
-      
+     
+     @free_curations.each do |curation| 
+        free_curation_customer = User.where(account_id: curation.account_id, role_id: 4).first
+        free_curation_customer.specific_drink_best_guess = best_guess_cellar(@drink.id, free_curation_customer.id)
+        @list_of_free_curations_who_not_had << free_curation_customer
+     end # end of loop through curations
+     
       # get inventory data for
       @inventory = Inventory.where(beer_id: @drink.id).first
       if !@inventory.blank?

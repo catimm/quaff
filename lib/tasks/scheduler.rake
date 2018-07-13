@@ -1480,3 +1480,32 @@ task :slug_db => :environment do
   Beer.find_each(&:save)
     
 end # end slug_db
+
+desc "Send reminder emails for free curations"
+task :free_curation_reminders => :environment do
+  @reminders = FreeCuration.where(status: "user review")
+  
+  @reminders.each do |reminder|
+    @sent_days_ago = (Time.now - reminder.sent_at).to_i
+    if reminder.emails_sent == 1 && @sent_days_ago >= 3
+      # get customer info
+      @customer = User.where(account_id: reminder.account_id, role_id: 4).first
+      # send email to customer to remind them             
+      UserMailer.customer_curation_reminder(@customer, @sent_days_ago).deliver_now
+    elsif reminder.emails_sent == 2 && @sent_days_ago >= 7
+      # get customer info
+      @customer = User.where(account_id: reminder.account_id, role_id: 4).first
+      # send email to customer to remind them             
+      UserMailer.customer_curation_reminder(@customer, @sent_days_ago).deliver_now
+    elsif reminder.emails_sent == 3 && @sent_days_ago >= 14
+      # get customer info
+      @customer = User.where(account_id: reminder.account_id, role_id: 4).first
+      # send email to customer to remind them             
+      UserMailer.customer_curation_reminder(@customer, @sent_days_ago).deliver_now
+    end
+    
+    # increment emails sent in FreeCuration
+    reminder.increment!(:emails_sent, 1)
+  end
+    
+end # end free_curation_reminders

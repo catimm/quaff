@@ -1327,17 +1327,15 @@ class Admin::RecommendationsController < ApplicationController
   def admin_share_curation_with_customer
     # find delivery to share
     @free_curation = FreeCuration.find_by_id(params[:id])
-
-    # update status
-    @free_curation.update(status: "user review", share_admin_prep: true)
     
     # get customer info to notify them
-    @customers = User.where(account_id: @free_curation.account_id)
+    @customer = User.where(account_id: @free_curation.account_id, role_id: 4).first
     
     # send email to customer to notify them             
-    @customers.each do |customer|
-      UserMailer.customer_curation_notice(customer).deliver_now
-    end
+    UserMailer.customer_curation_notice(@customer).deliver_now
+    
+    # update status
+    @free_curation.update(status: "user review", share_admin_prep: true, shared_at: DateTime.now, emails_sent: 1)
     
     # redirect back to recommendation page                  
     redirect_to customer_curation_path(@free_curation.account_id, @free_curation.id)  

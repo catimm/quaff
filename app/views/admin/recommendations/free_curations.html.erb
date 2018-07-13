@@ -20,7 +20,11 @@
 						<% @requested_curations.each do |curation| %>
 								<% @account_owner = User.where(account_id: curation.account_id, role_id: [1,4]).first %>
 								<tr>
-									<td><%= @account_owner.first_name %> [<%= curation.account_id %>]</td>
+									<% if !@account_owner.first_name.nil? %>
+										<td><%= @account_owner.first_name %> [<%= curation.account_id %>]</td>
+									<% else %>
+										<td><%= @account_owner.email %> [<%= curation.account_id %>]</td>
+									<% end %>
 									<td class="text-center">
 										<%= link_to curation.requested_date, customer_curation_path(curation.account_id,curation.id) %>
 									</td>

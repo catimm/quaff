@@ -130,6 +130,7 @@ class DrinksController < ApplicationController
     else
       # get user info 
       @user = current_user
+      @this_is_user = true
     end
 
     # determine if account has multiple users
@@ -158,17 +159,22 @@ class DrinksController < ApplicationController
         
         # get average drink cost
         @average_drink_cost = @free_curation.subtotal / (@curated_small_drinks + @curated_large_drinks)
-      
-        # indicate user has reviewed drinks
-        @free_curation_drink_ids = @free_curation_drinks.pluck(:id)
-        @all_user_drinks = FreeCurationUser.where(user_id: @user.id, 
-                                                  free_curation_account_id: @free_curation_drink_ids,
-                                                  user_reviewed: false)
-        if !@all_user_drinks.blank?
-          @all_user_drinks.each do |drink|
-            drink.update(user_reviewed: true)
+        
+        if @this_is_user == true
+          # indicate user has reviewed drinks
+          @free_curation_drink_ids = @free_curation_drinks.pluck(:id)
+          @all_user_drinks = FreeCurationUser.where(user_id: @user.id, 
+                                                    free_curation_account_id: @free_curation_drink_ids,
+                                                    user_reviewed: false)
+          if !@all_user_drinks.blank?
+            @all_user_drinks.each do |drink|
+              drink.update(user_reviewed: true)
+            end
           end
-        end
+          if @free_curation.emails_sent == 1
+            @free_curation.update(status: "viewed", viewed_at: DateTime.now)
+          end
+        end # end of check that this is user
         
       end # end of check on free curation drinks data      
       

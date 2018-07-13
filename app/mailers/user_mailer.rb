@@ -551,7 +551,13 @@ class UserMailer < ApplicationMailer
   
   def customer_curation_notice(customer)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-
+    
+    if !customer.first_name.nil?
+      @first_name = customer.first_name
+    else
+      @first_name = "Friend"
+    end
+    
     payload  = {
       recipients: [
         {
@@ -562,7 +568,7 @@ class UserMailer < ApplicationMailer
         template_id: 'customer-curation-notice'
       },
       substitution_data: {
-        customer_name: customer.first_name
+        customer_name: @first_name
       }
     }
     
@@ -570,6 +576,35 @@ class UserMailer < ApplicationMailer
     p response
           
   end # end of customer_curation_notice email
+  
+  def customer_curation_reminder(customer, days)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    if !customer.first_name.nil?
+      @first_name = customer.first_name
+    else
+      @first_name = "Friend"
+    end
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-curation-reminder'
+      },
+      substitution_data: {
+        customer_name: @first_name,
+        days: days
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+          
+  end # end of customer_curation_reminder email
   
   def welcome_email(customer, membership_name, membership_deliveries, subscription_fee, plan_type, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

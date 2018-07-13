@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180703193728) do
+ActiveRecord::Schema.define(version: 20180712234827) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -562,6 +562,9 @@ ActiveRecord::Schema.define(version: 20180703193728) do
     t.boolean "share_admin_prep"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "emails_sent"
+    t.datetime "viewed_at"
+    t.datetime "shared_at"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
