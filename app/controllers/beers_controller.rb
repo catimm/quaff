@@ -47,7 +47,7 @@ class BeersController < ApplicationController
      #@role_ids = [1, 2, 3, 4] 
      @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
      @active_users = User.where(account_id: @active_account_ids, getting_started_step: 14)
-     @free_curations = FreeCuration.where(viewed: false)
+     @free_curations = FreeCuration.where(share_admin_prep: false)
 
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
      # create variables to hold customer info
