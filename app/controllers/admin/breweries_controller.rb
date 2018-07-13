@@ -295,7 +295,8 @@ class Admin::BreweriesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def brewery_params
       params.require(:brewery).permit(:brewery_name, :short_brewery_name, :collab, :vetted, :brewery_city, 
-      :brewery_state_short, :brewery_state_long, :facebook_url, :twitter_url, :brewery_beers, :brewery_url, :image)
+      :brewery_state_short, :brewery_state_long, :facebook_url, :twitter_url, :instagram_url, 
+      :brewery_beers, :brewery_url, :brewery_description, :founded, :image)
     end
     
     def brewery_name_params
