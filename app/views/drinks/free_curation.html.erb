@@ -1,6 +1,6 @@
 <%= render 'layouts/header' %> 
 <%= render 'drinks_common', current_section: "Recommendations" %>
-<% if !@free_curation.blank? && @free_curation.status == "user review" %>
+<% if !@free_curation.blank? && (@free_curation.status == "user review" || @free_curation.status == "viewed") %>
 	<div class="row">
 		<div class="container" id="deliveries-view">
 			<div class="row no-margin">
