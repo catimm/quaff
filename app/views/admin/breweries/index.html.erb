@@ -1,4 +1,4 @@
-<% unless RAILS_ENV == "development" %>
+<% unless ENV["RAILS_ENV"] == "development" %>
 	<!-- Script for Google Analytics to filter out admins -->
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
