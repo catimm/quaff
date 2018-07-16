@@ -73,11 +73,13 @@ class BeersController < ApplicationController
       
      @users_have_not_had = @users_would_like - @users_have_had
      
-     @free_curations.each do |curation| 
-        free_curation_customer = User.where(account_id: curation.account_id, role_id: 4).first
-        free_curation_customer.specific_drink_best_guess = best_guess_cellar(@drink.id, free_curation_customer.id)
-        @list_of_free_curations_who_not_had << free_curation_customer
-     end # end of loop through curations
+     if !@free_curations.blank?
+       @free_curations.each do |curation| 
+          free_curation_customer = User.where(account_id: curation.account_id, role_id: 4).first
+          free_curation_customer.specific_drink_best_guess = best_guess_cellar(@drink.id, free_curation_customer.id)
+          @list_of_free_curations_who_not_had << free_curation_customer
+       end # end of loop through curations
+     end
      
       # get inventory data for
       @inventory = Inventory.where(beer_id: @drink.id).first
