@@ -45,11 +45,11 @@
 					<%= link_to "Edit", edit_blog_post_path(post.id), class: 'btn btn-primary add-blog-post-button' %>
 				</div>
 				<div class="col-md-8">
-					<%= link_to "Read more", blog_post_path(post.id), class: 'btn btn-default blog-post-details-button' %>
+					<%= link_to "Read more", blog_path(post.slug), class: 'btn btn-default blog-post-details-button' %>
 				</div>
 			<% else %>
 				<div class="col-md-offset-2 col-md-8">
-					<%= link_to "Read more", blog_post_path(post.id), class: 'btn btn-default blog-post-details-button' %>
+					<%= link_to "Read more", blog_path(post.slug), class: 'btn btn-default blog-post-details-button' %>
 				</div>
 			<% end %>
 		</div>
