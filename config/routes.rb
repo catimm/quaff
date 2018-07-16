@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   post '/users/start_new_plan/:id' => 'users#start_new_plan', :as => 'start_new_plan'
   post '/users/update_home_address/:id' => 'users#update_home_address'
   post '/users/username_verification/:id' => 'users#username_verification'
+  post '/users/email_verification/' => 'users#email_verification'
   post '/stripe-webhooks' => 'users#stripe_webhooks'
   
   resources :users do

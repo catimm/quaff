@@ -1,0 +1,9 @@
+<% if @response == "no" %>
+	$("#email-not-available").removeClass('hidden').addClass('show');
+	$("#email-not-available").html("<%= @message %>");
+	$('#user-info-next-button').attr('disabled', true);
+<% else %>
+	$("#email-not-available").removeClass('show').addClass('hidden');
+	$('#user-info-next-button').removeAttr('disabled');
+	$('#user-info-next-button').addClass('btn-success');
+<% end %>

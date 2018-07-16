@@ -14,6 +14,7 @@
 	<label for="email_field" class="col-xs-4 col-sm-3 control-label">Email</label>
 	<div class="col-xs-8 col-sm-9">
 		<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+		<h5 class="hidden" id="email-not-available"></h5>
 	</div>
 </div>
 <div class="form-group">

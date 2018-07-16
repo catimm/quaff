@@ -155,7 +155,7 @@ class UsersController < ApplicationController
       params[:user][:user_color] = @user_color
     end
     
-    if @user.update!(user_params)
+    if @user.update(user_params)
       #Rails.logger.debug("User updated")
       # Sign in the user by passing validation in case their password changed
       bypass_sign_in(@user)
@@ -219,7 +219,8 @@ class UsersController < ApplicationController
       # redirect to next step in signup process
       redirect_to @redirect_link
   else
-      #Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
+      #Rails.logger.debug("User NOT updated")
+      Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
       # set saved message
       flash[:error] = @user.errors.full_messages[0]
 
@@ -896,6 +897,47 @@ class UsersController < ApplicationController
     end
     
   end # end username_verification method
+  
+  def email_verification
+    # get special code
+    @email = params[:_json]
+    Rails.logger.debug("email param: #{@email.inspect}")
+    
+    # get current user info if it exists
+    if !current_user.nil?
+      @user = User.find_by_id(current_user.id)
+      #Rails.logger.debug("user username: #{@user.username.inspect}")
+    
+      # if user's email doesn't equal the one in the field check against DB
+      if @user.email != @email
+        @email_check = User.find_by_email(@email)
+        #Rails.logger.debug("username check: #{@username_check.inspect}")
+        
+        if !@email_check.blank?
+          @response = "no"
+          @message = @email + ' is already in use. Is this you?'
+        end
+        
+        respond_to do |format|
+          format.js
+        end
+      else
+        render :nothing => true
+      end
+    else
+      @email_check = User.find_by_email(@email)
+      
+      if !@email_check.blank?
+        @response = "no"
+        @message =  @email + ' is already in use. Is this you?'
+      end
+      
+      respond_to do |format|
+        format.js
+      end
+    end
+    
+  end # end email_verification method
   
   def add_new_card
     # get customer subscription info
