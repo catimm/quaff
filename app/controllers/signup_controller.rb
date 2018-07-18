@@ -127,7 +127,7 @@ class SignupController < ApplicationController
       if @user.special_code.downcase == "6free"
         @six_free_promo = true
       else
-        @referrer = User.find_by_email(@user.special_code)
+        @referrer = User.where(email: @user.special_code)
         if !@referrer.blank?
           @six_free_promo = true
         end
