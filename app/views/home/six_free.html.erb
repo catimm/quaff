@@ -1,0 +1,43 @@
+<%= render 'layouts/header_amplify_summer' %> 
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12 col-md-offset-2 col-md-8">
+			<h3 class="index-section-header plan-section">Kick the tires on Knird with up to 6 free deliveries</h3> 
+			<h4 class="special-offer-subheader">
+				You'll have a pretty good idea how great our service is after 2 - 3 deliveries.</br>But we like you already, so <span>take 
+				6**</span> on us!
+			</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
+			<h3 class="six-free-offer-desc">
+				Sign up for a delivery plan and enter the code <span>6free</span> in the Special Code field. Easy!
+			</h3>
+		</div>
+	</div>
+	<div class="row CTA-button-row">
+		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+			<%= link_to drink_profile_categories_path, :class => 'btn btn-primary special-offer-gift-certificate-button' do %>
+				<i class="fa fa-pencil-square-o"></i>
+				Sign up now!
+			<% end %>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 text-center">
+			<h5 class="more-info-text"><span>** You have no obligation to buy from us and are free to cancel anytime.</span></h5>
+		</div>
+	</div>
+	<hr>
+	<div class="row promo-more-info-row">
+		<div class="col-xs-12 col-sm-offset-2 col-sm-8 text-center">
+			<h3 class="promo-more-info-header">Curious how Knird works?</h3> 
+			<%= link_to root_path, :class => 'btn btn-success formButton-home-get-started-button' do %>
+				<i class="fa fa-play">&nbsp;</i>
+				Learn more 
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

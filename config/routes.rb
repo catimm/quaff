@@ -358,6 +358,7 @@ Rails.application.routes.draw do
   get 'membership_plans' => 'home#membership_plans', :as => "membership_plans"
   get 'summer' => 'home#summer', :as => "summer"
   get 'relax' => 'home#relax', :as => "relax"
+  get 'six_free' => 'home#six_free', :as => "six_free"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'

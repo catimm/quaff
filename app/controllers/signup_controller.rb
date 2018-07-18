@@ -121,6 +121,19 @@ class SignupController < ApplicationController
         
     # get User info 
     @user = current_user
+    
+    # determine if user is getting the 6 free deliveries promo
+    if !@user.special_code.nil?
+      if @user.special_code.downcase == "6free"
+        @six_free_promo = true
+      else
+        @referrer = User.find_by_email(@user.special_code)
+        if !@referrer.blank?
+          @six_free_promo = true
+        end
+      end
+    end
+    
     # update getting started step
     if @user.getting_started_step < 9
       @user.update_attribute(:getting_started_step, 9)
@@ -176,6 +189,18 @@ class SignupController < ApplicationController
     #get user info
     @user = current_user
     
+    # determine if user is getting the 6 free deliveries promo
+    if !@user.special_code.nil?
+      if @user.special_code.downcase == "6free"
+        @six_free_promo = true
+      else
+        @referrer = User.find_by_email(@user.special_code)
+        if !@referrer.blank?
+          @six_free_promo = true
+        end
+      end
+    end
+    
     # get data
     @plan_name = params[:id]
     
@@ -185,7 +210,16 @@ class SignupController < ApplicationController
     
     if @subscription_info.deliveries_included != 0
       # create subscription info
-      @total_price = (@subscription_info.subscription_cost * 100).floor
+      if @six_free_promo == true
+        if @plan_name == "one_six"
+          @total_price = 0
+        elsif @plan_name == "one_fifteen"
+          @total_price = (36 * 100).floor
+        end
+      else
+        @total_price = (@subscription_info.subscription_cost * 100).floor
+      end
+      
       @charge_description = @subscription_info.subscription_name
       
       # check if user already has a subscription row
@@ -207,23 +241,27 @@ class SignupController < ApplicationController
                 :source => params[:stripeToken],
                 :email => @user.email
               )
-        # charge the customer for their subscription 
-        Stripe::Charge.create(
-          :amount => @total_price, # in cents
-          :currency => "usd",
-          :customer => customer.id,
-          :description => @charge_description
-        ) 
+        if @total_price != 0
+          # charge the customer for their subscription 
+          Stripe::Charge.create(
+            :amount => @total_price, # in cents
+            :currency => "usd",
+            :customer => customer.id,
+            :description => @charge_description
+          )
+        end 
       else
         # retrieve customer Stripe info
         customer = Stripe::Customer.retrieve(@current_customer.stripe_customer_number) 
         # charge the customer for subscription 
-        Stripe::Charge.create(
-          :amount => @total_price, # in cents
-          :currency => "usd",
-          :customer => @current_customer.stripe_customer_number,
-          :description => @charge_description
-        )
+        if @total_price != 0
+          Stripe::Charge.create(
+            :amount => @total_price, # in cents
+            :currency => "usd",
+            :customer => @current_customer.stripe_customer_number,
+            :description => @charge_description
+          )
+        end
 
       end
       
@@ -464,7 +502,11 @@ class SignupController < ApplicationController
           @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
         end
         # set low estimate total
-        @total_low_estimate = @total_low_estimate + @beer_cost_estimate_low
+        if @total_low_estimate != 0
+          @total_low_estimate = @beer_cost_estimate_low + @total_low_estimate 
+        else
+          @total_low_estimate = @beer_cost_estimate_low
+        end
       end
       if @delivery_preferences.cider_chosen
         # get user inputs
@@ -490,7 +532,11 @@ class SignupController < ApplicationController
           @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
         end
         # set low estimate total
-        @total_low_estimate = @total_low_estimate + @cider_cost_estimate_low
+        if @total_low_estimate != 0
+          @total_low_estimate =  @cider_cost_estimate_low + @total_low_estimate
+        else
+          @total_low_estimate =  @cider_cost_estimate_low
+        end
       end
     
       # determine minimum number of weeks between deliveries
@@ -557,7 +603,7 @@ class SignupController < ApplicationController
       # increment totals
       @total_categories += 1
       # set low estimate total
-      @total_low_estimate = @total_low_estimate + @beer_cost_estimate_low
+      @total_low_estimate =  @beer_cost_estimate_low + @total_low_estimate
     end
     if @delivery_preferences.cider_chosen
       @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
@@ -572,7 +618,7 @@ class SignupController < ApplicationController
       # increment totals
       @total_categories += 1
       # set low estimate total
-      @total_low_estimate = @total_low_estimate + @cider_cost_estimate_low
+      @total_low_estimate =  @cider_cost_estimate_low + @total_low_estimate
     end
     
     # set class for estimate holder, depending on number of categories chosen

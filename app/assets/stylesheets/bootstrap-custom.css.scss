@@ -739,10 +739,19 @@ label {
 .promo-more-info-row {
   margin: 30px 0;
 }
+.six-free-offer-desc {
+  color: $normal-text;
+  span {
+    color: $action-background;
+  }
+}
 .more-info-text {
   color: $normal-text;
   text-align: center;
   font-size: 16px;
+  span {
+    color: $action-background;
+  }
 }
 .how-it-works-desc.second-point {
   margin-bottom: 0;
@@ -946,6 +955,19 @@ label {
 }
 .plan-location-info-holder {
   padding-top: 5px;
+}
+.promo-text {
+  color: $more-emphasized-text;
+  span {
+    color: $action-background;
+  }
+}
+.promo-text-extra-note {
+  color: $normal-text;
+  margin-bottom: 0;
+  span {
+    color: $action-background;
+  }
 }
 .plan-details-row {
   margin: 30px 0 30px 0;
@@ -2169,6 +2191,9 @@ p {
       padding: 1px 3px;
     }
   }
+  .strikethrough-text {
+    text-decoration: line-through red solid;
+  }
 }
 .plan-get-started-button {
   width: 80%;
@@ -3378,7 +3403,7 @@ $beer-header-lines-to-show-fp: 1;
 .special-offer-subheader {
   margin: 5px 0 20px 0;
   color: $normal-text;
-  text-align: justify;
+  text-align: center;
   font-size: 18px;
   line-height: 1.25;
   span {
