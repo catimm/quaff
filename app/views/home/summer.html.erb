@@ -28,7 +28,9 @@
 	</div>
 	<div class="row CTA-button-row">
 		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
-			<%= link_to gift_certificates_new_path, :class => 'btn btn-primary special-offer-gift-certificate-button' do %>
+			<%= link_to gift_certificates_new_path, 
+				:class => 'btn btn-primary special-offer-gift-certificate-button',
+				:id => 'gift_certificates_from_summer' do %>
 				<i class="fa fa-gift"></i>
 				Buy a gift card!
 			<% end %>
@@ -46,7 +48,9 @@
 			<h4 class="promo-more-info-subheader">
 				<span>Create a free drink profile</span> to find out what we recommend for you.
 			</h4>
-			<%= link_to root_path(:anchor => "get_started"), :class => 'btn btn-success formButton-home-get-started-button' do %>
+			<%= link_to root_path(:anchor => "get_started"), 
+				:class => 'btn btn-success formButton-home-get-started-button',
+				:id => 'learn_more_from_summer' do %>
 				<i class="fa fa-play">&nbsp;</i>
 				Learn more 
 			<% end %>
@@ -54,3 +58,13 @@
 	</div>
 </div>
 <%= render 'layouts/footer' %>
+<script>
+	$(function () {
+		document.querySelector("#gift_certificates_from_summer").addEventListener("click", function(e) {
+	        	ahoy.track("promo", {source: $(this).attr('id')});
+	        });
+	    document.querySelector("#learn_more_from_summer").addEventListener("click", function(e) {
+	        	ahoy.track("promo", {source: $(this).attr('id')});
+	        });
+	 });
+</script>

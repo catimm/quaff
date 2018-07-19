@@ -1,5 +1,4 @@
 class GiftCertificatesController < ApplicationController
-  after_action :track_action
   require "stripe"
   require "coupon_code"
   include GiftCertificateRedeem
@@ -198,10 +197,6 @@ class GiftCertificatesController < ApplicationController
   end
 
   private
-
-    def track_action
-      ahoy.track "Ran action", request.path_parameters
-    end
   
     def generate_unique_coupon_code
         # try 10 times to generate a unique code and quit if unsuccessful

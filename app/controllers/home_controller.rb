@@ -210,6 +210,18 @@ class HomeController < ApplicationController
     
   end # end try_another_zip method
   
+  def summer
+    ahoy.track_visit
+  end
+  
+  def relax
+    ahoy.track_visit
+  end
+  
+  def six_free
+    ahoy.track_visit
+  end
+  
   private
   def verify_admin
     redirect_to root_url unless current_user.role_id == 1
