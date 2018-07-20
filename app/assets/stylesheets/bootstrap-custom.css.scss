@@ -3881,10 +3881,10 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-option-subheader {
   color: $normal-text;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 .signup-option-subheader.option-two {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   span {
     font-size: 14px;
     color: $more-emphasized-text;
@@ -6908,6 +6908,11 @@ $delivery-beer-header-lines-to-show: 2;
   margin: 10px 0 0 0;
   font-size: 15px;
 }
+.order-quantity-inventory {
+  color: $more-emphasized-text;
+  margin: 11px 0 0 0;
+  font-size: 15px;
+}
 .order-quantity {
   color: $normal-text;
   font-weight: 500;
@@ -6961,6 +6966,10 @@ $delivery-beer-header-lines-to-show: 2;
   font-weight: 500;
   margin: 10px 0 0 0;
   font-size: 15px;
+}
+.dropdown-toggle-user-change-quantity-inventory {
+  margin: 2.5px 0 0 7.5px;
+  height: 28px;
 }
 .dropdown-toggle-user-change-quantity {
   margin-top: 2.5px;

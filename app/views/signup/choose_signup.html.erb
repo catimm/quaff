@@ -16,7 +16,7 @@
 		         </div>
 		         <div class="row no-margin">
 		         	<div class="col-xs-12 col-sm-offset-1 col-sm-5 col-md-4 left-signup-option">
-		         		<h4 class="signup-option-header">Option 1: Sign up for a plan</h4>
+		         		<h4 class="signup-option-header">Option 1: Sign up</h4>
 		         		<h4 class="signup-option-subheader">I've heard enough good things about Knird. Let's do it!</h4>
 		         		<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-next-step-button" do %>
 		         			<i class="fa fa-play">&nbsp;</i>
@@ -24,46 +24,60 @@
 		         		<% end %>
 		         	</div>
 		         	
-		         	<div class="col-xs-12 col-sm-6 col-md-5 right-signup-option">
-		         		<h4 class="signup-option-header">Option 2: Get a free curation</h4>
-		         		<h4 class="signup-option-subheader option-two">
-		         			Provide your email** and we'll send a note when your free curation is ready&mdash;no strings!</br>
-		         			<span>** Note: we will never sell or share your email.</span>
-		         		</h4>
-		         		<%- flash.each do |name, msg| -%>
-			                <% if msg.include?  "email" %>
-			                	<%= content_tag :div, msg, class: "alert alert-danger text-center" if msg.is_a?(String) %>
-			            	<% end %>
-			            <%- end -%>
-		         		<%= simple_form_for :user, :url => process_free_curation_signup_path, :html => { :class => 'form-horizontal' } do |f| %>
-							<%= f.hidden_field :unregistered, :value => nil %>
-							<div class="form-group">
-								<label for="email_field" class="col-xs-3 control-label">Email</label>
-								<div class="col-xs-8 col-sm-9">
-									<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="password_field" class="col-xs-3 control-label">Password</label>
-								<div class="col-xs-8 col-sm-9">
-									<%= f.input :password, input_html: { class: "form-control", id: "password" }, label: false, required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="password_confirmation_field" class="col-xs-3 control-label">Confirm</label>
-								<div class="col-xs-8 col-sm-9">
-									<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password (8 characters min)" %>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-xs-12 col-sm-offset-2 col-sm-10 text-center">
-									<%= f.submit "Get my free curation", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
-									<h5 class="terms-and-conditions-text">By clicking 'Get my free curation', you agree to our 
-										<%= link_to "terms", terms_path, target: :_blank %> and <%= link_to "privacy policy", privacy_path, target: :_blank %>.
-									</h5>
-								</div>
-							</div>
-						<% end %>
+		         	<div class="col-xs-12 col-sm-6 right-signup-option">
+		         		<div class="row no-margin">
+		         			<div class="col-xs-12">
+		         				<h4 class="signup-option-header">Option 2: Get a free curation</h4>
+				         		<h4 class="signup-option-subheader option-two">
+				         			Provide your email** and we'll send you personalized recommendations based on your taste preferences&mdash;no strings, just review and decide if you like what we offer!</br>
+				         			<span>** Note: we will never sell or share your email.</span>
+				         		</h4>
+		         			</div>
+		         		</div>
+		         		<div class="row no-margin">
+		         			<div class="col-xs-12">
+				         		<%- flash.each do |name, msg| -%>
+					                <% if msg.include?  "email" %>
+					                	<%= content_tag :div, msg, class: "alert alert-danger text-center" if msg.is_a?(String) %>
+					            	<% end %>
+					            <%- end -%>
+				         		<%= simple_form_for :user, :url => process_free_curation_signup_path, :html => { :class => 'form-horizontal' } do |f| %>
+									<%= f.hidden_field :unregistered, :value => nil %>
+									<div class="form-group">
+										<label for="first_name_field" class="col-xs-3 control-label">First name</label>
+										<div class="col-xs-8 col-sm-9">
+											<%= f.input :first_name, input_html: { class: "form-control", id: "first_name_field" }, placeholder: "What should we call you?", label: false, required: false %>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="email_field" class="col-xs-3 control-label">Email</label>
+										<div class="col-xs-8 col-sm-9">
+											<%= f.input :email, input_html: { class: "form-control", id: "email_field" }, placeholder: "Email", label: false, required: true %>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="password_field" class="col-xs-3 control-label">Password</label>
+										<div class="col-xs-8 col-sm-9">
+											<%= f.input :password, input_html: { class: "form-control", id: "password" }, label: false, required: true, placeholder: "Set password (8 characters min)", hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="password_confirmation_field" class="col-xs-3 control-label">Confirm</label>
+										<div class="col-xs-8 col-sm-9">
+											<%= f.input :password_confirmation, input_html: { class: "form-control", id: "confirm_password" }, label: false, required: true, placeholder: "Confirm password (8 characters min)" %>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-xs-12 col-sm-offset-2 col-sm-10 text-center">
+											<%= f.submit "Get my free curation", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+											<h5 class="terms-and-conditions-text">By clicking 'Get my free curation', you agree to our 
+												<%= link_to "terms", terms_path, target: :_blank %> and <%= link_to "privacy policy", privacy_path, target: :_blank %>.
+											</h5>
+										</div>
+									</div>
+								<% end %>
+		         			</div>
+		         		</div>
 		         	</div>
 		         </div>
 			</div>
