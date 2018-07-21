@@ -736,6 +736,9 @@ label {
 .more-info-text-holder {
   margin: 30px 0 30px 0;
 }
+.six-free-more-info-row {
+  
+}
 .promo-more-info-row {
   margin: 30px 0;
 }
@@ -752,6 +755,10 @@ label {
   span {
     color: $action-background;
   }
+}
+.learn-more-or {
+  color: $normal-text;
+  margin: 20px 0;
 }
 .how-it-works-desc.second-point {
   margin-bottom: 0;
@@ -3354,6 +3361,10 @@ $beer-header-lines-to-show-fp: 1;
       font-weight: 400;
     }
   }
+}
+.six-free-learn-more-button {
+  width: 100%;
+  margin: 10px 0 5px 0 !important;
 }
 .formButton-home-get-started-button {
   width: 50%;
@@ -8540,6 +8551,13 @@ header {
     }
   }
 }
+.six-free-offer-desc {
+  margin-top: 10px !important;
+}
+.six-free-learn-more-button {
+  width: 90%;
+  margin: 0 0 5px 0 !important;
+}
 .formButton-home-get-started-button {
   width: 50%;
   margin: 10px 0 5px 0 !important;
@@ -8761,6 +8779,10 @@ header {
 }
 .index-section-header {
   font-size: 18px;
+  margin: 20px 0;
+}
+.index-section-header.six-free-promo-header {
+  font-size: 24px;
   margin: 20px 0;
 }
 .value-prop-row {
