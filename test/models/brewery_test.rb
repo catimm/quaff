@@ -17,6 +17,10 @@
 #  brewery_state_long  :string
 #  facebook_url        :string
 #  twitter_url         :string
+#  brewery_description :text
+#  founded             :string
+#  slug                :string
+#  instagram_url       :string
 #
 
 require 'test_helper'

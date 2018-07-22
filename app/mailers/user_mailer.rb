@@ -191,7 +191,7 @@ class UserMailer < ApplicationMailer
     else
       @no_plan_order = false
     end
-    if (1..4).include?(@user_subscription.id)
+    if (1..5).include?(@user_subscription.id)
       @local = true
     end
     if delivery_info.no_plan_delivery_fee > 0
@@ -551,7 +551,13 @@ class UserMailer < ApplicationMailer
   
   def customer_curation_notice(customer)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
-
+    
+    if !customer.first_name.nil?
+      @first_name = customer.first_name
+    else
+      @first_name = "Friend"
+    end
+    
     payload  = {
       recipients: [
         {
@@ -562,7 +568,7 @@ class UserMailer < ApplicationMailer
         template_id: 'customer-curation-notice'
       },
       substitution_data: {
-        customer_name: customer.first_name
+        customer_name: @first_name
       }
     }
     
@@ -570,6 +576,35 @@ class UserMailer < ApplicationMailer
     p response
           
   end # end of customer_curation_notice email
+  
+  def customer_curation_reminder(customer, days)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    if !customer.first_name.nil?
+      @first_name = customer.first_name
+    else
+      @first_name = "Friend"
+    end
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-curation-reminder'
+      },
+      substitution_data: {
+        customer_name: @first_name,
+        days: days
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+          
+  end # end of customer_curation_reminder email
   
   def welcome_email(customer, membership_name, membership_deliveries, subscription_fee, plan_type, membership_length)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
@@ -793,7 +828,7 @@ class UserMailer < ApplicationMailer
       substitution_data: {
         giver_name: gift_certificate.giver_name,
         receiver_name: gift_certificate.receiver_name,
-        amount: gift_certificate.amount,
+        amount: gift_certificate.amount.round(2),
         redeem_code: gift_certificate.redeem_code
       }
     }
@@ -801,6 +836,31 @@ class UserMailer < ApplicationMailer
     p response
     
   end # end of gift_certificate_created_email email
+
+  def gift_certificate_promotion_created_email(original_gift_certificate, additional_gift_certificate)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: original_gift_certificate.giver_email }
+        }
+      ],
+      content: {
+        template_id: 'gift-certificate-promotion-created-email'
+      },
+      substitution_data: {
+        giver_name: original_gift_certificate.giver_name,
+        receiver_name: original_gift_certificate.receiver_name,
+        original_amount: original_gift_certificate.amount.round(2),
+        additional_amount: additional_gift_certificate.amount.round(2),
+        redeem_code: additional_gift_certificate.redeem_code
+      }
+    }
+    response = sp.transmission.send_payload(payload)
+    p response
+    
+  end # end of gift_certificate_promotion_created_email email
 
   def gift_certificate_failed_email(gift_certificate)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

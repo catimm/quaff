@@ -53,7 +53,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :username, if: "!username.nil?"
   
   # add searchkick to find other users (friends)
-  searchkick
+  #searchkick
   
   # for ActsAsTaggableOn gem
   acts_as_tagger
@@ -61,6 +61,7 @@ class User < ApplicationRecord
   belongs_to :role 
   belongs_to :account
   
+  has_many :blog_posts
   has_many :user_deliveries
   has_many :delivery_drivers    
   has_many :admin_user_deliveries   
@@ -90,6 +91,27 @@ class User < ApplicationRecord
   attr_accessor :password_confirmation # to confirm password
   attr_accessor :specific_drink_best_guess # to hold temp drink best guess
   attr_accessor :account_name # to hold account name for corp signup process
+  
+  searchkick mappings: {
+    user: {
+      properties: {
+        email: {type: "string", analyzer: "standard"},
+        username: {type: "string", analyzer: "standard"},
+        first_name: {type: "string", analyzer: "standard"},
+        last_name: {type: "string", analyzer: "standard"}
+      }
+    }
+  }
+  
+  # for searchkick
+  def search_data
+    {
+      email: email,
+      first_name: first_name,
+      last_name: last_name,
+      username: username
+    }
+  end
   
   # set user roles for cancancan
   def super_admin?

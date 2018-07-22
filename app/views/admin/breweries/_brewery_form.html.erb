@@ -15,6 +15,12 @@
 		<%= f.check_box :vetted %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :brewery_description, :class => "form-control", placeholder: "Brewery Description" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :founded, :class => "form-control", placeholder: "Year founded" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :brewery_city, :class => "form-control", placeholder: "Brewery city" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
@@ -31,6 +37,9 @@
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :twitter_url, :class => "form-control", placeholder: "Twitter Handle" %>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<%= f.text_field :instagram_url, :class => "form-control", placeholder: "Instagram Handle" %>
 	</div>
 	<div class="col-sm-6 col-xs-12">
 		<%= f.text_field :brewery_url, :class => "form-control", placeholder: "Brewery url" %>

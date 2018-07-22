@@ -51,12 +51,15 @@ $bootstrap-info-blue: #5bc0de;
 $bootstrap-red-button-background: #dc3545;
 $bootstrap-red-button-hover-background: #c9302c;
 $bootstrap-red-button-hover-border: #ac2925;
+$bootstrap-blue-button-hover-border: #0077b3;
 $bootstrap-success-green: #40c170;
 $bootstrap-success-green-border: #4cae4c;
 $bootstrap-success-green-hover: #449d44;
 $bootstrap-success-green-border-hover: #398439;
 $inverse-primary: #337ab7;
 $bootstrap-warning-yellow: #ffc107;
+$facebook-blue: #4267b2;
+$twitter-blue: #1da1f2;
 
 // Functional use of colors for project
 $gray-body-background: $light-gray;
@@ -222,7 +225,7 @@ html {
 body {
   padding-top: 50px;
   padding-bottom: 20px;
-  margin-bottom: 50px !important;
+  margin-bottom: 100px !important;
   overflow-x: hidden;
 
 }
@@ -328,6 +331,10 @@ label {
 .combined-drink-text {
   color: $combined-drink-text !important;
 }
+.combined-drink-text-drink-page {
+  color: $combined-drink-text !important;
+  text-decoration: none !important;
+}
 .beer-type-info {
   float: left;
 }
@@ -339,7 +346,22 @@ label {
   float: left;
   padding: 1px 2.5px 1.5px 2.5px;
   font-size: 10px;
-  margin: -6px 0 0 5px;
+  margin: -6px 0 0 2.5px;
+  i {
+    font-size: 11px;
+    margin: 0 0 -5px 3.5px;
+  }
+}
+.cellar-this-drink {
+  background: $cellar-color;
+  color: $white;
+  border: 1px solid $cellar-color;
+  border-radius: 4px;
+  display: block;
+  float: left;
+  padding: 2px 2.5px 0 0;
+  font-size: 10px;
+  margin: -6px 0 0 2.5px;
   i {
     font-size: 11px;
     margin: 0 0 -5px 3.5px;
@@ -703,19 +725,46 @@ label {
   font-size: 18px;
   line-height: 1.25;
 }
+.how-it-works-desc-bullets {
+  color: $normal-text;
+  font-size: 16px;
+  text-align: left;
+}
 .how-it-works-holder {
   padding: 0 10px;
 }
 .more-info-text-holder {
   margin: 30px 0 30px 0;
 }
+.six-free-more-info-row {
+  
+}
+.promo-more-info-row {
+  margin: 30px 0;
+}
+.six-free-offer-desc {
+  color: $normal-text;
+  span {
+    color: $action-background;
+  }
+}
 .more-info-text {
   color: $normal-text;
   text-align: center;
   font-size: 16px;
+  span {
+    color: $action-background;
+  }
+}
+.learn-more-or {
+  color: $normal-text;
+  margin: 20px 0;
 }
 .how-it-works-desc.second-point {
   margin-bottom: 0;
+}
+.how-it-works-desc-bullets {
+  font-size: 15px;
 }
 .vertical-dotted-line {
   border-right: 2px dashed $action-background;
@@ -913,6 +962,19 @@ label {
 }
 .plan-location-info-holder {
   padding-top: 5px;
+}
+.promo-text {
+  color: $more-emphasized-text;
+  span {
+    color: $action-background;
+  }
+}
+.promo-text-extra-note {
+  color: $normal-text;
+  margin-bottom: 0;
+  span {
+    color: $action-background;
+  }
 }
 .plan-details-row {
   margin: 30px 0 30px 0;
@@ -1214,17 +1276,21 @@ label {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     width: 95%;
-    height: 35px;
+    min-height: 35px;
     margin: 5px 0;
     font-size: 18px;
     padding-top: 4px;
     i {
       color: $action-background;
       padding: 0 10px;
+      float: left;
+      margin-top: 5px;
     }
     span {
       color: $action-background;
       font-weight: 500;
+      float: left;
+      margin-top: 5px
     }
 }
 .delivery-numbers-prompt {
@@ -1446,9 +1512,89 @@ hr {
     margin: 15px 0 0 0 !important;
   }
 }
+// Brewery info page
+.brewery-header {
+  color: $more-emphasized-text;
+  margin: 10px 0 0 0;
+  font-size: 28px;
+}
+.brewery-subheader {
+  color: $normal-text;
+  margin: 5px 0;
+}
+.brewery-info-second-row {
+  margin: 5px 0 0 0;
+}
+.log-in-message-brewery-page {
+  padding: 15px 10px;
+  margin: 0;
+  color: $normal-text;
+  border: 1px solid $normal-text;
+  border-radius: 6px;
+  text-align: center;
+}
+.brewery-extra-info-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 4px;
+  color: $white;
+  text-align: center;
+  padding-top: 4px;
+  float: left;
+  margin: 10px 5px 0 5px;
+}
+.facebook-icon {
+  background: $facebook-blue;
+}
+.twitter-icon {
+  background: $twitter-blue;
+}
+.website-icon {
+  background: $medium-light-gray;
+}
+.brewery-stats-header {
+  color: $more-emphasized-text;
+  float: left;
+  margin: 15px 5px 10px 0;
+}
+.brewery-stats {
+  color: $more-emphasized-text;
+  font-size: 42px;
+  float: left;
+}
+
 // Drink info page
 .drink-info-container {
   margin-top: 25px;
+}
+.drink-page-header {
+  color: $more-emphasized-text;
+  font-size: 24px;
+  padding-right: 5px;
+  a {
+    text-decoration: underline;
+  }
+}
+.drink-page-drink-info-holder {
+  margin: 5px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+.in-stock-message {
+  color: $action-background;
+  text-align: center;
+  margin: 20px 0;
+  height: 26px; 
+}
+.log-in-message {
+  padding: 15px 10px;
+  color: $normal-text;
+  border: 1px solid $normal-text;
+  border-radius: 6px;
+  text-align: center;
 }
 .for-account-users-header{
   color: $normal-text;
@@ -1457,8 +1603,9 @@ hr {
 .brewery-image-holder-universal {
   padding: 5px 0 0 1px;
 }
-.cloud-descriptor-holder-universal {
-  height: 70px;
+.cloud-descriptor-holder-universal, .cloud-descriptor-drink-page {
+  height: 85px;
+  width: 125px;
 }
 .cloud-descriptor-holder-rating {
    height: 65px;
@@ -1491,7 +1638,7 @@ hr {
 $brewer-description-font-size-fp: 14px;
 $brewer-description-line-height-fp: 1.2;
 $brewer-description-lines-to-show-fp: 2;
-.small-brewer-description {
+.small-brewer-description, .small-brewery-description {
   color: $normal-text;
   margin-bottom: 0;
   display: block; /* Fallback for non-webkit */ 
@@ -1504,12 +1651,12 @@ $brewer-description-lines-to-show-fp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.big-brewer-description {
+.big-brewer-description, .big-brewery-description {
   color: $normal-text;
   margin-bottom: 0;
   line-height: $brewer-description-line-height-fp;
 }
-.more-brewer-description, .less-brewer-description {
+.more-brewer-description, .less-brewer-description, .more-brewery-description, .less-brewery-description {
   float: right;
   font-size: 13px;
 }
@@ -1519,7 +1666,7 @@ $brewer-description-lines-to-show-fp: 2;
 .cloud-holder-full-page {
   margin-top: 10px;
   height: 100px !important;
-  width: 100% !important;
+  width: 125px !important;
   display: inline;
   position: inherit;
   padding: 0;
@@ -1588,7 +1735,7 @@ $beer-header-lines-to-show-fp: 1;
   font-size: 12px;
   color: $less-emphasized-text;
   text-align: center;
-  margin: -12.5px 0 0 0;
+  margin: 5px 0 0 0;
 }
 .beer-tracking-status {
   margin-top: 30px;
@@ -1596,10 +1743,13 @@ $beer-header-lines-to-show-fp: 1;
   line-height: 1.2;
 }
 .cellar-add-drink, .cellar-remove-drink, .wishlist-add-drink {
-  width: 100%;
-  margin: 15px 0 20px 0;
+  background: $step-background;
+  border-color: #4cae4c !important;
 }
-
+.the-wishlist-button {
+  width: 100%;
+  margin: 0;
+}
 .formButton-track-beer-stop {
   width: 100%;
   margin: 15px 0 20px 0;
@@ -1611,6 +1761,15 @@ $beer-header-lines-to-show-fp: 1;
 }
 .user-rating-section {
   margin-bottom: 15px !important;
+  span {
+    color: $action-background;
+  }
+}
+.user-projected-rating-section {
+  margin-bottom: 15px !important;
+  span {
+    color: $best-guess-text;
+  }
 }
 #admin-user-data-drink-table {
   th, td {
@@ -1765,6 +1924,24 @@ $beer-header-lines-to-show: 2;
   float: left;
 }
 .beer-tile-header-homepage {
+  @extend .tile-header; 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: $beer-header-font-size*$beer-header-line-height*$beer-header-lines-to-show; /* Fallback for non-webkit */
+  margin: 10px auto 5px auto;
+  font-size: $beer-header-font-size;
+  line-height: $beer-header-line-height;
+  -webkit-line-clamp: $beer-header-lines-to-show;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  float: left;
+}
+.brewery-name-drink-page {
+  text-decoration: underline;
+}
+.beer-tile-header-drink-page {
   @extend .tile-header; 
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
@@ -1979,7 +2156,9 @@ p {
   color: $less-emphasized-text;
   font-weight: 400;
   line-height: 1.3;
-  margin: 0 0 15px 0;
+  width: 90%;
+  margin: 0 auto;
+  margin-bottom: 15px;
   span {
     color: $action-background;
   }
@@ -2018,6 +2197,9 @@ p {
       border-radius: 4px;
       padding: 1px 3px;
     }
+  }
+  .strikethrough-text {
+    text-decoration: line-through red solid;
   }
 }
 .plan-get-started-button {
@@ -3180,6 +3362,10 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
 }
+.six-free-learn-more-button {
+  width: 100%;
+  margin: 10px 0 5px 0 !important;
+}
 .formButton-home-get-started-button {
   width: 50%;
   margin: 20px 0 0 0px !important;
@@ -3189,7 +3375,7 @@ $beer-header-lines-to-show-fp: 1;
   margin: 20px 0 0 0;
 }
 .home-gift-certificate-button {
-  margin: 12px 0 0 20px;
+  margin: 10px 0 0 20px;
   width: 110%;
   font-size: 14px !important;
   padding: 6px 12px !important;
@@ -3197,6 +3383,69 @@ $beer-header-lines-to-show-fp: 1;
 .home-gift-certificate-button:hover {
   background: $action-background !important;
   border-color: #0077b3 !important;
+}
+.special-offer-gift-certificate-button {
+  width: 100%;
+  font-size: 14px !important;
+  padding: 6px 12px !important;
+}
+.special-offer-gift-certificate-button:hover {
+  background: $action-background !important;
+  border-color: #0077b3 !important;
+}
+.special-offer-header-text {
+  font-size: 36px;
+  color: $action-background;
+  text-align: center;
+}
+.special-offer-desc {
+  margin: 0 auto;
+  margin-bottom: 15px;
+  color: $normal-text;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.25;
+  width: 80%;
+  
+  span {
+    color: $action-background;
+  }
+}
+.special-offer-subheader {
+  margin: 5px 0 20px 0;
+  color: $normal-text;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.25;
+  span {
+    color: $action-background;
+  }
+}
+.promo-more-info-header {
+  text-align: center;
+  margin: 10px 0 15px 0;
+  color: $header-text;
+  line-height: 1.3;
+}
+.promo-more-info-subheader {
+  margin: 5px 0 20px 0;
+  color: $normal-text;
+  font-size: 18px;
+  line-height: 1.25;
+  span {
+    color: $action-background;
+  }
+}
+.CTA-button-row {
+  margin: 30px 0 0 0;
+}
+.limit-text {
+  color: $normal-text;
+  font-size: 14px;
+  span {
+    color: $action-background;
+    font-size: 20px;
+  }
 }
 .dropdown-toggle {
   height: 64px;
@@ -3217,6 +3466,17 @@ $beer-header-lines-to-show-fp: 1;
       }
     }
   }
+.navLinks.signup {
+  margin-top: 10px;
+    a {
+      padding: 5px 15px !important;
+    }
+} 
+.navLinks.signup:hover {
+  background: $bootstrap-success-green-hover;
+  border: 1px solid $bootstrap-success-green-border-hover;
+  border-radius: 4px;
+}
 .dropdown-menu {
   padding: 10px 0 !important;
   li {
@@ -3334,7 +3594,8 @@ $beer-header-lines-to-show-fp: 1;
   background: $footer-color !important;
   bottom: 0;
   position: absolute;
-  height: 50px !important;
+  //height: 50px !important;
+  z-index: 1000;
   width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -3342,7 +3603,7 @@ $beer-header-lines-to-show-fp: 1;
     text-align: center;
   }
   
-  a, .footer-menu-divider, p {
+  li > a, .footer-menu-divider, p {
     font-size: 12px;
     font-weight: 300;
     color: $white;
@@ -3355,8 +3616,21 @@ $beer-header-lines-to-show-fp: 1;
     font-family: "novecento_sans_widenormal";
     margin: 0;
   }
+  h6 {
+    color: $white;
+  }
 }
-
+.footer-social-col {
+  margin-top: 5px;
+}
+.social-media-follow-footer {
+  color: $white;
+  font-size: 16px;
+}
+.social-media-follow-footer:hover {
+  color: $white;
+  text-decoration: underline;
+}
 // User Account css style
 #account-settings-personal-info-holder > form > .form-group {
   margin: 0 !important;
@@ -3404,7 +3678,7 @@ $beer-header-lines-to-show-fp: 1;
 }
 #flash_success, #flash_failure, #flash_error, 
 #flash_alert, #flash_notice, #signup-error-holder, .help-block, .has-error, #username-not-available,
-.required-home-address-field-error {
+#email-not-available, .required-home-address-field-error {
   color: $current-beer-attention-needed-background !important;
   margin-bottom: 5px;
 }
@@ -3618,9 +3892,14 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-option-subheader {
   color: $normal-text;
+  line-height: 1.25;
 }
 .signup-option-subheader.option-two {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  span {
+    font-size: 14px;
+    color: $more-emphasized-text;
+  }
 }
 .getting-started-header {
   color: $action-background;
@@ -4163,6 +4442,9 @@ $beer-header-lines-to-show-fp: 1;
   margin: 15px 0 !important;
   width: 95% !important;
 }
+.add-delivery-zip {
+  margin: 15px 0 !important;
+}
 .knird-credit-header {
   margin-top: 10px;
 }
@@ -4215,13 +4497,31 @@ $beer-header-lines-to-show-fp: 1;
 }
 .gift-form-control .form-group{
   margin-left: 0px !important;
+  width: 99%;
 }
-
+.gift-code-row-holder {
+  margin: 10px 0;
+}
+#gift-certificate-coupon-code {
+  border: 1px solid $medium-light-gray;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+#gift-certificate-coupon-response {
+  margin: 10px 0;
+  padding: 5px !important;
+  color: $more-emphasized-text;
+}
 .gift-value-description {
   margin-top: 10px;
   margin-bottom: 10px;
   color: $normal-text;
   white-space: nowrap;
+  min-height: 18px;
+}
+.extra-email-note {
+  color: $more-emphasized-text;
+  font-size: 16px;
 }
 
 .gift-form-label {
@@ -4292,6 +4592,130 @@ $beer-header-lines-to-show-fp: 1;
 }
 .credit-card-info-text.last4 {
   padding-top: 15px;
+}
+// Blog Post
+.add-blog-post-button {
+  width: 100%; 
+  margin-top: 10px;
+}
+.blog-overview-holder-row {
+  margin: 0 0 40px 0;
+}
+.follow-us-text {
+  color: $normal-text;
+  margin-bottom: 0;
+  letter-spacing: 2px;
+}
+.social-media-follow {
+  border-radius: 3px;
+  background: $medium-light-gray;
+  color: $white;
+  font-size: 24px;
+  margin: 5px;
+  padding: 4px 8px 4px 12px;
+  max-width: 36px !important;
+  height: 36px;
+  display: block;
+  float: left;
+  text-align: center;
+}
+.social-media-follow:hover {
+  color: $white;
+  text-decoration: none !important;
+}
+.facebook-follow {
+  padding: 2px 10px 4px 10px;
+}
+.facebook-follow:hover {
+  background: #29487d;
+}
+.twitter-follow {
+  padding: 1px 7px 4px 8px;
+}
+.twitter-follow:hover {
+  background: #4AB3F4;
+}
+.instagram-follow {
+  padding: 1px 7px 4px 8px;
+}
+.instagram-follow:hover {
+  background: #fb3958;
+}
+
+.blog-overview-holder {
+  margin: 0 0 ;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  background: #fff;
+}
+.blog-first-row {
+  margin: 20px 0 10px 0;
+}
+.blog-last-row {
+  margin: 0 0 20px 0;
+}
+.blog-overview-title {
+  font-size: 42px;
+  color: $more-emphasized-text;
+}
+.blog-overview-subtitle {
+  color: $more-emphasized-text;
+}
+.blog-post-details-button {
+  width: 100%;
+  margin: 20px 0; 
+}
+.blog-post-details-button:hover {
+  color: $white;
+  background: $action-background;
+  border: 1px solid $bootstrap-blue-button-hover-border;
+}
+.blog-title {
+  color: $more-emphasized-text;
+  margin-top: 10px;
+}
+.blog-published-time {
+  color: $less-emphasized-text;
+}
+.tldr-text {
+  color: $normal-text;
+  margin: 20px 0;
+  span {
+    color: $more-emphasized-text;
+    font-weight: 500;
+  }
+}
+.blog-text {
+  color: $normal-text;
+  line-height: 1.3;
+  a {
+    color: $action-background;
+  }
+}
+.blog-beer-rating-text {
+  margin: 10px 0 0 -7px;
+  font-size: 10px;
+}
+.blog-rating-information {
+  margin: 20px 0 0 0;
+}
+.blog-rating-icons {
+  border-radius: 4px;
+  margin-top: 10px;
+}
+.blog-beer-rating {
+  color: $normal-text;
+  font-size: 20px;
+  margin: 0 0 0 -7px;
+}
+.blog-in-stock-message {
+  color: $action-background;
+  text-align: center;
+  margin: 10px 0 0 0; 
+  border: 1px solid $action-background;
+  border-radius: 4px;
+  padding: 3px 6px;
 }
 // Early Signup Page
 .code-verification-cushion {
@@ -4730,6 +5154,7 @@ $beer-header-lines-to-show-fp: 1;
   color: #4cae4c !important;
   text-align: center;
 }
+
 // Favorite drink tile
 .fav-drink-col {
   padding: 0 7.5px !important;
@@ -5188,6 +5613,9 @@ $beer-header-lines-to-show-fp: 1;
   color: $normal-text;
   margin: 10px 0;
   text-align: center;
+}
+.message-about-free-delivery {
+  color: $action-background;
 }
 .shipment-estimate-note {
   color: $normal-text;
@@ -6491,6 +6919,11 @@ $delivery-beer-header-lines-to-show: 2;
   margin: 10px 0 0 0;
   font-size: 15px;
 }
+.order-quantity-inventory {
+  color: $more-emphasized-text;
+  margin: 11px 0 0 0;
+  font-size: 15px;
+}
 .order-quantity {
   color: $normal-text;
   font-weight: 500;
@@ -6544,6 +6977,10 @@ $delivery-beer-header-lines-to-show: 2;
   font-weight: 500;
   margin: 10px 0 0 0;
   font-size: 15px;
+}
+.dropdown-toggle-user-change-quantity-inventory {
+  margin: 2.5px 0 0 7.5px;
+  height: 28px;
 }
 .dropdown-toggle-user-change-quantity {
   margin-top: 2.5px;
@@ -7593,6 +8030,26 @@ $delivery-beer-header-lines-to-show: 2;
     border-top: 1px solid $soft-border;
   }
   
+  // Brewery info page
+  .brewery-header {
+    margin: 10px 0 0 0;
+    font-size: 22px;
+  }
+  .brewery-extra-info-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    margin: 10px 5px 5px 5px;
+    i {
+      font-size: 1.25em !important;
+    }
+  }
+  .facebook-icon {
+    margin-left: 15px;
+  }
+  .brewery-stats {
+    font-size: 36px;
+  }
   // Mobile Drink page
   .section-header {
     font-weight: 400;
@@ -7786,7 +8243,16 @@ $delivery-beer-header-lines-to-show: 2;
     font-weight: 400;
   }
   .cloud-descriptor-holder-universal, .cloud-descriptors {
-    height: 70px;
+    height: 75px;
+  }
+  .cloud-descriptor-drink-page {
+    height: 75px;
+    width: 200px;
+  }
+  .cloud-holder-full-page {
+    height: 75px !important;
+    width: 200px !important;
+    margin-left: 45px;
   }
   .cloud-descriptor-row p {
     font-size: 10px;
@@ -7822,6 +8288,22 @@ $delivery-beer-header-lines-to-show: 2;
   // Mobile Search
   .add-drink-search-holder {
     margin: 5px 0 5px 0 !important;
+  }
+  // Mobile Blog Post
+  .blog-title {
+    font-size: 32px;
+  }
+  .blog-in-stock-message {
+    font-size: 22px;
+    margin-bottom: 10px;
+    margin-left: 12px;
+    width: 99%;
+  }
+  .blog-overview-title {
+    font-size: 24px;
+  }
+  .blog-overview-subtitle {
+    font-size: 20px;
   }
   // Mobile Drink Styles page
   .overview-tile-3, .overview-tile-4 {
@@ -8069,6 +8551,13 @@ header {
     }
   }
 }
+.six-free-offer-desc {
+  margin-top: 10px !important;
+}
+.six-free-learn-more-button {
+  width: 90%;
+  margin: 0 0 5px 0 !important;
+}
 .formButton-home-get-started-button {
   width: 50%;
   margin: 10px 0 5px 0 !important;
@@ -8180,6 +8669,7 @@ header {
   font-size: 16px;
   margin-top: 0 !important;
 }
+
 .how-it-works-overview {
   margin: 0;
 }
@@ -8289,6 +8779,10 @@ header {
 }
 .index-section-header {
   font-size: 18px;
+  margin: 20px 0;
+}
+.index-section-header.six-free-promo-header {
+  font-size: 24px;
   margin: 20px 0;
 }
 .value-prop-row {
@@ -8674,9 +9168,7 @@ header {
       font-size: 32px;
     }
   }
-  .cloud-holder-full-page {
-    height: 75px;
-  }
+  
   // User account page
   .user-account-header {
     font-size: 28px;
@@ -8688,7 +9180,8 @@ header {
     background: $footer-color !important;
     bottom: 0;
     position: absolute;
-    height: 40px;
+    //height: 40px;
+    z-index: 1000;
     width: 100%;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -8716,7 +9209,9 @@ header {
       margin-bottom: 0;
     }
   }
-
+  .social-media-follow-footer {
+    font-size: 16px !important;
+  }
   // Sign-up & log-in pages
   .box {
     margin-top: 24px;

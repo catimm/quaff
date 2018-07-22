@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180610190701) do
+ActiveRecord::Schema.define(version: 20180713191622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,6 +199,8 @@ ActiveRecord::Schema.define(version: 20180610190701) do
     t.integer "touched_by_location"
     t.text "cellar_note"
     t.boolean "gluten_free"
+    t.string "slug"
+    t.index ["slug"], name: "index_beers_on_slug", unique: true
   end
 
   create_table "blazer_audits", id: :serial, force: :cascade do |t|
@@ -247,6 +249,24 @@ ActiveRecord::Schema.define(version: 20180610190701) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "blog_posts", force: :cascade do |t|
+    t.string "title"
+    t.string "subtitle"
+    t.string "status"
+    t.text "content"
+    t.string "image_url"
+    t.integer "user_id"
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "beer_id"
+    t.string "untappd_url"
+    t.string "ba_url"
+    t.string "slug"
+    t.text "content_opening"
+    t.string "brewers_image_url"
+  end
+
   create_table "breweries", id: :serial, force: :cascade do |t|
     t.string "brewery_name", limit: 255
     t.string "brewery_city", limit: 255
@@ -262,6 +282,32 @@ ActiveRecord::Schema.define(version: 20180610190701) do
     t.string "brewery_state_long"
     t.string "facebook_url"
     t.string "twitter_url"
+    t.text "brewery_description"
+    t.string "founded"
+    t.string "slug"
+    t.string "instagram_url"
+    t.index ["slug"], name: "index_breweries_on_slug", unique: true
+  end
+
+  create_table "coupon_rules", force: :cascade do |t|
+    t.bigint "coupon_id"
+    t.decimal "original_value_start"
+    t.decimal "original_value_end"
+    t.float "add_value_percent"
+    t.decimal "add_value_amount"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coupon_id"], name: "index_coupon_rules_on_coupon_id"
+  end
+
+  create_table "coupons", force: :cascade do |t|
+    t.string "code"
+    t.datetime "valid_from"
+    t.datetime "valid_till"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "craft_stages", id: :serial, force: :cascade do |t|
@@ -517,6 +563,21 @@ ActiveRecord::Schema.define(version: 20180610190701) do
     t.boolean "share_admin_prep"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "emails_sent"
+    t.datetime "viewed_at"
+    t.datetime "shared_at"
+  end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
+    t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
   create_table "friends", id: :serial, force: :cascade do |t|
@@ -526,6 +587,14 @@ ActiveRecord::Schema.define(version: 20180610190701) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "mate"
+  end
+
+  create_table "gift_certificate_promotions", force: :cascade do |t|
+    t.bigint "gift_certificate_id"
+    t.integer "promotion_gift_certificate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gift_certificate_id"], name: "index_gift_certificate_promotions_on_gift_certificate_id"
   end
 
   create_table "gift_certificates", id: :serial, force: :cascade do |t|
@@ -539,6 +608,7 @@ ActiveRecord::Schema.define(version: 20180610190701) do
     t.string "receiver_name"
     t.boolean "purchase_completed"
     t.boolean "redeemed"
+    t.bigint "visit_id"
   end
 
   create_table "inventories", id: :serial, force: :cascade do |t|
@@ -1143,8 +1213,10 @@ ActiveRecord::Schema.define(version: 20180610190701) do
     t.string "geo_zip"
   end
 
+  add_foreign_key "coupon_rules", "coupons"
   add_foreign_key "credits", "accounts"
   add_foreign_key "deliveries", "orders"
+  add_foreign_key "gift_certificate_promotions", "gift_certificates"
   add_foreign_key "orders", "accounts"
   add_foreign_key "orders", "users"
   add_foreign_key "pending_credits", "accounts"

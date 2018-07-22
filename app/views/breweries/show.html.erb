@@ -1,0 +1,66 @@
+<% content_for :title do %>
+  	<title><%= @brewery.brewery_name %> &#124; Knird</title>
+<% end %>
+<% if !@meta_description.nil? %>
+	<% content_for :description do %>
+		<meta property="description" content="<%= @meta_description %>" />
+	<% end %>
+<% end %>
+<%= render 'layouts/header' %> 
+<div class="container drink-info-container">
+	<div class="row no-margin">
+		<div class="col-xs-12 col-md-offset-1 col-md-10 no-padding">
+			<div class="row no-margin drink-page-drink-info-holder">
+				<div class="col-xs-12 col-sm-9 col-md-8">
+					<%= render 'brewery_info' %>
+				</div>
+				<div class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-3 col-md-4">
+					<% if !@brewery.facebook_url.nil? %>
+						<%= link_to "https://www.facebook.com/#{@brewery.facebook_url}", :target => "_blank" do %>
+							<div class="facebook-icon brewery-extra-info-icon" data-toggle="tooltip" data-placement="left" title="<%= @brewery.short_brewery_name %>'s facebook page">
+								<i class="fa fa-facebook fa-2x" aria-hidden="true"></i>
+							</div>
+						<% end %>
+					<% end %>
+					<% if !@brewery.twitter_url.nil? %>
+						<%= link_to "https://twitter.com/#{@brewery.twitter_url}", :target => "_blank" do %>	
+							<div class="twitter-icon brewery-extra-info-icon" data-toggle="tooltip" data-placement="left" title="<%= @brewery.short_brewery_name %>'s twitter page">
+								<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>
+							</div>
+						<% end %>
+					<% end %>
+					<% if !@brewery.brewery_url.nil? %>
+						<%= link_to @brewery.brewery_url, :target => "_blank" do %>
+							<div class="website-icon brewery-extra-info-icon" data-toggle="tooltip" data-placement="left" title="<%= @brewery.short_brewery_name %>'s website">
+								<i class="fa fa-globe fa-2x" aria-hidden="true"></i>
+							</div>
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+			<hr />
+			<div class="row no-margin">
+				<div class="col-xs-5 col-sm-3 col-md-2">
+					<h4 class="brewery-stats-header">Drinks: </h4>
+					<h4 class="brewery-stats"><%= @number_of_drinks %></span></h4>
+				</div>
+				<div class="col-xs-7 col-sm-4 col-md-3 no-padding">
+					<h4 class="brewery-stats-header">Avg rating: </h4>
+					<% if !@average_rating.blank? %>
+						<h4 class="brewery-stats"><%= @average_rating.round(2) %><span class="recent-user-rating-context">/10</span></h4>
+					<% else %>
+						<h4 class="brewery-stats">n/a</h4>
+					<% end %>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12 no-padding">
+					<% @brewery_drinks.each do |drink| %>
+						<%= render(partial: 'drink_card_brewery_drinks', locals: { drink: drink }) %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

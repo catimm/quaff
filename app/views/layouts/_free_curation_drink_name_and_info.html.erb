@@ -1,13 +1,13 @@
 <div class="col-xs-12 drink-name-col">
 	<% if drink.beer.collab == true %>
 		<% @title_header = (Beer.collab_brewery_name(drink.beer.id) + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-		<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header' %>
+		<%= link_to @title_header, drink_path(drink.beer.slug), :class => 'tile-header beer-tile-header' %>
 	<% elsif drink.beer.brewery.short_brewery_name.nil? %>
 		<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-		<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header' %>
+		<%= link_to @title_header, drink_path(drink.beer.slug), :class => 'tile-header beer-tile-header' %>
 	<% else %>
 		<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
-		<%= link_to @title_header, brewery_beer_path(drink.beer.brewery.id, drink.beer.id), :class => 'tile-header beer-tile-header' %>
+		<%= link_to @title_header, drink_path(drink.beer.slug), :class => 'tile-header beer-tile-header' %>
 	<% end %>
 </div>
 <div class="col-xs-12 drink-style-col">

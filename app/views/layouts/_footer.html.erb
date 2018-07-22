@@ -1,29 +1,54 @@
  <footer class="footer">
-        
-        <div class="container">
-           
-                    <ul class="list-inline">
-                        <li>
-                        	<%= link_to "Home", root_path %>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                        	<%= link_to "About Us", about_us_path %>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                        	<%= link_to "Privacy", privacy_path %>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                        	 <%= link_to "Terms", terms_path %>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                        	 <%= mail_to "questions@drinkknird.com", "Contact" %>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted small">&copy; Knird 2018. Seattle, WA.</p>
-            
+	<div class="container">
+        <div class="row no-margin text-center">
+        	<div class="col-xs-offset-1 col-xs-3 col-sm-offset-3 col-sm-2">
+        		<h6 class='text-right'>Follow us</h6>
+			</div>
+        	<div class="col-xs-2 col-sm-1 footer-social-col">
+        		<%= link_to "https://www.facebook.com/drinkknird/", class: 'social-media-follow-footer', :target => "_blank" do %>
+					<i class="fa fa-facebook"></i>
+				<% end %>
+			</div>
+			<div class="col-xs-2 col-sm-1 footer-social-col">
+				<%= link_to "https://twitter.com/drink_knird/", class: 'social-media-follow-footer', :target => "_blank" do %>
+					<i class="fa fa-twitter"></i>
+				<% end %>
+			</div>
+			<div class="col-xs-2 col-sm-1 footer-social-col">
+				<%= link_to "https://www.instagram.com/drinkknird/", class: 'social-media-follow-footer', :target => "_blank" do %>
+					<i class="fa fa-instagram"></i>
+				<% end %>
+        	</div>
         </div>
-    </footer>
+        <div class="row no-margin">
+        	<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-12">
+        		<ul class="list-inline">
+		            <li>
+		            	<%= link_to "Home", root_path %>
+		            </li>
+		            <li class="footer-menu-divider">&sdot;</li>
+		            <li>
+		            	<%= link_to "About Us", about_us_path %>
+		            </li>
+		            <li class="footer-menu-divider">&sdot;</li>
+		            <li>
+		            	<%= link_to "Blog", blog_posts_path %>
+		            </li>
+		            <li class="footer-menu-divider">&sdot;</li>
+		            <li>
+		            	<%= link_to "Privacy", privacy_path %>
+		            </li>
+		            <li class="footer-menu-divider">&sdot;</li>
+		            <li>
+		            	 <%= link_to "Terms", terms_path %>
+		            </li>
+		            <li class="footer-menu-divider">&sdot;</li>
+		            <li>
+		            	 <%= mail_to "questions@drinkknird.com", "Contact" %>
+		            </li>
+		        </ul>
+		        <p class="copyright text-muted small">&copy; Knird 2018. Seattle, WA.</p>
+        	</div>
+        </div>   
+    </div>
+</footer>

@@ -97,10 +97,10 @@
 									<% @style_examples.each do |example| %>
 										<% if !example.brewery.short_brewery_name.blank? %>
 											<% @title_header = example.brewery.short_brewery_name + " " + example.beer_name %>
-											<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+											<li><%= link_to @title_header, drink_path(example.slug), :class => 'example-beer-header', :target => "_blank" %></li>
 										<% else %>
 											<% @title_header = example.brewery.brewery_name + " " + example.beer_name %>
-											<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+											<li><%= link_to @title_header, drink_path(example.slug), :class => 'example-beer-header', :target => "_blank" %></li>
 										<% end %>
 									<% end %>
 								</ul>
@@ -109,10 +109,10 @@
 										<% if index <= 1 %>
 											<% if !example.brewery.short_brewery_name.blank? %>
 												<% @title_header = example.brewery.short_brewery_name + " " + example.beer_name %>
-												<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+												<li><%= link_to @title_header, drink_path(example.slug), :class => 'example-beer-header', :target => "_blank" %></li>
 											<% else %>
 												<% @title_header = example.brewery.brewery_name + " " + example.beer_name %>
-												<li><%= link_to @title_header, brewery_beer_path(example.brewery.id, example.id), :class => 'example-beer-header', :target => "_blank" %></li>
+												<li><%= link_to @title_header, drink_path(example.slug), :class => 'example-beer-header', :target => "_blank" %></li>
 											<% end %>
 										<% end %>
 									<% end %>

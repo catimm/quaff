@@ -1,0 +1,70 @@
+<%= render 'layouts/header_amplify_summer' %> 
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12 col-md-offset-2 col-md-8">
+			<h3 class="index-section-header plan-section">For a limited time, extend your beer money!</h3> 
+			<h4 class="special-offer-subheader">
+				What's better than craft beers curated to your taste preferences and delivered to your door? 
+				Being able to buy <span>more</span> of those beers, of course!
+			</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-4">
+			<h3 class="special-offer-header-text">10% more</h3> 
+			<h4 class="special-offer-desc">
+				Buy a $50 gift card and get an additional $5 bonus card
+		</div>
+		<div class="col-xs-12 col-sm-4">
+			<h3 class="special-offer-header-text">15% more</h3> 
+			<h4 class="special-offer-desc">
+				Buy a $100 gift card and get an additional $15 bonus card
+		</div>
+		<div class="col-xs-12 col-sm-4">
+			<h3 class="special-offer-header-text">20% more</h3> 
+			<h4 class="special-offer-desc">
+				Buy a $150 gift card and get an additional $30 bonus card
+		</div>
+	</div>
+	<div class="row CTA-button-row">
+		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+			<%= link_to gift_certificates_new_path, 
+				:class => 'btn btn-primary special-offer-gift-certificate-button',
+				:id => 'gift_certificates_from_relax' do %>
+				<i class="fa fa-gift"></i>
+				Buy a gift card!
+			<% end %>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-offset-3 col-sm-6 text-center">
+			<h5 class="more-info-text">Don't have a promo code? <u><%= mail_to "questions@drinkknird.com", "Email us" %></u>!  We'd be happy to send you one.</h5>
+		</div>
+	</div>
+	<hr>
+	<div class="row promo-more-info-row">
+		<div class="col-xs-12 col-sm-offset-2 col-sm-8 text-center">
+			<h3 class="promo-more-info-header">Curious how Knird works?</h3> 
+			<h4 class="promo-more-info-subheader">
+				<span>Create a free drink profile</span> to find out what we recommend for you.
+			</h4>
+			<%= link_to root_path(:anchor => "get_started"), 
+				:class => 'btn btn-success formButton-home-get-started-button',
+				:id => 'learn_more_from_relax' do %>
+				<i class="fa fa-play">&nbsp;</i>
+				Learn more 
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>
+<script>
+	$(function () {
+		document.querySelector("#gift_certificates_from_relax").addEventListener("click", function(e) {
+	        	ahoy.track("promo", {source: $(this).attr('id')});
+	        });
+	    document.querySelector("#learn_more_from_relax").addEventListener("click", function(e) {
+	        	ahoy.track("promo", {source: $(this).attr('id')});
+	        });
+	 });
+</script>

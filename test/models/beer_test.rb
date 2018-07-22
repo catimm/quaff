@@ -34,6 +34,7 @@
 #  touched_by_location  :integer
 #  cellar_note          :text
 #  gluten_free          :boolean
+#  slug                 :string
 #
 
 require 'test_helper'

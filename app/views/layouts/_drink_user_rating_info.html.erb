@@ -1,17 +1,22 @@
+<% @source = false if local_assigns[:source].nil? %>
 <% @user_rating = @user.user_drink_rating(drink.id) %>
 <div class="row user-ratings-row-holder<%= @number_of_users %>">
 	<% if !@user_rating.nil? %>
-		<%= render 'layouts/user_initials_xsmall', friend: @user %>
-		<p class="delivery-user-rating-acknowledged<%= @number_of_users %>">avg rating: </p>
-		<h1 class="delivery-user-rating<%= @number_of_users %>"> <%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
+		<% if @source %>
+			<%= render 'layouts/user_initials_xsmall', friend: @user %>
+			<p class="delivery-user-rating-acknowledged<%= @number_of_users %>">avg rating: </p>
+		<% end %>
+		<h3 class="delivery-user-rating<%= @number_of_users %>"> <%= @user_rating %><span class="recent-user-rating-context">/10</span></h3>
 	<% else %>
-		<%= render 'layouts/user_initials_xsmall', friend: @user %>
-		<p class="delivery-best-guess-minimized<%= @number_of_users %>">predicted: </p>
+		<% if @source %>
+			<%= render 'layouts/user_initials_xsmall', friend: @user %>
+			<p class="delivery-best-guess-minimized<%= @number_of_users %>">predicted: </p>
+		<% end %>
 		<% @projected_rating = @user.user_drink_projected_rating(drink.id) %>
 		<% if !@projected_rating.nil? %>
-			<h1 class="delivery-best-guess"><%= @projected_rating %><span class="recent-user-rating-context">/10</span></h1>
+			<h3 class="delivery-best-guess"><%= @projected_rating %><span class="recent-user-rating-context">/10</span></h3>
 		<% else %>
-			<h1 class="delivery-best-guess"><%= drink.best_guess %><span class="recent-user-rating-context">/10</span></h1>
+			<h3 class="delivery-best-guess"><%= drink.best_guess %><span class="recent-user-rating-context">/10</span></h3>
 		<% end %>
 	<% end %>
 </div>

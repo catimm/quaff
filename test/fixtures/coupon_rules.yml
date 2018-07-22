@@ -1,0 +1,32 @@
+# == Schema Information
+#
+# Table name: coupon_rules
+#
+#  id                   :integer          not null, primary key
+#  coupon_id            :integer
+#  original_value_start :decimal(, )
+#  original_value_end   :decimal(, )
+#  add_value_percent    :float
+#  add_value_amount     :decimal(, )
+#  description          :text
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  coupon: one
+  original_value_start: 9.99
+  original_value_end: 9.99
+  add_value_percent: 1.5
+  add_value_amount: 9.99
+  description: MyText
+
+two:
+  coupon: two
+  original_value_start: 9.99
+  original_value_end: 9.99
+  add_value_percent: 1.5
+  add_value_amount: 9.99
+  description: MyText

@@ -1,56 +1,133 @@
+<% content_for :title do %>
+	<% if @drink.brewery.short_brewery_name.nil? %>
+  		<title><%= @drink.brewery.brewery_name %> <%= @drink.beer_name %> &#124; Knird</title>
+  	<% else %>
+  		<title><%= @drink.brewery.short_brewery_name %> <%= @drink.beer_name %> &#124; Knird</title>
+  	<% end %>
+<% end %>
+<% if !@meta_description.nil? %>
+	<% content_for :description do %>
+		<meta property="description" content="<%= @meta_description %>" />
+	<% end %>
+<% end %>
 <%= render 'layouts/header' %> 
 <div class="container drink-info-container">
 	<div class="row no-margin">
-		<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+		<div class="col-xs-12 col-md-offset-1 col-md-10 no-padding">
 			<div class="row no-margin">
-				<div class="col-xs-12 col-sm-8">
-					<%= render 'layouts/drink_info', drink: @drink %>
-				</div>
-				<div class="col-xs-12 col-sm-4">
-					<%= link_to new_drink_rating_path(@user.id, @drink.id), class: 'btn btn-default btn-success formButton' do %>
-						<i class="fa fa-thumbs-up"></i>
-						<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
-						rate drink
+				<% if user_signed_in? %>
+					<% if @user_rating >= 9 || @projected_rating >= 9 %>
+						<h1 class='drink-page-header'>We think you'd love this drink. Request it&mdash;fall in love!</h1>
+					<% elsif @user_rating >= 8 || @projected_rating >= 8 %>
+						<h1 class='drink-page-header'>We think you'd really like this drink. Request it&mdash;be amazed!</h1>
+					<% elsif @user_rating >= 7 || @projected_rating >= 7 %>
+						<h1 class='drink-page-header'>We think you'd like this drink. Request it&mdash;enjoy!</h1>
+					<% else %>
+						<h1 class='drink-page-header'>We don't think you'd appreciate this drink; but there's only one way to know...</h1>
 					<% end %>
-					<div id="<%=@drink.id %>">
-						<%= render 'wishlist_button', wishlist: @wishlist %>
-						<%= render 'cellar_button', cellar: @cellar %>
+				<% else %>
+					<h1 class='drink-page-header'>
+						<%= link_to "Log in", new_user_session_path %> or 
+						<%= link_to "Sign up", drink_profile_categories_path %> to see your personalized drink recommendation.
+					</h1>
+				<% end %>
+			</div>
+			<div class="row no-margin drink-page-drink-info-holder">
+				<div class="col-xs-12 col-sm-8">
+					<%= render 'layouts/drink_info_drink_page', drink: @drink %>
+				</div>
+				<% if user_signed_in? %>
+					<div class="col-xs-12 col-sm-4">
+						<%= link_to new_drink_rating_path(@user.id, @drink.id), class: 'btn btn-success formButton' do %>
+							<i class="fa fa-thumbs-up"></i>
+							<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
+							rate drink
+						<% end %>
+						<% if !@in_stock.blank? %>
+							<h3 class="in-stock-message">** Currently in stock! **</h3>
+						<% else %>
+							<h3 class="in-stock-message"></h3>
+						<% end %>
+						<div id="<%=@drink.id %>">
+							<%= render 'wishlist_button', wishlist: @wishlist %>
+						</div>
+					</div>
+				<% else %>
+					<div class="col-xs-12 col-sm-4">
+						<h5 class="log-in-message">Log in to rate or request this drink.</h5>
+						<% if !@in_stock.blank? %>
+							<h3 class="in-stock-message">** Currently in stock! **</h3>
+						<% else %>
+							<h3 class="in-stock-message"></h3>
+						<% end %>
+					</div>
+				<% end %>
+			</div>
+			<% if user_signed_in? %>
+				<hr />
+				<div class="row no-margin">
+					<div class="col-xs-12 col-sm-6">
+						<% if !@user_rating_for_this_drink.blank? %>
+							<div class="col-xs-9 no-padding">
+								<h5 class="tile-header user-rating-section">Your <span>average rating</span> for this drink: </h5>
+							</div>
+							<div class="col-xs-3 no-padding best-guess-drink-page text-left" id="best-guess-drink-page">
+								<%= render 'layouts/drink_user_rating_info', drink: @drink, source: true %>
+							</div>
+							<% @user_rating_for_this_drink.each do |rating| %>
+								<%= render 'drink_page_user_card', rating: rating %>
+							<% end %>
+						<% else %>
+							<div class="col-xs-9 col-md-8 no-padding">
+								<h5 class="tile-header user-projected-rating-section">You haven't rated this drink yet....<br>Our <span>project rating</span> for you is: </h5>
+							</div>
+							<div class="col-xs-3 no-padding best-guess-drink-page text-left" id="best-guess-drink-page">
+								<%= render 'layouts/drink_user_rating_info', drink: @drink, source: true %>
+							</div>
+						<% end %>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<h5 class="tile-header user-rating-section">Friend ratings</h5>
+						<% if !@user_friend_ratings.blank? %>
+							<% @user_friend_ratings.each do |rating| %>
+								<%= render 'drink_page_user_card', rating: rating %>
+							<% end %>
+						<% else %>
+							<div class="col-xs-12">
+								<h5>You don't have any friends who have rated this drink yet. Next round is on you!</h5>
+							</div>
+						<% end %>
+						<% if current_user.role_id == 1 %>
+							<hr>
+							<%= render 'admin_user_data' %>
+							<%= render 'admin_free_curation_data' %>
+						<% end %>
 					</div>
 				</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<div id="confirm_drink_cellar_move" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm cellar addition</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12 col-sm-8">
+				<h4>Add this drink to your cellar?</h4>
 			</div>
-			<hr class="visible-sm visible-md visible-lg" />
-			<div class="row no-margin">
-				<div class="col-xs-12 col-sm-6">
-					<% if !@user_rating_for_this_drink.blank? %>
-						<div class="col-xs-12">
-							<h5 class="tile-header user-rating-section">Your ratings</h5>
-						</div>
-						<% @user_rating_for_this_drink.each do |rating| %>
-							<%= render 'drink_page_user_card', rating: rating %>
-						<% end %>
-					<% else %>
-						<div class="col-xs-12">
-							<h5>You haven't rated this drink yet. Let us know what you think!</h5>
-						</div>
-					<% end %>
-				</div>
-				<div class="col-xs-12 col-sm-6">
-					<h5 class="tile-header user-rating-section">Friend ratings</h5>
-					<% if !@user_friend_ratings.blank? %>
-						<% @user_friend_ratings.each do |rating| %>
-							<%= render 'drink_page_user_card', rating: rating %>
-						<% end %>
-					<% else %>
-						<div class="col-xs-12">
-							<h5>You don't have any friends who have rated this drink yet. Next round is on you!</h5>
-						</div>
-					<% end %>
-					<% if current_user.role_id == 1 %>
-						<hr>
-						<%= render 'admin_user_data' %>
-					<% end %>
-				</div>
-			</div>
+		</div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "#", method: :post, :class => 'text-center btn btn-success add-drink-button', :id => 'move-to-cellar-button-drink-page', remote: true do %>
+				<i class="fa fa-chevron-circle-right"></i>
+				Add it!
+			<% end %>
+		</div>
+		<div class="col-sm-4 add-button-holder">
+			<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
 		</div>
 	</div>
 </div>

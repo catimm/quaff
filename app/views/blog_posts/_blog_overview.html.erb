@@ -1,0 +1,57 @@
+<div class="row blog-overview-holder-row">
+	<div class="col-xs-12 blog-overview-holder">
+		<div class="row blog-first-row">
+			<div class="col-xs-12 col-md-offset-1 col-md-10">
+				<h2 class="blog-overview-title"><%= post.title %></h2>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<% if !post.beer_id.nil? %>
+				<% @picture_title = post.beer.brewery_and_beer_name %>
+			<% end %>
+			<% if !post.brewers_image_url.blank? %>
+				<div class="col-xs-6 col-md-offset-1 col-md-5 no-padding-right">
+					<img class="img-responsive center-block" alt="<%= @picture_title %> - brewery image" src="<%= post.brewers_image_url %>">
+				</div>
+				<div class="col-xs-6 col-md-5 no-padding-left">
+					<img class="img-responsive center-block" alt="<%= @picture_title %> - poured" src="<%= post.image_url %>">
+				</div>
+			<% else %>
+				<div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6">
+					<img class="img-responsive center-block" alt="<%= @picture_title %> - poured" src="<%= post.image_url %>">
+				</div>
+			<% end %>
+		</div>
+		<div class="row no-margin">
+			<% if !post.brewers_image_url.blank? %>
+				<div class="col-xs-12 col-md-offset-1 col-md-10">
+					<h6 class="blog-published-time"><%= post.published_at.strftime("%B %-d, %Y") %></h6>
+				</div>
+			<% else %>
+				<div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6">
+					<h6 class="blog-published-time"><%= post.published_at.strftime("%B %-d, %Y") %></h6>
+				</div>
+			<% end %>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12 col-md-offset-1 col-md-10">
+				<h3 class="blog-overview-subtitle"><%= post.subtitle %></h3>
+				<%=raw post.content_opening %>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<% if user_signed_in? && current_user.role_id == 1 %>
+				<div class="col-md-2">
+					<%= link_to "Edit", edit_blog_post_path(post.id), class: 'btn btn-primary add-blog-post-button' %>
+				</div>
+				<div class="col-md-8">
+					<%= link_to "Read more", blog_path(post.slug), class: 'btn btn-default blog-post-details-button' %>
+				</div>
+			<% else %>
+				<div class="col-md-offset-2 col-md-8">
+					<%= link_to "Read more", blog_path(post.slug), class: 'btn btn-default blog-post-details-button' %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

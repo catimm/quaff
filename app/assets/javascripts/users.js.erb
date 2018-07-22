@@ -91,6 +91,27 @@ $(function () {
 			});
 	    }, 2000 );
 	});
+	
+	// search for email to see if unique
+	$(document).on("keyup", "#email_field", function() {
+		if ($(".user_email").hasClass('has-error')) {
+			$(".user_email").removeClass('has-error');
+			$(".user_email").children('span').remove();
+		}
+		if ($("#email-not-available").hasClass('show')) {
+			$("#email-not-available").removeClass('show').addClass('hidden');
+		}
+
+		delay(function(){
+			value = $('#email_field').val();
+			$.ajax({
+			  type: "POST",
+			  url: "/users/email_verification/",
+		 	 data: JSON.stringify(value),
+          	 contentType: 'application/json; charset=utf-8'
+			});
+	    }, 2000 );
+	});
 		
 	// update user address info
 	$(document).on("keyup", ".user-address-field", function() {

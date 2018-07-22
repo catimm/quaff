@@ -815,7 +815,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # set delivery fee
     if @user_subscription.subscription.deliveries_included == 0
-      if (1..4).include?(@user_subscription.subscription_id)
+      if (1..5).include?(@user_subscription.subscription_id)
         @delivery_fee = 6
       else
         @delivery_fee = Shipment.where(delivery_id: @next_customer_delivery.id).pluck(:estimated_shipping_fee).first
@@ -878,19 +878,19 @@ class Admin::RecommendationsController < ApplicationController
     @account = Account.find_by_id(@account_owner[0].account_id)
     
     # get account delivery address
-    @account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
-    if !@account_delivery_address.delivery_zone_id.blank?
-      @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
-      # get account tax
-      @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-      @multiply_by_tax = 1 + @account_tax
-    else
-      @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
-      # get account tax
-      @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-      @multiply_by_tax = 1 + @account_tax
-    end
-
+    #@account_delivery_address = UserAddress.where(account_id: @account_owner[0].account_id, current_delivery_location: true).first
+    #if !@account_delivery_address.delivery_zone_id.blank?
+    #  @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    #  # get account tax
+    #  @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #  @multiply_by_tax = 1 + @account_tax
+    #else
+    #  @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
+    #  # get account tax
+    #  @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #  @multiply_by_tax = 1 + @account_tax
+    #end
+    @multiply_by_tax = 1 + 0.101
     # find if account has wishlist items
     @account_wishlist_items = Wishlist.where(account_id: @account_owner[0].account_id)
 
@@ -1145,14 +1145,14 @@ class Admin::RecommendationsController < ApplicationController
     @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
     
     # get account tax
-    if !@account_delivery_address.delivery_zone_id.nil?
-      @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
-      @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-    else
-      @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
-      @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-    end
-    @current_sales_tax = @current_subtotal * @account_tax
+    #if !@account_delivery_address.delivery_zone_id.nil?
+    #  @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
+    #  @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #else
+    #  @account_delivery_zone_id = @account_delivery_address.shipping_zone_id
+    #  @account_tax = ShippingZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
+    #end
+    @current_sales_tax = @current_subtotal * 0.101 #@account_tax
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
 
@@ -1327,17 +1327,15 @@ class Admin::RecommendationsController < ApplicationController
   def admin_share_curation_with_customer
     # find delivery to share
     @free_curation = FreeCuration.find_by_id(params[:id])
-
-    # update status
-    @free_curation.update(status: "user review", share_admin_prep: true)
     
     # get customer info to notify them
-    @customers = User.where(account_id: @free_curation.account_id)
+    @customer = User.where(account_id: @free_curation.account_id, role_id: 4).first
     
     # send email to customer to notify them             
-    @customers.each do |customer|
-      UserMailer.customer_curation_notice(customer).deliver_now
-    end
+    UserMailer.customer_curation_notice(@customer).deliver_now
+    
+    # update status
+    @free_curation.update(status: "user review", share_admin_prep: true, shared_at: DateTime.now, emails_sent: 1)
     
     # redirect back to recommendation page                  
     redirect_to customer_curation_path(@free_curation.account_id, @free_curation.id)  

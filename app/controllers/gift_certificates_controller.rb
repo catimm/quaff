@@ -2,7 +2,8 @@ class GiftCertificatesController < ApplicationController
   require "stripe"
   require "coupon_code"
   include GiftCertificateRedeem
-
+  include CouponCodeValidate
+   
   def success
   end
 
@@ -15,7 +16,11 @@ class GiftCertificatesController < ApplicationController
 
     if user_signed_in?
       @user_email = current_user.email
-      @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
+      if !current_user.first_name.nil?
+        @gift_certificate.giver_name = current_user.first_name + " " + current_user.last_name
+      else
+        @gift_certificate.giver_name = "Your friend"
+      end
       @gift_certificate.giver_email = current_user.email
     else
       @user_email = ""
@@ -73,11 +78,15 @@ class GiftCertificatesController < ApplicationController
           redirect_to gift_certificates_index_path()
       end
   end
-  
+
   # POST /gift_certificates
   # POST /gift_certificates.json
   def create
     @gift_certificate = GiftCertificate.new(gift_certificate_params)
+    promotion_code = params[:coupon_code].strip.upcase
+    if promotion_code != ""
+      @promotion_code_validation_result = validate_coupon(promotion_code)
+    end
 
     if !@gift_certificate.valid?
         if @gift_certificate.giver_name.nil?
@@ -91,6 +100,10 @@ class GiftCertificatesController < ApplicationController
         elsif @gift_certificate.amount.nil?
           flash[:failure] = "Please choose an amount"
         end
+        redirect_to gift_certificates_new_path()
+        return
+    elsif @promotion_code_validation_result != nil && @promotion_code_validation_result[:is_valid] == false
+        flash[:failure] = @promotion_code_validation_result[:error_message]
         redirect_to gift_certificates_new_path()
         return
     else
@@ -110,6 +123,26 @@ class GiftCertificatesController < ApplicationController
   
       @gift_certificate.redeem_code = coupon_code
       @gift_certificate.save
+
+      # create an associated promotion gift certificate for the current user
+      if @promotion_code_validation_result != nil && @promotion_code_validation_result[:is_valid] == true
+        promotion_amount = calculate_coupon_amount(@gift_certificate.amount, @promotion_code_validation_result[:coupon])
+        if promotion_amount > 0
+            @additional_gift_certificate = GiftCertificate.new(purchase_completed: false,
+                                                              redeem_code: generate_unique_coupon_code(),
+                                                              giver_name: @gift_certificate.giver_name,
+                                                              giver_email: @gift_certificate.giver_email,
+                                                              receiver_name: @gift_certificate.giver_name,
+                                                              receiver_email: @gift_certificate.giver_email,
+                                                              amount: promotion_amount
+                                                              )
+            @additional_gift_certificate.save
+
+            @gift_certificate_promotion = GiftCertificatePromotion.new(gift_certificate_id: @gift_certificate.id,
+                                                                        promotion_gift_certificate_id: @additional_gift_certificate.id)
+            @gift_certificate_promotion.save
+        end
+      end
       
       # check for stripe customer number
       if user_signed_in?
@@ -164,6 +197,7 @@ class GiftCertificatesController < ApplicationController
   end
 
   private
+  
     def generate_unique_coupon_code
         # try 10 times to generate a unique code and quit if unsuccessful
         for i in 0..10
@@ -183,6 +217,6 @@ class GiftCertificatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def gift_certificate_params
-      params.require(:gift_certificate).permit(:giver_name, :giver_email, :receiver_name, :receiver_email, :amount, :redeem_code)
+      params.require(:gift_certificate).permit(:giver_name, :giver_email, :receiver_name, :receiver_email, :amount, :redeem_code, :coupon_code)
     end
 end

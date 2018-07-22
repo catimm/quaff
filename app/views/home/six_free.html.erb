@@ -1,0 +1,60 @@
+<%= render 'layouts/header_amplify_summer' %> 
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12 col-md-offset-2 col-md-8">
+			<h3 class="index-section-header plan-section six-free-promo-header">Kick the tires with free deliveries</h3> 
+			<h4 class="special-offer-subheader">
+				You'll probably realize how great the service is after 2 - 3 deliveries....</br>But we like you, so <span>take 
+				6**</span> on us!
+			</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10 text-center">
+			<h3 class="six-free-offer-desc">
+				Sign up for a delivery plan and enter the code <span>6free</span> in the Special Code field.
+			</h3>
+		</div>
+	</div>
+	<div class="row CTA-button-row">
+		<div class="col-xs-12 col-sm-offset-4 col-sm-4">
+			<%= link_to drink_profile_categories_path, 
+					:class => 'btn btn-primary special-offer-gift-certificate-button',
+					:id => 'sign_up_from_six_free' do %>
+				<i class="fa fa-pencil-square-o"></i>
+				Sign up for free!
+			<% end %>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 text-center">
+			<h5 class="learn-more-or">or</h5>
+		</div>
+	</div>
+	<div class="row six-free-more-info-row">
+		<div class="col-xs-12 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to root_path, 
+					:class => 'btn btn-success six-free-learn-more-button', 
+					:id => 'learn_more_from_six_free' do %>
+				<i class="fa fa-play">&nbsp;</i>
+				Learn more 
+			<% end %>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 text-center">
+			<h5 class="more-info-text"><span>** You have no obligation to buy from us and are free to cancel anytime.</span></h5>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>
+<script>
+	$(function () {
+		document.querySelector("#sign_up_from_six_free").addEventListener("click", function(e) {
+	        	ahoy.track("promo", {source: $(this).attr('id')});
+	        });
+	    document.querySelector("#learn_more_from_six_free").addEventListener("click", function(e) {
+	        	ahoy.track("promo", {source: $(this).attr('id')});
+	        });
+	 });
+</script>

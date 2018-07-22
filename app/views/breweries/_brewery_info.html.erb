@@ -1,0 +1,35 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<div class="col-xs-2 brewery-image-holder-universal">
+		<% if !@brewery.image.blank? %>
+			<img class="img-responsive center-block" alt="<%= @brewery.brewery_name %> logo" src="<%= @brewery.image %>">
+		<% else %>
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-xs-10 no-padding-right">
+		<div class="col-xs-12 no-padding">
+			<h1 class="brewery-header"><%= @brewery.brewery_name %></h1>
+		</div>
+		<div class="col-xs-12 no-padding">
+			<% if !@brewery.brewery_city.nil? && !@brewery.brewery_state_short.nil? %>
+				<h4 class="brewery-subheader"><%= @brewery.brewery_city %>, <%= @brewery.brewery_state_short %></h4>
+			<% end %>
+		</div>
+		<div class="col-xs-12 no-padding">
+			<% if !@brewery.founded.nil? %>
+				<h5 class="brewery-subheader">Founded in <%= @brewery.founded %></h5>
+			<% end %>
+		</div>	
+	</div>
+</div>
+<div class="row brewery-info-second-row">	
+	<div class="col-xs-12 why-statement">
+		<% if !@brewery.brewery_description.nil? %>
+			<h5 class="small-brewery-description" id="brewery-description"><%= @brewery.brewery_description %></h5>
+			<%= link_to "+ expand brewery description", "#", class: "show more-brewery-description", :id => "more-brewery-description" %>
+			<%= link_to "- less", "#", class: "hidden less-brewery-description", :id => "less-brewery-description" %>
+		<% end %>
+	</div>
+</div>

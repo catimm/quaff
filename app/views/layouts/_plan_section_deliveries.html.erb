@@ -18,6 +18,14 @@
 		</div>
 	</div>
 </div>
+<% if @six_free_promo == true %>
+	<div class="row no-margin">
+		<div class="col-xs-offset-1 col-xs-10 text-center">
+			<h4 class="promo-text">Lucky you! <span>You get 6 free deliveries</span> if you sign up for a delivery plan. Cheers!</h4>
+			<h5 class="promo-text-extra-note"><span>Note</span>: If you choose a "Prepaid Plan," <span>we still collect your credit card info</span> to ensure you're ready to receive deliveries.</h5>
+		</div>
+	</div>
+<% end %>
 <div class="row plan-details-row">
 	<div class="col-xs-12 col-sm-4">
 		<div class="homepage-plan-options">
@@ -45,19 +53,36 @@
 			<% if @page_source != "homepage" %>
 				<div class="row no-margin">
 					<div class="col-xs-12 no-padding">
-						<%= form_tag process_account_membership_getting_started_path("one_six"), class:"plan-button" do %>
-							<input name="plan_id" type="hidden" value="one_six"></input>
-				          	<script 
-				          		class="stripe-button" 
-				          		data-name="Knird" 
-				          		data-description="$30 for The Prepaid 6" 
-				          		data-currency="USD" 
-				          		data-label="Start The Prepaid 6 Plan"
-				          		data-email="<%= @user.email %>" 
-				          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
-				          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
-				          		src="https://checkout.stripe.com/checkout.js">
-				          	</script>
+						<% if @six_free_promo == true %>
+							<%= form_tag process_account_membership_getting_started_path("one_six"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_six"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="$0 for The Prepaid 6" 
+					          		data-currency="USD" 
+					          		data-label="Start The Prepaid 6 Plan"
+					          		data-email="<%= @user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						<% else %>
+							<%= form_tag process_account_membership_getting_started_path("one_six"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_six"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="$30 for The Prepaid 6" 
+					          		data-currency="USD" 
+					          		data-label="Start The Prepaid 6 Plan"
+					          		data-email="<%= @user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
 						<% end %>
 					</div>
 				</div>
@@ -71,24 +96,41 @@
 	</div>
 	<div class="col-xs-12 col-sm-4">
 		<div class="homepage-plan-options">
-			<%= render 'layouts/plan_delivery_twenty_five' %>
+			<%= render 'layouts/plan_delivery_fifteen' %>
 			<% if @page_source != "homepage" %>
 				<div class="row no-margin">
 					<div class="col-xs-12 no-padding">
-						<%= form_tag process_account_membership_getting_started_path("one_twenty_five"), class:"plan-button" do %>
-								<input name="plan_id" type="hidden" value="one_twenty_five"></input>
+						<% if @six_free_promo == true %>
+							<%= form_tag process_account_membership_getting_started_path("one_fifteen"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_fifteen"></input>
 					          	<script 
 					          		class="stripe-button" 
 					          		data-name="Knird" 
-					          		data-description="$100 for The Prepaid 25" 
+					          		data-description="$36 for The Prepaid 15" 
 					          		data-currency="USD" 
-					          		data-label="Start The Prepaid 25 Plan"
+					          		data-label="Start The Prepaid 15 Plan"
 					          		data-email="<%= @user.email %>" 
 					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
 					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
 					          		src="https://checkout.stripe.com/checkout.js">
 					          	</script>
 							<% end %>
+						<% else %>
+							<%= form_tag process_account_membership_getting_started_path("one_fifteen"), class:"plan-button" do %>
+								<input name="plan_id" type="hidden" value="one_fifteen"></input>
+					          	<script 
+					          		class="stripe-button" 
+					          		data-name="Knird" 
+					          		data-description="$60 for The Prepaid 15" 
+					          		data-currency="USD" 
+					          		data-label="Start The Prepaid 15 Plan"
+					          		data-email="<%= @user.email %>" 
+					          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+					          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+					          		src="https://checkout.stripe.com/checkout.js">
+					          	</script>
+							<% end %>
+						<% end %>
 					</div>
 				</div>
 			<% end %>

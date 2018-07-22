@@ -1,0 +1,33 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<div class="col-xs-2 brewery-image-holder-universal">
+		<% if !drink.brewery.image.blank? %>
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.brewery.image %>">
+		<% else %>
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		<% end %>
+	</div>
+	<div class="col-xs-10 no-padding drink-name-and-info-holder-universal">
+		<%= render 'layouts/drink_name_and_info', drink: drink %>	
+	</div>
+	<div class="drink-info-universal-show-more hidden">
+		<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+	</div>
+	<div class="drink-info-universal-show-less show">
+		<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+	</div>
+</div>
+<div class="row no-margin drink-info-universal-second-row show">	
+	<hr class="drink-info-separater">
+	<div class="col-xs-5 col-sm-6 no-padding">
+		<% if user_signed_in? %>
+			<%= render 'brewery_drink_user_rating_info', drink: drink %>
+		<% else %>
+			<h5 class="log-in-message-brewery-page">Log in to see a personalized drink rating.</h5>
+		<% end %>
+	</div>
+	<div class="col-xs-7 col-sm-6 cloud-descriptor-holder-universal no-padding">
+		<div class="cloud-descriptors" id="brewery_drink_<%= drink.id %>"></div>
+	</div>
+</div>

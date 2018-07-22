@@ -1,0 +1,74 @@
+<div class="row no-margin">
+	<div class="col-xs-12">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h2 class="blog-overview-title"><%= @blog_post.title %></h2>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<% if !@blog_post.beer_id.nil? %>
+				<% @picture_title = @blog_post.beer.brewery_and_beer_name %>
+			<% end %>
+			<% if !@blog_post.brewers_image_url.blank? %>
+				<div class="col-xs-6 no-padding-right">
+					<img class="img-responsive center-block" alt="<%= @picture_title %> - brewery image" src="<%= @blog_post.brewers_image_url %>">
+				</div>
+				<div class="col-xs-6 no-padding-left">
+					<img class="img-responsive center-block" alt="<%= @picture_title %> - poured" src="<%= @blog_post.image_url %>">
+				</div>
+			<% else %>
+				<div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6">
+					<img class="img-responsive center-block" alt="<%= @picture_title %> - poured" src="<%= @blog_post.image_url %>">
+				</div>
+			<% end %>
+		</div>
+		<div class="row no-margin">
+			<% if !@blog_post.brewers_image_url.blank? %>
+				<div class="col-xs-12 col-sm-4">
+					<h6 class="blog-published-time"><%= @blog_post.published_at.strftime("%B %-d, %Y") %></h6>
+				</div>
+				<% if !@in_stock.blank? %>
+					<div class="col-xs-4 col-sm-4 no-padding-left">
+						<h3 class="blog-in-stock-message">Now in stock!</h3>
+					</div>
+				<% end %>
+				<% if !@blog_post.beer.beer_rating_one.nil? %>
+					<div class="col-xs-4 col-sm-2 no-padding">
+						<div class="col-xs-4 no-padding">
+							<%= link_to @blog_post.untappd_url, target: :_blank do %>
+								<img class="img-responsive center-block blog-rating-icons" alt="untappd" src="https://s3-us-west-2.amazonaws.com/knird/blog/Untappd.png">
+							<% end %>
+						</div>
+						<div class="col-xs-6">
+							<p class="blog-beer-rating-text">rated</p>
+							<h5 class="blog-beer-rating"><%= @blog_post.beer.beer_rating_one %></h5>
+						</div>
+					</div>
+				<% end %>
+				<% if !@blog_post.beer.beer_rating_two.nil? %>
+					<div class="col-xs-4 col-sm-2 no-padding">
+						<div class="col-xs-4 no-padding">
+							<%= link_to @blog_post.ba_url, target: :_blank do %>
+								<img class="img-responsive center-block blog-rating-icons" alt="beer advocate" src="https://s3-us-west-2.amazonaws.com/knird/blog/beer_advocate.png">
+							<% end %>
+						</div>
+						<div class="col-xs-6">
+							<p class="blog-beer-rating-text">rated</p>
+							<h5 class="blog-beer-rating"><%= @blog_post.beer.beer_rating_two %></h5>
+						</div>
+					</div>
+				<% end %>
+			<% else %>
+				<div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6">
+					<h6 class="blog-published-time"><%= @blog_post.published_at.strftime("%B %-d, %Y") %></h6>
+				</div>
+			<% end %>
+		</div>
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h3 class="blog-overview-subtitle"><%= @blog_post.subtitle %></h3>
+				<%=raw @blog_post.content %>
+			</div>
+		</div>
+	</div>
+</div>

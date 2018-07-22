@@ -166,7 +166,7 @@ class UsersController < ApplicationController
       params[:user][:user_color] = @user_color
     end
     
-    if @user.update!(user_params)
+    if @user.update(user_params)
       #Rails.logger.debug("User updated")
       # Sign in the user by passing validation in case their password changed
       bypass_sign_in(@user)
@@ -230,7 +230,8 @@ class UsersController < ApplicationController
       # redirect to next step in signup process
       redirect_to @redirect_link
   else
-      #Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
+      #Rails.logger.debug("User NOT updated")
+      Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
       # set saved message
       flash[:error] = @user.errors.full_messages[0]
 
@@ -279,7 +280,7 @@ class UsersController < ApplicationController
       @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
       @next_plan = Subscription.find_by_id(@customer_plan.auto_renew_subscription_id)
     
-      if (1..4).include?(@customer_plan.subscription_id)
+      if (1..5).include?(@customer_plan.subscription_id)
         @plan_type = "delivery"
         @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
         @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first
@@ -325,27 +326,74 @@ class UsersController < ApplicationController
       #Rails.logger.debug("Card info: #{@customer_cards.data[0].brand.inspect}")
     else # user hasn't signed up for a plan yet
       @user_address = UserAddress.where(account_id: @user.account_id).first
-      if !@user_address.delivery_zone_id.nil?
-        @plan_type = "delivery"
-        @delivery_zone_info = DeliveryZone.find_by_id(@user_address.delivery_zone_id)
-        @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @delivery_zone_info.subscription_level_group)
-        @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
-        @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first
-      else
-        @plan_type = "shipment"
-        @shipping_zone_info = ShippingZone.find_by_id(@user_address.shipping_zone_id)
-        @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @shipping_zone_info.subscription_level_group)
-        @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 3).first
-        @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 9).first
-        @zone_plan_zero_shipment_cost_low = @zone_plan_zero.shipping_estimate_low
-        @zone_plan_zero_shipment_cost_high = @zone_plan_zero.shipping_estimate_high
-        @zone_plan_three_cost = @zone_plan_test.subscription_cost
-        @zone_plan_nine_cost = @zone_plan_committed.subscription_cost
-      end
+      if !@user_address.blank?
+        if !@user_address.delivery_zone_id.nil?
+          @plan_type = "delivery"
+          @delivery_zone_info = DeliveryZone.find_by_id(@user_address.delivery_zone_id)
+          @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @delivery_zone_info.subscription_level_group)
+          @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 6).first
+          @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 25).first
+        else
+          @plan_type = "shipment"
+          @shipping_zone_info = ShippingZone.find_by_id(@user_address.shipping_zone_id)
+          @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @shipping_zone_info.subscription_level_group)
+          @zone_plan_test = @all_plans_subscription_level_group.where(deliveries_included: 3).first
+          @zone_plan_committed = @all_plans_subscription_level_group.where(deliveries_included: 9).first
+          @zone_plan_zero_shipment_cost_low = @zone_plan_zero.shipping_estimate_low
+          @zone_plan_zero_shipment_cost_high = @zone_plan_zero.shipping_estimate_high
+          @zone_plan_three_cost = @zone_plan_test.subscription_cost
+          @zone_plan_nine_cost = @zone_plan_committed.subscription_cost
+        end
       @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
+      else
+        # set up form for user to provide delivery zip
+        @no_user_address = true
+        @new_user_address = UserAddress.new
+      end 
     end
 
   end # end of account_settings_membership action
+  
+  def add_delivery_zip # for free curation customers to see delivery options
+    @zip_code = params[:user_address][:zip]
+    @city = @zip_code.to_region(:city => true)
+    @state = @zip_code.to_region(:state => true)
+    
+    # first see if this address falls in Knird delivery zone
+      @knird_delivery_zone = DeliveryZone.where(zip_code: @zip_code, currently_available: true).first
+      # if there is no Knird delivery Zone, find Fed Ex zone
+      if !@knird_delivery_zone.blank?
+        UserAddress.create(account_id: current_user.account_id, 
+                            city: @city,
+                            state: @state,
+                            zip: @zip_code, 
+                            current_delivery_location: true,
+                            delivery_zone_id: @knird_delivery_zone.id)
+      else
+        # get Shipping Zone
+        @first_three = @zip_code[0...3]
+        @shipping_zone = ShippingZone.zone_match(@first_three).first
+        if !@shipping_zone.blank?
+          UserAddress.create(account_id: current_user.account_id, 
+                              city: @city,
+                              state: @state,
+                              zip: @zip_code, 
+                              current_delivery_location: true,
+                              shipping_zone_id: @shipping_zone.id)
+        else
+          UserAddress.create(account_id: current_user.account_id, 
+                              city: @city,
+                              state: @state,
+                              zip: @zip_code, 
+                              current_delivery_location: true,
+                              shipping_zone_id: 1000)
+        end
+      end
+      
+      # redirect user
+      redirect_to membership_plans_path(@zip_code)
+      
+  end # end of add_delivery_zip method
   
   def account_settings_profile
     # get user info
@@ -359,15 +407,20 @@ class UsersController < ApplicationController
     @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
     
     # set birthday to Date
-    @birthday =(@user.birthday).strftime("%Y-%m-%d")
-   
+    if !@user.birthday.nil?
+      @birthday = (@user.birthday).strftime("%Y-%m-%d")
+    end
+    
     # get additional info for page
     @user_updated = @user.updated_at
     if !@home_address.blank?
       @preference_updated = latest_date = [@user.updated_at, @home_address.updated_at].max
     else
       @preference_updated = @user.updated_at
-      @home_address = UserAddress.new
+      @user_address = UserAddress.where(account_id: @user.account_id) # again, for free curation customers
+      if !@user_address.blank?
+        @home_address = UserAddress.new
+      end
     end
     
     # set session to remember page arrived from 
@@ -653,6 +706,16 @@ class UsersController < ApplicationController
             gift_certificate.purchase_completed = true
             gift_certificate.save
             UserMailer.gift_certificate_created_email(gift_certificate).deliver_now
+
+            gift_certificate_promotions = GiftCertificatePromotion.where(gift_certificate_id: gift_certificate.id)
+            if gift_certificate_promotions != nil
+              for gift_certificate_promotion in gift_certificate_promotions
+                additional_gift_certificate = GiftCertificate.find_by id: gift_certificate_promotion.promotion_gift_certificate_id
+                additional_gift_certificate.purchase_completed = true
+                additional_gift_certificate.save
+                UserMailer.gift_certificate_promotion_created_email(gift_certificate, additional_gift_certificate).deliver_now
+              end
+            end
           end
         when 'charge.failed'
           #Rails.logger.debug("Failed charge event")
@@ -845,6 +908,47 @@ class UsersController < ApplicationController
     end
     
   end # end username_verification method
+  
+  def email_verification
+    # get special code
+    @email = params[:_json]
+    Rails.logger.debug("email param: #{@email.inspect}")
+    
+    # get current user info if it exists
+    if !current_user.nil?
+      @user = User.find_by_id(current_user.id)
+      #Rails.logger.debug("user username: #{@user.username.inspect}")
+    
+      # if user's email doesn't equal the one in the field check against DB
+      if @user.email != @email
+        @email_check = User.find_by_email(@email)
+        #Rails.logger.debug("username check: #{@username_check.inspect}")
+        
+        if !@email_check.blank?
+          @response = "no"
+          @message = @email + ' is already in use. Is this you?'
+        end
+        
+        respond_to do |format|
+          format.js
+        end
+      else
+        render :nothing => true
+      end
+    else
+      @email_check = User.find_by_email(@email)
+      
+      if !@email_check.blank?
+        @response = "no"
+        @message =  @email + ' is already in use. Is this you?'
+      end
+      
+      respond_to do |format|
+        format.js
+      end
+    end
+    
+  end # end email_verification method
   
   def add_new_card
     # get customer subscription info

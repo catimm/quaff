@@ -1,135 +1,159 @@
 <%= render 'layouts/header' %> 
 <%= render 'user_account_settings_common', current_section: "Plan" %>
-<% if !@customer_plan.blank? %>
-	<div class="row">
-		<div class="container" id="preference-view-choice">
-			<div class="row">
-				<div class="container">
-					<div class="col-xs-12">
-						<h3 class="recent-ratings-header">My plan</h3>
-					</div>
-					<% if @customer_plan.subscription_id == @zone_plan_zero.id && @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
-						<% if @plan_type == "delivery" %>
-							<div class="col-xs-12">
-								<h4 class="auto-renew-info">You're signed up for the <span><%= @current_plan_definition %> plan</span>.  Sign up for a different plan to start earning cash back!</h4>
-							</div>
-						<% else %>
-							<div class="col-xs-12">
-								<h4 class="auto-renew-info">You're signed up for the <span><%= @current_plan_definition %> plan</span>.  Sign up for a different plan to start saving on shipping!</h4>
-							</div>
-						<% end %>
-					<% elsif @customer_plan.auto_renew_subscription_id == @customer_plan.subscription_id %>
-						<div class="col-xs-12 col-sm-10">
-							<h4 class="auto-renew-info">Your <span><%= @current_plan_definition %> plan</span> will renew after <%= @remaining_deliveries %> more deliveries.</h4>
-						</div>
-					<% else %>
-						<div class="col-xs-12 col-sm-10">
-							<h4 class="auto-renew-info">Your <span><%= @current_plan_definition %> plan</span> will renew to <%= @next_plan_definition %> plan after <%= @remaining_deliveries %> more deliveries.</h4>
-						</div>
-					<% end %>
-					<% if @customer_plan.auto_renew_subscription_id != @zone_plan_zero.id %>
-						<div class="col-xs-12 col-sm-2">
-							<%= link_to "Turn off auto renew", "#", :class => "btn btn-default turn-off-renew-button",
-									data: {toggle: "modal", target: "#auto_renew_change"} %>
-						</div>
-					<% end %>
-				</div>
-			</div>
-			<div class="row">
-				<div class="container">
-					<% if @plan_type == "delivery" %>
-						<%= render 'user_account_plan_choice_delivery'%>
-					<% else %>
-						<%= render 'user_account_plan_choice_shipping'%>
-					<% end %>
-				</div>
-			</div>			
-		</div>
-	</div>
-	<div class="row">
-		<div class="container" id="preference-view-choice">
-			<%= render 'user_account_credit_card' %>
-		</div>
-	</div>
-<% else %>
-	<% if @user_delivery_preferences.beer_chosen || @user_delivery_preferences.cider_chosen %>
+<% if !@user_address.blank? %>
+	<% if !@customer_plan.blank? %>
 		<div class="row">
-			<div class="container">
+			<div class="container" id="preference-view-choice">
 				<div class="row">
 					<div class="container">
 						<div class="col-xs-12">
-							<h3 class="recent-ratings-header">My plan</h3>
+							<h3 class="recent-ratings-header">My delivery plan</h3>
 						</div>
-						<div class="col-xs-12">
-							<h4 class="auto-renew-info">
-								You haven't signed up for a delivery plan yet, but we're ready when you are!  
-								<%= link_to "Review our delivery options", membership_plans_path, :target => "_blank" %>.
-							</h4>
-						</div>	
+						<% if @customer_plan.subscription_id == @zone_plan_zero.id && @customer_plan.auto_renew_subscription_id == @zone_plan_zero.id %>
+							<% if @plan_type == "delivery" %>
+								<div class="col-xs-12">
+									<h4 class="auto-renew-info">You're signed up for the <span><%= @current_plan_definition %> plan</span>.  Sign up for a different plan to start earning cash back!</h4>
+								</div>
+							<% else %>
+								<div class="col-xs-12">
+									<h4 class="auto-renew-info">You're signed up for the <span><%= @current_plan_definition %> plan</span>.  Sign up for a different plan to start saving on shipping!</h4>
+								</div>
+							<% end %>
+						<% elsif @customer_plan.auto_renew_subscription_id == @customer_plan.subscription_id %>
+							<div class="col-xs-12 col-sm-10">
+								<h4 class="auto-renew-info">Your <span><%= @current_plan_definition %> plan</span> will renew after <%= @remaining_deliveries %> more deliveries.</h4>
+							</div>
+						<% else %>
+							<div class="col-xs-12 col-sm-10">
+								<h4 class="auto-renew-info">Your <span><%= @current_plan_definition %> plan</span> will renew to <%= @next_plan_definition %> plan after <%= @remaining_deliveries %> more deliveries.</h4>
+							</div>
+						<% end %>
+						<% if @customer_plan.auto_renew_subscription_id != @zone_plan_zero.id %>
+							<div class="col-xs-12 col-sm-2">
+								<%= link_to "Turn off auto renew", "#", :class => "btn btn-default turn-off-renew-button",
+										data: {toggle: "modal", target: "#auto_renew_change"} %>
+							</div>
+						<% end %>
 					</div>
 				</div>
-				<div class="row no-margin">
-					<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
-		         		<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-next-step-button" do %>
-		         			<i class="fa fa-play">&nbsp;</i>
-		         			Sign up for a delivery plan
-		         		<% end %>
-		         	</div>
+				<div class="row">
+					<div class="container">
+						<% if @plan_type == "delivery" %>
+							<%= render 'user_account_plan_choice_delivery'%>
+						<% else %>
+							<%= render 'user_account_plan_choice_shipping'%>
+						<% end %>
+					</div>
 				</div>			
+			</div>
+		</div>
+		<div class="row">
+			<div class="container" id="preference-view-choice">
+				<%= render 'user_account_credit_card' %>
 			</div>
 		</div>
 	<% else %>
-		<div class="row">
-			<div class="container">
-				<div class="row">
-					<div class="container">
-						<div class="col-xs-12">
-							<h4 class="auto-renew-info">Currently your only chosen category is wine, 
-														although you can change that in your 
-														<%= link_to "delivery settings", drink_categories_path %>.
-							</h4>
+		<% if @user_delivery_preferences.beer_chosen || @user_delivery_preferences.cider_chosen %>
+			<div class="row">
+				<div class="container">
+					<div class="row">
+						<div class="container">
+							<div class="col-xs-12">
+								<h3 class="recent-ratings-header">My plan</h3>
+							</div>
+							<div class="col-xs-12">
+								<h4 class="auto-renew-info">
+									You haven't signed up for a delivery plan yet, but we're ready when you are!  
+									<%= link_to "Review our delivery options", membership_plans_path, :target => "_blank" %>.
+								</h4>
+							</div>	
 						</div>
-						<div class="col-xs-12">
-							<h4 class="auto-renew-info">We will send you an email with a free initial curation as soon as we begin delivering wine.  Cheers!</h4>
-						</div>	
 					</div>
-				</div>			
+					<div class="row no-margin">
+						<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
+			         		<%= link_to edit_user_path("membership"), class: "btn btn-success signup-option-next-step-button" do %>
+			         			<i class="fa fa-play">&nbsp;</i>
+			         			Sign up for a delivery plan
+			         		<% end %>
+			         	</div>
+					</div>			
+				</div>
+			</div>
+		<% else %>
+			<div class="row">
+				<div class="container">
+					<div class="row">
+						<div class="container">
+							<div class="col-xs-12">
+								<h4 class="auto-renew-info">Currently your only chosen category is wine, 
+															although you can change that in your 
+															<%= link_to "delivery settings", drink_categories_path %>.
+								</h4>
+							</div>
+							<div class="col-xs-12">
+								<h4 class="auto-renew-info">We will send you an email with a free initial curation as soon as we begin delivering wine.  Cheers!</h4>
+							</div>	
+						</div>
+					</div>			
+				</div>
+			</div>
+		<% end %>
+	<% end %>
+	<% if !@customer_plan.blank? %>
+		<div id="auto_renew_change" class="modal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Confirm your auto renew settings change</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row no-margin">
+					<div class="col-xs-12">
+						<% if !@customer_plan.auto_renew_subscription_id.nil? %>
+							<% if  @plan_type == "delivery" %>
+								<h4 class="auto-confirm-confirmation-text">
+									Turning off auto renew will convert you to The Ad Hoc plan when your current 
+									plan ends, so you won't be charged unless you place an order.
+								</h4>
+							<% else %>
+								<h4 class="auto-confirm-confirmation-text">
+									Turning off auto renew will convert you to The Ad Hoc plan when your current 
+									plan ends, so you won't be charged unless you place an order.
+								</h4>
+							<% end %>
+							<h4 class="auto-confirm-confirmation-text">
+								Are you sure you want to <span class="turn-off-renew">turn off auto renew</span>?
+							</h4>
+						<% else %>
+							<h4 class="auto-confirm-confirmation-text">Are you sure you want to <span class="turn-on-renew">turn on auto renew</span> for your <%= @customer_plan.subscription.subscription_name %> plan?</h4>
+						<% end %>
+					</div>
+				</div>
+				<div class="row no-margin">
+					<div class="col-sm-offset-2 col-sm-4 remove-button-holder">
+						<%= link_to "Yep, positive", plan_rewewal_off_user_path, :class => 'change-auto-renew-confirmation text-center btn btn-danger remove-drink-button' %>
+					</div>
+					<div class="col-sm-4 remove-button-holder">
+						<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+					</div>
+				</div>
 			</div>
 		</div>
 	<% end %>
-<% end %>
-<% if !@customer_plan.blank? %>
-	<div id="auto_renew_change" class="modal">
+	<div id="change_auto_renew_plan_to_<%= @zone_plan_zero.subscription_level %>" class="modal">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3>Confirm your auto renew settings change</h3>
+			<h3>Confirm your auto renew plan change</h3>
 		</div>
 		<div class="modal-body">
 			<div class="row no-margin">
 				<div class="col-xs-12">
-					<% if !@customer_plan.auto_renew_subscription_id.nil? %>
-						<% if  @plan_type == "delivery" %>
-							<h4 class="auto-confirm-confirmation-text">
-								Turning off auto renew will convert you to The Ad Hoc plan when your current 
-								plan ends, so you won't be charged unless you place an order.
-							</h4>
-						<% else %>
-							<h4 class="auto-confirm-confirmation-text">
-								Turning off auto renew will convert you to The Ad Hoc plan when your current 
-								plan ends, so you won't be charged unless you place an order.
-							</h4>
-						<% end %>
-						<h4 class="auto-confirm-confirmation-text">
-							Are you sure you want to <span class="turn-off-renew">turn off auto renew</span>?
-						</h4>
-					<% else %>
-						<h4 class="auto-confirm-confirmation-text">Are you sure you want to <span class="turn-on-renew">turn on auto renew</span> for your <%= @customer_plan.subscription.subscription_name %> plan?</h4>
-					<% end %>
+					<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew to the <%= @zone_plan_zero.subscription_name %> plan?</h4>
 				</div>
 			</div>
 			<div class="row no-margin">
-				<div class="col-sm-offset-2 col-sm-4 remove-button-holder">
-					<%= link_to "Yep, positive", plan_rewewal_off_user_path, :class => 'change-auto-renew-confirmation text-center btn btn-danger remove-drink-button' %>
+				<div class="col-sm-2"></div>
+				<div class="col-sm-4 remove-button-holder">
+					<%= link_to "Yep, let's do it", process_user_plan_change_path(@zone_plan_zero.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>		
 				</div>
 				<div class="col-sm-4 remove-button-holder">
 					<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
@@ -137,123 +161,123 @@
 			</div>
 		</div>
 	</div>
+	<div id="change_auto_renew_plan_to_<%= @zone_plan_test.subscription_level %>" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Confirm your auto renew plan change</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew to the <%= @zone_plan_test.subscription_name %> plan?</h4>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-4 remove-button-holder">
+					<%= link_to "Yep, let's do it", process_user_plan_change_path(@zone_plan_test.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>	
+				</div>
+				<div class="col-sm-4 remove-button-holder">
+					<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="change_auto_renew_plan_to_<%= @zone_plan_committed.subscription_level %>" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Confirm your auto renew plan change</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew to the <%= @zone_plan_committed.subscription_name %> plan?</h4>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-4 remove-button-holder">
+					<%= link_to "Yep, let's do it", process_user_plan_change_path(@zone_plan_committed.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>		
+				</div>
+				<div class="col-sm-4 remove-button-holder">
+					<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="start_plan_<%= @zone_plan_test.subscription_level %>" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Confirm your plan change</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4 class="auto-confirm-confirmation-text">
+						Are you sure you want to start the <%= @zone_plan_test.subscription_name %> plan? 
+					</h4>
+					<h4 class="auto-confirm-confirmation-text">
+						This will charge your card <%= number_to_currency(@zone_plan_test.subscription_cost, precision: 0) %> and then take you to update your delivery settings.
+					</h4>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-6 remove-button-holder">
+					<%= link_to "Yep, charge $#{@zone_plan_test.subscription_cost.round}", start_new_plan_path(@zone_plan_test.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>	
+				</div>
+				<div class="col-sm-6 remove-button-holder">
+					<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="start_plan_<%= @zone_plan_committed.subscription_level %>" class="modal">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3>Confirm your plan change</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4 class="auto-confirm-confirmation-text">
+						Are you sure you want to start the <%= @zone_plan_committed.subscription_name %> plan? 
+					</h4>
+					<h4 class="auto-confirm-confirmation-text">
+						This will charge your card <%= number_to_currency(@zone_plan_committed.subscription_cost, precision: 0) %> and then take you to update your delivery settings.
+					</h4>
+				</div>
+			</div>
+			<div class="row no-margin">
+				<div class="col-sm-6 remove-button-holder">
+					<%= link_to "Yep, charge $#{@zone_plan_committed.subscription_cost.round}", start_new_plan_path(@zone_plan_committed.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>		
+				</div>
+				<div class="col-sm-6 remove-button-holder">
+					<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+				</div>
+			</div>
+		</div>
+	</div>
+<% else %>
+	<div class="row">
+		<div class="container" id="preference-view-choice">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4>Please add a delivery zip code to your Profile to see the delivery plans are available to you.</h4>
+				</div>
+				<div class="col-xs-12 col-sm-6">
+					<%= simple_form_for @new_user_address, :url => add_delivery_zip_path, :html => { :class => 'form-horizontal' } do |f| %>
+						<div class="form-group">
+							<div class="col-xs-offset-1 col-xs-10 col-sm-6">
+								<%= f.input :zip, input_html: { class: "form-control add-delivery-zip", id: "zip_code" }, placeholder: "Delivery zip code", label: false, required: true %>
+							</div>
+							<div class="col-xs-12 col-sm-5 text-center">
+								<%= f.submit "Submit", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+							</div>
+						</div>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>	
 <% end %>
-<div id="change_auto_renew_plan_to_<%= @zone_plan_zero.subscription_level %>" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your auto renew plan change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew to the <%= @zone_plan_zero.subscription_name %> plan?</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Yep, let's do it", process_user_plan_change_path(@zone_plan_zero.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>		
-			</div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="change_auto_renew_plan_to_<%= @zone_plan_test.subscription_level %>" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your auto renew plan change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew to the <%= @zone_plan_test.subscription_name %> plan?</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Yep, let's do it", process_user_plan_change_path(@zone_plan_test.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>	
-			</div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="change_auto_renew_plan_to_<%= @zone_plan_committed.subscription_level %>" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your auto renew plan change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">Are you sure you want to change your auto renew to the <%= @zone_plan_committed.subscription_name %> plan?</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-2"></div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Yep, let's do it", process_user_plan_change_path(@zone_plan_committed.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>		
-			</div>
-			<div class="col-sm-4 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="start_plan_<%= @zone_plan_test.subscription_level %>" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your plan change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">
-					Are you sure you want to start the <%= @zone_plan_test.subscription_name %> plan? 
-				</h4>
-				<h4 class="auto-confirm-confirmation-text">
-					This will charge your card <%= number_to_currency(@zone_plan_test.subscription_cost, precision: 0) %> and then take you to update your delivery settings.
-				</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-6 remove-button-holder">
-				<%= link_to "Yep, charge $#{@zone_plan_test.subscription_cost.round}", start_new_plan_path(@zone_plan_test.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>	
-			</div>
-			<div class="col-sm-6 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="start_plan_<%= @zone_plan_committed.subscription_level %>" class="modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3>Confirm your plan change</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row no-margin">
-			<div class="col-xs-12">
-				<h4 class="auto-confirm-confirmation-text">
-					Are you sure you want to start the <%= @zone_plan_committed.subscription_name %> plan? 
-				</h4>
-				<h4 class="auto-confirm-confirmation-text">
-					This will charge your card <%= number_to_currency(@zone_plan_committed.subscription_cost, precision: 0) %> and then take you to update your delivery settings.
-				</h4>
-			</div>
-		</div>
-		<div class="row no-margin">
-			<div class="col-sm-6 remove-button-holder">
-				<%= link_to "Yep, charge $#{@zone_plan_committed.subscription_cost.round}", start_new_plan_path(@zone_plan_committed.subscription_level), :class => 'change-auto-renew-confirmation text-center btn btn-success remove-drink-button', method: :post %>		
-			</div>
-			<div class="col-sm-6 remove-button-holder">
-				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
-			</div>
-		</div>
-	</div>
-</div>
 <%= render 'layouts/footer' %>

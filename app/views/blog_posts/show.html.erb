@@ -1,0 +1,38 @@
+<% content_for :title do %>
+  	<title><%= @blog_post.title %> &#124; Knird</title>
+<% end %>
+<% content_for :description do %>
+	<meta property="description" content="A drink review of <%= @blog_post.beer.brewery_and_beer_name %>" />
+<% end %>
+<%= render 'layouts/header' %> 
+<div class="row no-margin first-row">
+	<div class="container first-row-container">
+		<div class="col-xs-12 col-sm-12">
+			<h1 class="section-header">Blog: Drink Reviews</h1>
+		</div>
+		<div class="col-xs-12">
+			<%= link_to "Recent posts", blog_posts_path, class: "drink-preference-view-option current" %>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-9">
+			<%= render 'blog_template' %>
+		</div>
+		<div class="col-xs-12 col-sm-3">
+			<h4 class="follow-us-text">FOLLOW US</h4>
+			<hr />
+			<%= link_to "https://www.facebook.com/drinkknird/", class: 'social-media-follow facebook-follow', :target => "_blank" do %>
+				<i class="fa fa-facebook"></i>
+			<% end %>
+			<%= link_to "https://twitter.com/drink_knird", class: 'social-media-follow twitter-follow', :target => "_blank" do %>
+				<i class="fa fa-twitter"></i>
+			<% end %>
+			<%= link_to "https://www.instagram.com/drinkknird/", class: 'social-media-follow instagram-follow', :target => "_blank" do %>
+				<i class="fa fa-instagram"></i>
+			<% end %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

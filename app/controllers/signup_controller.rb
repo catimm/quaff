@@ -23,9 +23,9 @@ class SignupController < ApplicationController
   def process_free_curation_signup
     # get current user info
     @user = User.find_by_id(current_user.id)
-    @zip_code = params[:user][:zip]
-    @city = @zip_code.to_region(:city => true)
-    @state = @zip_code.to_region(:state => true)
+    #@zip_code = params[:user][:zip]
+    #@city = @zip_code.to_region(:city => true)
+    #@state = @zip_code.to_region(:state => true)
     
     if @user.update(free_curation_params)
       bypass_sign_in @user
@@ -47,42 +47,42 @@ class SignupController < ApplicationController
       @next_available_code.update(user_id: @user.id)
     
       # first see if this address falls in Knird delivery zone
-      @knird_delivery_zone = DeliveryZone.where(zip_code: @zip_code, currently_available: true).first
+      #@knird_delivery_zone = DeliveryZone.where(zip_code: @zip_code, currently_available: true).first
       # if there is no Knird delivery Zone, find Fed Ex zone
-      if !@knird_delivery_zone.blank?
-        UserAddress.create(account_id: @user.account_id, 
-                            city: @city,
-                            state: @state,
-                            zip: @zip_code, 
-                            current_delivery_location: true,
-                            delivery_zone_id: @knird_delivery_zone.id)
-      else
+      #if !@knird_delivery_zone.blank?
+      #  UserAddress.create(account_id: @user.account_id, 
+      #                      city: @city,
+      #                      state: @state,
+      #                      zip: @zip_code, 
+      #                      current_delivery_location: true,
+      #                      delivery_zone_id: @knird_delivery_zone.id)
+      #else
         # get Shipping Zone
-        @first_three = @zip_code[0...3]
-        @shipping_zone = ShippingZone.zone_match(@first_three).first
-        if !@shipping_zone.blank?
-          UserAddress.create(account_id: @user.account_id, 
-                              city: @city,
-                              state: @state,
-                              zip: @zip_code, 
-                              current_delivery_location: true,
-                              shipping_zone_id: @shipping_zone.id)
-        else
-          UserAddress.create(account_id: @user.account_id, 
-                              city: @city,
-                              state: @state,
-                              zip: @zip_code, 
-                              current_delivery_location: true,
-                              shipping_zone_id: 1000)
-        end
-      end
+      #  @first_three = @zip_code[0...3]
+      #  @shipping_zone = ShippingZone.zone_match(@first_three).first
+      #  if !@shipping_zone.blank?
+      #    UserAddress.create(account_id: @user.account_id, 
+      #                        city: @city,
+      #                        state: @state,
+      #                        zip: @zip_code, 
+      #                        current_delivery_location: true,
+      #                        shipping_zone_id: @shipping_zone.id)
+      #  else
+      #    UserAddress.create(account_id: @user.account_id, 
+      #                        city: @city,
+      #                        state: @state,
+      #                        zip: @zip_code, 
+      #                        current_delivery_location: true,
+      #                        shipping_zone_id: 1000)
+      #  end
+      #end
       
       # redirect to next step in signup process
       redirect_to confirm_free_curation_signup_path
     else
       #Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
       # set saved message
-      flash[:error] = @user.errors.full_messages[0]
+      flash[:error] = "Looks like that email is already registered. Try another!"
 
       # redirect back to user account page
       redirect_to choose_signup_path
@@ -121,6 +121,19 @@ class SignupController < ApplicationController
         
     # get User info 
     @user = current_user
+    
+    # determine if user is getting the 6 free deliveries promo
+    if !@user.special_code.nil?
+      if @user.special_code.downcase == "6free"
+        @six_free_promo = true
+      else
+        @referrer = User.where(email: @user.special_code)
+        if !@referrer.blank?
+          @six_free_promo = true
+        end
+      end
+    end
+    
     # update getting started step
     if @user.getting_started_step < 9
       @user.update_attribute(:getting_started_step, 9)
@@ -128,7 +141,7 @@ class SignupController < ApplicationController
     # check if user subscription exists
     @user_subscription = UserSubscription.where(user_id: @user.id, currently_active: [true, nil], total_deliveries: 0).first
     if !@user_subscription.blank?
-      if (1..4).include?(@user_subscription.subscription_id)
+      if (1..5).include?(@user_subscription.subscription_id)
         @plan_type = "delivery"
       else
         @related_plans = @subscriptions.where(subscription_level_group: @user_subscription.subscription.subscription_level_group)
@@ -176,6 +189,18 @@ class SignupController < ApplicationController
     #get user info
     @user = current_user
     
+    # determine if user is getting the 6 free deliveries promo
+    if !@user.special_code.nil?
+      if @user.special_code.downcase == "6free"
+        @six_free_promo = true
+      else
+        @referrer = User.find_by_email(@user.special_code)
+        if !@referrer.blank?
+          @six_free_promo = true
+        end
+      end
+    end
+    
     # get data
     @plan_name = params[:id]
     
@@ -185,7 +210,16 @@ class SignupController < ApplicationController
     
     if @subscription_info.deliveries_included != 0
       # create subscription info
-      @total_price = (@subscription_info.subscription_cost * 100).floor
+      if @six_free_promo == true
+        if @plan_name == "one_six"
+          @total_price = 0
+        elsif @plan_name == "one_fifteen"
+          @total_price = (36 * 100).floor
+        end
+      else
+        @total_price = (@subscription_info.subscription_cost * 100).floor
+      end
+      
       @charge_description = @subscription_info.subscription_name
       
       # check if user already has a subscription row
@@ -207,23 +241,27 @@ class SignupController < ApplicationController
                 :source => params[:stripeToken],
                 :email => @user.email
               )
-        # charge the customer for their subscription 
-        Stripe::Charge.create(
-          :amount => @total_price, # in cents
-          :currency => "usd",
-          :customer => customer.id,
-          :description => @charge_description
-        ) 
+        if @total_price != 0
+          # charge the customer for their subscription 
+          Stripe::Charge.create(
+            :amount => @total_price, # in cents
+            :currency => "usd",
+            :customer => customer.id,
+            :description => @charge_description
+          )
+        end 
       else
         # retrieve customer Stripe info
         customer = Stripe::Customer.retrieve(@current_customer.stripe_customer_number) 
         # charge the customer for subscription 
-        Stripe::Charge.create(
-          :amount => @total_price, # in cents
-          :currency => "usd",
-          :customer => @current_customer.stripe_customer_number,
-          :description => @charge_description
-        )
+        if @total_price != 0
+          Stripe::Charge.create(
+            :amount => @total_price, # in cents
+            :currency => "usd",
+            :customer => @current_customer.stripe_customer_number,
+            :description => @charge_description
+          )
+        end
 
       end
       
@@ -436,6 +474,7 @@ class SignupController < ApplicationController
     
     # get delivery preferences
     @estimated_delivery_price = 0
+    @total_low_estimate = 0
     #Rails.logger.debug("Delivery estimate 1: #{@estimated_delivery_price.inspect}")
     @total_categories = 0
     @delivery_preferences = DeliveryPreference.where(user_id: @user.id).first
@@ -462,6 +501,12 @@ class SignupController < ApplicationController
           @beer_cost_estimate_low = (((@beer_delivery_estimate.to_f) *0.9).floor / 5).round * 5
           @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
         end
+        # set low estimate total
+        if @total_low_estimate != 0
+          @total_low_estimate = @beer_cost_estimate_low + @total_low_estimate 
+        else
+          @total_low_estimate = @beer_cost_estimate_low
+        end
       end
       if @delivery_preferences.cider_chosen
         # get user inputs
@@ -485,6 +530,12 @@ class SignupController < ApplicationController
           end
           @cider_cost_estimate_low = (((@cider_delivery_estimate.to_f) *0.9).floor / 5).round * 5
           @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
+        end
+        # set low estimate total
+        if @total_low_estimate != 0
+          @total_low_estimate =  @cider_cost_estimate_low + @total_low_estimate
+        else
+          @total_low_estimate =  @cider_cost_estimate_low
         end
       end
     
@@ -523,6 +574,9 @@ class SignupController < ApplicationController
     # get user info
     @user = current_user
     
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+
     # get selected frequency
     @delivery_frequency = params[:id].to_i
     
@@ -533,6 +587,7 @@ class SignupController < ApplicationController
     
     # get delivery preferences
     @total_categories = 0
+    @total_low_estimate = 0
     # get Delivery Preferences
     @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
     if @delivery_preferences.beer_chosen
@@ -547,6 +602,8 @@ class SignupController < ApplicationController
       @beer_cost_estimate_high = ((((@beer_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
       # increment totals
       @total_categories += 1
+      # set low estimate total
+      @total_low_estimate =  @beer_cost_estimate_low + @total_low_estimate
     end
     if @delivery_preferences.cider_chosen
       @user_cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
@@ -560,6 +617,8 @@ class SignupController < ApplicationController
       @cider_cost_estimate_high = ((((@cider_delivery_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
       # increment totals
       @total_categories += 1
+      # set low estimate total
+      @total_low_estimate =  @cider_cost_estimate_low + @total_low_estimate
     end
     
     # set class for estimate holder, depending on number of categories chosen
@@ -921,7 +980,7 @@ class SignupController < ApplicationController
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     # set subscription type
-    if (1..4).include?(@user_subscription.subscription_id)
+    if (1..5).include?(@user_subscription.subscription_id)
       @plan_type = "delivery"
     else  
       @plan_type = "shipping"

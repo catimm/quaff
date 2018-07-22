@@ -506,7 +506,7 @@ task :apply_pending_credits => :environment do
     include DateHelper
     start_date = current_quarter_start DateTime.now
 
-    @pending_credit_account_ids = PendingCredit.where(is_credited: false).where('created_at < ?', start_date).pluck("DISTINCT account_id")
+    @pending_credit_account_ids = PendingCredit.where(is_credited: false).pluck("DISTINCT account_id")
     @pending_credit_account_ids.each do |account_id|
         @total_pending_credits = PendingCredit.where(is_credited: false, account_id: account_id).where('created_at < ?', start_date).sum(:transaction_credit)
         
@@ -521,7 +521,7 @@ task :apply_pending_credits => :environment do
         
         # add credit with the new total and reduced amount
         Credit.create(total_credit: (@total_pending_credits + @previous_credit_total), transaction_credit: @total_pending_credits, transaction_type: "CASHBACK_PURCHASES_RATINGS", account_id: account_id)
-        PendingCredit.where(is_credited: false, account_id: account_id).where('created_at < ?', start_date).update_all(is_credited: true)
+        PendingCredit.where(is_credited: false, account_id: account_id).update_all(is_credited: true)
     end
 
 end # end of apply_pending_credits
@@ -1196,6 +1196,14 @@ task :end_user_review_period => :environment do
     @tomorrow_deliveries.each do |delivery|
       # now change the delivery status for the user
       delivery.update(status: "in progress")
+      # add credit for customers with appropriate plan and > $40 subtotal for delivery
+      # get account subscription
+      @customer_subscription = UserSubscription.where(account_id: delivery.account_id, currently_active: true).first
+      if @customer_subscription.subscription.deliveries_included == 25 || @customer_subscription.subscription.deliveries_included == 15
+        if delivery.subtotal > 40
+          PendingCredit.create(account_id: delivery.account_id, transaction_credit: 4, transaction_type: "DELIVERY_CREDIT", is_credited: false, delivery_id: delivery.id)
+        end
+      end
     end
     
   end # end of looping through each delivery in review
@@ -1446,3 +1454,58 @@ task :top_style_descriptors => :environment do
     end # end of loop through styles
     
 end # end top_style_descriptors
+
+desc "Clean Brewery and Beer tables for slugging"
+task :clean_db => :environment do
+  Beer.all.each do |beer|
+    if beer.brewery.nil?
+      beer.destroy
+    end
+  end
+  UserBeerRating.all.each do |beer|
+    if beer.beer.nil?
+      beer.destroy
+    end
+  end
+  DistiInventory.all.each do |beer|
+    if beer.beer.nil?
+      beer.destroy
+    end
+  end
+end # end clean_db
+
+desc "Slug Brewery and Beer tables"
+task :slug_db => :environment do
+  Brewery.find_each(&:save)
+  Beer.find_each(&:save)
+    
+end # end slug_db
+
+desc "Send reminder emails for free curations"
+task :free_curation_reminders => :environment do
+  @reminders = FreeCuration.where(status: "user review")
+  
+  @reminders.each do |reminder|
+    @sent_days_ago = (Time.now - reminder.sent_at).to_i
+    if reminder.emails_sent == 1 && @sent_days_ago >= 3
+      # get customer info
+      @customer = User.where(account_id: reminder.account_id, role_id: 4).first
+      # send email to customer to remind them             
+      UserMailer.customer_curation_reminder(@customer, @sent_days_ago).deliver_now
+    elsif reminder.emails_sent == 2 && @sent_days_ago >= 7
+      # get customer info
+      @customer = User.where(account_id: reminder.account_id, role_id: 4).first
+      # send email to customer to remind them             
+      UserMailer.customer_curation_reminder(@customer, @sent_days_ago).deliver_now
+    elsif reminder.emails_sent == 3 && @sent_days_ago >= 14
+      # get customer info
+      @customer = User.where(account_id: reminder.account_id, role_id: 4).first
+      # send email to customer to remind them             
+      UserMailer.customer_curation_reminder(@customer, @sent_days_ago).deliver_now
+    end
+    
+    # increment emails sent in FreeCuration
+    reminder.increment!(:emails_sent, 1)
+  end
+    
+end # end free_curation_reminders

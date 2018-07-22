@@ -1,0 +1,50 @@
+<div class="col-xs-12 drink-name-col">
+	<% if drink.collab == true %>
+		<% @title_header = ("<span class=brewery-name-drink-page>"+Beer.collab_brewery_name(drink.id)+"</span>" + " " + "<span class=combined-drink-text-drink-page>"+drink.beer_name+"</span>").html_safe %>
+		<%= link_to @title_header, artisan_path(drink.brewery.slug), :class => 'tile-header beer-tile-header-drink-page' %>
+	<% elsif drink.brewery.short_brewery_name.nil? %>
+		<% @title_header = ("<span class=brewery-name-drink-page>"+drink.brewery.brewery_name+"</span>" + " " + "<span class=combined-drink-text-drink-page>"+drink.beer_name+"</span>").html_safe %>
+		<%= link_to @title_header, artisan_path(drink.brewery.slug), :class => 'tile-header beer-tile-header-drink-page' %>
+	<% else %>
+		<% @title_header = ("<span class=brewery-name-drink-page>"+drink.brewery.short_brewery_name+"</span>" + " " + "<span class=combined-drink-text-drink-page>"+drink.beer_name+"</span>").html_safe %>
+		<%= link_to @title_header, artisan_path(drink.brewery.slug), :class => 'tile-header beer-tile-header-drink-page' %>
+	<% end %>
+</div>
+<div class="col-xs-12 drink-style-col">
+	<% if !drink.beer_type_id.nil? %>
+		<h5 class="tile-subheader beer-info no-overflow beer-type-info"><%= drink.beer_type.beer_type_name %></h5>
+		<% if drink.beer_type.cellarable == true %>
+			<% if drink.cellar_note.nil? %>
+				<% @cellar_note = drink.beer_type.cellarable_info %>
+			<% else %>
+				<% @cellar_note = drink.cellar_note %>
+			<% end %>
+			<% if user_signed_in? %>
+				<% if !@cellar.nil? %>
+					<p class="cellarable" data-toggle="tooltip" data-placement="right" title="<%= @cellar_note %>">in cellar</p>
+				<% else %>
+					<p class="cellarable-next-delivery" data-toggle="tooltip" data-placement="right" title="<%= @cellar_note %>">cellar</p>
+					<p class="cellar-this-drink <%= @cellar_page_source %>" id="cellar-drink-<%= drink.id %>-1" data-toggle="tooltip" title="Click to add drink to your cellar."><i class="fa fa-plus"></i></p>
+				<% end %>
+			<% else %>
+				<p class="cellarable" data-toggle="tooltip" data-placement="right" title="<%= @cellar_note %>">cellar</p>
+			<% end %>
+		<% end %>
+	<% else %>
+		<h5 class="tile-subheader beer-info">Style unknown</h5>
+	<% end %>
+</div>
+<div class="col-xs-6 col-sm-5 drink-stats-col">
+	<% if !drink.beer_abv.nil? %>
+		<h6 class="tile-subheader beer-info"><%= drink.beer_abv %>% ABV</h6>
+	<% else %>
+		<h6 class="tile-subheader beer-info">ABV N/A</h6>
+	<% end %>
+</div>
+<% if !drink.beer_ibu.nil? %>
+	<div class="col-xs-6 col-sm-5 no-padding-left text-center ibu-div">
+		<h6 class="tile-subheader beer-info"><%= drink.beer_ibu %> IBUs</h6>
+	</div>
+<% else %>
+	<div class="col-xs-6 col-sm-5"></div>
+<% end %>

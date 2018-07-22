@@ -1,0 +1,20 @@
+# == Schema Information
+#
+# Table name: gift_certificate_promotions
+#
+#  id                            :integer          not null, primary key
+#  gift_certificate_id           :integer
+#  promotion_gift_certificate_id :integer
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  gift_certificate: one
+  promotion_gift_certificate_id: 1
+
+two:
+  gift_certificate: two
+  promotion_gift_certificate_id: 1

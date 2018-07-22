@@ -29,17 +29,21 @@ Rails.application.routes.draw do
   get '/users/delete_credit_card/:id' => 'users#delete_credit_card', :as => 'delete_credit_card_user'
   get '/users/send_mate_invite_reminder/:id' => 'users#send_mate_invite_reminder', :as => 'send_mate_invite_reminder'
   get '/users/drop_mate/:id' => 'users#drop_mate'
+  post '/users/add_delivery_zip' => 'users#add_delivery_zip', :as => 'add_delivery_zip'
   post '/users/process_user_plan_change/:id' => 'users#process_user_plan_change', :as => 'process_user_plan_change'
   post '/users/start_new_plan/:id' => 'users#start_new_plan', :as => 'start_new_plan'
   post '/users/update_home_address/:id' => 'users#update_home_address'
   post '/users/username_verification/:id' => 'users#username_verification'
+  post '/users/email_verification/' => 'users#email_verification'
   post '/stripe-webhooks' => 'users#stripe_webhooks'
   
   resources :users do
     resources :drinks, :ratings, :trackings   
   end
   
-  resources :user_addresses
+  get 'blog/:id' => "blog_posts#show", :as => 'blog'
+  get 'blog' => "blog_posts#index", :as => 'blogs'
+  resources :user_addresses, :blog_posts
   
   # for Knird admins to add/edit breweries and drinks
   namespace :admin do
@@ -64,13 +68,16 @@ Rails.application.routes.draw do
  end 
   
   resources :locations
-  
+  get 'breweries/:brewery_name/beers/:beer_name/:id' => 'beers#show'
+  get 'artisan/:id' => "breweries#show", :as => 'artisan'
+  get 'drink/:id' => "beers#show", :as => 'drink'
   resources :breweries do
     resources :beers
     collection do
       get :autocomplete
     end   
   end
+  
   
   # admin recommendation routes
   get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
@@ -334,6 +341,9 @@ Rails.application.routes.draw do
   get '/gift_certificates/signup_and_redeem' => 'gift_certificates#signup_and_redeem', :as => 'gift_certificates_signup_and_redeem'
   post '/gift_certificates/redeem' => 'gift_certificates#process_redeem', :as => 'gift_certificates_process_redeem'
   
+  # Coupons
+  get '/coupons/:coupon_code' => 'coupon#check_coupon', :as => 'check_coupon'
+
   # Orders
   get '/orders/status' => 'orders#status', :as => 'order_status'
   get '/orders/update_order_estimate' => 'orders#update_order_estimate', :as => 'update_order_estimate'
@@ -350,6 +360,9 @@ Rails.application.routes.draw do
   get 'faqs' => 'home#faqs', :as => "faqs"
   get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
   get 'membership_plans' => 'home#membership_plans', :as => "membership_plans"
+  get 'summer' => 'home#summer', :as => "summer"
+  get 'relax' => 'home#relax', :as => "relax"
+  get 'six_free' => 'home#six_free', :as => "six_free"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'
@@ -396,7 +409,7 @@ Rails.application.routes.draw do
   get 'searches/add_drink' => 'searches#add_drink', :as => 'user_add_drink'
   get 'users/:user_id/ratings/new(.:format)/:id' => 'ratings#new', :as => 'new_user_rating_at_retailer'
   post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
-  post 'beers/change_cellar_setting/:id' => 'beers#change_cellar_setting', :as => 'change_cellar_setting'
+  post 'breweries/:brewery_id/beers/beers/change_cellar_setting/:id' => 'beers#change_cellar_setting', :as => 'change_cellar_setting'
   get 'breweries/:brewery_id/beers/beers/data' => 'beers#data', :defaults => { :format => 'json'}
   #get '/users/:user_id/ratings/new(.:format)' => 'ratings#new', :as => 'new_user_rating'
   

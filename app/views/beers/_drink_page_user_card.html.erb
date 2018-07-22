@@ -13,7 +13,7 @@
 			<% else %>
 				<% @user_rating = rating.user_beer_rating %>
 			<% end %>
-			<h1 class="rating-view-user-rating"> <%= @user_rating %><span class="recent-user-rating-context">/10</span></h1>
+			<h3 class="rating-view-user-rating"> <%= @user_rating %><span class="recent-user-rating-context">/10</span></h3>
 		</div>
 		<div class="col-xs-7 no-padding">
 			<% if !rating.comment.blank? %>

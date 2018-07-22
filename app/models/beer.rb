@@ -34,6 +34,7 @@
 #  touched_by_location  :integer
 #  cellar_note          :text
 #  gluten_free          :boolean
+#  slug                 :string
 #
 
 class Beer < ApplicationRecord
@@ -42,12 +43,16 @@ class Beer < ApplicationRecord
   include DescriptorExtend
   # to strip white spaces from each beer added to this table
   strip_attributes
-   
+  
+  # include friendly id
+  extend FriendlyId
+  belongs_to :brewery
+  friendly_id :brewery_and_beer_name, use: :slugged
+  
   # to implement descriptor tags on each beer
   acts_as_taggable_on :descriptors
   attr_reader :descriptor_list_tokens
-
-  belongs_to :brewery
+  
   belongs_to :beer_type, optional: true
   
   has_many :alt_beer_names
@@ -56,6 +61,7 @@ class Beer < ApplicationRecord
   has_many :inventories
   has_many :size_formats, through: :inventories
   
+  has_many :blog_posts
   has_many :beer_formats
   has_many :size_formats, through: :beer_formats
   accepts_nested_attributes_for :beer_formats, :allow_destroy => true  
@@ -93,6 +99,16 @@ class Beer < ApplicationRecord
   #pg_search_scope :beer_search, :against => :beer_name,
   #                :associated_against => { :brewery => :brewery_name },
   #                :using => { :tsearch => {:prefix => true} }
+  
+  # update slug
+  def should_generate_new_friendly_id?
+    new_record? || slug.blank? || beer_name_changed? || slug.nil?
+  end
+  
+  # define slug
+  def brewery_and_beer_name
+      "#{brewery.brewery_name} #{beer_name}"
+  end
   
   # put beer name and id together into one variable
   def connect_deleted_beer
@@ -228,6 +244,11 @@ class Beer < ApplicationRecord
       end
     end
     collab_brewery_names  
+  }
+  
+  # scope all drinks ever in inventory 
+  scope :inventory_drinks, -> { 
+    joins(:inventories).merge(Inventory.ever_in_stock)
   }
   
   # scope all drinks in stock 

@@ -1,11 +1,13 @@
 <% if !wishlist.nil? %>
 	<%= link_to "#", class: 'btn change-wishlist-button-inverse wishlist-remove-drink the-wishlist-button' do %>
-		<i class="fa fa-minus"> remove from wishlist</i>
+		<i class="fa fa-minus"></i>
+		remove request
 	<% end %>
-	<p class="wishlist-added-info">added to wishlist on <%= (wishlist.created_at).strftime("%b %e, %Y") %></p>
+	<p class="wishlist-added-info">requested on <%= (wishlist.created_at).strftime("%b %e, %Y") %></p>
 <% else %>
-	<%= link_to "#", class: 'btn btn-default btn-success wishlist-add-drink the-wishlist-button' do %>
-		<i class="fa fa-plus"> add drink to wishlist</i>
+	<%= link_to "#", class: 'btn btn-success wishlist-add-drink the-wishlist-button' do %>
+		<i class="fa fa-check-square-o"></i>
+		request drink
 	<% end %>
 	<p class="wishlist-added-info"></p>
 <% end %>

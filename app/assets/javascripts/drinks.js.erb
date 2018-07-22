@@ -278,9 +278,9 @@ $(function () {
 	});
 
 	// move drink to cellar
-	$(document).on("click", ".cellarable", function() {
+	$(document).on("click", ".cellar-this-drink.deliveries-page", function() {
 		// get id of button
-		var this_id = $(this).children('.cellar-this-drink').attr('id');
+		var this_id = $(this).attr('id');
 		var drink_info = this_id.replace('cellar-drink-','');
 		var drink_info_split = drink_info.split("-");
 		var drink_id = drink_info_split[0];
