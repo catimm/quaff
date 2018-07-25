@@ -109,7 +109,7 @@ Rails.application.routes.draw do
   get 'admin/fulfillment/shipments' => 'admin/fulfillment#shipments', :as => 'admin_fulfillment_shipments'
   post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
   get 'admin/fulfillment/fulfillment_review_delivery/:id' => 'admin/fulfillment#fulfillment_review_delivery', :as =>'fulfillment_review_delivery'
-  #get 'admin/:short_url' => 'admin/shortened_urls#show'
+  get 's/:short_url' => 'admin/shortened_urls#show'
   get 'admin/shortened/:short_url' => 'admin/shortened_urls#shortened', :as => 'shortened'
   post 'admin/shortened_urls/create'
   get 'admin/shortened_urls/fetch_original_url'
@@ -491,7 +491,7 @@ Rails.application.routes.draw do
   post 'admin/recommendations/order_queue_create' => 'admin/recommendations#order_queue_create', :as => 'admin_order_queue_create'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
+  
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
