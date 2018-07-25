@@ -78,6 +78,12 @@ Rails.application.routes.draw do
     end   
   end
   
+  # routes to current inventory for customers to view
+  get 'current_inventory/beer/:artisan/:style' => 'current_inventory#beer', :as => 'current_inventory_beer'
+  get 'current_inventory/change_beer_view/:artisan/:style' => 'current_inventory#change_beer_view'
+  get 'current_inventory/cider/:artisan/:style' => 'current_inventory#cider', :as => 'current_inventory_cider'
+  get 'current_inventory/change_cider_view/:artisan/:style' => 'current_inventory#change_cider_view'
+  get 'current_inventory/wine/:artisan/:style' => 'current_inventory#wine', :as => 'current_inventory_wine'
   
   # admin recommendation routes
   get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
@@ -103,8 +109,19 @@ Rails.application.routes.draw do
   get 'admin/fulfillment/shipments' => 'admin/fulfillment#shipments', :as => 'admin_fulfillment_shipments'
   post 'admin/fulfillment/admin_confirm_delivery/:id' => 'admin/fulfillment#admin_confirm_delivery', :as =>'admin_confirm_delivery'
   get 'admin/fulfillment/fulfillment_review_delivery/:id' => 'admin/fulfillment#fulfillment_review_delivery', :as =>'fulfillment_review_delivery'
+  #get 'admin/:short_url' => 'admin/shortened_urls#show'
+  get 'admin/shortened/:short_url' => 'admin/shortened_urls#shortened', :as => 'shortened'
+  post 'admin/shortened_urls/create'
+  get 'admin/shortened_urls/fetch_original_url'
   namespace :admin do
-    resources :users, :user_beer_ratings, :recommendations, :inventories, :disti_inventories, :fulfillment, :descriptors
+    resources :users, 
+              :user_beer_ratings, 
+              :recommendations, 
+              :inventories, 
+              :disti_inventories, 
+              :fulfillment, 
+              :descriptors,
+              :shortened_urls
   end
   
   namespace :admin do
