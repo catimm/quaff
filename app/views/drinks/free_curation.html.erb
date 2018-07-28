@@ -6,12 +6,12 @@
 			<div class="row no-margin">
 				<div class="col-xs-12 col-sm-8"> 
 					<div class="col-xs-12 no-padding">
-						<h3 class="curation-header">Get either a free 6-pack or a free delivery!</h3>
+						<h3 class="curation-header">Get a free delivery!</h3>
 					</div>
 					<h4 class="free-curation-message"> 
 								<u><%= link_to "Sign up", edit_user_path("membership") %></u>
 								for a membership plan now! Or, <u><%= link_to "sign up", edit_user_path("membership") %></u> 
-								choose our Ad Hoc option for a free, one-time delivery.</h4>
+								for our Ad Hoc option for a free, one-time delivery.</h4>
 					<% if !@free_curation.admin_curation_note.nil? %>
 						<h4 class="curation-admin-note">Curator note: <span><%= @free_curation.admin_curation_note %></span></h4>
 					<% end %>
