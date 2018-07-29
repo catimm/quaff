@@ -1,7 +1,4 @@
 <% if !@user_delivery_preference.blank? %>
-	<% if current_user.account.is_corporate %>
-		<%= link_to "Next", corporate_signup_details_path, disabled: true, class: "btn btn-success user-info-next-button", id: "profile_category_next_button" %>
-	<% else %>
 		<% if @user_delivery_preference.beer_chosen == true %>
 			<%= link_to "Next", drink_profile_beer_styles_path, disabled: true, class: "btn btn-success user-info-next-button", id: "profile_category_next_button" %>
 		<% elsif @user_delivery_preference.cider_chosen == true %>
@@ -9,5 +6,4 @@
 		<% elsif @user_delivery_preference.wine_chosen == true %>
 			<%= link_to "Next", drink_profile_wine_styles_path, disabled: true, class: "btn btn-success user-info-next-button", id: "profile_category_next_button" %>
 		<% end %>
-	<% end %>
 <% end %>

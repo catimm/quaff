@@ -1227,4 +1227,6 @@ class CreateDrinkProfileController < ApplicationController
     
   end # end of process_drink_cost_estimates method
   
+  def corp_drink_details
+  end
 end # end of controller
