@@ -182,7 +182,7 @@ class UserMailer < ApplicationMailer
     @user_subscription = UserSubscription.where(account_id: customer.account_id, currently_active: true)[0]
     #Rails.logger.debug("User Subscription: #{@user_subscription.inspect}")
     if @user_subscription.subscription.deliveries_included == 0
-      @drinks_ordered = Order.where(id: delivery_info.order_id).pluck(:number_of_drinks)[0]
+      @drinks_ordered = Order.where(id: delivery_info.order_id).pluck(:number_of_drinks)[0] #CurationRequest.where(id: delivery_info.order_id).pluck(:number_of_drinks)[0]
       if total_quantity.to_i < @drinks_ordered
         @no_plan_order = true
       else
