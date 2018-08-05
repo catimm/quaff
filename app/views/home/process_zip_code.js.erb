@@ -1,0 +1,23 @@
+$(function() {
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	$("#zip_code_response").html("<%= escape_javascript(render 'section_zip_code_response') %>");
+	$("#zip_code_response").removeClass("hidden").addClass("show");
+	$([document.documentElement, document.body]).animate({
+        scrollTop: $("#zip-code-response-text").offset().top
+    }, 2000);
+    
+    delay(function(){
+			$("#section-drink-category").removeClass("hidden").addClass("show");
+			$("#section-drink-category").html("<%= escape_javascript(render 'section_drink_category') %>");
+			$([document.documentElement, document.body]).animate({
+		        scrollTop: $("#section-drink-category").offset().top
+		    }, 2000);
+	    }, 3000 );
+});

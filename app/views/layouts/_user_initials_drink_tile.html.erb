@@ -1,0 +1,16 @@
+<% if !friend.first_name.nil? %>
+	<% @first_name_initial = friend.first_name[0,1] %>
+<% else %>
+	<% @first_name_initial = "G" %>
+<% end %>
+<% if !friend.last_name.nil? %>
+	<% @last_name_initial = friend.last_name[0,1] %>
+<% elsif !friend.first_name.nil? && !friend.last_name.nil? %>
+	<% @last_name_initial = "$" %>
+<% else %>
+	<% @last_name_initial = "" %>
+<% end %>
+<% @friend_initials = @first_name_initial + @last_name_initial %>
+<div class="user-initial-holder-div-xsmall <%= friend.user_color %>" data-toggle="tooltip" title="<%= friend.first_name %> <%= friend.last_name %> (<%= friend.username %>)">
+	<h4 class="user-initial-text-xsmall"><%= @friend_initials %></h4>
+</div>

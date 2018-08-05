@@ -123,7 +123,11 @@ class Beer < ApplicationRecord
       "#{brewery.short_brewery_name} #{beer_name}"
     end
   end
-
+  
+  def drink_style
+    
+  end
+  
   def should_index?
     # there are some beers in the db with no corresponding breweries
     !brewery.nil?
@@ -246,6 +250,43 @@ class Beer < ApplicationRecord
     collab_brewery_names  
   }
   
+  # get related drink styles for drinks
+  def self.drink_style(drinks)
+    style_list = []
+    
+    drinks.each do |drink|
+      if drink.beer_type.beer_style_id == 27
+        @relationships = BeerTypeRelationship.where(beer_type_id: drink.beer_type_id).first
+        style_list << @relationships.relationship_one
+        style_list << @relationships.relationship_two
+      else
+        style_list << drink.beer_type.beer_style_id
+      end
+    end
+    style_list = style_list.flatten.uniq
+  end
+  
+  # scope current beer in stock
+  scope :current_inventory_beers, -> {
+    joins(:inventories).merge(Inventory.available_current_inventory_beers)
+  }
+  
+  # scope beers based on style chosen
+  scope :current_inventory_beers_based_by_style, ->(type_ids){
+    current_inventory_beers.
+    where(beer_type_id: type_ids)
+  }
+  
+  # scope current beer in stock
+  scope :current_inventory_ciders, -> {
+    joins(:inventories).merge(Inventory.available_current_inventory_ciders)
+  }
+  
+  # scope beers based on style chosen
+  scope :current_inventory_ciders_based_by_style, ->(type_ids){
+    current_inventory_ciders.
+    where(beer_type_id: type_ids)
+  }
   # scope all drinks ever in inventory 
   scope :inventory_drinks, -> { 
     joins(:inventories).merge(Inventory.ever_in_stock)
@@ -417,6 +458,26 @@ class Beer < ApplicationRecord
     @this_beer_descriptor_count.first(how_many)
   }
   
+  # get unique beer descriptors
+  def top_drink_descriptors(how_many)
+    # create empty array to hold top descriptors list for beer being rated
+    @this_beer_descriptors = Array.new
+    # find all descriptors for this drink
+    @this_beer_all_descriptors = self.descriptors
+    # Rails.logger.debug("this beer's descriptors: #{@this_beer_all_descriptors.inspect}")
+    @this_beer_all_descriptors.each do |descriptor|
+      @descriptor = descriptor["name"]
+      @this_beer_descriptors << @descriptor
+    end
+    
+    # attach count to each descriptor type to find the drink's most common descriptors
+    @this_beer_descriptor_count = @this_beer_descriptors.each_with_object(Hash.new(0)) { |word,counts| counts[word] += 1 }
+    # put descriptors in descending order of importance
+    @this_beer_descriptor_count = Hash[@this_beer_descriptor_count.sort_by{ |_, v| -v }]
+    # grab top 5 of most common descriptors for this drink
+    @this_beer_descriptor_count.first(how_many)
+  end
+  
   # save actual tags without quotes
   def descriptor_list_tokens=(tokens)
      self.descriptor_list = tokens.gsub("'", "")
@@ -508,9 +569,9 @@ class Beer < ApplicationRecord
     end
   end
   
-  # for filterrific sorting of admin drink recommendation page
-  def self.options_for_select
-    order('LOWER(beer_name)').map { |e| [e.beer_name, e.id] }
-  end
+  # scope styles currently available in inventory
+  scope :live_beers_at_location, ->(location_id) { 
+    joins(:beer_locations).merge(BeerLocation.active_beers(location_id)) 
+  }
   
-end
+end # end of controller

@@ -74,53 +74,17 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     #Rails.logger.debug("Original link: #{session[:user_return_to].inspect}")
     @user = current_user
+    if current_visit and !current_visit.user
+      current_visit.user = current_user
+      current_visit.save!
+    end
     if current_user.role_id == 1
-        # admin route
-        @first_view = admin_breweries_path
+      # admin route
+      redirect_to admin_breweries_path and return
     else # non-admin logic
-      @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-      if !session[:user_return_to].nil? && !@user_subscription.blank?
-        session[:user_subscription_id] = @user_subscription.subscription_id
-      end
-      
-      # set a different first view based on the user type
-      if !session[:user_return_to].nil? && @user.getting_started_step >= 7
-        @first_view = session[:user_return_to]
-      else
-        # if user hasn't moved beyond picking a drink category
-        if @user.getting_started_step == 0
-          @first_view = drink_profile_categories_path
-        end
-        if @user.getting_started_step == 12
-          @first_view = delivery_frequency_getting_started_path
-        elsif @user.getting_started_step == 13
-          @first_view = delivery_address_getting_started_path
-        elsif @user.getting_started_step == 14
-          @first_view = delivery_preferences_getting_started_path
-        end
-        if @user.getting_started_step >= 7
-          if !@user_subscription.blank?
-            @first_view = user_deliveries_path
-          else
-            @first_view = free_curation_path
-          end
-        elsif  @user.getting_started_step == 1
-          @first_view = drink_profile_beer_styles_path
-        elsif  @user.getting_started_step == 2
-          @first_view = drink_profile_beer_costs_path
-        elsif  @user.getting_started_step == 3
-          @first_view = drink_profile_cider_styles_path
-        elsif @user.getting_started_step == 4
-          @first_view = drink_profile_cider_costs_path
-        elsif @user.getting_started_step == 5
-          @first_view = drink_profile_wine_styles_path
-        elsif @user.getting_started_step == 6
-          @first_view = choose_signup_path
-        end
-      end # end of selecting path
-      
+      redirect_to user_deliveries_path and return
     end # end of check whether user is admin
-    return @first_view
+    
   end
   
   def after_sign_out_path_for(resource_or_scope)

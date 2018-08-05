@@ -20,13 +20,45 @@
 #
 
 class UserAddress < ApplicationRecord
-  after_save :check_delivery_zone_sum, if: :delivery_zone_id_changed?
+  after_save :add_delivery_or_shipping_zone_id, if: :saved_change_to_zip?
+  after_save :check_delivery_zone_sum, if: :saved_change_to_delivery_zone_id?
   
   belongs_to :account
   belongs_to :delivery_zone, optional: true
   belongs_to :shipping_zone, optional: true
   
   attr_accessor :user_id # to hold current user id
+  
+  def address_name
+    if self.location_type == "Other"
+      return self.other_name
+    else
+      return self.location_type
+    end
+  end
+  
+  def add_delivery_or_shipping_zone_id
+    # find delivery zone
+    @delivery_zone = DeliveryZone.where(zip_code: self.zip, currently_available: true).first
+    if !@delivery_zone.blank?
+      self.update(delivery_zone_id: @delivery_zone.id)
+    else
+      @zip_start = self.zip.slice(0..2)
+      @shipping_zone = ShippingZone.find_by_zip_start(@zip_start)
+      self.update(shipping_zone_id: @shipping_zone.id)
+    end
+  end
+  
+  def address_delivery_windows
+    @available_zones = Array.new
+    @available_delivery_zones = DeliveryZone.where(zip_code: self.zip)
+    
+    @available_delivery_zones.each do |zone|
+      @time_options = zone.delivery_time_options(self.address_name, self.id, zone.id)
+      @available_zones << @time_options
+    end
+    return @available_zones
+  end
   
   private 
     
@@ -76,4 +108,19 @@ class UserAddress < ApplicationRecord
       
     end # end of check_delivery_zone_sum method
   
+    def self.user_drink_price_based_on_address(account_id, inventory_id)
+      @subscription_level_group = UserAddress.where(account_id: account_id, current_delivery_location: true).
+                                        joins(:delivery_zone).select('delivery_zones.subscription_level_group')
+
+      @pricing_group = Subscription.where(subscription_level_group: @subscription_level_group).pluck(:pricing_model).first
+
+      if @pricing_group == "four_five"
+        @drink_price = Inventory.where(id: inventory_id).pluck(:drink_price_four_five)
+      elsif @pricing_group == "five_zero"
+        @drink_price = Inventory.where(id: inventory_id).pluck(:drink_price_five_zero)
+      elsif @pricing_group == "five_five"
+        @drink_price = Inventory.where(id: inventory_id).pluck(:drink_price_five_five)
+      end     
+      return @drink_price[0]                   
+    end # end of user_drink_price_based_on_address method
 end

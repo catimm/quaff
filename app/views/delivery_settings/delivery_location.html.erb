@@ -38,15 +38,17 @@
 												"<%= @current_delivery_location.special_instructions %>"
 											</h5>
 										<% end %>
-										<% if @user_subscription.subscription.deliveries_included != 0 %>
-											<h5 class="current-delivery-choice"><%= @current_delivery_time.day_of_week %>s,</h5>  
-											<h5 class="current-delivery-choice">
-												<%=  (@current_delivery_time.start_time).strftime("%l:%M%P") %> 
-												- <%= (@current_delivery_time.end_time).strftime("%l:%M%P") %>
-											</h5>
-											<h6 class="current-delivery-next">
-												 (Next: <%= (@next_delivery.delivery_date).strftime("%-m.%-d.%y") %>)
-											</h6>
+										<% if !@user_subscription.blank? %>
+											<% if @user_subscription.subscription.deliveries_included != 0 %>
+												<h5 class="current-delivery-choice"><%= @current_delivery_time.day_of_week %>s,</h5>  
+												<h5 class="current-delivery-choice">
+													<%=  (@current_delivery_time.start_time).strftime("%l:%M%P") %> 
+													- <%= (@current_delivery_time.end_time).strftime("%l:%M%P") %>
+												</h5>
+												<h6 class="current-delivery-next">
+													 (Next: <%= (@next_delivery.delivery_date).strftime("%-m.%-d.%y") %>)
+												</h6>
+											<% end %>
 										<% end %>
 									</div>
 									<div class="col-xs-1 no-padding">
@@ -62,29 +64,33 @@
 								</div>
 							</div>
 						</div>
-						<% if @user_subscription.subscription.deliveries_included != 0 %>
-							<% if !@current_delivery_time_options.blank? %>
-								<div class="row delivery-info-row">
-									<h4 class="delivery-options-header">Delivery <span>time <%= "option".pluralize(@current_delivery_time_options.count) %></span> for this location</h4>
-									<% @current_delivery_time_options.each do |option| %>
-										<div class="col-xs-5 col-sm-4 optional-delivery-time-container">
-											<h5 class="current-delivery-choice day-holder"><%= option.day_of_week %>s,</h5>  
-											<h5 class="current-delivery-choice time-holder">
-												<%=  (option.start_time).strftime("%l:%M%P") %> 
-												- <%= (option.end_time).strftime("%l:%M%P") %>
-											</h5>
-											<h6 class="current-delivery-next next-holder">
-												 (Starting: <%= (option.next_available_delivery_date).strftime("%-m.%-d.%y") %>)
-											</h6>
-											<%= link_to "#", 
-												class: 'btn btn-success change-delivery-time', data: {toggle: "modal", target: "#change_delivery_time"},
-												id: "#{@current_delivery_location.id}-#{option.id}" do %>
-												<i class="fa fa-check-circle"> choose</i>
-											<% end %>
-										</div>
-									<% end %>
-								</div>
+						<% if !@user_subscription.blank? %>
+							
+							<% if @user_subscription.subscription.deliveries_included != 0 %>
+								<% if !@current_delivery_time_options.blank? %>
+									<div class="row delivery-info-row">
+										<h4 class="delivery-options-header">Delivery <span>time <%= "option".pluralize(@current_delivery_time_options.count) %></span> for this location</h4>
+										<% @current_delivery_time_options.each do |option| %>
+											<div class="col-xs-5 col-sm-4 optional-delivery-time-container">
+												<h5 class="current-delivery-choice day-holder"><%= option.day_of_week %>s,</h5>  
+												<h5 class="current-delivery-choice time-holder">
+													<%=  (option.start_time).strftime("%l:%M%P") %> 
+													- <%= (option.end_time).strftime("%l:%M%P") %>
+												</h5>
+												<h6 class="current-delivery-next next-holder">
+													 (Starting: <%= (option.next_available_delivery_date).strftime("%-m.%-d.%y") %>)
+												</h6>
+												<%= link_to "#", 
+													class: 'btn btn-success change-delivery-time', data: {toggle: "modal", target: "#change_delivery_time"},
+													id: "#{@current_delivery_location.id}-#{option.id}" do %>
+													<i class="fa fa-check-circle"> choose</i>
+												<% end %>
+											</div>
+										<% end %>
+									</div>
+								<% end %>
 							<% end %>
+						
 						<% end %>
 					</div>
 				<% end %>

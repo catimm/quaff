@@ -19,6 +19,7 @@
 #  curation_ready        :boolean
 #  drink_price_five_zero :decimal(5, 2)
 #  drink_price_five_five :decimal(5, 2)
+#  rate_for_users        :boolean
 #
 
 class DistiInventory < ApplicationRecord
@@ -28,5 +29,5 @@ class DistiInventory < ApplicationRecord
   
   has_many :inventories
   has_many :user_drink_recommendations
-  
+  has_many :projected_ratings
 end

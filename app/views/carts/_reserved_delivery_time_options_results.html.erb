@@ -1,0 +1,35 @@
+<div class="col-xs-12">
+	<h4 class="twenty-one-plus-delivery-message">Note, someone 21+ must be available to receive the delivery.</h4>
+</div>
+<div class="col-xs-12">
+	<h4 class="choose-delivery-time-text">Please choose one of the next available Reserved Delivery options:</h4>
+</div>
+<% @reserved_delivery_options.each do |time_option| %>
+	<% @user_addresses.each do |address| %>
+		<% @tile_id = address.id.to_s + "-" + time_option.id.to_s %>
+		<% if @chosen_tile_id == @tile_id %>
+			<% @chosen_tile = "chosen" %>
+		<% else %>
+			<% @chosen_tile = "" %>
+		<% end %>
+		<div class="col-xs-12 col-sm-11">
+			<div class="delivery-time-reserved-option-tile <%= @chosen_tile %>" id="<%= @tile_id %>">
+				<div class="row no-margin">
+					<div class="col-xs-1 no-padding">
+						<div class="check-mark-holder">
+							<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<h5 class="address-name">Delivered to your <span><%= address.address_name %></span></h5>
+					</div>
+					<div class="col-xs-7">
+						<h4 class="delivery-time-option-text">
+							<%= time_option.start_time.strftime("%A, %b %e, %l%P") %> &mdash; <%= time_option.end_time.strftime("%l%P") %>
+						</h4>
+					</div>
+				</div>
+			</div>
+		</div>
+	<% end %>
+<% end %>

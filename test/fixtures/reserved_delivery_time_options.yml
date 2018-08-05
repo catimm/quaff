@@ -1,0 +1,28 @@
+# == Schema Information
+#
+# Table name: reserved_delivery_time_options
+#
+#  id                 :integer          not null, primary key
+#  max_customers      :integer
+#  delivery_driver_id :integer
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  start_time         :datetime
+#  end_time           :datetime
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  available_date: 2018-07-31
+  start_time: 2018-07-31 11:42:14
+  end_time: 2018-07-31 11:42:14
+  max_customers: 1
+  delivery_driver_id: 1
+
+two:
+  available_date: 2018-07-31
+  start_time: 2018-07-31 11:42:14
+  end_time: 2018-07-31 11:42:14
+  max_customers: 1
+  delivery_driver_id: 1

@@ -411,7 +411,7 @@ class AdminMailer < ApplicationMailer
         customer_name: customer.first_name,
         customer_email: customer.email,
         customer_id: customer.id,
-        delivery_amount: delivery.total_price,
+        delivery_amount: delivery.total_drink_price,
         delivery_id: delivery.id,
         delivery_date: delivery.delivery_date
       }

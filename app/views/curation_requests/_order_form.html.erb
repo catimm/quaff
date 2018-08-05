@@ -1,0 +1,93 @@
+<%= form_for @curation_request do |f| %>
+    <%= f.hidden_field :delivery_date %>
+	<%= f.hidden_field :drink_option_id, :value => @delivery_preferences.drink_option_id %>
+	<%= f.hidden_field :number_of_beers, :value => 0 %>
+	<%= f.hidden_field :number_of_ciders, :value => 0 %>
+	<%= f.hidden_field :number_of_glasses, :value => 0 %>
+    <%- flash.each do |name, msg| -%>
+        <% if name == "failure" %>
+        	<%= content_tag :div, msg, class: "alert alert-danger text-center", :id => "flash_gift_#{name}" if msg.is_a?(String) %>
+    	<% end %>
+    <%- end -%>
+<div class="row no-margin estimate-holder" id="scroller-anchor">
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-6" id="delivery-estimate-holder">
+			<%= render 'order_estimate' %>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4">
+			<% if @form == "new" %>
+				<%= f.submit "Place order", :class => "text-center btn btn-success remove-drink-button" %>
+			<% else %>
+			    <%= f.submit "Update order", :class => "text-center btn btn-success remove-drink-button" %>
+			<% end %>
+		</div>	
+	</div>
+</div>
+<hr />
+<div class="row no-margin full-top-margin" id="second-delivery-row">
+    <div class="col-xs-12 no-padding">
+        <h3 class="delivery-preference-prompt">
+        	We currently curate <span class="current-drink-choice" id="order-drink-type-text"><%= @drink_categories.to_sentence %></span> 
+        	for you.
+        		<span class="change-categories">
+        			(<%= link_to "change this", drink_categories_path %>)
+        		</span>
+  		</h3>
+    </div>
+</div>
+<div class="row no-margin">
+    <div class="col-xs-12 no-padding">
+        <div class="row no-margin">
+            <div class="col-sm-6 no-padding">
+                <h3 class="delivery-preference-prompt">Choose a delivery date</h3>
+            </div>
+            <div class="col-sm-6 no-padding-right" id="order_large_format_drinks">
+                <%= render 'delivery_date_options'%>
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<% if @beer_chosen == true %>
+	<div class="row no-margin">
+	    <div class="col-xs-12 no-padding">
+	        <div class="row no-margin">
+	            <div class="col-sm-6 no-padding">
+	                <h3 class="delivery-preference-prompt">How many beers are you ordering?</h3>
+	            </div>
+	            <div class="col-sm-6 no-padding-right">
+	                <%= render 'curation_requests/number_of_drinks_choice', category: "beer" %>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<hr />
+<% end %>
+<% if @cider_chosen == true %>
+	<div class="row no-margin">
+	    <div class="col-xs-12 no-padding">
+	        <div class="row no-margin">
+	            <div class="col-sm-6 no-padding">
+	                <h3 class="delivery-preference-prompt">How many ciders are you ordering?</h3>
+	            </div>
+	            <div class="col-sm-6 no-padding-right">
+	                <%= render 'curation_requests/number_of_drinks_choice', category: "cider" %>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<hr />
+<% end %>
+<div class="row" id="order-page-last-row">
+    <div class="col-xs-12 no-padding">
+        <div class="row no-margin">
+            <div class="col-sm-6 no-padding">
+                <h3 class="delivery-preference-prompt">Additional requests</h3>
+            </div>
+            <div class="col-sm-6 delivery-additional-request">
+                <%= f.text_area :additional_requests, {class: 'form-control', placeholder: 'For example: "All IPAs", "Only 2 large format drinks" or "Only gluten-free drinks"'}  %>
+            </div>
+        </div>
+    </div>
+</div>
+<% end %>

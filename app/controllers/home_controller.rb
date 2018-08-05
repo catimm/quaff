@@ -6,9 +6,9 @@ class HomeController < ApplicationController
   def index
     # instantiate invitation request 
     @view = "original"
-    if user_signed_in?
-      redirect_to after_sign_in_path_for(nil)
-    end
+    #if user_signed_in?
+    #  redirect_to after_sign_in_path_for(current_user)
+    #end
     
     # get user's IP Address
     @ip_address = request.remote_ip
@@ -221,6 +221,240 @@ class HomeController < ApplicationController
   def six_free
     ahoy.track_visit
   end
+  
+  def temp_home
+    ahoy.track_visit
+  end
+  def process_zip_code
+    # get zip code
+    @zip_code = params[:zip]
+    @city = @zip_code.to_region(:city => true)
+    @state = @zip_code.to_region(:state => true)
+    
+    # set location view
+    if !@city.blank? && !@state.blank?
+      @location = @city + ", " + @state
+    else
+      @location = nil
+    end 
+      
+    # get Delivery Zone info
+    @delivery_zone_info = DeliveryZone.find_by_zip_code(@zip_code)    
+    
+    if !@delivery_zone_info.blank?
+      @related_zone = @delivery_zone_info.id
+      if @delivery_zone_info.currently_available == true
+        @plan_type = "delivery"
+      else
+        @plan_type = "shipping"
+      end
+      @coverage = true
+    else
+      # get Shipping Zone
+      @first_three = @zip_code[0...3]
+      @shipping_zone = ShippingZone.zone_match(@first_three).first
+      @related_zone = @shipping_zone.id
+      if !@shipping_zone.blank?
+        @plan_type = "shipping"
+        @coverage = true
+      else
+        @coverage = false
+      end
+    end # end of check whether a local Knird Delivery Zone exists
+    
+    # add zip to our zip code list
+    @new_zip_check = ZipCode.create(zip_code: @zip_code, city: @city, state: @state, covered: @coverage)
+        
+    # send event to Ahoy table
+    ahoy.track "zip code", {zip_code_id: @new_zip_check.id, zip_code: @new_zip_check.zip_code, coverage: @coverage, type: @plan_type, related_zone: @related_zone}
+    
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
+  end # end of process_zip_code method
+  
+  def process_drink_category
+    @chosen_category = params[:category]
+    
+    if user_signed_in?
+      @user = current_user
+      @user_delivery_preference = DeliveryPreference.find_by_user_id(@user.id)
+    else 
+      # first create an account
+      @account = Account.create!(account_type: "consumer", number_of_users: 1)
+      
+      # next create fake user profile
+      @fake_user_email = Faker::Internet.unique.email
+      @generated_password = Devise.friendly_token.first(8)
+      
+      # create new user
+      @user = User.create(account_id: @account.id, 
+                          email: @fake_user_email, 
+                          password: @generated_password,
+                          password_confirmation: @generated_password,
+                          role_id: 4,
+                          getting_started_step: 0,
+                          unregistered: true)
+      
+      if @user.save
+        # Sign in the new user by passing validation
+        bypass_sign_in(@user)
+      end
+      
+      # update Ahoy Visit and Ahoy Events table 
+      @current_visit = Ahoy::Visit.find_by_id(current_visit.id)
+      @current_visit.update(user_id: @user.id)
+      @current_event = Ahoy::Event.find_by_visit_id(current_visit.id)
+      @current_event.update(user_id: @user.id)
+      #Rails.logger.debug("Current event: #{@current_event.inspect}")
+      
+      # now create User Address entry with user zip provided
+      UserAddress.create(account_id: @user.account_id, 
+                          zip: @current_event.properties["zip_code"], 
+                          current_delivery_location: true)
+      
+    end # end of check on whether user is signed in  
+    
+    if @chosen_category == "beer"
+       
+      if @user_delivery_preference.blank? 
+        # create delivery preference and chosen drink preference
+        @user_delivery_preference = DeliveryPreference.create(user_id: @user.id,
+                                                                beer_chosen: true)
+        if @user_delivery_preference.save
+          @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
+                                                            delivery_preference_id: @user_delivery_preference.id)
+        end
+      else
+        #check if user has already chosen a beer preference
+        @user_beer_preference = UserPreferenceBeer.find_by_user_id(@user.id)
+        if @user_beer_preference.blank?
+          @user_beer_preference = UserPreferenceBeer.create(user_id: @user.id,
+                                                            delivery_preference_id: @user_delivery_preference.id)
+        end
+      end
+
+      # get related drink styles
+      @drink_styles = BeerStyle.where(signup_beer: true).order('style_order ASC')
+
+    end # end of beer chosen
+          
+   if @chosen_category == "cider"
+      
+      if @user_delivery_preference.blank? 
+        # create delivery preference and chosen drink preference
+        @user_delivery_preference = DeliveryPreference.create(user_id: @user.id,
+                                                                beer_chosen: true)
+        if @user_delivery_preference.save
+          @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
+                                                          delivery_preference_id: @user_delivery_preference.id)
+        end
+      else
+        #check if user has already chosen a beer preference
+        @user_cider_preference = UserPreferenceBeer.find_by_user_id(@user.id)
+        if @user_cider_preference.blank?
+         @user_cider_preference = UserPreferenceCider.create(user_id: @user.id,
+                                                          delivery_preference_id: @user_delivery_preference.id)
+        end
+      end
+      
+      # get related drink styles
+      @drink_styles = BeerStyle.where(signup_cider: true).order('style_order ASC')
+      
+    end # end of cider chosen
+      
+    respond_to do |format|
+      format.js
+    end 
+      
+  end # end of process_drink_category method
+  
+  def process_styles
+    @user = current_user
+    
+    # get data
+    @style_info = params[:style_info]
+    @split_data = @style_info.split("-")
+    @preference = @split_data[0]
+    @action = @split_data[1]
+    @drink_style_id = params[:style_id].to_i
+    
+    # get all drinks styles
+    @drink_styles = BeerStyle.all
+    @style_info = @drink_styles.find_by_id(@drink_style_id)
+    # find if chosen style is related to beer or cider
+    if @style_info.signup_beer == true
+      @beer_style = true
+      @all_beer_style_ids = BeerStyle.where(signup_beer: true).pluck(:id)
+    elsif @style_info.signup_cider == true
+      @cider_style = true
+      @all_cider_style_ids = BeerStyle.where(signup_cider: true).pluck(:id)
+    end
+    # get all related styles
+    @style_id = @drink_styles.where(master_style_id: @drink_style_id).pluck(:id)    
+
+    # adjust user liked/disliked styles
+    if @action == "remove"
+      @style_id.each do |style|
+        @user_style_preference = UserStylePreference.where(user_id: current_user.id, 
+                                                            beer_style_id: style, 
+                                                            user_preference: @preference)
+          if !@user_style_preference.blank?
+            @user_style_preference.delete_all
+          end
+      end
+    end
+    if @action == "add"
+      @style_id.each do |style|
+          # first check to see if this is a reversal of previous choice
+          @user_style_preference = UserStylePreference.where(user_id: current_user.id, 
+                                                            beer_style_id: style)
+          if !@user_style_preference.blank?
+            @user_style_preference.destroy_all
+          end
+          
+          @new_user_style_preference = UserStylePreference.create(user_id: current_user.id, 
+                                                                  beer_style_id: style, 
+                                                                  user_preference: @preference)
+      end
+    end
+    
+    if @beer_style == true
+      @total_user_preferences = UserStylePreference.where(user_id: current_user.id, beer_style_id: @all_beer_style_ids)
+    else
+      @total_user_preferences = UserStylePreference.where(user_id: current_user.id, beer_style_id: @all_cider_style_ids)
+    end
+    #Rails.logger.debug("Total preferences Info: #{@total_user_preferences.inspect}")
+    @total_count = @total_user_preferences.count
+    #Rails.logger.debug("Total preferences count: #{@total_count.inspect}")
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end process_styles method
+  
+  def process_drink_styles
+    ProjectedRatingsJob.perform_later(current_user.id)
+    
+    # show user in process message
+    respond_to do |format|
+      format.js
+    end
+    
+  end
+  
+  def projected_ratings_check
+    # check if projected ratings are complete
+    @user = current_user
+    
+    if @user.projected_ratings_complete == true
+      @ready = true
+    else
+      @ready = false
+    end
+    
+  end # end of projected_ratings_check method
   
   private
   def verify_admin

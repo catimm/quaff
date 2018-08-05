@@ -2,29 +2,34 @@
 #
 # Table name: inventories
 #
-#  id                    :integer          not null, primary key
-#  beer_id               :integer
-#  stock                 :integer
-#  reserved              :integer
-#  order_request         :integer
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  size_format_id        :integer
-#  drink_price_four_five :decimal(5, 2)
-#  drink_cost            :decimal(5, 2)
-#  limit_per             :integer
-#  total_batch           :integer
-#  currently_available   :boolean
-#  distributor_id        :integer
-#  min_quantity          :integer
-#  regular_case_cost     :decimal(5, 2)
-#  sale_case_cost        :decimal(5, 2)
-#  disti_inventory_id    :integer
-#  total_demand          :integer
-#  drink_price_five_zero :decimal(5, 2)
-#  drink_price_five_five :decimal(5, 2)
-#  packaged_on           :date
-#  best_by               :date
+#  id                     :integer          not null, primary key
+#  beer_id                :integer
+#  stock                  :integer
+#  reserved               :integer
+#  order_request          :integer
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  size_format_id         :integer
+#  drink_price_four_five  :decimal(5, 2)
+#  drink_cost             :decimal(5, 2)
+#  limit_per              :integer
+#  total_batch            :integer
+#  currently_available    :boolean
+#  distributor_id         :integer
+#  min_quantity           :integer
+#  regular_case_cost      :decimal(5, 2)
+#  sale_case_cost         :decimal(5, 2)
+#  disti_inventory_id     :integer
+#  total_demand           :integer
+#  drink_price_five_zero  :decimal(5, 2)
+#  drink_price_five_five  :decimal(5, 2)
+#  packaged_on            :date
+#  best_by                :date
+#  drink_category         :string
+#  show_current_inventory :boolean
+#  comped                 :integer
+#  shrinkage              :integer
+#  membership_only        :boolean
 #
 
 class Inventory < ApplicationRecord
@@ -35,8 +40,10 @@ class Inventory < ApplicationRecord
   has_many :account_deliveries
   has_many :admin_account_deliveries
   has_many :disti_orders
+  has_many :projected_ratings
   has_many :inventory_transactions
-  
+  has_many :account_deliveries, :through => :inventory_transactions
+  has_many :order_drink_preps
   
   #scope small cooler drinks
   scope :small_cooler_drinks, -> { 
@@ -131,6 +138,35 @@ class Inventory < ApplicationRecord
     joins(:beer).
     group('beers.brewery_id').
     select('brewery_id as brewery_id, beers.breweries.short_brewery_name as brewery_name')
+  }
+  
+  # scope current beer in stock
+  scope :available_current_inventory_beers, -> { 
+    where("stock > ?", 0).
+    where(drink_category: "beer").
+    where(show_current_inventory: true)
+  }
+  
+  # scope current beer in stock
+  scope :available_current_inventory_ciders, -> { 
+    where("stock > ?", 0).
+    where(drink_category: "cider").
+    where(show_current_inventory: true)
+  }
+  
+  # scope inventory grouped by maker
+  scope :current_inventory_maker, -> {
+    joins(:beer).
+    group('beers.brewery_id').
+    select('brewery_id as brewery_id')
+  }
+  
+  # scope inventory grouped by style
+  scope :inventory_style, -> {
+    in_stock.
+    joins(:beer).
+    group('beers.beer_type.beer_style_id').
+    select('beers.beer_types.beer_style_id as style_id, beers.beer_types.beer_styles.style_name as style_name')
   }
   
 end

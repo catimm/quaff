@@ -1,0 +1,48 @@
+<% if user_signed_in? %>
+	<%= render 'layouts/header' %> 
+<% else %>
+	<%= render 'layouts/header_home_temp' %> 
+<% end %>
+<div class="container">
+	<div class="row more-info-page-header-row">
+		<div>
+		  <h3 class="recent-ratings-header">Our Mission</h3>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div>
+			<h4 class="about-us-text">
+				<span>We believe craft beer and cider should be simpler, more enjoyable.</span>  
+				We started Knird because we think craft beer and cider has become too complex.  Hundreds of varieties.  
+				Thousands of producers. Tap houses with 50+ taps.  Bottle shops with "thousands" of bottles on their shelves.  
+				Where to start?
+			</h4>
+			<h4 class="about-us-text">
+				You can ask the person behind the counter or a server for guidance, but they don't know you.  Often times 
+				their input isn't any better than ordering at random....
+			</h4>
+			<h4 class="about-us-text">
+				<span>We believe truly personalized curation should be available to everyone</span>, like you might get from your 
+				best-friend-beer-geek who knows your taste prefrences.
+			</h4>
+			<h4 class="about-us-text">
+				We built Knird with the following ideals in mind:
+				<ul class="about-us-bullets-section">
+					<li>
+						Knird will be extremely customer focused. Customers should expect very individualized attention&mdash;no 
+						matter your current level of craft sophistication.
+					</li>
+					<li>
+						Knird will continually learn each customer's individual taste preferences and leverage those learnings to 
+						better serve each customer. 
+					</li>
+					<li>
+						Knird will create both technology and a business model to ensure customers get personalized 
+						service without paying a premium. 
+					</li>
+				</ul>  
+			</h4>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

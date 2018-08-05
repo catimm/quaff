@@ -63,7 +63,7 @@
 								</div>
 								<div class="row">
 									<h5 class="fulfillment-totals">Drink total: <b><%= delivery.delivery_quantity %></b></h5>
-									<h5 class="fulfillment-totals">Total cost: <b>$<%= delivery.total_price %></b></h5>
+									<h5 class="fulfillment-totals">Total cost: <b>$<%= delivery.total_drink_price %></b></h5>
 								</div>
 								<div class="row">
 									<div class="col-xs-6">
@@ -106,7 +106,7 @@
 						</div>
 						<div class="row">
 							<h5 class="fulfillment-totals">Drink total: <b><%= delivery.delivery_quantity %></b></h5>
-							<h5 class="fulfillment-totals">Total cost: <b>$<%= delivery.total_price %></b></h5>
+							<h5 class="fulfillment-totals">Total cost: <b>$<%= delivery.total_drink_price %></b></h5>
 						</div>
 						<div class="row">
 							<h5>Delivered at <%= (delivery.delivered_at).strftime("%H:%M on %-m/%-d/%y") %></h5> 

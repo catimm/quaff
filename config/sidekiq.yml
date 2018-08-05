@@ -1,0 +1,11 @@
+:verbose: true
+development:
+  :concurrency: 1
+production:
+  :concurrency: 20
+:queues:
+  - critical
+  - default
+  - mailers
+  - low
+:timeout: 60

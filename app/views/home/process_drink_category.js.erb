@@ -1,0 +1,39 @@
+$(function() {
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	var drink_category_tile_height = $('.home-drink-profile-category-image-holder.home-drink-category').height();
+	<% if @chosen_category == "beer" %>
+		$("#home-beer-chosen").removeClass("hidden").addClass("show");
+		$('#home-beer-chosen').height(drink_category_tile_height);
+		if($("#home-cider-chosen").hasClass("show")) {
+			$("#home-cider-chosen").removeClass("show").addClass("hidden");
+		}
+	<% end %>
+	<% if @chosen_category == "cider" %>
+		$("#home-cider-chosen").removeClass("hidden").addClass("show");
+		$('#home-cider-chosen').height(drink_category_tile_height);
+		if($("#home-beer-chosen").hasClass("show")) {
+			$("#home-beer-chosen").removeClass("show").addClass("hidden");
+		}
+	<% end %>
+	
+	$("#section_drink_styles").html("<%= escape_javascript(render 'section_drink_styles') %>");
+	$("#section_drink_styles").removeClass("hidden").addClass("show");
+	$([document.documentElement, document.body]).animate({
+        scrollTop: $("#section_drink_styles").offset().top
+    }, 2000);
+		    
+	delay(function(){
+			$("#home-choose-styles-direction").removeClass("hidden").addClass("show");
+			$("#home-styles-to-choose").removeClass("hidden").addClass("show");
+			$("#process-styles-disabled-button-row").removeClass("hidden").addClass("show");
+			$([document.documentElement, document.body]).animate({
+		        scrollTop: $("#home-choose-styles-direction").offset().top + 50
+		    }, 2000);
+	    }, 2000 );
+});

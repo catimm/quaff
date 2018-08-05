@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180713191622) do
+ActiveRecord::Schema.define(version: 20180805014534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.integer "delivery_zone_id"
     t.integer "delivery_frequency"
     t.integer "shipping_zone_id"
+    t.boolean "knird_live_trial"
   end
 
   create_table "admin_inventory_transactions", id: :serial, force: :cascade do |t|
@@ -326,6 +327,23 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.index ["account_id"], name: "index_credits_on_account_id"
   end
 
+  create_table "curation_requests", id: :serial, force: :cascade do |t|
+    t.integer "account_id"
+    t.string "drink_type"
+    t.integer "number_of_beers"
+    t.integer "number_of_large_drinks"
+    t.datetime "delivery_date"
+    t.string "additional_requests"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "drink_option_id"
+    t.integer "user_id"
+    t.integer "number_of_ciders"
+    t.integer "number_of_glasses"
+    t.index ["account_id"], name: "index_curation_requests_on_account_id"
+    t.index ["user_id"], name: "index_curation_requests_on_user_id"
+  end
+
   create_table "customer_delivery_changes", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "delivery_id"
@@ -360,7 +378,7 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.date "delivery_date"
     t.decimal "subtotal", precision: 6, scale: 2
     t.decimal "sales_tax", precision: 6, scale: 2
-    t.decimal "total_price", precision: 6, scale: 2
+    t.decimal "total_drink_price", precision: 6, scale: 2
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -372,10 +390,13 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.boolean "share_admin_prep_with_user"
     t.boolean "recipient_is_21_plus"
     t.datetime "delivered_at"
-    t.integer "order_id"
+    t.integer "order_prep_id"
     t.decimal "no_plan_delivery_fee", precision: 5, scale: 2
     t.decimal "grand_total", precision: 5, scale: 2
-    t.index ["order_id"], name: "index_deliveries_on_order_id"
+    t.datetime "delivery_start_time"
+    t.datetime "delivery_end_time"
+    t.integer "account_address_id"
+    t.index ["order_prep_id"], name: "index_deliveries_on_order_prep_id"
   end
 
   create_table "delivery_drivers", id: :serial, force: :cascade do |t|
@@ -477,6 +498,7 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.boolean "curation_ready"
     t.decimal "drink_price_five_zero", precision: 5, scale: 2
     t.decimal "drink_price_five_five", precision: 5, scale: 2
+    t.boolean "rate_for_users"
   end
 
   create_table "disti_orders", id: :serial, force: :cascade do |t|
@@ -634,6 +656,11 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.decimal "drink_price_five_five", precision: 5, scale: 2
     t.date "packaged_on"
     t.date "best_by"
+    t.string "drink_category"
+    t.boolean "show_current_inventory"
+    t.integer "comped"
+    t.integer "shrinkage"
+    t.boolean "membership_only"
   end
 
   create_table "inventory_transactions", id: :serial, force: :cascade do |t|
@@ -684,21 +711,32 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.string "image_holder"
   end
 
-  create_table "orders", id: :serial, force: :cascade do |t|
+  create_table "order_drink_preps", force: :cascade do |t|
+    t.integer "user_id"
     t.integer "account_id"
-    t.string "drink_type"
-    t.integer "number_of_beers"
-    t.integer "number_of_large_drinks"
-    t.datetime "delivery_date"
-    t.string "additional_requests"
+    t.integer "inventory_id"
+    t.integer "order_prep_id"
+    t.integer "quantity"
+    t.decimal "drink_price", precision: 6, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "drink_option_id"
-    t.integer "user_id"
-    t.integer "number_of_ciders"
-    t.integer "number_of_glasses"
-    t.index ["account_id"], name: "index_orders_on_account_id"
-    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "order_preps", force: :cascade do |t|
+    t.integer "account_id"
+    t.decimal "subtotal", precision: 6, scale: 2
+    t.decimal "sales_tax", precision: 6, scale: 2
+    t.decimal "total_drink_price", precision: 6, scale: 2
+    t.string "status"
+    t.decimal "delivery_fee", precision: 6, scale: 2
+    t.decimal "grand_total", precision: 6, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "delivery_zone_id"
+    t.integer "start_time_option"
+    t.integer "reserved_delivery_time_option_id"
+    t.datetime "delivery_start_time"
+    t.datetime "delivery_end_time"
   end
 
   create_table "pending_credits", id: :serial, force: :cascade do |t|
@@ -742,6 +780,9 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.float "projected_rating"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "inventory_id"
+    t.integer "disti_inventory_id"
+    t.boolean "user_rated"
   end
 
   create_table "removed_beer_locations", id: :serial, force: :cascade do |t|
@@ -750,6 +791,15 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "removed_at"
+  end
+
+  create_table "reserved_delivery_time_options", force: :cascade do |t|
+    t.integer "max_customers"
+    t.integer "delivery_driver_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "start_time"
+    t.datetime "end_time"
   end
 
   create_table "reward_points", id: :serial, force: :cascade do |t|
@@ -800,6 +850,14 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.string "zip_end"
     t.integer "subscription_level_group"
     t.boolean "currently_available"
+  end
+
+  create_table "shortened_urls", force: :cascade do |t|
+    t.text "original_url"
+    t.string "short_url"
+    t.string "sanitize_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "size_formats", id: :serial, force: :cascade do |t|
@@ -1186,6 +1244,7 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.boolean "recent_addition"
     t.string "homepage_view"
     t.boolean "unregistered"
+    t.boolean "projected_ratings_complete"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
@@ -1215,10 +1274,9 @@ ActiveRecord::Schema.define(version: 20180713191622) do
 
   add_foreign_key "coupon_rules", "coupons"
   add_foreign_key "credits", "accounts"
-  add_foreign_key "deliveries", "orders"
+  add_foreign_key "curation_requests", "accounts"
+  add_foreign_key "curation_requests", "users"
   add_foreign_key "gift_certificate_promotions", "gift_certificates"
-  add_foreign_key "orders", "accounts"
-  add_foreign_key "orders", "users"
   add_foreign_key "pending_credits", "accounts"
   add_foreign_key "pending_credits", "beers"
   add_foreign_key "pending_credits", "deliveries"

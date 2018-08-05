@@ -1,0 +1,54 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin spinner text-center">
+	<div class="spinner-text">
+		<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+		<h4>Fetching...</h4>
+	</div>
+</div>
+<div class="container">
+	<div class="row no-margin">
+		<div class="col-xs-12 text-center" id="delivery-cost-message-holder">
+			<%= render 'delivery_cost_message'%>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-6">
+			<h1 class="standard-delivery-header">Reserved Delivery options ($8)</h1>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-9">
+			<div class="row no-margin" id="reserved-delivery-time-options-holder">
+				<%= render 'reserved_delivery_time_options_results' %>
+			</div>
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<h4 class="choose-delivery-time-text">Need more options?</h4>
+				</div>
+				<div class="col-xs-12 col-sm-4">
+					<div class="add-location-address-holder">
+						<h6 class="add-location-direction-text">back to Standard Delivery</h6>
+						<%= link_to standard_delivery_time_options_path, class: 'btn btn-success add-location' do %>
+							<i class="fa fa-calendar-check-o" aria-hidden="true"> Standard Delivery</i>
+						<% end %>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-1 text-center">
+					<h6 class="knird-live-signup-or">or</h6>
+				</div>
+				<div class="col-xs-12 col-sm-4">
+					<div class="add-location-address-holder">
+						<h6 class="add-location-direction-text">add a new delivery location</h6>
+						<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
+							<i class="fa fa-plus"> location</i>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-3 no-padding" id="checkout-summary-holder">
+			<%= render 'checkout_summary' %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

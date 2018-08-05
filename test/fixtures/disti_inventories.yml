@@ -19,6 +19,7 @@
 #  curation_ready        :boolean
 #  drink_price_five_zero :decimal(5, 2)
 #  drink_price_five_five :decimal(5, 2)
+#  rate_for_users        :boolean
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

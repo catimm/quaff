@@ -3,15 +3,28 @@ class UserAddressesController < ApplicationController
   def new
     #set user in case user navigates back during signup
     @user = current_user
-    
+        
     # set new form 
     @user_address = UserAddress.new
     
     # set additional data
     @location_type = "Office"
-    @current_delivery = false
     @header = "Add a new"
     @row_status = "hidden"
+    # check if user has a placeholder address that needs to be deleted
+    @placeholder_address = UserAddress.where(account_id: @user.account_id, address_street: nil, location_type: nil)
+    if !@placeholder_address.blank?
+      @placeholder_address.each do |address|
+        address.destroy!
+      end
+    end
+    # now check if user already has an address in the table
+    @current_address = UserAddress.where(account_id: @user.account_id).first
+    if !@current_address.blank?
+      @current_delivery = false
+    else
+      @current_delivery = true
+    end
     
     # set session to remember page arrived from 
     session[:return_to] ||= request.referer
@@ -21,8 +34,8 @@ class UserAddressesController < ApplicationController
   def create
     # create new address
     @new_address = UserAddress.create!(address_params)
-
-    # redirect back to last page before new location page
+    
+    # redirect 
     redirect_to session.delete(:return_to)
     
   end # end of create method

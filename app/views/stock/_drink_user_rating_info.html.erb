@@ -1,0 +1,14 @@
+<% @account_users.each do |account_user| %>
+	<div class="row user-ratings-row-holder<%= @number_of_users %>">
+		<% if account_user.id == current_user.id %>
+			<%= render 'layouts/user_initials_xsmall', friend: account_user %>
+			<p class="delivery-user-rating-acknowledged<%= @number_of_users %>">rated this:&nbsp </p>
+			<h1 class="delivery-user-rating<%= @number_of_users %>"> <%= drink.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
+		<% else %>
+			<% @user_rating = ProjectedRating.where(user_id: account_user.id, beer_id: drink.beer_id).first %>
+			<%= render 'layouts/user_initials_xsmall', friend: account_user %>
+			<p class="delivery-best-guess-minimized<%= @number_of_users %>">predicted:&nbsp </p>
+			<h1 class="delivery-best-guess<%= @number_of_users %>"> <%= @user_rating.projected_rating %><span class="recent-user-rating-context">/10</span></h1>
+		<% end %>
+	</div>
+<% end %>

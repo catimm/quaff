@@ -14,4 +14,15 @@
 
 class BeerTypeRelationship < ApplicationRecord
   belongs_to :beer_types
+  
+  # scope related drink styles based on first relationship
+  scope :related_drink_type_one, ->(style_id) {
+    where(relationship_one: style_id).pluck(:beer_type_id)
+  }
+  
+  # scope related drink styles based on second relationship
+  scope :related_drink_type_two, ->(style_id) {
+    where(relationship_two: style_id).pluck(:beer_type_id)
+  }
+  
 end

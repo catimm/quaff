@@ -1,0 +1,18 @@
+<div class="row cart-review-delivery-cost-message">
+	<div class="col-xs-12">
+		<h3>Want FREE Delivery? Sign up for <%= link_to "Knird Preferred", knird_preferred_membership_path %>!</h3>
+	</div>
+</div>
+<% if @delivery_cost_message == true %>
+	<div class="row no-margin">
+		<div class="co-xs-12">
+			<% if @order_prep.subtotal < 20 %>
+				<h4 class="delivery-cost-message">We have a $20 minimum for delivery...almost there!</h4>
+			<% elsif @order_prep.subtotal < 35 %>
+				<h4 class="delivery-cost-message">Standard Delivery is $5 if over $35, $8 if under $35.</h4>
+			<% elsif @order_prep.subtotal > 35 %>
+				<h4 class="delivery-cost-message">Congrats, Standard Delivery is only $5!</h4>
+			<% end %>
+		</div>
+	</div>
+<% end %>

@@ -40,7 +40,14 @@ class RatingsController < ApplicationController
     
     # post new rating and related info
     @new_user_rating = UserBeerRating.new(rating_params)
-    @new_user_rating.save!
+    if @new_user_rating.save
+      @projected_rating = ProjectedRating.where(user_id: @user.id, beer_id: @beer.id)
+      if !@projected_rating.blank?
+        @projected_rating.each do |rating|
+          rating.update(projected_rating: @new_user_rating.user_beer_rating, user_rated: true)
+        end
+      end
+    end
     @user.tag(@beer, :with => params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens], :on => :descriptors)
     
     # get the related account delivery id
@@ -142,6 +149,9 @@ class RatingsController < ApplicationController
       @user_ratings = UserBeerRating.where(user_id: current_user.id)
     end
     
+    # check if any deliveries have been made to this account
+    @account_delivery = Delivery.where(account_id: current_user.account_id)
+
     # get recent user ratings history
     @recent_user_ratings = @user_ratings.order(created_at: :desc).paginate(:page => params[:page], :per_page => 12)
   

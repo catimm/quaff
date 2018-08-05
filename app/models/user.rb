@@ -2,44 +2,45 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default("")
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0), not null
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :inet
-#  last_sign_in_ip        :inet
-#  created_at             :datetime
-#  updated_at             :datetime
-#  role_id                :integer
-#  username               :string
-#  invitation_token       :string
-#  invitation_created_at  :datetime
-#  invitation_sent_at     :datetime
-#  invitation_accepted_at :datetime
-#  invitation_limit       :integer
-#  invited_by_id          :integer
-#  invited_by_type        :string
-#  invitations_count      :integer          default(0)
-#  first_name             :string
-#  craft_stage_id         :integer
-#  last_name              :string
-#  getting_started_step   :integer
-#  cohort                 :string
-#  birthday               :date
-#  user_graphic           :string
-#  user_color             :string
-#  special_code           :string
-#  tpw                    :string
-#  account_id             :integer
-#  phone                  :string
-#  recent_addition        :boolean
-#  homepage_view          :string
-#  unregistered           :boolean
+#  id                         :integer          not null, primary key
+#  email                      :string(255)      default(""), not null
+#  encrypted_password         :string(255)      default("")
+#  reset_password_token       :string(255)
+#  reset_password_sent_at     :datetime
+#  remember_created_at        :datetime
+#  sign_in_count              :integer          default(0), not null
+#  current_sign_in_at         :datetime
+#  last_sign_in_at            :datetime
+#  current_sign_in_ip         :inet
+#  last_sign_in_ip            :inet
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  role_id                    :integer
+#  username                   :string
+#  invitation_token           :string
+#  invitation_created_at      :datetime
+#  invitation_sent_at         :datetime
+#  invitation_accepted_at     :datetime
+#  invitation_limit           :integer
+#  invited_by_id              :integer
+#  invited_by_type            :string
+#  invitations_count          :integer          default(0)
+#  first_name                 :string
+#  craft_stage_id             :integer
+#  last_name                  :string
+#  getting_started_step       :integer
+#  cohort                     :string
+#  birthday                   :date
+#  user_graphic               :string
+#  user_color                 :string
+#  special_code               :string
+#  tpw                        :string
+#  account_id                 :integer
+#  phone                      :string
+#  recent_addition            :boolean
+#  homepage_view              :string
+#  unregistered               :boolean
+#  projected_ratings_complete :boolean
 #
 
 class User < ApplicationRecord
@@ -84,6 +85,7 @@ class User < ApplicationRecord
   has_many :user_preference_beers
   has_many :user_preference_ciders
   has_many :user_preference_wines
+  has_many :order_drink_preps
   
   attr_accessor :zip # to hold zip for customers signing up for a free curation
   attr_accessor :top_type_descriptor_list # to hold list of top drink descriptors
@@ -110,6 +112,16 @@ class User < ApplicationRecord
       last_name: last_name,
       username: username
     }
+  end
+  
+  # if user is a member
+  def member?
+    @member = UserSubscription.where(account_id: self.account_id, currently_active: true)
+    if !@member.blank?
+      return true
+    else
+      return false
+    end
   end
   
   # set user roles for cancancan
@@ -146,6 +158,30 @@ class User < ApplicationRecord
     where(role_id: [1,4]) 
   }
   
+  # create Instance Method for user drink category preference
+  def chosen_drink_category
+    @user_delivery_preferences = DeliveryPreference.find_by_user_id(self.id)
+    if @user_delivery_preferences.beer_chosen == true
+      return "beer"
+    elsif @user_delivery_preferences.cider_chosen == true
+      return "cider"
+    end
+  end
+  
+  # create Instance Method for user subscription status
+  def subscription_status
+    @user_subscription_status = UserSubscription.find_by_account_id(self.account_id)
+    if !@user_subscription_status.blank?
+      if @user_subscription_status.id == 1 || @user_subscription_status.subscription.deliveries_included != 0
+        return "subscribed"
+      else
+        return "not subscribed"
+      end
+    else
+        return "not subscribed"
+    end
+  end
+  
   # create Instance Method for user drink rating
   def user_drink_rating(drink_id)
     @user_drink_rating = UserBeerRating.where(user_id: self.id, beer_id: drink_id)
@@ -164,7 +200,7 @@ class User < ApplicationRecord
   
   # create Instance Method for drink projected rating
   def user_drink_projected_rating(drink_id)
-    @projected_rating = ProjectedRating.where(user_id: self.id, beer_id: drink_id)[0]
+    @projected_rating = UserDrinkRecommendation.where(user_id: self.id, beer_id: drink_id)[0]
     if !@projected_rating.blank?
       if @projected_rating.projected_rating >= 10.0
         @final_projection = 10

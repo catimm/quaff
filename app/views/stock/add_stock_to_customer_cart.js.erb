@@ -1,0 +1,6 @@
+$(function() {
+	$("#customer-cart-indicator-holder").html("<%= escape_javascript(render 'layouts/customer_cart_addition_indicator' ) %>");
+	if($(".customer-cart-addition-indicator").hasClass("hidden")){
+		$(".customer-cart-addition-indicator").removeClass("hidden").addClass("show");
+	};
+});

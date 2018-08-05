@@ -14,6 +14,9 @@ module BestiesCode
     # add fonts folder to asset pipeline
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
     
+    # set sidekiq as background job processor
+    config.active_job.queue_adapter = :sidekiq
+    
     # set up redis for sessions
     #config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 90.minutes }
     # Settings in config/environments/* take precedence over those specified here.

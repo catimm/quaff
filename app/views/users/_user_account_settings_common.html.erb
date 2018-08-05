@@ -1,22 +1,26 @@
-<div class="row no-margin first-row">
-	<div class="container first-row-container">
-		<div class="col-xs-12 col-sm-5">
-			<h1 class="section-header">Account Settings</h1>
-		</div>
-		<div class="col-xs-12 col-sm-7">
-			<h4 class="join-date"><%= current_user.username %> joined <%= (current_user.created_at).strftime("%b %e, %Y") %></h4>
-		</div>
-		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 no-padding">
-			<div class="row">
-				<div class="col-xs-2 col-sm-1 col-md-1 col-lg-1 text-center">
-					<%= link_to "Plan", account_settings_membership_user_path, class: "drink-preference-view-option #{if current_section == "Plan" then "current" else "" end}", id: "history" %>
+<div class="row no-margin first-row-new">
+	<div class="container first-row-container-new">
+		<div class="col-xs-12 no-padding">
+			<div class="row no-margin">
+				<div class="col-xs-4 col-sm-3 col-md-2">
+					<h3 class="submenu-options">
+						<%= link_to "Personal", account_personal_path, class: "#{if current_section == "Personal" then "current" else "" end}", id: "next" %>
+					</h3>
 				</div>
-				<div class="col-xs-3 col-sm-2 col-md-2 col-lg-2 text-center">
-					<%= link_to "Mates", account_settings_mates_user_path, class: "drink-preference-view-option #{if current_section == "Mates" then "current" else "" end}", id: "guests" %>
+				<div class="col-xs-4 col-sm-3">
+					<h3 class="submenu-options">
+						<%= link_to "Addresses", account_addresses_path, class: "#{if current_section == "Address" then "current" else "" end}", id: "next" %>
+					</h3>
 				</div>
-				<div class="col-xs-3 col-sm-2 col-md-2 col-lg-2 text-center">
-					<%= link_to "Profile", account_settings_profile_user_path, class: "drink-preference-view-option #{if current_section == "Profile" then "current" else "" end}", id: "next" %>
-				</div>
+				<% if !@user_subscription.blank? %>
+					<% if @user_subscription.subscription.deliveries_included != 0 %>
+						<div class="col-xs-4 col-sm-3 col-md-2 no-padding-right">
+							<h3 class="submenu-options">
+								<%= link_to "Mates", account_mates_path, class: "#{if current_section == "Mates" then "current" else "" end}", id: "guests" %>
+							</h3>
+						</div>
+					<% end %>
+				<% end %>
 			</div>
 		</div>
 	</div>

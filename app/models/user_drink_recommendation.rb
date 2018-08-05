@@ -29,7 +29,8 @@ class UserDrinkRecommendation < ApplicationRecord
   attr_accessor :within_month # to hold whether customer had drink delivered within last month
   attr_accessor :limited_quantity # to hold whether a drink has a limited quantity available for ordering
   attr_accessor :quantity_available # to hold the quantity available for the curator to set aside
-
+  attr_accessor :top_descriptor_list # to hold list of top drink descriptors
+  
   #def initialize()
   #  self.quantity_available = []
   #end

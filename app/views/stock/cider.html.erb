@@ -1,0 +1,23 @@
+<%= render 'layouts/header' %> 
+<%= render 'stock_common', current_section: "Cider" %>
+<div class="row no-margin spinner text-center">
+	<div class="spinner-text">
+		<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+		<h4>Fetching...</h4>
+	</div>
+</div>
+<div class="container">
+	<div class="row no-margin" id="cider-header-row">
+		<%= render 'cider_header' %>
+	</div>
+	<div class="row filter-row" id="cider-filter-row">
+		<%= render 'cider_filters' %>
+	</div>
+	<div class="row no-margin" id="cider-filter-results-row">
+		<%= render 'cider_filter_results' %>
+	</div>
+	<div class="col-xs-12" id="stock-paginator-row">
+		<%= render 'stock_drink_paginator' %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

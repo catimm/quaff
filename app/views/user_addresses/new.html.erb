@@ -1,13 +1,10 @@
 <%= render 'layouts/header' %> 
 <div class="row no-margin first-row">
-	<div class="container first-row-container">
-		<div class="col-xs-12">
-			<h1 class="section-header">Delivery addresses</h1>
-		</div>
+	<div class="container first-row-container-new">
 		<div class="col-xs-12 col-sm-6">
 			<div class="row">
 				<div class="col-xs-12 no-padding-right">
-					<%= link_to "Back to Previous", request.referer.present? ? request.referer : default_path, class: "drink-preference-view-option current" %>
+					<%= link_to "Back to Previous", request.referer.present? ? request.referer : default_path, class: "submenu-options current" %>
 				</div>
 			</div>
 		</div>

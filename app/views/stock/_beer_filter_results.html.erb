@@ -1,0 +1,5 @@
+<div class="row no-margin">
+	<% @drink_recommendations.each do |drink| %>
+		<%= render 'layouts/drink_tile', drink: drink %>
+	<% end %>
+</div>

@@ -1,0 +1,10 @@
+<% if @chosen_category == "beer" %>
+	<%= render 'layouts/settings_drink_styles', drink: @category %>
+<% elsif @chosen_category == "cider" %>
+	<%= render 'layouts/settings_drink_styles', drink: @category %>
+<% end %>
+<div class="row drink-profile-next-row">
+	<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+		<%= link_to "I want to see drinks I'll love!", "#", disabled: false, class: "btn btn-success user-info-next-button", id: "profile_styles_next_button" %>
+	</div>
+</div>

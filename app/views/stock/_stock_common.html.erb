@@ -1,0 +1,18 @@
+<div class="row no-margin first-row-new">
+	<div class="container first-row-container-new">
+		<div class="col-xs-12 col-sm-7 no-padding">
+			<div class="row no-margin">
+				<div class="col-xs-5 col-md-4 no-padding-right">
+					<h3 class="submenu-options">
+						<%= link_to "Beer", beer_stock_path, class: "#{if current_section == "Beer" then "current" else "" end}" %>
+					</h3>
+				</div>
+				<div class="col-xs-4 col-sm-3">
+					<h3 class="submenu-options">
+						<%= link_to "Cider", cider_stock_path, class: "#{if current_section == "Cider" then "current" else "" end}" %>
+					</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,12 @@
+$(function() {
+	$("#beer-header-row").html("<%= escape_javascript(render 'beer_header') %>");
+	$("#beer-filter-row").html("<%= escape_javascript(render 'beer_filters') %>");
+	$("#beer-filter-results-row").html("<%= escape_javascript(render 'beer_filter_results') %>");
+	$("#stock-paginator-row").html("<%= escape_javascript(render 'stock_drink_paginator') %>");
+	
+	// get height of order quantity dropdown
+	var order_height = $('.order-dropdown-button-quantity').height();
+	// make associated text box equal height
+	$('.order-dropdown-button-text').height(order_height);
+	
+});

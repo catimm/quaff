@@ -1,0 +1,74 @@
+<div class="row no-margin">
+	<div class="col-sm-offset-6 col-sm-2 text-center">
+		<h5 class="review-table-header">Item price</h5>
+	</div>
+	<div class="col-sm-2 text-center">
+		<h5 class="review-table-header">Quantity</h5>
+	</div>
+	<div class="col-sm-2 text-center">
+		<h5 class="review-table-header">Item total</h5>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="col-xs-12"><hr></div>
+</div>
+<% @order_prep_drinks.each do |drink| %>
+	<div class="row no-margin">
+		<% if !drink.inventory.beer.beer_image.blank? %>
+			<div class="col-sm-1">
+				 <div class="beer-image-holder-cart-review">
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.inventory.beer.beer_image %>">
+				</div>
+			</div>
+		<% elsif !drink.inventory.beer.brewery.image.blank? %>
+			<div class="col-sm-1 no-padding">
+				<div class="brewery-image-holder-cart-review">
+					<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.inventory.beer.brewery.image %>">
+				</div>
+			</div>
+		<% end %>
+		<div class="col-sm-5">
+			<div class="row no-margin">
+				<div class="col-xs-12">
+					<% if drink.inventory.beer.brewery.short_brewery_name.nil? %>
+						<h5 class="tile-header beer-tile-header-homepage"><%= drink.inventory.beer.brewery.brewery_name %><span class="combined-drink-text"> <%= drink.inventory.beer.beer_name %></h5> 
+					<% else %>
+						<h5 class="tile-header beer-tile-header-homepage"><%= drink.inventory.beer.brewery.short_brewery_name %><span class="combined-drink-text"> <%= drink.inventory.beer.beer_name %></h5>
+					<% end %>
+				</div>
+				<div class="col-xs-12">
+					<%= link_to "Remove", "#", :class => 'remove-from-cart-text', :id => "#{drink.id}" %>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-2 text-center">
+			<h5 class="cart-item-price"><%= number_to_currency(drink.drink_price, precision: 2) %></h5>
+		</div>
+		<div class="col-sm-2 text-center">
+			<% if !drink.inventory.limit_per.nil? %>
+				<% @end_quantity = drink.inventory.limit_per %>
+			<% else %>
+				<% @end_quantity = drink.inventory.stock %>
+			<% end %>
+			<%= select_tag('user_quantity_add', 
+						options_for_select([*0..@end_quantity], drink.quantity),
+						class:"review-cart-dropdown", 
+						id: "#{drink.id}") %>
+		</div>
+		<div class="col-sm-2 text-center">
+			<% @item_total = drink.drink_price * drink.quantity %>
+			<h4 class="cart-item-total-price"><%= number_to_currency(@item_total, precision: 2) %></h4>
+		</div>
+	</div>
+	<div class="row no-margin"><hr></div>
+<% end %>
+<div class="row no-margin">
+	<div class="col-sm-offset-7 col-sm-5 text-right">
+		<h4 class="cart-review-summary-subtotal">Subtotal (<%= pluralize(@total_drink_count,"item") %>):&nbsp;&nbsp;&nbsp; 
+			<span class="cart-review-summary-subtotal-price"><%= number_to_currency(@order_prep.subtotal, precision: 2) %></span>
+		</h4>
+	</div>
+	<div class="col-sm-offset-7 col-sm-5 text-right">
+		<%= link_to "Add more items", stocks_path, class: "review-cart-add-more-items-text" %>
+	</div>
+</div>

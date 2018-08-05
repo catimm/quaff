@@ -1,0 +1,33 @@
+<div class="col-xs-12">
+	<h4 class="twenty-one-plus-delivery-message">Note, someone 21+ must be available to receive the delivery.</h4>
+</div>
+<div class="col-xs-12">
+	<h4 class="choose-delivery-time-text">Please choose one of the next available Standard Delivery options:</h4>
+</div>
+<% @delivery_window_options.each do |time_option| %>
+	<% @tile_id = time_option[2].to_s + "-" + time_option[3].to_s + "_" + time_option[1].to_s + "_" + time_option[4].strftime("%Y-%m-%d") %>
+	<% if @chosen_tile_id == @tile_id %>
+		<% @chosen_tile = "chosen" %>
+	<% else %>
+		<% @chosen_tile = "" %>
+	<% end %>
+	<div class="col-xs-12 col-sm-11">
+		<div class="delivery-time-standard-option-tile <%= @chosen_tile %>" id="<%= @tile_id %>">
+			<div class="row no-margin">
+				<div class="col-xs-1 no-padding">
+					<div class="check-mark-holder">
+						<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+					</div>
+				</div>
+				<div class="col-xs-4">
+					<h5 class="address-name">Delivered to your <span><%= time_option[0] %></span></h5>
+				</div>
+				<div class="col-xs-7">
+					<h4 class="delivery-time-option-text">
+						<%= time_option[4].strftime("%A, %b %e, %l%P") %> &mdash; <%= (time_option[4] + 2.hours).strftime("%l%P") %>
+					</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

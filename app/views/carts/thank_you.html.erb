@@ -1,0 +1,13 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row no-margin">
+		<div class="col-xs-12 text-center">
+			<h2 class="order-thank-you-header">Thank you for your order! We'll see you on <%= @order_prep.delivery_start_time.strftime("%A, %b %e") %>.</h2>
+			<h4 class="order-thank-you-subheader">Also, you'll receive a confirmation email soon.</h4>
+		</div>
+		<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-4 col-md-4 text-center">
+			<%= link_to "Review your upcoming delivery", user_deliveries_path, class: "btn btn-success thank-you-next-button" %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

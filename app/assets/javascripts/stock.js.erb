@@ -1,0 +1,126 @@
+$(function () {
+	
+	// hide spinner
+	$(".spinner-text").hide();
+	
+  	// show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner-text").show();
+	});
+	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner-text").hide();
+	});
+	
+	// get height of order quantity dropdown
+	var order_height = $('.order-dropdown-button-quantity').height();
+	// make associated text box equal height
+	$('.order-dropdown-button-text').height(order_height);
+	
+	// allow customers to see second row of drink information
+	$(document).on("click", ".drink-tile-show-more", function() {
+		$(this).siblings(".drink-tile-rating-row-divider").removeClass("hidden").addClass("show");
+		$(this).siblings(".drink-tile-rating-row").removeClass("hidden").addClass("show");
+		$(this).siblings(".drink-tile-show-less").removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
+	// allow customers to hide second row of drink information
+	$(document).on("click", ".drink-tile-show-less", function() {
+		$(this).siblings(".drink-tile-rating-row-divider").removeClass("show").addClass("hidden");
+		$(this).siblings(".drink-tile-rating-row").removeClass("show").addClass("hidden");
+		$(this).siblings(".drink-tile-show-more").removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
+	$('.dropdown-toggle-user-change-quantity-inventory').children('option').css('font-size','18');
+	// add logic to filter in stock table based on admin choice 
+	$(document).on('change', '#maker-list-for-beer-inventory', function () {
+		var maker_id = $(this).val();
+		var style_id = $("#style-list-for-beer-inventory").val();
+		if ( maker_id === '' ) {
+			maker_id = "all";
+		}
+		if ( style_id === '' ) {
+			style_id = "all";
+		}
+
+		$.ajax({
+		  type: "GET",
+		  url: "/stock/change_beer_view/" + maker_id + "/" + style_id
+		});
+	});
+	
+	// add logic to filter in stock table based on admin choice 
+	$(document).on('change', '#style-list-for-beer-inventory', function () {
+		var style_id = $(this).val();
+		var maker_id = $("#maker-list-for-beer-inventory").val();
+		if ( maker_id === '' ) {
+			maker_id = "all";
+		}
+		if ( style_id === '' ) {
+			style_id = "all";
+		}
+		$.ajax({
+		  type: "GET",
+		  url: "/stock/change_beer_view/" + maker_id + "/" + style_id
+		});
+	});
+	
+	// add logic to filter in stock table based on admin choice 
+	$(document).on('change', '#maker-list-for-cider-inventory', function () {
+		var maker_id = $(this).val();
+		var style_id = $("#style-list-for-cider-inventory").val();
+		if ( maker_id === '' ) {
+			maker_id = "all";
+		}
+		if ( style_id === '' ) {
+			style_id = "all";
+		}
+
+		$.ajax({
+		  type: "GET",
+		  url: "/stock/change_cider_view/" + maker_id + "/" + style_id
+		});
+	});
+	
+	// add logic to filter in stock table based on admin choice 
+	$(document).on('change', '#style-list-for-cider-inventory', function () {
+		var style_id = $(this).val();
+		var maker_id = $("#maker-list-for-cider-inventory").val();
+		if ( maker_id === '' ) {
+			maker_id = "all";
+		}
+		if ( style_id === '' ) {
+			style_id = "all";
+		}
+		$.ajax({
+		  type: "GET",
+		  url: "/stock/change_cider_view/" + maker_id + "/" + style_id
+		});
+	});
+	
+	// add inventory to cart for nonsubscribed customer
+	$(document).on('change', '.dropdown-toggle-customer-change-quantity-inventory', function () {
+		var quantity = $(this).val();
+		var this_id = $(this).attr('id');
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/stock/add_stock_to_customer_cart/" + this_id + "/" + quantity
+		});
+	});
+	
+	// add inventory to delivery request for subscribed customer
+	$(document).on('change', '.dropdown-toggle-subscriber-change-quantity-inventory', function () {
+		var quantity = $(this).val();
+		var this_id = $(this).attr('id');
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/stock/add_stock_to_subscriber_delivery/" + this_id + "/" + quantity
+		});
+	});
+	
+});

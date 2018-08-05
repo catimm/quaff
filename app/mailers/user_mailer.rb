@@ -215,7 +215,7 @@ class UserMailer < ApplicationMailer
         review_date: @review_date,
         drink: delivery_drinks,
         total_quantity: total_quantity,
-        total_price: delivery_info.total_price,
+        total_price: delivery_info.total_drink_price,
         mates: mates,
         no_plan_order: @no_plan_order,
         grand_total: delivery_info.grand_total, 
@@ -228,6 +228,33 @@ class UserMailer < ApplicationMailer
     p response
           
   end # end of customer_delivery_review email
+  
+  def customer_order_confirmation(customer, delivery_info, delivery_drinks, total_quantity)
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'customer-order-confirmation'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        delivery_date: (delivery_info.delivery_date).strftime("%A, %B #{delivery_info.delivery_date.day.ordinalize}"),
+        drink: delivery_drinks,
+        total_quantity: total_quantity,
+        total_price: delivery_info.total_drink_price,
+        grand_total: delivery_info.grand_total, 
+        delivery_fee: delivery_info.no_plan_delivery_fee
+      }
+    }
+    #Rails.logger.debug("email payload: #{payload.inspect}")
+    response = sp.transmission.send_payload(payload)
+    p response
+  end # end of customer_order_confirmation email
   
   def customer_change_confirmation(customer, delivery_info, delivery_drinks, total_quantity, mates)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV
@@ -250,7 +277,7 @@ class UserMailer < ApplicationMailer
         review_date: @review_date,
         drink: delivery_drinks,
         total_quantity: total_quantity,
-        total_price: delivery_info.total_price,
+        total_price: delivery_info.total_drink_price,
         mates: mates
       }
     }
@@ -397,7 +424,7 @@ class UserMailer < ApplicationMailer
         total_quantity: drink_quantity,
         total_subtotal: "%.2f" % (delivery_info.subtotal),
         total_tax: delivery_info.sales_tax,
-        total_price: delivery_info.total_price
+        total_price: delivery_info.total_drink_price
       }
     }
     

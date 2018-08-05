@@ -66,38 +66,22 @@ class Brewery < ApplicationRecord
   scope :order_by_brewery_name, -> {
     order(:brewery_name) 
   }
-
+  
+  # scope breweries available in current beer inventory
+  scope :current_inventory_breweries, -> { 
+    joins(:beers).merge(Beer.current_inventory_beers).uniq
+  }
+  
+  # scope breweries available in current beer inventory
+  scope :current_inventory_cideries, -> { 
+    joins(:beers).merge(Beer.current_inventory_ciders).uniq
+  }
+  
   # scope all breweries in stock
   scope :makers_in_stock, ->(brewery_id) { 
     where(id: brewery_id).
     joins(:beers).
     merge(Beer.drinks_in_stock)
   }
-  
-  #filterrific(
-  #  #default_filter_params: { live_brewery_beers: 0 },
-  #  available_filters: [
-  #    :live_brewery_beers
-  #    ]
-  #)
-  
-  #scope :live_brewery_beers, lambda { |flag|
-  #  if flag == 0 # checkbox unchecked
-  #    all
-  #    Rails.logger.debug("ALL is firing")
-  #  else 
-  #    joins(:beers).merge(Beer.live_beers) 
-  #    Rails.logger.debug("JOIN is firing")
-  #  end
-  #}
-  
-  # This method provides select options for the `current beers` filter select input.
-  # It is called in the controller as part of `initialize_filterrific`.
-  #def self.options_for_live_brewery_beers
-  #  [
-  #    ['All breweries', 0],
-  #    ['Breweries with current beers', 1]
-  #  ]
-  #end
   
 end

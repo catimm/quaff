@@ -1,0 +1,73 @@
+$(function () {
+	
+	// find parent
+	parentObj = $("#customer-cart-indicator-holder").offsetParent;
+
+	// hide spinner
+	$(".spinner-text").hide();
+	
+  	// show spinner on AJAX start
+	$(document).ajaxStart(function(){
+	  $(".spinner-text").show();
+	});
+	
+	// hide spinner on AJAX stop
+	$(document).ajaxStop(function(){
+	  $(".spinner-text").hide();
+	});
+	
+	// add inventory to cart for nonsubscribed customer
+	$(document).on('click', '.remove-from-cart-text', function () {
+		var this_id = $(this).attr('id');
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/carts/remove_drink_from_cart/" + this_id
+		});
+	});
+	
+	// add inventory to delivery request for subscribed customer
+	$(document).on('change', '.review-cart-dropdown', function () {
+		var quantity = $(this).val();
+		var this_id = $(this).attr('id');
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/carts/change_drink_quantity_in_cart/" + this_id + "/" + quantity
+		});
+	});
+	
+	// add logic to send chosen delivery time window to controller
+	$(document).on('click', '.delivery-time-standard-option-tile', function () {
+		var this_id = $(this).attr('id');
+		var id_split = this_id.split("_");
+		var delivery_zone_id = id_split[0];
+		var user_address_id = id_split[1];
+		var date_time = id_split[2];
+		
+		if($(this).parent().siblings().children('.delivery-time-option-tile').hasClass('chosen')){
+			$(this).parent().siblings().children('.delivery-time-option-tile').removeClass('chosen');
+		}
+		$(this).addClass('chosen');
+		
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/carts/standard_delivery_time_select/" + delivery_zone_id + "/" + user_address_id + "/" + date_time
+		});
+	});
+	
+	// add logic to send chosen delivery time window to controller
+	$(document).on('click', '.delivery-time-reserved-option-tile', function () {
+		var this_id = $(this).attr('id');
+		var id_split = this_id.split("-");
+		var user_address_id = id_split[0];
+		var reserved_time_option_id = id_split[1];
+		
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/carts/reserved_delivery_time_select/" + user_address_id + "/" + reserved_time_option_id
+		});
+	});
+});

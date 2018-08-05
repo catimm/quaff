@@ -68,11 +68,11 @@ class Admin::RecommendationsController < ApplicationController
       @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
     end
     # find if the account has any other users
-    @mates = User.where(account_id: @current_account_id, getting_started_step: 14).where.not(id: @account_owner[0].id)
+    @mates = User.where(account_id: @current_account_id).where('getting_started_step >= ?', 14).where.not(id: @account_owner[0].id)
     
     # set users to get relevant delivery info
     if !@mates.blank?
-      @users = User.where(account_id: @current_account_id, getting_started_step: 14)
+      @users = User.where(account_id: @current_account_id).where('getting_started_step >= ?', 14)
     else
       @users = @account_owner
     end
@@ -134,10 +134,10 @@ class Admin::RecommendationsController < ApplicationController
       # completing total cost estimate
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
       @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-      if !@customer_next_delivery.total_price.nil?
+      if !@customer_next_delivery.total_drink_price.nil?
         @next_account_delivery_subtotal = @customer_next_delivery.subtotal
         @next_account_delivery_tax = @customer_next_delivery.sales_tax
-        @next_account_delivery_drink_price = @customer_next_delivery.total_price
+        @next_account_delivery_drink_price = @customer_next_delivery.total_drink_price
       else
         @next_account_delivery_drink_price = 0
       end
@@ -251,10 +251,10 @@ class Admin::RecommendationsController < ApplicationController
     @account_id = @user.account_id
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14).where.not(id: @user.id)
+    @mates = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    @users = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14)
+    @users = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14)
     
     # get Disti Inventory option
     @disti_inventory = DistiInventory.where(beer_id: @user_drink_recommendation.beer_id, 
@@ -530,7 +530,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # update price info in Delivery table and set change confirmation to false so user gets notice
     @customer_next_delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 
-                                    total_price: @current_total_price, grand_total: @grand_total,
+                                    total_drink_price: @current_total_price, grand_total: @grand_total,
                                     delivery_change_confirmation: false)
     
     # get all drinks included in next Account Delivery
@@ -588,10 +588,10 @@ class Admin::RecommendationsController < ApplicationController
       # completing total cost estimate
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
       @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-      if !@customer_next_delivery.total_price.nil?
+      if !@customer_next_delivery.total_drink_price.nil?
         @next_account_delivery_subtotal = @customer_next_delivery.subtotal
         @next_account_delivery_tax = @customer_next_delivery.sales_tax
-        @next_account_delivery_drink_price = @customer_next_delivery.total_price
+        @next_account_delivery_drink_price = @customer_next_delivery.total_drink_price
       else
         @next_account_delivery_drink_price = 0
       end
@@ -700,10 +700,10 @@ class Admin::RecommendationsController < ApplicationController
     @customer_next_delivery = Delivery.where(account_id: @user_drink_recommendation.account_id).where.not(status: "delivered").first
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14).where.not(id: @user.id)
+    @mates = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    @users = User.where(account_id: @user_drink_recommendation.account_id, getting_started_step: 14)
+    @users = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14)
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
@@ -761,10 +761,10 @@ class Admin::RecommendationsController < ApplicationController
       # completing total cost estimate
       @delivery_cost_estimate_low = (((@delivery_cost_estimate.to_f) *0.9).floor / 5).round * 5
       @delivery_cost_estimate_high = ((((@delivery_cost_estimate.to_f) *0.9).ceil * 1.1) / 5).round * 5
-      if !@customer_next_delivery.total_price.nil?
+      if !@customer_next_delivery.total_drink_price.nil?
         @next_account_delivery_subtotal = @customer_next_delivery.subtotal
         @next_account_delivery_tax = @customer_next_delivery.sales_tax
-        @next_account_delivery_drink_price = @customer_next_delivery.total_price
+        @next_account_delivery_drink_price = @customer_next_delivery.total_drink_price
       else
         @next_account_delivery_drink_price = 0
       end
@@ -824,7 +824,7 @@ class Admin::RecommendationsController < ApplicationController
       @delivery_fee = 0
     end
     # set grand total
-    @grand_total = @next_customer_delivery.total_price + @delivery_fee
+    @grand_total = @next_customer_delivery.total_drink_price + @delivery_fee
     # update status
     @next_customer_delivery.update(share_admin_prep_with_user: true, no_plan_delivery_fee: @delivery_fee, grand_total: @grand_total)
     
@@ -1159,7 +1159,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # update price info in Delivery table and set change confirmation to false so user gets notice
     @customer_curation.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 
-                                    total_price: @current_total_price)
+                                    total_drink_price: @current_total_price)
     
     # redirect back to curation page                                             
     render js: "window.location = '#{customer_curation_path(@user.account_id, @curation_id)}'"

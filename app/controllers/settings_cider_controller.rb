@@ -1,6 +1,26 @@
 class SettingsCiderController < ApplicationController
   include StyleDescriptors
   
+  def index
+    @cider_activated = DeliveryPreference.find_by_user_id(current_user.id)
+    if @cider_activated.cider_chosen == true
+      redirect_to settings_cider_styles_path
+    end
+    
+  end # end of index method
+  
+  def activate_cider
+    @delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+    @delivery_preference.update(cider_chosen: true)
+    @user_cider_preference = UserPreferenceCider.create(user_id: current_user.id,
+                                                            delivery_preference_id: @delivery_preference.id)
+    if @user_cider_preference.save                                                       
+      redirect_to settings_cider_styles_path
+    else
+      render cider_setting_path
+    end
+  end # end activate_cider method
+  
   def cider_journey
     # give admin a view
     if current_user.role_id == 1 && params.has_key?(:format)

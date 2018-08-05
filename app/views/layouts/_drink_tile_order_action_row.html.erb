@@ -1,0 +1,59 @@
+<div class="row no-margin">
+	<div class="col-xs-12">
+		<hr>
+	</div>
+</div>
+<div class="row drink-tile-size-price-row">
+	<div class="col-xs-4 no-padding text-center">
+		<h4 class="drink-tile-item-price" data-toggle="tooltip" title="Price does not include tax"><%= number_to_currency(drink.inventory.drink_price_four_five, precision: 2) %> per </h4>
+	</div>
+	<div class="col-xs-2 no-padding text-center">
+		<h4 class="drink-tile-svg-holder" data-toggle="tooltip" title="<%= drink.inventory.size_format.format_name %>" data-placement="right">
+			<%= svg drink.inventory.size_format.image %>
+		</h4>		
+	</div>
+	<div class="col-xs-5 no-padding">
+		<% if drink.inventory.membership_only == true && !current_user.member? %>
+			<div class="member-only-order-notice">
+				<h5><%= link_to "Knird Preferred", knird_preferred_membership_path %> Members Only</h5>
+			</div>
+		<% else %>
+			<div class="order-dropdown-button">
+				<div class="order-dropdown-button-text-holder">
+					<% if !@customer_order.blank? %>
+						<h4 class="order-dropdown-button-text">Change</h4>
+					<% else %>
+						<h4 class="order-dropdown-button-text">Order</h4>
+					<% end %>
+				</div>
+				<div class="order-dropdown-button-quantity">
+					<% if !drink.inventory.limit_per.nil? %>
+						<% @end_quantity = drink.inventory.limit_per %>
+					<% else %>
+						<% @end_quantity = drink.inventory.stock %>
+					<% end %>
+					<% @quantity_available = [*0..@end_quantity] %>
+					<% if !@customer_drink_order.blank? %>
+						<% @chosen_quantity = @customer_drink_order.where(inventory_id: drink.inventory_id).first %>
+						<% if !@chosen_quantity.blank? %>
+							<%= select_tag('user_quantity_add', 
+											options_for_select(@quantity_available.map { |num| [num, num] }, @chosen_quantity.quantity.round),
+											class:"#{@current_customer_status_for_dropdown_button_class}", 
+											id: "#{drink.id}") %>
+						<% else %>
+							<%= select_tag('user_quantity_add', 
+											options_for_select(@quantity_available.map { |num| [num, num] }),
+											class:"#{@current_customer_status_for_dropdown_button_class}", 
+											id: "#{drink.id}") %>
+						<% end %>
+					<% else %>
+						<%= select_tag('user_quantity_add', 
+										options_for_select(@quantity_available.map { |num| [num, num] }),
+										class:"#{@current_customer_status_for_dropdown_button_class}", 
+										id: "#{drink.id}") %>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>

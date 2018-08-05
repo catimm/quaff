@@ -67,7 +67,11 @@
 				<div class="row no-margin delivery-second-row show" id="delivery-second-row-<%= @first_delivery.id %>">
 					<% if @first_delivery.status == "admin prep" %>
 						<div class="col-xs-12">
-							<h4 class="delivered-on-date">You will receive an email with details as soon as your curator has prepared this delivery&mdash;should be soon!</h4>
+							<h4 class="delivered-on-date">
+								You can 
+								<%= link_to "add drinks to your next delivery here", @current_stock_link %> or you can let your PDA handle the heavy lifing. 
+								Either way, you'll receive an email to review details as soon as your curation is ready for this delivery!
+							</h4>
 						</div>
 					<% elsif @first_delivery.status == "user review" %>
 						<% if @user_subscription.subscription.deliveries_included == 0 %>
@@ -75,7 +79,7 @@
 								<h4 class="delivered-on-date">Your order is ready to review.</h4>
 							</div>
 							<div class="col-xs-4 col-sm-2">
-								<%= link_to "Review order", order_status_path, class: 'btn btn-success formButton-send-note' %>
+								<%= link_to "Review order", curation_request_status_path, class: 'btn btn-success formButton-send-note' %>
 							</div>
 						<% else %>
 							<% @first_delivery_drinks.each do |drink| %>
@@ -84,7 +88,7 @@
 						<% end %>
 					<% else %>
 						<% @first_delivery_drinks.each do |drink| %>
-							<%= render(partial: 'drink_card_current_delivery', locals: { drink: drink }) %>
+							<%= render 'layouts/drink_tile', drink: drink %>
 						<% end %>
 					<% end %>	
 				</div>
@@ -227,12 +231,25 @@
 			</div>
 			<div class="row no-margin">
 				<div class="col-xs-12">
-					<% if @user_subscription.blank? %>
-						<h4>We'll send you an email as soon as your free curation is ready!</h4>
-					<% elsif @user.role_id == 6 %>
-						<h4>Join Knird to get your first delivery!</h4>
+					<% if @first_order_in_process == true %>
+						<div class="row no-margin delivery-first-row">
+							<div class="col-xs-12 col-sm-5 col-md-5 no-padding-right">
+								<h4 class="delivered-on-date"><%= (@order_prep.delivery_start_time).strftime("%a, %b %-d %Y") %></h4>
+							</div>
+						</div>
+						<div class="row no-margin delivery-second-row show">
+							<div class="col-xs-12">
+								<h4 class="delivered-on-date">
+									Your order is currently being processed. 
+									Details will be available here shortly!
+								</h4>
+							</div>
+						</div>
 					<% else %>
-						<h4>You haven't had a delivery yet, but there should be one on its way soon!</h4>
+						<h4 class="deliveries-get-started-message">
+							You haven't had a delivery yet, but  
+									<%= link_to "order drinks here", stocks_path %> to get one scheduled. Hope to see you soon!
+						</h4>
 					<% end %>
 				</div>
 			</div>

@@ -7,7 +7,7 @@
 #  delivery_date                    :date
 #  subtotal                         :decimal(6, 2)
 #  sales_tax                        :decimal(6, 2)
-#  total_price                      :decimal(6, 2)
+#  total_drink_price                :decimal(6, 2)
 #  status                           :string
 #  created_at                       :datetime         not null
 #  updated_at                       :datetime         not null
@@ -19,14 +19,17 @@
 #  share_admin_prep_with_user       :boolean
 #  recipient_is_21_plus             :boolean
 #  delivered_at                     :datetime
-#  order_id                         :integer
+#  order_prep_id                    :integer
 #  no_plan_delivery_fee             :decimal(5, 2)
 #  grand_total                      :decimal(5, 2)
+#  delivery_start_time              :datetime
+#  delivery_end_time                :datetime
+#  account_address_id               :integer
 #
 
 class Delivery < ApplicationRecord
   belongs_to :account
-  belongs_to :order, optional: true
+  belongs_to :order_prep, optional: true
   
   has_many :delivery_zones
   has_many :account_deliveries

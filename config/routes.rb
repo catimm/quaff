@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     get '/users/invitation/invite_friend/users/invitation/check_invited_mate_status/:id' => 'invitations#check_invited_friend_status', :constraints => { :id => /[^\/]+/ }
     post 'users/invitation/process_friend_invite' => 'invitations#process_friend_invite', :as => 'process_friend_invite'
   end
+
   
   # mount Blazer
   mount Blazer::Engine, at: "admin/blazer"
@@ -19,8 +20,9 @@ Rails.application.routes.draw do
   get '/users/start_account' => 'users#edit', :as => 'users_start_account'
   get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'
   patch '/users/process_first_password' => 'users#process_first_password', :as => 'process_first_password_user'
-  get '/users/account_settings_profile' => 'users#account_settings_profile', :as => 'account_settings_profile_user' 
-  get '/users/account_settings_mates' => 'users#account_settings_mates', :as => 'account_settings_mates_user'
+  get '/account_settings_personal' => 'users#account_personal', :as => 'account_personal'
+  get '/account_settings_addresses' => 'users#account_addresses', :as => 'account_addresses'  
+  get '/account_settings_mates' => 'users#account_mates', :as => 'account_mates'
   get '/users/plan_rewewal_off' => 'users#plan_rewewal_off', :as => 'plan_rewewal_off_user'
   patch '/users/update_profile' => 'users#update_profile', :as => 'update_profile_user'
   patch '/users/update_password' => 'users#update_password', :as => 'update_password_user'
@@ -79,11 +81,26 @@ Rails.application.routes.draw do
   end
   
   # routes to current inventory for customers to view
-  get 'current_inventory/beer/:artisan/:style' => 'current_inventory#beer', :as => 'current_inventory_beer'
-  get 'current_inventory/change_beer_view/:artisan/:style' => 'current_inventory#change_beer_view'
-  get 'current_inventory/cider/:artisan/:style' => 'current_inventory#cider', :as => 'current_inventory_cider'
-  get 'current_inventory/change_cider_view/:artisan/:style' => 'current_inventory#change_cider_view'
-  get 'current_inventory/wine/:artisan/:style' => 'current_inventory#wine', :as => 'current_inventory_wine'
+  get 'stock/index' => 'stock#index', :as => 'stocks'
+  get 'stock/beer' => 'stock#beer', :as => 'beer_stock'
+  get 'stock/change_beer_view/:artisan/:style' => 'stock#change_beer_view'
+  get 'stock/cider' => 'stock#cider', :as => 'cider_stock'
+  get 'stock/change_cider_view/:artisan/:style' => 'stock#change_cider_view'
+  get 'stock/wine' => 'stock#wine', :as => 'wine_stock'
+  post 'stock/add_stock_to_customer_cart/:id/:quantity' => 'stock#add_stock_to_customer_cart'
+  post 'stock/add_stock_to_subscriber_delivery/id:/:quantity' => 'stock#add_stock_to_subscriber_delivery'
+  
+  # routes for cart checkout
+  get 'review' => 'carts#review', :as => 'cart_review'
+  post 'carts/change_drink_quantity_in_cart/:id/:quantity' => 'carts#change_drink_quantity'
+  post 'carts/remove_drink_from_cart/:id' => 'carts#remove_drink'
+  get 'standard_delivery' => 'carts#standard_delivery_time_options', :as => 'standard_delivery_time_options'
+  post 'carts/standard_delivery_time_select/:delivery_zone/:user_address/:date_time' => 'carts#standard_delivery_time_select'
+  get 'reserved_delivery' => 'carts#reserved_delivery_time_options', :as => 'reserved_delivery_time_options'
+  post 'carts/reserved_delivery_time_select/:user_address/:reserved_id' => 'carts#reserved_delivery_time_select'
+  get 'checkout' => 'carts#checkout', :as => 'cart_checkout'
+  post 'process_checkout' => 'carts#process_checkout', :as => 'process_cart_checkout'
+  get 'order_thank_you' => 'carts#thank_you', :as => 'order_thank_you'
   
   # admin recommendation routes
   get 'admin/recommendations/admin_account_delivery/:id' => 'admin/recommendations#admin_account_delivery'
@@ -130,8 +147,30 @@ Rails.application.routes.draw do
     end
   end
   
+  # home controller routes
   root :to => 'home#index'
-   
+  get 'privacy' => 'home#privacy', :as => "privacy"
+  get 'terms' => 'home#terms', :as => "terms"
+  get 'about_us' => 'home#about_us', :as => "about_us"
+  get 'faqs' => 'home#faqs', :as => "faqs"
+  get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
+  get 'membership_plans' => 'home#membership_plans', :as => "membership_plans"
+  get 'summer' => 'home#summer', :as => "summer"
+  get 'relax' => 'home#relax', :as => "relax"
+  get 'six_free' => 'home#six_free', :as => "six_free"
+  get 'temp_home' => 'home#temp_home', :as => "temp_home"
+  get 'home/try_another_zip' => 'home#try_another_zip', :as => 'try_another_zip'
+  get 'home/zip_code_response/:id' => 'home#zip_code_response', :as => 'homepage_zipcode_search'
+  post 'home/process_zip_code/:zip' => 'home#process_zip_code'
+  post 'home/process_drink_category/:category' => 'home#process_drink_category'
+  post 'home/process_styles/:style_info/:style_id' => 'home#process_styles'
+  get 'home/process_drink_styles' => 'home#process_drink_styles', :as => 'homepage_process_styles'
+  get 'home/projected_ratings_check' => 'home#projected_ratings_check'
+  
+  # routes for Knird Live membership and settings
+  get '/knird_preferred_membership' => 'knird_preferred#membership', :as => 'knird_preferred_membership'
+  get '/knird_preferred_drink_categories' => 'knird_preferred#drink_categories', :as => 'knird_preferred_drink_categories'
+  
   # routes to user delivery settings pages
   get '/delivery_settings/index' => 'delivery_settings#index', :as => 'user_delivery_settings'
   get '/delivery_settings/delivery_location' => 'delivery_settings#delivery_location', :as => 'user_delivery_settings_location'
@@ -145,7 +184,6 @@ Rails.application.routes.draw do
   post '/delivery_settings/customer_delivery_messages/' => 'delivery_settings#customer_delivery_messages', :as => 'customer_delivery_messages'
   post '/delivery_settings/customer_delivery_requests/' => 'delivery_settings#customer_delivery_requests', :as => 'customer_delivery_requests_settings'
   post '/signup/customer_delivery_requests/' => 'signup#customer_delivery_requests', :as => 'customer_delivery_requests_signup'
-  get '/delivery_settings/drink_categories' => 'delivery_settings#drink_categories', :as => 'drink_categories'
   get '/delivery_settings/delivery_frequency' => 'delivery_settings#delivery_frequency', :as => 'delivery_frequency'
   get '/delivery_settings/change_delivery_date' => 'delivery_settings#change_delivery_date', :as => 'change_delivery_date'
   post '/delivery_settings/process_delivery_date_change/:id' => 'delivery_settings#process_delivery_date_change', :as => 'process_delivery_date_change'
@@ -180,10 +218,10 @@ Rails.application.routes.draw do
   post '/connections/process_friend_changes_on_find_page/:id' => 'connections#process_friend_changes_on_find_page'
   
   # routes to drink pages
-  get '/drinks/deliveries' => 'drinks#deliveries', :as => 'user_deliveries'
+  get '/deliveries' => 'drinks#deliveries', :as => 'user_deliveries'
   get '/drinks/free_curation' => 'drinks#free_curation', :as => 'free_curation'
-  get '/drinks/cellar' => 'drinks#cellar', :as => 'user_cellar'
-  get '/drinks/wishlist' => 'drinks#wishlist', :as => 'user_wishlist'
+  get '/cellar' => 'drinks#cellar', :as => 'user_cellar'
+  get '/wishlist' => 'drinks#wishlist', :as => 'user_wishlist'
   get '/drinks/supply/:id' => 'drinks#supply', :as => 'user_supply'
   get '/drinks/load_rating_form_in_supply/:id' => 'drinks#load_rating_form_in_supply'
   get '/drinks/reload_drink_skip_rating/:id' => 'drinks#reload_drink_skip_rating'
@@ -214,6 +252,8 @@ Rails.application.routes.draw do
   patch '/users/customer_delivery_date/:id' => 'users#customer_delivery_date', :as => 'reset_customer_delivery_date'
   
   # beer settings routes
+  get '/settings_beer/index' => 'settings_beer#index', :as => 'beer_setting'
+  get '/settings_beer/activate_beer' => 'settings_beer#activate_beer', :as => 'activate_beer'
   get '/settings_beer/beer_journey' => 'settings_beer#beer_journey', :as => 'settings_beer_journey'
   get '/settings_beer/beer_numbers' => 'settings_beer#beer_numbers', :as => 'settings_beer_numbers'
   get '/settings_beer/beer_styles' => 'settings_beer#beer_styles', :as => 'settings_beer_styles'
@@ -223,6 +263,8 @@ Rails.application.routes.draw do
   patch '/settings_beer/process_beer_extras' => 'settings_beer#process_beer_extras', :as => 'process_beer_extras'
   
   # cider settings routes
+  get '/settings_cider/index' => 'settings_cider#index', :as => 'cider_setting'
+  get '/settings_cider/activate_cider' => 'settings_cider#activate_cider', :as => 'activate_cider'
   get '/settings_cider/cider_journey' => 'settings_cider#cider_journey', :as => 'settings_cider_journey'
   get '/settings_cider/cider_numbers' => 'settings_cider#cider_numbers', :as => 'settings_cider_numbers'
   get '/settings_cider/cider_styles' => 'settings_cider#cider_styles', :as => 'settings_cider_styles'
@@ -232,6 +274,8 @@ Rails.application.routes.draw do
   patch '/settings_cider/process_cider_extras' => 'settings_cider#process_cider_extras', :as => 'process_cider_extras'
   
   # wine settings routes
+  get '/settings_wine/index' => 'settings_wine#index', :as => 'wine_setting'
+  get '/settings_wine/activate_wine' => 'settings_wine#activate_wine', :as => 'activate_wine'
   get '/settings_wine/wine_journey' => 'settings_wine#wine_journey', :as => 'settings_wine_journey'
   get '/settings_wine/wine_numbers' => 'settings_wine#wine_numbers', :as => 'settings_wine_numbers'
   get '/settings_wine/wine_styles' => 'settings_wine#wine_styles', :as => 'settings_wine_styles'
@@ -357,25 +401,15 @@ Rails.application.routes.draw do
   # Coupons
   get '/coupons/:coupon_code' => 'coupon#check_coupon', :as => 'check_coupon'
 
-  # Orders
-  get '/orders/status' => 'orders#status', :as => 'order_status'
-  get '/orders/update_order_estimate' => 'orders#update_order_estimate', :as => 'update_order_estimate'
-  post '/orders/process_ad_hoc_approval/:id' => 'orders#process_ad_hoc_approval', :as => 'process_ad_hoc_approval'
-  resources :orders
+  # Curation Requests
+  get '/curation_requests/status' => 'curation_requests#status', :as => 'curation_request_status'
+  get '/curation_requests/update_order_estimate' => 'curation_requests#update_order_estimate', :as => 'update_curation_request_estimate'
+  post '/curation_requests/process_ad_hoc_approval/:id' => 'curation_requests#process_ad_hoc_approval', :as => 'process_ad_hoc_approval'
+  resources :curation_requests
   
   # Shipments
   resources :shipments
   
-  # privacy and terms routes
-  get 'privacy' => 'home#privacy', :as => "privacy"
-  get 'terms' => 'home#terms', :as => "terms"
-  get 'about_us' => 'home#about_us', :as => "about_us"
-  get 'faqs' => 'home#faqs', :as => "faqs"
-  get 'outside_seattle' => 'home#outside_seattle', :as => "outside_seattle"
-  get 'membership_plans' => 'home#membership_plans', :as => "membership_plans"
-  get 'summer' => 'home#summer', :as => "summer"
-  get 'relax' => 'home#relax', :as => "relax"
-  get 'six_free' => 'home#six_free', :as => "six_free"
   
   # routes--mostly old for retailers
   get '/draft_boards/:board_id/swap_drinks/:tap_id(.:format)' => 'draft_boards#choose_swap_drinks', :as => 'swap_drinks'
@@ -410,9 +444,7 @@ Rails.application.routes.draw do
   post '/retailers/info_request' => 'retailers#info_request'
   resources :retailers
   
-  get 'home/try_another_zip' => 'home#try_another_zip', :as => 'try_another_zip'
-  get 'home/zip_code_response/:id' => 'home#zip_code_response', :as => 'homepage_zipcode_search'
-  post 'home/create' => 'home#create', :as => 'invitation_request'
+  # random routes
   post 'users/update' => 'users#update', :as => 'new_drink'
   post 'ratings/create' => 'ratings#create', :as => 'user_new_rating'
   post 'trackings/create' => 'trackings#create', :as => 'user_new_tracking'
@@ -424,7 +456,7 @@ Rails.application.routes.draw do
   post 'beers/change_wishlist_setting/:id' => 'beers#change_wishlist_setting', :as => 'change_wishlist_setting'
   post 'breweries/:brewery_id/beers/beers/change_cellar_setting/:id' => 'beers#change_cellar_setting', :as => 'change_cellar_setting'
   get 'breweries/:brewery_id/beers/beers/data' => 'beers#data', :defaults => { :format => 'json'}
-  #get '/users/:user_id/ratings/new(.:format)' => 'ratings#new', :as => 'new_user_rating'
+  
   
   # admin testing routes
   get 'porting' => 'porting#index'

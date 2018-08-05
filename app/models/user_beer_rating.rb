@@ -63,4 +63,5 @@ class UserBeerRating < ApplicationRecord
     select('beer_id as beer_id, avg(user_beer_ratings.user_beer_rating) as average_drink_rating, count(user_beer_ratings.user_beer_rating) as drinks_rated').
     order('average_drink_rating desc')
   }
+
 end

@@ -480,7 +480,7 @@ class DeliverySettingsController < ApplicationController
     @next_delivery.update(delivery_date: @new_delivery_date, 
                           subtotal: 0, 
                           sales_tax: 0, 
-                          total_price: 0,
+                          total_drink_price: 0,
                           status: "admin prep",
                           share_admin_prep_with_user: false)
     if !@second_delivery.blank?
@@ -548,7 +548,7 @@ class DeliverySettingsController < ApplicationController
     end
     
     # update delivery info and note a confirmation email should be sent
-    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
+    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_drink_price: @new_total_price, delivery_change_confirmation: false)
       
     # add change to the customer_delivery_changes table
     @customer_delivery_change = CustomerDeliveryChange.where(user_delivery_id: @user_delivery_id).first
@@ -620,7 +620,7 @@ class DeliverySettingsController < ApplicationController
     @new_total_price = @new_subtotal + @new_sales_tax
     
     # update delivery info and note that a confirmation email should be sent
-    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_price: @new_total_price, delivery_change_confirmation: false)
+    @delivery.update(subtotal: @new_subtotal, sales_tax: @new_sales_tax, total_drink_price: @new_total_price, delivery_change_confirmation: false)
     
     # update reserved inventory 
     @new_inventory_reserved = @current_inventory_reserved - 1
@@ -697,134 +697,141 @@ class DeliverySettingsController < ApplicationController
     # get user info
     @user = User.find(current_user.id)
     
-    # get user subscription
-    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
-    
-    # determine current week status
-    @current_week_number = Date.today.strftime("%U").to_i
-    if @current_week_number.even?
-      @current_week_status = "even"
-    else
-      @current_week_status = "odd"
-    end
-    
-    @display_a_currently_chosen_time = true
-    # get user delivery location preference
-    @delivery_location_preference = DeliveryPreference.find_by_user_id(current_user.id)
-    #Rails.logger.debug("Delivery preference info: #{@delivery_location_preference.inspect}")
-    
     # get current delivery location
     @current_delivery_location = UserAddress.where(account_id: @user.account_id, current_delivery_location: true)[0]
     #Rails.logger.debug("Current Delivery Location: #{@current_delivery_location.inspect}")
     
-    # get name of current delivery location
-    if @current_delivery_location.location_type == "Other"
-      @current_delivery_location_name = @current_delivery_location.other_name.upcase
-    else
-      @current_delivery_location_name = @current_delivery_location.location_type.upcase
-    end
-            
-    # get current delivery day/time
-    @current_delivery_time = DeliveryZone.find_by_id(@current_delivery_location.delivery_zone_id)
-    
-    # get current delivery time options 
-    @current_delivery_time_options = DeliveryZone.where(zip_code: @current_delivery_location.zip).
-                                      where.not(id: @current_delivery_location.delivery_zone_id)
-   
-    # get user's delivery info
-    @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
-    if !@all_upcoming_deliveries.blank?
-      # get next planned delivery
-      @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
-    end 
-    
-    # set number of days needed before allowing change in delivery date
-    @days_notice_required = 1
-    
-    # get next delivery date(s) of current delivery alternatives 
-    @current_delivery_time_options.each do |option|
-      # first determine next two options based on week alignment
-      if option.weeks_of_year == "every"
-        @first_delivery_date_option = Date.parse(option.day_of_week)
-        @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-      elsif option.weeks_of_year == @current_week_status
-        @first_delivery_date_option = Date.parse(option.day_of_week)
-        @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
-      else
-        @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-        @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
-      end
-
-      # next determine which of two options is best based on days noticed required
-      @days_between_today_and_first_option = @first_delivery_date_option - Date.today
-      #Rails.logger.debug("Days between today and first option: #{@days_between_today_and_first_option.inspect}")
-      if @days_between_today_and_first_option >= @days_notice_required
-        if @first_delivery_date_option < option.beginning_at
-          option.next_available_delivery_date = option.beginning_at
-        else
-          option.next_available_delivery_date = @first_delivery_date_option
-        end
-      else
-        if @second_delivery_date_option < option.beginning_at
-          option.next_available_delivery_date = option.beginning_at
-        else
-          option.next_available_delivery_date = @second_delivery_date_option
-        end
-      end
-    end
+    if !@current_delivery_location.blank?
+      # get user subscription
+      @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
       
-    # order delivery time options by date
-    @current_delivery_time_options = @current_delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}
-   
-    # get other location options
-    @additional_delivery_locations = UserAddress.where(account_id: @user.account_id, current_delivery_location: false)
-    
-    # create hash to store additional delivery time options
-    @delivery_time_options_hash = {}
-    
-    # find delivery time options for additional delivery locations
-    @additional_delivery_locations.each do |location|
-      @delivery_time_options = DeliveryZone.where(zip_code: location.zip)
-      if !@delivery_time_options.blank?
-        @delivery_time_options.each do |option| 
-          # first determine next two options based on week alignment
-          if option.weeks_of_year == "every"
-            @first_delivery_date_option = Date.parse(option.day_of_week)
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-          elsif option.weeks_of_year == @current_week_status
-            @first_delivery_date_option = Date.parse(option.day_of_week)
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
+      # determine current week status
+      @current_week_number = Date.today.strftime("%U").to_i
+      if @current_week_number.even?
+        @current_week_status = "even"
+      else
+        @current_week_status = "odd"
+      end
+      
+      @display_a_currently_chosen_time = true
+      # get user delivery location preference
+      @delivery_location_preference = DeliveryPreference.find_by_user_id(current_user.id)
+      #Rails.logger.debug("Delivery preference info: #{@delivery_location_preference.inspect}")
+      
+      
+      
+      # get name of current delivery location
+      if @current_delivery_location.location_type == "Other"
+        @current_delivery_location_name = @current_delivery_location.other_name.upcase
+      else
+        @current_delivery_location_name = @current_delivery_location.location_type.upcase
+      end
+              
+      # get current delivery day/time
+      @current_delivery_time = DeliveryZone.find_by_id(@current_delivery_location.delivery_zone_id)
+      
+      # get current delivery time options 
+      @current_delivery_time_options = DeliveryZone.where(zip_code: @current_delivery_location.zip).
+                                        where.not(id: @current_delivery_location.delivery_zone_id)
+     
+      # get user's delivery info
+      @all_upcoming_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: "delivered")
+      if !@all_upcoming_deliveries.blank?
+        # get next planned delivery
+        @next_delivery = @all_upcoming_deliveries.order("delivery_date ASC").first
+      end 
+      
+      # set number of days needed before allowing change in delivery date
+      @days_notice_required = 1
+      
+      # get next delivery date(s) of current delivery alternatives 
+      @current_delivery_time_options.each do |option|
+        # first determine next two options based on week alignment
+        if option.weeks_of_year == "every"
+          @first_delivery_date_option = Date.parse(option.day_of_week)
+          @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+        elsif option.weeks_of_year == @current_week_status
+          @first_delivery_date_option = Date.parse(option.day_of_week)
+          @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
+        else
+          @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+          @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
+        end
+  
+        # next determine which of two options is best based on days noticed required
+        @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+        #Rails.logger.debug("Days between today and first option: #{@days_between_today_and_first_option.inspect}")
+        if @days_between_today_and_first_option >= @days_notice_required
+          if @first_delivery_date_option < option.beginning_at
+            option.next_available_delivery_date = option.beginning_at
           else
-            @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
-            @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
+            option.next_available_delivery_date = @first_delivery_date_option
           end
-            # next determine which of two options is best based on days noticed required
-            @days_between_today_and_first_option = @first_delivery_date_option - Date.today
-            if @days_between_today_and_first_option >= @days_notice_required
-              if @first_delivery_date_option < option.beginning_at
-                @delivery_time_options_hash[option.id] = option.beginning_at
-              else
-                @delivery_time_options_hash[option.id] = @first_delivery_date_option
-              end
-            else
-              if @second_delivery_date_option < option.beginning_at
-                @delivery_time_options_hash[option.id] = option.beginning_at
-              else
-                @delivery_time_options_hash[option.id] = @second_delivery_date_option
-              end
-            end
+        else
+          if @second_delivery_date_option < option.beginning_at
+            option.next_available_delivery_date = option.beginning_at
+          else
+            option.next_available_delivery_date = @second_delivery_date_option
+          end
         end
       end
-    end
-    
-    # find if the account has any other users (for menu links)
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
-    
-    # create new CustomerDeliveryRequest instance
-    @customer_delivery_request = CustomerDeliveryRequest.new
-    # and set correct path for form
-    @customer_delivery_request_path = customer_delivery_requests_settings_path
-    
+        
+      # order delivery time options by date
+      @current_delivery_time_options = @current_delivery_time_options.sort_by{|data| [data.day_of_week, data.start_time, data.next_available_delivery_date]}
+     
+      # get other location options
+      @additional_delivery_locations = UserAddress.where(account_id: @user.account_id, current_delivery_location: false)
+      
+      # create hash to store additional delivery time options
+      @delivery_time_options_hash = {}
+      
+      # find delivery time options for additional delivery locations
+      @additional_delivery_locations.each do |location|
+        @delivery_time_options = DeliveryZone.where(zip_code: location.zip)
+        if !@delivery_time_options.blank?
+          @delivery_time_options.each do |option| 
+            # first determine next two options based on week alignment
+            if option.weeks_of_year == "every"
+              @first_delivery_date_option = Date.parse(option.day_of_week)
+              @second_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+            elsif option.weeks_of_year == @current_week_status
+              @first_delivery_date_option = Date.parse(option.day_of_week)
+              @second_delivery_date_option = Date.parse(option.day_of_week) + 14.days
+            else
+              @first_delivery_date_option = Date.parse(option.day_of_week) + 7.days
+              @second_delivery_date_option = Date.parse(option.day_of_week) + 21.days
+            end
+              # next determine which of two options is best based on days noticed required
+              @days_between_today_and_first_option = @first_delivery_date_option - Date.today
+              if @days_between_today_and_first_option >= @days_notice_required
+                if @first_delivery_date_option < option.beginning_at
+                  @delivery_time_options_hash[option.id] = option.beginning_at
+                else
+                  @delivery_time_options_hash[option.id] = @first_delivery_date_option
+                end
+              else
+                if @second_delivery_date_option < option.beginning_at
+                  @delivery_time_options_hash[option.id] = option.beginning_at
+                else
+                  @delivery_time_options_hash[option.id] = @second_delivery_date_option
+                end
+              end
+          end
+        end
+      end
+      
+      # find if the account has any other users (for menu links)
+      @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
+      
+      # create new CustomerDeliveryRequest instance
+      @customer_delivery_request = CustomerDeliveryRequest.new
+      # and set correct path for form
+      @customer_delivery_request_path = customer_delivery_requests_settings_path
+    else
+      # set session to remember page arrived from 
+      session[:return_to] ||= request.referer
+      redirect_to new_user_address_path(@user.account_id)
+    end  
   end # end of delivery_location method
   
   def change_delivery_time

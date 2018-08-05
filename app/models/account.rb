@@ -11,6 +11,7 @@
 #  delivery_zone_id                  :integer
 #  delivery_frequency                :integer
 #  shipping_zone_id                  :integer
+#  knird_live_trial                  :boolean
 #
 
 class Account < ApplicationRecord
@@ -23,6 +24,7 @@ class Account < ApplicationRecord
   accepts_nested_attributes_for :user_addresses, :allow_destroy => true
   has_many :users
   accepts_nested_attributes_for :users, :allow_destroy => true
+  has_many :order_drink_preps
   
   belongs_to :delivery_zone, optional: true
   belongs_to :shipping_zone, optional: true

@@ -1,0 +1,14 @@
+<div class="col-xs-12 col-sm-3">
+	<% if @artisan != "all" %>
+		<%= collection_select(:brewery, :id, @currently_available_makers, :slug, :short_brewery_name, {include_blank: "All Artisans", selected: @current_artisan.slug}, {class: "form-control", id: "maker-list-for-beer-inventory"}) %>
+	<% else %>
+		<%= collection_select(:brewery, :id, @currently_available_makers, :slug, :short_brewery_name, {include_blank: "All Artisans"}, {class: "form-control", id: "maker-list-for-beer-inventory"}) %>
+	<% end %>
+</div>
+<div class="col-xs-12 col-sm-3">
+	<% if @style != "all" %>
+		<%= collection_select(:beer_style, :id, @currently_available_styles, :id, :style_name, {include_blank: "All Styles", selected: @current_style.id}, {class: "form-control", id: "style-list-for-beer-inventory"}) %>
+	<% else %>
+		<%= collection_select(:beer_style, :id, @currently_available_styles, :id, :style_name, {include_blank: "All Styles"}, {class: "form-control", id: "style-list-for-beer-inventory"}) %>
+	<% end %>
+</div>

@@ -1,65 +1,14 @@
-<% if user_signed_in? %>
-	<%= render 'layouts/header' %> 
-<% else %>
-	<%= render 'layouts/header_home_temp' %> 
-<% end %>
-<div class="row no-margin first-row">
-	<div class="container first-row-container">
-		<div class="col-xs-12">
-			<h1 class="section-header">More info</h1>
-		</div>
-		<div class="col-xs-12 col-sm-7">
-			<div class="row">
-				<div class="col-xs-4">
-					<%= link_to "About Us", about_us_path, class: "drink-preference-view-option current" %>
-				</div>
-				<div class="col-xs-4">
-					<%= link_to "FAQs", faqs_path, class: "drink-preference-view-option" %>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="container">
-	<div class="row more-info-page-header-row">
-		<div>
-		  <h3 class="recent-ratings-header">About Us</h3>
-		</div>
-	</div>
-	<div class="row no-margin">
-		<div>
-			<h4 class="about-us-text">
-				<span>We believe craft beer and cider should be simpler, more enjoyable.</span>  
-				We started Knird because we think craft beer and cider has become too complex.  Hundreds of varieties.  
-				Thousands of producers. Tap houses with 50+ taps.  Bottle shops with "thousands" of bottles on their shelves.  
-				Where to start?
-			</h4>
-			<h4 class="about-us-text">
-				You can ask the person behind the counter or a server for guidance, but they don't know you.  Often times 
-				their input isn't any better than ordering at random....
-			</h4>
-			<h4 class="about-us-text">
-				<span>We believe truly personalized curation should be available to everyone</span>, like you might get from your 
-				best-friend-beer-geek who knows your taste prefrences.
-			</h4>
-			<h4 class="about-us-text">
-				We built Knird with the following ideals in mind:
-				<ul class="about-us-bullets-section">
-					<li>
-						Knird will be extremely customer focused. Customers should expect very individualized attention&mdash;no 
-						matter your current level of craft sophistication.
-					</li>
-					<li>
-						Knird will continually learn each customer's individual taste preferences and leverage those learnings to 
-						better serve each customer. 
-					</li>
-					<li>
-						Knird will create both technology and a business model to ensure customers get personalized 
-						service without paying a premium. 
-					</li>
-				</ul>  
-			</h4>
-		</div>
-	</div>
-</div>
-<%= render 'layouts/footer' %>
+<%= render 'layouts/header_home_temp' %> 
+<!-- Page Content -->
+    <section class="background-light about_us_section">
+		<%= render 'section_about_us_intro' %>
+    </section>
+    <section class="background-dark about_us_section">
+		<%= render 'section_about_us_how' %>
+    </section>
+    <%= render 'knird_preferred/membership_value_prop' %>
+	<%= render 'knird_preferred/membership_overview' %>
+	<%= render 'knird_preferred/membership_pda' %>
+	<%= render 'knird_preferred/membership_drink_pricing' %>
+	<%= render 'knird_preferred/membership_regular_deliveries' %>
+<%= render 'layouts/footer_home' %>

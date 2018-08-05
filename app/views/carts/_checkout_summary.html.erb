@@ -1,0 +1,75 @@
+<div class="checkout-summary-tile">
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<% if @final_checkout_button == true && @user.unregistered != true %>
+				<%= form_tag process_cart_checkout_path, class:"confirm-order-checkout" do %>
+					<input name="plan_id" type="hidden" value="drink_order"></input>
+		          	<script 
+		          		class="stripe-button" 
+		          		data-name="Knird" 
+		          		data-description="<%= number_to_currency(@order_prep.grand_total, precision: 2) %> for a Knird Drink Order" 
+		          		data-currency="USD" 
+		          		data-label="Confirm Order"
+		          		data-email="<%= @user.email %>" 
+		          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+		          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+		          		src="https://checkout.stripe.com/checkout.js">
+		          	</script>
+		    	<% end %>
+			<% elsif @final_checkout_button == true && @user.unregistered == true %>
+				<%= link_to "Provide contact info", account_personal_path, :class => 'btn btn-success checkout-summary-proceed-button' %>
+			<% else %>
+				<% if @button_disabled == true %>
+					<%= link_to @next_button_text, "#", :disabled => true, :class => 'btn btn-default checkout-summary-proceed-button' %>
+				<% else %>
+					<%= link_to @next_button_text, @proceed_link, :class => 'btn btn-success checkout-summary-proceed-button' %>
+				<% end %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h3>Order Summary</h3>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-6">
+			<h5 class="checkout-summary-info-text">Subtotal</h5>
+		</div>
+		<div class="col-xs-6 text-right">
+			<h5 class="checkout-summary-info-text"><%= number_to_currency(@order_prep.subtotal, precision: 2) %></h5>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-6">
+			<h5 class="checkout-summary-info-text">Delivery Fee</h5>
+		</div>
+		<div class="col-xs-6 text-right">
+			<% if !@order_prep.delivery_fee.nil? %>
+				<h5 class="checkout-summary-info-text"><%= number_to_currency(@order_prep.delivery_fee, precision: 2) %></h5>
+			<% else %>
+				<h5 class="checkout-summary-info-text"> &mdash; </h5>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-6">
+			<h5 class="checkout-summary-info-text">Tax</h5>
+		</div>
+		<div class="col-xs-6 text-right">
+			<h5 class="checkout-summary-info-text"><%= number_to_currency(@order_prep.sales_tax, precision: 2) %></h5>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-6">
+			<h5 class="checkout-summary-info-text total-text">Total</h5>
+		</div>
+		<div class="col-xs-6 text-right">
+			<% if !@order_prep.grand_total.nil? %>
+				<h5 class="checkout-summary-info-text total-text"><%= number_to_currency(@order_prep.grand_total, precision: 2) %></h5>
+			<% else %>
+				<h5 class="checkout-summary-info-text total-text"><%= number_to_currency(@order_prep.total_drink_price, precision: 2) %></h5>
+			<% end %>
+		</div>
+	</div>
+</div>

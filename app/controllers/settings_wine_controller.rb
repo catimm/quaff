@@ -1,6 +1,26 @@
 class SettingsWineController < ApplicationController
   include StyleDescriptors
   
+  def index
+    @wine_activated = DeliveryPreference.find_by_user_id(current_user.id)
+    if @wine_activated.wine_chosen == true
+      redirect_to settings_wine_styles_path
+    end
+    
+  end # end of index method
+  
+  def activate_wine
+    @delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+    @delivery_preference.update(wine_chosen: true)
+    @user_wine_preference = UserPreferenceWine.create(user_id: current_user.id,
+                                                            delivery_preference_id: @delivery_preference.id)
+    if @user_wine_preference.save                                                       
+      redirect_to settings_wine_styles_path
+    else
+      render wine_setting_path
+    end
+  end # end activate_wine method
+  
   def wine_journey
     @category = "wine"
     # get user delivery preferences

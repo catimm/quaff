@@ -1,0 +1,41 @@
+<div class="row drink-style-initial-response-row">
+	<div class="col-xs-12 text-center">
+		<% if @chosen_category == "beer" %>
+			<h3 class="home-prompt-text">Got it! Beer....</h3>
+		<% elsif @chosen_category == "cider" %>
+			<h3 class="home-prompt-text">Ok, you like Cider....</h3>
+		<%end%>
+	</div>
+</div>
+<div class="row no-margin hidden" id="home-choose-styles-direction">
+	<div class="col-xs-12 text-center">
+		<h3 class="home-prompt-text">Choose 
+			<span class="like-icon"> <i class="fa fa-check-square" aria-hidden="true"></i></span> 
+			if you like a style or
+			<span class="dislike-icon"> <i class="fa fa-square" aria-hidden="true"><h4><i class="fa fa-times" aria-hidden="true"></i></h4></i></span> 
+			if you don't.<br> 
+			<span class="style-choose-neither">
+				<span>Choose neither</span> if you don't have a strong preference either way.
+			</span>
+		</h3>
+	</div>
+</div>
+<div class="row no-margin hidden" id="home-styles-to-choose">
+	<div class="col-sm-offset-1 col-sm-10">
+		<% @drink_styles.each do |style| %>
+			<div class="col-xs-6 col-sm-3 col-md-2 padding-5" id="<%= style.id %>-parent">
+				<%= render 'layouts/home_style_holder_standard', style: style %>
+			</div>
+		<% end %>
+	</div>
+</div>
+<div class="row no-margin hidden" id="process-styles-disabled-button-row">
+	<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+		<%= link_to "Done!", "#", class: "btn btn-default home-disabled-styles-button" %>
+	</div>
+</div>
+<div class="row no-margin hidden" id="process-styles-live-button-row">
+	<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+		<%= link_to "Done!", "#", class: "btn btn-success home-process-styles-button" %>
+	</div>
+</div>

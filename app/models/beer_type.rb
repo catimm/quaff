@@ -71,5 +71,10 @@ class BeerType < ApplicationRecord
   scope :non_cellarable, -> {
     where(cellarable: [false, nil]) 
   }
+
+  # scope related drink type based on style id
+  scope :related_drink_type, ->(style_id) {
+    where(beer_style_id: style_id).pluck(:id)
+  }
   
 end

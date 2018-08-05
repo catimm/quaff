@@ -1,0 +1,33 @@
+<div class="container">
+	<div class="row landing-page-first-row landing-page-value-prop-holder">
+		<div class="col-xs-12 text-center">
+			<h1 class="first-words">Knird is the easiest way to get rad craft beers and ciders!</h1>
+		</div>
+	</div>
+	<div class="row get-started-and-bouncing-arrow-row">
+		<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
+			<div class="get-started-words-box">
+				<h2 class="get-started-words">Get Started</h2>
+			</div>
+		</div>
+		<div class="col-xs-12 text-center">
+			<div class="arrow bounce">
+				<i class="fa fa-chevron-down fa-5x" aria-hidden="true"></i>
+			</div>
+		</div>
+	</div>
+	<div class="row zip-code-input-row">
+		<div class="col-xs-12 text-center">
+			<h3 class='home-prompt-text'>Can we deliver to you?</h3>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-3 no-padding">
+			<%= text_field_tag 'delivery_zip_code', nil, placeholder: 'Enter your zip code', class: 'form-control check-zip-code-button', id: 'check-zip-code' %>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-3">
+			<%= link_to "#", :class => "btn btn-success home-start-with-zip" do %>
+				<i class="fa fa-check-square-o" aria-hidden="true"></i>
+				Check 
+			<% end %>
+		</div>
+	</div>
+</div>

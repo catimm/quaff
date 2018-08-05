@@ -1,5 +1,14 @@
 $(function () {
-
+		
+		var delay = (function(){
+		  var timer = 0;
+		  return function(callback, ms){
+		    clearTimeout (timer);
+		    timer = setTimeout(callback, ms);
+		  };
+		})();
+	
+	
 		// set delay function
 		var delay_small_fade = (function(){
 		  var timer = 0;
@@ -8,6 +17,38 @@ $(function () {
 		    timer = setTimeout(callback, ms);
 		  };
 		})();
+		
+		// get height of category image holder
+		var  cat_holder_height = $(".drink-profile-category-image-holder").height();
+		$(".drink-profile-category-image-holder-chosen-cover").height(cat_holder_height);
+	
+		// send zip response to controller
+		$(document).on('click', '.home-start-with-zip', function () {
+		   var zipCode = $('#check-zip-code').val();
+	       $.ajax({
+			  type: "POST",
+			  url: "/home/process_zip_code/" + zipCode
+			});
+			// prevent page from jumping to the top after click event
+			return false;
+		}); 
+		
+		// send drink category response to controller
+		$(document).on('click', '.home-drink-profile-category-image-holder.home-drink-category', function () {
+		   var drink_category = $(this).attr('id');
+	       $.ajax({
+			  type: "POST",
+			  url: "/home/process_drink_category/" + drink_category
+			});
+			// prevent page from jumping to the top after click event
+			return false;
+		});
+		
+		// make sure page doesn't jump if user  clicks process styles button too early
+		$(document).on('click', '.home-disabled-styles-button', function () {
+		   // prevent page from jumping to the top after click event
+			return false;
+		});
 		
 		var delay_small = (function(){
 		  var timer = 0;
@@ -94,6 +135,40 @@ $(function () {
 			
 		});
 		
+		// add logic to send chosen style info to controller
+		$(document).on('click', '.home-style-indicator.home-like-style', function () {
+			var this_id = $(this).attr('id');
+			var style_id = $(this).parent().attr('id');
+			
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/home/process_styles/" + this_id + "/" + style_id
+			});
+	
+		});
+		$(document).on('click', '.home-style-indicator.home-dislike-style', function () {
+			var this_id = $(this).attr('id');
+			var style_id = $(this).parent().attr('id');
+			
+			// send data to controller
+			$.ajax({
+			  type: "POST",
+			  url: "/home/process_styles/" + this_id + "/" + style_id
+			});
+	
+		});
+		
+		// activate final step in home signup
+		$(document).on('click', '.home-process-styles-button', function () {
+		   
+	       $.ajax({
+			  type: "GET",
+			  url: "/home/process_drink_styles/" 
+			});
+			// prevent page from jumping to the top after click event
+			return false;
+		}); 
 		
 		// set function for sticky scroller
 		//function lockHeaderButton() {

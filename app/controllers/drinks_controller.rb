@@ -22,6 +22,15 @@ class DrinksController < ApplicationController
     # set cellarable data
     @cellar_page_source = "deliveries-page"
     
+    # get Delivery Preferences
+    @user_delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    if @user_delivery_preferences.beer_chosen == true
+      @beer_chosen = true
+      @current_stock_link = beer_stock_path
+    elsif @user_delivery_preferences.cider_chosen == true
+      @cider_chosen = true
+      @current_stock_link = cider_stock_path
+    end
     # get user subscription info
     @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
@@ -31,9 +40,10 @@ class DrinksController < ApplicationController
       @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
       # get account tax
       @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
-      
+
       # determine if account has multiple users and add appropriate CSS class tags
-      @account_users_count = User.where(account_id: @user.account_id, getting_started_step: 14).count
+      @account_users = User.where(account_id: @user.account_id)
+      @account_users_count = @account_users.count
       
       # get delivery info
       @all_deliveries = Delivery.where(account_id: @user.account_id)
@@ -48,12 +58,44 @@ class DrinksController < ApplicationController
           
           # set delivery history variables
           @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6)
-        else
-          # set delivery history variables
-          @first_delivery = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).first
           
-          # set delivery history variables
-          @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6).offset(1)
+          # set view on bottom of drink tile
+          if @upcoming_delivery.status == "user review" || @upcoming_delivery.status == "admin prep"
+            @order_change_page = true
+          else
+            @review_quantity_page = true
+          end
+        else
+          # check if user is an Ad Hoc orderer and just put an order in that hasn't yet populated the Delivery table
+          if @user_subscription.subscription.deliveries_included == 0
+            @order_prep = OrderPrep.where(account_id: current_user.account_id).order_by(updated_at: :desc).first
+            if @order_prep.status == "complete"
+              @order_prep_check = @all_deliveries.find_by_order_prep_id(@order_prep.id)
+              if @order_prep_check.blank?
+                @first_order_in_process = true
+                # set delivery history variables
+                @first_delivery = nil
+                
+                # set delivery history variables
+                @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6)
+              else
+                # set delivery history variables
+                @first_delivery = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).first
+                
+                # set delivery history variables
+                @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6).offset(1)
+              end
+            end
+          else
+            # set delivery history variables
+            @first_delivery = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).first
+            
+            # set delivery history variables
+            @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6).offset(1)
+          end 
+            
+            # set view on bottom of drink tile
+            @review_quantity_page = true
         end
         #Rails.logger.debug("First Delivery info: #{@first_delivery.inspect}")
         #Rails.logger.debug("Remaining Deliveries info: #{@remaining_deliveries.inspect}")  
@@ -115,8 +157,17 @@ class DrinksController < ApplicationController
               end 
           
           end # end of check whether first delivery exists
-           
-      end # end of check on @upcoming_delivery variable
+      
+      else #check on @all_deliveries variablee
+        # check if user is an Ad Hoc orderer and just put an order in that hasn't yet populated the Delivery table
+        if @user_subscription.subscription.deliveries_included == 0
+          @order_prep = OrderPrep.where(account_id: current_user.account_id).order(updated_at: :desc).first
+          if @order_prep.status == "complete"
+            @first_order_in_process = true
+          end
+        end
+             
+      end # end of check on @all_deliveries variable
     
     end # end of check whether use has a subscription
     
@@ -134,7 +185,7 @@ class DrinksController < ApplicationController
     end
 
     # determine if account has multiple users
-    @account_users = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 7)
+    @account_users = User.where(account_id: @user.account_id)
     @account_users_count = @account_users.count
     
     # get free curation info

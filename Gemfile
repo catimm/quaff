@@ -129,6 +129,8 @@ gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
 gem 'friendly_id', '~> 5.2.0'
 # SitemapGenerator is the easiest way to generate Sitemaps in Ruby
 gem 'sitemap_generator'
+# gem for background processing for Ruby
+gem 'sidekiq'
 
 # Use unicorn as the app server
 # gem 'unicorn'

@@ -1,0 +1,40 @@
+$(function() {
+	
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+	    clearTimeout (timer);
+	    timer = setTimeout(callback, ms);
+	  };
+	})();
+	
+	<% if @ready == true %>
+		$("#knird_info_ready").html("<%= escape_javascript(render 'section_knird_info_ready') %>");
+		$('#knird_info_ready').removeClass("hidden").addClass("show");
+		$('#ready-and-bouncing-arrow-row').removeClass("hidden").addClass("show");
+		$([document.documentElement, document.body]).animate({
+	        scrollTop: $("#ready-indication").offset().top
+	    }, 2000);
+	<% end %>
+	<% if @ready == false %>
+		$("#knird_info_two").html("<%= escape_javascript(render 'section_knird_info_two') %>");
+		$('#knird_info_two').removeClass("hidden").addClass("show");
+		$([document.documentElement, document.body]).animate({
+	        scrollTop: $("#second-info-statement").offset().top
+	    }, 2000);
+		
+		// set up carousel to show knird info while projected ratings are loading
+	    $('#knird_info_two_carousel').carousel({
+	    	pause: null,
+	    	interval: 3000,
+	    	wrap: false
+	    });
+	    delay(function(){
+			$.ajax({
+				  type: "GET",
+				  url: "/home/projected_ratings_check/"
+				});
+	    }, 15000 );
+
+	<% end %>
+});

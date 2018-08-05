@@ -220,7 +220,7 @@ class UsersController < ApplicationController
       redirect_to @redirect_link
   else
       #Rails.logger.debug("User NOT updated")
-      Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
+      #Rails.logger.debug("User errors: #{@user.errors.full_messages[0].inspect}")
       # set saved message
       flash[:error] = @user.errors.full_messages[0]
 
@@ -261,6 +261,7 @@ class UsersController < ApplicationController
     # get customer plan details
     @customer_plan = UserSubscription.where(account_id: @user.account_id, currently_active: true)[0]
     if !@customer_plan.blank?
+      @user_address = UserAddress.where(account_id: @user.account_id).first
       if @user.role_id == 1
         @all_plans_subscription_level_group = Subscription.where(subscription_level_group: 1) 
       else
@@ -384,16 +385,18 @@ class UsersController < ApplicationController
       
   end # end of add_delivery_zip method
   
-  def account_settings_profile
+  def account_personal
     # get user info
     @user = User.find_by_id(current_user.id)
     #Rails.logger.debug("User info: #{@user.inspect}")
-
-    # set link as chosen
-    @profile_chosen = "chosen"
     
-    # get user home address info
-    @home_address = UserAddress.where(account_id: @user.account_id, location_type: "Home")[0]
+    # check on user subscription status
+    @user_subscription = UserSubscription.find_by_user_id(@user.id)
+    
+    # don't show fake email if user is not yet registered
+    if @user.unregistered == true 
+      @user.email = nil
+    end
     
     # set birthday to Date
     if !@user.birthday.nil?
@@ -401,23 +404,46 @@ class UsersController < ApplicationController
     end
     
     # get additional info for page
-    @user_updated = @user.updated_at
-    if !@home_address.blank?
-      @preference_updated = latest_date = [@user.updated_at, @home_address.updated_at].max
-    else
-      @preference_updated = @user.updated_at
-      @user_address = UserAddress.where(account_id: @user.account_id) # again, for free curation customers
-      if !@user_address.blank?
-        @home_address = UserAddress.new
-      end
+    @preference_updated = @user.updated_at
+    
+    if session[:return_to]
+      session.delete(:return_to)
     end
+    if @user.unregistered == true
+      # set session to remember page arrived from 
+      session[:return_to] ||= request.referer
+    end
+    #Rails.logger.debug("Original Session info: #{session[:return_to].inspect}")
+    
+  end # end of account_personal action
+  
+  def account_addresses
+    # get user info
+    @user = current_user
+    
+    # check on user subscription status
+    @user_subscription = UserSubscription.find_by_user_id(@user.id)
+    
+    # get addresses
+    @account_addresses = UserAddress.where(account_id: @user.account_id)
+    #Rails.logger.debug("Current Delivery Location: #{@current_delivery_location.inspect}")
+    # set default and additional address
+    if !@account_addresses.blank?
+      @current_default_address = @account_addresses.where(current_delivery_location: true).first
+      @additional_addresses = @account_addresses.where(current_delivery_location: [false, nil])
+    end
+    
+    # create new CustomerDeliveryRequest instance
+    @customer_delivery_request = CustomerDeliveryRequest.new
+    # and set correct path for form
+    @customer_delivery_request_path = customer_delivery_requests_settings_path
     
     # set session to remember page arrived from 
     session[:return_to] ||= request.referer
     
-  end # end of account_settings_profile action
-
-  def account_settings_gifts_credits
+  end # end of account_addresses method
+  
+  def account_gifts_credits
       @credits = Credit.where(account_id: current_user.account_id).order(created_at: :desc)
   end
     
@@ -429,7 +455,7 @@ class UsersController < ApplicationController
     # find if the user has added any guests
     @user_guests = User.where(account_id: @user.account_id, role_id: 5)
     
-  end # end of account_settings_mates action
+  end # end of account_mates action
   
   def send_mate_invite_reminder
     # find mate
@@ -683,11 +709,21 @@ class UsersController < ApplicationController
             @user = User.find(@user_subscription.user_id)
             #Rails.logger.debug("Delivery Charge Event")
             # get delivery info
-            @delivery = Delivery.where(user_id: @user.id, total_price: @charge_amount, status: "delivered").first
+            @delivery = Delivery.where(user_id: @user.id, total_drink_price: @charge_amount, status: "delivered").first
             @user_delivery = UserDelivery.where(user_id: @user.id, delivery_id: @delivery.id)
             @drink_quantity = @user_delivery.sum(:quantity)
             # send delivery confirmation email
             UserMailer.delivery_confirmation_email(@user, @delivery, @drink_quantity).deliver_now
+          
+          elsif @charge_description.include? "Knird Drink Order" # run only if this is a non-subscription order
+            # get the customer info
+            @stripe_customer_number = event_object['customer']
+            @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number, currently_active: true).first
+            # get related order
+            @order_prep = OrderPrep.where(account_id: @user_subscription.account_id, status: "order placed").first
+            # send processing to background job
+            ProcessConfirmedOrderJob.perform_later(@order_prep)
+            
           elsif @charge_description.include? "Knird Gift Certificate" # run only if this is a gift certificate
             metadata = event_object['metadata']
             redeem_code = metadata['redeem_code']
@@ -723,7 +759,7 @@ class UsersController < ApplicationController
               # get customer info
               @user = User.find_by_id(@user_subscription.user_id)
               # get delivery info
-              @delivery_info = Delivery.where(account_id: @user.account_id, total_price: @charge_amount).first
+              @delivery_info = Delivery.where(account_id: @user.account_id, total_drink_price: @charge_amount).first
               # send Admin notice
               AdminMailer.admin_failed_charge_notice(@user, @delivery_info).deliver_now
               # send customer notice
@@ -804,8 +840,25 @@ class UsersController < ApplicationController
     # get time of last update
     @preference_updated = @user.updated_at
     
+    if session[:return_to]
+      @last_page_link = session[:return_to]
+      #Rails.logger.debug("Last Page info: #{@last_page_link.inspect}")
+      if @last_page_link.include?("checkout")
+        @redirect_path = cart_checkout_path
+      elsif @last_page_link.include?("beer") 
+        @redirect_path = beer_stock_path
+      elsif @last_page_link.include?("cider") 
+        @redirect_path = cider_stock_path
+      else
+        @redirect_path = account_personal_path
+      end
+      session.delete(:return_to)
+    else
+        @redirect_path = account_personal_path
+    end
+    #Rails.logger.debug("New Session info: #{session[:return_to].inspect}")
     # redirect back to account settings page
-    redirect_to account_settings_profile_user_path
+    redirect_to @redirect_path
     
   end # end update_profile method
   
@@ -901,7 +954,7 @@ class UsersController < ApplicationController
   def email_verification
     # get special code
     @email = params[:_json]
-    Rails.logger.debug("email param: #{@email.inspect}")
+    #Rails.logger.debug("email param: #{@email.inspect}")
     
     # get current user info if it exists
     if !current_user.nil?

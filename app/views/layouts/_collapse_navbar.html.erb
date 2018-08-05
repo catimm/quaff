@@ -1,5 +1,16 @@
 <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
     <ul class="nav navbar-nav" id="navbar-holder">
-    	<%= render 'layouts/collapse_navbar_dropdown' %>
+    	<%= render 'layouts/collapse_navbar_dropdown' %>   	
     </ul>
+    <% if user_signed_in? %>
+    	<% if current_user.subscription_status == "not subscribed" %>
+    		<%= link_to cart_review_path do %>
+				<i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i> 
+			<% end %>
+    		
+    	<% end %>
+    <% end %>
+    <div class="customer-cart-indicator-holder" id="customer-cart-indicator-holder">
+		<%= render 'layouts/customer_cart_addition_indicator' %>
+	</div> 
 </div> 

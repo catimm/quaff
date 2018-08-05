@@ -227,8 +227,129 @@ body {
   padding-bottom: 20px;
   margin-bottom: 100px !important;
   overflow-x: hidden;
-
 }
+body.home-body {
+  padding-top: 60px;
+  padding-bottom: 85px;
+}
+// Bounce Arrow homepage
+.arrow {
+  text-align: center;
+  margin: 4% 0;
+  color: $action-background;
+}
+.bounce {
+  -moz-animation: bounce 2s infinite;
+  -webkit-animation: bounce 2s infinite;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+// New Landing/Homepage
+.landing-page-first-row.landing-page-value-prop-holder {
+  margin-top: 150px;
+}
+.landing-page-first-row.value-prop-holder-about-us-page {
+  margin: 100px 0;
+}
+.about-us-section-header {
+  padding: 30px 0 20px 0;
+}
+.first-words {
+  color: $action-background;
+}
+.get-started-and-bouncing-arrow-row {
+  margin-top: 50px;
+}
+.get-started-words-box {
+  border: 1px solid $action-background;
+  border-radius: 10px;
+  margin-top: 30px;
+}
+.get-started-words {
+  margin: 10px 0;
+  color: $more-emphasized-text;
+}
+.zip-response-row {
+  margin: 50px 0;
+}
+.zip-code-input-row {
+  margin: 40px 0;
+}
+.home-start-with-zip {
+  width: 100%;
+}
+.home-prompt-text {
+  color: $more-emphasized-text;
+  margin-bottom: 15px;
+  line-height: 1.3;
+  span.prompt-emphasis {
+    color: $action-background;
+  }
+}
+.stock-ranking-ready-button {
+  width: 100%;
+}
+.drink-style-initial-response-row {
+  margin: 50px 0 100px 0;
+}
+.like-icon {
+  color: $user-action;
+}
+.dislike-icon {
+  color: $current-beer-attention-needed-background;
+  .fa.fa-square {
+    position: relative;
+    .fa.fa-times {
+      color: $white;
+      position: absolute;
+      left: 3px;
+      top: 3px;
+    }
+  }
+}
+#section_drink_styles {
+  margin-top: 100px;
+}
+
+#knird_info_ready {
+  padding: 50px 0 100px 0;
+}
+#knird_info_one,
+#knird_info_two {
+  margin: 150px 0 100px 0;
+}
+.knird-info-one-text-row,
+.knird-info-two-text-row {
+  margin: 80px 0 50px 0;
+}
+.home-style-indicator {
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 1000;
+  position: absolute;
+  padding: 0 3px 5px 3px !important;
+  i {
+    color: $white;
+  }
+}
+// Site General
 .body-retail-index {
   padding-bottom: 0 !important;
 }
@@ -259,10 +380,36 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 .dropdown-menu {
   z-index: 9999 !important;
  }
-
+.fa.fa-shopping-basket {
+  margin-top: 12.5px;
+  color: $white;
+}
+.customer-cart-indicator-holder {
+  position: absolute;
+  right: 6px;
+  top: 23px;
+}
+.customer-cart-addition-indicator {
+  background: $user-action;
+  color: $white;
+  text-align: center;
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  text-decoration: none;
+}
 .top-row {
   margin-bottom: 20px;
 }
+.new-page-header {
+  color: $more-emphasized-text;
+  margin-top: 20px;
+}
+.new-page-subheader {
+  color: $normal-text;
+  
+}
+
 .sign-up {
   border: 1px solid #fff;
   border-radius: 4px;
@@ -482,19 +629,19 @@ label {
 }
 .check-zip-code-button::-webkit-input-placeholder {
  font-size: 14px;
- color: $user-action;
+ color: $action-background;
 }
 .check-zip-code-button:-moz-placeholder { /* Firefox 18- */
    font-size: 14px;
-   color: $user-action;
+   color: $action-background;
 }
 .check-zip-code-button::-moz-placeholder {  /* Firefox 19+ */
    font-size: 14px; 
-   color: $user-action;
+   color: $action-background;
 }
 .check-zip-code-button:-ms-input-placeholder {  
    font-size: 14px; 
-   color: $user-action; 
+   color: $action-background;
 }
 .formButton-index-Banner {
   width: 100%;
@@ -1449,7 +1596,7 @@ label {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: rgba(116, 116, 116, 0.2);
+  background: rgba(0, 137, 203, 0.2);
   z-index: 9999;
   color: $white;
   line-height: 1.5;
@@ -1583,6 +1730,18 @@ hr {
   overflow: hidden;
   background: #fff;
 }
+.stock-header {
+  color: $more-emphasized-text;
+  float: left;
+  margin: 10px 10px 10px 0;
+}
+#maker-list-for-beer-inventory {
+  margin-bottom: 10px;
+}
+.stock-header-numbers {
+  color: $normal-text;
+  margin-top: 22.5px;
+}
 .in-stock-message {
   color: $action-background;
   text-align: center;
@@ -1600,8 +1759,290 @@ hr {
   color: $normal-text;
   margin: 5px 0;
 }
+.beer-image-holder-universal {
+  padding: 5px 6px 0 6px;
+}
 .brewery-image-holder-universal {
-  padding: 5px 0 0 1px;
+  padding: 5px;
+}
+.drink-descriptors-universal {
+  min-height: 62px !important;
+  padding: 7.5px 0 0 5px;
+}
+.descriptor-bubble {
+  border: 1px solid $bright-aqua-blue;
+  border-radius: 4px;
+  background: $light-aqua-blue;
+  color: $white;
+  font-size: 11px;
+  display: inline-block;
+  padding: 3px 6px;
+  margin: 0 0 2px 0;
+}
+.drink-tile-rating-row {
+  margin: 0;
+}
+.drink-tile-rate-button {
+  margin: 10px 0 5px 0 !important;
+  padding: 3px 7px !important;
+}
+.user-initials-drink-tile {
+  margin: 2px 5px 5px 0;
+  border-radius: 4px;
+  height: 24px;
+  width: 24px;
+  text-align: center;
+  padding-top: 5px;
+  float: left;
+}
+.drink-tile-user-rating-acknowledged {
+  color: $user-rating-text;
+  font-size: 10px;
+  margin-bottom: 0;
+}
+.drink-tile-user-rating {
+  color: $user-rating-text;
+  margin: 0;
+}
+.drink-tile-best-guess-minimized {
+  color: $best-guess-text;
+  font-size: 10px;
+  margin: 2px 0 0 0;
+}
+.drink-tile-best-guess {
+  color: $best-guess-text;
+  margin: 0;
+}
+.drink-tile-size-price-row {
+  margin: 0;
+}
+.drink-tile-item-price {
+  color: $more-emphasized-text;
+  margin: 5px 0 0 0;
+  text-align: right;
+}
+.drink-tile-svg-holder {
+  color: $normal-text;
+  font-weight: 500;
+  margin: 0 15px 0 0;
+  svg {
+    height: 34px;
+  }
+}
+.member-only-order-notice {
+  border: 1px solid $medium-gray;
+  border-radius: 4px;
+  text-align: center;
+  margin-top: -2px;
+  h5 {
+    color: $more-emphasized-text;
+    margin: 2px 0;
+  }
+}
+.order-dropdown-button {
+  background: $action-background;
+  color: $white;
+  border-radius: 4px;
+  margin-top: 2px;
+}
+.order-dropdown-button-text-holder {
+  border-right: 1px solid $white;
+  float: left;
+  text-align: center;
+  width: 75px;
+}
+.order-dropdown-button-text {
+  color: $white;
+  margin: 5px 0 0 0;
+}
+// Cart review
+.cart-header {
+  color: $more-emphasized-text;
+  margin: 0;
+}
+.standard-delivery-header {
+  color: $more-emphasized-text;
+  margin: 10px 0;
+}
+.review-table-header {
+  color: $more-emphasized-text;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.remove-from-cart-text {
+  color: $bright-blue;
+  font-size: 12px;
+}
+.dropdown-toggle-user-change-quantity-inventory,
+.dropdown-toggle-subscriber-change-quantity-inventory,
+.dropdown-toggle-customer-change-quantity-inventory {
+  margin: 0 0 0 7.5px;
+  height: 28px;
+  min-width: 41px;
+  background: $action-background !important;
+  color: $white !important;
+  border: 0;
+}
+.review-cart-dropdown {
+  margin: 5px 0 0 7.5px;
+  height: 28px;
+  min-width: 41px;
+  background: $action-background !important;
+  color: $white !important;
+  border: 0;
+  height: 40px;
+}
+#delivery-cost-message-holder {
+  margin-top: 20px;
+}
+.cart-review-delivery-cost-message {
+  background: $extra-light-blue-gray;
+  border: 1px solid $action-background;
+  border-radius: 6px;
+  padding: 5px 10px;
+  display: inline-block;
+  margin: 0;
+  h3 {
+    color: $more-emphasized-text;
+    letter-spacing: 0.3px;
+    margin: 10px 0;
+    span {
+      color: $action-background;
+    }
+  }
+}
+.delivery-cost-message {
+  color: $normal-text;
+  margin: 5px 0 0 0;
+}
+.cart-review-summary-subtotal {
+  color: $more-emphasized-text;
+  margin-right: 30px;
+}
+.review-cart-add-more-items-text {
+  margin-right: 30px;
+}
+.cart-review-summary-subtotal-price {
+  color: $black;
+  font-weight: 500;
+}
+.checkout-summary-tile {
+  margin: 0 0 ;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  position: relative;
+}
+.checkout-summary-proceed-button {
+  width: 100%;
+  margin-top: 10px;
+}
+.checkout-summary-info-text {
+  color: $normal-text;
+  margin: 5px 0;
+}
+.checkout-summary-info-text.total-text {
+  color: $more-emphasized-text;
+  margin: 10px 0 20px 0;
+  font-weight: 500;
+}
+.no-account-address-message {
+  color: $more-emphasized-text;
+}
+.twenty-one-plus-delivery-message {
+  color: $action-background;
+}
+.choose-delivery-time-text {
+  color: $more-emphasized-text;
+}
+.delivery-time-standard-option-tile,
+.delivery-time-reserved-option-tile {
+  margin: 0 0 15px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  padding: 5px 0;
+}
+.delivery-time-standard-option-tile:hover,
+.delivery-time-reserved-option-tile:hover {
+  background: rgba(0,135,203, 0.25);
+}
+.delivery-time-standard-option-tile.chosen,
+.delivery-time-reserved-option-tile.chosen {
+  background: rgba(0,135,203, 0.25);
+}
+.check-mark-holder {
+  text-align: center;
+  padding:5px;
+  border-right: 1px solid $less-emphasized-text;
+  i {
+    color: $action-background;
+    font-weight: 300;
+  }
+}
+.address-name {
+  color: $less-emphasized-text;
+  span {
+    color: $more-emphasized-text;
+    font-weight: 500;
+  }
+}
+.delivery-time-option-text {
+  color: $more-emphasized-text;
+}
+.register-prompt-text {
+  color: $normal-text;
+}
+.confirm-order-checkout {
+  button {
+    width: 100%;
+    margin-top: 10px;
+ }
+}
+.order-thank-you-header {
+  color: $more-emphasized-text;
+  margin: 60px 0 20px 0;
+}
+.order-thank-you-subheader {
+  color: $more-emphasized-text;
+  margin: 30px 0;
+}
+.drink-tile-show-more {
+  position: absolute;
+  left: 0.55px; 
+  bottom: -4.5px;
+  i {
+    color: $action-background;
+    font-size: 22px;
+  }
+}
+.drink-tile-show-less {
+  position: absolute;
+  left: 0.55px; 
+  bottom: 60px;
+  i {
+    color: $action-background;
+    font-size: 22px;
+  }
+}
+.drink-info-universal-first-row {
+  min-height: 146px;
+}
+.first-row-get-shopping {
+  margin-top: 40px;
+}
+.start-shopping-text {
+  color: $more-emphasized-text;
+  margin:30px 0;
+}
+.start-shopping-button {
+  width: 100%;
 }
 .cloud-descriptor-holder-universal, .cloud-descriptor-drink-page {
   height: 85px;
@@ -3357,6 +3798,7 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
   .navbar-right {
+    position: relative;
     a {
       font-weight: 400;
     }
@@ -3589,7 +4031,7 @@ $beer-header-lines-to-show-fp: 1;
     color: $user-action;
   }
 }
-//
+// Footer CSS
 .footer {
   background: $footer-color !important;
   bottom: 0;
@@ -3620,6 +4062,17 @@ $beer-header-lines-to-show-fp: 1;
     color: $white;
   }
 }
+.footer.home-footer {
+  background: $footer-color !important;
+  bottom: 0;
+  position: fixed;
+  height: 85px !important;
+  z-index: 1000;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 .footer-social-col {
   margin-top: 5px;
 }
@@ -3710,6 +4163,136 @@ $beer-header-lines-to-show-fp: 1;
     color: $best-guess-text;
   }
 }
+// About Us Detailed Page
+.about_us_section {
+  padding: 30px 0 50px 0;
+}
+.about-us-number-holder {
+  background: $action-background;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  padding: 8px 10px 10px 10px;
+  text-align: center;
+  h2 {
+    color: $white;
+    margin: 0;
+  }
+}
+.about-us-header-text {
+  color: $more-emphasized-text;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  span {
+    color: $action-background;
+  }
+}
+.about-us-info-text {
+  color: $more-emphasized-text;
+  text-align: justify;
+  line-height: 1.25;
+}
+.about-us-get-started-button {
+  width: 100%;
+  margin: 40px 0;
+}
+//Knird Preferred info page
+.knird-preferred-section {
+  padding: 30px 0 50px 0;
+}
+.membership-first-row {
+  margin-top: 15px;
+}
+.knird-preferred-explained-box {
+  border: 1px solid $medium-gray;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.knird-preferred-get-started {
+  width: 100%;
+}
+.knird-preferred-signup-or {
+  color: $normal-text;
+  margin-top: 50px;
+}
+.knird-preferred-extra-info-text {
+  color: $normal-text;
+  text-align: center;
+}
+.knird-preferred-section-header,
+.about-us-section-header {
+  color: $more-emphasized-text;
+  text-align: center;
+  margin: 10px 0 30px 0;
+}
+.knird-preferred-text {
+  color: $more-emphasized-text;
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+.knird-preferred-value-prop-text {
+  color: $more-emphasized-text;
+  font-weight: 500;
+  margin-top: 10px;
+  letter-spacing: 0.2px;
+}
+.knird-preferred-value-prop-subtext {
+  color: $more-emphasized-text;
+  text-align: justify;
+  line-height: 1.3;
+  margin-bottom: 20px;
+  span {
+    color: $action-background;
+  }
+}
+.last-value-prop-subtext-row {
+  margin-bottom: 10px;
+}
+.knird-preferred-pda-value-prop-text {
+  color: $more-emphasized-text;
+  line-height: 1.3;
+}
+.knird-preferred-table-row {
+  margin: 10px 0 25px 0;
+}
+.knird-preferred-table-text {
+  color: $more-emphasized-text;
+  margin: 5px 0;
+  span {
+    color: $action-background;
+  }
+}
+.knird-preferred-pricing-setion {
+  margin-bottom: 20px;
+}
+.knird-preferred-price-row {
+  border: 1px solid $normal-text;
+  border-radius: 4px;
+  text-align: center;
+}
+.knird-preferred-price-caveat {
+  color: $more-emphasized-text;
+}
+.knird-preferred-price-container {
+  width: 100%;
+}
+.knird-preferred-price-icon {
+  color: $action-background;
+  margin: 3px 0 0 3px;
+}
+.regular-delivery-guarantee-text {
+  margin-bottom: 50px;
+}
+.fa-arrow-circle-o-down {
+  position: absolute;
+  top: 20px;
+  left: 32px;
+  color: $white;
+}
+.knird-preferred-price-container.right-side {
+  margin-top: 60px;
+}
 .auto-renew-info {
   color: $normal-text;
   margin-bottom: 20px;
@@ -3738,12 +4321,15 @@ $beer-header-lines-to-show-fp: 1;
 }
 
 // User Delivery Location Options
+.location-help-text-row {
+  margin: 5px 0
+}
 .shipping-location-spacer-row {
   height: 20px;
 }
 .delivery-location-help {
   float: left;
-  margin: 20px 10px 20px 0;
+  margin: 20px 10px 5px 0;
 }
 .delivery-location-option-tile {
   min-height: 150px;
@@ -3751,26 +4337,43 @@ $beer-header-lines-to-show-fp: 1;
   border-radius: 6px;
   margin-bottom: 10px;
 }
-.delivery-info-row {
-  margin: 5px 10px;
-  .delivery-options-header {
-    span {
-      color: $action-background;
-    }
+
+.delivery-options-header {
+  margin-bottom: 0;
+  span {
+    color: $action-background;
   }
+  
 }
 .location-address-holder {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
-  padding-bottom: 5px;
-  padding-right: 5px;
+  padding: 0 10px 10px 10px;
+  margin-bottom: 10px;
+  min-height: 150px;
 }
 .add-location-address-holder {
   text-align: center;
-  min-height: 150px;
   border: 1.75px dashed $less-emphasized-text;
   border-radius: 6px;
+  margin-bottom: 10px;
+  min-height: 150px;
+}
+.address-default-button-row {
+  margin: 0;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 95%;
+  padding-left: 15px;
+  text-align: center;
+}
+.change-default-delivery-location {
+  padding: 2px 12px;
+  color: $user-action;
+  background: $white;
+  width: 80%;
 }
 .add-location-direction-text {
   margin-top: 45px;
@@ -3785,24 +4388,22 @@ $beer-header-lines-to-show-fp: 1;
 .better-option-request-text {
   color: $normal-text;
   font-size: 16px;
-  width: 110%;
 }
 .formButton-make-delivery-request {
   width: 80%;
-  margin-left: 5%;
 }
 .edit-delivery-location-button {
     color: $action-background;
     i {
       font-size: 16px;
-      padding: 5px 0 0 0;
+      padding: 10px 0 0 0;
     }
 }
 .remove-user-address-button {
     color: #d9534f;
     i {
       font-size: 18px;
-      padding: 5px 0 0 2.5px;
+      padding: 10px 0 0 2.5px;
     }
 }
 .remove-home-address-button {
@@ -3821,6 +4422,7 @@ $beer-header-lines-to-show-fp: 1;
 }
 .location-address {
   margin: 0;
+  line-height: 1.2;
 }
 .location-instructions {
   margin: 10px 0 5px 0;
@@ -4071,7 +4673,8 @@ $beer-header-lines-to-show-fp: 1;
     height: inherit;
   }
 }
-.drink-profile-category-image-holder {
+.drink-profile-category-image-holder,
+.home-drink-profile-category-image-holder {
   background: $white;
   width: 95%;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -4079,6 +4682,13 @@ $beer-header-lines-to-show-fp: 1;
   text-align: center;
   border-radius: 6px;
 } 
+.drink-profile-category-image-holder:hover,
+.home-drink-profile-category-image-holder:hover {
+  background: rgba(0,135,203, 0.25);
+  h3, p {
+    color: $white;
+  }
+}
 .drink-profile-category-image-holder-chosen-cover {
     background: rgba(0,135,203, 0.4);
     width: 95% !important;
@@ -4088,15 +4698,19 @@ $beer-header-lines-to-show-fp: 1;
     z-index: 100;
     border-radius: 6px;
 }
-.drink-profile-category-image-holder:hover {
-  background: rgba(0,135,203, 0.25);
-  h3, p {
-    color: $white;
-  }
-}
 .drink-profile-category-image-holder.chosen {
   background: $signup-category-image-background-chosen;
 }
+.home-drink-category-chosen {
+    background: rgba(64,193,112, 0.2);
+    width: 95% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    border-radius: 6px;
+}
+
 .signup-category-image-holder,
 .signup-journey-image-holder, 
 .signup-plan-start-holder, 
@@ -4354,7 +4968,8 @@ $beer-header-lines-to-show-fp: 1;
 }
 .signup-style-tile, 
 .drink-profile-style-tile, 
-.drink-profile-style-tile-chosen {
+.drink-profile-style-tile-chosen,
+.home-drink-profile-style-tile {
     margin-bottom: 10px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -4370,6 +4985,12 @@ $beer-header-lines-to-show-fp: 1;
   left: 0;
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
+}
+.home-drink-profile-style-tile.like-cover {
+  background: rgba(64,193,112, 0.5);
+}
+.home-drink-profile-style-tile.dislike-cover {
+  background: rgba(254,97,101, 0.8);
 }
 .drink-profile-style-tile.dislike-style-tile {
   background: rgba(0,135,203, 0.4);
@@ -4438,9 +5059,15 @@ $beer-header-lines-to-show-fp: 1;
 .user-info-form {
   margin-top: -10px;
 }
-.user-info-next-button {
+.user-info-next-button,
+.home-category-next-button,
+.home-disabled-styles-button,
+.home-process-styles-button {
   margin: 15px 0 !important;
   width: 95% !important;
+}
+.home-disabled-styles-button:hover {
+  background: $white;
 }
 .add-delivery-zip {
   margin: 15px 0 !important;
@@ -4735,7 +5362,7 @@ $beer-header-lines-to-show-fp: 1;
   color: $inverse-primary;
   background-color: $white;
   border-color: $inverse-primary;
-  margin: 0 10px 10px 0;
+  margin: 5px 10px 10px 0;
   float: left;
 }
 .delivery-neighborhoods {
@@ -4848,14 +5475,35 @@ $beer-header-lines-to-show-fp: 1;
   margin-left: 5px;
 }
 // User Profile Page
+.first-row-new {
+  background: $soft-gray-background;
+  margin-top: 10px !important;
+  border-bottom: 1px solid $soft-border;
+}
 .first-row {
   background: $soft-gray-background;
   margin-top: 10px !important;
   border-bottom: 1px solid $soft-border;
-  
 }
 .first-row-container {
   
+}
+.submenu-options {
+  margin: 10px 0;
+  color: $normal-text;
+  display: block;
+}
+.submenu-options:hover {
+  color: $action-background !important;
+}
+.submenu-options.current {
+  color: $action-background;
+  font-weight: 500;
+}
+.submenu-options.current:hover {
+  color: $action-background;
+  font-weight: 500;
+  text-decoration: none;
 }
 .section-header {
   font-weight: 500;
@@ -4963,6 +5611,9 @@ $beer-header-lines-to-show-fp: 1;
   height: 450px;
   position: relative;
   z-index: 9000;
+}
+.deliveries-get-started-message {
+  color: $more-emphasized-text;
 }
 .drink-name-col, .drink-style-col, .drink-stats-col {
   padding:0 0 0 5px;
@@ -5844,7 +6495,7 @@ $descriptor-lines-to-show: 2;
   padding-top: 8px;
 }
 .user-initial-holder-div-xsmall {
-  margin: 0 2.5px 0 0;
+  margin: 2px 2.5px 0 0;
   border-radius: 4px;
   height: 22.5px;
   width: 22.5px;
@@ -6257,7 +6908,8 @@ $descriptor-lines-to-show: 2;
     text-decoration: underline;
   }
 }
-.dislike-style {
+.dislike-style,
+.home-dislike-style {
   background: $current-beer-attention-needed-background;
   bottom: 0 !important;
   left: 0 !important;
@@ -6281,7 +6933,8 @@ $descriptor-lines-to-show: 2;
   padding: 6px;
   margin-top: 10px !important;
 }
-.like-style {
+.like-style,
+.home-like-style {
   background: $step-background;
   bottom: 0 !important;
   right: 0 !important;
@@ -6919,10 +7572,13 @@ $delivery-beer-header-lines-to-show: 2;
   margin: 10px 0 0 0;
   font-size: 15px;
 }
+.filter-row {
+  margin: 0 0 10px 0;
+}
 .order-quantity-inventory {
-  color: $more-emphasized-text;
-  margin: 11px 0 0 0;
-  font-size: 15px;
+  color: $white;
+  margin: 8px 10px 0 0;
+  font-size: 14px;
 }
 .order-quantity {
   color: $normal-text;
@@ -6977,10 +7633,6 @@ $delivery-beer-header-lines-to-show: 2;
   font-weight: 500;
   margin: 10px 0 0 0;
   font-size: 15px;
-}
-.dropdown-toggle-user-change-quantity-inventory {
-  margin: 2.5px 0 0 7.5px;
-  height: 28px;
 }
 .dropdown-toggle-user-change-quantity {
   margin-top: 2.5px;
@@ -8030,6 +8682,16 @@ $delivery-beer-header-lines-to-show: 2;
     border-top: 1px solid $soft-border;
   }
   
+  // Mobile Knird Live signup page
+  .knird-preferred-signup-or {
+    margin-top: 20px;
+  }
+  .knird-preferred-price-container.right-side {
+    margin-top: 15px;
+  }
+  .knird-preferred-price-container {
+    margin-top: 15px;
+  }
   // Brewery info page
   .brewery-header {
     margin: 10px 0 0 0;

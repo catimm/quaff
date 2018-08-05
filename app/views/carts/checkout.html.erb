@@ -1,0 +1,51 @@
+<%= render 'layouts/header' %> 
+<div class="row no-margin spinner text-center">
+	<div class="spinner-text">
+		<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+		<h4>Fetching...</h4>
+	</div>
+</div>
+<div class="container">
+	<div class="row no-margin">
+		<div class="col-xs-12 text-center" id="delivery-cost-message-holder">
+			<%= render 'delivery_cost_message'%>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-3">
+			<h1 class="cart-header">Review order</h1>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-9"  id="review-summary-holder">
+			<h5 class="review-table-header" style="margin-bottom:5px;">Delivery details</h5>
+			<div class="delivery-time-reserved-option-tile chosen">
+				<div class="row no-margin">
+					<div class="col-xs-1 no-padding">
+						<div class="check-mark-holder">
+							<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<h5 class="address-name">Delivered to your <span><%= @selected_user_address.address_name %></span></h5>
+					</div>
+					<div class="col-xs-7">
+						<h4 class="delivery-time-option-text">
+							<%= @order_prep.delivery_start_time.strftime("%A, %b %e, %l%P") %> &mdash; <%= @order_prep.delivery_end_time.strftime("%l%P") %>
+						</h4>
+					</div>
+				</div>
+			</div>
+			<%= render 'review_summary_final'%>
+		</div>
+		<% if @user.unregistered == true %>
+			<div class="col-xs-12 col-sm-3 no-padding text-center">
+				<h5 class="register-prompt-text">Last step: how do we contact you?</h5>
+			</div>
+		<% end %>
+		<div class="col-xs-12 col-sm-3 no-padding" id="checkout-summary-holder">
+			<%= render 'checkout_summary' %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

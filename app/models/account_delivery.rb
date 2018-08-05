@@ -25,6 +25,7 @@ class AccountDelivery < ApplicationRecord
   
   has_many :user_deliveries    
   has_many :inventory_transactions
+  has_many :inventories, :through => :inventory_transactions
   
   attr_accessor :beer_rating  # to hold user drink rating or projected rating
   attr_accessor :this_beer_descriptors # to hold list of descriptors user typically likes/dislikes

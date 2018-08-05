@@ -1,3 +1,4 @@
+<%= f.hidden_field :unregistered, :value => nil %>
 <div class="form-group">
 	<label for="first_name_field" class="col-xs-4 col-sm-3 control-label">First name</label>
 	<div class="col-xs-8 col-sm-9">
@@ -25,7 +26,7 @@
 		<h5 class="hidden" id="username-available"></h5>
 	</div>
 </div>
-<% if @show_phone == true %>
+<% if current_user.role.id == 1 || current_user.role.id == 2 || current_user.role.id == 4 %>
 	<div class="form-group">
 		<label for="phone_field" class="col-xs-4 col-sm-3 control-label">Mobile <sup  id="signup_phone_note" data-toggle="tooltip" title="This is how we'll provide an update on delivery times.">?</sup></label>
 		<div class="col-xs-8 col-sm-9">

@@ -6,15 +6,284 @@ class ReloadsController < ApplicationController
   include BestGuessCellar
   require "date"
   require "stripe"
+  include Sidekiq::Worker
   
-  def index
-    Beer.all.each do |beer|
-      if beer.brewery.nil?
-        beer.destroy
-      end
-    end
+  def index # updated projected ratings table with drinks from current inventory and specific disti drinks
+    # get related order
+    @order_prep = OrderPrep.find_by_id(9)
+    # get customer info
+    @customer = User.find_by_account_id(order_prep.account_id)
+    # get related drinks
+    @order_prep_drinks = OrderDrinkPrep.where(order_prep_id: order_prep.id)
+    @total_quantity = @order_prep_drinks.sum(:quantity)
+    
+    # create array of drinks for email
+    @email_drink_array = Array.new
+       
+    # get delivery address of order 
+    @account_address = UserAddress.where(account_id: order_prep.account_id,
+                                          current_delivery_location: true).first
+    # create new delivery entry
+    @new_delivery = Delivery.new(account_id: order_prep.account_id, 
+                                    delivery_date: order_prep.delivery_start_time,
+                                    subtotal: order_prep.subtotal,
+                                    sales_tax: order_prep.sales_tax,
+                                    total_drink_price: order_prep.total_drink_price,
+                                    status: "in progress",
+                                    share_admin_prep_with_user: true,
+                                    order_prep_id: order_prep.id,
+                                    no_plan_delivery_fee: order_prep.delivery_fee,
+                                    grand_total: order_prep.grand_total,
+                                    account_address_id: @account_address.id,
+                                    delivery_start_time: order_prep.delivery_start_time,
+                                    delivery_end_time: order_prep.delivery_end_time)
+                                    
+     if @new_delivery.save
+       
+       # push all related drinks into AccountDelivery and UserDelivery tables
+       @order_prep_drinks.each_with_index do |drink, index|
+         # first create AccountDelivery
+         @new_account_delivery = AccountDelivery.new(account_id: drink.account_id,
+                                                      beer_id: drink.inventory.beer_id,
+                                                      quantity: drink.quantity,
+                                                      delivery_id: @new_delivery.id,
+                                                      drink_price: drink.drink_price,
+                                                      size_format_id: drink.inventory.size_format_id)
+         if @new_account_delivery.save
+           @projected_rating = ProjectedRating.where(user_id: drink.user_id, beer_id: drink.inventory.beer_id).first
+           UserDelivery.create(user_id: drink.user_id,
+                                account_delivery_id: @new_account_delivery.id,
+                                delivery_id: @new_delivery.id,
+                                quantity: drink.quantity,
+                                projected_rating: @projected_rating.projected_rating,
+                                drink_category: drink.inventory.drink_category)
+         
+            # put data into json for user confirmation email
+            # find if drinks is odd/even
+            if index.odd?
+              @odd = false # easier to make this backwards than change sparkpost email logic....
+            else  
+              @odd = true
+            end
+            @drink_account_data = ({:maker => drink.beer.brewery.short_brewery_name,
+                                    :drink => drink.beer.beer_name,
+                                    :drink_type => drink.beer.beer_type.beer_type_short_name,
+                                    :format => drink.size_format.format_name,
+                                    :projected_rating => @projected_rating,
+                                    :quantity => drink.quantity,
+                                    :odd => @odd}).as_json
+             
+            # push this array into overall email array
+            @email_drink_array << @drink_account_data
+         end
+
+       end # end of cycle through drinks
+       
+       @order_prep.update(status: "complete")
+       
+       # send email to single user with drinks
+       UserMailer.customer_order_confirmation(@customer, @new_delivery, @email_drink_array, @total_quantity).deliver_now
+       
+     end # end of check whether new delivery was saved
+
   end
   
+  def projected_ratings_updated_for_one_user
+    # get packaged size formats
+    @packaged_format_ids = SizeFormat.where(packaged: true).pluck(:id)
+    
+    # get list of available Knird Inventory
+    @available_knird_inventory = Inventory.where(currently_available: true, size_format_id: @packaged_format_ids).where("stock > ?", 0)
+    
+    # get list of available Disti Inventory to rate
+    @available_disti_inventory_to_rate = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: @packaged_format_ids, rate_for_users: true)
+    
+    # get list of all currently_active subscriptions
+    @active_subscription_account_ids = UserSubscription.where(subscription_id: [1,2,3,4,5,6,7], currently_active: true).pluck(:account_id)
+
+      # get each user associated to this account
+      @active_users = User.where(id: current_user.id)
+      
+      #Rails.logger.debug("Active users: #{@active_users.inspect}")
+      
+      @active_users.each do |user|
+        
+        # cycle through each knird inventory drink to assign projected rating
+        @available_knird_inventory.each do |available_drink|
+          # find if user has rated/had this drink before
+          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: available_drink.beer_id).order('created_at DESC')
+          
+          if !@drink_ratings.blank? 
+            # get average rating
+            @drink_rating_average = @drink_ratings.average(:user_beer_rating)
+            
+            if @drink_rating_average >= 10
+              @drink_rating = 10
+            else
+              @drink_rating = @drink_rating_average.round(1)
+            end
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink_rating, 
+                                    inventory_id: available_drink.id,
+                                    user_rated: true)
+          
+          else
+            # get this drink from DB for the Type Based Guess Concern
+            @drink = Beer.find_by_id(available_drink.beer_id)
+            
+            # find the drink best_guess for the user
+            type_based_guess(@drink, user.id)
+            
+            if @drink.best_guess >= 10
+              @drink_best_guess = 10
+            else
+              @drink_best_guess = @drink.best_guess.round(1)
+            end
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink_best_guess, 
+                                    inventory_id: available_drink.id,
+                                    user_rated: false)
+          end
+        end # end of knird inventory loop
+        
+        # cycle through each disti inventory drink to be rated to assign projected rating
+        @available_disti_inventory_to_rate.each do |available_drink|
+          # find if user has rated/had this drink before
+          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: available_drink.beer_id).order('created_at DESC')
+          
+          if !@drink_ratings.blank? 
+            # get average rating
+            @drink_rating_average = @drink_ratings.average(:user_beer_rating)
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink_rating_average, 
+                                    disti_inventory_id: available_drink.id)
+          
+          else
+            # get this drink from DB for the Type Based Guess Concern
+            @drink = Beer.find_by_id(available_drink.beer_id)
+            
+            # find the drink best_guess for the user
+            type_based_guess(@drink, user.id)
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink.best_guess, 
+                                    disti_inventory_id: available_drink.id)
+          end
+        end # end of disti inventory loop
+        
+      end # end of active user loop
+  end
+  def get_current_user_project_ratings_updated
+    # get packaged size formats
+    @packaged_format_ids = SizeFormat.where(packaged: true).pluck(:id)
+    
+    # get list of available Knird Inventory
+    @available_knird_inventory = Inventory.where(currently_available: true, size_format_id: @packaged_format_ids).where("stock > ?", 0)
+    
+    # get list of available Disti Inventory to rate
+    @available_disti_inventory_to_rate = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: @packaged_format_ids, rate_for_users: true)
+    
+    # get list of all currently_active subscriptions
+    @active_subscription_account_ids = UserSubscription.where(subscription_id: [1,2,3,4,5,6,7], currently_active: true).pluck(:account_id)
+    
+    # determine viable drinks for each active account
+    @active_subscription_account_ids.each do |account_id|
+
+      # get each user associated to this account
+      @active_users = User.where(account_id: account_id).where('getting_started_step >= ?', 7)
+      
+      #Rails.logger.debug("Active users: #{@active_users.inspect}")
+      
+      @active_users.each do |user|
+        
+        # cycle through each knird inventory drink to assign projected rating
+        @available_knird_inventory.each do |available_drink|
+          # find if user has rated/had this drink before
+          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: available_drink.beer_id).order('created_at DESC')
+          
+          if !@drink_ratings.blank? 
+            # get average rating
+            @drink_rating_average = @drink_ratings.average(:user_beer_rating)
+            
+            if @drink_rating_average >= 10
+              @drink_rating = 10
+            else
+              @drink_rating = @drink_rating_average.round(1)
+            end
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink_rating, 
+                                    inventory_id: available_drink.id,
+                                    user_rated: true)
+          
+          else
+            # get this drink from DB for the Type Based Guess Concern
+            @drink = Beer.find_by_id(available_drink.beer_id)
+            
+            # find the drink best_guess for the user
+            type_based_guess(@drink, user.id)
+            
+            if @drink.best_guess >= 10
+              @drink_best_guess = 10
+            else
+              @drink_best_guess = @drink.best_guess.round(1)
+            end
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink_best_guess, 
+                                    inventory_id: available_drink.id,
+                                    user_rated: false)
+          end
+        end # end of knird inventory loop
+        
+        # cycle through each disti inventory drink to be rated to assign projected rating
+        @available_disti_inventory_to_rate.each do |available_drink|
+          # find if user has rated/had this drink before
+          @drink_ratings = UserBeerRating.where(user_id: user.id, beer_id: available_drink.beer_id).order('created_at DESC')
+          
+          if !@drink_ratings.blank? 
+            # get average rating
+            @drink_rating_average = @drink_ratings.average(:user_beer_rating)
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink_rating_average, 
+                                    disti_inventory_id: available_drink.id)
+          
+          else
+            # get this drink from DB for the Type Based Guess Concern
+            @drink = Beer.find_by_id(available_drink.beer_id)
+            
+            # find the drink best_guess for the user
+            type_based_guess(@drink, user.id)
+            
+            # create new project rating DB entry
+            ProjectedRating.create(user_id: user.id, 
+                                    beer_id: available_drink.beer_id, 
+                                    projected_rating: @drink.best_guess, 
+                                    disti_inventory_id: available_drink.id)
+          end
+        end # end of disti inventory loop
+        
+      end # end of active user loop
+    end # end of active account loop
+  end
   def old_index  
     # get this drink from DB for the Type Based Guess Concern
     @drink = Beer.find_by_id(35411)

@@ -1,6 +1,26 @@
 class SettingsBeerController < ApplicationController
   include StyleDescriptors
   
+  def index
+    @beer_activated = DeliveryPreference.find_by_user_id(current_user.id)
+    if @beer_activated.beer_chosen == true
+      redirect_to settings_beer_styles_path
+    end
+    
+  end # end of index method
+  
+  def activate_beer
+    @delivery_preference = DeliveryPreference.find_by_user_id(current_user.id)
+    @delivery_preference.update(beer_chosen: true)
+    @user_beer_preference = UserPreferenceBeer.create(user_id: current_user.id,
+                                                            delivery_preference_id: @delivery_preference.id)
+    if @user_beer_preference.save                                                       
+      redirect_to settings_beer_styles_path
+    else
+      render beer_setting_path
+    end
+  end # end activate_beer method
+  
   def beer_journey
     # give admin a view
     if current_user.role_id == 1 && params.has_key?(:format)

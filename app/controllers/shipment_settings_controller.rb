@@ -101,7 +101,7 @@ class ShipmentSettingsController < ApplicationController
                                     status: "admin prep",
                                     subtotal: 0,
                                     sales_tax: 0,
-                                    total_price: 0,
+                                    total_drink_price: 0,
                                     delivery_change_confirmation: false,
                                     share_admin_prep_with_user: false)
     # create related shipment
@@ -114,7 +114,7 @@ class ShipmentSettingsController < ApplicationController
                                       status: "admin prep",
                                       subtotal: 0,
                                       sales_tax: 0,
-                                      total_price: 0,
+                                      total_drink_price: 0,
                                       delivery_change_confirmation: false,
                                       share_admin_prep_with_user: false)
     

@@ -1,0 +1,34 @@
+<%= render 'layouts/header' %> 
+<%= render 'stock_common', current_section: "Beer" %>
+<div class="row no-margin spinner text-center">
+	<div class="spinner-text">
+		<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
+		<h4>Fetching...</h4>
+	</div>
+</div>
+<div class="container">
+	<% if current_user.unregistered == true %>
+		<div class="row no-margin">
+			<div class="col-xs-12 text-center" id="delivery-cost-message-holder">
+				<div class="row cart-review-delivery-cost-message">
+					<div class="col-xs-12">
+						<h3>To reserve your drinks, <%= link_to "create an account", account_personal_path %>. It's free!</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	<% end %>
+	<div class="row no-margin" id="beer-header-row">
+		<%= render 'beer_header' %>
+	</div>
+	<div class="row filter-row" id="beer-filter-row">
+		<%= render 'beer_filters' %>
+	</div>
+	<div class="row no-margin" id="beer-filter-results-row">
+		<%= render 'beer_filter_results' %>
+	</div>
+	<div class="col-xs-12" id="stock-paginator-row">
+		<%= render 'stock_drink_paginator' %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

@@ -1,0 +1,45 @@
+$(function() {
+
+	// make sure correct "next" button is visible
+	<% if @total_count > 0 %>
+		if($('#process-styles-disabled-button-row').hasClass("show")){
+			$('#process-styles-disabled-button-row').removeClass("show").addClass("hidden");
+			$('#process-styles-live-button-row').removeClass("hidden").addClass("show");
+		}
+	<% else %>
+		$('#process-styles-disabled-button-row').removeClass("hidden").addClass("show");
+		$('#process-styles-live-button-row').removeClass("show").addClass("hidden");
+	<% end %>
+	
+	// adjust view of chosen style/action
+	<% if @action == "add" %>
+
+		<% if @preference == "like" %>
+			if($('#<%= @drink_style_id %>').hasClass('dislike-cover')){
+				$('#<%= @drink_style_id %>').removeClass('dislike-cover').addClass('like-cover');
+			} else {
+				$('#<%= @drink_style_id %>').addClass('like-cover');
+			}
+			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-like-style').attr('id','like-remove');
+			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-dislike-style').attr('id','dislike-add');
+		<% elsif @preference == "dislike" %>
+			if($('#<%= @drink_style_id %>').hasClass('like-cover')){
+				$('#<%= @drink_style_id %>').removeClass('like-cover').addClass('dislike-cover');
+			} else {
+				$('#<%= @drink_style_id %>').addClass('dislike-cover');
+			}
+			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-like-style').attr('id','like-add');
+			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-dislike-style').attr('id','dislike-remove');
+		<% end %>
+	<% end %>
+	
+	<% if @action == "remove" %>
+		<% if @preference == "like" %>
+			$('#<%= @drink_style_id %>').removeClass('like-cover');
+			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-like-style').attr('id','like-add');
+		<% elsif @preference == "dislike" %>
+			$('#<%= @drink_style_id %>').removeClass('dislike-cover');
+			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-dislike-style').attr('id','dislike-add');
+		<% end %>
+	<% end %>
+});

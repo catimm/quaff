@@ -23,4 +23,11 @@ class BeerStyle < ApplicationRecord
   
   # add way to access user's preference in view
   attr_accessor :user_preference
+  
+  # scope all breweries in stock
+  scope :styles_of_beer_in_stock, ->(beers_in_stock) { 
+    joins(:beer_types).
+    merge(BeerType.types_of_beer_in_stock(beers_in_stock))
+  }
+  
 end

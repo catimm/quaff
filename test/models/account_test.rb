@@ -11,6 +11,7 @@
 #  delivery_zone_id                  :integer
 #  delivery_frequency                :integer
 #  shipping_zone_id                  :integer
+#  knird_live_trial                  :boolean
 #
 
 require 'test_helper'

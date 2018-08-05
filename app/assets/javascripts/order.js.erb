@@ -35,7 +35,7 @@ $(function() {
 	    var valuesToSubmit = $("#new_order").serialize();
 	    $.ajax({
 	        type: "POST",
-	        url: "/orders/process_subsequent_order",
+	        url: "/curation_requests/process_subsequent_order",
 	        data: valuesToSubmit
 	        //dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
 	    });
@@ -82,7 +82,7 @@ $(function() {
 
 		$.ajax({
 		  type: "GET",
-		  url: "/orders/update_order_estimate",
+		  url: "/curation_requests/update_order_estimate",
 		  data: { 
 		    number_of_beers: number_of_beers, 
 		    number_of_ciders: number_of_ciders
