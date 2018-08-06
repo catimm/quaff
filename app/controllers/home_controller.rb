@@ -228,6 +228,7 @@ class HomeController < ApplicationController
   def process_zip_code
     # get zip code
     @zip_code = params[:zip]
+    Rails.logger.debug("Zip: #{@zip_code.inspect}")
     @city = @zip_code.to_region(:city => true)
     @state = @zip_code.to_region(:state => true)
     
@@ -240,7 +241,7 @@ class HomeController < ApplicationController
       
     # get Delivery Zone info
     @delivery_zone_info = DeliveryZone.find_by_zip_code(@zip_code)    
-    
+    Rails.logger.debug("Delivery Zone: #{@delivery_zone_info.inspect}")
     if !@delivery_zone_info.blank?
       @related_zone = @delivery_zone_info.id
       if @delivery_zone_info.currently_available == true
