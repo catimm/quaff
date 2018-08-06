@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
   
+  # set route for sidekiq monitor
+  require 'sidekiq/web'
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => 'admin/sidekiq'
+  end
+  
+  #set routes for devise
   devise_for :users, controllers: { invitations: "invitations", 
                                     omniauth_callbacks: "authentications",
                                     passwords: "passwords" }
@@ -12,9 +19,11 @@ Rails.application.routes.draw do
     post 'users/invitation/process_friend_invite' => 'invitations#process_friend_invite', :as => 'process_friend_invite'
   end
 
-  
   # mount Blazer
-  mount Blazer::Engine, at: "admin/blazer"
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Blazer::Engine, at: "admin/blazer"
+  end
+  
   
   # routes to user profile pages
   get '/users/start_account' => 'users#edit', :as => 'users_start_account'
