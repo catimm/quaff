@@ -80,11 +80,11 @@ class ApplicationController < ActionController::Base
     end
     if current_user.role_id == 1
       # admin route
-      redirect_to admin_breweries_path and return
+      @redirect_link = admin_breweries_path
     else # non-admin logic
-      redirect_to user_deliveries_path and return
+      @redirect_link = user_deliveries_path
     end # end of check whether user is admin
-    
+    @redirect_link
   end
   
   def after_sign_out_path_for(resource_or_scope)
