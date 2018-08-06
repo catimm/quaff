@@ -228,7 +228,7 @@ class HomeController < ApplicationController
   def process_zip_code
     # get zip code
     @zip_code = params[:zip]
-    Rails.logger.debug("Zip: #{@zip_code.inspect}")
+    #Rails.logger.debug("Zip: #{@zip_code.inspect}")
     @city = @zip_code.to_region(:city => true)
     @state = @zip_code.to_region(:state => true)
     
@@ -241,7 +241,7 @@ class HomeController < ApplicationController
       
     # get Delivery Zone info
     @delivery_zone_info = DeliveryZone.find_by_zip_code(@zip_code)    
-    Rails.logger.debug("Delivery Zone: #{@delivery_zone_info.inspect}")
+    #Rails.logger.debug("Delivery Zone: #{@delivery_zone_info.inspect}")
     if !@delivery_zone_info.blank?
       @related_zone = @delivery_zone_info.id
       if @delivery_zone_info.currently_available == true
@@ -304,11 +304,11 @@ class HomeController < ApplicationController
       end
       
       # update Ahoy Visit and Ahoy Events table 
-      Rails.logger.debug("Current visit: #{current_visit.inspect}")
+      #Rails.logger.debug("Current visit: #{current_visit.inspect}")
       @current_visit = Ahoy::Visit.where(id: current_visit.id).first
-      Rails.logger.debug("Current visit info: #{@current_visit.inspect}")
+      #Rails.logger.debug("Current visit info: #{@current_visit.inspect}")
       @current_visit.update(user_id: @user.id)
-      Rails.logger.debug("Current visit after update: #{@current_visit.inspect}")
+      #Rails.logger.debug("Current visit after update: #{@current_visit.inspect}")
       @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
       @current_event.update(user_id: @user.id)
       #Rails.logger.debug("Current event: #{@current_event.inspect}")
