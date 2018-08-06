@@ -44,13 +44,6 @@ Rails.application.configure do
   # Set to :debug to see everything in the log; :info to see high-level.
   config.log_level = :debug
   
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter = config.log_formatter
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
-    config.logger.level = Logger::DEBUG
-  end
-  
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
 
@@ -95,10 +88,15 @@ Rails.application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
-
+  
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    config.logger.level = Logger::DEBUG
+  end
+  
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  
-  # add dependency loading
-  config.dependency_loading = true
+
 end
