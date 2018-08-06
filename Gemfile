@@ -131,6 +131,8 @@ gem 'friendly_id', '~> 5.2.0'
 gem 'sitemap_generator'
 # gem for background processing for Ruby
 gem 'sidekiq'
+# Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server for Ruby/Rack applications
+gem 'puma'
 
 # Use unicorn as the app server
 # gem 'unicorn'

@@ -569,9 +569,4 @@ class Beer < ApplicationRecord
     end
   end
   
-  # scope styles currently available in inventory
-  scope :live_beers_at_location, ->(location_id) { 
-    joins(:beer_locations).merge(BeerLocation.active_beers(location_id)) 
-  }
-  
 end # end of controller
