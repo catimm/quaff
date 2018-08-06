@@ -304,9 +304,12 @@ class HomeController < ApplicationController
       end
       
       # update Ahoy Visit and Ahoy Events table 
-      @current_visit = Ahoy::Visit.find_by_id(current_visit.id)
+      Rails.logger.debug("Current visit: #{current_visit.inspect}")
+      @current_visit = Ahoy::Visit.where(id: current_visit.id).first
+      Rails.logger.debug("Current visit info: #{@current_visit.inspect}")
       @current_visit.update(user_id: @user.id)
-      @current_event = Ahoy::Event.find_by_visit_id(current_visit.id)
+      Rails.logger.debug("Current visit after update: #{@current_visit.inspect}")
+      @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
       @current_event.update(user_id: @user.id)
       #Rails.logger.debug("Current event: #{@current_event.inspect}")
       

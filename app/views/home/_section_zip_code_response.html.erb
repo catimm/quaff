@@ -5,7 +5,7 @@
 			<h3 class="index-section-header" id="zip-code-response-text">Lucky day, we deliver to <%= @location %>!</h3> 
 		</div>
 		<div class="col-xs-12 text-center">
-			<h3 class="index-section-header">Just a couple questions so we can personalize a stack rank of our inventory according to your preferences....</h3> 
+			<h3 class="index-section-header">Just a couple questions so we can personalize your view of our inventory according to your preferences....</h3> 
 		</div>
 	</div>
 <% elsif @coverage == true && @plan_type == "delivery" && @location == nil %>
@@ -14,7 +14,7 @@
 			<h3 class="index-section-header" id="zip-code-response-text">Lucky day, we deliver to you!</h3>
 		</div>
 		<div class="col-xs-12 text-center">
-			<h3 class="index-section-header">Just a couple questions so we can personalize a stack rank of our inventory according to your preferences.....</h3> 
+			<h3 class="index-section-header">Just a couple questions so we can personalize your view of our inventory according to your preferences.....</h3> 
 		</div>
 	</div>
 <% elsif @coverage == true && @plan_type == "shipping" && @location != nil %>
