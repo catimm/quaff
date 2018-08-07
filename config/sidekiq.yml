@@ -9,5 +9,6 @@ production:
   - critical
   - default
   - mailers
+  - ahoy
   - low
 :timeout: 8
