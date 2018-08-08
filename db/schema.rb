@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180713191622) do
+ActiveRecord::Schema.define(version: 20180730045636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -287,6 +287,18 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.string "slug"
     t.string "instagram_url"
     t.index ["slug"], name: "index_breweries_on_slug", unique: true
+  end
+
+  create_table "corporate_drink_preferences", force: :cascade do |t|
+    t.bigint "account_id"
+    t.string "drink_type"
+    t.integer "number_of_employees"
+    t.integer "number_of_drinks_per_employee"
+    t.decimal "budget_per_employee"
+    t.text "admin_comments"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_corporate_drink_preferences_on_account_id"
   end
 
   create_table "coupon_rules", force: :cascade do |t|
@@ -1213,6 +1225,7 @@ ActiveRecord::Schema.define(version: 20180713191622) do
     t.string "geo_zip"
   end
 
+  add_foreign_key "corporate_drink_preferences", "accounts"
   add_foreign_key "coupon_rules", "coupons"
   add_foreign_key "credits", "accounts"
   add_foreign_key "deliveries", "orders"

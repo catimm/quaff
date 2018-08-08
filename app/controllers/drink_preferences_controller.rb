@@ -152,5 +152,9 @@ class DrinkPreferencesController < ApplicationController
     redirect_to user_profile_path(current_user.id)
   end # end create_drink_descriptors method
   
+  def corp_drink_preferences
+    @drink_type = params[:drink_type]
+    @user = current_user
+  end
   
 end

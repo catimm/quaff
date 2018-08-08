@@ -1082,9 +1082,6 @@ class SignupController < ApplicationController
       @user_personal_info_chosen = "current"
   end
 
-  def corporate_details
-  end
-  
   private
 
   def free_curation_params

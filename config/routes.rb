@@ -258,6 +258,8 @@ Rails.application.routes.draw do
   #get '/create_drink_profile/wine_costs' => 'create_drink_profile#wine_costs', :as => 'drink_profile_wine_costs'
   post '/create_drink_profile/process_drink_cost_estimates/:id' => 'create_drink_profile#process_drink_cost_estimates'
   
+  get '/create_drink_profile/corp_drink_preferences/:drink_type' => 'create_drink_profile#corp_drink_preferences', :as => 'corp_drink_preferences'
+
   # user signup process
   get '/signup/process_final_drink_profile_step' => 'signup#process_final_drink_profile_step', :as => 'process_final_drink_profile_step'
   get '/signup/choose_signup' => 'signup#choose_signup', :as => 'choose_signup'
@@ -311,8 +313,7 @@ Rails.application.routes.draw do
 
   # corp signup
   get '/signup/corporate' => 'signup#corporate', :as => 'corporate_signup'
-  get '/signup/corporate_details' => 'signup#corporate_details', :as => 'corporate_signup_details'
-  
+    
   # user early signup process
   get '/early_signup/invitation_code/:id' => 'early_signup#invitation_code', :as => 'invitation_code'
   post '/early_signup/process_invitation_code' => 'early_signup#process_invitation_code', :as => 'process_invitation_code'
