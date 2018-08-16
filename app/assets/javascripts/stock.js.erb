@@ -1,5 +1,8 @@
 $(function () {
 	
+	// set page source of member dropdown
+	var member_page_source = gon.page_source
+	
 	// hide spinner
 	$(".spinner-text").hide();
 	
@@ -119,7 +122,7 @@ $(function () {
 		
 		$.ajax({
 		  type: "POST",
-		  url: "/stock/add_stock_to_subscriber_delivery/" + this_id + "/" + quantity
+		  url: "/stock/add_stock_to_subscriber_delivery/" + member_page_source + "-" + this_id + "/" + quantity
 		});
 	});
 	

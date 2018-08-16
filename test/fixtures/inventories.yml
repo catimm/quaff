@@ -30,6 +30,7 @@
 #  comped                 :integer
 #  shrinkage              :integer
 #  membership_only        :boolean
+#  nonmember_limit        :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

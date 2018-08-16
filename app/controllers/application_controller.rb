@@ -82,7 +82,7 @@ class ApplicationController < ActionController::Base
       # admin route
       @redirect_link = admin_breweries_path
     else # non-admin logic
-      @redirect_link = user_deliveries_path
+      @redirect_link = user_orders_path
     end # end of check whether user is admin
     @redirect_link
   end

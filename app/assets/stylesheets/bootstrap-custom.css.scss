@@ -20,6 +20,7 @@ $extra-extra-dark-gray: #242424;
 $black: #000;
 $dark-blue: #4780b4;
 $bright-blue: #0087cb;
+$homepage-blue: #04ADFF;
 $ninty-five-person-version-bright-blue: #e6f7ff;
 $light-blue: #17B1FB;
 $faded-blue: #91D8FA;
@@ -28,6 +29,7 @@ $super-light-faded-blue: #b6e6fc;
 $bright-orange: #ffa200;
 $light-orange: #FFC764;
 $faded-orange: #FCC769;
+$homepage-orange: #FFB739;
 $bright-aqua-blue: #24a8ac;
 $light-aqua-blue: #6FD0D4;
 $bright-purple: #982395;
@@ -286,7 +288,11 @@ body.home-body {
 .zip-code-input-row {
   margin: 40px 0;
 }
-.home-start-with-zip {
+#invitation-request-response-row {
+  margin: 100px 0;
+}
+.home-start-with-zip,
+.new-user-start-with-zip {
   width: 100%;
 }
 .home-prompt-text {
@@ -295,6 +301,25 @@ body.home-body {
   line-height: 1.3;
   span.prompt-emphasis {
     color: $action-background;
+  }
+}
+.home-carousel-text {
+  color: $more-emphasized-text;
+  margin: 0;
+  line-height: 1.3;
+  min-height: 125px;
+  span.prompt-emphasis {
+    color: $action-background;
+  }
+}
+.carousel-control-prev {
+  .fa.fa-chevron-left {
+    padding-top: 12px;
+  }
+}
+.carousel-control-next {
+  .fa.fa-chevron-right {
+    padding-top: 12px;
   }
 }
 .stock-ranking-ready-button {
@@ -318,18 +343,69 @@ body.home-body {
     }
   }
 }
-#section_drink_styles {
-  margin-top: 100px;
+#knird_info_one {
+  padding: 100px 0 80px 0;
 }
-
+#section_drink_styles {
+  margin: 100px 0;
+}
+.home-attention-background {
+  background: $light-aqua-blue !important;
+  .knird-info-one-text-row  {
+    .home-carousel-text {
+      color: $white;
+    }
+  }
+}
+.home-attention-background-second {
+  background: $light-green !important;
+  .knird-info-one-text-row  {
+    .home-carousel-text {
+      color: $white;
+    }
+  }
+}
+.home-attention-background-third {
+  background: $light-yellow !important;
+  .knird-info-one-text-row  {
+    .home-carousel-text {
+      color: $white;
+    }
+  }
+}
+.home-attention-background-fourth {
+  background: $homepage-orange !important;
+  .knird-info-one-text-row  {
+    .home-carousel-text {
+      color: $white;
+    }
+  }
+}
+.home-attention-background-fifth {
+  background: $faded-red !important;
+  .knird-info-one-text-row  {
+    .home-carousel-text {
+      color: $white;
+    }
+  }
+}
+.home-attention-background-sixth {
+  background: $faded-purple !important;
+  .knird-info-one-text-row  {
+    .home-carousel-text {
+      color: $white;
+    }
+  }
+}
 #knird_info_ready {
   padding: 50px 0 100px 0;
 }
-#knird_info_one,
 #knird_info_two {
   margin: 150px 0 100px 0;
 }
-.knird-info-one-text-row,
+.knird-info-one-text-row {
+  margin: 200px 0 150px 0;
+}
 .knird-info-two-text-row {
   margin: 110px 0 80px 0;
 }
@@ -379,6 +455,9 @@ h1, h2, h3, h4, h5, h6, p, .h1, .h2, .h3, .h4, .h5, .h6, .p {
 }
 .dropdown-menu {
   z-index: 9999 !important;
+ }
+ .back-to-previous-row {
+   margin: 20px 0 0 0;
  }
 .fa.fa-shopping-basket {
   margin-top: 12.5px;
@@ -587,7 +666,9 @@ label {
         }
     }
 }
-
+#check-zip-code {
+  margin-bottom: 10px;
+}
 #homepage-get-started-box {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -687,6 +768,15 @@ label {
   span {
     color: $action-background;
   }
+}
+.new-user-getting-started-header {
+  margin: 35px 0 20px 0;
+  color: $header-text;
+  line-height: 1.3;
+}
+.new-user-getting-started-subheader {
+  margin: 0 0 20px 0;
+  color: $header-text;
 }
 .index-section-header.plan-section {
   margin-bottom: 15px;
@@ -1232,6 +1322,110 @@ label {
 .opportunity-row {
   margin: 10px 0;
 }
+// Delivery Settings Page
+.delivery-settings-row-header {
+  margin: 5px 0 0 0;
+  color: $more-emphasized-text;
+  span {
+    font-size: 70%;
+  }
+}
+.delivery-settings-status-text {
+  color: $more-emphasized-text;
+  .fa.fa-check-circle-o {
+    color: $user-action;
+  }
+  .fa.fa-times-circle-o {
+    color: $bootstrap-red-button-background;
+  }
+}
+.delivery-frequency-holder {
+  background: $white;
+  height: 100%;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+.drinks-per-delivery-row {
+  margin-bottom: 10px;
+}
+.delivery-number-box-holder {
+  border: 1px solid $normal-text;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  text-align: center;
+  width: 80%;
+  height: 50px;
+  margin: 5px 0;
+  h5 {
+    color: $normal-text;
+    margin-top: 15px;
+  }
+}
+.delivery-number-box-holder.chosen {
+  background: rgba(0,135,203, 0.4);
+}
+.delivery-number-box-holder:hover {
+  background: rgba(0,135,203, 0.4);
+}
+.delivery-drink-numbers-container {
+  margin-bottom: 10px;
+}
+.delivery-extras-container {
+  margin-bottom: 10px;
+}
+.delivery_preference_additional {
+  textarea {
+    min-height: 100px;
+  }
+}
+.saved-settings-message-text {
+  color: $more-emphasized-text;
+}
+.member-check-mark-holder {
+  text-align: center;
+  padding: 25px 5px;
+  border-right: 1px solid $less-emphasized-text;
+  i {
+    color: $action-background;
+    font-weight: 300;
+  }
+}
+.delivery-settings-confirm-header {
+  color: $more-emphasized-text;
+  font-weight: 500;
+}
+.delivery-settings-confirm-text {
+  color: $more-emphasized-text;
+  span {
+    color: $action-background;
+  }
+  sup {
+    border: 1px solid $normal-text;
+    border-radius: 4px;
+    width: 12px;
+    height: 12px;
+    padding: 1px 3px;
+    margin-left: 2.5px;
+    font-size: 12px;
+  }
+}
+.delivery-settings-estimate-tile {
+  margin: 5px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  width: 99%;
+  position: relative;
+  padding: 0 7px;
+}
+.confirm-delivery-settings-button {
+  width: 100%;
+  margin-top: 20px;
+}
 // User Create Drink Profile
 .signup-drink-category-row-holder {
   margin-top: 20px;
@@ -1306,28 +1500,8 @@ label {
   color: $normal-text;
   margin: 0;
 }
-.create-profile-number-box-holder {
-  border: 1px solid $normal-text;
-  border-radius: 2px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-  text-align: center;
-  width: 80%;
-  height: 35px;
-  margin: 5px 0;
-  p {
-    color: $normal-text;
-    margin-top: 10px;
-  }
-}
 .price-estimate-highlight {
   color: $action-background;
-}
-.create-profile-number-box-holder.chosen {
-  background: rgba(0,135,203, 0.4);
-}
-.create-profile-number-box-holder:hover {
-  background: rgba(0,135,203, 0.4);
 }
 .chosen-drinks-per-week-holder {
   width: 80%;
@@ -1829,6 +2003,25 @@ hr {
     height: 34px;
   }
 }
+.nonmember-limit-holder {
+  border: 1px solid $action-background;
+  background: $white;
+  border-top-left-radius: 4px;
+  text-align: left;
+  position: absolute;
+  right: 0px;
+  top: 132px;
+  z-index: 1000;
+  width: 162px;
+  .nonmember-limit-text-holder {
+    text-align: right;
+    width: 80%;
+  }
+  h5 {
+    color: $more-emphasized-text;
+    margin: 2px 0;
+  }
+}
 .member-only-order-notice {
   border: 1px solid $medium-gray;
   border-radius: 4px;
@@ -1854,6 +2047,16 @@ hr {
 .order-dropdown-button-text {
   color: $white;
   margin: 5px 0 0 0;
+}
+// Invitation Request and Referral
+.email-invitation-request {
+  color: $normal-text;
+  font-weight: 500;
+  float: left;
+  margin-right: 5px;
+}
+.notify-me-button {
+  width: 100%;
 }
 // Cart review
 .cart-header {
@@ -1906,6 +2109,7 @@ hr {
     color: $more-emphasized-text;
     letter-spacing: 0.3px;
     margin: 10px 0;
+    line-height: 1.2;
     span {
       color: $action-background;
     }
@@ -1959,7 +2163,8 @@ hr {
   color: $more-emphasized-text;
 }
 .delivery-time-standard-option-tile,
-.delivery-time-reserved-option-tile {
+.delivery-time-reserved-option-tile,
+.delivery-time-member-option-tile {
   margin: 0 0 15px 0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -1970,11 +2175,13 @@ hr {
   padding: 5px 0;
 }
 .delivery-time-standard-option-tile:hover,
-.delivery-time-reserved-option-tile:hover {
+.delivery-time-reserved-option-tile:hover,
+.delivery-time-member-option-tile:hover {
   background: rgba(0,135,203, 0.25);
 }
 .delivery-time-standard-option-tile.chosen,
-.delivery-time-reserved-option-tile.chosen {
+.delivery-time-reserved-option-tile.chosen,
+.delivery-time-member-option-tile.chosen {
   background: rgba(0,135,203, 0.25);
 }
 .check-mark-holder {
@@ -2005,9 +2212,32 @@ hr {
     margin-top: 10px;
  }
 }
+.confirm-membership {
+  text-align: center;
+  button {
+    width: 100%;
+    margin: 15px 0 30px 0;
+ }
+}
+.membership-thank-you-header {
+  color: $more-emphasized-text;
+  margin: 20px 0 30px 0;
+}
+.membership-thank-you-subheader {
+  color: $more-emphasized-text;
+  margin: 10px 0 30px 0;
+  line-height: 1.25;
+}
+.extra-get-started-option-row {
+  margin: 30px 0 20px 0;
+  p {
+    margin-bottom: 20px;
+  }
+}
 .order-thank-you-header {
   color: $more-emphasized-text;
   margin: 60px 0 20px 0;
+  line-height: 1.3;
 }
 .order-thank-you-subheader {
   color: $more-emphasized-text;
@@ -2057,7 +2287,15 @@ hr {
 .drink-info-universal-second-row {
   padding: 0 10px;
 }
-.delivery-drinks-show-more, .delivery-drinks-show-less {
+.delivery-settings-header-row {
+  background: $light-gray;
+  border: 1px solid $medium-light-gray;
+  padding: 5px 0;
+}
+.delivery-drinks-show-more, 
+.delivery-drinks-show-less,
+.delivery-settings-show-more,
+.delivery-settings-show-less {
   float: left;
   margin: 5px 5px 0 0;
   i {
@@ -2074,7 +2312,8 @@ hr {
   }
 }
 .delivered-on-date {
-  float: left;
+  margin: 5px 0 0 0;
+  color: $more-emphasized-text;
 }
 $brewer-description-font-size-fp: 14px;
 $brewer-description-line-height-fp: 1.2;
@@ -4219,6 +4458,7 @@ $beer-header-lines-to-show-fp: 1;
 .knird-preferred-extra-info-text {
   color: $normal-text;
   text-align: center;
+  line-height: 1.2;
 }
 .knird-preferred-section-header,
 .about-us-section-header {
@@ -4351,14 +4591,14 @@ $beer-header-lines-to-show-fp: 1;
   border-radius: 6px;
   padding: 0 10px 10px 10px;
   margin-bottom: 10px;
-  min-height: 150px;
+  min-height: 200px;
 }
 .add-location-address-holder {
   text-align: center;
   border: 1.75px dashed $less-emphasized-text;
   border-radius: 6px;
   margin-bottom: 10px;
-  min-height: 150px;
+  min-height: 200px;
 }
 .address-default-button-row {
   margin: 0;
@@ -4383,6 +4623,91 @@ $beer-header-lines-to-show-fp: 1;
   }
 }
 .add-location {
+  padding: 3px 12px;
+}
+.credit-card-holder {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  padding: 0 10px 10px 10px;
+  margin-bottom: 10px;
+  min-height: 110px;
+}
+.add-credit-card-holder {
+  text-align: center;
+  border: 1.75px dashed $less-emphasized-text;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  min-height: 110px;
+}
+.add-new-card-button {
+  margin: 20px 0 0 0;
+}
+.card-visual-holder {
+  padding-top: 10px;
+  i {
+    color: $normal-text;
+  }
+}
+.credit-card-info-text {
+  color: $normal-text;
+}
+.credit-card-info-text.last4 {
+  padding-top: 15px;
+}
+.delete-credit-card-button {
+  color: #d9534f;
+    i {
+      font-size: 18px;
+      padding: 10px 0 0 2.5px;
+    }
+}
+.gift-card-info-holder {
+  text-align: center;
+  border: 1.75px dashed $less-emphasized-text;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  min-height: 150px;
+  padding-top: 30px;
+}
+.gift-card-entry-field {
+  width: 100%;
+  margin: 10px 0;
+}
+.gift-redeem-submit {
+  width: 100%;
+  margin: 10px 0;
+}
+.buy-knird-credit-button {
+  width: 80%;
+}
+.membership-details-holder {
+  text-align: center;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  padding: 15px 10px 10px 10px;
+  margin-bottom: 10px;
+  min-height: 135px;
+}
+.membership-details-subtext {
+  color: $normal-text;
+}
+.membership-details-text {
+  margin-top: 10px;
+  color: $action-background;
+  span {
+    font-size: 50%;
+    color: $normal-text;
+  }
+}
+.btn.btn-default.change-auto-renew-button:hover {
+  background: $bootstrap-red-button-hover-background;
+  border: 1px solid $bootstrap-red-button-hover-border;
+  color: $white;
+}
+.change-auto-renew-button {
+  width: 80%;
   padding: 3px 12px;
 }
 .better-option-request-text {
@@ -4966,10 +5291,12 @@ $beer-header-lines-to-show-fp: 1;
   width: 115% !important;
   margin: 2px 0 0 -25px !important;
 }
-.signup-style-tile, 
+.signup-style-tile,
+.drink-style-tile,
+.drink-style-tile-slim, 
 .drink-profile-style-tile, 
 .drink-profile-style-tile-chosen,
-.home-drink-profile-style-tile {
+.drink-style-tile-home {
     margin-bottom: 10px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
     -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
@@ -4986,15 +5313,16 @@ $beer-header-lines-to-show-fp: 1;
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
-.home-drink-profile-style-tile.like-cover {
-  background: rgba(64,193,112, 0.5);
-}
-.home-drink-profile-style-tile.dislike-cover {
-  background: rgba(254,97,101, 0.8);
-}
-.drink-profile-style-tile.dislike-style-tile {
+.drink-style-tile-slim:hover,
+.drink-style-tile-home:hover {
   background: rgba(0,135,203, 0.4);
 }
+
+.drink-style-tile-slim.like-cover,
+.drink-style-tile-home.like-cover {
+  background: rgba(0,135,203, 0.4);
+}
+
 .signup-style-tile:hover {
     background: rgba(0,135,203, 0.25);
     h5 {
@@ -5204,22 +5532,7 @@ $beer-header-lines-to-show-fp: 1;
     line-height: 1.2;
   }
 }
-.add-new-card-button {
-  margin: 20px 0 0 0;
-}
 
-.card-visual-holder, .card-info-holder {
-  margin-bottom: 5px;
-  i {
-    color: $normal-text;
-  }
-}
-.credit-card-info-text {
-  color: $normal-text;
-}
-.credit-card-info-text.last4 {
-  padding-top: 15px;
-}
 // Blog Post
 .add-blog-post-button {
   width: 100%; 
@@ -5475,6 +5788,9 @@ $beer-header-lines-to-show-fp: 1;
   margin-left: 5px;
 }
 // User Profile Page
+.top-header-row {
+  margin-top: 20px;
+}
 .first-row-new {
   background: $soft-gray-background;
   margin-top: 10px !important;
@@ -5485,20 +5801,65 @@ $beer-header-lines-to-show-fp: 1;
   margin-top: 10px !important;
   border-bottom: 1px solid $soft-border;
 }
-.first-row-container {
-  
+.account-category-tile {
+  margin: 15px 0 20px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+}
+.membership-header-row {
+  margin: 25px 0 0 0;
+}
+.membership-section-header {
+  color: $more-emphasized-text;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.membership-section-header.add-cc-header {
+  margin-top: 20px;
+}
+.membership-benefit-tile {
+  margin: 10px 0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  padding: 5px 10px;
+}
+.account-category-tile:hover {
+  background: rgba(0,135,203, 0.25);
+  h3, p {
+    //color: $white;
+  }
+}
+.account-category-icon-holder {
+  text-align: center;
+  padding-top: 10px;
+}
+.account-settings-header {
+  color: $more-emphasized-text;
+  margin: 10px 0 5px 0;
+}
+.account-settings-subheader {
+  color: $normal-text;
+  margin: 5px 0 10px 0;
 }
 .submenu-options {
   margin: 10px 0;
-  color: $normal-text;
   display: block;
+  a {
+    color: $normal-text;
+    text-decoration: none;
+  }
+  .current {
+    color: $action-background;
+    font-weight: 500;
+  }
 }
-.submenu-options:hover {
+.submenu-options a:hover {
   color: $action-background !important;
-}
-.submenu-options.current {
-  color: $action-background;
-  font-weight: 500;
 }
 .submenu-options.current:hover {
   color: $action-background;
@@ -6056,10 +6417,15 @@ $beer-header-lines-to-show-fp: 1;
   width: 60%;
   margin: 20px 0;
 }
-.delivery-date-change-row-holder, .average-drink-cost-row-holder {
+.delivery-date-change-row-holder, 
+.average-drink-cost-row-holder,
+.max-drink-cost-row-holder {
   margin: 2.5px 0;
 }
-.delivery-date-change-row, .order-delivery-date-change-row, .average-drink-cost-row {
+.delivery-date-change-row, 
+.order-delivery-date-change-row, 
+.average-drink-cost-row,
+.max-drink-cost-row {
   border-radius: 6px;
   background: $white;
   height: inherit;
@@ -6085,13 +6451,20 @@ $beer-header-lines-to-show-fp: 1;
   width: 100%;
   margin-top: 10px;
 }
-.delivery-date-change-row.chosen, .order-delivery-date-change-row.chosen, .average-drink-cost-row.chosen {
+.delivery-date-change-row.chosen, 
+.order-delivery-date-change-row.chosen, 
+.average-drink-cost-row.chosen,
+.max-drink-cost-row.chosen {
   background: rgba(0,135,203, 0.4);
 }
-.delivery-date-change-row:hover, .order-delivery-date-change-row:hover, .average-drink-cost-row:hover {
+.delivery-date-change-row:hover, 
+.order-delivery-date-change-row:hover, 
+.average-drink-cost-row:hover,
+.max-drink-cost-row:hover {
   background: rgba(0,135,203, 0.4);
 }
-.average-drink-cost {
+.average-drink-cost,
+.max-drink-cost {
    color: $more-emphasized-text;
    margin: 15px 0;
 }
@@ -6253,9 +6626,12 @@ $beer-header-lines-to-show-fp: 1;
   color: $more-emphasized-text;
 }
 .change-delivery-directions {
-  color: $normal-text;
+  color: $more-emphasized-text;
   padding-left: 15px;
   margin-top: 20px;
+}
+.change-delivery-date-more-options-row {
+  margin: 30px 0;
 }
 .preference-estimate-holder-admin {
   padding: 0 5px !important;
@@ -6933,11 +7309,13 @@ $descriptor-lines-to-show: 2;
   padding: 6px;
   margin-top: 10px !important;
 }
-.like-style,
+.like-style {
+  background: $step-background;
+}
 .home-like-style {
   background: $step-background;
-  bottom: 0 !important;
-  right: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 .like-style-middle {
   background: $step-background;
@@ -7331,12 +7709,32 @@ input[type="checkbox"] {
 .approve-order-button {
   width: 95%;
 }
+.my-orders-header {
+  margin-top: 25px;
+}
 .order-message-sent {
   color: $normal-text;
 }
-
+.order-action-option-buttons {
+  width: 100%;
+  margin: 5px 0;
+  background: $white;
+  border: 1px solid $bootstrap-success-green-border;
+  color: $bootstrap-success-green;
+  .fa.fa-shopping-basket {
+    margin: 0;
+    color: $bootstrap-success-green;
+  }
+}
+.order-action-option-buttons:hover {
+  background: $bootstrap-success-green-hover;
+  color: $white;
+  .fa.fa-shopping-basket {
+    color: $white;
+  }
+}
 .show-delivery-stats-text, .hide-delivery-stats-text {
-  margin: 16px 0 0 0;
+  margin: 0 0 10px 0;
   span {
     color: $action-background;
   }
@@ -8681,7 +9079,16 @@ $delivery-beer-header-lines-to-show: 2;
     border-left: none;
     border-top: 1px solid $soft-border;
   }
-  
+  .carousel-control-prev {
+    .fa.fa-chevron-left {
+      padding-top: 40px;
+    }
+  }
+  .carousel-control-next {
+    .fa.fa-chevron-right {
+      padding-top: 40px;
+    }
+  }
   // Mobile Knird Live signup page
   .knird-preferred-signup-or {
     margin-top: 20px;
@@ -8785,10 +9192,6 @@ $delivery-beer-header-lines-to-show: 2;
   .drink-info-universal-show-more, .drink-info-universal-show-less {
     left: 0.55px; 
     top: 58px;
-  }
-  .delivered-on-date {
-    font-size: 15px;
-    display: inline;
   }
   .show-delivery-stats-text, .hide-delivery-stats-text {
     font-size: 11px;
@@ -9438,10 +9841,6 @@ header {
 .formButton-index-Banner2 {
   font-size: 14px;
   width: 100%;
-}
-.index-section-header {
-  font-size: 18px;
-  margin: 20px 0;
 }
 .index-section-header.six-free-promo-header {
   font-size: 24px;

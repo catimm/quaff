@@ -1,0 +1,22 @@
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-8">
+		<h3 class="user-settings-header">My personal info</h3>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="col-xs-12 col-sm-6" id="account-settings-personal-info-holder">
+		<%= simple_form_for @user, :url => update_profile_user_path, :html => { :class => 'form-horizontal' } do |f| %>
+			<%= f.hidden_field :special_code, :value => @code %>
+				<%= render 'user_personal_info', f: f  %>
+				<%= render 'user_personal_additional_info', f: f  %>
+				<div class="form-group">
+					<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-10 text-center">
+						<%= f.submit "Save", class: "btn btn-success user-info-next-button", id: "user-info-next-button" %>
+						<h5 class="terms-and-conditions-text">By clicking 'Save', you agree to our 
+							<%= link_to "terms", terms_path, target: :_blank %> and <%= link_to "privacy policy", privacy_path, target: :_blank %>.
+						</h5>
+					</div>
+				</div>
+		<% end %>
+	</div>
+</div>

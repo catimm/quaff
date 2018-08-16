@@ -172,7 +172,7 @@ class User < ApplicationRecord
   def subscription_status
     @user_subscription_status = UserSubscription.find_by_account_id(self.account_id)
     if !@user_subscription_status.blank?
-      if @user_subscription_status.id == 1 || @user_subscription_status.subscription.deliveries_included != 0
+      if @user_subscription_status.subscription_id == 1 || @user_subscription_status.subscription.deliveries_included != 0
         return "subscribed"
       else
         return "not subscribed"

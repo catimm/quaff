@@ -1,0 +1,63 @@
+<% if @delivery_preferences.beer_chosen == true %>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">How many beers per delivery?</h2>
+				<h5 class="signup-question-detail">You can change this at any point in time.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row drinks-per-delivery-row">
+		<div class="container">
+			<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+				<div class="row no-margin">
+					<% (6..21).each do |i| %>
+						<div class="col-xs-3 no-padding number-box-holder-parent">
+							<% if @beer_preferences.beers_per_delivery == i %>
+							  	<div class="delivery-number-box-holder chosen" id="beer-<%= i %>">
+							 		<h5><%= i %></h5>
+							 	</div>
+						 	<% else %>
+							  	<div class="delivery-number-box-holder" id="beer-<%= i %>">
+							 		<h5><%= i %></h5>
+							 	</div>
+						 <% end %>
+						</div>    
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>
+
+<% if @delivery_preferences.cider_chosen == true %>
+	<div class="row">
+		<div class="container" id="user-drinks-per-week-signup">
+			<div class="col-xs-12 text-center">
+				<h2 class="signup-question">How many ciders per delivery?</h2>
+				<h5 class="signup-question-detail">You can change this at any point in time.</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row drinks-per-delivery-row">
+		<div class="container">
+			<div class="col-xs-12 col-sm-offset-1 col-sm-10">
+				<div class="row no-margin">
+					<% (6..21).each do |i| %>
+						<div class="col-xs-3 no-padding number-box-holder-parent">
+							<% if @cider_preferences.ciders_per_delivery == i %>
+							  	<div class="delivery-number-box-holder chosen" id="cider-<%= i %>">
+							 		<h5><%= i %></h5>
+							 	</div>
+						 	<% else %>
+							  	<div class="delivery-number-box-holder" id="cider-<%= i %>">
+							 		<h5><%= i %></h5>
+							 	</div>
+						 <% end %>
+						</div>    
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

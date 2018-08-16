@@ -134,6 +134,12 @@ class CartsController < ApplicationController
     @order_prep_drinks = OrderDrinkPrep.where(order_prep_id: @order_prep.id)
     @total_drink_count = @order_prep_drinks.sum(:quantity)
     
+    if @order_prep.subtotal >= 35
+      @standard_delivery_price = 5
+    else
+      @standard_delivery_price = 8
+    end
+    
     # get customer's addresses
     @user_addresses = UserAddress.where(account_id: current_user.account_id)
     @selected_user_address = @user_addresses.where(current_delivery_location: true).first
@@ -261,6 +267,12 @@ class CartsController < ApplicationController
     @order_prep = OrderPrep.where(account_id: current_user.account_id, status: "order in process").first
     @order_prep_drinks = OrderDrinkPrep.where(order_prep_id: @order_prep.id)
     @total_drink_count = @order_prep_drinks.sum(:quantity)
+    
+    if @order_prep.subtotal >= 35
+      @reserved_delivery_price = 8
+    else
+      @reserved_delivery_price = 11
+    end
     
     # get customer's addresses
     @user_addresses = UserAddress.where(account_id: current_user.account_id)

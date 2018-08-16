@@ -1,0 +1,8 @@
+<div class="row back-to-previous-row">
+	<div class="col-xs-12 no-padding-right">
+		<h3 class="submenu-options">
+			<%= link_to "Back to previous", request.referer.present? ? request.referer : default_path, class: "current" %>
+		</h3>
+		
+	</div>
+</div>

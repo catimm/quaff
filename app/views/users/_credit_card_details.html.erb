@@ -7,23 +7,20 @@
 <% else %>
 	<% @card_visual = 'diners-club' %>
 <% end %>
-<div class="col-xs-12 col-sm-4">
-	<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+	<div class="credit-card-holder">
 		<div class="col-xs-4 card-visual-holder">
-			<i class="fa fa-cc-<%= @card_visual %> fa-5x" aria-hidden="true"></i>
+			<i class="fa fa-cc-<%= @card_visual %> fa-3x" aria-hidden="true"></i>
 		</div>
-		<div class="col-xs-8 card-info-holder">
+		<div class="col-xs-8">
 			<p class="credit-card-info-text last4">&hellip; <%= card.last4 %></p>
-			<p class="credit-card-info-text"><%= card.exp_month %>/<%= card.exp_year %></p>
+			<p class="credit-card-info-text">Exp: <%= card.exp_month %>/<%= card.exp_year %></p>
 		</div>
-
 		<% if @customer_cards.data.length > 1 %>
-			<div class="col-xs-4">
-				<%= link_to "Delete card", delete_credit_card_user_path(card.id), :class => "btn btn-danger delete-credit-card-button" %>
-			</div>
-		<% else %>
-			<div class="col-xs-4">
-				<%= link_to "Delete card", "#", :class => "btn btn-default delete-credit-card-button", :title => "You must have at least one credit card on file. Please add a new card before removing your current card.", :data => {toggle: "tooltip", placement: "right"} %>
+			<div class="col-xs-12">
+				<%= link_to delete_credit_card_user_path(card.id), class: 'delete-credit-card-button' do %>
+					<i class="fa fa-times-circle" data-toggle="tooltip" title="Remove this location"></i> Delete
+				<% end %>
 			</div>
 		<% end %>
 	</div>

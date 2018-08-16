@@ -26,7 +26,20 @@
 		<h5 class="hidden" id="username-available"></h5>
 	</div>
 </div>
-<% if current_user.role.id == 1 || current_user.role.id == 2 || current_user.role.id == 4 %>
+<% if !current_user.nil? %>
+	<% if current_user.role.id == 1 || current_user.role.id == 2 || current_user.role.id == 4 %>
+		<div class="form-group">
+			<label for="phone_field" class="col-xs-4 col-sm-3 control-label">Mobile <sup  id="signup_phone_note" data-toggle="tooltip" title="This is how we'll provide an update on delivery times.">?</sup></label>
+			<div class="col-xs-8 col-sm-9">
+				<%= f.input :phone, as: :tel, input_html: 
+					{ class: "form-control", 
+						id: "phone_field",
+						pattern: "^([0-9]{3}-[0-9]{3}-[0-9]{4})|([0-9]{10})$",
+						title: 'Enter a valid mobile number in 123-123-1234 or 1231231234 format' }, placeholder: "Mobile (for texts when delivering)", label: false, required: true %>
+			</div>
+		</div>
+	<% end %>
+<% else %>
 	<div class="form-group">
 		<label for="phone_field" class="col-xs-4 col-sm-3 control-label">Mobile <sup  id="signup_phone_note" data-toggle="tooltip" title="This is how we'll provide an update on delivery times.">?</sup></label>
 		<div class="col-xs-8 col-sm-9">
@@ -34,7 +47,7 @@
 				{ class: "form-control", 
 					id: "phone_field",
 					pattern: "^([0-9]{3}-[0-9]{3}-[0-9]{4})|([0-9]{10})$",
-					title: 'Enter a valid mobile number in 123-123-1234 or 1231231234 format' }, placeholder: "Mobile (for texts when delivering)", label: false, required: true %>
+					title: 'Enter a valid mobile number in 123-123-1234 or 1231231234 format' }, placeholder: "Mobile (for texts when delivering)", label: false %>
 		</div>
 	</div>
 <% end %>

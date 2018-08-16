@@ -1,5 +1,17 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, :except => [:stripe_webhooks, :new, :create, :edit, :update, :first_password, :process_first_password]
+  before_action :authenticate_user!, :except => [:stripe_webhooks, 
+                                                  :new, 
+                                                  :create, 
+                                                  :edit, 
+                                                  :update, 
+                                                  :first_password, 
+                                                  :process_first_password,
+                                                  :new_user,
+                                                  :new_user_process_zip_code,
+                                                  :new_user_process_profile,
+                                                  :new_user_process_invitation_request,
+                                                  :new_user_next,
+                                                  :invitation_request_thanks]
   include DrinkTypeDescriptorCloud
   include DrinkDescriptorCloud
   include DrinkDescriptors
@@ -10,6 +22,10 @@ class UsersController < ApplicationController
   include GiftCertificateRedeem
   require "stripe"
   require 'json'
+  
+  def index
+    @user = current_user
+  end # end of index
   
   def new
     @user = User.new
@@ -143,10 +159,6 @@ class UsersController < ApplicationController
       
       # fill in other miscelaneous user info
       params[:user][:account_id] = @account.id
-    end
-    
-    if @user.getting_started_step < 8
-      params[:user][:getting_started_step] = 8
     end
     
     if @user.user_color.nil?
@@ -411,7 +423,7 @@ class UsersController < ApplicationController
     end
     if @user.unregistered == true
       # set session to remember page arrived from 
-      session[:return_to] ||= request.referer
+      session[:return_to] = request.referer
     end
     #Rails.logger.debug("Original Session info: #{session[:return_to].inspect}")
     
@@ -439,7 +451,7 @@ class UsersController < ApplicationController
     @customer_delivery_request_path = customer_delivery_requests_settings_path
     
     # set session to remember page arrived from 
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
     
   end # end of account_addresses method
   
@@ -508,38 +520,19 @@ class UsersController < ApplicationController
 
   end # end of account_settings_cc action
   
-  #def update
-  #  # update user info if submitted
-  #  if !params[:user].blank?
-  #    User.update(params[:id], username: params[:user][:username], first_name: params[:user][:first_name],
-  #                email: params[:user][:email])
-  #    # set saved message
-  #    @message = "Your profile is updated!"
-  #  end
-  #  # update user preferences if submitted
-  #  if !params[:user_notification_preference].blank?
-  #    @user_preference = UserNotificationPreference.where(user_id: current_user.id)[0]
-  #    UserNotificationPreference.update(@user_preference.id, preference_one: params[:user_notification_preference][:preference_one], threshold_one: params[:user_notification_preference][:threshold_one],
-  #                preference_two: params[:user_notification_preference][:preference_two], threshold_two: params[:user_notification_preference][:threshold_two])
-  #    # set saved message
-  #    @message = "Your notification preferences are updated!"
-  #  end
-  #  
-  #  # set saved message
-  #  flash[:success] = @message         
-  #  # redirect back to user account page
-  #  redirect_to user_path(current_user.id)
-  #end
-  
-  def plan_rewewal_off
-    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true)[0]
-    @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @user_subscription.subscription.subscription_level_group)
-    @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
+  def plan_rewewal_change
+    @change = params[:id]
+    @user_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
+    if @change == "on"
+      @user_subscription.update(auto_renew_subscription_id: @user_subscription.subscription_id)
+    else
+      @all_plans_subscription_level_group = Subscription.where(subscription_level_group: @user_subscription.subscription.subscription_level_group)
+      @zone_plan_zero = @all_plans_subscription_level_group.where(deliveries_included: 0).first
+      @user_subscription.update(auto_renew_subscription_id: @zone_plan_zero.id)
+    end
     
-    # change in Knird DB
-    @user_subscription.update_attribute(:auto_renew_subscription_id, @zone_plan_zero.id)
+    redirect_to account_membership_path
     
-    redirect_to account_settings_membership_user_path
   end # end plan_rewewal_off method
   
   def process_user_plan_change
@@ -699,7 +692,7 @@ class UsersController < ApplicationController
           #Rails.logger.debug("Charge Succeeded event")
           @charge_description = event_object['description']
           #Rails.logger.debug("charge description: #{@charge_description.inspect}")
-          if @charge_description.include? "Knird delivery." # run only if this is a delivery charge
+          if @charge_description.include? "delivery" # run only if this is a delivery charge
             @charge_amount = ((event_object['amount']).to_f / 100).round(2)
             #Rails.logger.debug("charge amount: #{@charge_amount.inspect}")
             # get the customer number
@@ -715,7 +708,7 @@ class UsersController < ApplicationController
             # send delivery confirmation email
             UserMailer.delivery_confirmation_email(@user, @delivery, @drink_quantity).deliver_now
           
-          elsif @charge_description.include? "Knird Drink Order" # run only if this is a non-subscription order
+          elsif @charge_description.include? "Order" # run only if this is a non-subscription order
             # get the customer info
             @stripe_customer_number = event_object['customer']
             @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number, currently_active: true).first
@@ -724,7 +717,7 @@ class UsersController < ApplicationController
             # send processing to background job
             ProcessConfirmedOrderJob.perform_later(@order_prep)
             
-          elsif @charge_description.include? "Knird Gift Certificate" # run only if this is a gift certificate
+          elsif @charge_description.include? "Gift" # run only if this is a gift certificate
             metadata = event_object['metadata']
             redeem_code = metadata['redeem_code']
             gift_certificate = GiftCertificate.find_by redeem_code: redeem_code
@@ -741,7 +734,25 @@ class UsersController < ApplicationController
                 UserMailer.gift_certificate_promotion_created_email(gift_certificate, additional_gift_certificate).deliver_now
               end
             end
+          
+          elsif @charge_description.include? "Membership" # run only if this is a delivery charge
+            @charge_amount = ((event_object['amount']).to_f / 100).round
+            #Rails.logger.debug("charge amount: #{@charge_amount.inspect}")
+            # get the customer number
+            @stripe_customer_number = event_object['customer']
+            @user_subscription = UserSubscription.where(stripe_customer_number: @stripe_customer_number, currently_active: true).first
+            # get customer info
+            @user = User.find(@user_subscription.user_id)
+            #Rails.logger.debug("Delivery Charge Event")
+            if @charge_amount == 15
+              @membership_type = "trial"
+            else
+              @membership_type = "full"
+            end
+            # send delivery confirmation email
+            UserMailer.membership_payment_email(@user, @charge_amount, @membership_type).deliver_now
           end
+          
         when 'charge.failed'
           #Rails.logger.debug("Failed charge event")
           # get customer data
@@ -772,7 +783,7 @@ class UsersController < ApplicationController
             end
           end # end of nil test
           if !@charge_description_two.nil?
-            if @charge_description_two.include?("plan")
+            if @charge_description_two.include?("Membership")
               # get charge amount
               @charge_amount = ((event_object['amount']).to_f / 100).round(2)
               # get customer subscription info
@@ -830,17 +841,30 @@ class UsersController < ApplicationController
     render :json => {:status => 200}
   end # end stripe_webhook method
   
+  def new_user_next
+    
+  end # end new_user_next method
+  
   def update_profile
     # get user info
     @user = User.find_by_id(current_user.id)
-    
+    if @user.getting_started_step.to_i < 1
+      params[:user][:getting_started_step] = 1
+    end
     # update user info
     @user.update(user_params)
     
+    # Sign in the user by passing validation in case their password changed
+    bypass_sign_in(@user)
+      
     # get time of last update
     @preference_updated = @user.updated_at
     
-    if session[:return_to]
+    if session[:new_membership_path] == true
+      @redirect_path = knird_preferred_new_membership_path
+    elsif session[:new_trial_path] == true
+      @redirect_path = knird_preferred_new_trial_path
+    elsif session[:return_to]
       @last_page_link = session[:return_to]
       #Rails.logger.debug("Last Page info: #{@last_page_link.inspect}")
       if @last_page_link.include?("checkout")
@@ -992,6 +1016,19 @@ class UsersController < ApplicationController
     
   end # end email_verification method
   
+  def account_credit_cards
+    @user = current_user
+    # get subscription details
+    @customer_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    
+    if !@customer_subscription.blank?
+      # customer's Stripe card info
+      @customer_cards = Stripe::Customer.retrieve(@customer_subscription.stripe_customer_number).sources.
+                                          all(:object => "card")
+    end
+    
+  end # end of credit_cards method
+  
   def add_new_card
     # get customer subscription info
     @customer_subscription_info = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
@@ -1003,7 +1040,7 @@ class UsersController < ApplicationController
     @customer.sources.create(:card => params[:stripeToken])
 
     # redirect back to membership page
-    redirect_to account_settings_membership_user_path
+    redirect_to user_credit_cards_path
     
   end # end of add_new_card
   
@@ -1018,9 +1055,26 @@ class UsersController < ApplicationController
     @customer.sources.retrieve(params[:id]).delete
     
     # redirect back to membership page
-    redirect_to account_settings_membership_user_path
+    redirect_to user_credit_cards_path
     
   end # end of delete_credit_card method
+  
+  def account_gift_cards
+    @user = current_user
+    
+    @credits = Credit.where(account_id: current_user.account_id).order(created_at: :desc)
+    @available_credit_value = 0
+    if @credits != nil and @credits.length > 0
+        @available_credit_value = @credits[0].total_credit
+    end
+    
+  end # end of account_gift_cards method
+  
+  def account_membership
+    @user = current_user
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    
+  end # end of account_membership method
   
   def destroy
     @user = User.find(current_user.id)
@@ -1039,7 +1093,10 @@ class UsersController < ApplicationController
   def new_user_params
     params.require(:user).permit(:first_name, :last_name, :username, :email, :birthday, :role_id, :cohort, 
                                  :password, :password_confirmation, :special_code, :user_color, :account_id, 
-                                 :getting_started_step, :phone, :homepage_view)  
+                                 :getting_started_step, :phone, :homepage_view, :unregistered)  
   end
   
+  def invitation_request_params
+    params.require(:invitation_request).permit(:first_name, :email, :zip_code, :city, :state)  
+  end
 end

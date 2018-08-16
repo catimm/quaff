@@ -194,8 +194,8 @@ class UserMailer < ApplicationMailer
     if (1..5).include?(@user_subscription.id)
       @local = true
     end
-    if delivery_info.no_plan_delivery_fee > 0
-      @delivery_fee = delivery_info.no_plan_delivery_fee
+    if delivery_info.delivery_fee > 0
+      @delivery_fee = delivery_info.delivery_fee
     else
       @delivery_fee = nil
     end
@@ -244,11 +244,14 @@ class UserMailer < ApplicationMailer
       substitution_data: {
         customer_name: customer.first_name,
         delivery_date: (delivery_info.delivery_date).strftime("%A, %B #{delivery_info.delivery_date.day.ordinalize}"),
+        delivery_date_reg: (delivery_info.delivery_date).strftime("%A, %B %-d"),
+        delivery_start_time: (delivery_info.delivery_start_time).strftime("%-l%P"),
+        delivery_end_time: (delivery_info.delivery_end_time).strftime("%-l%P"),
         drink: delivery_drinks,
         total_quantity: total_quantity,
         total_price: delivery_info.total_drink_price,
         grand_total: delivery_info.grand_total, 
-        delivery_fee: delivery_info.no_plan_delivery_fee
+        delivery_fee: delivery_info.delivery_fee
       }
     }
     #Rails.logger.debug("email payload: #{payload.inspect}")
@@ -430,7 +433,37 @@ class UserMailer < ApplicationMailer
     
     response = sp.transmission.send_payload(payload)
     p response
-  end # end of select_invite_email email
+  end # end of delivery_confirmation_email email
+  
+  def membership_payment_email(customer, amount, type)
+    #Rails.logger.debug("customer info: #{customer.inspect}")
+    sp = SparkPost::Client.new() # pass api key or get api key from ENV
+    
+    if type == "trial"
+      @subject = "Your Knird Preferred Trial Payment"
+    else
+      @subject = "Your Knird Preferred Membership Payment"
+    end 
+    payload  = {
+      recipients: [
+        {
+          address: { email: customer.email },
+        }
+      ],
+      content: {
+        template_id: 'membership-payment-email'
+      },
+      substitution_data: {
+        customer_name: customer.first_name,
+        amount: amount,
+        type: type,
+        subject: @subject
+      }
+    }
+    
+    response = sp.transmission.send_payload(payload)
+    p response
+  end # end of membership_payment_email email
   
   def delivery_date_change_confirmation(customer, old_delivery_date, new_delivery_date)
     sp = SparkPost::Client.new() # pass api key or get api key from ENV

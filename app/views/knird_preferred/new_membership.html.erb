@@ -1,0 +1,55 @@
+<%= render 'layouts/header_home_temp' %> 
+<div class="container">
+	<div class="row membership-header-row">
+		<div class="col-xs-12 padding-5">
+			<h3 class="user-settings-header">Knird Preferred Membership</h3>
+			<h5 class="membership-section-subheader">Your Knird Preferred benefits will be available as long as your membership is in effect. Cancel anytime.</h5>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 padding-5">
+			<h4 class="membership-section-header">Benefits</h4>
+		</div>
+		<div class="col-xs-12 col-sm-4 padding-5">
+			<div class="membership-benefit-tile">
+				<h4 class="account-settings-header">Free Delivery</h4>
+				<h6 class="account-settings-subheader">Get free delivery on orders with over $35 of drinks!</h6>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4 padding-5">
+			<div class="membership-benefit-tile">
+				<h4 class="account-settings-header">Personal Drink Assistant</h4>
+				<h6 class="account-settings-subheader">Get your own PDA to help find and secure the best drinks.</h6>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4 padding-5">
+			<div class="membership-benefit-tile">
+				<h4 class="account-settings-header">Access to limited drinks</h4>
+				<h6 class="account-settings-subheader">Get first dibs on limited, rare or seasonal drinks.</h6>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 padding-5">
+			<h4 class="membership-section-header add-cc-header">Add Credit Card and Start Membership</h4>
+			<h5 class="membership-section-subheader">This will bill your card $30 for 6 deliveries. Remember, you get a $5 credit for each drink order over $35!</h5>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-3 padding-5">
+			<%= form_tag process_membership_payment_path, class:"confirm-membership" do %>
+				<input name="plan_id" type="hidden" value="knird_preferred_membership"></input>
+	          	<script 
+	          		class="stripe-button" 
+	          		data-name="Knird" 
+	          		data-description="A $30 Knird Preferred Membership" 
+	          		data-currency="USD" 
+	          		data-label="Start Membership"
+	          		data-email="<%= @user.email %>" 
+	          		data-image="https://s3-us-west-2.amazonaws.com/knird/Knird_logo-3.jpg" 
+	          		data-key="<%= Rails.configuration.stripe[:publishable_key] %>" 
+	          		src="https://checkout.stripe.com/checkout.js">
+	          	</script>
+	    	<% end %>
+		</div>
+	</div>	
+</div>	
+<%= render 'layouts/footer' %>

@@ -33,6 +33,17 @@ $(function () {
 		}
 	});
 	
+	// send new user zip response to controller
+	$(document).on('click', '.new-user-start-with-zip', function () {
+	   var zipCode = $('#check-zip-code').val();
+       $.ajax({
+		  type: "POST",
+		  url: "/users/new_user_process_zip_code/" + zipCode
+		});
+		// prevent page from jumping to the top after click event
+		return false;
+	}); 
+		
 	// if this link isn't already active, show underline when mouse over
 	$("#user-profile-link").on("mouseover", function() {
 		if ($("#user-profile").hasClass("hidden")) {

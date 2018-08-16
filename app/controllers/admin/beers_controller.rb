@@ -99,7 +99,7 @@ class Admin::BeersController < ApplicationController
     # grab beer type list for editing
     @beer_types = BeerType.all.order(:beer_type_name)
     # store this session to redirect to previous page after update
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
   end
   
   def update

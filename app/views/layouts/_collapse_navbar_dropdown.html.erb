@@ -3,24 +3,23 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
       <ul class="dropdown-menu">
         
-        <li class="dropdown-header">Activity</li>
+        <li class="dropdown-header">Knird Info</li>
         <li class="dropdown-link"><%= link_to "Current Stock", stocks_path %></li>
-        <% if current_user.subscription_status == "subscribed" %>
-			<% if current_user.role_id != 6 %>
-				<li class="dropdown-link"><%= link_to "Credits", user_credits_path %></li>
-	        <% end %>
-	    <% end %>
-        <li class="dropdown-link"><%= link_to "Deliveries", user_deliveries_path %></li>
+        <% if current_user.subscription_status != "subscribed" %>
+        	<li class="dropdown-link"><%= link_to "Knird Preferred", knird_preferred_membership_path %></li>
+        <% end %>
+        
+        <li class="dropdown-header">My Activity</li>
+        <li class="dropdown-link"><%= link_to "Orders", user_orders_path %></li>
         <li class="dropdown-link"><%= link_to "Ratings", recent_user_ratings_path %></li>
 		
-		<li class="dropdown-header">Settings</li>
-		<% if current_user.role_id != 6 %>
-			<li class="dropdown-link"><%= link_to "Account", account_personal_path %></li>
-			<li class="dropdown-link"><%= link_to "Knird Preferred", knird_preferred_membership_path %></li>
-		<% end %>
-		<li class="dropdown-link"><%= link_to "Beer", beer_setting_path %></li>
-		<li class="dropdown-link"><%= link_to "Cider", cider_setting_path %></li>
-		<li class="dropdown-link"><%= link_to "Wine", wine_setting_path %></li>
+		<li class="dropdown-header">My Settings</li>
+		<li class="dropdown-link"><%= link_to "Account", account_overview_path %></li>
+		<% if current_user.subscription_status == "subscribed" %>
+        	<li class="dropdown-link"><%= link_to "Delivery", delivery_settings_path %></li>
+        <% else %>
+        	<li class="dropdown-link"><%= link_to "Drink Styles", delivery_settings_drink_styles_path %></li>
+        <% end %>
 		
         <% if current_user.role_id == 1 %>
             <li class="dropdown-header">Admin links</li>
@@ -41,6 +40,5 @@
       </ul>
     </li>
 <% else %>
-	<li class="navLinks signup"> <%= link_to "Sign up", drink_profile_categories_path, class: "btn btn-success" %></li>
 	<li class="navLinks"> <%= link_to "Log in", new_user_session_path %></li>
 <% end %>

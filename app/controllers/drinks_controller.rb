@@ -1,8 +1,5 @@
 class DrinksController < ApplicationController
   before_action :authenticate_user!
-  include DrinkTypeDescriptorCloud
-  include DeliveredDrinkDescriptorCloud
-  include DrinkDescriptorCloud
   include DrinkDescriptors
   include CreateNewDrink
   include BestGuess
@@ -10,7 +7,7 @@ class DrinksController < ApplicationController
   include QuerySearch
   require 'json'
   
-  def deliveries   
+  def orders   
     if current_user.role_id == 1 && params.has_key?(:format)
       # get user info
       @user = User.find_by_id(params[:format])
@@ -18,160 +15,92 @@ class DrinksController < ApplicationController
       # get user info
       @user = User.find_by_id(current_user.id)
     end
-    
-    # set cellarable data
-    @cellar_page_source = "deliveries-page"
-    
-    # get Delivery Preferences
-    @user_delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
-    if @user_delivery_preferences.beer_chosen == true
-      @beer_chosen = true
-      @current_stock_link = beer_stock_path
-    elsif @user_delivery_preferences.cider_chosen == true
-      @cider_chosen = true
-      @current_stock_link = cider_stock_path
-    end
-    # get user subscription info
-    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
-    
-    if !@user_subscription.blank?
-      # get account delivery address
-      @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
-      @account_delivery_zone_id = @account_delivery_address.delivery_zone_id
-      # get account tax
-      @account_tax = DeliveryZone.where(id: @account_delivery_zone_id).pluck(:excise_tax)[0]
 
-      # determine if account has multiple users and add appropriate CSS class tags
-      @account_users = User.where(account_id: @user.account_id)
-      @account_users_count = @account_users.count
+    # find number of account users for drink tile and appropriate CSS class tags
+    @account_users = User.where(account_id: @user.account_id)
+    @account_users_count = @account_users.count
+    
+    # get account delivery address and account tax
+    @account_delivery_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first
+    if !@account_delivery_address.delivery_zone_id.nil?
+      @account_tax = DeliveryZone.where(id: @account_delivery_address.delivery_zone_id).pluck(:excise_tax)[0]
+    elsif !@account_delivery_address.shipping_zone_id.nil?
+      @account_tax = ShippingZone.where(id: @account_delivery_address.shipping_zone_id).pluck(:excise_tax)[0]
+    end
       
+    # get appropriate order data for current members
+    if @user.subscription_status == "subscribed"
       # get delivery info
       @all_deliveries = Delivery.where(account_id: @user.account_id)
-      @upcoming_delivery = @all_deliveries.where(status: ["user review", "in progress", "admin prep"]).order(delivery_date: :asc).first
+
+      # find if there is a next delivery planned
+      @next_delivery = @all_deliveries.where(status: ["admin prep next", "user review", "in progress"]).order(delivery_date: :asc).first
       
-      # check if deliveries exist before executing rest of code
+      if !@next_delivery.blank?
+        # set view on bottom of drink tile
+        if @next_delivery.status == "admin prep next" || @next_delivery.status == "user review"
+          if (@next_delivery.delivery_start_time - 4.hours) <= 6
+            @next_delivery_review_end = (@next_delivery.delivery_start_time.prev_day.beginning_of_day + 20.hours)
+          else
+            @next_delivery_review_end = (@next_delivery.delivery_start_time - 4.hours)
+          end
+          
+          #set class for order dropdown button
+          @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+          gon.page_source = "order"
+        end
+        
+        # allow customer to send message about next delivery
+        @user_delivery_message = CustomerDeliveryMessage.where(user_id: @user.id, delivery_id: @next_delivery.id).first
+        #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
+        if @user_delivery_message.blank?
+          @user_delivery_message = CustomerDeliveryMessage.new
+        end
+        
+        # set this variable for dropdown quantities
+        @customer_drink_order = @next_delivery.account_deliveries
+      end # end of check whether @next_delivery is blank
+      
+      # find if past deliveries exist
+      @delivery_history = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6)
+
+    else # get # get appropriate order data for non-members
+       # get delivery info
+      @all_deliveries = Delivery.where(account_id: @user.account_id)
+      
       if !@all_deliveries.blank?
+        # find if there is a next delivery planned
+        @next_delivery = @all_deliveries.where(status: "in progress").order(delivery_date: :asc).first
         
-        if !@upcoming_delivery.blank?
-          # set next delivery variables
-          @first_delivery = @upcoming_delivery
+        if !@next_delivery.blank?
           
-          # set delivery history variables
-          @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6)
-          
-          # set view on bottom of drink tile
-          if @upcoming_delivery.status == "user review" || @upcoming_delivery.status == "admin prep"
-            @order_change_page = true
-          else
-            @review_quantity_page = true
+          # allow customer to send message about next delivery
+          @user_delivery_message = CustomerDeliveryMessage.where(user_id: @user.id, delivery_id: @next_delivery.id).first
+          if @user_delivery_message.blank?
+            @user_delivery_message = CustomerDeliveryMessage.new
           end
-        else
-          # check if user is an Ad Hoc orderer and just put an order in that hasn't yet populated the Delivery table
-          if @user_subscription.subscription.deliveries_included == 0
-            @order_prep = OrderPrep.where(account_id: current_user.account_id).order_by(updated_at: :desc).first
-            if @order_prep.status == "complete"
-              @order_prep_check = @all_deliveries.find_by_order_prep_id(@order_prep.id)
-              if @order_prep_check.blank?
-                @first_order_in_process = true
-                # set delivery history variables
-                @first_delivery = nil
-                
-                # set delivery history variables
-                @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6)
-              else
-                # set delivery history variables
-                @first_delivery = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).first
-                
-                # set delivery history variables
-                @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6).offset(1)
-              end
-            end
-          else
-            # set delivery history variables
-            @first_delivery = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).first
-            
-            # set delivery history variables
-            @remaining_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6).offset(1)
-          end 
-            
-            # set view on bottom of drink tile
-            @review_quantity_page = true
-        end
-        #Rails.logger.debug("First Delivery info: #{@first_delivery.inspect}")
-        #Rails.logger.debug("Remaining Deliveries info: #{@remaining_deliveries.inspect}")  
-        # get delivery drinks
-        if !@first_delivery.blank?
-          @first_delivery_drinks = AccountDelivery.where(delivery_id: @first_delivery.id)
         
+        else # check whether recent order is in process Delivery table has not yet been populated
+           @order_prep = OrderPrep.where(account_id: current_user.account_id).where.not(status: "complete").order(delivery_start_time: :desc).first
+           if !@order_prep.blank?
+             @recent_order_placed = true
+           end
+        end # end of check whether @next_delivery is blank
         
-          # combine drinks from old deliveries into one array to get descriptor info
-          @drink_history_descriptors = Array.new
-          
-          # get delivery info from delivery history
-          @delivery_history_array = Array.new
-          
-          @remaining_deliveries.each do |delivery|
-            @this_delivery_array = Array.new
-            @this_delivery_array << delivery
-            @this_delivery_drinks = AccountDelivery.where(delivery_id: delivery.id)
-            @this_delivery_array << @this_delivery_drinks
-            @drink_history_descriptors << @this_delivery_drinks
-            @delivery_history_array << @this_delivery_array
-          end
-          #Rails.logger.debug("Drink Descriptor Array: #{@drink_history_descriptors.inspect}")
-            
-            @time_now = Time.now
-            @next_delivery_date = @first_delivery.delivery_date
-            @next_delivery_review_end_date = @next_delivery_date - 1.day
-            #Rails.logger.debug("Delivery status: #{@delivery.status.inspect}")
-            gon.review_period_ends = @time_left
-       
-            
-              # create array to hold descriptors cloud
-              @final_descriptors_cloud = Array.new
-              
-              # get top descriptors for drinks in most recent delivery
-              @first_delivery_drinks.each do |drink|
-                @drink_id_array = Array.new
-                @drink_type_descriptors = delivered_drink_descriptor_cloud(drink)
-                @final_descriptors_cloud << @drink_type_descriptors
-              end
-              # get top descriptors for drinks from old deliveries
-              @drink_history_descriptors.each do |array|
-                 array.each do |drink|
-                  @drink_id_array = Array.new
-                  @drink_type_descriptors = delivered_drink_descriptor_cloud(drink)
-                  @final_descriptors_cloud << @drink_type_descriptors
-                 end
-              end
-              
-              # send full array to JQCloud
-              gon.delivered_drink_descriptor_array = @final_descriptors_cloud
-              #Rails.logger.debug("Descriptors array: #{gon.drink_descriptor_array.inspect}")
-              
-              # allow customer to send message
-              @user_delivery_message = CustomerDeliveryMessage.where(user_id: @user.id, delivery_id: @first_delivery.id).first
-              #Rails.logger.debug("Delivery message: #{@user_delivery_message.inspect}") 
-              if @user_delivery_message.blank?
-                @user_delivery_message = CustomerDeliveryMessage.new
-              end 
-          
-          end # end of check whether first delivery exists
+        # find if past deliveries exist
+        @delivery_history = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(6)
       
-      else #check on @all_deliveries variablee
-        # check if user is an Ad Hoc orderer and just put an order in that hasn't yet populated the Delivery table
-        if @user_subscription.subscription.deliveries_included == 0
-          @order_prep = OrderPrep.where(account_id: current_user.account_id).order(updated_at: :desc).first
-          if @order_prep.status == "complete"
-            @first_order_in_process = true
-          end
-        end
-             
-      end # end of check on @all_deliveries variable
-    
-    end # end of check whether use has a subscription
-    
-  end # end deliveries method
+      else # check whether first order is in process Delivery table has not yet been populated
+        @order_prep = OrderPrep.where(account_id: current_user.account_id).where.not(status: "complete").order(delivery_start_time: :desc).first
+        if !@order_prep.blank?
+           @recent_order_placed = true
+         end
+         
+      end # end of check whether @all_deliveries is blank
+       
+    end  # end of check whether user is current member
+           
+  end # end orders method
   
   def free_curation
     # give admin a view
@@ -258,7 +187,7 @@ class DrinksController < ApplicationController
     #Rails.logger.debug("Current User Info: #{@user.inspect}")
     
     # determine if account has multiple users and add appropriate CSS class tags
-    @account_users = User.where(account_id: @user.account_id, getting_started_step: 14)
+    @account_users = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 1)
     @account_users_count = @account_users.count
     
     if @account_users_count == 1
@@ -302,24 +231,10 @@ class DrinksController < ApplicationController
     end
     
     # set variable for user drink rating info
-    @account_users = @user
+    @account_users = User.where(account_id: @user.account_id)
     
     # get wishlist drinks
     @wishlist_drinks = Wishlist.where(user_id: @user.id, removed_at: nil)
-    
-    # create array to hold descriptors cloud
-    @final_descriptors_cloud = Array.new
-    
-    # get top descriptors for drinks in most recent delivery
-    @wishlist_drinks.each do |drink|
-      @drink_id_array = Array.new
-      @drink_type_descriptors = drink_descriptor_cloud(drink.beer)
-      @final_descriptors_cloud << @drink_type_descriptors
-    end
-    
-    # send full array to JQCloud
-    gon.universal_drink_descriptor_array = @final_descriptors_cloud
-    #Rails.logger.debug("Descriptors array: #{gon.cellar_drink_descriptor_array.inspect}")
     
   end # end wishlist method
   
@@ -355,7 +270,7 @@ class DrinksController < ApplicationController
     @user = User.find_by_id(current_user.id)
     
     # determine if account has multiple users and each user has a rating for the cellar drink
-    @account_users = User.where(account_id: @user.account_id, getting_started_step: 14)
+    @account_users = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 1)
     @account_users_count = @account_users.count
     
     if @account_users_count > 1
@@ -432,24 +347,11 @@ class DrinksController < ApplicationController
     # conduct search
     query_search(params[:query], only_ids: true)
     
-    @final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
+    #@final_search_results = best_guess(@final_search_results, current_user.id).paginate(:page => params[:page], :per_page => 12)
     #Rails.logger.debug("Drink results: #{@final_search_results.inspect}")
         
     #  get user info
-    @user = User.find_by_id(current_user.id)
-    
-    # create array to hold descriptors cloud
-    @final_descriptors_cloud = Array.new
-    # get top descriptors for drink types the user likes
-    @final_search_results.each do |drink|
-      @drink_id_array = Array.new
-      @drink_type_descriptors = drink_descriptor_cloud(drink)
-      @final_descriptors_cloud << @drink_type_descriptors
-    end
-    #Rails.logger.debug("Drink descriptors: #{@final_descriptors_cloud.inspect}")
-    # send full array to JQCloud
-    gon.universal_drink_descriptor_array = @final_descriptors_cloud
-    #Rails.logger.debug("Final Search results in method: #{@final_descriptors_cloud.inspect}")
+    @user = current_user
 
     respond_to do |format|
       format.js
@@ -655,7 +557,7 @@ class DrinksController < ApplicationController
     @current_total_price = @current_subtotal + @current_sales_tax
      
     # and grand total
-    @grand_total = @current_total_price + @delivery.no_plan_delivery_fee
+    @grand_total = @current_total_price + @delivery.delivery_fee
      
     # update price info in Delivery table & change confirmation to false so an update confirmation is sent
     @delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 

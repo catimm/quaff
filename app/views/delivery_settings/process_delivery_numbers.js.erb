@@ -1,0 +1,16 @@
+$(function() {
+	// update view
+	$('#status-row-holder').html("<%= escape_javascript(render 'status_complete_row') %>");
+	$('#numbers-section-status-holder').html("");
+	$("#numbers-section-status-holder").html("<%= escape_javascript(render 'section_complete_indicator') %>");
+	<% if @update_settings_confirmed_view == true %>
+		$('#confirm-section-status-holder').html("");
+		$('#confirm-section-status-holder').html("<%= escape_javascript(render 'section_incomplete_indicator') %>");
+	<% end %>
+	$('#confirm-price-message-holder').html("");
+	$('#confirm-price-message-holder').html("<%= escape_javascript(render 'confirm_price_message') %>");
+	$('#confirmation_drink_details_holder').html("");
+	$('#confirmation_drink_details_holder').html("<%= escape_javascript(render 'confirmation_drink_details') %>");
+	$('#confirm-settings-button-holder').html("");
+	$('#confirm-settings-button-holder').html("<%= escape_javascript(render 'confirm_settings_button') %>");	
+});

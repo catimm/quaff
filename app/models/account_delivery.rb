@@ -15,6 +15,7 @@
 #  times_rated            :integer
 #  moved_to_cellar_supply :boolean
 #  size_format_id         :integer
+#  inventory_id           :integer
 #
 
 class AccountDelivery < ApplicationRecord
@@ -22,10 +23,9 @@ class AccountDelivery < ApplicationRecord
   belongs_to :beer
   belongs_to :delivery
   belongs_to :size_format
+  belongs_to :inventory
   
-  has_many :user_deliveries    
-  has_many :inventory_transactions
-  has_many :inventories, :through => :inventory_transactions
+  has_many :user_deliveries
   
   attr_accessor :beer_rating  # to hold user drink rating or projected rating
   attr_accessor :this_beer_descriptors # to hold list of descriptors user typically likes/dislikes

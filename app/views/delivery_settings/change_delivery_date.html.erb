@@ -1,15 +1,46 @@
 <%= render 'layouts/header' %>
 <%= render 'layouts/updating_spinner' %>
-<%= render 'delivery_settings_common', current_section: "Date" %>
 <div class="container">
+	<div class="row back-to-previous-row">
+		<div class="col-xs-12 no-padding-right">
+			<h3 class="submenu-options">
+				<%= link_to "Back to previous", user_orders_path, class: "current" %>
+			</h3>
+			
+		</div>
+	</div>
 	<div class="row no-margin">
 		<div class="col-xs-12">
 			<h3 class="next-delivery-header">Your next delivery will be on <%= (@delivery.delivery_date).strftime("%a, %b %-d %Y") %></h3>
 		</div>
 	</div>
 	<div class="row no-margin">
-		<h4 class="change-delivery-directions">Choose one of the dates below to change your next delivery to that date.</h4>
+		<h4 class="change-delivery-directions">Based on your chosen delivery time window, you can change your next delivery date to one of the following:</h4>
 		<%= render 'delivery_date_change_options' %>
+	</div>
+	<div class="row change-delivery-date-more-options-row">
+		<div class="col-xs-12">
+			<h4 class="choose-delivery-time-text">Need more options?</h4>
+		</div>
+		<div class="col-xs-12 col-sm-4">
+			<div class="add-location-address-holder">
+				<h6 class="add-location-direction-text">find a different delivery window</h6>
+				<%= link_to delivery_settings_path, class: 'btn btn-success add-location' do %>
+					<i class="fa fa-calendar-check-o" aria-hidden="true"> Delivery Settings</i>
+				<% end %>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-1 text-center">
+			<h6 class="knird-live-signup-or">or</h6>
+		</div>
+		<div class="col-xs-12 col-sm-4">
+			<div class="add-location-address-holder">
+				<h6 class="add-location-direction-text">add a new delivery location</h6>
+				<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
+					<i class="fa fa-plus"> location</i>
+				<% end %>
+			</div>
+		</div>
 	</div>
 </div>
 <% if !@last_saved.nil? %>

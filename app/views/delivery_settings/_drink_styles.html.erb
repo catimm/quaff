@@ -1,0 +1,22 @@
+<div class="row no-margin">
+	<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-12 text-center">
+		<h3 class="home-prompt-text">
+			Choose each style you enjoy drinking
+		</h3>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-offset-1 col-sm-10">
+		<% @drink_styles.each do |style| %>
+			<% if @user_likes.include?(style.id) %>
+				<div class="col-xs-12 col-sm-9 col-md-6 padding-5" id="<%= style.id %>-<%= @page_source %>">
+					<%= render 'delivery_settings/style_holder_chosen_like', style: style %>
+				</div>
+			<% else %>
+				<div class="col-xs-6 col-sm-3 col-md-2 padding-5" id="<%= style.id %>-<%= @page_source %>">
+					<%= render 'delivery_settings/style_holder_slim', style: style %>
+				</div>
+			<% end %>
+		<% end %>
+	</div>
+</div>

@@ -30,6 +30,7 @@
 #  comped                 :integer
 #  shrinkage              :integer
 #  membership_only        :boolean
+#  nonmember_limit        :integer
 #
 
 class Inventory < ApplicationRecord
@@ -44,6 +45,7 @@ class Inventory < ApplicationRecord
   has_many :inventory_transactions
   has_many :account_deliveries, :through => :inventory_transactions
   has_many :order_drink_preps
+  has_many :account_deliveries
   
   #scope small cooler drinks
   scope :small_cooler_drinks, -> { 

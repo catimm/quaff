@@ -20,11 +20,13 @@
 #  recipient_is_21_plus             :boolean
 #  delivered_at                     :datetime
 #  order_prep_id                    :integer
-#  no_plan_delivery_fee             :decimal(5, 2)
+#  delivery_fee                     :decimal(5, 2)
 #  grand_total                      :decimal(5, 2)
 #  delivery_start_time              :datetime
 #  delivery_end_time                :datetime
 #  account_address_id               :integer
+#  has_customer_additions           :boolean
+#  delivery_credit                  :decimal(5, 2)
 #
 
 class Delivery < ApplicationRecord

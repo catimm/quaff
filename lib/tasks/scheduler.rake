@@ -1301,7 +1301,7 @@ task :update_customer_subscriptions => :environment do
         # send customer email
         UserMailer.cancelled_membership(expiring_subscription.user).deliver_now
         # turn current subscription off
-        expiring_subscription.update(active_until: false)
+        expiring_subscription.update(active_until: false, current_trial: nil)
         
       else # renewal will happen  
         
@@ -1309,7 +1309,7 @@ task :update_customer_subscriptions => :environment do
         if expiring_subscription.auto_renew_subscription_id == expiring_subscription.subscription_id # if customer is renewing current subscription
           
           # update Knird DB with reset deliveries_this_period column
-          expiring_subscription.update(deliveries_this_period: 0, active_until: nil)
+          expiring_subscription.update(deliveries_this_period: 0, active_until: nil, current_trial: nil)
           expiring_subscription.increment!(:renewals)
     
         else # if customer is renewing to a different subscription
@@ -1364,11 +1364,13 @@ task :update_customer_subscriptions => :environment do
         @first_delivery_date = @last_delivery.delivery_date + @delivery_frequency.weeks
         @first_delivery = Delivery.create(account_id: expiring_subscription.account_id, 
                                           delivery_date: @first_delivery_date,
-                                          status: "admin prep",
+                                          status: "admin prep next",
                                           subtotal: 0,
                                           sales_tax: 0,
-                                          total_price: 0,
+                                          total_drink_price: 0,
                                           delivery_change_confirmation: false,
+                                          delivery_start_time: @last_delivery.delivery_start_time,
+                                          delivery_end_time: @last_delivery.delivery_end_time,
                                           share_admin_prep_with_user: false)
         if (5..22).include?(expiring_subscription.subscription_id)
           # create related shipment
@@ -1380,8 +1382,10 @@ task :update_customer_subscriptions => :environment do
                                           status: "admin prep",
                                           subtotal: 0,
                                           sales_tax: 0,
-                                          total_price: 0,
+                                          total_drink_price: 0,
                                           delivery_change_confirmation: false,
+                                          delivery_start_time: @last_delivery.delivery_start_time,
+                                          delivery_end_time: @last_delivery.delivery_end_time,
                                           share_admin_prep_with_user: false)
         if (5..22).include?(expiring_subscription.subscription_id)
           # create related shipment
@@ -1421,7 +1425,7 @@ task :top_style_descriptors => :environment do
     @current_descriptors.destroy_all
     
     # get drink styles
-    @all_drink_styles = BeerStyle.all
+    @all_drink_styles = BeerStyle.where(standard_list: true)
     
     @all_drink_styles.each do |style|
       # get style descriptors

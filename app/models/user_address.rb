@@ -49,17 +49,31 @@ class UserAddress < ApplicationRecord
     end
   end
   
+  # delivery options for members
+  def address_delivery_times
+    @available_zones = Array.new
+    @available_delivery_zones = DeliveryZone.where(zip_code: self.zip)
+    
+    @available_delivery_zones.each do |zone|
+      @time_options = zone.member_delivery_time_options(self.address_name, self.id, zone.id)
+      @available_zones << @time_options
+    end
+    return @available_zones
+  end # end of address_delivery_times method
+  
+  # delivery options for nonmembers
   def address_delivery_windows
     @available_zones = Array.new
     @available_delivery_zones = DeliveryZone.where(zip_code: self.zip)
     
     @available_delivery_zones.each do |zone|
-      @time_options = zone.delivery_time_options(self.address_name, self.id, zone.id)
+      @time_options = zone.nonmember_delivery_time_options(self.address_name, self.id, zone.id)
       @available_zones << @time_options
     end
     return @available_zones
-  end
-  
+    
+  end # end of address_delivery_windows method
+   
   private 
     
     def check_delivery_zone_sum

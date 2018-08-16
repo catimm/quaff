@@ -14,6 +14,7 @@
 #  projected_rating    :float
 #  times_rated         :integer
 #  drink_category      :string
+#  user_addition       :boolean
 #
 
 require 'test_helper'

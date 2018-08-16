@@ -1,0 +1,49 @@
+<div class="container delivery-drink-numbers-container">
+	<div class="row no-margin">
+		<div class="col-xs-12 text-center no-padding">
+			<h3 class="home-prompt-text">What is the <u>average cost per drink</u> you'd like to target?</h3>
+			<h5 class="signup-question-detail">Remember, you get to review each delivery; so you'll never be suprised by the cost!</h5>
+		</div>
+	</div>
+	<div class="row no-margin">
+        <% (2..10).each do |i| %>
+        	<% @price_chosen = nil %>
+        	<% if !@average_price.nil? %>
+        		<% if @average_price == i %>
+	        		<% @price_chosen = 'chosen' %>
+	        	<% end %>
+        	<% end %>
+			<div class="col-xs-4 col-sm-2 average-drink-cost-row-holder padding-5">
+				<div class="row no-margin average-drink-cost-row text-center <%= @price_chosen %>" id="average-<%= i %>">
+					<div class="col-xs-12 average-drink-cost-holder no-padding">
+						<h1 class="average-drink-cost">$<%= i %></h1>
+					</div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+	<div class="row no-margin">
+    	<div class="col-xs-12 text-center no-padding">
+            <h3 class="home-prompt-text">What is the most you'd pay for a limited/rare drink?</h3>
+            <h5 class="signup-question-detail">This is an optional question, for those interested in limited/rare drinks....</h5>
+        </div>
+    </div>
+    <div class="row no-margin">
+	     <% (2..10).each do |i| %>
+	     	<% @drink_price = i.to_i * 5 %>
+        	<% @max_chosen = nil %>
+        	<% if !@max_price.nil? %>
+	        	<% if @max_price == @drink_price %>
+	        		<% @max_chosen = 'chosen' %>
+	        	<% end %>
+        	<% end %>
+			<div class="col-xs-4 col-sm-2 max-drink-cost-row-holder padding-5">
+				<div class="row no-margin max-drink-cost-row text-center <%= @max_chosen %>" id="max-<%= @drink_price %>">
+					<div class="col-xs-12 max-drink-cost-holder no-padding">
+						<h1 class="max-drink-cost">$<%= @drink_price %></h1>
+					</div>
+				</div>
+			</div>
+		<% end %>	
+	</div>
+</div>

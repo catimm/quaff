@@ -27,10 +27,18 @@
 					<% end %>
 				</div>
 				<div class="order-dropdown-button-quantity">
-					<% if !drink.inventory.limit_per.nil? %>
-						<% @end_quantity = drink.inventory.limit_per %>
+					<% if current_user.member? %>
+						<% if !drink.inventory.limit_per.nil? %>
+							<% @end_quantity = drink.inventory.limit_per %>
+						<% else %>
+							<% @end_quantity = drink.inventory.stock %>
+						<% end %>
 					<% else %>
-						<% @end_quantity = drink.inventory.stock %>
+						<% if !drink.inventory.nonmember_limit.nil? %>
+							<% @end_quantity = drink.inventory.nonmember_limit %>
+						<% else %>
+							<% @end_quantity = drink.inventory.stock %>
+						<% end %>
 					<% end %>
 					<% @quantity_available = [*0..@end_quantity] %>
 					<% if !@customer_drink_order.blank? %>
@@ -56,4 +64,16 @@
 			</div>
 		<% end %>
 	</div>
+	<% if !current_user.member? && drink.inventory.nonmember_limit.to_i >= 1 %>
+		<div class="nonmember-limit-holder">
+			<div class="nonmember-limit-text-holder">
+				<h5><%= link_to "Nonmember", knird_preferred_membership_path %> limit: <%= drink.inventory.nonmember_limit %></h5>
+				<% if drink.inventory.limit_per.to_i >= 1 %>
+					<h5>Member limit: <%= drink.inventory.limit_per %></h5>
+				<% else %>
+					<h5>No member limit!!!</h5>
+				<% end %>
+			</div>
+		</div>
+	<% end %>
 </div>

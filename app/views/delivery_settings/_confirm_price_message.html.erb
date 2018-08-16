@@ -1,0 +1,15 @@
+<% if @sections_complete >= 5 %>
+	<div class="col-xs-12 text-center no-padding">
+		<% if @delivery_preferences.total_price_estimate < 20 %>
+			<h4 class="twenty-one-plus-delivery-message">Please adjust your settings to hit the $20 minimum for delivery.</h4>
+		<% elsif @delivery_preferences.total_price_estimate < 35 %>
+			<h4 class="twenty-one-plus-delivery-message">Don't forget to adjust your settings to hit the $35 minimum for FREE delivery!</h4>
+		<% else %>
+			<h4 class="twenty-one-plus-delivery-message">Congrats! You're all set to hit the $35 minimum for FREE delivery!</h4>
+		<% end %>
+	</div>
+<% else %>
+	<div class="col-xs-12 text-center no-padding">
+		<h4 class="twenty-one-plus-delivery-message">Just a few more pieces of input needed!</h4>
+	</div>
+<% end %>

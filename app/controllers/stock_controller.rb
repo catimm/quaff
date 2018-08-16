@@ -13,13 +13,9 @@ class StockController < ApplicationController
     # set keys for page
     @artisan = "all"
     @style = "all"
-    @order_change_page = true
-
+    
     # determine if account has multiple users and add appropriate CSS class tags
     @user = current_user
-    
-    # find if user has an order in process
-    @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
     
     # need account users for projected rating partial
     @account_users = User.where(account_id: @user.account_id)
@@ -27,11 +23,17 @@ class StockController < ApplicationController
     
     # check if user has already chosen drinks
     if current_user.subscription_status == "subscribed"
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id)
+      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+      #Rails.logger.debug("Next Delivery: #{@next_delivery.inspect}")
+      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
+      #Rails.logger.debug("Next Delivery Drinks: #{@customer_drink_order.inspect}")
       @current_subscriber = true
       #set class for order dropdown button
       @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      gon.page_source = "stock"
     else
+      # find if user has an order in process
+      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
       if !@order_prep.blank?
         @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
       else
@@ -77,14 +79,8 @@ class StockController < ApplicationController
       @style = params[:style].to_i
     end
     
-    # set page for user action
-    @order_change_page = true
-    
     # determine if account has multiple users and add appropriate CSS class tags
     @user = current_user
-    
-    # find if user has an order in process
-    @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
     
     # need account users for projected rating partial
     @account_users = User.where(account_id: @user.account_id)
@@ -92,11 +88,15 @@ class StockController < ApplicationController
     
      # check if user has already chosen drinks
     if current_user.subscription_status == "subscribed"
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id)
+      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
       @current_subscriber = true
       #set class for order dropdown button
       @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      gon.page_source = "stock"
     else
+      # find if user has an order in process
+      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
       if !@order_prep.blank?
         @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
       else
@@ -227,13 +227,9 @@ class StockController < ApplicationController
     # set keys for page
     @artisan = "all"
     @style = "all"
-    @order_change_page = true
     
     # determine if account has multiple users and add appropriate CSS class tags
     @user = current_user
-    
-    # find if user has an order in process
-    @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
     
     # need account users for projected rating partial
     @account_users = User.where(account_id: @user.account_id)
@@ -241,11 +237,15 @@ class StockController < ApplicationController
     
      # check if user has already chosen drinks
     if current_user.subscription_status == "subscribed"
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id)
+      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
       @current_subscriber = true
       #set class for order dropdown button
       @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      gon.page_source = "stock"
     else
+      # find if user has an order in process
+      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
       if !@order_prep.blank?
         @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
       else
@@ -291,14 +291,8 @@ class StockController < ApplicationController
       @style = params[:style].to_i
     end
     
-    # set page key
-    @order_change_page = true
-    
     # determine if account has multiple users and add appropriate CSS class tags
     @user = current_user
-    
-    # find if user has an order in process
-    @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
     
     # need account users for projected rating partial
     @account_users = User.where(account_id: @user.account_id)
@@ -306,11 +300,16 @@ class StockController < ApplicationController
     
      # check if user has already chosen drinks
     if current_user.subscription_status == "subscribed"
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id)
+      # find if user has a delivery in process
+      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["admin prep next", "user review"]).first
+      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
       @current_subscriber = true
       #set class for order dropdown button
       @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      gon.page_source = "stock"
     else
+      # find if user has an order in process
+      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
       if !@order_prep.blank?
         @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
       else
@@ -452,14 +451,16 @@ class StockController < ApplicationController
     end
       
     # find if customer currently has an order in process
-    @current_order = OrderPrep.find_by_account_id(current_user.account_id)
+    @current_order = OrderPrep.where(account_id: current_user.account_id, status: "order in process").first
     
     if @current_order.blank? # create a new Order Prep entry
       @current_order = OrderPrep.create(account_id: current_user.account_id, status: "order in process")
     end
     
     # now check if this inventory item already exists in the Order Drink Prep table
-    @current_drink_order = OrderDrinkPrep.where(user_id: current_user.id, inventory_id: @project_rating_info.inventory_id)
+    @current_drink_order = OrderDrinkPrep.where(user_id: current_user.id, 
+                                                order_prep_id: @current_order.id,
+                                                inventory_id: @project_rating_info.inventory_id)
     
     if !@current_drink_order.blank? #update entry
       if @customer_drink_quantity != 0
@@ -508,6 +509,133 @@ class StockController < ApplicationController
   end # end of add_stock_to_customer_cart method
   
   def add_stock_to_subscriber_delivery
+    # get params
+    @source_info = params[:id]
+    @source_info_split = @source_info.split("-")
+    @page = @source_info_split[0]
+    @related_id = @source_info_split[1]
+    @customer_drink_quantity = params[:quantity].to_i
+    
+    # get delivery info
+    @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+      
+    # get related info
+    if @page == "stock"
+      # get projected rating info
+      @project_rating_info = ProjectedRating.find_by_id(@related_id)
+      # get inventory info
+      @inventory = Inventory.find_by_id(@project_rating_info.inventory_id)
+      #Rails.logger.debug("Inventory: #{@inventory.inspect}")
+      # now check if this inventory item already exists in the Account Delivery table
+      # get drink info
+      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, 
+                                                    delivery_id: @next_delivery.id,
+                                                    inventory_id: @inventory.id).first
+    else
+      # get drink info
+      @customer_drink_order = AccountDelivery.find_by_id(@related_id)
+      # get inventory info
+      @inventory = Inventory.find_by_id(@customer_drink_order.inventory_id)
+      #Rails.logger.debug("Inventory: #{@inventory.inspect}")
+      # get projected rating info
+      @project_rating_info = ProjectedRating.where(user_id: current_user.id, inventory_id: @inventory.id).first
+    end
+    #Rails.logger.debug("Next Delivery Drink Check: #{@customer_drink_order.inspect}")
+    if !@customer_drink_order.blank? #update entry
+      #Rails.logger.debug("Found this drink")
+      # put inventory back before updating based on current quantity chosen
+      @inventory.increment!(:stock, @customer_drink_order.quantity)
+      @inventory.decrement!(:reserved, @customer_drink_order.quantity)
+      
+      # get related User Delivery info
+      @related_user_delivery = UserDelivery.find_by_account_delivery_id(@customer_drink_order.id)
+      
+      # make adjustments to both delivery and inventory info
+      if @customer_drink_quantity != 0
+        
+        # update delivery info
+        @customer_drink_order.update(quantity: @customer_drink_quantity)
+        @related_user_delivery.update(quantity: @customer_drink_quantity, user_addition: true)
+        @next_delivery.update(has_customer_additions: true)
+        # update inventory info
+        @inventory.increment!(:reserved, @customer_drink_quantity)
+        @inventory.decrement!(:stock, @customer_drink_quantity)
+      else
+        # remove related delivery items
+        @customer_drink_order.destroy!
+        @related_user_delivery.destroy!
+        # already put inventory back, so no need to do more with inventory
+      end
+    else # create new Account and User delivery entries and adjust Inventory
+      #Rails.logger.debug("Did not find this drink")
+      # get cellarable info
+      @cellar = @inventory.beer.beer_type.cellarable
+      if @cellar.nil?
+        @cellar = false
+      end
+      # get size format info
+      if @inventory.size_format_id == 5 || @inventory.size_format_id == 12 || @inventory.size_format_id == 14
+        @large_format = true
+      else
+        @large_format = false
+      end
+      # adjust drink price to wholesale if user is admin
+      if current_user.role_id == 1
+        if !@inventory.sale_case_cost.nil?
+          @wholesale_cost = (@inventory.sale_case_cost / @inventory.min_quantity)
+        else
+          @wholesale_cost = (@inventory.regular_case_cost / @inventory.min_quantity)
+        end
+        @stripe_fees = (@wholesale_cost * 0.029)
+        @drink_price = (@wholesale_cost + @stripe_fees)
+      else
+        # get correct price of drink based on user's address
+        @drink_price = UserAddress.user_drink_price_based_on_address(current_user.account_id, @inventory.id)
+      end
+      #Rails.logger.debug("Drink Price: #{@drink_price.inspect}")
+      # create new Account Delivery table entry
+      @account_delivery = AccountDelivery.create(account_id: current_user.account_id, 
+                                                  beer_id: @inventory.beer_id,
+                                                  quantity: @customer_drink_quantity,
+                                                  cellar: @cellar,
+                                                  large_format: @large_format,
+                                                  delivery_id: @next_delivery.id,
+                                                  drink_price: @drink_price,
+                                                  times_rated: 0,
+                                                  size_format_id: @inventory.size_format_id,
+                                                  inventory_id: @inventory.id)
+      if @account_delivery.save!
+        # create new User Delivery entry
+         UserDelivery.create(user_id: current_user.id,
+                              account_delivery_id: @account_delivery.id,
+                              delivery_id: @next_delivery.id,
+                              quantity: @customer_drink_quantity,
+                              projected_rating: @project_rating_info.projected_rating,
+                              drink_category: @inventory.drink_category)
+        
+        # update inventory info
+        @inventory.increment!(:reserved, @customer_drink_quantity)
+        @inventory.decrement!(:stock, @customer_drink_quantity)
+      end
+    end
+
+    # update Delivery totals
+    # get all drinks in the Account Delivery Table
+    @account_delivery_drinks = AccountDelivery.where(account_id: current_user.account_id, 
+                                                            delivery_id: @next_delivery.id)
+    @subtotal = @account_delivery_drinks.sum( "drink_price*quantity" ) 
+    @sales_tax = @subtotal * 0.101
+    @total_drink_price = @subtotal + @sales_tax
+    @grand_total = @total_drink_price + @next_delivery.delivery_fee
+    
+    # update price info in Delivery table and set change confirmation to false so user gets notice
+    @next_delivery.update(subtotal: @subtotal, sales_tax: @sales_tax, 
+                                    total_drink_price: @total_drink_price, grand_total: @grand_total)
+                                    
+    # update page
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
     
   end # end of add_stock_to_subscriber_delivery method
   

@@ -9,7 +9,7 @@ class RatingsController < ApplicationController
   
   def new
     # set the page to return to after adding a rating
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
     
     if params.has_key?(:source)
       @ratings_source = params[:source]
@@ -81,7 +81,7 @@ class RatingsController < ApplicationController
   
   def edit
     # set the page to return to after adding a rating
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
     
     @user_drink_rating = UserBeerRating.find_by_id(params[:id])
     @user = User.find_by_id(@user_drink_rating.user_id)

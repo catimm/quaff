@@ -1,0 +1,205 @@
+<% if @delivery_preferences.beer_chosen == true %>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 no-padding">
+			<div class="delivery-settings-estimate-tile">
+				<h4 class='delivery-settings-confirm-header'>Beer Details</h4>
+				<% if !@beer_preferences.beers_per_delivery.nil? && !@beer_preferences.beer_price_estimate.nil? %>
+					<% @beer_total = (@beer_preferences.beers_per_delivery.to_i * @beer_preferences.beer_price_estimate.to_i) %>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-beer" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Beers per delivery
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								&nbsp;<span><%= @beer_preferences.beers_per_delivery %></span>
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Target price point
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								&nbsp;<span><%= number_to_currency(@beer_preferences.beer_price_estimate, precision: 2) %></span>
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-usd" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Estimate per delivery
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								<span>~<%= number_to_currency(@beer_total, precision: 2) %></span>
+								<sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup>
+							</h4>
+						</div>
+					</div>
+				<% elsif @beer_preferences.beers_per_delivery.nil? %>
+					<h4 class='delivery-settings-confirm-unchosen-text'>Please choose number of beers per delivery</h4>
+				<% elsif @beer_preferences.beer_price_estimate.nil? %>
+					<h4 class='delivery-settings-confirm-unchosen-text'>Please choose your target price point</h4>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<% end %>
+<% if @delivery_preferences.cider_chosen == true %>
+	<div class="row no-margin">
+		<div class="col-xs-12 no-padding">
+			<div class="delivery-settings-estimate-tile">
+				<h4 class='delivery-settings-confirm-header'>Cider Details</h4>
+				<% if !@cider_preferences.ciders_per_delivery.nil? && !@cider_preferences.cider_price_estimate.nil? %>
+					<% @cider_total = (@cider_preferences.ciders_per_delivery.to_i * @cider_preferences.cider_price_estimate.to_i) %>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-beer" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Ciders per delivery
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								<span><%= @cider_preferences.ciders_per_delivery %></span>
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Target price point
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								<span><%= number_to_currency(@cider_preferences.cider_price_estimate, precision: 2) %></span>
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-usd" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Estimate per delivery
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								<span>~<%= number_to_currency(@beer_total, precision: 2) %></span>
+								<sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup>
+							</h4>
+						</div>
+					</div>
+				<% elsif @cider_preferences.ciders_per_delivery.nil? %>
+					<h4 class='delivery-settings-confirm-unchosen-text'>Please choose number of ciders per delivery</h4>
+				<% elsif @cider_preferences.cider_price_estimate.nil? %>
+					<h4 class='delivery-settings-confirm-unchosen-text'>Please choose your target price point</h4>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<% end %>
+<% if @delivery_preferences.beer_chosen == true && @delivery_preferences.cider_chosen == true %>
+	<div class="row no-margin">
+		<div class="col-xs-12 no-padding">
+			<div class="delivery-settings-estimate-tile">
+				<h4 class='delivery-settings-confirm-header'>Totals</h4>
+				<% if !@cider_preferences.ciders_per_delivery.nil? && !@beer_preferences.beers_per_delivery.nil? && !@average_price.nil? %>
+					<% @drinks_per_delivery = (@beer_preferences.beers_per_delivery.to_i + @cider_preferences.ciders_per_delivery.to_i) %>
+					<% @drink_total = (@drinks_per_delivery * @average_price.to_i) %>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-beer" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Drinks per delivery
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								<span><%= @drinks_per_delivery %></span>
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Target price point
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								<span><%= number_to_currency(@cider_preferences.cider_price_estimate, precision: 2) %></span>
+							</h4>
+						</div>
+					</div>
+					<div class="row no-margin">
+						<div class="col-xs-1 padding-5 text-center">
+							<h4 class='delivery-settings-confirm-text'>
+								<i class="fa fa-usd" aria-hidden="true"></i>
+							</h4>
+						</div>
+						<div class="col-xs-7 padding-5">
+							<h4 class='delivery-settings-confirm-header'>
+								Total per delivery
+							</h4>
+						</div>
+						<div class="col-xs-4 no-padding">
+							<h4 class='delivery-settings-confirm-text'>
+								<span>~<%= number_to_currency(@drink_total, precision: 2) %></span>
+								<sup  data-toggle="tooltip" title="You always have final say on each delivery, so you'll never be surprised by the actual cost.">?</sup>
+							</h4>
+						</div>
+					</div>
+				<% elsif @cider_preferences.ciders_per_delivery.nil? || @beer_preferences.beers_per_delivery.nil?  %>
+					<h4 class='delivery-settings-confirm-unchosen-text'>Please choose number of drinks per delivery</h4>
+				<% elsif @average_price.nil? %>
+					<h4 class='delivery-settings-confirm-unchosen-text'>Please choose your target price point</h4>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<% end %>

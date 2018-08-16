@@ -1,0 +1,49 @@
+<body class="home-body">
+	<%= render 'layouts/header_home_temp' %> 
+	<!-- Page Content -->
+	    <section class="background-light intro-section">
+			<%= render 'section_intro' %>
+	    </section>
+	    <!-- /.row -->	
+	    <section class="background-dark value-prop-section" id="value_section">
+			<%= render 'section_value_prop' %>
+	    </section>
+	    <!-- /.row -->
+	    <section class="background-light how-it-works-section" id="works_section">
+			<%= render 'section_how_it_works' %>
+	    </section>
+	    <!-- /.row -->
+	   	<section class="background-dark homepage-last-row" id="get_started">
+			<%= render 'section_get_started' %>
+	    </section>
+	   
+	    <div id="initial_delivery_area" class="modal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="delivery-helpful-hints-text">Current delivery area</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row no-margin">
+					<div class="col-xs-12 no-padding">
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= image_url('https://s3-us-west-2.amazonaws.com/knird/index/Knird_delivery_area.png') %>">
+						<h5 class="delivery-neighborhoods">
+							We deliver to most of Seattle as well as Downtown Bellevue and Microsoft's 
+							Redmond campus. And we're expanding quickly&mdash;let us know if you have a specific request for a 
+							delivery location not yet available.
+						</h5>
+					</div>
+				</div>
+			</div> 
+		</div>
+	<%= render 'layouts/footer' %>
+</body>
+
+<script>
+$(function() {
+  $.scrollDepth({
+	  userTiming: false,
+	  pixelDepth: false,
+	  nonInteraction: false
+	});
+});
+</script>

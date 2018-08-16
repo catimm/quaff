@@ -10,6 +10,681 @@ class DeliverySettingsController < ApplicationController
   require "stripe"
   require 'json'
 
+  def delivery_settings
+    # set page source
+    @page_source = "delivery"
+    # get User info 
+    @user = User.find_by_id(current_user.id)
+    # get Account info
+    @account = Account.find_by_id(@user.account_id)
+    # track sections complete
+    @sections_complete = 0
+    
+    @last_saved = @account.updated_at
+    
+    # get User Subscription info
+    @user_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
+    
+    # get user Delivery Preference info
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    # get drink styles
+      @drink_styles = BeerStyle.where(standard_list: true).order('style_order ASC')
+      @beer_style_ids = @drink_styles.pluck(:id)
+      
+      # find if user has already liked styles & give admin a view
+      if current_user.role_id == 1 && params.has_key?(:format)
+        # get user info
+        @all_user_styles = UserStylePreference.where(user_id: params[:format])
+      else
+        # get user info
+        @all_user_styles = UserStylePreference.where(user_id: current_user.id)
+      end
+      
+      if !@all_user_styles.blank?
+        @user_likes = @all_user_styles.where(user_preference: "like",
+                                                      beer_style_id: @beer_style_ids).
+                                                      pluck(:beer_style_id)
+      end
+
+      # update if drink styles section is complete
+      if !@all_user_styles.blank?
+        @styles_section_complete = true
+        @sections_complete = @sections_complete + 1
+      end
+    
+      # update if frequency section is complete
+      if @delivery_preferences.delivery_frequency_chosen == true
+        @frequency_section_complete = true
+        @sections_complete = @sections_complete + 1
+      end
+     
+      # update if numbers section is complete
+      if @delivery_preferences.beer_chosen == true
+        @beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+        @average_price = @beer_preferences.beer_price_estimate
+        @max_price = @beer_preferences.beer_price_limit
+        @beers_per_delivery = @beer_preferences.beers_per_delivery.to_i
+      else
+        @beers_per_delivery = 0
+      end
+      if @delivery_preferences.cider_chosen == true
+        @cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+        @average_price = @cider_preferences.cider_price_estimate
+        @max_price = @cider_preferences.cider_price_limit
+        @ciders_per_delivery = @beer_preferences.beers_per_delivery.to_i
+      else
+        @ciders_per_delivery = 0
+      end
+      if @delivery_preferences.drinks_per_delivery == (@beers_per_delivery + @ciders_per_delivery)
+        @numbers_section_complete = true
+        @sections_complete = @sections_complete + 1
+        @drinks_per_delivery = true
+      else
+        @drinks_per_delivery = false
+      end
+      
+      # update if prices section is complete
+      if !@delivery_preferences.total_price_estimate.nil?
+        @prices_section_complete = true
+        @sections_complete = @sections_complete + 1
+      end
+    
+    # get delivery time options
+      # get customer's addresses
+      @user_addresses = UserAddress.where(account_id: current_user.account_id)
+      @selected_user_address = @user_addresses.where(current_delivery_location: true).first
+      @full_address_check = @user_addresses.where.not(address_street: nil, zip: nil)
+      
+      @delivery_window_options = Array.new
+      # get available delivery time windows based on user address
+      @user_addresses.each do |address|
+        @available_delivery_windows = address.address_delivery_times
+        @delivery_window_options << @available_delivery_windows
+      end
+      
+      # create final array for view
+      @delivery_time_options = @delivery_window_options.flatten(2).sort {|a,b| a[3] <=> b[3]}
+      #Rails.logger.debug("Delivery Windows: #{@delivery_window_options.inspect}")  
+      
+      if !@full_address_check.blank?
+        @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["admin prep next", "user review"]).
+                                  order("delivery_date ASC").first
+        if !@next_delivery.blank?
+          @chosen_tile_id = @selected_user_address.id.to_s + 
+                            "-" + @selected_user_address.delivery_zone_id.to_s + 
+                            "_" + @next_delivery.delivery_date.strftime("%Y-%m-%d")
+        else
+          @chosen_tile_id = nil
+        end
+      end
+      #Rails.logger.debug("Chosen tile info: #{@chosen_tile_id.inspect}") 
+       
+       # update if delivery time is selected
+      if @delivery_preferences.delivery_time_window_chosen == true
+        @times_section_complete = true
+        @sections_complete = @sections_complete + 1
+      end
+      
+    # get review & confirm info
+    if !@all_user_styles.blank? && 
+       @delivery_preferences.delivery_frequency_chosen == true && 
+       @drinks_per_delivery == true && 
+       !@delivery_preferences.total_price_estimate.nil? && 
+       @delivery_preferences.delivery_time_window_chosen == true # if all this is true...
+       @ready_to_confirm = true
+    end
+    
+    # update if review & confirm section is complete
+      if @delivery_preferences.settings_confirmed == true
+        @review_section_complete = true
+        @sections_complete = @sections_complete + 1
+      end
+    
+  end # end of delivery_settings method
+  
+  def drink_styles
+    # set page source
+    @page_source = "delivery"
+    
+    # get user info
+    @user = current_user
+    
+    # get drink styles
+    @drink_styles = BeerStyle.where(standard_list: true).order('style_order ASC')
+    @beer_style_ids = @drink_styles.pluck(:id)
+    
+    # find if user has already liked styles & give admin a view
+    if current_user.role_id == 1 && params.has_key?(:format)
+      # get user info
+      @all_user_styles = UserStylePreference.where(user_id: params[:format])
+    else
+      # get user info
+      @all_user_styles = UserStylePreference.where(user_id: current_user.id)
+    end
+    
+    if !@all_user_styles.blank?
+      @user_likes = @all_user_styles.where(user_preference: "like",
+                                                    beer_style_id: @beer_style_ids).
+                                                    pluck(:beer_style_id)
+    end
+      
+  end # end drink_styles
+  
+  def process_drink_styles
+    @user = current_user
+    
+    # get style ID and action to take
+    @style_info = params[:style_info]
+    @split_data = @style_info.split("-")
+    @action = @split_data[0]
+    @drink_style_id = @split_data[1] #params[:style_id].to_i
+    
+    # get source of request
+    @source_info = params[:page_source]
+    @source_info_split = @source_info.split("-")
+    @page_source = @source_info_split[1]
+    
+    # get number of styles current chosen
+    @number_of_styles = UserStylePreference.number_of_master_styles(@user.id)
+    #Rails.logger.debug("Number of styles: #{@number_of_styles.inspect}")
+    if @number_of_styles == 1 && @action == "remove" # don't take action
+      @only_one_left = true
+    else # proceed
+      @only_one_left = false
+      # get user delivery preference
+      @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+      
+      # get all drinks styles for processing
+      @all_drink_styles = BeerStyle.all
+      @drink_style_ids = @all_drink_styles.pluck(:id)
+
+      # adjust user liked/disliked styles
+      if @action == "remove"
+        @user_style_preference = UserStylePreference.where(user_id: current_user.id, 
+                                                            beer_style_id: @drink_style_id, 
+                                                            user_preference: "like").destroy_all
+
+      end
+      if @action == "add"
+        @new_user_style_preference = UserStylePreference.create(user_id: current_user.id, 
+                                                                beer_style_id: @drink_style_id, 
+                                                                user_preference: "like")
+      end
+      
+      # get drink styles for repopulating view
+      @drink_styles = @all_drink_styles.where(standard_list: true).order('style_order ASC')
+      @beer_style_ids = @drink_styles.pluck(:id)
+      
+      # get user style preferences
+      @all_user_styles = UserStylePreference.where(user_id: current_user.id)
+  
+      if !@all_user_styles.blank?
+        @user_likes = @all_user_styles.where(user_preference: "like",
+                                                    beer_style_id: @beer_style_ids).
+                                                    pluck(:beer_style_id)
+      else
+        #Rails.logger.debug("User All Styles IS Blank")
+        @user_likes = nil
+        @user_dislikes = nil
+      end
+  
+      #Rails.logger.debug("User Likes Drink Styles: #{@user_likes.inspect}")
+      @total_count = @all_user_styles.count
+      
+      @user_style_check = BeerStyle.where(id: @user_likes)
+      @user_style_beer_check = @user_style_check.where(signup_beer: true)
+      @user_style_cider_check = @user_style_check.where(signup_cider: true)
+      # find if user has chosen any beer styles
+      if !@user_style_beer_check.blank?
+        @beer_style = true
+        
+        if @delivery_preferences.blank? 
+          # create delivery preference and chosen drink preference
+          @delivery_preferences = DeliveryPreference.create(user_id: @user.id,
+                                                                  beer_chosen: true)
+          if @delivery_preferences.save
+            @beer_preferences = UserPreferenceBeer.create(user_id: @user.id,
+                                                              delivery_preference_id: @delivery_preferences.id)
+          end
+          @change_in_style_categories = true
+        else
+          if @delivery_preferences.beer_chosen != true
+            @delivery_preferences.update(beer_chosen: true)
+          end
+          #check if user has already chosen a beer preference
+          @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id)
+          if @beer_preferences.blank?
+            @beer_preferences = UserPreferenceBeer.create(user_id: @user.id,
+                                                              delivery_preference_id: @delivery_preferences.id)
+          @change_in_style_categories = true
+          end
+        end
+      else
+        if !@delivery_preferences.blank?
+          if @delivery_preferences.beer_chosen == true
+            @delivery_preferences.update(beer_chosen: false)
+            @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id).destroy
+            @change_in_style_categories = true
+          end
+        end
+      end # end of check whether any beer styles are chosen
+      
+      # find if user has chosen any cider styles
+      if !@user_style_cider_check.blank?
+        @cider_style = true
+        
+        if @delivery_preferences.blank? 
+          # create delivery preference and chosen drink preference
+          @delivery_preferences = DeliveryPreference.create(user_id: @user.id,
+                                                                  cider_chosen: true)
+          if @delivery_preferences.save
+            @cider_preferences = UserPreferenceCider.create(user_id: @user.id,
+                                                              delivery_preference_id: @delivery_preferences.id)
+          end
+          @change_in_style_categories = true
+        else
+          if @delivery_preferences.cider_chosen != true
+            @delivery_preferences.update(cider_chosen: true)
+          end
+          #check if user has already chosen a cider preference
+          @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id)
+          if @cider_preferences.blank?
+            @cider_preferences = UserPreferenceCider.create(user_id: @user.id,
+                                                              delivery_preference_id: @delivery_preferences.id)
+           @change_in_style_categories = true
+          end
+        end
+      else
+        if !@delivery_preferences.blank?
+          if @delivery_preferences.cider_chosen == true
+            @delivery_preferences.update(cider_chosen: false)
+            @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id).destroy
+            @change_in_style_categories = true
+          end
+        end
+      end # end of check whether any beer styles are chosen
+    
+    end # end of check whether to proceed
+    
+    #Rails.logger.debug("Total preferences count: #{@total_count.inspect}")
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end process_drink_styles method
+  
+  def process_delivery_frequency
+    # get frequency
+    @frequency = params[:frequency]
+
+    # get account info
+    @account = Account.find_by_id(current_user.account_id)
+    
+    # update account frequency
+    @account.update(delivery_frequency: @frequency)
+    
+    # track sections complete
+    @sections_complete = 1
+    
+    # get delivery preference info
+    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    
+    # update delivery preference if need be
+    if @delivery_preferences.delivery_frequency_chosen != true
+      @delivery_preferences.update(delivery_frequency_chosen: true)
+      @sections_complete = @sections_complete + 1
+    else
+      @sections_complete = @sections_complete + 1
+    end
+      
+    # next deliveries
+    @user_deliveries = Delivery.where(account_id: current_user.account_id).where.not(status: ["delivered"]).
+                                  order("delivery_date ASC")
+    if !@user_deliveries.blank?
+      @next_delivery = @user_deliveries.first
+      if @user_deliveries.count > 1 # update second delivery info
+        # get account delivery frequency
+        @second_delivery = @user_deliveries.second
+        @second_delivery_date = @next_delivery.delivery_date + (@account.delivery_frequency.to_i).weeks
+        @second_delivery.update(delivery_date: @second_delivery_date, delivery_start_time: @delivery_start_time, delivery_end_time: @delivery_end_time)
+      else # create second delivery, if account frequency has been selected
+        @second_delivery_date = @next_delivery.delivery_date + (@account.delivery_frequency.to_i).weeks
+        Delivery.create(account_id: @user.account_id, 
+                        delivery_date: @second_delivery_date,
+                        status: "admin prep",
+                        subtotal: 0,
+                        sales_tax: 0,
+                        total_drink_price: 0,
+                        delivery_change_confirmation: false,
+                        share_admin_prep_with_user: false)
+      end # end of check on how many user deliveries exist
+      
+    end # end of check whether user deliveries exist 
+    
+    # check how many sections are complete for the view refresh
+    if !@delivery_preferences.drinks_per_delivery.nil?
+      @sections_complete = @sections_complete + 1
+    end
+    if !@delivery_preferences.total_price_estimate.nil?
+      @sections_complete = @sections_complete + 1
+    end
+    if @delivery_preferences.delivery_time_window_chosen == true
+      @sections_complete = @sections_complete + 1
+    end
+    if @delivery_preferences.settings_confirmed == true
+      # update delivery preference to show other settings have been changed and settings need to be reconfirmed
+      @delivery_preferences.update(settings_confirmed: false)
+      @update_settings_confirmed_view = true
+    end
+    
+    # update view
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end process_delivery_frequency method
+  
+  def process_delivery_numbers
+    # get input
+    @number_info = params[:numbers]
+    @number_info_split = @number_info.split("-")
+    @category = @number_info_split[0]
+    @number = @number_info_split[1].to_i
+    
+    # get user preferences
+    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    
+    # track sections complete
+    @sections_complete = 1
+    
+    # update delivery preference if need be
+    if @delivery_preferences.beer_chosen == true && @delivery_preferences.cider_chosen == true
+      @beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+      @cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+      # make related updates
+      if @category == "beer"
+        @beer_preferences.update(beers_per_delivery: @number)
+        @total_drinks = @number + @cider_preferences.ciders_per_delivery.to_i
+        
+      end # end of beer update
+      if @category == "cider"
+        @cider_preferences.update(ciders_per_delivery: @number)
+        @total_drinks = @number + @beer_preferences.beers_per_delivery.to_i
+      end # end of cider update
+      
+    elsif @delivery_preferences.beer_chosen == true
+      @beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+      @beer_preferences.update(beers_per_delivery: @number)
+      @total_drinks = @number
+    elsif @delivery_preferences.cider_chosen == true
+      @cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+      @cider_preferences.update(ciders_per_delivery: @number)
+      @total_drinks = @number
+    end
+    
+    # update drinks per delivery in delivery preferences
+    @delivery_preferences.update(drinks_per_delivery: @total_drinks)
+    @sections_complete = @sections_complete + 1
+    
+    # check how complete the remaining sections are 
+    if @delivery_preferences.delivery_frequency_chosen == true
+      @sections_complete = @sections_complete + 1
+    end
+    if !@delivery_preferences.total_price_estimate.nil?
+      if @delivery_preferences.beer_chosen == true
+        @total_delivery_estimate = @delivery_preferences.drinks_per_delivery.to_i * @beer_preferences.beer_price_estimate
+      elsif @delivery_preferences.cider_chosen == true
+        @total_delivery_estimate = @delivery_preferences.drinks_per_delivery.to_i * @cider_preferences.cider_price_estimate
+      end
+      @delivery_preferences.update(total_price_estimate: @total_delivery_estimate)
+      @sections_complete = @sections_complete + 1
+    end
+    
+    if @delivery_preferences.delivery_time_window_chosen == true
+      @sections_complete = @sections_complete + 1
+    end
+    if @delivery_preferences.settings_confirmed == true
+      # update delivery preference to show other settings have been changed and settings need to be reconfirmed
+      @delivery_preferences.update(settings_confirmed: false)
+      @update_settings_confirmed_view = true
+    end
+    
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end of process_delivery_numbers method
+  
+  def process_delivery_prices
+    # get input
+    @number_info = params[:numbers]
+    @number_info_split = @number_info.split("-")
+    @question = @number_info_split[0]
+    @price = @number_info_split[1].to_i
+ 
+    # track sections complete
+    @sections_complete = 1
+    
+    # get delivery preferences
+    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    
+    if @delivery_preferences.beer_chosen == true
+      @beer_preferences = UserPreferenceBeer.find_by_user_id(current_user.id)
+      if @question == "average"
+        @beer_preferences.update(beer_price_estimate: @price)
+      end
+      if @question == "max"
+        @beer_preferences.update(beer_price_limit: @price)
+      end
+    end
+    
+    if @delivery_preferences.cider_chosen == true
+      @cider_preferences = UserPreferenceCider.find_by_user_id(current_user.id)
+      if @question == "average"
+        @cider_preferences.update(cider_price_estimate: @price)
+      end
+      if @question == "max"
+        @cider_preferences.update(cider_price_limit: @price)
+      end
+    end
+    
+    # update delivery preferences
+    if !@delivery_preferences.drinks_per_delivery.nil?
+      if @question == "average"
+        @total_delivery_estimate = @delivery_preferences.drinks_per_delivery.to_i * @price
+        @delivery_preferences.update(total_price_estimate: @total_delivery_estimate)
+        @sections_complete = @sections_complete + 2
+      end  
+    end
+    
+    # check how complete the remaining sections are 
+    if @delivery_preferences.delivery_frequency_chosen == true
+      @sections_complete = @sections_complete + 1
+    end
+    if @delivery_preferences.delivery_time_window_chosen == true
+      @sections_complete = @sections_complete + 1
+    end
+    if @delivery_preferences.settings_confirmed == true
+      # update delivery preference to show other settings have been changed and settings need to be reconfirmed
+      @delivery_preferences.update(settings_confirmed: false)
+      @update_settings_confirmed_view = true
+    end
+    
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end process_delivery_prices
+  
+  def process_delivery_extras
+    # get info
+    @additional = params[:delivery_preference][:additional]
+    # update delivery preferences
+    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    @delivery_preferences.update(additional: @additional)
+    
+    @saved_settings_message = "Noted. Thanks!"
+    
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end of process_delivery_extras method
+  
+  def process_delivery_time
+    @chosen_time_info = params[:time]
+    @split_info = @chosen_time_info.split("_")
+    @table_ids = @split_info[0]
+    @split_table_ids = @table_ids.split("-")
+    @chosen_address_id = @split_table_ids[0]
+    @chosen_delivery_zone_id = @split_table_ids[1]
+    @delivery_date = @split_info[1].to_date
+
+    # get user info
+    @user = current_user
+    
+    # get account info
+    @account = Account.find_by_id(@user.account_id)
+    # update account info
+    @account.update(delivery_zone_id: @chosen_delivery_zone_id)
+    
+    # track sections complete
+    @sections_complete = 1
+    
+    # get delivery preferences
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+    
+    # get user addresses
+    @user_addresses = UserAddress.where(account_id: @user.account_id)
+    # get currently selected address
+    @current_delivery_location = @user_addresses.where(current_delivery_location: true).first
+    if @chosen_address_id != @current_delivery_location.id
+      # update current delivery location
+      @current_delivery_location.update(current_delivery_location: false)
+      # update chosen address
+      @chosen_address = @user_addresses.where(id: @chosen_address_id).first
+      @chosen_address.update(current_delivery_location: true, delivery_zone_id: @chosen_delivery_zone_id)
+      @selected_user_address = @chosen_address
+    else # just update the delivery_zone_id
+      @current_delivery_location.update(delivery_zone_id: @chosen_delivery_zone_id)
+      @selected_user_address = @current_delivery_location
+    end
+    
+    # set variables for view
+    @full_address_check = @selected_user_address
+
+    @delivery_window_options = Array.new
+    # get available delivery time windows based on user address
+    @user_addresses.each do |address|
+      @available_delivery_windows = address.address_delivery_times
+      @delivery_window_options << @available_delivery_windows
+    end
+    
+    # create final array for view
+    @delivery_time_options = @delivery_window_options.flatten(2).sort {|a,b| a[3] <=> b[3]}
+    #Rails.logger.debug("Delivery Windows: #{@delivery_window_options.inspect}")  
+    
+    # get delivery zone info
+    @delivery_zone = DeliveryZone.find_by_id(@chosen_delivery_zone_id)  
+    @start_time = Time.parse(@delivery_zone.start_time.to_s)
+    @delivery_start_time = (@delivery_date + @start_time.seconds_since_midnight.seconds).to_datetime  
+    @delivery_end_time = @delivery_start_time + 4.hours
+      
+    # next deliveries
+    @user_deliveries = Delivery.where(account_id: @user.account_id).where.not(status: ["delivered"]).
+                                  order("delivery_date ASC")
+    # update next delivery info
+    if !@user_deliveries.blank?
+      @next_delivery = @user_deliveries.first
+      @next_delivery.update(delivery_date: @delivery_date, delivery_start_time: @delivery_start_time, delivery_end_time: @delivery_end_time)
+      if @user_deliveries.count > 1 # update second delivery info
+        if !@account.delivery_frequency.nil?
+          # get account delivery frequency
+          @second_delivery = @user_deliveries.second
+          @second_delivery_date = @delivery_date + (@account.delivery_frequency.to_i).weeks
+          @second_delivery.update(delivery_date: @second_delivery_date, delivery_start_time: @delivery_start_time, delivery_end_time: @delivery_end_time)
+        end
+      else # create second delivery, if account frequency has been selected
+        if !@account.delivery_frequency.nil?
+          @second_delivery_date = @delivery_date + (@account.delivery_frequency.to_i).weeks
+          Delivery.create(account_id: @user.account_id, 
+                          delivery_date: @second_delivery_date,
+                          status: "admin prep",
+                          subtotal: 0,
+                          sales_tax: 0,
+                          total_drink_price: 0,
+                          delivery_change_confirmation: false,
+                          share_admin_prep_with_user: false)
+        end
+      end # check on how many entries exist in Deliveries
+    else # no deliveries exist, so create them
+        @next_delivery = Delivery.create(account_id: @user.account_id, 
+                                          delivery_date: @delivery_date,
+                                          status: "admin prep next",
+                                          subtotal: 0,
+                                          sales_tax: 0,
+                                          total_drink_price: 0,
+                                          delivery_change_confirmation: false,
+                                          share_admin_prep_with_user: false,
+                                          delivery_start_time: @delivery_start_time, 
+                                          delivery_end_time: @delivery_end_time)
+        # create 2nd delivery date too
+        @second_delivery_date = @delivery_date + (@account.delivery_frequency.to_i).weeks
+        Delivery.create(account_id: @user.account_id, 
+                        delivery_date: @second_delivery_date,
+                        status: "admin prep",
+                        subtotal: 0,
+                        sales_tax: 0,
+                        total_drink_price: 0,
+                        delivery_change_confirmation: false,
+                        share_admin_prep_with_user: false,
+                        delivery_start_time: @delivery_start_time, 
+                        delivery_end_time: @delivery_end_time)
+    end # end of check whether user deliveries is blank or not
+
+    # set chosen tile
+    @chosen_tile_id = @selected_user_address.id.to_s + 
+                      "-" + @selected_user_address.delivery_zone_id.to_s + 
+                      "_" + @next_delivery.delivery_date.strftime("%Y-%m-%d")
+
+    
+    # update delivery preferences
+    @delivery_preferences.update(delivery_time_window_chosen: true)
+    @sections_complete = @sections_complete + 1
+    
+    # check how many sections are complete for the view refresh
+    if @delivery_preferences.delivery_frequency_chosen == true
+        @sections_complete = @sections_complete + 1
+      end
+    if !@delivery_preferences.drinks_per_delivery.nil?
+      @sections_complete = @sections_complete + 1
+    end
+    if !@delivery_preferences.total_price_estimate.nil?
+      @sections_complete = @sections_complete + 1
+    end
+    if @delivery_preferences.settings_confirmed == true
+      # update delivery preference to show other settings have been changed and settings need to be reconfirmed
+      @delivery_preferences.update(settings_confirmed: false)
+      @update_settings_confirmed_view = true
+    end
+    
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end of process_delivery_time method
+  
+  def delivery_settings_confirm
+    # get delivery preferences
+    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    @delivery_preferences.update(settings_confirmed: true)
+    
+    # redirect back to settings so user sees it's now complete
+    redirect_to delivery_settings_path
+    
+  end # end delivery_settings_confirm method
+  
   def delivery_frequency
     # set referring page
     @referring_url = request.referrer
@@ -130,7 +805,7 @@ class DeliverySettingsController < ApplicationController
     @customer_next_delivery = Delivery.where(account_id: @user.account_id).where.not(status: "delivered").first
     
     # find if the account has any other users who have completed their profile
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 1).where.not(id: @user.id)
     
     # update customer drink choice if needed
     if @column == "drink_choice"
@@ -189,7 +864,7 @@ class DeliverySettingsController < ApplicationController
     # get page data, depending on whether the account has mates
     if !@mates.blank?
       @mate_count = @mates.size
-      @account_users = User.where(account_id: @user.account_id, getting_started_step: 14)
+      @account_users = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 1)
       # create an array to hold the mates drink preferences
       @account_mates_preferences = Array.new
       # set account variables
@@ -447,7 +1122,15 @@ class DeliverySettingsController < ApplicationController
     #Rails.logger.debug("first delivery date: #{@first_delivery.inspect}")
     @second_delivery = @all_upcoming_deliveries.order("delivery_date ASC").second
     #Rails.logger.debug("second delivery date: #{@second_delivery.inspect}")
-
+    
+    # create new date time for delivery start and end times
+    @original_delivery_start = @first_delivery.delivery_start_time
+    @new_delivery_start = DateTime.new(@new_delivery_date.year, 
+                                       @new_delivery_date.month, 
+                                       @new_delivery_date.day, 
+                                       @original_delivery_start.hour, 
+                                       @original_delivery_start.min)
+    @new_delivery_end = @new_delivery_start + 4.hours
     # send a confirmation email about the change
     UserMailer.delivery_date_change_confirmation(@customer, @first_delivery.delivery_date, @new_delivery_date).deliver_now
 
@@ -481,13 +1164,23 @@ class DeliverySettingsController < ApplicationController
                           subtotal: 0, 
                           sales_tax: 0, 
                           total_drink_price: 0,
-                          status: "admin prep",
-                          share_admin_prep_with_user: false)
+                          status: "admin prep next",
+                          share_admin_prep_with_user: false,
+                          delivery_start_time: @new_delivery_start,
+                          delivery_end_time: @new_delivery_end)
     if !@second_delivery.blank?
       @account = Account.find_by_id(current_user.account_id)
       @delivery_frequency = @account.delivery_frequency
       @second_delivery_date = @new_delivery_date + @delivery_frequency.weeks
-      @second_delivery.update_attribute(:delivery_date, @second_delivery_date)
+      @second_delivery_start = DateTime.new(@second_delivery_date.year, 
+                                       @second_delivery_date.month, 
+                                       @second_delivery_date.day, 
+                                       @original_delivery_start.hour, 
+                                       @original_delivery_start.min)
+      @second_delivery_end = @second_delivery_start + 4.hours
+      @second_delivery.update(delivery_date: @second_delivery_date,
+                              delivery_start_time: @second_delivery_start,
+                              delivery_end_time: @second_delivery_end)
     end
     
     redirect_to change_delivery_date_path
@@ -821,7 +1514,7 @@ class DeliverySettingsController < ApplicationController
       end
       
       # find if the account has any other users (for menu links)
-      @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
+      @mates = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 1).where.not(id: @user.id)
       
       # create new CustomerDeliveryRequest instance
       @customer_delivery_request = CustomerDeliveryRequest.new
@@ -829,7 +1522,7 @@ class DeliverySettingsController < ApplicationController
       @customer_delivery_request_path = customer_delivery_requests_settings_path
     else
       # set session to remember page arrived from 
-      session[:return_to] ||= request.referer
+      session[:return_to] = request.referer
       redirect_to new_user_address_path(@user.account_id)
     end  
   end # end of delivery_location method
@@ -941,10 +1634,10 @@ class DeliverySettingsController < ApplicationController
     @user = User.find(current_user.id)
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user.account_id, getting_started_step: 14).where.not(id: @user.id)
+    @mates = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 1).where.not(id: @user.id)
     
     # get all users on account
-    @users = User.where(account_id: @user.account_id, getting_started_step: 14)
+    @users = User.where(account_id: @user.account_id).where('getting_started_step >= ?', 1)
     @drink_per_delivery_calculation = 0
     @large_delivery_estimate = 0
     @small_delivery_estimate = 0

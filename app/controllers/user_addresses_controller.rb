@@ -27,8 +27,8 @@ class UserAddressesController < ApplicationController
     end
     
     # set session to remember page arrived from 
-    session[:return_to] ||= request.referer
-    
+    session[:return_to] = request.referer
+    #Rails.logger.debug("Session URL 1: #{session[:return_to].inspect}")
   end # end of new method
   
   def create
@@ -37,7 +37,7 @@ class UserAddressesController < ApplicationController
     
     # redirect 
     redirect_to session.delete(:return_to)
-    
+
   end # end of create method
   
   def edit
@@ -56,7 +56,7 @@ class UserAddressesController < ApplicationController
     @header = "Edit " + @location_name
     
     # set session to remember page arrived from 
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
     
   end # end of edit method
   
@@ -76,7 +76,7 @@ class UserAddressesController < ApplicationController
       # redirect back to last page before new location page
       redirect_to session.delete(:return_to)
     # determine redirect path, based on where user is in signup process
-    elsif  @user.getting_started_step >= 12
+    elsif  @user.getting_started_step >= 1
       if @user_subscription.subscription.deliveries_included != 0
         redirect_to delivery_preferences_getting_started_path
       else
@@ -88,7 +88,7 @@ class UserAddressesController < ApplicationController
   
   def destroy
     # set session to remember page arrived from 
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
     
     # destory address record
     UserAddress.destroy(params[:id])

@@ -1,0 +1,11 @@
+<div class="row no-margin">
+    <div class="col-xs-12 col-sm-4 col-md-3">
+    	<div class="credit-tile">
+    		<p class="credit-tile-header">
+    			Current credit
+    			<sup  data-toggle="tooltip" title="Credits will automatically be applied towards your future drink purchases.">?</sup>
+    		</p>
+    		<h1 class="credit-tile-number"><%= number_to_currency(@available_credit_value, precision: 2) %></h1>
+    	</div>
+    </div>
+</div> 

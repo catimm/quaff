@@ -30,4 +30,27 @@ class BeerStyle < ApplicationRecord
     merge(BeerType.types_of_beer_in_stock(beers_in_stock))
   }
   
-end
+  # scope all beers and ciders used for choosing styles
+  scope :beer_or_cider, -> {
+    where("signup_beer = ? OR signup_cider = ?", true, true)
+  }
+  
+  def top_style_descriptors
+    @this_style_descriptors = DrinkStyleTopDescriptor.where(beer_style_id: self.id).
+                                                        order(descriptor_tally: :desc).
+                                                        first(10)
+    return @this_style_descriptors
+  end # end of top_style_descriptors method
+  
+  def descriptor_chosen(user_id, descriptor_name)
+    @descriptor_chosen = UserDescriptorPreference.where(user_id: user_id,
+                                                            beer_style_id: self.id,
+                                                            descriptor_name: descriptor_name)
+    if !@descriptor_chosen.blank?
+      return true
+    else
+      return false
+    end
+  end # end of descriptor_chosen method
+  
+end # end of class

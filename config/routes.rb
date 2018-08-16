@@ -26,13 +26,17 @@ Rails.application.routes.draw do
   
   
   # routes to user profile pages
+  get '/account_settings' => 'users#index', :as => 'account_overview'
   get '/users/start_account' => 'users#edit', :as => 'users_start_account'
   get '/users/account_settings_membership' => 'users#account_settings_membership', :as => 'account_settings_membership_user'
   patch '/users/process_first_password' => 'users#process_first_password', :as => 'process_first_password_user'
   get '/account_settings_personal' => 'users#account_personal', :as => 'account_personal'
   get '/account_settings_addresses' => 'users#account_addresses', :as => 'account_addresses'  
   get '/account_settings_mates' => 'users#account_mates', :as => 'account_mates'
-  get '/users/plan_rewewal_off' => 'users#plan_rewewal_off', :as => 'plan_rewewal_off_user'
+  get '/account_credit_cards' => 'users#account_credit_cards', :as => 'user_credit_cards'
+  get '/account_gift_cards' => 'users#account_gift_cards', :as => 'user_gift_cards'
+  get '/account_membership' => 'users#account_membership', :as => 'account_membership'
+  get '/users/plan_rewewal_change/:id' => 'users#plan_rewewal_change', :as => 'plan_rewewal_change'
   patch '/users/update_profile' => 'users#update_profile', :as => 'update_profile_user'
   patch '/users/update_password' => 'users#update_password', :as => 'update_password_user'
   post '/users/add_new_card' => 'users#add_new_card', :as => 'add_new_card_user'
@@ -97,7 +101,7 @@ Rails.application.routes.draw do
   get 'stock/change_cider_view/:artisan/:style' => 'stock#change_cider_view'
   get 'stock/wine' => 'stock#wine', :as => 'wine_stock'
   post 'stock/add_stock_to_customer_cart/:id/:quantity' => 'stock#add_stock_to_customer_cart'
-  post 'stock/add_stock_to_subscriber_delivery/id:/:quantity' => 'stock#add_stock_to_subscriber_delivery'
+  post 'stock/add_stock_to_subscriber_delivery/:id/:quantity' => 'stock#add_stock_to_subscriber_delivery'
   
   # routes for cart checkout
   get 'review' => 'carts#review', :as => 'cart_review'
@@ -171,14 +175,22 @@ Rails.application.routes.draw do
   get 'home/try_another_zip' => 'home#try_another_zip', :as => 'try_another_zip'
   get 'home/zip_code_response/:id' => 'home#zip_code_response', :as => 'homepage_zipcode_search'
   post 'home/process_zip_code/:zip' => 'home#process_zip_code'
+  post 'home/process_invitation_request' => 'home#process_invitation_request', :as => 'process_invitation_request'
+  get 'home/invitation_request_thanks' => 'home#invitation_request_thanks', :as => 'invitation_request_thanks'
   post 'home/process_drink_category/:category' => 'home#process_drink_category'
-  post 'home/process_styles/:style_info/:style_id' => 'home#process_styles'
-  get 'home/process_drink_styles' => 'home#process_drink_styles', :as => 'homepage_process_styles'
+  post 'home/process_styles/:style_id/:style_info' => 'home#process_styles'
+  get 'home/process_drink_styles' => 'home#process_drink_styles'
   get 'home/projected_ratings_check' => 'home#projected_ratings_check'
   
   # routes for Knird Live membership and settings
   get '/knird_preferred_membership' => 'knird_preferred#membership', :as => 'knird_preferred_membership'
-  get '/knird_preferred_drink_categories' => 'knird_preferred#drink_categories', :as => 'knird_preferred_drink_categories'
+  get '/knird_preferred_membership_start' => 'knird_preferred#membership_start', :as => 'knird_preferred_membership_start'
+  get '/knird_preferred_membership_new' => 'knird_preferred#new_membership', :as => 'knird_preferred_new_membership'
+  post 'process_membership_payment' => 'knird_preferred#process_membership_payment', :as => 'process_membership_payment'
+  get '/knird_preferred_trial_start' => 'knird_preferred#trial_start', :as => 'knird_preferred_trial_start'
+  get '/knird_preferred_trial_new' => 'knird_preferred#new_trial', :as => 'knird_preferred_new_trial'
+  post 'process_trial_payment' => 'knird_preferred#process_trial_payment', :as => 'process_trial_payment'
+  get '/thank_you' => 'knird_preferred#membership_thank_you', :as => 'membership_thank_you'
   
   # routes to user delivery settings pages
   get '/delivery_settings/index' => 'delivery_settings#index', :as => 'user_delivery_settings'
@@ -196,6 +208,16 @@ Rails.application.routes.draw do
   get '/delivery_settings/delivery_frequency' => 'delivery_settings#delivery_frequency', :as => 'delivery_frequency'
   get '/delivery_settings/change_delivery_date' => 'delivery_settings#change_delivery_date', :as => 'change_delivery_date'
   post '/delivery_settings/process_delivery_date_change/:id' => 'delivery_settings#process_delivery_date_change', :as => 'process_delivery_date_change'
+  # new delivery settings
+  get '/delivery_settings/drink_styles' => 'delivery_settings#drink_styles', :as => 'delivery_settings_drink_styles'
+  get '/delivery_settings' => 'delivery_settings#delivery_settings', :as => 'delivery_settings'
+  post 'delivery_settings/process_drink_styles/:style_info/:page_source' => 'delivery_settings#process_drink_styles'
+  post '/delivery_settings/process_delivery_frequency/:frequency' => 'delivery_settings#process_delivery_frequency'
+  post '/delivery_settings/process_delivery_numbers/:numbers' => 'delivery_settings#process_delivery_numbers'
+  post '/delivery_settings/process_delivery_prices/:numbers' => 'delivery_settings#process_delivery_prices'
+  post '/delivery_settings/process_delivery_time/:time' => 'delivery_settings#process_delivery_time'
+  patch '/delivery_settings/process_delivery_extras' => 'delivery_settings#process_delivery_extras'
+  get '/delivery_settings/delivery_settings_confirm' => 'delivery_settings#delivery_settings_confirm', :as => 'delivery_settings_confirm'
 
   # routes to user shipment settings pages
   get '/shipment_settings/index' => 'shipment_settings#index', :as => 'user_shipment_settings'
@@ -227,7 +249,7 @@ Rails.application.routes.draw do
   post '/connections/process_friend_changes_on_find_page/:id' => 'connections#process_friend_changes_on_find_page'
   
   # routes to drink pages
-  get '/deliveries' => 'drinks#deliveries', :as => 'user_deliveries'
+  get '/orders' => 'drinks#orders', :as => 'user_orders'
   get '/drinks/free_curation' => 'drinks#free_curation', :as => 'free_curation'
   get '/cellar' => 'drinks#cellar', :as => 'user_cellar'
   get '/wishlist' => 'drinks#wishlist', :as => 'user_wishlist'

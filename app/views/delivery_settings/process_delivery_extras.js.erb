@@ -1,0 +1,9 @@
+$(function() {
+	// show successful saved modal
+	$('#saved_delivery_settings_confirmation').modal('show');
+	$('#saved_settings_message').text("We got it. Feel free to update at any time. Thanks!");
+	
+	// update extras
+	$('#delivery-settings-extra-row').html("<%= escape_javascript(render 'delivery_extras') %>");
+	
+});

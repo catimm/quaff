@@ -46,7 +46,7 @@ class BeersController < ApplicationController
      # need to change this to---@customer_ids = DeliveryPreference.uniq.pluck(:user_id)
      #@role_ids = [1, 2, 3, 4] 
      @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
-     @active_users = User.where(account_id: @active_account_ids).where('getting_started_step >= ?', 14)
+     @active_users = User.where(account_id: @active_account_ids).where('getting_started_step >= ?', 1)
      @free_curations = FreeCuration.where(share_admin_prep: false)
 
      #Rails.logger.debug("Customer ids: #{@customers.inspect}")
@@ -201,7 +201,7 @@ class BeersController < ApplicationController
   
   def add_beer
     # set the page to return to after adding a rating
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
     
     @new_beer = Beer.new
   end # end add_beer action

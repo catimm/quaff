@@ -19,17 +19,6 @@ $(function () {
 	    });
 	}
 	
-	// set height and width of drink style holders
-	var drink_style_tile_height = $('.drink-profile-style-tile').height();
-	$('.drink-profile-style-tile-chosen').height(drink_style_tile_height);
-	var chosen_drink_style_tile_width = $('.style-image-column-holder').outerWidth();
-	$('.chosen-style-like-cover').height(drink_style_tile_height);
-	$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
-	
-	// get height of category image holder
-	var  cat_holder_height = $(".drink-profile-category-image-holder").height();
-	$(".drink-profile-category-image-holder-chosen-cover").height(cat_holder_height);
-	
 	// capture customer drink category addition
 	$(document).on('click', '.drink-profile-category-image-holder', function () {
 		var this_category = $(this).attr('id');
@@ -78,18 +67,6 @@ $(function () {
 		$.ajax({
 		  type: "POST",
 		  url: "/create_drink_profile/process_drinks_per_week/" + category_timeframe
-		});
-	});
-	
-	// capture number of drinks per timeframe
-	$(document).on('click', '.create-profile-number-box-holder', function () {
-		var category_number = $(this).attr('id');
-		$(this).parent('.number-box-holder-parent').siblings('.number-box-holder-parent').children('.create-profile-number-box-holder').removeClass('chosen');
-		
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/create_drink_profile/process_drinks_per_week/" + category_number
 		});
 	});
 	
@@ -270,41 +247,6 @@ $(function () {
 			return "$" + value;
 		}
 	});
-	$("#beer-rare-cost-max").on("slide", function(slideEvt) {
-		$("#chosen-beer-rare-cost-max").text("$"+slideEvt.value).addClass('chosen-drink-rare-cost-max');
-		
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/create_drink_profile/process_drink_cost_estimates/beer-limit-" + slideEvt.value
-		});
-	});
-	$("#cider-rare-cost-max").slider({
-		value: cider_price_limit,
-		formatter: function(value) {
-			return "$" + value;
-		}
-	});
-	$("#cider-rare-cost-max").on("slide", function(slideEvt) {
-		$("#chosen-cider-rare-cost-max").text("$"+slideEvt.value).addClass('chosen-drink-rare-cost-max');
-		
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/create_drink_profile/process_drink_cost_estimates/cider-limit-" + slideEvt.value
-		});
-	});
 	
-	// send cost estimate input to controller
-	$(document).on('click', '.average-drink-cost-row', function () {
-		
-		var data = $(this).attr('id');
-		
-		// send data to controller
-		$.ajax({
-		  type: "POST",
-		  url: "/create_drink_profile/process_drink_cost_estimates/" + data
-		});
-	}); 
 	
 });

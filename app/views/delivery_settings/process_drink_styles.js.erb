@@ -1,0 +1,22 @@
+$(function() {
+	
+	<% if @only_one_left == false %>
+		$('#delivery-settings-drink-types-row').html("<%= escape_javascript(render 'delivery_settings/drink_styles') %>");
+		// set height and width of drink style holders on home page
+		var drink_style_tile_height = $('.drink-style-tile-slim').height();
+		$('.drink-profile-style-tile-chosen').height(drink_style_tile_height);
+		var chosen_drink_style_tile_width = $('.style-image-column-holder').outerWidth();
+		$('.chosen-style-like-cover').height(drink_style_tile_height);
+		$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
+		
+		<% if @change_in_style_categories == true %>
+			$('#delivery-settings-numbers-row').html("");
+			$('#delivery-settings-numbers-row').html("<%= escape_javascript(render 'drinks_per_delivery') %>");
+		<% end %>
+	<% else %>
+		// show error modal
+		$('#delivery_settings_need_one_type_notice').modal('show');
+	<% end %>
+		
+	
+});

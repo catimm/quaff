@@ -18,6 +18,7 @@
 #  account_id                 :integer
 #  renewals                   :integer
 #  currently_active           :boolean
+#  membership_join_date       :datetime
 #
 
 class UserSubscription < ApplicationRecord

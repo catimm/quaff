@@ -1,0 +1,14 @@
+$(function() {
+	// update view
+	$('#status-row-holder').html("<%= escape_javascript(render 'status_complete_row') %>");
+	$('#frequency-section-status-holder').html("");
+	$('#frequency-section-status-holder').html("<%= escape_javascript(render 'section_complete_indicator') %>");
+	<% if @update_settings_confirmed_view == true %>
+		$('#confirm-section-status-holder').html("");
+		$('#confirm-section-status-holder').html("<%= escape_javascript(render 'section_incomplete_indicator') %>");	
+	<% end %>
+	$('#confirmation_time_and_frequency_holder').html("");
+	$('#confirmation_time_and_frequency_holder').html("<%= escape_javascript(render 'confirmation_time_and_frequency_holder') %>");
+	$('#confirm-settings-button-holder').html("");
+	$('#confirm-settings-button-holder').html("<%= escape_javascript(render 'confirm_settings_button') %>");	
+});

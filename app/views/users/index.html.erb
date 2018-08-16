@@ -1,0 +1,93 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h2 class="my-orders-header">My account</h2>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<%= link_to account_personal_path do %>
+				<div class="row account-category-tile">
+					<div class="col-xs-2 account-category-icon-holder">
+						<i class="fa fa-user fa-3x" aria-hidden="true"></i>
+					</div>
+					<div class="col-xs-10 no-padding-right">
+						<h3 class="account-settings-header">Personal</h3>
+						<h5 class="account-settings-subheader">Edit email, username, or password</h5>
+					</div>
+				</div>
+			<% end %>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<%= link_to account_addresses_path do %>
+				<div class="row account-category-tile">
+					<div class="col-xs-2 account-category-icon-holder">
+						<i class="fa fa-map-marker fa-3x" aria-hidden="true"></i>
+					</div>
+					<div class="col-xs-10 no-padding-right">
+						<h3 class="account-settings-header">Addresses</h3>
+						<h5 class="account-settings-subheader">Add or edit addresses</h5>
+					</div>
+				</div>
+			<% end %>
+		</div>
+		<% if current_user.subscription_status == "subscribed" %>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<%= link_to account_mates_path do %>
+					<div class="row account-category-tile">
+						<div class="col-xs-2 account-category-icon-holder">
+							<i class="fa fa-users fa-3x" aria-hidden="true"></i>
+						</div>
+						<div class="col-xs-10 no-padding-right">
+							<h3 class="account-settings-header">Mates</h3>
+							<h5 class="account-settings-subheader">Invite or manage a mate</h5>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<%= link_to user_credit_cards_path do %>
+				<div class="row account-category-tile">
+					<div class="col-xs-2 account-category-icon-holder">
+						<i class="fa fa-credit-card fa-3x" aria-hidden="true"></i>
+					</div>
+					<div class="col-xs-10 no-padding-right">
+						<h3 class="account-settings-header">Credit Cards</h3>
+						<h5 class="account-settings-subheader">Add or edit a credit card</h5>
+					</div>
+				</div>
+			<% end %>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<%= link_to user_gift_cards_path do %>
+				<div class="row account-category-tile">
+					<div class="col-xs-2 account-category-icon-holder">
+						<i class="fa fa-gift fa-3x" aria-hidden="true"></i>
+					</div>
+					<div class="col-xs-10 no-padding-right">
+						<h3 class="account-settings-header">Gift cards</h3>
+						<h5 class="account-settings-subheader">Buy or redeem a gift card</h5>
+					</div>
+				</div>
+			<% end %>
+		</div>
+		<% if current_user.subscription_status == "subscribed" %>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<%= link_to account_membership_path do %>
+					<div class="row account-category-tile">
+						<div class="col-xs-2 account-category-icon-holder no-padding-right">
+							<%= image_tag('/assets/Knird_logo.png', class: "img-responsive") %>
+						</div>
+						<div class="col-xs-10 no-padding-right">
+							<h3 class="account-settings-header">Knird Preferred</h3>
+							<h5 class="account-settings-subheader">View or edit membership details</h5>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

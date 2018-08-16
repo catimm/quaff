@@ -7,17 +7,11 @@
 	</div>
 </div>
 <div class="container">
-	<% if current_user.unregistered == true %>
-		<div class="row no-margin">
-			<div class="col-xs-12 text-center" id="delivery-cost-message-holder">
-				<div class="row cart-review-delivery-cost-message">
-					<div class="col-xs-12">
-						<h3>To reserve your drinks, <%= link_to "create an account", account_personal_path %>. It's free!</h3>
-					</div>
-				</div>
-			</div>
-		</div>
-	<% end %>
+	<div class="row no-margin" id="stock-page-header-message">
+		<% if current_user.subscription_status != "subscribed" %>
+			<%= render 'stock_page_header_message' %>
+		<% end %>
+	</div>
 	<div class="row no-margin" id="beer-header-row">
 		<%= render 'beer_header' %>
 	</div>
@@ -31,4 +25,17 @@
 		<%= render 'stock_drink_paginator' %>
 	</div>
 </div>
+<div id="drink_addition_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Got it!</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin" id="drink_addition_message"></div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 add-button-holder">
+			<%= link_to "Cool!", "#", :class => 'btn btn-success add-drink-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
+
 <%= render 'layouts/footer' %>

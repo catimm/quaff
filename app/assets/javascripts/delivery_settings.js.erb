@@ -47,6 +47,163 @@ $(function () {
 	  };
 	})();
 	
+	// set height and width of drink style holders on home page
+	var drink_style_tile_height = $('.drink-style-tile-slim').height();
+	$('.drink-profile-style-tile-chosen').height(drink_style_tile_height);
+	var chosen_drink_style_tile_width = $('.style-image-column-holder').outerWidth();
+	$('.chosen-style-like-cover').height(drink_style_tile_height);
+	$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
+	
+	// get height of category image holder
+	var  cat_holder_height = $(".drink-profile-category-image-holder").height();
+	$(".drink-profile-category-image-holder-chosen-cover").height(cat_holder_height);
+	
+	// open related delivery settings section
+	$(document).on("click", ".delivery-settings-header-row", function() {
+		var this_section = $(this).attr('id');
+		if ($(this).children('#delivery-settings-toggle-holder').children('.delivery-settings-show-more').hasClass("hidden")) {
+			// close related section
+			$('#' + this_section +'-row').removeClass("show").addClass("hidden");
+			// change toggle showing
+			$(this).children('#delivery-settings-toggle-holder').children('.delivery-settings-show-more').removeClass("hidden").addClass("show");
+			$(this).children('#delivery-settings-toggle-holder').children('.delivery-settings-show-less').removeClass("show").addClass("hidden");
+		} else {
+			// open related section
+			$('#' + this_section +'-row').removeClass("hidden").addClass("show");
+			// close all other sibling sections
+			if ($('#' + this_section +'-row').siblings('.delivery-settings-row').hasClass("show")) {
+				$('#' + this_section +'-row').siblings('.delivery-settings-row').removeClass("show").addClass("hidden");
+			}
+			if ( $('.delivery-settings-show-less.show').length ) {
+				$('.delivery-settings-show-less.show').siblings('.delivery-settings-show-more').removeClass("hidden").addClass("show");
+				$('.delivery-settings-show-less.show').removeClass("show").addClass("hidden");
+			}
+			// if section opened is the drink type section, adjust size of tiles
+			if (this_section == "delivery-settings-drink-types") {
+				// set height and width of drink style holders
+				var drink_style_tile_height = $('.drink-style-tile-slim').height();
+				$('.drink-profile-style-tile-chosen').height(drink_style_tile_height);
+				var chosen_drink_style_tile_width = $('.style-image-column-holder').outerWidth();
+				$('.chosen-style-like-cover').height(drink_style_tile_height);
+				$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
+			}
+			// change toggle showing
+			$(this).children('#delivery-settings-toggle-holder').children('.delivery-settings-show-more').removeClass("show").addClass("hidden");
+			$(this).children('#delivery-settings-toggle-holder').children('.delivery-settings-show-less').removeClass("hidden").addClass("show");
+		}
+		
+		// make page not jump to top
+		return false;
+	});
+	
+	// add logic to send chosen style info to controller
+	$(document).on('click', '.drink-style-tile-slim', function () {
+		var this_id = $(this).attr('id');
+		var style_id = $(this).parent().attr('id');
+
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_drink_styles/" + this_id + "/" + style_id
+		});
+
+	});
+	$(document).on('click', '.chosen-style-like-cover', function () {
+		var this_id = $(this).attr('id');
+		var style_id = $(this).parent('.row.no-margin').parent('.drink-profile-style-tile-chosen.like-style-tile').parent().attr('id');
+
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_drink_styles/" + this_id + "/" + style_id
+		});
+
+	});
+	
+	// logic to choose delivery frequency
+	$(document).on('click', '.delivery-frequency-holder', function () {
+		if ( $('.delivery-frequency-holder.chosen').length ) {
+				$('.delivery-frequency-holder.chosen').removeClass("chosen");
+			}
+		$(this).addClass('chosen');
+		
+		// get choices to send to controller
+		var number_of_weeks = $(this).attr('id');
+		
+		// send data to signup controller--process_delivery_frequency_getting_started method
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_delivery_frequency/" + number_of_weeks
+		});
+		
+	});
+	
+	// capture number of drinks per delivery
+	$(document).on('click', '.delivery-number-box-holder', function () {
+		
+		if ( $('.delivery-number-box-holder.chosen').length ) {
+				$('.delivery-number-box-holder.chosen').removeClass("chosen");
+			}
+		$(this).addClass('chosen');
+		
+		var numbers = $(this).attr('id');
+		$(this).parent('.number-box-holder-parent').siblings('.number-box-holder-parent').children('.delivery-number-box-holder').removeClass('chosen');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_delivery_numbers/" + numbers
+		});
+	});
+	
+	// send average cost input to controller
+	$(document).on('click', '.average-drink-cost-row', function () {
+		if ( $('.average-drink-cost-row.chosen').length ) {
+				$('.average-drink-cost-row.chosen').removeClass("chosen");
+			}
+		$(this).addClass('chosen');
+		
+		var number = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_delivery_prices/" + number
+		});
+	}); 
+	
+	// send max cost input to controller
+	$(document).on('click', '.max-drink-cost-row', function () {
+		if ( $('.max-drink-cost-row.chosen').length ) {
+				$('.max-drink-cost-row.chosen').removeClass("chosen");
+		}
+		$(this).addClass('chosen');
+		
+		var number = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_delivery_prices/" + number
+		});
+	}); 
+	
+	// send time input to controller
+	$(document).on('click', '.delivery-time-member-option-tile', function () {
+		if ( $('.delivery-time-member-option-tile.chosen').length ) {
+				$('.delivery-time-member-option-tile.chosen').removeClass("chosen");
+			}
+		$(this).addClass('chosen');
+			
+		var time = $(this).attr('id');
+		
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_delivery_time/" + time
+		});
+	}); 
+	
 	// add review end countdown clock
 	$('#review-ends-on').countdown({until: gon.review_period_ends, format: 'dhmS',
 										labels: ['Yr', 'Mo', 'Wk', 'Days', 'Hours', 'Mins', 'Secs'],
@@ -74,17 +231,6 @@ $(function () {
 		});
 		// make page not jump to top
 		return false;
-	});
-	
-	// add logic to change delivery frequency
-	$(document).on('click', '.delivery-frequency-holder', function () {
-		var week_number = $(this).attr('id');
-		
-		// send to controller to change database 
-		$.ajax({
-		  type: "POST",
-		  url: "/signup/process_delivery_frequency_getting_started/" + week_number
-		});
 	});
 	
 	// allow user to save additional delivery preferences info once they start typing

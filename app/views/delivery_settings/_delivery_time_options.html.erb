@@ -1,0 +1,71 @@
+<% if @full_address_check.blank? %>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h4 class="no-account-address-message">Please add an address to your account to see standard delivery options.</h4>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-6">
+			<div class="add-location-address-holder">
+				<h6 class="add-location-direction-text">add a new delivery location</h6>
+				<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
+					<i class="fa fa-plus"> location</i>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<% else %>
+	<div class="row no-margin">
+		<div class="col-xs-12 text-center no-padding">
+			<h4 class="twenty-one-plus-delivery-message">Note, someone 21+ must be available to receive the delivery.</h4>
+		</div>
+		<div class="col-xs-12 text-center no-padding">
+			<h3 class="home-prompt-text">Choose your delivery time window</h3>
+			<h5 class="signup-question-detail">You can change this at any point in time.</h5>
+		</div>
+		<% @delivery_time_options.each do |time_option| %>
+			<% @tile_id = time_option[1].to_s + "-" + time_option[2].to_s + "_" + time_option[3].strftime("%Y-%m-%d") %>
+			<% if @chosen_tile_id == @tile_id %>
+				<% @chosen_tile = "chosen" %>
+			<% else %>
+				<% @chosen_tile = "" %>
+			<% end %>
+			<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 no-padding">
+				<div class="delivery-time-member-option-tile <%= @chosen_tile %>" id="<%= @tile_id %>">
+					<div class="row no-margin">
+						<div class="col-xs-2 no-padding">
+							<div class="member-check-mark-holder">
+								<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+							</div>
+						</div>
+						<div class="col-xs-3 padding-10 no-padding-right">
+							<h5 class="address-name">Location:<br> 
+								<span><%= time_option[0] %></span>
+							</h5>
+						</div>
+						<div class="col-xs-7 padding-5 no-padding-right">
+							<h4 class="delivery-time-option-text">
+								<%= time_option[3].strftime("%A") %>s <br>
+								<%= (time_option[4]).strftime("%l%P") %> - <%= (time_option[5]).strftime("%l%P") %>,<br>
+								Starting <%= (time_option[3]).strftime("%b %-d, %Y") %>
+							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-offset-3 col-sm-3 col-md-offset-4 col-md-4">
+			<h4 class="choose-delivery-time-text">Need more options?</h4>
+		</div>
+		<div class="col-xs-12 col-sm-offset-3 col-sm-3 col-md-offset-4 col-md-4">
+			<div class="add-location-address-holder">
+				<h6 class="add-location-direction-text">add a new delivery location</h6>
+				<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
+					<i class="fa fa-plus"> location</i>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<% end %>

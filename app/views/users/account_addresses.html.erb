@@ -1,6 +1,13 @@
 <%= render 'layouts/header' %> 
-<%= render 'user_account_settings_common', current_section: "Address" %>
 <div class="container">	
+	<div class="row back-to-previous-row">
+		<div class="col-xs-12 no-padding-right">
+			<h3 class="submenu-options">
+				<%= link_to "Back to previous", account_overview_path, class: "current" %>
+			</h3>
+			
+		</div>
+	</div>
 	<div class="row no-margin">
 		<div class="col-xs-12 location-help-text-row">
 			<h4 class="delivery-location-help">Read a few hints to choosing a delivery location</h3>

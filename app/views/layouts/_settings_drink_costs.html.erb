@@ -10,7 +10,7 @@
 	<div class="container">
 		<div class="row no-margin">
 	    	<div class="col-xs-12">
-	            <h3 class="delivery-numbers-prompt">What is the highest <u> average cost per <%= @category %></u> you'd be comfortable paying?</h3>
+	            <h3 class="delivery-numbers-prompt">What is the <u>average cost per <%= @category %></u> you'd like to target?</h3>
 	        </div>
 		</div>
 		<div class="row no-margin">
@@ -29,28 +29,26 @@
 				</div>
 			<% end %>
 	    </div>
-        <% if !@referring_url.include?("create_drink_profile") %>
-			<div class="row no-margin">
-	        	<div class="col-xs-12">
-	                <h3 class="delivery-numbers-prompt cost-max">What is the most you'd pay for a limited/rare/seasonal <%= @category %>?</h3>
-	            </div>
-	        </div>
-	        <div class="row no-margin">
-	            <div class="col-xs-10 text-center" id="<%= drink %>-rare-cost-max-holder">
-	                <b>$5 </b><input id="<%= drink %>-rare-cost-max"
-						type="text"  
-						class="span2" 
-						value="" 
-						data-slider-min="5" 
-						data-slider-max="50" 
-						data-slider-step="5" 
-						data-slider-value="5"
-						data-slider-orientation="horizontal" /><b> $50</b>
-	            </div>
-	            <div class="col-xs-2 col-sm-1 no-padding text-center">
-	            	<h3 class="" id="chosen-<%= drink %>-rare-cost-max"></h3>
-	            </div>
-		    </div>
-		<% end %>	
+		<div class="row no-margin">
+        	<div class="col-xs-12">
+                <h3 class="delivery-numbers-prompt cost-max">What is the most you'd pay for a limited/rare/seasonal <%= @category %>?</h3>
+            </div>
+        </div>
+        <div class="row no-margin">
+            <div class="col-xs-10 text-center" id="<%= drink %>-rare-cost-max-holder">
+                <b>$5 </b><input id="<%= drink %>-rare-cost-max"
+					type="text"  
+					class="span2" 
+					value="" 
+					data-slider-min="5" 
+					data-slider-max="50" 
+					data-slider-step="5" 
+					data-slider-value="5"
+					data-slider-orientation="horizontal" /><b> $50</b>
+            </div>
+            <div class="col-xs-2 col-sm-1 no-padding text-center">
+            	<h3 class="" id="chosen-<%= drink %>-rare-cost-max"></h3>
+            </div>
+	    </div>	
 	</div>
 </div>

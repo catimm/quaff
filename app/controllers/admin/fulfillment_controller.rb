@@ -217,7 +217,11 @@ class Admin::FulfillmentController < ApplicationController
     @account = Account.find_by_id(@account_owner[0].account_id)
     
     # get account owner subscription deliveries info
-    @subscription_deliveries_included = @customer_subscription.subscription.deliveries_included
+    if @customer_subscription.current_trial != true
+      @subscription_deliveries_included = @customer_subscription.subscription.deliveries_included
+    else
+      @subscription_deliveries_included = 3
+    end
     
     # increment delivery totals
     @customer_subscription.increment!(:total_deliveries)
@@ -234,26 +238,30 @@ class Admin::FulfillmentController < ApplicationController
         @renewal_date = @next_delivery_date + 3.days
         # add renewal date to user subscription
         @customer_subscription.update_attribute(:active_until, @renewal_date)
-        
+        # update next delivery
+        @next_delivery.update(status: "admin prep next")
       elsif @remaining_deliveries >= 2
         # start next delivery cycle
-        
+        # update next delivery
+        @next_delivery.update(status: "admin prep next")
         # get account delivery frequency
         @delivery_frequency = @account.delivery_frequency
         # get new delivery date
         @second_delivery_date = @next_delivery.delivery_date + @delivery_frequency.weeks
         # insert new line in delivery table
-        @next_delivery = Delivery.create(account_id: @delivery.account_id, 
+        @second_delivery = Delivery.create(account_id: @delivery.account_id, 
                                           delivery_date: @second_delivery_date,
                                           status: "admin prep",
                                           subtotal: 0,
                                           sales_tax: 0,
-                                          total_price: 0,
+                                          total_drink_price: 0,
                                           delivery_change_confirmation: false,
+                                          delivery_start_time: @next_delivery.delivery_start_time,
+                                          delivery_end_time: @next_delivery.delivery_end_time,
                                           share_admin_prep_with_user: false)
         if (5..22).include?(@customer_subscription.subscription_id)
           # create related shipment
-          Shipment.create(delivery_id: @next_delivery.id)
+          Shipment.create(delivery_id: @second_delivery.id)
         end
       end
     end # end of check whether user is no plan customer

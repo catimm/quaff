@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180805014534) do
+ActiveRecord::Schema.define(version: 20180815230455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20180805014534) do
     t.integer "times_rated"
     t.boolean "moved_to_cellar_supply"
     t.integer "size_format_id"
+    t.integer "inventory_id"
   end
 
   create_table "accounts", id: :serial, force: :cascade do |t|
@@ -391,11 +392,13 @@ ActiveRecord::Schema.define(version: 20180805014534) do
     t.boolean "recipient_is_21_plus"
     t.datetime "delivered_at"
     t.integer "order_prep_id"
-    t.decimal "no_plan_delivery_fee", precision: 5, scale: 2
+    t.decimal "delivery_fee", precision: 5, scale: 2
     t.decimal "grand_total", precision: 5, scale: 2
     t.datetime "delivery_start_time"
     t.datetime "delivery_end_time"
     t.integer "account_address_id"
+    t.boolean "has_customer_additions"
+    t.decimal "delivery_credit", precision: 5, scale: 2
     t.index ["order_prep_id"], name: "index_deliveries_on_order_prep_id"
   end
 
@@ -407,21 +410,20 @@ ActiveRecord::Schema.define(version: 20180805014534) do
 
   create_table "delivery_preferences", id: :serial, force: :cascade do |t|
     t.integer "user_id"
-    t.integer "drinks_per_week"
     t.text "additional"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "price_estimate"
-    t.datetime "first_delivery_date"
-    t.integer "drink_option_id"
-    t.integer "max_large_format"
-    t.integer "max_cellar"
     t.boolean "gluten_free"
     t.text "admin_comments"
     t.integer "drinks_per_delivery"
     t.boolean "beer_chosen"
     t.boolean "cider_chosen"
     t.boolean "wine_chosen"
+    t.integer "settings_complete"
+    t.boolean "settings_confirmed"
+    t.decimal "total_price_estimate", precision: 6, scale: 2
+    t.boolean "delivery_frequency_chosen"
+    t.boolean "delivery_time_window_chosen"
   end
 
   create_table "delivery_zones", id: :serial, force: :cascade do |t|
@@ -661,6 +663,7 @@ ActiveRecord::Schema.define(version: 20180805014534) do
     t.integer "comped"
     t.integer "shrinkage"
     t.boolean "membership_only"
+    t.integer "nonmember_limit"
   end
 
   create_table "inventory_transactions", id: :serial, force: :cascade do |t|
@@ -866,6 +869,7 @@ ActiveRecord::Schema.define(version: 20180805014534) do
     t.datetime "updated_at", null: false
     t.string "image"
     t.boolean "packaged"
+    t.string "format_type"
   end
 
   create_table "special_codes", id: :serial, force: :cascade do |t|
@@ -1066,6 +1070,7 @@ ActiveRecord::Schema.define(version: 20180805014534) do
     t.float "projected_rating"
     t.integer "times_rated"
     t.string "drink_category"
+    t.boolean "user_addition"
   end
 
   create_table "user_descriptor_preferences", force: :cascade do |t|
@@ -1204,6 +1209,7 @@ ActiveRecord::Schema.define(version: 20180805014534) do
     t.integer "account_id"
     t.integer "renewals"
     t.boolean "currently_active"
+    t.datetime "membership_join_date"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|

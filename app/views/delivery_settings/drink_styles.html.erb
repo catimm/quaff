@@ -1,0 +1,28 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row top-header-row">
+		<div class="col-xs-12 col-sm-8">
+			<h3 class="user-settings-header">My preferred styles</h3>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row" id="delivery-settings-drink-types-row">
+		<%= render 'drink_styles' %>
+	</div>
+</div>
+<div id="delivery_settings_need_one_type_notice" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Removal error</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<h2 class="saved-settings-message-text" id="saved_settings_message">
+				You need at least one preferred drink type!
+			</h2>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 add-button-holder">
+			<%= link_to "Got it", "#", :class => 'btn btn-success add-drink-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

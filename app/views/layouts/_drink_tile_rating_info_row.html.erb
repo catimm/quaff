@@ -28,7 +28,7 @@
 				<% else %>
 					<p class="drink-tile-best-guess-minimized">projected rating</p>
 					<%= render 'layouts/drink_tile_rating_user_initials', friend: account_user %>
-					<h3 class="drink-tile-best-guess"> <%= drink.best_guess %><span class="recent-user-rating-context">/10</span></h3>
+					<h3 class="drink-tile-best-guess"> <%= drink.beer.best_guess %><span class="recent-user-rating-context">/10</span></h3>
 				<% end %>
 			</div>
 		<% end %>

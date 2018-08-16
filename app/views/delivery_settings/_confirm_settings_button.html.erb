@@ -1,0 +1,7 @@
+<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4">
+	<% if @sections_complete >= 5 %>
+		<%= link_to "Confirm Settings", delivery_settings_confirm_path, class: "btn btn-success confirm-delivery-settings-button" %>
+	<% else %>
+		<%= link_to "Confirm Settings", "#", class: "btn btn-default confirm-delivery-settings-button" %>
+	<% end %>
+</div>

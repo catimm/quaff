@@ -1,22 +1,9 @@
 <%= render 'layouts/header' %> 
-<% if @user.subscription_status == "subscribed" %>
-	<%= render 'knird_preferred_common', current_section: "Membership" %>
-<% end %>
 <div class="row no-margin">
-	<% if @user.subscription_status == "subscribed" %>
-		<div class="container">
-			<div class="row no-margin">
-				<div class="col-xs-12">
-					<h3 class="recent-ratings-header">Knird Preferred Membership</h3>
-				</div>
-			</div>
-		</div>
-	<% else %>
-		<%= render 'membership_value_prop' %>
-		<%= render 'membership_overview' %>
-		<%= render 'membership_pda' %>
-		<%= render 'membership_drink_pricing' %>
-		<%= render 'membership_regular_deliveries' %>
-	<% end %>
+	<%= render 'membership_value_prop' %>
+	<%= render 'membership_overview' %>
+	<%= render 'membership_pda' %>
+	<%= render 'membership_drink_pricing' %>
+	<%= render 'membership_regular_deliveries' %>
 </div>
 <%= render 'layouts/footer' %>

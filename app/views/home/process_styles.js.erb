@@ -1,5 +1,5 @@
 $(function() {
-
+	
 	// make sure correct "next" button is visible
 	<% if @total_count > 0 %>
 		if($('#process-styles-disabled-button-row').hasClass("show")){
@@ -13,33 +13,14 @@ $(function() {
 	
 	// adjust view of chosen style/action
 	<% if @action == "add" %>
-
-		<% if @preference == "like" %>
-			if($('#<%= @drink_style_id %>').hasClass('dislike-cover')){
-				$('#<%= @drink_style_id %>').removeClass('dislike-cover').addClass('like-cover');
-			} else {
-				$('#<%= @drink_style_id %>').addClass('like-cover');
-			}
-			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-like-style').attr('id','like-remove');
-			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-dislike-style').attr('id','dislike-add');
-		<% elsif @preference == "dislike" %>
-			if($('#<%= @drink_style_id %>').hasClass('like-cover')){
-				$('#<%= @drink_style_id %>').removeClass('like-cover').addClass('dislike-cover');
-			} else {
-				$('#<%= @drink_style_id %>').addClass('dislike-cover');
-			}
-			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-like-style').attr('id','like-add');
-			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-dislike-style').attr('id','dislike-remove');
-		<% end %>
+		$('#add-'+'<%= @drink_style_id %>').children('.style-indicator.home-like-style').removeClass("hidden").addClass("show");
+		$('#add-'+'<%= @drink_style_id %>').addClass('like-cover');
+		$('#add-'+'<%= @drink_style_id %>').attr('id','remove-'+<%= @drink_style_id %>);
 	<% end %>
 	
 	<% if @action == "remove" %>
-		<% if @preference == "like" %>
-			$('#<%= @drink_style_id %>').removeClass('like-cover');
-			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-like-style').attr('id','like-add');
-		<% elsif @preference == "dislike" %>
-			$('#<%= @drink_style_id %>').removeClass('dislike-cover');
-			$('#<%= @drink_style_id %>').children('.home-style-indicator.home-dislike-style').attr('id','dislike-add');
-		<% end %>
+		$('#remove-'+'<%= @drink_style_id %>').removeClass('like-cover');
+		$('#remove-'+'<%= @drink_style_id %>').children('.style-indicator.home-like-style').removeClass("show").addClass("hidden");
+		$('#remove-'+'<%= @drink_style_id %>').attr('id','remove-'+<%= @drink_style_id %>);
 	<% end %>
 });

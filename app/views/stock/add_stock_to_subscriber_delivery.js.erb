@@ -1,0 +1,9 @@
+$(function() {
+	// show modal
+	$('#drink_addition_confirmation').modal('show');
+	// add message to modal
+	$("#drink_addition_message").html("<%= escape_javascript(render 'member_drink_added_confirmation_message' ) %>");
+	<% if @page == "order" %>
+		$("#delivery-stats-holder-<%= @next_delivery.id %>").html("<%= escape_javascript(render 'drinks/delivery_stats', delivery: @next_delivery ) %>");
+	<% end %>
+});

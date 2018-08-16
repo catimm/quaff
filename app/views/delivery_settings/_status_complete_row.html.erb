@@ -1,0 +1,27 @@
+<div class="row no-margin">
+	<div class="col-xs-2 col-md-1 text-center no-padding">
+		<h4 class="delivery-settings-status-text">Status:</h4>
+	</div>
+	<div class="col-xs-5 col-sm-3 col-md-2 padding-5">
+		<h4 class="delivery-settings-status-text">
+			<i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i>
+			<span id="sections_complete"><%= @sections_complete %></span> complete
+		</h4>
+	</div>
+	<div class="col-xs-5 col-sm-3 col-md-2 padding-5 no-padding-right">
+		<h4 class="delivery-settings-status-text">
+			<i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i>
+			<span id="sections_incomplete"><%= 6 - @sections_complete %></span> incomplete
+		</h4>
+	</div>
+</div>
+<% if @sections_complete == 6 %>
+	<div class="row no-margin">
+		<div col="col-xs-12">
+			<h4 class="delivery-settings-status-text">
+				Congrats, you're ready for an order! Check out 
+				<%= link_to "your Orders page", user_orders_path %> for the details.
+			</h4>
+		</div>
+	</div>
+<% end %>

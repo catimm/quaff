@@ -77,7 +77,6 @@ $(function () {
 		      interval: 3000
 		  });
 		});
-			
 		$('#medium_drink_format_carousel').delay(500).fadeIn(1000, function(){
 		  $(this).removeClass("hidden");
 		  $(this).carousel({
@@ -114,7 +113,8 @@ $(function () {
 			// prevent page from jumping to the top after click event
 			return false;
 		});
-		
+
+	
 		$(document).on('click', '.formButton-check-zip-code-button-shipments', function () {
 		   var zipCode = $('#check-zip-code-shipments').val();
 
@@ -127,47 +127,18 @@ $(function () {
 			// prevent page from jumping to the top after click event
 			return false;
 		});
-		// change example delivery view
-		$(document).on("click", ".price-examples", function() {
-			var this_id = $(this).attr('id');
-			
-			if (this_id == "cider-examples") {
-				// change this button class
-				$(".cider-examples").removeClass("hidden").addClass("show");
-				$(".beer-examples").removeClass("show").addClass("hidden");
-				$("#cider-examples").removeClass("price-example-not-chosen").addClass("price-example-chosen");
-				$("#beer-examples").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-			} else {
-				// change this button class
-				$(".beer-examples").removeClass("hidden").addClass("show");
-				$(".cider-examples").removeClass("show").addClass("hidden");
-				$("#beer-examples").removeClass("price-example-not-chosen").addClass("price-example-chosen");
-				$("#cider-examples").removeClass("price-example-chosen").addClass("price-example-not-chosen");
-			}
-			
-		});
 		
 		// add logic to send chosen style info to controller
-		$(document).on('click', '.home-style-indicator.home-like-style', function () {
+		$(document).on('click', '.drink-style-tile-home', function () {
 			var this_id = $(this).attr('id');
 			var style_id = $(this).parent().attr('id');
-			
+	
 			// send data to controller
 			$.ajax({
 			  type: "POST",
 			  url: "/home/process_styles/" + this_id + "/" + style_id
 			});
 	
-		});
-		$(document).on('click', '.home-style-indicator.home-dislike-style', function () {
-			var this_id = $(this).attr('id');
-			var style_id = $(this).parent().attr('id');
-			
-			// send data to controller
-			$.ajax({
-			  type: "POST",
-			  url: "/home/process_styles/" + this_id + "/" + style_id
-			});
 	
 		});
 		

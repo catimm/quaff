@@ -1,0 +1,13 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row first-row-get-shopping">
+		<div class="col-xs-12 text-center">
+			<h2 class="membership-thank-you-header">Thank you for joining Knird Preferred!</h2>
+			<h4 class="membership-thank-you-subheader">We're psyched to start finding you drinks you will love.<br>Please complete your delivery settings so we can get started.</h4>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to "Complete Delivery Settings", delivery_settings_path, class: "btn btn-success start-shopping-button" %>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

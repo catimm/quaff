@@ -1,0 +1,23 @@
+<div class="container delivery-extras-container">
+	<div class="row no-margin">
+		<div class="col-xs-12 text-center no-padding">
+			<h3 class="home-prompt-text">What else should we know about your preferences?</h3>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<%= simple_form_for @delivery_preferences, :url => {:action => "process_delivery_extras"}, remote: true do |f| %>
+			<div class="col-xs-offset-1 col-xs-10 delivery-additional-request">
+				<%= f.input :additional, 
+							placeholder: 'For example, "I always want FREE delivery!" or "I always want an ISA on hand"', 
+							label: false %>
+			</div>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 no-padding text-center">
+				<% if @delivery_preferences.additional.blank? %>
+					<%= f.submit "Save", class: "btn btn-success update_delivery_request" %>
+				<% else %>
+					<%= f.submit "Update", class: "btn btn-success update_delivery_request" %>
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+</div>

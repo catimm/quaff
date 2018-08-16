@@ -1,0 +1,9 @@
+$(function() {
+	$("#invitation_request_row").html("");
+	
+	$("#invitation-request-response-row").removeClass("hidden").addClass("show");
+	$([document.documentElement, document.body]).animate({
+        scrollTop: $("#invitation-request-response-row").offset().top
+    }, 2000);
+
+});

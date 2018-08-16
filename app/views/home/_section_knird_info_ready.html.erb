@@ -19,8 +19,36 @@
 		</div>
 		<div class="col-xs-12 text-center">
 			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
-				<%= link_to "Ok, let me see the drinks!", stocks_path, :target => "_blank", class: "btn btn-success stock-ranking-ready-button" %>
+				<%= link_to "Let me see the drinks!", stocks_path, class: "btn btn-success stock-ranking-ready-button" %>
 			</div>
 		</div>
 	</div>
+	<% if session[:new_membership_path] == true %>
+		<div class="row extra-get-started-option-row">
+			<div class="col-xs-12 text-center">
+		      <p>
+		      	or 
+		      </p>
+			</div>
+			<div class="col-xs-12 text-center">
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+					<%= link_to "Continue with Knird Preferred", account_personal_path, class: "btn btn-success stock-ranking-ready-button" %>
+				</div>
+			</div>
+		</div>
+	<% end %>
+	<% if session[:new_trial_path] == true %>
+		<div class="row extra-get-started-option-row">
+			<div class="col-xs-12 text-center">
+		      <p>
+		      	or 
+		      </p>
+			</div>
+			<div class="col-xs-12 text-center">
+				<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+					<%= link_to "Continue with a trial membership", account_personal_path, class: "btn btn-success stock-ranking-ready-button" %>
+				</div>
+			</div>
+		</div>
+	<% end %>
 </div>

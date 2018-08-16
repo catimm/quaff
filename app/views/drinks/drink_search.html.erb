@@ -1,24 +1,5 @@
 <%= render 'layouts/header' %> 
-<div class="row no-margin first-row">
-	<div class="container first-row-container">
-		<div class="col-xs-12">
-			<h1 class="section-header">Add Drinks</h1>
-		</div>
-		<div class="col-xs-12 col-sm-7">
-			<div class="row">
-				<div class="col-xs-4">
-					<%= link_to "Deliveries", user_deliveries_path, class: "drink-preference-view-option" %>
-				</div>
-				<div class="col-xs-4">
-					<%= link_to "Cellar", user_cellar_path, class: "drink-preference-view-option" %>
-				</div>
-				<div class="col-xs-4">
-					<%= link_to "Wishlist", user_wishlist_path, class: "drink-preference-view-option" %>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+<%= render 'drinks_common', current_section: "" %>
 <div class="row spinner">
 	<div class="spinner-text">
 		<i class="fa fa-spinner fa-spin fa-4x" aria-hidden="true"></i>
@@ -45,7 +26,9 @@
 			</div>
 		<hr>
 		</div>
-		<div class="row no-margin cellar-drinks-row" id="search-results-holder"></div>
+		<div class="row no-margin cellar-drinks-row" id="search-results-holder">
+			
+		</div>
 	</div>
 </div>
 <%= render 'layouts/footer' %>

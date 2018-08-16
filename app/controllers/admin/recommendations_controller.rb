@@ -420,7 +420,7 @@ class Admin::RecommendationsController < ApplicationController
           @cellar = false
         end
         # get size format info
-        if @inventory.size_format_id == 5
+        if @inventory.size_format_id == 5 || @inventory.size_format_id == 12 || @inventory.size_format_id == 14
           @large_format = true
         else
           @large_format = false
@@ -452,7 +452,8 @@ class Admin::RecommendationsController < ApplicationController
                                                               delivery_id: @customer_next_delivery.id,
                                                               drink_price: @drink_price,
                                                               times_rated: 0,
-                                                              size_format_id: @user_drink_recommendation.size_format_id)
+                                                              size_format_id: @user_drink_recommendation.size_format_id,
+                                                              inventory_id: @inventory.id)
         
         
         # check if this drink could be allocated to multiple users or just one
@@ -522,8 +523,8 @@ class Admin::RecommendationsController < ApplicationController
     @current_total_price = @current_subtotal + @current_sales_tax
     
     # update grand total if user has a delivery fee
-    if !@customer_next_delivery.no_plan_delivery_fee.blank?
-      @grand_total = @current_total_price + @customer_next_delivery.no_plan_delivery_fee
+    if !@customer_next_delivery.delivery_fee.blank?
+      @grand_total = @current_total_price + @customer_next_delivery.delivery_fee
     else 
       @grand_total = @current_total_price
     end
@@ -826,7 +827,7 @@ class Admin::RecommendationsController < ApplicationController
     # set grand total
     @grand_total = @next_customer_delivery.total_drink_price + @delivery_fee
     # update status
-    @next_customer_delivery.update(share_admin_prep_with_user: true, no_plan_delivery_fee: @delivery_fee, grand_total: @grand_total)
+    @next_customer_delivery.update(share_admin_prep_with_user: true, delivery_fee: @delivery_fee, grand_total: @grand_total)
     
     # redirect back to recommendation page                  
     redirect_to admin_recommendation_path(@next_customer_delivery.account_id, @next_customer_delivery.id) 

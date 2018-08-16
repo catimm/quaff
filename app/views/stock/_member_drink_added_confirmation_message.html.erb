@@ -1,0 +1,7 @@
+<div class="col-xs-12 text-center">
+	<h4>You now have <%= @customer_drink_quantity %> 
+		<%= @inventory.size_format.format_type.pluralize(@customer_drink_quantity) %> of 
+		<%= @inventory.beer.brewery.short_brewery_name %> <%= @inventory.beer.beer_name %> 
+		in your next delivery.
+		<%= link_to "See all drinks.", user_orders_path %></h4>
+</div>

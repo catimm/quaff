@@ -30,6 +30,7 @@
 #  comped                 :integer
 #  shrinkage              :integer
 #  membership_only        :boolean
+#  nonmember_limit        :integer
 #
 
 require 'test_helper'

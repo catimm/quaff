@@ -1,0 +1,182 @@
+<%= render 'layouts/header' %> 
+<%= render 'layouts/updating_spinner' %>
+<div class="container delivery-settings-container">
+	<div class="row top-header-row">
+		<div class="col-xs-8">
+			<h3 class="user-settings-header">Knird Preferred Delivery Settings</h3>
+		</div>
+	</div>
+	<div class="row no-margin" id="status-row-holder">
+		<%= render 'status_complete_row' %>
+	</div>
+	<div class="row no-margin delivery-settings-header-row" id="delivery-settings-drink-types">
+		<div class="col-xs-10 no-padding-right" id="delivery-settings-toggle-holder">
+			<div class="delivery-settings-show-more show" id="delivery-settings-drink-types-more">
+				<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+			</div>
+			<div class="delivery-settings-show-less hidden" id="delivery-settings-drink-types-less">
+				<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+			</div>
+			<h3 class="delivery-settings-row-header">Preferred Drink Types</h3>
+		</div>
+		<div class="col-xs-2" id="styles-section-status-holder">
+			<% if @styles_section_complete == true %>
+				<%= render 'section_complete_indicator' %>
+			<% else %>
+				<%= render 'section_incomplete_indicator' %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row hidden" id="delivery-settings-drink-types-row">
+		<%= render 'drink_styles' %>
+	</div>
+	<div class="row no-margin delivery-settings-header-row" id="delivery-settings-frequency">
+		<div class="col-xs-10 no-padding-right" id="delivery-settings-toggle-holder">
+			<div class="delivery-settings-show-more show" id="delivery-settings-frequency-more">
+				<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+			</div>
+			<div class="delivery-settings-show-less hidden" id="delivery-settings-frequency-less">
+				<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+			</div>
+			<h3 class="delivery-settings-row-header">Delivery Frequency</h3>
+		</div>
+		<div class="col-xs-2" id="frequency-section-status-holder">
+			<% if @frequency_section_complete == true %>
+				<%= render 'section_complete_indicator' %>
+			<% else %>
+				<%= render 'section_incomplete_indicator' %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row hidden" id="delivery-settings-frequency-row">
+		<%= render 'delivery_frequency_options' %>
+	</div>
+	<div class="row no-margin delivery-settings-header-row" id="delivery-settings-numbers">
+		<div class="col-xs-10 no-padding-right" id="delivery-settings-toggle-holder">
+			<div class="delivery-settings-show-more show" id="delivery-settings-numbers-more">
+				<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+			</div>
+			<div class="delivery-settings-show-less hidden" id="delivery-settings-numbers-less">
+				<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+			</div>
+			<h3 class="delivery-settings-row-header">Drinks Per Delivery</h3>
+		</div>
+		<div class="col-xs-2" id="numbers-section-status-holder">
+			<% if @numbers_section_complete == true %>
+				<%= render 'section_complete_indicator' %>
+			<% else %>
+				<%= render 'section_incomplete_indicator' %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row hidden" id="delivery-settings-numbers-row">
+		<%= render 'drinks_per_delivery' %>
+	</div>
+	<div class="row no-margin delivery-settings-header-row" id="delivery-settings-prices">
+		<div class="col-xs-10 no-padding-right" id="delivery-settings-toggle-holder">
+			<div class="delivery-settings-show-more show" id="delivery-settings-prices-more">
+				<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+			</div>
+			<div class="delivery-settings-show-less hidden" id="delivery-settings-prices-less">
+				<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+			</div>
+			<h3 class="delivery-settings-row-header">Drinks Prices</h3>
+		</div>
+		<div class="col-xs-2" id="prices-section-status-holder">
+			<% if @prices_section_complete == true %>
+				<%= render 'section_complete_indicator' %>
+			<% else %>
+				<%= render 'section_incomplete_indicator' %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row hidden" id="delivery-settings-prices-row">
+		<%= render 'delivery_drink_costs' %>
+	</div>
+	<div class="row no-margin delivery-settings-header-row" id="delivery-settings-times">
+		<div class="col-xs-10 no-padding-right" id="delivery-settings-toggle-holder">
+			<div class="delivery-settings-show-more show" id="delivery-settings-times-more">
+				<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+			</div>
+			<div class="delivery-settings-show-less hidden" id="delivery-settings-times-less">
+				<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+			</div>
+			<h3 class="delivery-settings-row-header">Delivery Times</h3>
+		</div>
+		<div class="col-xs-2" id="times-section-status-holder">
+			<% if @times_section_complete == true %>
+				<%= render 'section_complete_indicator' %>
+			<% else %>
+				<%= render 'section_incomplete_indicator' %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row hidden" id="delivery-settings-times-row">
+		<%= render 'delivery_time_options' %>
+	</div>
+	<div class="row no-margin delivery-settings-header-row" id="delivery-settings-extra">
+		<div class="col-xs-12" id="delivery-settings-toggle-holder">
+			<div class="delivery-settings-show-more show" id="delivery-settings-extra-more">
+				<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+			</div>
+			<div class="delivery-settings-show-less hidden" id="delivery-settings-extra-less">
+				<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+			</div>
+			<h3 class="delivery-settings-row-header">Extra Input <span>(optional)</span></h3>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row hidden" id="delivery-settings-extra-row">
+		<%= render 'delivery_extras' %>
+	</div>
+	<div class="row no-margin delivery-settings-header-row" id="delivery-settings-review">
+		<div class="col-xs-10 no-padding-right" id="delivery-settings-toggle-holder">
+			<div class="delivery-settings-show-more show" id="delivery-settings-review-more">
+				<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+			</div>
+			<div class="delivery-settings-show-less hidden" id="delivery-settings-review-less">
+				<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+			</div>
+			<h3 class="delivery-settings-row-header">Review & Confirm</h3>
+		</div>
+		<div class="col-xs-2" id="confirm-section-status-holder">
+			<% if @review_section_complete == true %>
+				<%= render 'section_complete_indicator' %>
+			<% else %>
+				<%= render 'section_incomplete_indicator' %>
+			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin delivery-settings-row hidden" id="delivery-settings-review-row">
+		<%= render 'delivery_estimates' %>
+	</div>
+</div>
+<div id="delivery_settings_need_one_type_notice" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Removal error</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<h2 class="saved-settings-message-text" id="saved_settings_message">
+				You need at least one preferred drink type!
+			</h2>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 add-button-holder">
+			<%= link_to "Got it", "#", :class => 'btn btn-success add-drink-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
+<div id="saved_delivery_settings_confirmation" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Saved!</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<h2 class="saved-settings-message-text" id="saved_settings_message"></h2>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 add-button-holder">
+			<%= link_to "Cool!", "#", :class => 'btn btn-success add-drink-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>

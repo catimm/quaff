@@ -1,0 +1,100 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row back-to-previous-row">
+		<div class="col-xs-12 no-padding-right">
+			<h3 class="submenu-options">
+				<%= link_to "Back to previous", account_overview_path, class: "current" %>
+			</h3>
+			
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12">
+			<h3 class="recent-ratings-header">Knird Preferred Membership</h3>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="membership-details-holder">
+				<h5 class="membership-details-subtext">Member since</h5>
+				<h2 class="membership-details-text"><%= (@user_subscription.membership_join_date).strftime("%b %Y") %></h2>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="membership-details-holder">
+				<h5 class="membership-details-subtext">Deliveries this membership</h5>
+				<h2 class="membership-details-text"><%= @user_subscription.deliveries_this_period %><span>/<%= @user_subscription.subscription.deliveries_included %></span></h2>
+			</div>
+		</div>
+	</div>
+	<div class="row no-margin">
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="membership-details-holder">
+				<h5 class="membership-details-subtext">Total deliveries</h5>
+				<h2 class="membership-details-text"><%= @user_subscription.total_deliveries %></h2>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="membership-details-holder">
+				<h5 class="membership-details-subtext">Auto renew status</h5>
+				<% if @user_subscription.auto_renew_subscription_id == @user_subscription.subscription_id %>
+					<h2 class="membership-details-text">On</h2>
+					<%= link_to "Turn off", "#", :class => "btn btn-default change-auto-renew-button",
+								data: {toggle: "modal", target: "#auto_renew_off"} %>
+
+				<% else %>
+					<h2 class="membership-details-text">Off</h2>
+					<%= link_to "Turn on", "#", :class => "btn btn-success change-auto-renew-button",
+								data: {toggle: "modal", target: "#auto_renew_on"} %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="auto_renew_off" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm auto renew change</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="auto-confirm-confirmation-text">
+					Are you sure you want to turn off free deliveries?
+				</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-offset-2 col-sm-4 remove-button-holder">
+				<%= link_to "Yep, positive", plan_rewewal_change_path("off"), :class => 'change-auto-renew-confirmation text-center btn btn-danger remove-drink-button' %>
+			</div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="auto_renew_on" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Confirm auto renew change</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin">
+			<div class="col-xs-12">
+				<h4 class="auto-confirm-confirmation-text">
+					Woohoo! Are you as psyched as we are?
+				</h4>
+			</div>
+		</div>
+		<div class="row no-margin">
+			<div class="col-sm-offset-2 col-sm-4 remove-button-holder">
+				<%= link_to "Um, yeah...", plan_rewewal_change_path("on"), :class => 'change-auto-renew-confirmation text-center btn btn-success' %>
+			</div>
+			<div class="col-sm-4 remove-button-holder">
+				<%= link_to "Wait!", "#", :class => 'btn btn-default wait-button', :data => {:dismiss=>"modal"} %>
+			</div>
+		</div>
+	</div>
+</div>
+<%= render 'layouts/footer' %>

@@ -1,0 +1,13 @@
+<%= render 'layouts/header' %> 
+<div class="container">
+	<div class="row back-to-previous-row">
+		<div class="col-xs-12 no-padding-right">
+			<h3 class="submenu-options">
+				<%= link_to "Back to previous", account_overview_path, class: "current" %>
+			</h3>
+			
+		</div>
+	</div>
+	<%= render 'user_account_credit_card' %>
+</div>
+<%= render 'layouts/footer' %>
