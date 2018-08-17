@@ -2074,16 +2074,30 @@ hr {
   color: $bright-blue;
   font-size: 12px;
 }
+.order-dropdown-button-quantity {
+  .fa.fa-caret-up {
+    position: absolute; 
+    right: 20px;
+    top: 4px;
+  }
+  .fa.fa-caret-down {
+    position: absolute;
+    right: 20px;
+    bottom: 6px; 
+  }
+}
 .dropdown-toggle-user-change-quantity-inventory,
 .dropdown-toggle-subscriber-change-quantity-inventory,
 .dropdown-toggle-customer-change-quantity-inventory {
-  margin: 0 0 0 7.5px;
+  margin: 0 0 0 15px;
   height: 28px;
   min-width: 41px;
   background: $action-background !important;
   color: $white !important;
   border: 0;
+  -webkit-appearance: none;
 }
+
 .review-cart-dropdown {
   margin: 5px 0 0 7.5px;
   height: 28px;
@@ -9047,6 +9061,7 @@ $delivery-beer-header-lines-to-show: 2;
   }
   .nav.navbar-nav {
     margin: 0 !important;
+    padding-left: 0 !important
   }
   .dropdown-menu {
     padding: 10px 0 !important;
