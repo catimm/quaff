@@ -312,6 +312,9 @@ class HomeController < ApplicationController
                             zip: @current_event.properties["zip_code"], 
                             current_delivery_location: true)
         
+        # and create a Delivery PReference entry
+        DeliveryPreference.create(user_id: @user.id)
+        
       end # end of check on whether user is signed in  
       
       # set page source for drink type tiles
@@ -461,7 +464,7 @@ class HomeController < ApplicationController
                                                   pluck(:beer_style_id)
     end
     
-    # check for a delivery preference table entry
+    # get the delivery preference table entry
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
 
     @total_count = @all_user_styles.count
@@ -473,31 +476,19 @@ class HomeController < ApplicationController
     if !@user_style_beer_check.blank?
       @beer_style = true
       
-      if @delivery_preferences.blank? 
-        # create delivery preference and chosen drink preference
-        @delivery_preferences = DeliveryPreference.create(user_id: @user.id,
-                                                                beer_chosen: true)
-        if @delivery_preferences.save
-          @beer_preferences = UserPreferenceBeer.create(user_id: @user.id,
-                                                            delivery_preference_id: @delivery_preferences.id)
-        end
-      else
-        if @delivery_preferences.beer_chosen != true
-          @delivery_preferences.update(beer_chosen: true)
-        end
-        #check if user has already chosen a beer preference
-        @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id)
-        if @beer_preferences.blank?
-          @beer_preferences = UserPreferenceBeer.create(user_id: @user.id,
-                                                            delivery_preference_id: @delivery_preferences.id)
-        end
+      if @delivery_preferences.beer_chosen != true
+        @delivery_preferences.update(beer_chosen: true)
+      end
+      #check if user has already chosen a beer preference
+      @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id)
+      if @beer_preferences.blank?
+        @beer_preferences = UserPreferenceBeer.create(user_id: @user.id,
+                                                          delivery_preference_id: @delivery_preferences.id)
       end
     else
-      if !@delivery_preferences.blank?
-        if @delivery_preferences.beer_chosen == true
-          @delivery_preferences.update(beer_chosen: false)
-          @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id).destroy
-        end
+      if @delivery_preferences.beer_chosen == true
+        @delivery_preferences.update(beer_chosen: false)
+        @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id).destroy
       end
     end # end of check whether any beer styles are chosen
     
@@ -505,31 +496,19 @@ class HomeController < ApplicationController
     if !@user_style_cider_check.blank?
       @cider_style = true
       
-      if @delivery_preferences.blank? 
-        # create delivery preference and chosen drink preference
-        @delivery_preferences = DeliveryPreference.create(user_id: @user.id,
-                                                                cider_chosen: true)
-        if @delivery_preferences.save
-          @cider_preferences = UserPreferenceCider.create(user_id: @user.id,
-                                                            delivery_preference_id: @delivery_preferences.id)
-        end
-      else
-        if @delivery_preferences.cider_chosen != true
-          @delivery_preferences.update(cider_chosen: true)
-        end
-        #check if user has already chosen a cider preference
-        @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id)
-        if @cider_preferences.blank?
-          @cider_preferences = UserPreferenceCider.create(user_id: @user.id,
-                                                            delivery_preference_id: @delivery_preferences.id)
-        end
+      if @delivery_preferences.cider_chosen != true
+        @delivery_preferences.update(cider_chosen: true)
+      end
+      #check if user has already chosen a cider preference
+      @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id)
+      if @cider_preferences.blank?
+        @cider_preferences = UserPreferenceCider.create(user_id: @user.id,
+                                                          delivery_preference_id: @delivery_preferences.id)
       end
     else
-      if !@delivery_preferences.blank?
-        if @delivery_preferences.cider_chosen == true
-          @delivery_preferences.update(cider_chosen: false)
-          @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id).destroy
-        end
+      if @delivery_preferences.cider_chosen == true
+        @delivery_preferences.update(cider_chosen: false)
+        @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id).destroy
       end
     end # end of check whether any beer styles are chosen
     
