@@ -1,4 +1,9 @@
-<div class="row no-margin drink-info-universal-first-row">
+<%= link_to edit_user_rating_path(current_user.id, drink.id), :class => 'text-center edit-drink-rating' do %>
+	<i class="fa fa-thumbs-up"></i>
+	<i class="fa fa-thumbs-down fa-flip-horizontal"></i>
+	<p>edit</p>
+<% end %>
+<div class="row no-margin drink-info-universal-first-row-rating">
 	<% if !drink.beer.beer_image.blank? %>
 		<div class="col-xs-3 beer-image-holder-universal">
 			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.beer_image %>">
@@ -15,7 +20,7 @@
 		</div>
 	<% end %>
 	<div class="col-xs-9 no-padding drink-name-and-info-holder-universal">
-		<div class="col-xs-12 drink-name-col">
+		<div class="col-xs-11 drink-name-col">
 			<% if drink.beer.brewery.short_brewery_name.nil? %>
 				<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
 				<%= link_to @title_header, drink_path(drink.beer.slug), :class => 'tile-header beer-tile-header' %>
@@ -45,8 +50,39 @@
 		<% else %>
 			<div class="col-xs-6 col-sm-5"></div>
 		<% end %>
-		<div class="col-xs-12 drink-descriptors-universal">	
-			<%= render 'layouts/drink_tile_descriptors_general', drink: drink %>
-		</div>
+	</div>
+</div>
+<div class="row no-margin">
+	<div class="col-xs-3 padding-5 no-padding-right">
+		<p class="drink-tile-user-rating-acknowledged">user rating</p>
+		<%= render 'layouts/drink_tile_rating_user_initials', friend: @user %>
+		<h3 class="drink-tile-user-rating"> <%= sprintf("%g", drink.user_beer_rating) %><span class="recent-user-rating-context">/10</span></h3>
+	</div>
+	<div class="col-xs-9 drink-descriptors-universal">
+		<% if !drink.current_descriptors.blank? %>
+			<% @descriptors = drink.current_descriptors.split(',') %>
+			<% @descriptors.each do |descriptor| %>
+				<h6 class="descriptor-bubble general"><%= descriptor %></h6>
+			<% end %>
+		<% else %>
+			<h6 class="recent-user-rating-descriptions-none">no descriptors given</h6>
+		<% end %>
+	</div>
+</div>
+<div class="row no-margin drink-tile-rating-row-divider hidden">
+	<div class="col-xs-12">
+		<hr>
+	</div>
+</div>
+<div class="row drink-tile-rating-row hidden">
+	<div class="col-xs-5 padding-5">
+		<h6 class="rated-on-date">Rated: <%= (drink.created_at).strftime("%b %e, %Y") %></h6>
+	</div>
+	<div class="col-xs-7">
+		<% if !drink.comment.blank? %>
+			<h5 class="tile-subheader beer-info">"<%= drink.comment %>"</h5>
+		<% else %>
+			<h5 class="tile-subheader beer-info">no comment</h5>
+		<% end %>
 	</div>
 </div>

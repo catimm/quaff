@@ -68,6 +68,7 @@ class ProcessConfirmedOrderJob < ActiveJob::Base
                                 delivery_id: @new_delivery.id,
                                 quantity: drink.quantity,
                                 projected_rating: @projected_rating.projected_rating,
+                                times_rated: 0,
                                 drink_category: drink.inventory.drink_category)
          
             # put data into json for user confirmation email

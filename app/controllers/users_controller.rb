@@ -851,6 +851,14 @@ class UsersController < ApplicationController
     if @user.getting_started_step.to_i < 1
       params[:user][:getting_started_step] = 1
     end
+    if @user.user_color.nil?
+      # get a random color for the user
+      @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
+      params[:user][:user_color] = @user_color
+    end
+   
+    # create new user
+    @user = User.create(new_user_params)
     # update user info
     @user.update(user_params)
     

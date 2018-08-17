@@ -17,6 +17,10 @@ class BeersController < ApplicationController
     #  get user info
     @user = User.find_by_id(current_user.id)
     
+    # get other account users
+    @account_users = User.where(account_id: @user.account_id)
+    @account_users_count = @account_users.count
+    
     # create array to hold descriptors cloud
     @final_descriptors_cloud = Array.new
     # get top descriptors for drink types the user likes

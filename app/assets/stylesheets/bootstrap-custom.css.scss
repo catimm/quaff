@@ -2077,12 +2077,12 @@ hr {
 .order-dropdown-button-quantity {
   .fa.fa-caret-up {
     position: absolute; 
-    right: 20px;
+    right: 15px;
     top: 4px;
   }
   .fa.fa-caret-down {
     position: absolute;
-    right: 20px;
+    right: 15px;
     bottom: 6px; 
   }
 }
@@ -2097,15 +2097,29 @@ hr {
   border: 0;
   -webkit-appearance: none;
 }
-
+.cart-review-quantity-holder {
+  padding: 0 5px 0 10px;
+  color: $white;
+  .fa.fa-caret-up {
+    position: absolute; 
+    right: 15px;
+    top: 11px;
+  }
+  .fa.fa-caret-down {
+    position: absolute;
+    right: 15px;
+    bottom: 5px; 
+  }
+}
 .review-cart-dropdown {
-  margin: 5px 0 0 7.5px;
-  height: 28px;
-  min-width: 41px;
+  margin: 5px 0 0 0;
   background: $action-background !important;
   color: $white !important;
   border: 0;
+  width: 100%;
   height: 40px;
+  padding-left: 8px;
+  -webkit-appearance: none;
 }
 #delivery-cost-message-holder {
   margin-top: 20px;
@@ -2117,6 +2131,7 @@ hr {
   padding: 5px 10px;
   display: inline-block;
   margin: 0;
+  width: 100%;
   h3 {
     color: $more-emphasized-text;
     letter-spacing: 0.3px;
@@ -2273,8 +2288,28 @@ hr {
     font-size: 22px;
   }
 }
+.drink-tile-show-more-rating {
+  position: absolute;
+  left: 0.55px; 
+  top: 125px;
+  i {
+    color: $action-background;
+    font-size: 22px;
+  }
+}
+.drink-tile-show-less-rating {
+  position: absolute;
+  left: 0.55px; 
+  top: 125px;
+  i {
+    color: $action-background;
+    font-size: 22px;
+  }
+}
 .drink-info-universal-first-row {
   min-height: 146px;
+}
+.drink-info-universal-first-row-rating {
 }
 .first-row-get-shopping {
   margin-top: 40px;
@@ -2615,7 +2650,8 @@ $beer-header-lines-to-show: 2;
   text-decoration: underline;
   float: left;
 }
-.beer-tile-header-homepage {
+.beer-tile-header-homepage,
+.beer-tile-header-cart-review {
   @extend .tile-header; 
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
@@ -4155,6 +4191,9 @@ $beer-header-lines-to-show-fp: 1;
       }
     }
   }
+.navLinks.log-in {
+  padding-top: 10px;
+}
 .navLinks.signup {
   margin-top: 10px;
     a {
@@ -6016,7 +6055,7 @@ $beer-header-lines-to-show-fp: 1;
   left: 14px;
   top: 22px;
 }
-.rate-beer, .rate-drink-from-delivery, .edit-drink-rating {
+.rate-beer, .rate-drink-from-delivery {
   width: 22px;
   height: 22px;
   padding: 2px 0 0 3px;
@@ -6045,7 +6084,35 @@ $beer-header-lines-to-show-fp: 1;
     line-height: 8px;      
   } 
 }
-
+.edit-drink-rating {
+  width: 22px;
+  height: 22px;
+  padding: 2px 0 0 3px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  vertical-align: middle;
+  background: $step-background;
+  color: #fff;
+  margin: 0;
+  z-index: 1000;
+  position: absolute;
+  right: 0;
+  text-decoration: none;
+  i {
+    color: $white;
+    display: block;
+    float: left;
+    font-size: 9px;
+  }
+  p {
+    color: $white;
+    font-size: 10px;
+    text-align: center;
+    padding-right: 2px;
+    line-height: 8px;      
+  } 
+}
 .drink-info-separater {
   margin: 5px 0;
 }
@@ -8327,7 +8394,6 @@ $delivery-beer-header-lines-to-show: 2;
 .disti-list-for-order-requests, .disti-current-orders, .disti-current-inventory, .current-driver {
   margin-top: 10px;
 }
-
 .process-disti-inventory-form {
   border: 1px solid $less-emphasized-text;
   border-radius: 4px;
@@ -9088,6 +9154,12 @@ $delivery-beer-header-lines-to-show: 2;
       }
     }
    }
+   .drink-tile-show-more-rating {
+      top: 120px;
+    }
+    .drink-tile-show-less-rating { 
+      top: 120px;
+    }
   // Mobile Global
   .first-row {
     min-height: 90px;
@@ -9317,6 +9389,36 @@ $delivery-beer-header-lines-to-show: 2;
     text-decoration: underline;
     float: left;
   }
+  .beer-tile-header-cart-review {
+    font-size: 14px;
+    line-height: 1.1;
+    color: $header-text;
+    font-weight: 400; 
+    margin-bottom: 5px;
+    display: block; /* Fallback for non-webkit */
+    display: -webkit-box;
+    margin: 5px auto 5px auto;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    overflow: visible;
+    text-decoration: underline;
+    height: auto;
+    float: left;
+  }
+  .cart-header {
+    margin-top: 20px;
+  }
+  #review-summary-holder {
+    padding: 0 5px 0 0 !important;
+    margin-bottom: 20px;
+  }
+  .mobile-cart-drink-name-holder {
+    padding: 0;
+  }
+  .mobile-cart-item-total {
+    float: right;
+    margin: 0 5px;
+  }
   .tile-subheader {
     font-size: 11px; 
     color: $less-emphasized-text;
@@ -9404,6 +9506,24 @@ $delivery-beer-header-lines-to-show: 2;
   }
   .dropdown-toggle-user-change-quantity {
     padding: 0 !important;
+  }
+  .cart-review-quantity-holder {
+    padding: 0 0 0 10px;
+    .fa.fa-caret-up {
+      right: 8px;
+      top: 11px;
+    }
+    .fa.fa-caret-down {
+      right: 8px;
+      bottom: 5px; 
+    }
+  }
+  .review-cart-dropdown {
+    height: 36px;
+    padding-left: 5px;
+  }
+  .check-mark-holder {
+    padding: 15px 5px;
   }
   // Mobile Search
   .add-drink-search-holder {
@@ -9653,8 +9773,11 @@ header {
     -o-background-size: cover;
     background-size: cover;
 }
+.navLinks.log-in {
+  padding-top: 10px;
+}
 .navLinks {
-  padding-top: 0;
+  padding-top: 0 !important;
   width: 80px;
   a {
     padding-left: 10px !important;

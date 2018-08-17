@@ -4,39 +4,45 @@
 	<div class="container" id="deliveries-view">
 		<div class="row no-margin">
 			<div class="col-xs-5 col-sm-3 no-padding-right">
-				<h3 class="recent-ratings-header">My deliveries</h3>
+				<h3 class="recent-ratings-header">My orders</h3>
 			</div>
 		</div>
-		<% @delivery_history_array.each_with_index do |delivery, index| %>	
-				<% if index == 0 %>
-					<% @row_visibility = "show" %>
-					<% @show_more_sign = "hidden" %>
-					<% @show_less_sign = "show" %>
-				<% else %>
-					<% @row_visibility = "hidden" %>
-					<% @show_more_sign = "show" %>
-					<% @show_less_sign = "hidden" %>
-				<% end %>
-				<div class="row no-margin">
-					<div class="row no-margin" id="delivery-first-row-<%= delivery[0].id %>">	
-						<div class="col-xs-12 col-sm-5 col-md-5 no-padding-right" id="delivery-toggle-holder-<%= delivery[0].id %>">
-							<div class="delivery-drinks-show-more <%= @show_more_sign %>" id="delivery-drinks-more-<%= delivery[0].id %>">
-								<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+		<% if !@delivery_history_array.blank? %>
+			<% @delivery_history_array.each_with_index do |delivery, index| %>	
+					<% if index == 0 %>
+						<% @row_visibility = "show" %>
+						<% @show_more_sign = "hidden" %>
+						<% @show_less_sign = "show" %>
+					<% else %>
+						<% @row_visibility = "hidden" %>
+						<% @show_more_sign = "show" %>
+						<% @show_less_sign = "hidden" %>
+					<% end %>
+					<div class="row no-margin">
+						<div class="row no-margin" id="delivery-first-row-<%= delivery[0].id %>">	
+							<div class="col-xs-12 col-sm-5 col-md-5 no-padding-right" id="delivery-toggle-holder-<%= delivery[0].id %>">
+								<div class="delivery-drinks-show-more <%= @show_more_sign %>" id="delivery-drinks-more-<%= delivery[0].id %>">
+									<i class="fa fa-plus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
+								</div>
+								<div class="delivery-drinks-show-less <%= @show_less_sign %>" id="delivery-drinks-less-<%= delivery[0].id %>">
+									<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
+								</div>
+								<h4 class="delivered-on-date visible-xs visible-sm hidden-md hidden-lg hidden-xl"><%= (delivery[0].delivery_date).strftime("%a, %b %-d %Y") %></h4>
+								<h4 class="delivered-on-date hidden-xs hidden-sm visible-md visible-lg visible-xl"><%= (delivery[0].delivery_date).strftime("%A, %B %-d %Y") %></h4>
 							</div>
-							<div class="delivery-drinks-show-less <%= @show_less_sign %>" id="delivery-drinks-less-<%= delivery[0].id %>">
-								<i class="fa fa-minus-square-o fa-2x" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
-							</div>
-							<h4 class="delivered-on-date visible-xs visible-sm hidden-md hidden-lg hidden-xl"><%= (delivery[0].delivery_date).strftime("%a, %b %-d %Y") %></h4>
-							<h4 class="delivered-on-date hidden-xs hidden-sm visible-md visible-lg visible-xl"><%= (delivery[0].delivery_date).strftime("%A, %B %-d %Y") %></h4>
+						</div>
+						<div class="row no-margin delivery-second-row <%= @row_visibility %>" id="delivery-second-row-<%= delivery[0].id %>">
+							<% delivery[1].each do |drink| %>
+								<%= render 'layouts/drink_tile', drink: drink, tile_type: "" %>
+							<% end %>
 						</div>
 					</div>
-					<div class="row no-margin delivery-second-row <%= @row_visibility %>" id="delivery-second-row-<%= delivery[0].id %>">
-						<% delivery[1].each do |drink| %>
-							<%= render(partial: 'ratings/drink_card_delivered', locals: { drink: drink }) %>
-						<% end %>
-					</div>
-				</div>
-				<hr>
+					<hr>
+			<% end %>
+		<% else %>
+			<div class="col-xs-12">
+				<h4>You haven't ordered any drinks yet!</h4>
+			</div>
 		<% end %>
 	</div>
 </div>

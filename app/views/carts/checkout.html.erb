@@ -21,13 +21,15 @@
 			<h5 class="review-table-header" style="margin-bottom:5px;">Delivery details</h5>
 			<div class="delivery-time-reserved-option-tile chosen">
 				<div class="row no-margin">
-					<div class="col-xs-1 no-padding">
+					<div class="col-xs-2 no-padding">
 						<div class="check-mark-holder">
 							<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
 						</div>
 					</div>
-					<div class="col-xs-4">
-						<h5 class="address-name">Delivered to your <span><%= @selected_user_address.address_name %></span></h5>
+					<div class="col-xs-3 padding-10 no-padding-right">
+						<h5 class="address-name">Location:&nbsp; 
+							<span><%= @selected_user_address.address_name %></span>
+						</h5>			
 					</div>
 					<div class="col-xs-7">
 						<h4 class="delivery-time-option-text">

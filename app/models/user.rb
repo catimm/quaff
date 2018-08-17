@@ -170,7 +170,7 @@ class User < ApplicationRecord
   
   # create Instance Method for user subscription status
   def subscription_status
-    @user_subscription_status = UserSubscription.find_by_account_id(self.account_id)
+    @user_subscription_status = UserSubscription.where(account_id: self.account_id, currently_active: true).first
     if !@user_subscription_status.blank?
       if @user_subscription_status.subscription_id == 1 || @user_subscription_status.subscription.deliveries_included != 0
         return "subscribed"

@@ -172,6 +172,7 @@ class DeliverySettingsController < ApplicationController
   end # end drink_styles
   
   def process_drink_styles
+    # get user info
     @user = current_user
     
     # get style ID and action to take
@@ -315,6 +316,9 @@ class DeliverySettingsController < ApplicationController
   end # end process_drink_styles method
   
   def process_delivery_frequency
+    # get user info
+    @user = current_user
+    
     # get frequency
     @frequency = params[:frequency]
 
@@ -386,6 +390,9 @@ class DeliverySettingsController < ApplicationController
   end # end process_delivery_frequency method
   
   def process_delivery_numbers
+    # get user info
+    @user = current_user
+    
     # get input
     @number_info = params[:numbers]
     @number_info_split = @number_info.split("-")
@@ -457,6 +464,9 @@ class DeliverySettingsController < ApplicationController
   end # end of process_delivery_numbers method
   
   def process_delivery_prices
+    # get user info
+    @user = current_user
+    
     # get input
     @number_info = params[:numbers]
     @number_info_split = @number_info.split("-")
@@ -518,6 +528,9 @@ class DeliverySettingsController < ApplicationController
   end # end process_delivery_prices
   
   def process_delivery_extras
+    # get user info
+    @user = current_user
+    
     # get info
     @additional = params[:delivery_preference][:additional]
     # update delivery preferences

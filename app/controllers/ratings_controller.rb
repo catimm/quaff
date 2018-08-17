@@ -38,6 +38,17 @@ class RatingsController < ApplicationController
     @beer = Beer.find(params[:user_beer_rating][:beer_id])
     params[:user_beer_rating][:current_descriptors] = params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens]
     
+    # find if user has ordered this drink
+    @ordered_account_drink = AccountDelivery.where(account_id: current_user.account_id, beer_id: @beer.id).
+                                      where("quantity > times_rated").first
+    if !@ordered_account_drink.blank?
+      @ordered_account_drink.increment!(:times_rated)
+      @ordered_user_drink = UserDelivery.find_by_account_delivery_id(@ordered_account_drink.id)
+      if !@ordered_user_drink.blank?
+        @ordered_user_drink.increment!(:times_rated)
+      end
+    end
+    
     # post new rating and related info
     @new_user_rating = UserBeerRating.new(rating_params)
     if @new_user_rating.save
@@ -49,30 +60,6 @@ class RatingsController < ApplicationController
       end
     end
     @user.tag(@beer, :with => params[:user_beer_rating][:beer_attributes][:descriptor_list_tokens], :on => :descriptors)
-    
-    # get the related account delivery id
-    @account_delivery_id = @new_user_rating.account_delivery_id
-    
-    # indicate user has rated this delivered drink
-    if !@account_delivery_id.nil?
-       # first the account delivery table
-      @account_delivery = AccountDelivery.find_by_id(@account_delivery_id)
-      @account_delivery.increment!(:times_rated)
-      # now user delivery table
-      @user_delivery = UserDelivery.where(account_delivery_id: @account_delivery_id).first
-      previous_rated_times = @user_delivery.times_rated
-      @user_delivery.increment!(:times_rated)
-
-      # Add 5% cash back as pending credit for 6, 25 delivery plan customers if they rated a delivered drink
-      # if the user hasn't already rated this drink in this delivery before
-      #if previous_rated_times == 0
-      #    @customer_subscription = UserSubscription.where(account_id: current_user.account_id, currently_active: true).first
-      #    if @customer_subscription.subscription.deliveries_included == 6 or @customer_subscription.subscription.deliveries_included == 25
-      #          cashback_amount = (0.05 * @account_delivery.drink_price * @account_delivery.quantity).round(2)
-      #          PendingCredit.create(account_id: current_user.account_id, user_id: current_user.id, transaction_credit: cashback_amount, transaction_type: "CASHBACK_PURCAHSED_DRINK_RATED", is_credited: false, delivery_id: @account_delivery.delivery_id)
-      #    end
-      #end
-    end
     
     # now redirect back to previous page
     redirect_to session.delete(:return_to)
@@ -133,6 +120,7 @@ class RatingsController < ApplicationController
   end # end of update method
   
   def user_ratings
+    @rating_review_page = true
     if current_user.role_id == 1 && params.has_key?(:format)
       # get user info
       @user = User.find_by_id(params[:format])
@@ -148,6 +136,10 @@ class RatingsController < ApplicationController
       # get user ratings history
       @user_ratings = UserBeerRating.where(user_id: current_user.id)
     end
+    
+    # get other account users
+    @account_users = User.where(account_id: @user.account_id)
+    @account_users_count = @account_users.count
     
     # check if any deliveries have been made to this account
     @account_delivery = Delivery.where(account_id: current_user.account_id)
@@ -182,6 +174,10 @@ class RatingsController < ApplicationController
       @user = User.find_by_id(current_user.id)
     end
     
+    # get other account users
+    @account_users = User.where(account_id: @user.account_id)
+    @account_users_count = @account_users.count
+    
     # get delivery info
     @past_deliveries = Delivery.where(account_id: @user.account_id).where(status: "delivered").order(delivery_date: :desc).limit(12)
       
@@ -205,22 +201,6 @@ class RatingsController < ApplicationController
         @delivery_history_array << @this_delivery_array
       end
     end
-
-    # create array to hold descriptors cloud
-    @final_descriptors_cloud = Array.new
-
-    # get top descriptors for drinks from old deliveries
-    @drink_history_descriptors.each do |array|
-       array.each do |drink|
-        @drink_id_array = Array.new
-        @drink_type_descriptors = delivered_drink_descriptor_cloud(drink)
-        @final_descriptors_cloud << @drink_type_descriptors
-       end
-    end
-            
-    # send full array to JQCloud
-    gon.delivered_drink_descriptor_array = @final_descriptors_cloud
-    #Rails.logger.debug("Descriptors array: #{gon.drink_descriptor_array.inspect}")
 
   end # end of unrated_drinks method
   

@@ -68,12 +68,18 @@
 										<% end %>
 									</div>
 								</div>
-							<% end %>
+								<div class="row no-margin">
+									<% @next_delivery.account_deliveries.each do |drink| %>
+										<%= render 'layouts/drink_tile', drink: drink, tile_type: "order" %>
+									<% end %>
+								</div>
+							<% else %>
 							<div class="row no-margin">
 								<% @next_delivery.account_deliveries.each do |drink| %>
-									<%= render 'layouts/drink_tile', drink: drink, tile_type: "order" %>
+									<%= render 'layouts/drink_tile', drink: drink, tile_type: "review" %>
 								<% end %>
 							</div>
+							<% end %>
 						<% else %>
 							<% if @next_delivery.status == "admin prep next" || @next_delivery.status == "user review" %>
 								<div class="row no-margin">

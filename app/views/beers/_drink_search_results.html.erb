@@ -1,9 +1,5 @@
 <% @final_search_results.each do |drink| %>
-	<div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="drink-tile-<%= drink.id %>">
-		<div class="drink-delivery-tile">
-			<%= render 'layouts/search_drink_info_common', drink: drink %>
-		</div>
-	</div>			
+	<%= render 'layouts/drink_tile', drink: drink, tile_type: "search" %>	
 <% end %>
 <div class="col-xs-12">
 <%= will_paginate @final_search_results, renderer: BootstrapPagination::Rails %>

@@ -37,6 +37,22 @@ $(function () {
 		$(this).removeClass("show").addClass("hidden");
 	});
 	
+	// allow customers to see second row of drink information
+	$(document).on("click", ".drink-tile-show-more-rating", function() {
+		$(this).siblings(".drink-tile-rating-row-divider").removeClass("hidden").addClass("show");
+		$(this).siblings(".drink-tile-rating-row").removeClass("hidden").addClass("show");
+		$(this).siblings(".drink-tile-show-less-rating").removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
+	// allow customers to hide second row of drink information
+	$(document).on("click", ".drink-tile-show-less-rating", function() {
+		$(this).siblings(".drink-tile-rating-row-divider").removeClass("show").addClass("hidden");
+		$(this).siblings(".drink-tile-rating-row").removeClass("show").addClass("hidden");
+		$(this).siblings(".drink-tile-show-more-rating").removeClass("hidden").addClass("show");
+		$(this).removeClass("show").addClass("hidden");
+	});
+	
 	$('.dropdown-toggle-user-change-quantity-inventory').children('option').css('font-size','18');
 	// add logic to filter in stock table based on admin choice 
 	$(document).on('change', '#maker-list-for-beer-inventory', function () {

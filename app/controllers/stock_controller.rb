@@ -23,10 +23,14 @@ class StockController < ApplicationController
     
     # check if user has already chosen drinks
     if current_user.subscription_status == "subscribed"
-      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next", "admin prep"]).order(delivery_date: :asc).first
       #Rails.logger.debug("Next Delivery: #{@next_delivery.inspect}")
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
-      #Rails.logger.debug("Next Delivery Drinks: #{@customer_drink_order.inspect}")
+      if !@next_delivery.blank?
+        @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
+        #Rails.logger.debug("Next Delivery Drinks: #{@customer_drink_order.inspect}")
+      else
+        @customer_drink_order = nil
+      end
       @current_subscriber = true
       #set class for order dropdown button
       @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
@@ -517,7 +521,7 @@ class StockController < ApplicationController
     @customer_drink_quantity = params[:quantity].to_i
     
     # get delivery info
-    @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+    @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next", "admin prep"]).order(delivery_date: :asc).first
       
     # get related info
     if @page == "stock"
@@ -626,11 +630,18 @@ class StockController < ApplicationController
     @subtotal = @account_delivery_drinks.sum( "drink_price*quantity" ) 
     @sales_tax = @subtotal * 0.101
     @total_drink_price = @subtotal + @sales_tax
-    @grand_total = @total_drink_price + @next_delivery.delivery_fee
+    if @subtotal > 35
+      @delivery_fee = 0
+    else
+      @delivery_fee = 5
+    end
+    @grand_total = @total_drink_price + @delivery_fee
     
     # update price info in Delivery table and set change confirmation to false so user gets notice
     @next_delivery.update(subtotal: @subtotal, sales_tax: @sales_tax, 
-                                    total_drink_price: @total_drink_price, grand_total: @grand_total)
+                                    total_drink_price: @total_drink_price,
+                                    delivery_fee: @delivery_fee,
+                                    grand_total: @grand_total)
                                     
     # update page
     respond_to do |format|
