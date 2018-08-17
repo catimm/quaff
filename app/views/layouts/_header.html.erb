@@ -1,39 +1,38 @@
 <nav class="navbar navbar-default navbar-fixed-top common_navbar" role="navigation">
-        
-        <div class="container no-padding">
-	         <div class="row no-margin">   
-	            <div class="navbar-header col-xs-12 col-sm-9 col-md-10" id="home-navbar">
-	                <div class="row no-margin">
-		                <div class="col-xs-1 col-sm-2 text-left mobile-logo-holder">
-			                <%= link_to "Knird", root_path, id: "logo", class:"navbar-brand brand visible-sm visible-md visible-lg brand-font" %>
-			                <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
-		            	</div>
-		            	<div class="col-xs-9 col-sm-offset-2 col-sm-8 col-md-6 mobile-search-holder">
-						  <%= form_tag autocomplete_breweries_path, method: :get, :id => "header-navbar", class: 'navbar-form', role: 'search' do %>
-						    <div class="input-group">
-						      <%= text_field_tag :query, params[:query], size: 30, placeholder: "Search beers or breweries", class: "form-control typeahead", :html => {:id => "beer_search", :name => "beer_search" } %>
-							    <div class="input-group-btn">
-							      <%= button_tag(type: "submit", class: "btn btn-default") do %>
-							        <i class="glyphicon glyphicon-search"></i>
-							      <% end %>
-							    </div>
-						    </div>
-						  <% end %>
-				    	</div>
-				    	
-				    	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-		                    <span class="sr-only">Toggle navigation</span>
-		                    <span class="icon-bar"></span>
-		                    <span class="icon-bar"></span>
-		                    <span class="icon-bar"></span>
-		                </button>
-				    </div> <!-- /.row -->
-	            </div> <!-- /.navbar-header -->
-			
-	            <!-- Collect the nav links, forms, and other content for toggling -->
-	            	<%= render 'layouts/collapse_navbar' %>
-	            <!-- /.nav links -->
-        	</div> <!-- /.row -->
-        </div> <!-- /.container -->
-        
-    </nav>
+	<div class="container no-padding">
+		<div class="row no-margin">   
+                <div class="col-xs-1 col-sm-2 text-left mobile-logo-holder navbar-header" id="home-navbar">
+	                <%= link_to "Knird", root_path, id: "logo", class:"navbar-brand brand visible-sm visible-md visible-lg brand-font" %>
+	                <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
+            	</div>
+            	<div class="col-xs-offset-1 col-xs-7 col-sm-6 col-md-5">
+				  <%= form_tag autocomplete_breweries_path, method: :get, :id => "header-navbar", class: 'navbar-form', role: 'search' do %>
+				    <div class="input-group">
+				      <%= text_field_tag :query, params[:query], size: 30, placeholder: "Search beers or breweries", class: "form-control typeahead", :html => {:id => "beer_search", :name => "beer_search" } %>
+					    <div class="input-group-btn">
+					      <%= button_tag(type: "submit", class: "btn btn-default") do %>
+					        <i class="glyphicon glyphicon-search"></i>
+					      <% end %>
+					    </div>
+				    </div>
+				  <% end %>
+	         </div>
+			<div class="col-xs-1 col-md-3 no-padding text-right">
+				<% if user_signed_in? %>
+			    	<% if current_user.subscription_status == "not subscribed" %>
+			    		<%= link_to cart_review_path do %>
+							<i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i> 
+						<% end %>
+			    		<div class="customer-cart-indicator-holder" id="customer-cart-indicator-holder">
+							<%= render 'layouts/customer_cart_addition_indicator' %>
+						</div>
+			    	<% end %>
+			    <% end %>
+			</div>
+			<div class="col-xs-2 col-sm-1 no-padding">
+				<!-- Collect the nav links, forms, and other content for toggling -->
+           		 <%= render 'layouts/collapse_navbar' %>
+			</div>  <!-- /.nav links -->
+        </div> <!-- /.row -->
+    </div> <!-- /.container -->
+</nav>
