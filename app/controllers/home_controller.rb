@@ -295,6 +295,7 @@ class HomeController < ApplicationController
         if @user.save
           # Sign in the new user by passing validation
           bypass_sign_in(@user)
+          Rails.logger.debug("Current user: #{current_user.inspect}")
         end
         
         # update Ahoy Visit and Ahoy Events table 
@@ -453,7 +454,9 @@ class HomeController < ApplicationController
     
     # get drink styles for repopulating view
     @drink_styles = @all_drink_styles.beer_or_cider.order('style_order ASC')
-    @beer_style_ids = @drink_styles.pluck(:id)
+    
+    # get beer style ids to find drinks user has chosen
+    @beer_style_ids = @all_drink_styles.pluck(:id)
     
     # get user style preferences
     @all_user_styles = UserStylePreference.where(user_id: current_user.id)
