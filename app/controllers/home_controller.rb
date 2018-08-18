@@ -466,15 +466,16 @@ class HomeController < ApplicationController
                                                   beer_style_id: @beer_style_ids).
                                                   pluck(:beer_style_id)
     end
-    
+
     # get the delivery preference table entry
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
 
     @total_count = @all_user_styles.count
     
-    @user_style_check = BeerStyle.where(id: @user_likes)
-    @user_style_beer_check = @user_style_check.where(signup_beer: true)
-    @user_style_cider_check = @user_style_check.where(signup_cider: true)
+    @user_style_check = @all_drink_styles.where(id: @user_likes).pluck(:master_style_id)
+    @user_masters_style_check = @all_drink_styles.where(master_style_id: @user_style_check)
+    @user_style_beer_check = @user_masters_style_check.where(signup_beer: true)
+    @user_style_cider_check = @user_masters_style_check.where(signup_cider: true)
     # find if user has chosen any beer styles
     if !@user_style_beer_check.blank?
       @beer_style = true
