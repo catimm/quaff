@@ -1,5 +1,5 @@
 <% if @user.unregistered == true %>
-	<div class="col-xs-12 text-center no-padding" id="delivery-cost-message-holder">
+	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
 		<div class="row cart-review-delivery-cost-message">
 			<div class="col-xs-12 no-padding">
 				<h3>Want to be notified when we get drinks you'll love?<br><%= link_to "Create an account", account_personal_path %>. It's free!</h3>
@@ -7,10 +7,10 @@
 		</div>
 	</div>
 <% else %>
-	<div class="col-xs-12 text-center no-padding" id="delivery-cost-message-holder">
+	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
 		<div class="row cart-review-delivery-cost-message">
 			<div class="col-xs-12">
-				<h3>Want FREE Delivery? Sign up for <%= link_to "Knird Preferred", knird_preferred_membership_path %>!</h3>
+				<h3>Want FREE Delivery?<br>Sign up for <%= link_to "Knird Preferred", knird_preferred_membership_path %>!</h3>
 			</div>
 		</div>
 	</div>
