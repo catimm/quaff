@@ -66,7 +66,7 @@ class StockController < ApplicationController
     @inventory_beer_ids = @currently_available_beers.pluck(:beer_id)
 
     # get related user drink recommendations
-    @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
+    @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).uniq.paginate(:page => params[:page], :per_page => 12)
     #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
      
   end # end of beer method
