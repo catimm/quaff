@@ -16,7 +16,9 @@ class Admin::RecommendationsController < ApplicationController
   def show
     # get account and delivery info
     @account_id = params[:id].to_i
+    #Rails.logger.debug("Account Id: #{@account_id.inspect}")
     @chosen_delivery_id = params[:format]
+    #Rails.logger.debug("Chosen Delivery Id: #{@chosen_delivery_id.inspect}")
     
     # get all account ids where account is currently active--for view drop down menu
     @active_account_ids = UserSubscription.where(currently_active: true).pluck(:account_id)
@@ -63,16 +65,17 @@ class Admin::RecommendationsController < ApplicationController
     else
       @customer_next_delivery = Delivery.find_by_id(@chosen_delivery_id)
     end
+    #Rails.logger.debug("Next Delivery: #{@customer_next_delivery.inspect}")
     # show correct view if delivery is past point of adjustments
     if @customer_next_delivery.status == "in progress" || @customer_next_delivery.status == "delivered"
       @next_delivery_plans = AccountDelivery.where(delivery_id: @customer_next_delivery.id)
     end
     # find if the account has any other users
-    @mates = User.where(account_id: @current_account_id).where('getting_started_step >= ?', 14).where.not(id: @account_owner[0].id)
+    @mates = User.where(account_id: @current_account_id).where.not(id: @account_owner[0].id)
     
     # set users to get relevant delivery info
     if !@mates.blank?
-      @users = User.where(account_id: @current_account_id).where('getting_started_step >= ?', 14)
+      @users = User.where(account_id: @current_account_id)
     else
       @users = @account_owner
     end
@@ -81,7 +84,9 @@ class Admin::RecommendationsController < ApplicationController
     # get all drinks included in next Account Delivery
     @next_account_delivery = AccountDelivery.where(account_id: @current_account_id, 
                                                         delivery_id: @customer_next_delivery.id)
-                                                            
+    
+    #Rails.logger.debug("Next Account Delivery: #{@next_account_delivery.inspect}")                                                        
+    
     # get relevant delivery info
     @drink_per_delivery_estimate = 0
     @large_delivery_estimate = 0
@@ -116,7 +121,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_cellar_drinks = @next_account_delivery.where(cellar: true).sum(:quantity).round
         
         # set small/large format drink estimates
-        @individual_large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
+        @individual_large_delivery_estimate = (1 * @account.delivery_frequency)
         @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
         @individual_small_delivery_estimate = @drink_per_delivery_estimate
         @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
@@ -125,7 +130,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * 2)
         
         # get price estimate
-        @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
+        @individual_delivery_cost_estimate = @delivery_preferences.total_price_estimate
         @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
         #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
         
@@ -156,7 +161,7 @@ class Admin::RecommendationsController < ApplicationController
                               where.not(inventory_id: nil).
                               group_by(&:beer_id).
                               each_with_object({}) {|(k, v), h| h[k] = v.group_by(&:size_format_id) }
-                             
+    #Rails.logger.debug("drink recommendations in stock: #{@drink_recommendations_in_stock.inspect}")                          
     @drink_recommendations_with_disti = UserDrinkRecommendation.where(account_id: @current_account_id, 
                               inventory_id: nil).
                               where('projected_rating >= ?', 7).
@@ -251,10 +256,10 @@ class Admin::RecommendationsController < ApplicationController
     @account_id = @user.account_id
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14).where.not(id: @user.id)
+    @mates = User.where(account_id: @user_drink_recommendation.account_id).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    @users = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14)
+    @users = User.where(account_id: @user_drink_recommendation.account_id)
     
     # get Disti Inventory option
     @disti_inventory = DistiInventory.where(beer_id: @user_drink_recommendation.beer_id, 
@@ -522,16 +527,20 @@ class Admin::RecommendationsController < ApplicationController
     # and total price
     @current_total_price = @current_subtotal + @current_sales_tax
     
-    # update grand total if user has a delivery fee
-    if !@customer_next_delivery.delivery_fee.blank?
-      @grand_total = @current_total_price + @customer_next_delivery.delivery_fee
-    else 
-      @grand_total = @current_total_price
+    # determine if user has a delivery fee
+    if @current_subtotal >= 35
+      @delivery_fee = 0
+    else
+      @delivery_fee = 5
     end
+    
+    # update grand total
+    @grand_total = @current_total_price + @delivery_fee
     
     # update price info in Delivery table and set change confirmation to false so user gets notice
     @customer_next_delivery.update(subtotal: @current_subtotal, sales_tax: @current_sales_tax, 
-                                    total_drink_price: @current_total_price, grand_total: @grand_total,
+                                    total_drink_price: @current_total_price, delivery_fee: @delivery_fee,
+                                    grand_total: @grand_total,
                                     delivery_change_confirmation: false)
     
     # get all drinks included in next Account Delivery
@@ -572,7 +581,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_cellar_drinks = @next_account_delivery.where(cellar: true).sum(:quantity).round
         
         # set small/large format drink estimates
-        @individual_large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
+        @individual_large_delivery_estimate = (1 * @account.delivery_frequency)
         @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
         @individual_small_delivery_estimate = @drink_per_delivery_estimate
         @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
@@ -581,7 +590,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * @account.delivery_frequency)
         
         # get price estimate
-        @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
+        @individual_delivery_cost_estimate = @delivery_preferences.total_price_estimate
         @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
         #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
       end
@@ -701,10 +710,10 @@ class Admin::RecommendationsController < ApplicationController
     @customer_next_delivery = Delivery.where(account_id: @user_drink_recommendation.account_id).where.not(status: "delivered").first
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14).where.not(id: @user.id)
+    @mates = User.where(account_id: @user_drink_recommendation.account_id).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    @users = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 14)
+    @users = User.where(account_id: @user_drink_recommendation.account_id)
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
@@ -745,7 +754,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_cellar_drinks = @next_account_delivery.where(cellar: true).sum(:quantity).round
         
         # set small/large format drink estimates
-        @individual_large_delivery_estimate = (@delivery_preferences.max_large_format * @account.delivery_frequency)
+        @individual_large_delivery_estimate = (1 * @account.delivery_frequency)
         @large_delivery_estimate = @large_delivery_estimate + @individual_large_delivery_estimate
         @individual_small_delivery_estimate = @drink_per_delivery_estimate
         @small_delivery_estimate = @small_delivery_estimate + @individual_small_delivery_estimate
@@ -754,7 +763,7 @@ class Admin::RecommendationsController < ApplicationController
         @next_account_delivery_drink_count = @next_account_delivery_small_drinks + (@next_account_delivery_large_drinks * @account.delivery_frequency)
         
         # get price estimate
-        @individual_delivery_cost_estimate = @delivery_preferences.price_estimate
+        @individual_delivery_cost_estimate = @delivery_preferences.total_price_estimate
         @delivery_cost_estimate = @delivery_cost_estimate.to_f + @individual_delivery_cost_estimate.to_f
         #Rails.logger.debug("Delivery cost estimate: #{@delivery_cost_estimate.inspect}")
       end
@@ -794,7 +803,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # get customer next delivery info
     @delivery = Delivery.find_by_id(@customer_next_delivery_id)
-    if @delivery.status == "admin prep"
+    if @delivery.status == "admin prep next"
       @admin_note = params[:delivery][:admin_delivery_review_note]
       @delivery.update(admin_delivery_review_note: @admin_note)
     elsif @delivery.status == "user review"
@@ -858,7 +867,7 @@ class Admin::RecommendationsController < ApplicationController
   end #end of admin_review_delivery method
   
   def free_curations
-    @requested_curations = FreeCuration.where(status: ["admin prep", "user review"])
+    @requested_curations = FreeCuration.where(status: ["admin prep next", "user review"])
                                 .order("requested_date ASC")
   end # end free_curations method
   
@@ -896,11 +905,11 @@ class Admin::RecommendationsController < ApplicationController
     @account_wishlist_items = Wishlist.where(account_id: @account_owner[0].account_id)
 
     # find if the account has any other users
-    @mates = User.where(account_id: @account_id).where('getting_started_step >= ?', 7).where.not(id: @account_owner[0].id)
+    @mates = User.where(account_id: @account_id).where.not(id: @account_owner[0].id)
     #Rails.logger.debug("Mates: #{@users.inspect}")
     # set users to get relevant delivery info
     if !@mates.blank?
-      @users = User.where(account_id: @account_id).where('getting_started_step >= ?', 7)
+      @users = User.where(account_id: @account_id)
     else
       @users = @account_owner
     end
@@ -1262,13 +1271,13 @@ class Admin::RecommendationsController < ApplicationController
     @account = Account.find_by_id(@user.account_id)
     
     # get next delivery date
-    @free_curation = FreeCuration.where(account_id: @user_drink_recommendation.account_id).where(status: ["admin prep", "user review"]).first
+    @free_curation = FreeCuration.where(account_id: @user_drink_recommendation.account_id).where(status: ["admin prep next", "user review"]).first
     
     # find if the account has any other users
-    @mates = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 7).where.not(id: @user.id)
+    @mates = User.where(account_id: @user_drink_recommendation.account_id).where.not(id: @user.id)
     
     # set users to get relevant delivery info
-    @users = User.where(account_id: @user_drink_recommendation.account_id).where('getting_started_step >= ?', 7)
+    @users = User.where(account_id: @user_drink_recommendation.account_id)
     #Rails.logger.debug("Account users: #{@users.inspect}")
     
     # get all drinks included in next Account Delivery
@@ -1355,7 +1364,7 @@ class Admin::RecommendationsController < ApplicationController
     
     # get customer next delivery info
     @free_curation = FreeCuration.find_by_id(@curation_id)
-    if @free_curation.status == "admin prep"
+    if @free_curation.status == "admin prep next"
       @admin_note = params[:free_curation][:admin_curation_note]
       @free_curation.update(admin_curation_note: @admin_note)
     end

@@ -27,7 +27,7 @@
 			<%= render 'account_delivery_estimates' %>
 		</div>
 		<hr>
-		<% if @customer_next_delivery.status == "admin prep" || @customer_next_delivery.status == "user review" %>
+		<% if @customer_next_delivery.status == "admin prep" || @customer_next_delivery.status == "admin prep next" || @customer_next_delivery.status == "user review" %>
 			<div class="row no-margin">
 				<h3><u>Items in stock</u></h3>
 				<%= render 'drink_recommendations_in_stock' %>
