@@ -1516,7 +1516,8 @@ end # end free_curation_reminders
 
 desc "Set Projected Ratings For Users" # step 1 of curation process
 task :set_projected_ratings => :environment do
-
+    include TypeBasedGuess
+    
     # get packaged size formats
     @packaged_format_ids = SizeFormat.where(packaged: true).pluck(:id)
     
