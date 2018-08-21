@@ -1522,7 +1522,7 @@ task :set_projected_ratings => :environment do
     @packaged_format_ids = SizeFormat.where(packaged: true).pluck(:id)
     
     # get list of available Knird Inventory
-    @available_knird_inventory = Inventory.where(currently_available: true, size_format_id: @packaged_format_ids).where("stock > ?", 0)
+    @available_knird_inventory = Inventory.where(size_format_id: @packaged_format_ids)
     
     # get list of available Disti Inventory to rate
     @available_disti_inventory_to_rate = DistiInventory.where(currently_available: true, curation_ready: true, size_format_id: @packaged_format_ids, rate_for_users: true)

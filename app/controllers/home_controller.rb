@@ -226,6 +226,7 @@ class HomeController < ApplicationController
   def temp_home
     #ahoy.track_visit
   end
+  
   def process_zip_code
     # get zip code
     @zip_code = params[:zip]
@@ -275,6 +276,28 @@ class HomeController < ApplicationController
     if @coverage == true  
       if user_signed_in?
         @user = current_user
+        
+        # update Ahoy Visit and Ahoy Events table 
+        #Rails.logger.debug("Current visit: #{current_visit.inspect}")
+        @current_visit = Ahoy::Visit.where(id: current_visit.id).first
+        #Rails.logger.debug("Current visit info: #{@current_visit.inspect}")
+        @current_visit.update(user_id: @user.id)
+        #Rails.logger.debug("Current visit after update: #{@current_visit.inspect}")
+        @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
+        @current_event.update(user_id: @user.id)
+        #Rails.logger.debug("Current event: #{@current_event.inspect}")
+        
+        # check if user already has an address in the DB
+        @user_address = UserAddress.find_by_account_id(@user.account_id)
+        
+        if !@user_address.blank?
+          @user_address.update(zip: @zip_code)
+        else
+          # create User Address entry with user zip provided
+          UserAddress.create(account_id: @user.account_id, 
+                              zip: @zip_code, 
+                              current_delivery_location: true)
+        end
       else 
         # first create an account
         @account = Account.create!(account_type: "consumer", number_of_users: 1)
@@ -295,7 +318,7 @@ class HomeController < ApplicationController
         if @user.save
           # Sign in the new user by passing validation
           bypass_sign_in(@user)
-          Rails.logger.debug("Current user: #{current_user.inspect}")
+          #Rails.logger.debug("Current user: #{current_user.inspect}")
         end
         
         # update Ahoy Visit and Ahoy Events table 
@@ -310,7 +333,7 @@ class HomeController < ApplicationController
         
         # now create User Address entry with user zip provided
         UserAddress.create(account_id: @user.account_id, 
-                            zip: @current_event.properties["zip_code"], 
+                            zip: @zip_code, 
                             current_delivery_location: true)
         
         # and create a Delivery PReference entry

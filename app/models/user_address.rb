@@ -39,7 +39,7 @@ class UserAddress < ApplicationRecord
   
   def add_delivery_or_shipping_zone_id
     # find delivery zone
-    @delivery_zone = DeliveryZone.where(zip_code: self.zip, currently_available: true).first
+    @delivery_zone = DeliveryZone.where(zip_code: self.zip).first
     if !@delivery_zone.blank?
       self.update(delivery_zone_id: @delivery_zone.id)
     else
