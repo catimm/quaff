@@ -3,4 +3,8 @@ $(function() {
 	if($(".customer-cart-addition-indicator").hasClass("hidden")){
 		$(".customer-cart-addition-indicator").removeClass("hidden").addClass("show");
 	};
+	// change selected number
+	$('#<%= @related_id %>-<%= @customer_drink_quantity %>').addClass("selected");
+	$('#<%= @related_id %>').children('.row.no-margin').children('.col-xs-2.text-center').children('.chosen-quantity-shown').children('h4').html("");
+	$('#<%= @related_id %>').children('.row.no-margin').children('.col-xs-2.text-center').children('.chosen-quantity-shown').children('h4').html(<%= @customer_drink_quantity %>);
 });

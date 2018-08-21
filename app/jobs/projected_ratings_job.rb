@@ -4,8 +4,8 @@ class ProjectedRatingsJob < ActiveJob::Base
 
   # update a user's projected ratings in table
   def perform(user_id)
-    Rails.logger.debug("Gets here")
-    Rails.logger.debug("User Id: #{user_id.inspect}")
+    #Rails.logger.debug("Gets here")
+    #Rails.logger.debug("User Id: #{user_id.inspect}")
     # get packaged size formats
     @packaged_format_ids = SizeFormat.where(packaged: true).pluck(:id)
     
@@ -17,7 +17,7 @@ class ProjectedRatingsJob < ActiveJob::Base
 
     # get each user associated to this account
     @user = User.find_by_id(user_id)
-    Rails.logger.debug("User: #{@user.inspect}")
+    #Rails.logger.debug("User: #{@user.inspect}")
     # cycle through each knird inventory drink to assign projected rating
     @available_knird_inventory.each do |available_drink|
       # find if user has rated/had this drink before
@@ -94,7 +94,7 @@ class ProjectedRatingsJob < ActiveJob::Base
     
     # update user with complete flag
     @user.update(projected_ratings_complete: true)
-    Rails.logger.debug("User again: #{@user.inspect}")
+    #Rails.logger.debug("User again: #{@user.inspect}")
   end # end of method
     
 end # end of concern

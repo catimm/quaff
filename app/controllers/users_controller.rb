@@ -856,11 +856,9 @@ class UsersController < ApplicationController
       @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
       params[:user][:user_color] = @user_color
     end
-   
-    # create new user
-    @user = User.create(new_user_params)
+
     # update user info
-    @user.update(user_params)
+    @user.update!(new_user_params)
     
     # Sign in the user by passing validation in case their password changed
     bypass_sign_in(@user)

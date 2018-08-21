@@ -84,6 +84,7 @@ GEM
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
+    bootstrap-select-rails (1.12.4)
     bootstrap-social-rails (4.12.0)
       railties (>= 3.1)
     browser (2.5.3)
@@ -394,6 +395,7 @@ DEPENDENCIES
   bootstrap-datepicker-rails
   bootstrap-modal-rails
   bootstrap-sass
+  bootstrap-select-rails
   bootstrap-social-rails
   cancancan
   chosen-rails

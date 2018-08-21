@@ -12,22 +12,13 @@
 			<%= svg drink.inventory.size_format.image %>
 		</h4>		
 	</div>
-	<div class="col-xs-5 no-padding">
+	<div class="col-xs-6 no-padding dropdown">
 		<% if drink.inventory.membership_only == true && !current_user.member? %>
 			<div class="member-only-order-notice">
 				<h5><%= link_to "Knird Preferred", knird_preferred_membership_path %> Members Only</h5>
 			</div>
 		<% else %>
-			<div class="order-dropdown-button">
-				<div class="order-dropdown-button-text-holder">
-					<% if !@customer_order.blank? %>
-						<h4 class="order-dropdown-button-text">Change</h4>
-					<% else %>
-						<h4 class="order-dropdown-button-text">Order</h4>
-					<% end %>
-				</div>
-				<div class="order-dropdown-button-quantity">
-					<% if current_user.member? %>
+			<% if current_user.member? %>
 						<% if !drink.inventory.limit_per.nil? %>
 							<% @end_quantity = drink.inventory.limit_per %>
 						<% else %>
@@ -42,28 +33,45 @@
 					<% end %>
 					<% @quantity_available = [*0..@end_quantity] %>
 					<% if !@customer_drink_order.blank? %>
-						<% @chosen_quantity = @customer_drink_order.where(inventory_id: drink.inventory_id).first %>
-						<% if !@chosen_quantity.blank? %>
-							<%= select_tag('user_quantity_add', 
-											options_for_select(@quantity_available.map { |num| [num, num] }, @chosen_quantity.quantity.round),
-											class:"#{@current_customer_status_for_dropdown_button_class}", 
-											id: "#{drink.id}") %>
-						<% else %>
-							<%= select_tag('user_quantity_add', 
-											options_for_select(@quantity_available.map { |num| [num, num] }),
-											class:"#{@current_customer_status_for_dropdown_button_class}", 
-											id: "#{drink.id}") %>
-						<% end %>
+						<% @chosen_quantity = @customer_drink_order.where(inventory_id: drink.inventory_id).pluck(:quantity).first %>
 					<% else %>
-						<%= select_tag('user_quantity_add', 
-										options_for_select(@quantity_available.map { |num| [num, num] }),
-										class:"#{@current_customer_status_for_dropdown_button_class}", 
-										id: "#{drink.id}") %>
+						<% @chosen_quantity = 0 %>
 					<% end %>
-					<i class="fa fa-caret-up fa-lg" aria-hidden="true"></i>
-					<i class="fa fa-caret-down fa-lg" aria-hidden="true"></i>
-				</div>
-			</div>
+					<%= link_to "#", class: 'btn btn-primary stock-order-button', id:"#{drink.id}", data:{toggle: "dropdown"}, aria: {haspopup:"true"} do %>
+						<div class="row no-margin">
+							<div class="col-xs-6 no-padding">
+								<div class="order-dropdown-button-text-holder">
+									<h4>Order</h4>
+								</div>
+							</div>
+							<div class="col-xs-2 text-center">
+								<div class="chosen-quantity-shown">
+									<% if !@chosen_quantity.nil? %>
+										<h4><%= @chosen_quantity %></h4>
+									<% else %>
+										<h4>0</h4>
+									<% end %>
+								</div>
+							</div>
+							<div class="col-xs-1 text-center order-button-carrot-holder">
+								<i class="fa fa-caret-down fa-2x" aria-hidden="true"></i>
+							</div>
+						</div>
+					<% end %>
+					<ul class="dropdown-menu stock-order-quantity-dropdown" aria-labelledby="<%=drink.id%>">
+						<% @quantity_available.each do |quantity| %>
+							<% if @chosen_quantity.to_i == quantity %>
+								<li class="<%= @customer_change_quantity%> selected" id="<%= drink.id %>-<%= quantity %>" data-value="<%= quantity %>">
+									<h4><%= quantity %></h4>
+								</li>
+							<% else %>
+								<li class="<%= @customer_change_quantity%>" id="<%= drink.id %>-<%= quantity %>" data-value="<%= quantity %>">
+									<h4><%= quantity %></h4>
+								</li>
+							<% end %>
+						<% end %>
+					</ul>
+
 		<% end %>
 	</div>
 	<% if !current_user.member? && drink.inventory.nonmember_limit.to_i >= 1 %>

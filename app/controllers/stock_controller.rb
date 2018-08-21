@@ -33,7 +33,7 @@ class StockController < ApplicationController
       end
       @current_subscriber = true
       #set class for order dropdown button
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      @customer_change_quantity = "subscriber-change-quantity"
       gon.page_source = "stock"
     else
       # find if user has an order in process
@@ -44,7 +44,7 @@ class StockController < ApplicationController
         @customer_drink_order = nil
       end
       @current_subscriber = false
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-customer-change-quantity-inventory"
+      @customer_change_quantity = "nonsubscriber-change-quantity"
     end
     
     # get current inventory breweries for dropdown
@@ -96,7 +96,7 @@ class StockController < ApplicationController
       @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
       @current_subscriber = true
       #set class for order dropdown button
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      @customer_change_quantity = "subscriber-change-quantity"
       gon.page_source = "stock"
     else
       # find if user has an order in process
@@ -107,7 +107,7 @@ class StockController < ApplicationController
         @customer_drink_order = nil
       end
       @current_subscriber = false
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-customer-change-quantity-inventory"
+      @customer_change_quantity = "nonsubscriber-change-quantity"
     end
     
     # check if user has already chosen drinks
@@ -245,7 +245,7 @@ class StockController < ApplicationController
       @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
       @current_subscriber = true
       #set class for order dropdown button
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      @customer_change_quantity = "subscriber-change-quantity"
       gon.page_source = "stock"
     else
       # find if user has an order in process
@@ -256,7 +256,7 @@ class StockController < ApplicationController
         @customer_drink_order = nil
       end
       @current_subscriber = false
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-customer-change-quantity-inventory"
+      @customer_change_quantity = "nonsubscriber-change-quantity"
     end
     
     # get current inventory breweries for dropdown
@@ -309,7 +309,7 @@ class StockController < ApplicationController
       @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
       @current_subscriber = true
       #set class for order dropdown button
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+      @customer_change_quantity = "subscriber-change-quantity"
       gon.page_source = "stock"
     else
       # find if user has an order in process
@@ -320,7 +320,7 @@ class StockController < ApplicationController
         @customer_drink_order = nil
       end
       @current_subscriber = false
-      @current_customer_status_for_dropdown_button_class = "dropdown-toggle-customer-change-quantity-inventory"
+      @customer_change_quantity = "nonsubscriber-change-quantity"
     end
     
     # get current inventory breweries for dropdown

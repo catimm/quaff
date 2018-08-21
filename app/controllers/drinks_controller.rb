@@ -46,7 +46,7 @@ class DrinksController < ApplicationController
           end
           
           #set class for order dropdown button
-          @current_customer_status_for_dropdown_button_class = "dropdown-toggle-subscriber-change-quantity-inventory"
+          @customer_change_quantity = "subscriber-change-quantity"
           gon.page_source = "order"
         end
         

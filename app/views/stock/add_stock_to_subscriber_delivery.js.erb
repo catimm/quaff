@@ -6,4 +6,8 @@ $(function() {
 	<% if @page == "order" %>
 		$("#delivery-stats-holder-<%= @next_delivery.id %>").html("<%= escape_javascript(render 'drinks/delivery_stats', delivery: @next_delivery ) %>");
 	<% end %>
+	// change selected number
+	$('#<%= @related_id %>-<%= @customer_drink_quantity %>').addClass("selected");
+	$('#<%= @related_id %>').children('.row.no-margin').children('.col-xs-2.text-center').children('.chosen-quantity-shown').children('h4').html("");
+	$('#<%= @related_id %>').children('.row.no-margin').children('.col-xs-2.text-center').children('.chosen-quantity-shown').children('h4').html(<%= @customer_drink_quantity %>);
 });

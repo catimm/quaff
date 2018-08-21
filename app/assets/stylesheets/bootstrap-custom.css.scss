@@ -2030,6 +2030,13 @@ hr {
     margin: 2px 0;
   }
 }
+.stock-order-button {
+  padding: 0;
+  background: $action-background;
+  color: $white;
+  width: 100%;
+  margin-top: -6px;
+}
 .order-dropdown-button {
   background: $action-background;
   color: $white;
@@ -2038,13 +2045,33 @@ hr {
 }
 .order-dropdown-button-text-holder {
   border-right: 1px solid $white;
-  float: left;
-  text-align: center;
-  width: 75px;
+  min-height: 38px;
+  padding-top: 2px;
+  h4 {
+    margin: 5px 0 0 0;
+  }
+}
+.test-menu-test {
+  background: $action-background;
+  z-index: 1000 !important;
+  li {
+    background: $action-background;
+    min-height: 40px;
+    color: $white;
+  }
+}
+.chosen-quantity-shown {
+  padding: 2px;
+  h4 {
+    margin-top: 5px;
+  }
 }
 .order-dropdown-button-text {
   color: $white;
   margin: 5px 0 0 0;
+}
+.order-button-carrot-holder {
+  padding-top: 2px;
 }
 // Invitation Request and Referral
 .email-invitation-request {
@@ -2074,24 +2101,13 @@ hr {
   color: $bright-blue;
   font-size: 12px;
 }
-.order-dropdown-button-quantity {
-  .fa.fa-caret-up {
-    position: absolute; 
-    right: 15px;
-    top: 4px;
-  }
-  .fa.fa-caret-down {
-    position: absolute;
-    right: 15px;
-    bottom: 6px; 
-  }
-}
 .dropdown-toggle-user-change-quantity-inventory,
 .dropdown-toggle-subscriber-change-quantity-inventory,
 .dropdown-toggle-customer-change-quantity-inventory {
-  margin: 0 0 0 15px;
+  margin: 0;
+  padding-left: 15px;
   height: 28px;
-  min-width: 41px;
+  min-width: 60px;
   background: $action-background !important;
   color: $white !important;
   border: 0;
@@ -4230,9 +4246,35 @@ $beer-header-lines-to-show-fp: 1;
     }
   }
  }
-.dropdown.open {
-  background: $admin-background !important;
-}
+ .stock-order-quantity-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0 !important;
+    left: auto !important;
+    min-width: 0 !important;
+    z-index: 3000;
+    float: right !important;
+    width: 85px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    li {
+      border: 1px solid $extra-light-gray;
+      color: $normal-text;
+      text-align: center;
+    }
+ }
+ .subscriber-change-quantity:hover,
+ .subscriber-change-quantity.selected,
+ .nonsubscriber-change-quantity:hover,
+ .nonsubscriber-change-quantity.selected {
+   background: rgba(0,135,203, 0.4);
+   color: $white;
+ }
 .dropdown-toggle {
   height: 64px;
   color: $normal-text !important;
@@ -4273,7 +4315,7 @@ $beer-header-lines-to-show-fp: 1;
   color: #999
 }
 
-.tt-menu {    // used to be tt-dropdown-menu in older versions
+.tt-menu {    // used to be in older versions
   width: 100% !important;
   margin-top: 4px;
   padding: 4px 0;
@@ -7989,7 +8031,6 @@ input[type="checkbox"] {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
   border-radius: 6px;
-  overflow: hidden;
   background: #fff;
   width: 99%;
   position: relative;
@@ -9153,6 +9194,33 @@ $delivery-beer-header-lines-to-show: 2;
       a {
       }
     }
+   }
+   .stock-order-quantity-dropdown {
+      position: absolute !important;
+      top: 100% !important;
+      right: 0 !important;
+      left: auto !important;
+      min-width: 0 !important;
+      z-index: 3000 !important;
+      float: right !important;
+      width: 85px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+      -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      li {
+        border: 1px solid $extra-light-gray;
+        color: $normal-text;
+        text-align: center;
+      }
+   }
+   .dropdown-quantity:hover,
+   .dropdown-quantity.selected {
+     background: rgba(0,135,203, 0.4);
+     color: $white;
    }
    .drink-tile-show-more-rating {
       top: 120px;

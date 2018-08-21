@@ -24,6 +24,10 @@
 //= require jqcloud
 //= require jquery.scrolldepth
 //= require jquery.tokeninput
+//= require jquery-ui/widgets/mouse
+//= require jquery-ui/widgets/draggable
+//= require jquery-ui/widgets/sortable
+//= require jquery.ui.touch-punch
 //= require typeahead.bundle.min
 //= require search-bloodhound-engine
 //= require autonumeric
@@ -32,10 +36,8 @@
 //= require bootstrap-modal
 //= require bootstrap-modalmanager
 //= require bootstrap-datepicker/core
-//= require jquery-ui/widgets/mouse
-//= require jquery-ui/widgets/draggable
-//= require jquery-ui/widgets/sortable
-//= require jquery.ui.touch-punch
+//= require bootstrap-select
+//= require bootstrap/dropdown
 //= require d3
 //= require_tree .
 jQuery( function($) {

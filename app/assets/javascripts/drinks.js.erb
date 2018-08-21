@@ -33,6 +33,17 @@ $(function () {
 	    }, 500 );
 	});
 	
+	// activate drink order dropdown
+	$(document).on("click", ".stock-order-button", function() {
+		var drink_id = $(this).attr('id');
+
+	    //open dropdown
+		$('.dropdown-toggle').dropdown()
+		//$('#'+drink_id).dropdown();
+		// prevent page from jumping to the top after click event
+		return false;
+	});
+	
 	// hide delivery details
 	$(".delivery-second-row.history-rows").removeClass("show").addClass("hidden");
 	

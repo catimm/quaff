@@ -44,6 +44,7 @@ gem 'bootstrap-sass'
 gem 'bootstrap-social-rails'
 gem 'bootstrap-modal-rails'
 gem 'bootstrap-datepicker-rails'
+gem 'bootstrap-select-rails' # to add js dropdown functionality for order buttons
 gem 'font-awesome-rails'
 gem 'elusive-icons-sass'
 
