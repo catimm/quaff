@@ -96,7 +96,7 @@ Rails.application.routes.draw do
   # routes to current inventory for customers to view
   get 'stock/index' => 'stock#index', :as => 'stocks'
   get 'stock/beer' => 'stock#beer', :as => 'beer_stock'
-  get 'stock/change_beer_view/:artisan/:style' => 'stock#change_beer_view'
+  get 'stock/change_beer_view/:artisan/:style/:page' => 'stock#change_beer_view'
   get 'stock/cider' => 'stock#cider', :as => 'cider_stock'
   get 'stock/change_cider_view/:artisan/:style' => 'stock#change_cider_view'
   get 'stock/wine' => 'stock#wine', :as => 'wine_stock'

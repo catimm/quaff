@@ -8,5 +8,6 @@ $(function() {
 	var order_height = $('.order-dropdown-button-quantity').height();
 	// make associated text box equal height
 	$('.order-dropdown-button-text').height(order_height);
-	
+	// add remote true to pagination links
+	$('.pagination a').attr('data-remote', 'true');
 });

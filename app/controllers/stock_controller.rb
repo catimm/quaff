@@ -224,7 +224,12 @@ class StockController < ApplicationController
       #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
         
     end
-
+    
+    # update page
+    respond_to do |format|
+      format.js
+    end # end of redirect to jquery
+    
   end # end of change_beer_view
   
   def cider
@@ -434,6 +439,11 @@ class StockController < ApplicationController
       #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
 
     end
+    
+     # update page
+      respond_to do |format|
+        format.js
+      end # end of redirect to jquery
     
   end # end of change_cider_view
   
