@@ -1,5 +1,5 @@
 class Admin::ShortenedUrlsController < ApplicationController
-  before_action :verify_admin
+  before_action :verify_admin, except: [:show]
   before_action :find_url, only: [:show, :shortened]
   skip_before_action :verify_authenticity_token
   
