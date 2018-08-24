@@ -10,7 +10,7 @@ $(function() {
 	$("#zip_code_response").html("<%= escape_javascript(render 'section_zip_code_response') %>");
 	$("#zip_code_response").removeClass("hidden").addClass("show");
 	$([document.documentElement, document.body]).animate({
-        scrollTop: $("#zip-code-response-text").offset().top
+        scrollTop: $("#zip-code-response-text").offset().top - 60
     }, 2000);
     
     <% if @coverage != true %>

@@ -241,6 +241,8 @@ class HomeController < ApplicationController
   end
   
   def process_zip_code
+    @user = current_user
+      
     # get zip code
     @zip_code = params[:zip]
     #Rails.logger.debug("Zip: #{@zip_code.inspect}")
@@ -287,9 +289,6 @@ class HomeController < ApplicationController
     ahoy.track "zip code", {zip_code_id: @new_zip_check.id, zip_code: @new_zip_check.zip_code, coverage: @coverage, type: @plan_type, related_zone: @related_zone}
     
     if @coverage == true  
-      if user_signed_in?
-        @user = current_user
-        
         # update Ahoy Visit and Ahoy Events table 
         #Rails.logger.debug("Current visit: #{current_visit.inspect}")
         @current_visit = Ahoy::Visit.where(id: current_visit.id).first
@@ -306,57 +305,12 @@ class HomeController < ApplicationController
         if !@user_address.blank?
           @user_address.update(zip: @zip_code)
         else
-          # create User Address entry with user zip provided
+          # now create User Address entry with user zip provided
           UserAddress.create(account_id: @user.account_id, 
                               zip: @zip_code, 
                               current_delivery_location: true)
-        end
-      else 
-        # first create an account
-        @account = Account.create!(account_type: "consumer", number_of_users: 1)
-        
-        # next create fake user profile
-        @fake_user_email = Faker::Internet.unique.email
-        @generated_password = Devise.friendly_token.first(8)
-        
-        # create new user
-        @user = User.create(account_id: @account.id, 
-                            email: @fake_user_email, 
-                            password: @generated_password,
-                            password_confirmation: @generated_password,
-                            role_id: 4,
-                            getting_started_step: 0,
-                            unregistered: true)
-        
-        if @user.save
-          # Sign in the new user by passing validation
-          bypass_sign_in(@user)
-          #Rails.logger.debug("Current user: #{current_user.inspect}")
-        end
-        
-        # update Ahoy Visit and Ahoy Events table 
-        #Rails.logger.debug("Current visit: #{current_visit.inspect}")
-        @current_visit = Ahoy::Visit.where(id: current_visit.id).first
-        #Rails.logger.debug("Current visit info: #{@current_visit.inspect}")
-        @current_visit.update(user_id: @user.id)
-        #Rails.logger.debug("Current visit after update: #{@current_visit.inspect}")
-        @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
-        @current_event.update(user_id: @user.id)
-        #Rails.logger.debug("Current event: #{@current_event.inspect}")
-        
-        # now create User Address entry with user zip provided
-        UserAddress.create(account_id: @user.account_id, 
-                            zip: @zip_code, 
-                            current_delivery_location: true)
-        
-        
-      end # end of check on whether user is signed in  
-      
-      # set page source for drink type tiles
-      @page_source = "home" 
-       
-      # get drink styles
-      @drink_styles = BeerStyle.beer_or_cider.order('style_order ASC')
+        end # end of address check 
+
     else
       # update Ahoy Visit and Ahoy Events table 
         #Rails.logger.debug("Current visit: #{current_visit.inspect}")
