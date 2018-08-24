@@ -7,7 +7,7 @@
 	<div class="row get-started-and-bouncing-arrow-row">
 		<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
 			<div class="get-started-words-box">
-				<h2 class="get-started-words">Get Started</h2>
+				<h2 class="get-started-words">Find drinks you love</h2>
 			</div>
 		</div>
 		<div class="col-xs-12 text-center">
@@ -16,18 +16,30 @@
 			</div>
 		</div>
 	</div>
-	<div class="row zip-code-input-row">
+	<div class="row no-margin" id="home-choose-styles-direction">
 		<div class="col-xs-12 text-center">
-			<h3 class='home-prompt-text'>Can we deliver to you?</h3>
+			<h3 class="home-prompt-text">
+				We'll quickly personalize your view of our inventory....<br>Choose your favorite styles.
+			</h3>
 		</div>
-		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-4 col-md-offset-3 col-md-3">
-			<%= text_field_tag 'delivery_zip_code', nil, placeholder: 'Enter your zip code', class: 'form-control check-zip-code-button', id: 'check-zip-code' %>
-		</div>
-		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4 col-md-3">
-			<%= link_to "#", :class => "btn btn-success home-start-with-zip" do %>
-				<i class="fa fa-check-square-o" aria-hidden="true"></i>
-				Check 
+	</div>
+	<div class="row no-margin" id="home-styles-to-choose">
+		<div class="col-sm-offset-1 col-sm-10">
+			<% @drink_styles.each do |style| %>
+				<div class="col-xs-6 col-sm-3 col-md-2 padding-5" id="<%= style.id %>-<%= @page_source %>">
+					<%= render 'home/style_holder_home', style: style %>
+				</div>
 			<% end %>
+		</div>
+	</div>
+	<div class="row no-margin show" id="process-styles-disabled-button-row">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to "Done!", "#", class: "btn btn-default home-disabled-styles-button" %>
+		</div>
+	</div>
+	<div class="row no-margin hidden" id="process-styles-live-button-row">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to "Done!", "#", class: "btn btn-success home-process-styles-button" %>
 		</div>
 	</div>
 </div>

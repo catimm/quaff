@@ -34,6 +34,19 @@ class HomeController < ApplicationController
     #session[:homepage_view] = @homepage_view
     #session[:geo_zip] = @geocode_data.zip 
     
+    # set page source for drink type tiles
+    @page_source = "home" 
+     
+    # get drink styles
+    @drink_style_master_ids = BeerType.current_inventory_master_drink_style_ids
+    #Rails.logger.debug("Beer Style Master IDs: #{@drink_style_master_ids.inspect}")
+    #@drink_style_master_ids = @drink_types_available.beer_style.pluck(:master_style_id)
+    #@drink_styles = BeerStyle.where(master_style_id: @drink_style_master_ids).beer_or_cider.order('style_order ASC')
+    #@drink_style_master_style_ids = BeerStyle.drink_styles_in_stock_for_signup.pluck(:master_style_id)
+    @drink_styles = BeerStyle.where(master_style_id: @drink_style_master_ids).
+                              where("signup_beer = ? OR signup_cider = ?", true, true).
+                              order('style_order ASC').uniq
+    #Rails.logger.debug("Beer Types: #{@drink_styles.inspect}")
   end # end index action
   
   def create
@@ -336,8 +349,6 @@ class HomeController < ApplicationController
                             zip: @zip_code, 
                             current_delivery_location: true)
         
-        # and create a Delivery PReference entry
-        DeliveryPreference.create(user_id: @user.id)
         
       end # end of check on whether user is signed in  
       
@@ -347,6 +358,16 @@ class HomeController < ApplicationController
       # get drink styles
       @drink_styles = BeerStyle.beer_or_cider.order('style_order ASC')
     else
+      # update Ahoy Visit and Ahoy Events table 
+        #Rails.logger.debug("Current visit: #{current_visit.inspect}")
+        @current_visit = Ahoy::Visit.where(id: current_visit.id).first
+        #Rails.logger.debug("Current visit info: #{@current_visit.inspect}")
+        @current_visit.update(user_id: @user.id)
+        #Rails.logger.debug("Current visit after update: #{@current_visit.inspect}")
+        @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
+        @current_event.update(user_id: @user.id)
+        #Rails.logger.debug("Current event: #{@current_event.inspect}")
+        
       @invitation_request = InvitationRequest.new
     end # end of check whether we have coverage for this person
      
@@ -439,7 +460,31 @@ class HomeController < ApplicationController
   end # end of process_drink_category method
   
   def process_styles
-    @user = current_user
+    if user_signed_in?
+      @user = current_user
+    else
+      # first create an account
+      @account = Account.create!(account_type: "consumer", number_of_users: 1)
+      
+      # next create fake user profile
+      @fake_user_email = Faker::Internet.unique.email
+      @generated_password = Devise.friendly_token.first(8)
+      
+      # create new user
+      @user = User.create(account_id: @account.id, 
+                          email: @fake_user_email, 
+                          password: @generated_password,
+                          password_confirmation: @generated_password,
+                          role_id: 4,
+                          getting_started_step: 0,
+                          unregistered: true)
+      
+      if @user.save
+        # Sign in the new user by passing validation
+        bypass_sign_in(@user)
+        #Rails.logger.debug("Current user: #{current_user.inspect}")
+      end
+    end #end of check whether user is already "signed in"
     
     # get data
     @style_info = params[:style_id]
@@ -482,8 +527,8 @@ class HomeController < ApplicationController
     @beer_style_ids = @all_drink_styles.pluck(:id)
     
     # get user style preferences
-    @all_user_styles = UserStylePreference.where(user_id: current_user.id)
-
+    @all_user_styles = UserStylePreference.where(user_id: @user.id)
+    #Rails.logger.debug("User Styles: #{@all_user_styles.inspect}")
     if !@all_user_styles.blank?
       @user_likes = @all_user_styles.where(user_preference: "like",
                                                   beer_style_id: @beer_style_ids).
@@ -492,9 +537,14 @@ class HomeController < ApplicationController
 
     # get the delivery preference table entry
     @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
-
-    @total_count = @all_user_styles.count
     
+    if @delivery_preferences.blank?
+      # and create a Delivery PReference entry
+      @delivery_preferences = DeliveryPreference.create(user_id: @user.id)
+    end
+    
+    @total_count = @all_user_styles.count
+    #Rails.logger.debug("User Styles Count: #{@total_count.inspect}")
     @user_style_check = @all_drink_styles.where(id: @user_likes).pluck(:master_style_id)
     @user_masters_style_check = @all_drink_styles.where(master_style_id: @user_style_check)
     @user_style_beer_check = @user_masters_style_check.where(signup_beer: true)

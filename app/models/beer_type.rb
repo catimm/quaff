@@ -77,4 +77,21 @@ class BeerType < ApplicationRecord
     where(beer_style_id: style_id).pluck(:id)
   }
   
+   # scope current beer types in stock
+  def self.current_inventory_master_drink_style_ids
+    @current_drink_types = BeerType.joins(:beers).merge(Beer.current_inventory_drinks)
+    @style_ids = Array.new
+    @current_drink_types.each do |type|
+      if type.beer_style_id == 27
+        @related_styles = BeerTypeRelationship.find_by_beer_type_id(type.id)
+        @style_ids << @related_styles.relationship_one
+        @style_ids << @related_styles.relationship_two
+      else
+        @style_ids << type.beer_style_id
+      end
+    end
+    @master_style_ids = BeerStyle.where(id: @style_ids).pluck(:master_style_id).uniq
+    return @master_style_ids
+  end
+
 end

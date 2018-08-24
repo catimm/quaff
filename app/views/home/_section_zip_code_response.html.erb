@@ -5,7 +5,9 @@
 			<h3 class="index-section-header" id="zip-code-response-text">Lucky day, we deliver to <%= @location %>!</h3> 
 		</div>
 		<div class="col-xs-12 text-center">
-			<h3 class="index-section-header">Ok, so let's personalize your view of our inventory....</h3> 
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+				<%= link_to "Let me see the drinks!", stocks_path, class: "btn btn-success stock-ranking-ready-button" %>
+			</div>
 		</div>
 	</div>
 <% elsif @coverage == true && @plan_type == "delivery" && @location == nil %>
@@ -14,7 +16,9 @@
 			<h3 class="index-section-header" id="zip-code-response-text">Lucky day, we deliver to you!</h3>
 		</div>
 		<div class="col-xs-12 text-center">
-			<h3 class="index-section-header">Ok, so let's personalize your view of our inventory....</h3> 
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+				<%= link_to "Let me see the drinks!", stocks_path, class: "btn btn-success stock-ranking-ready-button" %>
+			</div>
 		</div>
 	</div>
 <% elsif @coverage == true && @plan_type == "shipping" && @location != nil %>
@@ -23,7 +27,9 @@
 			<h3 class="index-section-header" id="zip-code-response-text">Lucky day, we ship to <%= @location %>!</h3>
 		</div>
 		<div class="col-xs-12 text-center">
-			<h3 class="index-section-header">Ok, so let's personalize your view of our inventory....</h3> 
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+				<%= link_to "Let me see the drinks!", stocks_path, class: "btn btn-success stock-ranking-ready-button" %>
+			</div>
 		</div>
 	</div>
 <% elsif @coverage == true && @plan_type == "shipping" && @location == nil %>
@@ -31,8 +37,10 @@
 		<div class="col-xs-12 text-center">
 			<h3 class="index-section-header" id="zip-code-response-text">Lucky day, we ship to you!</h3>
 		</div>
-		<div class="col-xs-12 col-md-offset-1 col-md-10 text-center">
-			<h3 class="index-section-header">Ok, so let's personalize your view of our inventory....</h3> 
+		<div class="col-xs-12 text-center">
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+				<%= link_to "Let me see the drinks!", stocks_path, class: "btn btn-success stock-ranking-ready-button" %>
+			</div>
 		</div>
 	</div>
 <% elsif @coverage == false &&  @location != nil %>

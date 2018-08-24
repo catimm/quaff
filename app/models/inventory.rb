@@ -156,6 +156,12 @@ class Inventory < ApplicationRecord
     where(show_current_inventory: true)
   }
   
+  # scope all current drinks in stock
+  scope :available_current_inventory_drinks, -> { 
+    where("stock > ?", 0).
+    where(show_current_inventory: true)
+  }
+  
   # scope inventory grouped by maker
   scope :current_inventory_maker, -> {
     joins(:beer).

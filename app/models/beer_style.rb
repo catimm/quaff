@@ -52,5 +52,9 @@ class BeerStyle < ApplicationRecord
       return false
     end
   end # end of descriptor_chosen method
+
+   scope :drink_styles_in_stock_for_signup, -> {
+    joins(:beers).merge(Beer.current_inventory_drinks)
+  }
   
 end # end of class

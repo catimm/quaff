@@ -13,18 +13,7 @@ $(function() {
         scrollTop: $("#zip-code-response-text").offset().top
     }, 2000);
     
-    <% if @coverage == true %>
-	    delay(function(){
-				$("#section_drink_styles").html("<%= escape_javascript(render 'section_drink_styles') %>");
-				$("#section_drink_styles").removeClass("hidden").addClass("show");
-				$("#home-choose-styles-direction").removeClass("hidden").addClass("show");
-				$("#home-styles-to-choose").removeClass("hidden").addClass("show");
-				$("#process-styles-disabled-button-row").removeClass("hidden").addClass("show");
-				$([document.documentElement, document.body]).animate({
-			        scrollTop: $("#home-choose-styles-direction").offset().top - 100
-			    }, 2000);
-		    }, 3000 );
-	<% else %>
+    <% if @coverage != true %>
 		$("#invitation_request_row").html("<%= escape_javascript(render 'invitation_request') %>");
 	<% end %>
 });

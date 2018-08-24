@@ -266,6 +266,11 @@ class Beer < ApplicationRecord
     style_list = style_list.flatten.uniq
   end
   
+  # scope current drinks in stock
+  scope :current_inventory_drinks, -> {
+    joins(:inventories).merge(Inventory.available_current_inventory_drinks)
+  }
+  
   # scope current beer in stock
   scope :current_inventory_beers, -> {
     joins(:inventories).merge(Inventory.available_current_inventory_beers)
@@ -277,7 +282,7 @@ class Beer < ApplicationRecord
     where(beer_type_id: type_ids)
   }
   
-  # scope current beer in stock
+  # scope current ciders in stock
   scope :current_inventory_ciders, -> {
     joins(:inventories).merge(Inventory.available_current_inventory_ciders)
   }

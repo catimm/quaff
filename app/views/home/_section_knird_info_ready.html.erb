@@ -1,25 +1,17 @@
 <div class="container">
-	<div class="row no-margin hidden" id="ready-and-bouncing-arrow-row">
-		<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
-			<div class="get-started-words-box">
-				<h2 class="get-started-words" id="ready-indication">Ready!</h2>
+	<div class="row zip-code-input-row">
+		<div class="row no-margin" id="home_enter_zip_code">
+ 			<div class="col-xs-12 text-center">
+				<h3 class='home-prompt-text'>Ok, just one more thing.<br>Let's make sure we deliver to you...</h3>
+ 			</div>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-4 col-md-offset-3 col-md-3">
+				<%= text_field_tag 'delivery_zip_code', nil, placeholder: 'Enter your zip code', class: 'form-control check-zip-code-button', id: 'check-zip-code' %>
 			</div>
-		</div>
-		<div class="col-xs-12 text-center">
-			<div class="arrow bounce">
-				<i class="fa fa-chevron-down fa-5x" aria-hidden="true"></i>
-			</div>
-		</div>	
-	</div>
-	<div class="row no-margin">
-		<div class="col-xs-12 text-center">
-	      <h3 class="home-prompt-text">
-	      	Thanks for your patience! 
-	      </h3>
-		</div>
-		<div class="col-xs-12 text-center">
-			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
-				<%= link_to "Let me see the drinks!", stocks_path, class: "btn btn-success stock-ranking-ready-button" %>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4 col-md-3">
+				<%= link_to "#", :class => "btn btn-success home-start-with-zip" do %>
+					<i class="fa fa-check-square-o" aria-hidden="true"></i>
+					Check 
+				<% end %>
 			</div>
 		</div>
 	</div>
