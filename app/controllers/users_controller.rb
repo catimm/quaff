@@ -1028,9 +1028,11 @@ class UsersController < ApplicationController
     @customer_subscription = UserSubscription.where(account_id: @user.account_id, currently_active: true).first
     
     if !@customer_subscription.blank?
-      # customer's Stripe card info
-      @customer_cards = Stripe::Customer.retrieve(@customer_subscription.stripe_customer_number).sources.
-                                          all(:object => "card")
+      if !@customer_subscription.stripe_customer_number.nil?
+        # customer's Stripe card info
+        @customer_cards = Stripe::Customer.retrieve(@customer_subscription.stripe_customer_number).sources.
+                                            all(:object => "card")
+      end
     end
     
   end # end of credit_cards method
