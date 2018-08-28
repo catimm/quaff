@@ -337,6 +337,9 @@ class HomeController < ApplicationController
   end # end of process_zip_code method
   
   def process_invitation_request
+    # set session to remember page arrived from 
+    session[:return_to] = request.referer
+    
     # get email
     @email = params[:email]
     # get zip code
@@ -353,11 +356,15 @@ class HomeController < ApplicationController
    
     # create new invitation request
     InvitationRequest.create(invitation_request_params)
-
+    
+    session[:invitation_requested] = true
     # redirect
-    respond_to do |format|
-      format.js
-    end # end of redirect to jquery
+    #respond_to do |format|
+    #  format.js
+    #end # end of redirect to jquery
+    
+    # redirect back to stock page
+    render js: "window.location = '#{session.delete(:return_to)}'"
     
   end # end process_invitation_request method
   

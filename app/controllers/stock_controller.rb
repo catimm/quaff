@@ -15,13 +15,14 @@ class StockController < ApplicationController
   
   def beer
     ahoy.track_visit
-    # check if session variable indicating the zip is covered is set
-    if session[:zip_covered]
-      if session[:zip_covered] == false
-        gon.zip_covered = false
-      end     
-    end
     
+    if session[:invitation_requested]
+      if session[:invitation_requested] == true
+        gon.invitation_requested = true
+        session.delete(:invitation_requested)
+      end
+    end
+        
     # set keys for page
     @artisan = "all"
     @style = "all"
@@ -56,14 +57,14 @@ class StockController < ApplicationController
       @user_address = UserAddress.find_by_account_id(@user.account_id)
       
       if session[:zip_covered]
-        if session[:zip_covered] == true
+        if session[:zip_covered] == "covered"
           @city = @user_address.city
           @state = @user_address.state
           @zip = @user_address.zip
           if !@city.blank? && !@state.blank?
             @location = @city + ", " + @state + " " + @zip
           end
-          gon.zip_covered = true
+          gon.zip_covered = "covered"
           session.delete(:zip_covered)
         end     
       end
@@ -118,6 +119,15 @@ class StockController < ApplicationController
       # indicate user hasn't provided zip
       @need_zip = true
       @zip_code_check = UserAddress.new
+      # check if session variable indicating the zip is covered is set
+      if session[:zip_covered]
+        if session[:zip_covered] == "not_covered"
+          @invitation_request_confrim = true
+          @invitation_request = InvitationRequest.new
+          gon.zip_covered = "not_covered"
+          session.delete(:zip_covered)
+        end     
+      end
     end # end of check whether user is signed in
      
   end # end of beer method
@@ -286,11 +296,12 @@ class StockController < ApplicationController
   
   def cider
     ahoy.track_visit
-    # check if session variable indicating the zip is covered is set
-    if session[:zip_covered]
-      if session[:zip_covered] == false
-        gon.zip_covered = false
-      end     
+    
+    if session[:invitation_requested]
+      if session[:invitation_requested] == true
+        gon.invitation_requested = true
+        session.delete(:invitation_requested)
+      end
     end
     
     # set keys for page
@@ -327,14 +338,14 @@ class StockController < ApplicationController
       @user_address = UserAddress.find_by_account_id(@user.account_id)
       
       if session[:zip_covered]
-        if session[:zip_covered] == true
+        if session[:zip_covered] == "covered"
           @city = @user_address.city
           @state = @user_address.state
           @zip = @user_address.zip
           if !@city.blank? && !@state.blank?
             @location = @city + ", " + @state + " " + @zip
           end
-          gon.zip_covered = true
+          gon.zip_covered = "covered"
           session.delete(:zip_covered)
         end     
       end
@@ -383,6 +394,14 @@ class StockController < ApplicationController
       # indicate user hasn't provided zip
       @need_zip = true
       @zip_code_check = UserAddress.new
+      if session[:zip_covered]
+        if session[:zip_covered] == "not_covered"
+          @invitation_request_confrim = true
+          @invitation_request = InvitationRequest.new
+          gon.zip_covered = "not_covered"
+          session.delete(:zip_covered)
+        end     
+      end
     end # end of check whether user is signed in
   
   end # end of cider method
@@ -770,48 +789,13 @@ class StockController < ApplicationController
   def process_zip_from_inventory
     # set session to remember page arrived from 
     session[:return_to] = request.referer
-    
-    if user_signed_in?
-      @user = current_user
-    else
-      # first create an account
-      @account = Account.create!(account_type: "consumer", number_of_users: 1)
-      
-      # next create fake user profile
-      @fake_user_email = Faker::Internet.unique.email
-      @generated_password = Devise.friendly_token.first(8)
-      
-      # create new user
-      @user = User.create(account_id: @account.id, 
-                          email: @fake_user_email, 
-                          password: @generated_password,
-                          password_confirmation: @generated_password,
-                          role_id: 4,
-                          getting_started_step: 0,
-                          unregistered: true)
-      
-      if @user.save
-        # Sign in the new user by passing validation
-        bypass_sign_in(@user)
-        #Rails.logger.debug("Current user: #{current_user.inspect}")
-      end
-    end #end of check whether user is already "signed in"
-      
+ 
     # get zip code
     @zip_code = params[:user_address][:zip]
     #Rails.logger.debug("Zip: #{@zip_code.inspect}")
     @city = @zip_code.to_region(:city => true)
     @state = @zip_code.to_region(:state => true)
-    Rails.logger.debug("Zip: #{@zip_code.inspect}")
-    Rails.logger.debug("City: #{@city.inspect}")
-    Rails.logger.debug("State: #{@state.inspect}")
-    # set location view
-    if !@city.blank? && !@state.blank?
-      @location = @city + ", " + @state
-    else
-      @location = nil
-    end 
-    Rails.logger.debug("Location info: #{@location.inspect}")  
+ 
     # get Delivery Zone info
     @delivery_zone_info = DeliveryZone.find_by_zip_code(@zip_code)    
     #Rails.logger.debug("Delivery Zone: #{@delivery_zone_info.inspect}")
@@ -843,24 +827,51 @@ class StockController < ApplicationController
         
     # send event to Ahoy table
     ahoy.track "zip code", {zip_code_id: @new_zip_check.id, zip_code: @new_zip_check.zip_code, coverage: @coverage, type: @plan_type, related_zone: @related_zone}
-    
-    # update Ahoy Visit and Ahoy Events table 
-    @current_visit = Ahoy::Visit.where(id: current_visit.id).first
-    @current_visit.update(user_id: @user.id)
-    @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
-    @current_event.update(user_id: @user.id)
         
     if @coverage == true  
-      session[:zip_covered] = true
+      session[:zip_covered] = "covered"
+      
+      if user_signed_in?
+        @user = current_user
+      else
+        # first create an account
+        @account = Account.create!(account_type: "consumer", number_of_users: 1)
+        
+        # next create fake user profile
+        @fake_user_email = Faker::Internet.unique.email
+        @generated_password = Devise.friendly_token.first(8)
+        
+        # create new user
+        @user = User.create(account_id: @account.id, 
+                            email: @fake_user_email, 
+                            password: @generated_password,
+                            password_confirmation: @generated_password,
+                            role_id: 4,
+                            getting_started_step: 0,
+                            unregistered: true)
+        
+        if @user.save
+          # Sign in the new user by passing validation
+          bypass_sign_in(@user)
+          #Rails.logger.debug("Current user: #{current_user.inspect}")
+        end
+      end #end of check whether user is already "signed in"
+      
       # now create User Address entry with user zip provided
       UserAddress.create(account_id: @user.account_id, 
                           city: @city,
                           state: @state,
                           zip: @zip_code, 
                           current_delivery_location: true) 
+                          
+      # update Ahoy Visit and Ahoy Events table 
+      @current_visit = Ahoy::Visit.where(id: current_visit.id).first
+      @current_visit.update(user_id: @user.id)
+      @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
+      @current_event.update(user_id: @user.id)
+    
     else
-      session[:zip_covered] = false
-      @invitation_request = InvitationRequest.new
+      session[:zip_covered] = "not_covered"
     end # end of check whether we have coverage for this person
     
     # redirect back to stock page

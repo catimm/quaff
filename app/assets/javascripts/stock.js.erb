@@ -1,5 +1,5 @@
 $(function () {
-	
+
 	// set page source of member dropdown
 	var member_page_source = gon.page_source
 	
@@ -18,8 +18,17 @@ $(function () {
 	
 	// show area coverage confirmation if needed
 	if (gon.zip_covered != undefined) {
-		if (gon.zip_covered == true) {
+		if (gon.zip_covered == 'covered') {
 			$('#coverage_congrats').modal('show');
+		}
+		if (gon.zip_covered == 'not_covered') {
+			$('#invitation_request').modal('show');
+		}
+	}
+	// show area coverage confirmation if needed
+	if (gon.invitation_requested != undefined) {
+		if (gon.invitation_requested == true) {
+			$('#invitation_request_confirm').modal('show');
 		}
 	}
 	

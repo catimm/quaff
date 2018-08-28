@@ -1,0 +1,21 @@
+<div id="invitation_request" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>Be the first to know!</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin" id="drink_addition_message">
+			<h4 class="homepage-text-create-account">We're not yet available in your area, but we will be soon....<br>Leave your email and we'll notify you when we're available!</h4>
+		</div>
+		<%= simple_form_for @invitation_request, :url => process_invitation_request_path, :remote => true do |f| %>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-2 col-sm-4 col-md-offset-3 col-md-3 text-center">
+				<%= f.input :email, input_html: { class: "form-control", id: "invitation_request_email" }, placeholder: "Email", label: false, required: true %>
+			</div>
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-4 col-md-3 text-center">
+				<%= f.submit "Notify me!", class: "btn btn-success notify-me-button" do %>
+					<i class="fa fa-bullhorn" aria-hidden="true"></i> 
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+</div>

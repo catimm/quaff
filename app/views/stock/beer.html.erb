@@ -58,4 +58,21 @@
 <% if @need_zip == true %>
 	<%= render 'new_zip_code_modal' %>
 <% end %>
+<% if @invitation_request_confrim == true %>
+	<%= render 'invitation_request_modal' %>
+<% end %>
+<div id="invitation_request_confirm" class="modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3>We got it!</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row no-margin" id="drink_addition_message">
+			<h4>We'll be in touch soon. Thanks!</h4>
+		</div>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6 add-button-holder">
+			<%= link_to "Cool", "#", :class => 'btn btn-success add-drink-button', :data => {:dismiss=>"modal"} %>
+		</div>
+	</div>
+</div>
 <%= render 'layouts/footer' %>
