@@ -72,9 +72,19 @@ class Brewery < ApplicationRecord
     joins(:beers).merge(Beer.current_inventory_beers).uniq
   }
   
+  # scope breweries available with specific style in inventory
+  scope :current_inventory_breweries_based_on_style, ->(style_id){ 
+    joins(:beers).merge(Beer.current_inventory_beers_based_on_style(style_id)).uniq
+  }
+  
   # scope breweries available in current beer inventory
   scope :current_inventory_cideries, -> { 
     joins(:beers).merge(Beer.current_inventory_ciders).uniq
+  }
+  
+  # scope breweries available with specific style in inventory
+  scope :current_inventory_cideries_based_on_style, ->(style_id){ 
+    joins(:beers).merge(Beer.current_inventory_ciders_based_on_style(style_id)).uniq
   }
   
   # scope all breweries in stock

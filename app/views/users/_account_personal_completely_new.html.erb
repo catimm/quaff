@@ -5,7 +5,7 @@
 </div>
 <div class="row no-margin">
 	<div class="col-xs-12 col-sm-8 col-md-6" id="account-settings-personal-info-holder">
-		<%= simple_form_for @user, :url => update_profile_user_path, :html => { :class => 'form-horizontal' } do |f| %>
+		<%= simple_form_for @user, :url => users_path, :html => { :class => 'form-horizontal' } do |f| %>
 			<%= f.hidden_field :special_code, :value => @code %>
 				<%= render 'user_personal_info', f: f  %>
 				<%= render 'user_personal_additional_info', f: f  %>

@@ -13,6 +13,7 @@
 #  state       :string
 #  delivery_ok :boolean
 #  birthday    :datetime
+#  visit_id    :integer
 #
 
 require 'test_helper'

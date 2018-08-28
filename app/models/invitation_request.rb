@@ -13,7 +13,9 @@
 #  state       :string
 #  delivery_ok :boolean
 #  birthday    :datetime
+#  visit_id    :integer
 #
 
 class InvitationRequest < ApplicationRecord
+  visitable
 end

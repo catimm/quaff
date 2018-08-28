@@ -13,6 +13,7 @@
 #  state       :string
 #  delivery_ok :boolean
 #  birthday    :datetime
+#  visit_id    :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

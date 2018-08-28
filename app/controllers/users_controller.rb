@@ -11,6 +11,7 @@ class UsersController < ApplicationController
                                                   :new_user_process_profile,
                                                   :new_user_process_invitation_request,
                                                   :new_user_next,
+                                                  :account_personal,
                                                   :invitation_request_thanks]
   include DrinkTypeDescriptorCloud
   include DrinkDescriptorCloud
@@ -30,14 +31,10 @@ class UsersController < ApplicationController
   def new
     @user = User.new
     # change session variable with new membership choice
-    session[:new_membership] = params[:format]
+    #session[:new_membership] = params[:format]
     
     # show phone row for new users (assuming they will be the account owner)
     @show_phone = true
-    
-    # set sub-guide view
-    @user_chosen = "current"
-    @subguide = "user"
     
     # send getting_started_step data to js to show welcome modal if needed
     gon.getting_started_step = 0
@@ -52,8 +49,7 @@ class UsersController < ApplicationController
     params[:user][:account_id] = @account.id
     params[:user][:role_id] = 4
     params[:user][:getting_started_step] = 1
-    params[:user][:cohort] = "f_&_f"
-    params[:user][:homepage_view] = session[:homepage_view]
+    params[:user][:unregistered] = false
     # get a random color for the user
     @user_color = ["light-aqua-blue", "light-orange", "faded-blue", "light-purple", "faded-green", "light-yellow", "faded-red"].sample
     params[:user][:user_color] = @user_color
@@ -72,47 +68,32 @@ class UsersController < ApplicationController
         @account_owner = User.where(account_id: @user.account_id, role_id: [1,4]).first
         # create friend connection
         Friend.create(user_id: @account_owner.id, friend_id: @user.id, confirmed: true)
-        
-        # set redirect link
-        @redirect_link = drink_choice_getting_started_path
-      else
-        # create user subscription table entry
-        
-        # find subscription level id
-        @subscription_info = Subscription.find_by_subscription_level(session[:new_membership])
-        
-        # create a new user_subscription row
-        UserSubscription.create(user_id: @user.id, 
-                                subscription_id: @subscription_info.id,
-                                auto_renew_subscription_id: @subscription_info.id,
-                                deliveries_this_period: 0,
-                                total_deliveries: 0,
-                                account_id: @user.account_id,
-                                renewals: 0,
-                                currently_active: nil)
-        # set redirect link
-        @redirect_link = delivery_address_getting_started_path
       end
-
-      # Redeem gift certificate if required
-      if !session[:redeem_code].nil?
-          redeem_code = session[:redeem_code]
-
-          if redeem_certificate(redeem_code, current_user) == true
-              flash[:success] = "The gift certificate with code #{redeem_code} was successfully redeemed and credited to your account."
-          else
-              session[:user_return_to] = @redirect_link
-              @redirect_link = gift_certificates_redeem_path
-          end
-      end
-      
-      # redirect to next step in signup process
-      redirect_to @redirect_link
-    else
-      @account.destroy!
-      render :new
     end
     
+      # Redeem gift certificate if required
+      #if !session[:redeem_code].nil?
+      #    redeem_code = session[:redeem_code]
+      #
+      #    if redeem_certificate(redeem_code, current_user) == true
+      #        flash[:success] = "The gift certificate with code #{redeem_code} was successfully redeemed and credited to your account."
+      #    else
+      #        session[:user_return_to] = @redirect_link
+      #        @redirect_link = gift_certificates_redeem_path
+      #    end
+      #end
+    # determine redirect path
+    if session[:new_membership_path] == true
+      @redirect_path = knird_preferred_new_membership_path
+    elsif session[:new_trial_path] == true
+      @redirect_path = knird_preferred_new_trial_path
+    else
+      @redirect_link = delivery_settings_drink_styles_path
+    end
+    
+    # redirect to next step in signup process
+    redirect_to @redirect_link
+      
   end # end create action
   
   def edit
@@ -398,35 +379,39 @@ class UsersController < ApplicationController
   end # end of add_delivery_zip method
   
   def account_personal
-    # get user info
-    @user = User.find_by_id(current_user.id)
-    #Rails.logger.debug("User info: #{@user.inspect}")
-    
-    # check on user subscription status
-    @user_subscription = UserSubscription.find_by_user_id(@user.id)
-    
-    # don't show fake email if user is not yet registered
-    if @user.unregistered == true 
-      @user.email = nil
+    if user_signed_in?
+      # get user info
+      @user = User.find_by_id(current_user.id)
+      #Rails.logger.debug("User info: #{@user.inspect}")
+      
+      # check on user subscription status
+      @user_subscription = UserSubscription.find_by_user_id(@user.id)
+      
+      # don't show fake email if user is not yet registered
+      if @user.unregistered == true 
+        @user.email = nil
+      end
+      
+      # set birthday to Date
+      if !@user.birthday.nil?
+        @birthday = (@user.birthday).strftime("%Y-%m-%d")
+      end
+      
+      # get additional info for page
+      @preference_updated = @user.updated_at
+      
+      if session[:return_to]
+        session.delete(:return_to)
+      end
+      if @user.unregistered == true
+        # set session to remember page arrived from 
+        session[:return_to] = request.referer
+      end
+      #Rails.logger.debug("Original Session info: #{session[:return_to].inspect}")
+    else
+      @user = User.new
     end
-    
-    # set birthday to Date
-    if !@user.birthday.nil?
-      @birthday = (@user.birthday).strftime("%Y-%m-%d")
-    end
-    
-    # get additional info for page
-    @preference_updated = @user.updated_at
-    
-    if session[:return_to]
-      session.delete(:return_to)
-    end
-    if @user.unregistered == true
-      # set session to remember page arrived from 
-      session[:return_to] = request.referer
-    end
-    #Rails.logger.debug("Original Session info: #{session[:return_to].inspect}")
-    
+      
   end # end of account_personal action
   
   def account_addresses

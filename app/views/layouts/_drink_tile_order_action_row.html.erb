@@ -4,21 +4,75 @@
 	</div>
 </div>
 <div class="row drink-tile-size-price-row">
-	<div class="col-xs-4 no-padding text-center">
-		<h4 class="drink-tile-item-price" data-toggle="tooltip" title="Price does not include tax"><%= number_to_currency(drink.inventory.drink_price_four_five, precision: 2) %> per </h4>
-	</div>
-	<div class="col-xs-2 no-padding text-center">
-		<h4 class="drink-tile-svg-holder" data-toggle="tooltip" title="<%= drink.inventory.size_format.format_name %>" data-placement="right">
-			<%= svg drink.inventory.size_format.image %>
-		</h4>		
-	</div>
-	<div class="col-xs-6 no-padding dropdown">
-		<% if drink.inventory.membership_only == true && !current_user.member? %>
-			<div class="member-only-order-notice">
-				<h5><%= link_to "Knird Preferred", knird_preferred_membership_path %> Members Only</h5>
+	<% if user_signed_in? %>
+		<% if @need_zip == true %>
+			<div class="col-xs-offset-1 col-xs-5 no-padding text-center">
+				<div class="drink-tile-message">
+					<h5>
+						<%= link_to "Add zip code", "#", data: {toggle: "modal", target: "#add_zip_code"} %>
+						for local price
+					</h5>
+				</div>
 			</div>
 		<% else %>
-			<% if current_user.member? %>
+			<% if drink.has_attribute?(:inventory_id) %>
+				<% @drink_price = UserAddress.user_drink_price_based_on_address(current_user.account_id, drink.inventory_id) %>
+			<% else %>
+				<% @drink_price = UserAddress.user_drink_price_based_on_address(current_user.account_id, drink.id) %>
+			<% end %>
+			<div class="col-xs-4 no-padding text-center">
+				<h4 class="drink-tile-item-price" data-toggle="tooltip" title="Price does not include tax"><%= number_to_currency(@drink_price, precision: 2) %> per </h4>
+			</div>			
+		<% end %>
+	<% else %>
+		<div class="col-xs-offset-1 col-xs-5 no-padding text-center">
+			<div class="drink-tile-message">
+				<h5>
+					<%= link_to "Add zip code", "#", data: {toggle: "modal", target: "#add_zip_code"} %>
+					for local price
+				</h5>
+			</div>
+		</div>
+	<% end %>
+	<% if drink.has_attribute?(:inventory_id) %>
+		<% if @need_zip == true %>
+			<div class="col-xs-6 no-padding text-center">
+				<h5 class="drink-size-text">Drink size:</h5>
+				<h4 class="drink-tile-svg-holder" data-toggle="tooltip" title="<%= drink.inventory.size_format.format_name %>" data-placement="right">
+					<%= svg drink.inventory.size_format.image %>
+				</h4>
+			</div>
+		<% else %>
+			<div class="col-xs-2 no-padding text-center">
+				<h4 class="drink-tile-svg-holder" data-toggle="tooltip" title="<%= drink.inventory.size_format.format_name %>" data-placement="right">
+					<%= svg drink.inventory.size_format.image %>
+				</h4>
+			</div>
+		<% end %>
+	<% else %>
+		<% if @need_zip == true %>
+			<div class="col-xs-6 no-padding text-center">
+				<h5 class="drink-size-text">Drink size:</h5>
+				<h4 class="drink-tile-svg-holder" data-toggle="tooltip" title="<%= drink.size_format.format_name %>" data-placement="right">
+					<%= svg drink.size_format.image %>
+				</h4>
+			</div>
+		<% else %>
+			<div class="col-xs-2 no-padding text-center">
+				<h4 class="drink-tile-svg-holder" data-toggle="tooltip" title="<%= drink.size_format.format_name %>" data-placement="right">
+					<%= svg drink.size_format.image %>
+				</h4>
+			</div>
+		<% end %>
+	<% end %>
+	<% if user_signed_in? && drink.has_attribute?(:inventory_id) && @need_zip == false %>
+		<div class="col-xs-6 no-padding dropdown">
+			<% if drink.inventory.membership_only == true && !current_user.member? %>
+				<div class="member-only-order-notice">
+					<h5><%= link_to "Knird Preferred", knird_preferred_membership_path %> Members Only</h5>
+				</div>
+			<% else %>
+				<% if current_user.member? %>
 						<% if !drink.inventory.limit_per.nil? %>
 							<% @end_quantity = drink.inventory.limit_per %>
 						<% else %>
@@ -71,19 +125,93 @@
 							<% end %>
 						<% end %>
 					</ul>
-
-		<% end %>
-	</div>
-	<% if !current_user.member? && drink.inventory.nonmember_limit.to_i >= 1 %>
-		<div class="nonmember-limit-holder">
-			<div class="nonmember-limit-text-holder">
-				<h5><%= link_to "Nonmember", knird_preferred_membership_path %> limit: <%= drink.inventory.nonmember_limit %></h5>
-				<% if drink.inventory.limit_per.to_i >= 1 %>
-					<h5>Member limit: <%= drink.inventory.limit_per %></h5>
-				<% else %>
-					<h5>No member limit!!!</h5>
-				<% end %>
-			</div>
+			<% end %>
 		</div>
+		<% if !current_user.member? && drink.inventory.nonmember_limit.to_i >= 1 %>
+			<div class="nonmember-limit-holder">
+				<div class="nonmember-limit-text-holder">
+					<h5><%= link_to "Nonmember", knird_preferred_membership_path %> limit: <%= drink.inventory.nonmember_limit %></h5>
+					<% if drink.inventory.limit_per.to_i >= 1 %>
+						<h5>Member limit: <%= drink.inventory.limit_per %></h5>
+					<% else %>
+						<h5>No member limit!!!</h5>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
+	<% elsif user_signed_in? && @need_zip == false %>
+		<div class="col-xs-6 no-padding dropdown">
+			<% if drink.membership_only == true && !current_user.member? %>
+				<div class="member-only-order-notice">
+					<h5><%= link_to "Knird Preferred", knird_preferred_membership_path %> Members Only</h5>
+				</div>
+			<% else %>
+				<% if current_user.member? %>
+						<% if !drink.limit_per.nil? %>
+							<% @end_quantity = drink.limit_per %>
+						<% else %>
+							<% @end_quantity = drink.stock %>
+						<% end %>
+					<% else %>
+						<% if !drink.nonmember_limit.nil? %>
+							<% @end_quantity = drink.nonmember_limit %>
+						<% else %>
+							<% @end_quantity = drink.stock %>
+						<% end %>
+					<% end %>
+					<% @quantity_available = [*0..@end_quantity] %>
+					<% if !@customer_drink_order.blank? %>
+						<% @chosen_quantity = @customer_drink_order.where(inventory_id: drink.id).pluck(:quantity).first %>
+					<% else %>
+						<% @chosen_quantity = 0 %>
+					<% end %>
+					<%= link_to "#", class: 'btn btn-primary stock-order-button', id:"#{drink.id}", data:{toggle: "dropdown"}, aria: {haspopup:"true"} do %>
+						<div class="row no-margin">
+							<div class="col-xs-6 no-padding">
+								<div class="order-dropdown-button-text-holder">
+									<h4>Order</h4>
+								</div>
+							</div>
+							<div class="col-xs-2 text-center">
+								<div class="chosen-quantity-shown">
+									<% if !@chosen_quantity.nil? %>
+										<h4><%= @chosen_quantity %></h4>
+									<% else %>
+										<h4>0</h4>
+									<% end %>
+								</div>
+							</div>
+							<div class="col-xs-1 text-center order-button-carrot-holder">
+								<i class="fa fa-caret-down fa-2x" aria-hidden="true"></i>
+							</div>
+						</div>
+					<% end %>
+					<ul class="dropdown-menu stock-order-quantity-dropdown" aria-labelledby="<%=drink.id %>">
+						<% @quantity_available.each do |quantity| %>
+							<% if @chosen_quantity.to_i == quantity %>
+								<li class="<%= @customer_change_quantity%> selected" id="<%= drink.id %>-<%= quantity %>" data-value="<%= quantity %>">
+									<h4><%= quantity %></h4>
+								</li>
+							<% else %>
+								<li class="<%= @customer_change_quantity%>" id="<%= drink.id %>-<%= quantity %>" data-value="<%= quantity %>">
+									<h4><%= quantity %></h4>
+								</li>
+							<% end %>
+						<% end %>
+					</ul>
+			<% end %>
+		</div>
+		<% if !current_user.member? && drink.nonmember_limit.to_i >= 1 %>
+			<div class="nonmember-limit-holder">
+				<div class="nonmember-limit-text-holder">
+					<h5><%= link_to "Nonmember", knird_preferred_membership_path %> limit: <%= drink.nonmember_limit %></h5>
+					<% if drink.limit_per.to_i >= 1 %>
+						<h5>Member limit: <%= drink.limit_per %></h5>
+					<% else %>
+						<h5>No member limit!!!</h5>
+					<% end %>
+				</div>
+			</div>
+		<% end %>
 	<% end %>
 </div>

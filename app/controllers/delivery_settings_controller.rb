@@ -167,9 +167,113 @@ class DeliverySettingsController < ApplicationController
       @user_likes = @all_user_styles.where(user_preference: "like",
                                                     beer_style_id: @beer_style_ids).
                                                     pluck(:beer_style_id)
+    else
+      @all_user_styles = UserStylePreference.new
     end
       
   end # end drink_styles
+  
+  def process_drink_styles_nonmembers
+    # get user info
+    @user = current_user
+    
+    # get style ID and action to take
+    @style_info = params[:style_info]
+    @styles_ids = @style_info.split("-")
+    Rails.logger.debug("Style IDs: #{@styles_ids.inspect}")  
+    
+    # find and delete currently chosen styles
+    @user_style_preferences = UserStylePreference.where(user_id: @user.id).destroy_all
+    
+    # upload changes
+    @styles_ids.each do |style_id|
+      UserStylePreference.create(user_id: @user.id, beer_style_id: style_id, user_preference: "like")
+    end
+
+    # get user delivery preference
+    @delivery_preferences = DeliveryPreference.find_by_user_id(@user.id)
+      
+    # get all drinks styles for processing
+    @all_drink_styles = BeerStyle.all
+      
+    # get user style preferences
+    @all_user_styles = UserStylePreference.where(user_id: current_user.id).pluck(:beer_style_id)
+
+    @user_style_master_ids = @all_drink_styles.where(id: @all_user_styles).pluck(:master_style_id)
+    @user_style_check = @all_drink_styles.where(master_style_id: @user_style_master_ids)
+    @user_style_beer_check = @user_style_check.where(signup_beer: true)
+    @user_style_cider_check = @user_style_check.where(signup_cider: true)
+      
+    # find if user has chosen any beer styles
+    if !@user_style_beer_check.blank?
+
+      if @delivery_preferences.blank? 
+        # create delivery preference and chosen drink preference
+        @delivery_preferences = DeliveryPreference.create(user_id: @user.id,
+                                                                beer_chosen: true)
+        if @delivery_preferences.save
+          @beer_preferences = UserPreferenceBeer.create(user_id: @user.id,
+                                                            delivery_preference_id: @delivery_preferences.id)
+        end
+      else
+        if @delivery_preferences.beer_chosen != true
+          @delivery_preferences.update(beer_chosen: true)
+        end
+        #check if user has already chosen a beer preference
+        @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id)
+        if @beer_preferences.blank?
+          @beer_preferences = UserPreferenceBeer.create(user_id: @user.id,
+                                                            delivery_preference_id: @delivery_preferences.id)
+        end
+      end
+    else
+      if !@delivery_preferences.blank?
+        if @delivery_preferences.beer_chosen == true
+          @delivery_preferences.update(beer_chosen: false)
+          @beer_preferences = UserPreferenceBeer.find_by_user_id(@user.id).destroy
+        end
+      end
+    end # end of check whether any beer styles are chosen
+    
+    # find if user has chosen any cider styles
+    if !@user_style_cider_check.blank?
+      
+      if @delivery_preferences.blank? 
+        # create delivery preference and chosen drink preference
+        @delivery_preferences = DeliveryPreference.create(user_id: @user.id,
+                                                                cider_chosen: true)
+        if @delivery_preferences.save
+          @cider_preferences = UserPreferenceCider.create(user_id: @user.id,
+                                                            delivery_preference_id: @delivery_preferences.id)
+        end
+      else
+        if @delivery_preferences.cider_chosen != true
+          @delivery_preferences.update(cider_chosen: true)
+        end
+        #check if user has already chosen a cider preference
+        @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id)
+        if @cider_preferences.blank?
+          @cider_preferences = UserPreferenceCider.create(user_id: @user.id,
+                                                            delivery_preference_id: @delivery_preferences.id)
+        end
+      end
+    else
+      if !@delivery_preferences.blank?
+        if @delivery_preferences.cider_chosen == true
+          @delivery_preferences.update(cider_chosen: false)
+          @cider_preferences = UserPreferenceCider.find_by_user_id(@user.id).destroy
+        end
+      end
+    end # end of check whether any beer styles are chosen
+    
+    # start projected rating job
+    ProjectedRatingsJob.perform_later(@user.id)
+
+    respond_to do |format|
+      format.js
+    end
+    
+  end # end process_drink_styles_nonmembers method
   
   def process_drink_styles
     # get user info

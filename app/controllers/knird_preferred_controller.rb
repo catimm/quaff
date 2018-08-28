@@ -71,19 +71,9 @@ class KnirdPreferredController < ApplicationController
     if session[:new_trial_path]
       session.delete(:new_trial_path)
     end
-    # redirect baesd on whether current user has already completed a user profile
-    if user_signed_in? 
-      @user = current_user
-      if @user.unregistered == true
-        @redirect_path = account_personal_path
-      else
-        @redirect_path = knird_preferred_new_membership_path
-      end
-    else
-      @redirect_path = new_user_session_path
-    end
+
     # redirect
-    redirect_to @redirect_path
+    redirect_to account_personal_path
     
   end # end of membership_start method
   
@@ -199,19 +189,9 @@ class KnirdPreferredController < ApplicationController
     if session[:new_membership_path]
       session.delete(:new_membership_path)
     end
-    # redirect based on whether current user has already completed a user profile
-    if user_signed_in? 
-      @user = current_user
-      if @user.unregistered == true
-        @redirect_path = account_personal_path
-      else
-        @redirect_path = knird_preferred_new_trial_path
-      end
-    else
-      @redirect_path = new_user_session_path
-    end
+
     # redirect
-    redirect_to @redirect_path
+    redirect_to account_personal_path
   end # end of trial_start method
   
   def new_trial

@@ -31,6 +31,7 @@
 #  shrinkage              :integer
 #  membership_only        :boolean
 #  nonmember_limit        :integer
+#  trending               :boolean
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

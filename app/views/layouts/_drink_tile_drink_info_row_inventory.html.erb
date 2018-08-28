@@ -1,0 +1,52 @@
+<div class="row no-margin drink-info-universal-first-row">
+	<% if !drink.beer.beer_image.blank? %>
+		<div class="col-xs-3 beer-image-holder-universal">
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.beer_image %>">
+		</div>
+	<% elsif !drink.beer.brewery.image.blank? %>
+		<div class="col-xs-3 brewery-image-holder-universal">
+			<img class="img-responsive center-block" alt="Responsive image" src="<%= drink.beer.brewery.image %>">
+		</div>
+	<% else %>
+		<div class="col-xs-3 brewery-image-holder-universal">
+			<div class="brewery-image-holder-empty-ratings-page text-center">
+				<h2><i class="fa fa-beer"></i></h2>
+			</div>
+		</div>
+	<% end %>
+	<div class="col-xs-9 no-padding drink-name-and-info-holder-universal">
+		<div class="col-xs-12 drink-name-col">
+			<% if drink.beer.brewery.short_brewery_name.nil? %>
+				<% @title_header = (drink.beer.brewery.brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
+				<%= link_to @title_header, drink_path(drink.beer.slug), :class => 'tile-header beer-tile-header' %>
+			<% else %>
+				<% @title_header = (drink.beer.brewery.short_brewery_name + " " + "<span class=combined-drink-text>"+drink.beer.beer_name+"</span>").html_safe %>
+				<%= link_to @title_header, drink_path(drink.beer.slug), :class => 'tile-header beer-tile-header' %>
+			<% end %>
+		</div>
+		<div class="col-xs-12 drink-style-col">
+			<% if !drink.beer.beer_type_id.nil? %>
+				<h5 class="tile-subheader beer-info no-overflow beer-type-info"><%= drink.beer.beer_type.beer_type_name %></h5>
+			<% else %>
+				<h5 class="tile-subheader beer-info">Style unknown</h5>
+			<% end %>
+		</div>
+		<div class="col-xs-6 col-sm-5 drink-stats-col">
+			<% if !drink.beer.beer_abv.nil? %>
+				<h6 class="tile-subheader beer-info"><%= drink.beer.beer_abv %>% ABV</h6>
+			<% else %>
+				<h6 class="tile-subheader beer-info">ABV N/A</h6>
+			<% end %>
+		</div>
+		<% if !drink.beer.beer_ibu.nil? %>
+			<div class="col-xs-6 col-sm-5 no-padding-left text-center ibu-div">
+				<h6 class="tile-subheader beer-info"><%= drink.beer.beer_ibu %> IBUs</h6>
+			</div>
+		<% else %>
+			<div class="col-xs-6 col-sm-5"></div>
+		<% end %>
+		<div class="col-xs-12 drink-descriptors-universal">	
+			<%= render 'layouts/drink_tile_descriptors_general', drink: drink %>
+		</div>
+	</div>
+</div>

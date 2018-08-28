@@ -2,50 +2,29 @@ class StockController < ApplicationController
   
   def index
     @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
-    if @delivery_preferences.beer_chosen == true
+    if !@delivery_preferences.blank?
+      if @delivery_preferences.beer_chosen == true
+        redirect_to beer_stock_path
+      elsif @delivery_preferences.cider_chosen == true
+        redirect_to cider_stock_path
+      end
+    else
       redirect_to beer_stock_path
-    elsif @delivery_preferences.cider_chosen == true
-      redirect_to cider_stock_path
     end
   end # end of index method
   
   def beer
+    ahoy.track_visit
+    # check if session variable indicating the zip is covered is set
+    if session[:zip_covered]
+      if session[:zip_covered] == false
+        gon.zip_covered = false
+      end     
+    end
+    
     # set keys for page
     @artisan = "all"
     @style = "all"
-    
-    # determine if account has multiple users and add appropriate CSS class tags
-    @user = current_user
-    
-    # need account users for projected rating partial
-    @account_users = User.where(account_id: @user.account_id)
-    @account_users_count = @account_users.count
-    
-    # check if user has already chosen drinks
-    if current_user.subscription_status == "subscribed"
-      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next", "admin prep"]).order(delivery_date: :asc).first
-      #Rails.logger.debug("Next Delivery: #{@next_delivery.inspect}")
-      if !@next_delivery.blank?
-        @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
-        #Rails.logger.debug("Next Delivery Drinks: #{@customer_drink_order.inspect}")
-      else
-        @customer_drink_order = nil
-      end
-      @current_subscriber = true
-      #set class for order dropdown button
-      @customer_change_quantity = "subscriber-change-quantity"
-      gon.page_source = "stock"
-    else
-      # find if user has an order in process
-      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
-      if !@order_prep.blank?
-        @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
-      else
-        @customer_drink_order = nil
-      end
-      @current_subscriber = false
-      @customer_change_quantity = "nonsubscriber-change-quantity"
-    end
     
     # get current inventory breweries for dropdown
     @currently_available_makers = Brewery.current_inventory_breweries
@@ -64,10 +43,82 @@ class StockController < ApplicationController
     
     # get inventory beer ids
     @inventory_beer_ids = @currently_available_beers.pluck(:beer_id)
-
-    # get related user drink recommendations
-    @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).uniq.paginate(:page => params[:page], :per_page => 12)
-    #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
+    
+    if user_signed_in?
+      # determine if account has multiple users and add appropriate CSS class tags
+      @user = current_user
+      
+      # need account users for projected rating partial
+      @account_users = User.where(account_id: @user.account_id)
+      @account_users_count = @account_users.count
+      
+      # check for zip code/address
+      @user_address = UserAddress.find_by_account_id(@user.account_id)
+      
+      if session[:zip_covered]
+        if session[:zip_covered] == true
+          @city = @user_address.city
+          @state = @user_address.state
+          @zip = @user_address.zip
+          if !@city.blank? && !@state.blank?
+            @location = @city + ", " + @state + " " + @zip
+          end
+          gon.zip_covered = true
+          session.delete(:zip_covered)
+        end     
+      end
+      
+      if !@user_address.blank?
+        if @user_address.zip.nil?
+          @need_zip = true
+          @zip_code_check = UserAddress.new
+        else
+          @need_zip = false
+        end
+      else
+        @need_zip = true
+        @zip_code_check = UserAddress.new
+      end
+      
+      # check if user has already chosen drinks
+      if @user.subscription_status == "subscribed"
+        @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next", "admin prep"]).order(delivery_date: :asc).first
+        #Rails.logger.debug("Next Delivery: #{@next_delivery.inspect}")
+        if !@next_delivery.blank?
+          @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
+          #Rails.logger.debug("Next Delivery Drinks: #{@customer_drink_order.inspect}")
+        else
+          @customer_drink_order = nil
+        end
+        @current_subscriber = true
+        #set class for order dropdown button
+        @customer_change_quantity = "subscriber-change-quantity"
+        gon.page_source = "stock"
+      else
+        # find if user has an order in process
+        @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
+        if !@order_prep.blank?
+          @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
+        else
+          @customer_drink_order = nil
+        end
+        @current_subscriber = false
+        @customer_change_quantity = "nonsubscriber-change-quantity"
+      end
+      # get related user drink recommendations
+      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).uniq.paginate(:page => params[:page], :per_page => 12)
+      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
+      if @drink_recommendations.blank?
+        # get inventory drinks 
+        @drink_recommendations = Inventory.where(beer_id: @inventory_beer_ids).includes(:beer).order('beers.beer_rating_one desc').uniq.paginate(:page => params[:page], :per_page => 12)
+      end
+    else
+      # get inventory drinks 
+      @drink_recommendations = Inventory.where(beer_id: @inventory_beer_ids).includes(:beer).order('beers.beer_rating_one desc').uniq.paginate(:page => params[:page], :per_page => 12)
+      # indicate user hasn't provided zip
+      @need_zip = true
+      @zip_code_check = UserAddress.new
+    end # end of check whether user is signed in
      
   end # end of beer method
   
@@ -83,38 +134,37 @@ class StockController < ApplicationController
       @style = params[:style].to_i
     end
     
-    # determine if account has multiple users and add appropriate CSS class tags
-    @user = current_user
-    
-    # need account users for projected rating partial
-    @account_users = User.where(account_id: @user.account_id)
-    @account_users_count = @account_users.count
-    
-     # check if user has already chosen drinks
-    if current_user.subscription_status == "subscribed"
-      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
-      @current_subscriber = true
-      #set class for order dropdown button
-      @customer_change_quantity = "subscriber-change-quantity"
-      gon.page_source = "stock"
-    else
-      # find if user has an order in process
-      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
-      if !@order_prep.blank?
-        @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
+    if user_signed_in?
+      # determine if account has multiple users and add appropriate CSS class tags
+      @user = current_user
+      
+      # need account users for projected rating partial
+      @account_users = User.where(account_id: @user.account_id)
+      @account_users_count = @account_users.count
+      
+       # check if user has already chosen drinks
+      if current_user.subscription_status == "subscribed"
+        @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+        @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
+        @current_subscriber = true
+        #set class for order dropdown button
+        @customer_change_quantity = "subscriber-change-quantity"
+        gon.page_source = "stock"
       else
-        @customer_drink_order = nil
+        # find if user has an order in process
+        @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
+        if !@order_prep.blank?
+          @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
+        else
+          @customer_drink_order = nil
+        end
+        @current_subscriber = false
+        @customer_change_quantity = "nonsubscriber-change-quantity"
       end
-      @current_subscriber = false
-      @customer_change_quantity = "nonsubscriber-change-quantity"
     end
     
     # check if user has already chosen drinks
     @customer_order = nil
-    
-    # get current inventory breweries for dropdown
-    @currently_available_makers = Brewery.current_inventory_breweries
     
     # get currently available drink info
     if @artisan == "all" && @style == "all"
@@ -122,6 +172,8 @@ class StockController < ApplicationController
       # get currently available beers to show in inventory
       @currently_available_beers = Beer.current_inventory_beers
       
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_breweries
       # get currently available styles for dropdown filter
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_beers)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -133,10 +185,6 @@ class StockController < ApplicationController
       
       # get inventory beer ids
       @inventory_beer_ids = @currently_available_beers.pluck(:beer_id)
-
-      # get related user drink recommendations
-      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
     
     elsif @artisan != "all" && @style == "all"
       # get info about chosen artisan
@@ -145,6 +193,8 @@ class StockController < ApplicationController
       # get currently available beers to show in inventory
       @currently_available_beers = Beer.current_inventory_beers.where(brewery_id: @current_artisan.id)
       
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_breweries
       # get currently available styles to show in dropdown
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_beers)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -154,10 +204,6 @@ class StockController < ApplicationController
       
       # get inventory beer ids
       @inventory_beer_ids = @currently_available_beers.pluck(:beer_id)
-
-      # get related user drink recommendations
-      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
       
     elsif @artisan == "all" && @style != "all"
       # get info about chosen style
@@ -166,6 +212,8 @@ class StockController < ApplicationController
       # get currently available beers to show in inventory
       @currently_available_beers = Beer.current_inventory_beers
       
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_breweries_based_on_style(@style)
       # get currently available styles to show in dropdown
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_beers)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -187,10 +235,6 @@ class StockController < ApplicationController
       # get inventory beer ids
       @inventory_beer_ids = @currently_available_beers.pluck(:beer_id)
 
-      # get related user drink recommendations
-      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
-
     else
       # get info about chosen style and artisan
       @current_artisan = Brewery.friendly.find(@artisan) 
@@ -199,6 +243,8 @@ class StockController < ApplicationController
       # get currently available beers to show in inventory
       @currently_available_beers = Beer.current_inventory_beers.where(brewery_id: @current_artisan.id)
       
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_breweries_based_on_style(@style)
       # get currently available styles to show in dropdown
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_beers)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -218,11 +264,17 @@ class StockController < ApplicationController
       
       # get inventory beer ids
       @inventory_beer_ids = @currently_available_beers.pluck(:beer_id)
-
+        
+    end
+    
+    if user_signed_in?
       # get related user drink recommendations
       @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
       #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
-        
+    else
+      # get related user drink recommendations
+      @drink_recommendations = Inventory.where(beer_id: @inventory_beer_ids).includes(:beer).order('beers.beer_rating_one desc').uniq.paginate(:page => params[:page], :per_page => 12)
+      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
     end
     
     # update page
@@ -233,36 +285,17 @@ class StockController < ApplicationController
   end # end of change_beer_view
   
   def cider
+    ahoy.track_visit
+    # check if session variable indicating the zip is covered is set
+    if session[:zip_covered]
+      if session[:zip_covered] == false
+        gon.zip_covered = false
+      end     
+    end
+    
     # set keys for page
     @artisan = "all"
     @style = "all"
-    
-    # determine if account has multiple users and add appropriate CSS class tags
-    @user = current_user
-    
-    # need account users for projected rating partial
-    @account_users = User.where(account_id: @user.account_id)
-    @account_users_count = @account_users.count
-    
-     # check if user has already chosen drinks
-    if current_user.subscription_status == "subscribed"
-      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
-      @current_subscriber = true
-      #set class for order dropdown button
-      @customer_change_quantity = "subscriber-change-quantity"
-      gon.page_source = "stock"
-    else
-      # find if user has an order in process
-      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
-      if !@order_prep.blank?
-        @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
-      else
-        @customer_drink_order = nil
-      end
-      @current_subscriber = false
-      @customer_change_quantity = "nonsubscriber-change-quantity"
-    end
     
     # get current inventory breweries for dropdown
     @currently_available_makers = Brewery.current_inventory_cideries
@@ -281,10 +314,76 @@ class StockController < ApplicationController
     
     # get inventory beer ids
     @inventory_beer_ids = @currently_available_ciders.pluck(:beer_id)
-
-    # get related user drink recommendations
-    @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
-    #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
+    
+    if user_signed_in?
+      # determine if account has multiple users and add appropriate CSS class tags
+      @user = current_user
+      
+      # need account users for projected rating partial
+      @account_users = User.where(account_id: @user.account_id)
+      @account_users_count = @account_users.count
+      
+      # check for zip code/address
+      @user_address = UserAddress.find_by_account_id(@user.account_id)
+      
+      if session[:zip_covered]
+        if session[:zip_covered] == true
+          @city = @user_address.city
+          @state = @user_address.state
+          @zip = @user_address.zip
+          if !@city.blank? && !@state.blank?
+            @location = @city + ", " + @state + " " + @zip
+          end
+          gon.zip_covered = true
+          session.delete(:zip_covered)
+        end     
+      end
+      
+      if !@user_address.blank?
+        if @user_address.zip.nil?
+          @need_zip = true
+          @zip_code_check = UserAddress.new
+        else
+          @need_zip = false
+        end
+      else
+        @need_zip = true
+        @zip_code_check = UserAddress.new
+      end
+      
+      # check if user has already chosen drinks
+      if current_user.subscription_status == "subscribed"
+        @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["user review", "admin prep next"]).order(delivery_date: :asc).first
+        @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
+        @current_subscriber = true
+        #set class for order dropdown button
+        @customer_change_quantity = "subscriber-change-quantity"
+        gon.page_source = "stock"
+      else
+        # find if user has an order in process
+        @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
+        if !@order_prep.blank?
+          @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
+        else
+          @customer_drink_order = nil
+        end
+        @current_subscriber = false
+        @customer_change_quantity = "nonsubscriber-change-quantity"
+      end
+      # get related user drink recommendations
+      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
+      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
+      if @drink_recommendations.blank?
+        # get inventory drinks 
+        @drink_recommendations = Inventory.where(beer_id: @inventory_beer_ids).includes(:beer).order('beers.beer_rating_one desc').uniq.paginate(:page => params[:page], :per_page => 12)
+      end
+    else
+      # get inventory drinks 
+      @drink_recommendations = Inventory.where(beer_id: @inventory_beer_ids).includes(:beer).order('beers.beer_rating_one desc').uniq.paginate(:page => params[:page], :per_page => 12)
+      # indicate user hasn't provided zip
+      @need_zip = true
+      @zip_code_check = UserAddress.new
+    end # end of check whether user is signed in
   
   end # end of cider method
   
@@ -300,43 +399,44 @@ class StockController < ApplicationController
       @style = params[:style].to_i
     end
     
-    # determine if account has multiple users and add appropriate CSS class tags
-    @user = current_user
-    
-    # need account users for projected rating partial
-    @account_users = User.where(account_id: @user.account_id)
-    @account_users_count = @account_users.count
-    
-     # check if user has already chosen drinks
-    if current_user.subscription_status == "subscribed"
-      # find if user has a delivery in process
-      @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["admin prep next", "user review"]).first
-      @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
-      @current_subscriber = true
-      #set class for order dropdown button
-      @customer_change_quantity = "subscriber-change-quantity"
-      gon.page_source = "stock"
-    else
-      # find if user has an order in process
-      @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
-      if !@order_prep.blank?
-        @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
+    if user_signed_in?
+      # determine if account has multiple users and add appropriate CSS class tags
+      @user = current_user
+      
+      # need account users for projected rating partial
+      @account_users = User.where(account_id: @user.account_id)
+      @account_users_count = @account_users.count
+      
+       # check if user has already chosen drinks
+      if current_user.subscription_status == "subscribed"
+        # find if user has a delivery in process
+        @next_delivery = Delivery.where(account_id: current_user.account_id, status: ["admin prep next", "user review"]).first
+        @customer_drink_order = AccountDelivery.where(account_id: current_user.account_id, delivery_id: @next_delivery.id)
+        @current_subscriber = true
+        #set class for order dropdown button
+        @customer_change_quantity = "subscriber-change-quantity"
+        gon.page_source = "stock"
       else
-        @customer_drink_order = nil
+        # find if user has an order in process
+        @order_prep = OrderPrep.where(account_id: @user.account_id, status: "order in process").first
+        if !@order_prep.blank?
+          @customer_drink_order = OrderDrinkPrep.where(user_id: current_user.id, order_prep_id: @order_prep.id)
+        else
+          @customer_drink_order = nil
+        end
+        @current_subscriber = false
+        @customer_change_quantity = "nonsubscriber-change-quantity"
       end
-      @current_subscriber = false
-      @customer_change_quantity = "nonsubscriber-change-quantity"
     end
-    
-    # get current inventory breweries for dropdown
-    @currently_available_makers = Brewery.current_inventory_cideries
     
     # get currently available drink info
     if @artisan == "all" && @style == "all"
-      
+
       # get currently available beers to show in inventory
       @currently_available_ciders = Beer.current_inventory_ciders
       
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_cideries
       # get currently available styles for dropdown filter
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_ciders)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -349,10 +449,6 @@ class StockController < ApplicationController
       # get inventory beer ids
       @inventory_beer_ids = @currently_available_ciders.pluck(:beer_id)
 
-      # get related user drink recommendations
-      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
-    
     elsif @artisan != "all" && @style == "all"
       # get info about chosen artisan
       @current_artisan = Brewery.friendly.find(@artisan)
@@ -360,6 +456,8 @@ class StockController < ApplicationController
       # get currently available beers to show in inventory
       @currently_available_ciders = Beer.current_inventory_ciders.where(brewery_id: @current_artisan.id)
       
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_cideries
       # get currently available styles to show in dropdown
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_ciders)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -370,17 +468,16 @@ class StockController < ApplicationController
       # get inventory beer ids
       @inventory_beer_ids = @currently_available_ciders.pluck(:beer_id)
 
-      # get related user drink recommendations
-      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
-      
     elsif @artisan == "all" && @style != "all"
       # get info about chosen style
       @current_style = BeerStyle.find_by_id(@style)
       
       # get currently available beers to show in inventory
       @currently_available_ciders = Beer.current_inventory_ciders
-      
+      #Rails.logger.debug("Current ciders: #{@currently_available_ciders.inspect}")
+
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_cideries_based_on_style(@style)
       # get currently available styles to show in dropdown
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_ciders)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -392,8 +489,8 @@ class StockController < ApplicationController
       @all_related_types << BeerTypeRelationship.related_drink_type_two(@style)
       @all_related_types = @all_related_types.flatten.uniq
       
-      # get currently available beers to show in inventory
-      @currently_available_ciders = Beer.current_inventory_beers.where(beer_type_id: @all_related_types)
+      # get currently available ciders to show in inventory
+      @currently_available_ciders = Beer.current_inventory_ciders.where(beer_type_id: @all_related_types)
       @current_makers = @currently_available_ciders.pluck(:brewery_id).uniq
       
       @drink_count = @currently_available_ciders.count
@@ -402,10 +499,6 @@ class StockController < ApplicationController
       # get inventory beer ids
       @inventory_beer_ids = @currently_available_ciders.pluck(:beer_id)
 
-      # get related user drink recommendations
-      @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
-      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
-      
     else
       # get info about chosen style and artisan
       @current_artisan = Brewery.friendly.find(@artisan) 
@@ -414,6 +507,8 @@ class StockController < ApplicationController
       # get currently available beers to show in inventory
       @currently_available_ciders = Beer.current_inventory_ciders.where(brewery_id: @current_artisan.id)
       
+      # get current inventory breweries for dropdown
+      @currently_available_makers = Brewery.current_inventory_cideries_based_on_style(@style)
       # get currently available styles to show in dropdown
       @current_inventory_drink_style_ids = Beer.drink_style(@currently_available_ciders)
       @currently_available_styles = BeerStyle.where(id:@current_inventory_drink_style_ids)
@@ -425,19 +520,24 @@ class StockController < ApplicationController
       @all_related_types << BeerTypeRelationship.related_drink_type_two(@style)
       @all_related_types = @all_related_types.flatten.uniq
       
-      # get currently available beers to show in inventory
+      # get currently available ciders to show in inventory
       @currently_available_ciders = Beer.current_inventory_ciders.where(brewery_id: @current_artisan.id, beer_type_id: @all_related_types)
       
       @drink_count = @currently_available_ciders.count
       @artisan_count = 1
       
       # get inventory beer ids
-      @inventory_beer_ids = @currently_available_beers.pluck(:beer_id)
-
+      @inventory_beer_ids = @currently_available_ciders.pluck(:beer_id)
+    end
+    
+    if user_signed_in?
       # get related user drink recommendations
       @drink_recommendations = ProjectedRating.where(user_id: @user.id, beer_id: @inventory_beer_ids).order(projected_rating: :desc).paginate(:page => params[:page], :per_page => 12)
       #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
-
+    else
+      # get related user drink recommendations
+      @drink_recommendations = Inventory.where(beer_id: @inventory_beer_ids).includes(:beer).order('beers.beer_rating_one desc').uniq.paginate(:page => params[:page], :per_page => 12)
+      #Rails.logger.debug("Drink recommendations: #{@drink_recommendations.inspect}")
     end
     
      # update page
@@ -457,24 +557,31 @@ class StockController < ApplicationController
     @customer_drink_quantity = params[:quantity].to_i
     
     # get drink info
-    @project_rating_info = ProjectedRating.find_by_id(@customer_projected_rating_id)
-    
+    @user_projected_ratings = ProjectedRating.where(user_id: current_user.id)
+
+    if !@user_projected_ratings.blank?
+      @this_projected_rating = ProjectedRating.find_by_id(@customer_projected_rating_id)
+      @inventory_id = @this_projected_rating.inventory_id
+    else
+      @inventory_id = @customer_projected_rating_id
+    end
+
     if @customer_drink_quantity != 0
       # get correct price of drink based on user's address
-      @drink_price = UserAddress.user_drink_price_based_on_address(current_user.account_id, @project_rating_info.inventory_id)
+      @drink_price = UserAddress.user_drink_price_based_on_address(current_user.account_id, @inventory_id)
     end
       
     # find if customer currently has an order in process
     @current_order = OrderPrep.where(account_id: current_user.account_id, status: "order in process").first
     
     if @current_order.blank? # create a new Order Prep entry
-      @current_order = OrderPrep.create(account_id: current_user.account_id, status: "order in process")
+      @current_order = OrderPrep.create!(account_id: current_user.account_id, status: "order in process")
     end
     
     # now check if this inventory item already exists in the Order Drink Prep table
-    @current_drink_order = OrderDrinkPrep.where(user_id: current_user.id, 
+    @current_drink_order = OrderDrinkPrep.where(user_id: current_user.id,
                                                 order_prep_id: @current_order.id,
-                                                inventory_id: @project_rating_info.inventory_id)
+                                                inventory_id: @inventory_id)
     
     if !@current_drink_order.blank? #update entry
       if @customer_drink_quantity != 0
@@ -483,9 +590,9 @@ class StockController < ApplicationController
         @current_drink_order[0].destroy!
       end
     else # create a new entry
-      OrderDrinkPrep.create(user_id: current_user.id,
+      OrderDrinkPrep.create!(user_id: current_user.id,
                             account_id: current_user.account_id,
-                            inventory_id: @project_rating_info.inventory_id,
+                            inventory_id: @inventory_id,
                             order_prep_id: @current_order.id,
                             quantity: @customer_drink_quantity,
                             drink_price: @drink_price)
@@ -659,5 +766,106 @@ class StockController < ApplicationController
     end # end of redirect to jquery
     
   end # end of add_stock_to_subscriber_delivery method
+  
+  def process_zip_from_inventory
+    # set session to remember page arrived from 
+    session[:return_to] = request.referer
+    
+    if user_signed_in?
+      @user = current_user
+    else
+      # first create an account
+      @account = Account.create!(account_type: "consumer", number_of_users: 1)
+      
+      # next create fake user profile
+      @fake_user_email = Faker::Internet.unique.email
+      @generated_password = Devise.friendly_token.first(8)
+      
+      # create new user
+      @user = User.create(account_id: @account.id, 
+                          email: @fake_user_email, 
+                          password: @generated_password,
+                          password_confirmation: @generated_password,
+                          role_id: 4,
+                          getting_started_step: 0,
+                          unregistered: true)
+      
+      if @user.save
+        # Sign in the new user by passing validation
+        bypass_sign_in(@user)
+        #Rails.logger.debug("Current user: #{current_user.inspect}")
+      end
+    end #end of check whether user is already "signed in"
+      
+    # get zip code
+    @zip_code = params[:user_address][:zip]
+    #Rails.logger.debug("Zip: #{@zip_code.inspect}")
+    @city = @zip_code.to_region(:city => true)
+    @state = @zip_code.to_region(:state => true)
+    Rails.logger.debug("Zip: #{@zip_code.inspect}")
+    Rails.logger.debug("City: #{@city.inspect}")
+    Rails.logger.debug("State: #{@state.inspect}")
+    # set location view
+    if !@city.blank? && !@state.blank?
+      @location = @city + ", " + @state
+    else
+      @location = nil
+    end 
+    Rails.logger.debug("Location info: #{@location.inspect}")  
+    # get Delivery Zone info
+    @delivery_zone_info = DeliveryZone.find_by_zip_code(@zip_code)    
+    #Rails.logger.debug("Delivery Zone: #{@delivery_zone_info.inspect}")
+    if !@delivery_zone_info.blank?
+      @related_zone = @delivery_zone_info.id
+      if @delivery_zone_info.currently_available == true
+        @plan_type = "delivery"
+        @coverage = true
+      else
+        @plan_type = "shipping"
+        @coverage = false
+      end
+      
+    else
+      # get Shipping Zone
+      @first_three = @zip_code[0...3]
+      @shipping_zone = ShippingZone.zone_match(@first_three).first
+      @related_zone = @shipping_zone.id
+      if !@shipping_zone.blank? && @shipping_zone.currently_available == true
+        @plan_type = "shipping"
+        @coverage = false
+      else
+        @coverage = false
+      end
+    end # end of check whether a local Knird Delivery Zone exists
+    
+    # add zip to our zip code list
+    @new_zip_check = ZipCode.create(zip_code: @zip_code, city: @city, state: @state, covered: @coverage)
+        
+    # send event to Ahoy table
+    ahoy.track "zip code", {zip_code_id: @new_zip_check.id, zip_code: @new_zip_check.zip_code, coverage: @coverage, type: @plan_type, related_zone: @related_zone}
+    
+    # update Ahoy Visit and Ahoy Events table 
+    @current_visit = Ahoy::Visit.where(id: current_visit.id).first
+    @current_visit.update(user_id: @user.id)
+    @current_event = Ahoy::Event.where(visit_id: current_visit.id).first
+    @current_event.update(user_id: @user.id)
+        
+    if @coverage == true  
+      session[:zip_covered] = true
+      # now create User Address entry with user zip provided
+      UserAddress.create(account_id: @user.account_id, 
+                          city: @city,
+                          state: @state,
+                          zip: @zip_code, 
+                          current_delivery_location: true) 
+    else
+      session[:zip_covered] = false
+      @invitation_request = InvitationRequest.new
+    end # end of check whether we have coverage for this person
+    
+    # redirect back to stock page
+    redirect_to session.delete(:return_to)
+    
+  end # end of process_zip_from_inventory method
   
 end # end of controller

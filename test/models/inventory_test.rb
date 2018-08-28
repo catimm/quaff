@@ -31,6 +31,7 @@
 #  shrinkage              :integer
 #  membership_only        :boolean
 #  nonmember_limit        :integer
+#  trending               :boolean
 #
 
 require 'test_helper'

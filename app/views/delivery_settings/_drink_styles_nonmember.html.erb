@@ -1,0 +1,34 @@
+<div class="row no-margin">
+	<div class="col-xs-12 text-center">
+		<% if @user_likes.blank? %>
+			<h3 class="home-prompt-text">
+				Select your favorite styles to see personalized, projected ratings for each drink.
+			</h3>
+			<h3 class="home-prompt-text">
+				Also, if we know what you prefer, we'll stock drinks you will love!
+			</h3>
+		<% else %>
+			<h3 class="home-prompt-text">
+				Update the styles you enjoy drinking
+			</h3>
+		<% end %>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-offset-1 col-sm-10">
+		<% @drink_styles.each do |style| %>
+			<%= render 'delivery_settings/style_holder_nonmember', style: style %>
+		<% end %>
+	</div>
+</div>
+<div class="row no-margin">
+	<% if !@user_likes.blank? %>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to "Update", "#", class: "btn btn-success drink-style-save-button" %>
+		</div>
+	<% else %>
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-4 col-sm-4 text-center">
+			<%= link_to "Save", "#", class: "btn btn-success drink-style-save-button" %>
+		</div>
+	<% end %>
+</div>

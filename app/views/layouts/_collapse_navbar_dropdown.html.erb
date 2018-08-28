@@ -17,7 +17,7 @@
 		<li class="dropdown-link"><%= link_to "Account", account_overview_path %></li>
 		<% if current_user.subscription_status == "subscribed" %>
         	<li class="dropdown-link"><%= link_to "Delivery", delivery_settings_path %></li>
-        <% else %>
+        <% elsif current_user.unregistered != true %>
         	<li class="dropdown-link"><%= link_to "Drink Styles", delivery_settings_drink_styles_path %></li>
         <% end %>
 		

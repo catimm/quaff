@@ -5,6 +5,10 @@ class HomeController < ApplicationController
 
   def index
     ahoy.track_visit
+    
+    # get current hot inventory drinks
+    @hot_inventory = Inventory.where(trending: true)
+    
     # instantiate invitation request 
     #@view = "original"
     #if user_signed_in?
@@ -38,15 +42,16 @@ class HomeController < ApplicationController
     @page_source = "home" 
      
     # get drink styles
-    @drink_style_master_ids = BeerType.current_inventory_master_drink_style_ids
+    #@drink_style_master_ids = BeerType.current_inventory_master_drink_style_ids
     #Rails.logger.debug("Beer Style Master IDs: #{@drink_style_master_ids.inspect}")
     #@drink_style_master_ids = @drink_types_available.beer_style.pluck(:master_style_id)
     #@drink_styles = BeerStyle.where(master_style_id: @drink_style_master_ids).beer_or_cider.order('style_order ASC')
     #@drink_style_master_style_ids = BeerStyle.drink_styles_in_stock_for_signup.pluck(:master_style_id)
-    @drink_styles = BeerStyle.where(master_style_id: @drink_style_master_ids).
-                              where("signup_beer = ? OR signup_cider = ?", true, true).
-                              order('style_order ASC').uniq
+    #@drink_styles = BeerStyle.where(master_style_id: @drink_style_master_ids).
+    #                          where("signup_beer = ? OR signup_cider = ?", true, true).
+    #                          order('style_order ASC').uniq
     #Rails.logger.debug("Beer Types: #{@drink_styles.inspect}")
+  
   end # end index action
   
   def create

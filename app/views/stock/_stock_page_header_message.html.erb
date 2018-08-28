@@ -1,12 +1,31 @@
-<% if @user.unregistered == true %>
-	<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 text-center no-padding" id="delivery-cost-message-holder">
+<% if !user_signed_in? %>
+	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
 		<div class="row cart-review-delivery-cost-message">
 			<div class="col-xs-12 no-padding">
-				<h3>Want to be notified when we get drinks you'll love?<br><%= link_to "Create an account", account_personal_path %>. It's free!</h3>
+				<h3><%= link_to "Create an account", account_personal_path %> to see personalized, projected drink ratings. It's free!</h3>
 			</div>
 		</div>
 	</div>
-<% else %>
+<% elsif current_user.unregistered == true %>
+	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
+		<div class="row cart-review-delivery-cost-message">
+			<div class="col-xs-12 no-padding">
+				<h3><%= link_to "Create an account", account_personal_path %> to see personalized, projected drink ratings. It's free!</h3>
+			</div>
+		</div>
+	</div>
+<% elsif current_user.projected_ratings_complete != true %>
+	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
+		<div class="row cart-review-delivery-cost-message">
+			<div class="col-xs-12 no-padding">
+				<h3><%= link_to "Choose your favorite drink styles", delivery_settings_drink_styles_path %> 
+							to see a personalized, projected drink rating.
+				</h3>
+			</div>
+		</div>
+	</div>
+	
+<% elsif current_user.subscription_status != "subscribed" %>
 	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
 		<div class="row cart-review-delivery-cost-message">
 			<div class="col-xs-12">

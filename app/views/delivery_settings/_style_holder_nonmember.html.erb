@@ -1,0 +1,103 @@
+<% if !@user_likes.blank? && @user_likes.include?(style.id) %>
+	<div class="col-xs-12 col-sm-9 col-md-6 padding-5 show" id="chosen-<%= style.id %>">
+		<div class="drink-profile-style-tile-chosen-nonmember like-style-tile">
+			<div class="row no-margin">
+				<div class="col-xs-3 padding-5 style-image-column-holder-nonmember show">
+					<h5 class="drink-profile-style-tile-header"><%= style.style_name %></h5>
+					<div class="style-image-holder">
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
+					</div>
+				</div>
+				<div class="chosen-style-like-cover-nonmember show" id="<%= style.id %>">
+					<div class='style-indicator like-style text-center'>
+						<i class="fa fa-check"></i>
+					</div>
+				</div>
+				<div class="col-xs-9 no-padding">
+					<h6 class="drink-style-like-optional-text"><span class="optional-stress">Optional:</span> choose favorite descriptors for style</h6>
+					<ul class="drink-profile-descriptors-holder">
+						<% style.top_style_descriptors.each do |descriptor| %>
+		                     <% if style.descriptor_chosen(@user.id, descriptor.descriptor_name) %>
+								<li class="drink-profile-chosen-descriptor chosen" id="<%= descriptor.id %>">
+									<p><%= descriptor.descriptor_name %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% else %>
+								<li class="drink-profile-chosen-descriptor" id="<%= descriptor.id %>">
+									<p><%= descriptor.descriptor_name %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% end %>
+						<% end %>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6 col-sm-3 col-md-2 padding-5 hidden" id="unchosen-<%= style.id %>">
+		<div class="drink-style-tile-slim-nonmember text-center" id="<%= style.id %>">
+			<div class="row no-margin">
+				<div class="col-xs-12 padding-5">
+					<h5 class="drink-profile-style-tile-header"><%= style.style_name %></h5>
+					<div class="style-image-holder">
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
+					</div>
+				</div>
+			</div>
+			<div class='style-indicator home-like-style hidden text-center'>
+				<i class="fa fa-check"></i>
+			</div>
+		</div>
+	</div>
+<% else %>
+	<div class="col-xs-12 col-sm-9 col-md-6 padding-5 hidden" id="chosen-<%= style.id %>">
+		<div class="drink-profile-style-tile-chosen-nonmember like-style-tile">
+			<div class="row no-margin">
+				<div class="col-xs-3 padding-5 style-image-column-holder-nonmember">
+					<h5 class="drink-profile-style-tile-header"><%= style.style_name %></h5>
+					<div class="style-image-holder">
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
+					</div>
+				</div>
+				<div class="chosen-style-like-cover-nonmember hidden" id="<%= style.id %>">
+					<div class='style-indicator like-style text-center'>
+						<i class="fa fa-check"></i>
+					</div>
+				</div>
+				<div class="col-xs-9 no-padding">
+					<h6 class="drink-style-like-optional-text"><span class="optional-stress">Optional:</span> choose favorite descriptors for style</h6>
+					<ul class="drink-profile-descriptors-holder">
+						<% style.top_style_descriptors.each do |descriptor| %>
+		                     <% if style.descriptor_chosen(@user.id, descriptor.descriptor_name) %>
+								<li class="drink-profile-chosen-descriptor chosen" id="<%= descriptor.id %>">
+									<p><%= descriptor.descriptor_name %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% else %>
+								<li class="drink-profile-chosen-descriptor" id="<%= descriptor.id %>">
+									<p><%= descriptor.descriptor_name %></p>
+									<span class="token-input-delete-token-facebook_rating">+</span>
+								</li>
+							<% end %>
+						<% end %>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6 col-sm-3 col-md-2 padding-5 show" id="unchosen-<%= style.id %>">
+		<div class="drink-style-tile-slim-nonmember text-center" id="<%= style.id %>">
+			<div class="row no-margin">
+				<div class="col-xs-12 padding-5">
+					<h5 class="drink-profile-style-tile-header"><%= style.style_name %></h5>
+					<div class="style-image-holder">
+						<img class="img-responsive center-block" alt="Responsive image" src="<%= style.style_image_url %>">
+					</div>
+				</div>
+			</div>
+			<div class='style-indicator home-like-style hidden text-center'>
+				<i class="fa fa-check"></i>
+			</div>
+		</div>
+	</div>
+<% end %>

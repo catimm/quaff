@@ -54,6 +54,13 @@ $(function () {
 	$('.chosen-style-like-cover').height(drink_style_tile_height);
 	$('.chosen-style-like-cover').width(chosen_drink_style_tile_width);
 	
+	// set height and width of drink style holders on nonmember drink styles page
+	var drink_style_tile_height_nonmember = $('.drink-style-tile-slim-nonmember').height();
+	$('.drink-profile-style-tile-chosen-nonmember').height(drink_style_tile_height_nonmember);
+	var chosen_drink_style_tile_width_nonmember = $('.style-image-column-holder-nonmember.show').outerWidth();
+	$('.chosen-style-like-cover-nonmember').height(drink_style_tile_height_nonmember);
+	$('.chosen-style-like-cover-nonmember').width(chosen_drink_style_tile_width_nonmember);
+	
 	// get height of category image holder
 	var  cat_holder_height = $(".drink-profile-category-image-holder").height();
 	$(".drink-profile-category-image-holder-chosen-cover").height(cat_holder_height);
@@ -94,6 +101,46 @@ $(function () {
 		
 		// make page not jump to top
 		return false;
+	});
+	
+	// adjust view of styles chosen or unchosen by nonmembers
+	$(document).on('click', '.drink-style-tile-slim-nonmember', function () {
+		var this_id = $(this).attr('id');
+		
+		$('#unchosen-'+this_id).removeClass("show").addClass("hidden");
+		$('#chosen-'+this_id).removeClass("hidden").addClass("show");
+		
+		$('#chosen-'+this_id).children('.drink-profile-style-tile-chosen-nonmember.like-style-tile').children('.row.no-margin').children('.chosen-style-like-cover-nonmember').removeClass("hidden").addClass("show");
+		
+		$('#chosen-'+this_id).children('.drink-profile-style-tile-chosen-nonmember').height(drink_style_tile_height_nonmember);
+		var chosen_drink_style_tile_width_nonmember = $('.style-image-column-holder-nonmember.show').outerWidth();
+		$('#chosen-'+this_id).children('.drink-profile-style-tile-chosen-nonmember.like-style-tile').children('.row.no-margin').children('.chosen-style-like-cover-nonmember').height(drink_style_tile_height_nonmember);
+		$('#chosen-'+this_id).children('.drink-profile-style-tile-chosen-nonmember.like-style-tile').children('.row.no-margin').children('.chosen-style-like-cover-nonmember').width(chosen_drink_style_tile_width_nonmember);
+	});
+	$(document).on('click', '.chosen-style-like-cover-nonmember', function () {
+		var this_id = $(this).attr('id');
+		$(this).removeClass("show").addClass("hidden");
+		
+		$('#chosen-'+this_id).removeClass("show").addClass("hidden");
+		$('#unchosen-'+this_id).removeClass("hidden").addClass("show");
+	});
+	
+	// logic to send chosen styles to db and start projected ratings job
+	// add logic to send chosen style info to controller
+	$(document).on('click', '.drink-style-save-button', function () {
+		var this_id = $(this).attr('id');
+		var string_of_ids = 0
+		$('.chosen-style-like-cover-nonmember.show').each(function() {
+		  $( this ).text()
+		  string_of_ids = string_of_ids + "-" + $( this ).attr('id')
+		});
+		string_of_ids = string_of_ids.replace('0-', '');
+
+		// send data to controller
+		$.ajax({
+		  type: "POST",
+		  url: "/delivery_settings/process_drink_styles_nonmembers/" + string_of_ids
+		});
 	});
 	
 	// add logic to send chosen style info to controller

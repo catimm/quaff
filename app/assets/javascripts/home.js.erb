@@ -30,6 +30,12 @@ $(function () {
 		  };
 		})();
 		
+		// set up carousel to show hot inventory
+	    $('#hot_inventory').carousel({
+	    	pause: "hover",
+	    	interval: 3000,
+	    });
+    
 		// get height of category image holder
 		var  cat_holder_height = $(".drink-profile-category-image-holder").height();
 		$(".drink-profile-category-image-holder-chosen-cover").height(cat_holder_height);

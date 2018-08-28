@@ -4,6 +4,9 @@ class ProjectedRatingsJob < ActiveJob::Base
 
   # update a user's projected ratings in table
   def perform(user_id)
+    # first find and delete any current projected ratings if they exist
+    ProjectedRating.where(user_id: user_id).destroy_all
+    
     #Rails.logger.debug("Gets here")
     #Rails.logger.debug("User Id: #{user_id.inspect}")
     # get packaged size formats

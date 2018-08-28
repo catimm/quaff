@@ -1547,6 +1547,8 @@ task :set_projected_ratings => :environment do
       @active_users.each do |user|
         @user = user
         #Rails.logger.debug("User: #{@user.inspect}")
+        # first find and delete any current projected ratings if they exist
+        ProjectedRating.where(user_id: @user.id).destroy_all
         # cycle through each knird inventory drink to assign projected rating
         @available_knird_inventory.each do |available_drink|
           # find if user has rated/had this drink before

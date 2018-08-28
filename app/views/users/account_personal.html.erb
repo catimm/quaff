@@ -1,11 +1,15 @@
 <%= render 'layouts/header' %> 
 <div class="container">
 	<%= render 'layouts/back_to_previous' %>
-	<% if current_user.unregistered == true %>
-   		<%= render 'account_personal_new' %>
-	<% else %>  
-    	<%= render 'account_personal_info' %>
-    	<%= render 'account_personal_password' %>
+	<% if user_signed_in? %>
+		<% if current_user.unregistered == true %>
+	   		<%= render 'account_personal_new' %>
+		<% else %>  
+	    	<%= render 'account_personal_info' %>
+	    	<%= render 'account_personal_password' %>
+		<% end %>
+	<% else %>
+		<%= render 'account_personal_completely_new' %>
 	<% end %>
 </div>
 <%= render 'layouts/footer' %>

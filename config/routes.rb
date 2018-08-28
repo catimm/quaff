@@ -98,10 +98,11 @@ Rails.application.routes.draw do
   get 'stock/beer' => 'stock#beer', :as => 'beer_stock'
   get 'stock/change_beer_view/:artisan/:style/:page' => 'stock#change_beer_view'
   get 'stock/cider' => 'stock#cider', :as => 'cider_stock'
-  get 'stock/change_cider_view/:artisan/:style' => 'stock#change_cider_view'
+  get 'stock/change_cider_view/:artisan/:style/:page' => 'stock#change_cider_view'
   get 'stock/wine' => 'stock#wine', :as => 'wine_stock'
   post 'stock/add_stock_to_customer_cart/:id/:quantity' => 'stock#add_stock_to_customer_cart'
   post 'stock/add_stock_to_subscriber_delivery/:id/:quantity' => 'stock#add_stock_to_subscriber_delivery'
+  post 'stock/process_zip_from_inventory' => 'stock#process_zip_from_inventory', :as => 'process_zip_from_inventory'
   
   # routes for cart checkout
   get 'review' => 'carts#review', :as => 'cart_review'
@@ -212,6 +213,7 @@ Rails.application.routes.draw do
   get '/delivery_settings/drink_styles' => 'delivery_settings#drink_styles', :as => 'delivery_settings_drink_styles'
   get '/delivery_settings' => 'delivery_settings#delivery_settings', :as => 'delivery_settings'
   post 'delivery_settings/process_drink_styles/:style_info/:page_source' => 'delivery_settings#process_drink_styles'
+  post 'delivery_settings/process_drink_styles_nonmembers/:style_info' => 'delivery_settings#process_drink_styles_nonmembers'
   post '/delivery_settings/process_delivery_frequency/:frequency' => 'delivery_settings#process_delivery_frequency'
   post '/delivery_settings/process_delivery_numbers/:numbers' => 'delivery_settings#process_delivery_numbers'
   post '/delivery_settings/process_delivery_prices/:numbers' => 'delivery_settings#process_delivery_prices'

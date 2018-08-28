@@ -277,9 +277,15 @@ class Beer < ApplicationRecord
   }
   
   # scope beers based on style chosen
-  scope :current_inventory_beers_based_by_style, ->(type_ids){
+  scope :current_inventory_beers_based_on_style, ->(style_id){
+    @all_type_ids = Array.new
+    @type_ids = BeerType.where(beer_style_id: style_id).pluck(:id)
+    @related_ids = BeerTypeRelationship.where('relationship_one = ? OR relationship_two = ?', style_id, style_id).pluck(:beer_type_id)
+    @all_type_ids << @type_ids
+    @all_type_ids << @related_ids
+    @all_type_ids = @all_type_ids.flatten.uniq
     current_inventory_beers.
-    where(beer_type_id: type_ids)
+    where(beer_type_id: @all_type_ids)
   }
   
   # scope current ciders in stock
@@ -288,10 +294,17 @@ class Beer < ApplicationRecord
   }
   
   # scope beers based on style chosen
-  scope :current_inventory_ciders_based_by_style, ->(type_ids){
+  scope :current_inventory_ciders_based_on_style, ->(style_id){
+    @all_type_ids = Array.new
+    @type_ids = BeerType.where(beer_style_id: style_id).pluck(:id)
+    @related_ids = BeerTypeRelationship.where('relationship_one = ? OR relationship_two = ?', style_id, style_id).pluck(:beer_type_id)
+    @all_type_ids << @type_ids
+    @all_type_ids << @related_ids
+    @all_type_ids = @all_type_ids.flatten.uniq
     current_inventory_ciders.
-    where(beer_type_id: type_ids)
+    where(beer_type_id: @all_type_ids)
   }
+  
   # scope all drinks ever in inventory 
   scope :inventory_drinks, -> { 
     joins(:inventories).merge(Inventory.ever_in_stock)

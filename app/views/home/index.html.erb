@@ -1,22 +1,16 @@
 <%= render 'layouts/header' %> 
-<%= render 'layouts/updating_spinner' %>
 <!-- Page Content -->
+    <section class="background-light about_us_section">
+		<%= render 'section_about_us_intro' %>
+    </section>
     <section class="background-light">
-		<%= render 'section_begin' %>
+		<%= render 'section_hot_drinks' %>
     </section>
-    <section class="background-light hidden"  id="section_drink_styles">
-
+    <section class="background-dark about_us_section">
+		<%= render 'section_about_us_how' %>
     </section>
-    <section class="background-light hidden" id="knird_info_one">
-
-    </section>
-    <section class="background-light hidden" id="knird_info_two">
-
-    </section>
-    <section class="background-light hidden" id="knird_info_ready">
-
-    </section>
-    <section class="background-light hidden" id="zip_code_response">
-
-    </section>
+    <%= render 'knird_preferred/membership_value_prop' %>
+	<%= render 'knird_preferred/membership_overview' %>
+	<%= render 'knird_preferred/membership_pda' %>
+	<%= render 'knird_preferred/membership_drink_pricing' %>
 <%= render 'layouts/footer_home' %>

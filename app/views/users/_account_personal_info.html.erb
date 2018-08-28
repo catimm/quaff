@@ -9,7 +9,7 @@
 	</div>
 </div>
 <div class="row no-margin">
-	<div class="col-xs-12 col-sm-6" id="account-settings-personal-info-holder">
+	<div class="col-xs-12 col-sm-8 col-md-6" id="account-settings-personal-info-holder">
 		<%= simple_form_for @user, :url => update_profile_user_path, :html => { :class => 'form-horizontal' } do |f| %>
 			<%= render 'user_personal_info', f: f  %>
 			<div class="form-group">
