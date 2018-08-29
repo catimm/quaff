@@ -947,7 +947,7 @@ end # end of assess_total_demand_for_inventory task
 desc "share admin drink prep with customers" # step 3 of curation process (step #2 is manual curation)
 task :share_admin_prep_with_customer => :environment do
     # get customers who have drinks slated for delivery this week
-    @accounts_with_deliveries = Delivery.where(status: "admin prep", share_admin_prep_with_user: true).where(delivery_date: (1.day.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
+    @accounts_with_deliveries = Delivery.where(status: "admin prep next", share_admin_prep_with_user: true).where(delivery_date: (1.day.from_now.beginning_of_day)..(3.days.from_now.end_of_day))
     
     if !@accounts_with_deliveries.blank?
       @accounts_with_deliveries.each do |account_delivery|
