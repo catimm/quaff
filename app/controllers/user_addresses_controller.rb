@@ -35,8 +35,16 @@ class UserAddressesController < ApplicationController
     # create new address
     @new_address = UserAddress.create!(address_params)
     
+    if session[:new_membership_path] == true
+      @redirect_path = knird_preferred_new_membership_path
+    elsif session[:new_trial_path] == true
+      @redirect_path = knird_preferred_new_trial_path
+    else
+      @redirect_path = session.delete(:return_to)
+    end
+    
     # redirect 
-    redirect_to session.delete(:return_to)
+    redirect_to @redirect_path
 
   end # end of create method
   

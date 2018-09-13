@@ -180,7 +180,7 @@ class DeliverySettingsController < ApplicationController
     # get style ID and action to take
     @style_info = params[:style_info]
     @styles_ids = @style_info.split("-")
-    Rails.logger.debug("Style IDs: #{@styles_ids.inspect}")  
+    #Rails.logger.debug("Style IDs: #{@styles_ids.inspect}")  
     
     # find and delete currently chosen styles
     @user_style_preferences = UserStylePreference.where(user_id: @user.id).destroy_all

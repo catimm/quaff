@@ -83,16 +83,26 @@ class UsersController < ApplicationController
       #    end
       #end
     # determine redirect path
-    if session[:new_membership_path] == true
-      @redirect_path = knird_preferred_new_membership_path
-    elsif session[:new_trial_path] == true
-      @redirect_path = knird_preferred_new_trial_path
-    else
-      @redirect_link = delivery_settings_drink_styles_path
-    end
+    @user_address = UserAddress.where(account_id: @user.account_id, current_delivery_location: true).first 
     
+      if session[:new_membership_path] == true
+        if !@user_address.blank?
+          @redirect_path = knird_preferred_new_membership_path
+        else # redirect to address step
+          @redirect_path = account_addresses_path
+        end
+      elsif session[:new_trial_path] == true
+        if !@user_address.blank?
+          @redirect_path = knird_preferred_new_trial_path
+        else # redirect to address step
+          @redirect_path = account_addresses_path
+        end
+      else
+        @redirect_path = delivery_settings_drink_styles_path
+      end
+
     # redirect to next step in signup process
-    redirect_to @redirect_link
+    redirect_to @redirect_path
       
   end # end create action
   

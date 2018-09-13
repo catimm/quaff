@@ -8,10 +8,16 @@
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10">
 		<% @drink_styles.each do |style| %>
-			<% if @user_likes.include?(style.id) %>
-				<div class="col-xs-12 col-sm-9 col-md-6 padding-5" id="<%= style.id %>-<%= @page_source %>">
-					<%= render 'delivery_settings/style_holder_chosen_like', style: style %>
-				</div>
+			<% if !@user_likes.blank? %>
+				<% if @user_likes.include?(style.id) %>
+					<div class="col-xs-12 col-sm-9 col-md-6 padding-5" id="<%= style.id %>-<%= @page_source %>">
+						<%= render 'delivery_settings/style_holder_chosen_like', style: style %>
+					</div>
+				<% else %>
+					<div class="col-xs-6 col-sm-3 col-md-2 padding-5" id="<%= style.id %>-<%= @page_source %>">
+						<%= render 'delivery_settings/style_holder_slim', style: style %>
+					</div>
+				<% end %>
 			<% else %>
 				<div class="col-xs-6 col-sm-3 col-md-2 padding-5" id="<%= style.id %>-<%= @page_source %>">
 					<%= render 'delivery_settings/style_holder_slim', style: style %>

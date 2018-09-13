@@ -1,7 +1,7 @@
 $(function() {
 	
 	<% if @only_one_left == false %>
-		$('#delivery-settings-drink-types-row').html("<%= escape_javascript(render 'delivery_settings/drink_styles') %>");
+		$('#delivery-settings-drink-types-row').html("<%= escape_javascript(render 'delivery_settings/drink_styles_member') %>");
 		// set height and width of drink style holders on home page
 		var drink_style_tile_height = $('.drink-style-tile-slim').height();
 		$('.drink-profile-style-tile-chosen').height(drink_style_tile_height);

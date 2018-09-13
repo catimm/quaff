@@ -117,6 +117,7 @@ $(function () {
 		$('#chosen-'+this_id).children('.drink-profile-style-tile-chosen-nonmember.like-style-tile').children('.row.no-margin').children('.chosen-style-like-cover-nonmember').height(drink_style_tile_height_nonmember);
 		$('#chosen-'+this_id).children('.drink-profile-style-tile-chosen-nonmember.like-style-tile').children('.row.no-margin').children('.chosen-style-like-cover-nonmember').width(chosen_drink_style_tile_width_nonmember);
 	});
+	
 	$(document).on('click', '.chosen-style-like-cover-nonmember', function () {
 		var this_id = $(this).attr('id');
 		$(this).removeClass("show").addClass("hidden");
