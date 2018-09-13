@@ -8041,11 +8041,20 @@ input[type="checkbox"] {
     color: $large-format-color;
   }
 }
+.delivery-info-box.retail-value {
+  float: left;
+  margin-right: 2px;
+  border: 1px solid $less-emphasized-text;
+  min-width: 70px;
+  h4 {
+    color: $less-emphasized-text;
+  }
+}
 .delivery-info-box.subtotal, .delivery-settings-info-box.subtotal {
   float: left;
   margin-right: 2px;
   border: 1px solid $normal-text;
-  min-width: 80px;
+  min-width: 70px;
   h4 {
     color: $normal-text;
   }
@@ -10076,12 +10085,6 @@ header {
 .example-delivery-info-row {
     padding: 0 15px !important;
     margin-left: 15px;
-}
-.delivery-info-box.subtotal, .delivery-setgings-info-box.subtotal {
-  min-width: 50px;
-  h4 {
-    margin: 0 0 0 5px !important;
-  }
 }
 .delivery-info-box.sales-tax, .delivery-settings-info-box.sales-tax {
   min-width: 40px;
