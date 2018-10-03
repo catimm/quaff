@@ -100,8 +100,11 @@ Rails.application.routes.draw do
   get 'stock/cider' => 'stock#cider', :as => 'cider_stock'
   get 'stock/change_cider_view/:artisan/:style/:page' => 'stock#change_cider_view'
   get 'stock/wine' => 'stock#wine', :as => 'wine_stock'
+  get 'stock/specials' => 'stock#specials', :as => 'specials_stock'
   post 'stock/add_stock_to_customer_cart/:id/:quantity' => 'stock#add_stock_to_customer_cart'
   post 'stock/add_stock_to_subscriber_delivery/:id/:quantity' => 'stock#add_stock_to_subscriber_delivery'
+  post 'stock/add_package_to_customer_cart/:id/:quantity' => 'stock#add_package_to_customer_cart'
+  post 'stock/add_package_to_subscriber_delivery/:id/:quantity' => 'stock#add_package_to_subscriber_delivery'
   post 'stock/process_zip_from_inventory' => 'stock#process_zip_from_inventory', :as => 'process_zip_from_inventory'
   
   # routes for cart checkout

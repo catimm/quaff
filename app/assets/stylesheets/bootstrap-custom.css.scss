@@ -2046,6 +2046,9 @@ hr {
     margin: 2px 0;
   }
 }
+.package-info-and-order-row {
+  margin: 10px 0 5px 0;
+}
 .stock-order-button {
   padding: 0;
   background: $action-background;
@@ -2164,7 +2167,7 @@ hr {
   display: inline-block;
   margin: 0;
   width: 100%;
-  h3 {
+  h4 {
     color: $more-emphasized-text;
     letter-spacing: 0.3px;
     margin: 10px 0;
@@ -4309,8 +4312,12 @@ $beer-header-lines-to-show-fp: 1;
  }
  .subscriber-change-quantity:hover,
  .subscriber-change-quantity.selected,
+ .subscriber-change-package-quantity:hover,
+ .subscriber-change-package-quantity.selected,
  .nonsubscriber-change-quantity:hover,
  .nonsubscriber-change-quantity.selected,
+ .nonsubscriber-change-package-quantity:hover,
+ .nonsubscriber-change-package-quantity.selected,
  .nonsubscriber-change-quantity-inventory:hover,
  .nonsubscriber-change-quantity-inventory.selected {
    background: rgba(0,135,203, 0.4);

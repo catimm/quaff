@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: special_package_drinks
+#
+#  id                 :integer          not null, primary key
+#  special_package_id :integer
+#  inventory_id       :integer
+#  quantity           :integer
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  special_package_id: 1
+  inventory_id: 1
+  quantity: 1
+
+two:
+  special_package_id: 1
+  inventory_id: 1
+  quantity: 1

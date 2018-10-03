@@ -1,22 +1,9 @@
 <div class="col-xs-12 col-sm-6 col-md-4 beer-tile-container" id="drink-tile-<%= drink.id %>">
 	<div class="drink-delivery-tile">
 		<% if tile_type == "user_rating" %>
-			<%= render 'layouts/drink_tile_drink_info_row_rating', drink: drink %>
-			<div class="drink-tile-show-more-rating show">
-				<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
-			</div>
-			<div class="drink-tile-show-less-rating hidden">
-				<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
-			</div>	
+			<%= render 'layouts/drink_tile_drink_info_row_rating', drink: drink %>	
 		<% elsif tile_type == "search" %>
 			<%= render 'layouts/drink_tile_drink_info_row_search', drink: drink %>
-			<%= render 'layouts/drink_tile_rating_info_row_search', drink: drink %>
-			<div class="drink-tile-show-more show">
-				<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
-			</div>
-			<div class="drink-tile-show-less hidden">
-				<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
-			</div>	
 		<% else %>
 			<%= render 'layouts/drink_tile_drink_info_row', drink: drink %>
 			<% if tile_type == "order" %>
@@ -28,13 +15,6 @@
 			<% else %>
 			
 			<% end %>
-			<%= render 'layouts/drink_tile_rating_info_row', drink: drink %>
-			<div class="drink-tile-show-more show">
-				<i class="fa fa-plus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show more"></i>
-			</div>
-			<div class="drink-tile-show-less hidden">
-				<i class="fa fa-minus-square-o" aria-hidden="true" data-toggle="tooltip" title="Show less"></i>
-			</div>	
 		<% end %>
 		
 	</div>

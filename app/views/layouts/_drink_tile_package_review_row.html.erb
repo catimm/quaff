@@ -1,0 +1,18 @@
+<div class="row no-margin">
+	<div class="col-xs-12">
+		<hr>
+	</div>
+</div>
+<div class="row drink-tile-size-price-row">
+	<div class="col-xs-4 no-padding text-center">
+		<h4 class="drink-tile-item-price" data-toggle="tooltip" title="Price does not include tax"><%= number_to_currency(drink.inventory.drink_price_four_five, precision: 2) %> per </h4>
+	</div>
+	<div class="col-xs-2 no-padding text-center">
+		<h4 class="drink-tile-svg-holder" data-toggle="tooltip" title="<%= drink.inventory.size_format.format_name %>" data-placement="right">
+			<%= svg drink.inventory.size_format.image %>
+		</h4>		
+	</div>
+	<div class="col-xs-5 no-padding">
+		<h4 class="drink-tile-item-price">Qty: <%= drink.quantity %></h4>
+	</div>
+</div>

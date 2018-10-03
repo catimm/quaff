@@ -1,0 +1,10 @@
+$(function() {
+	$("#customer-cart-indicator-holder").html("<%= escape_javascript(render 'layouts/customer_cart_addition_indicator' ) %>");
+	if($(".customer-cart-addition-indicator").hasClass("hidden")){
+		$(".customer-cart-addition-indicator").removeClass("hidden").addClass("show");
+	};
+	// change selected number
+	$('#<%= @package_id %>-<%= @customer_drink_quantity %>').addClass("selected");
+	$('#<%= @package_id %>').children('.row.no-margin').children('.col-xs-2.text-center').children('.chosen-quantity-shown').children('h4').html("");
+	$('#<%= @package_id %>').children('.row.no-margin').children('.col-xs-2.text-center').children('.chosen-quantity-shown').children('h4').html(<%= @customer_drink_quantity %>);
+});

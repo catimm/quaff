@@ -133,17 +133,66 @@ class CartsController < ApplicationController
     @order_prep = OrderPrep.where(account_id: current_user.account_id, status: "order in process").first
     @order_prep_drinks = OrderDrinkPrep.where(order_prep_id: @order_prep.id)
     @total_drink_count = @order_prep_drinks.sum(:quantity)
-    
-    if @order_prep.subtotal >= 35
-      @standard_delivery_price = 5
-    else
-      @standard_delivery_price = 8
-    end
+    @special_packages = @order_prep_drinks.where.not(special_package_id: nil)
     
     # get customer's addresses
     @user_addresses = UserAddress.where(account_id: current_user.account_id)
     @selected_user_address = @user_addresses.where(current_delivery_location: true).first
     @full_address_check = @user_addresses.where.not(address_street: nil, zip: nil)
+    
+    if !@selected_user_address.blank?
+      # get subscription group number
+      if !@selected_user_address.delivery_zone_id.nil?
+        @delivery_zone = DeliveryZone.find_by_id(@selected_user_address.delivery_zone_id)
+        @subscription_level = @delivery_zone.subscription_level_group
+        if @order_prep.subtotal >= 35
+          if !@special_packages.nil?
+            @standard_delivery_price = 0
+          else
+            @standard_delivery_price = 5
+          end
+        else
+          if !@special_packages.nil?
+            @standard_delivery_price = 3
+          else
+            @standard_delivery_price = 8
+          end
+        end
+      end
+      
+      if !@selected_user_address.shipping_zone_id.nil?
+        @shipping_zone = ShippingZone.find_by_id(@selected_user_address.shipping_zone_id)
+        @subscription_level = @shipping_zone.subscription_level_group
+        if @subscription_level == 2
+          if !@special_packages.nil?
+            @standard_delivery_price = 4
+          else
+            @standard_delivery_price = 9
+          end
+        else
+          if !@special_packages.nil?
+            @standard_delivery_price = 10
+          else
+            @standard_delivery_price = 15
+          end
+        end
+        
+        if @order_prep.delivery_fee.nil?
+          @grand_total = @order_prep.total_drink_price + @standard_delivery_price
+          @sat  = Date.parse("Saturday")
+          @delta = @sat > Date.today ? 0 : 7
+          @next_sat = @sat + @delta
+          #update order
+          @order_prep.update(delivery_fee: @standard_delivery_price,
+                              grand_total: @grand_total,
+                              delivery_start_time: @next_sat,
+                              delivery_end_time: @next_sat,
+                              shipping_zone_id: @selected_user_address.shipping_zone_id)
+        end
+        
+      end
+      
+    end
     
     @delivery_window_options = Array.new
     # get available delivery time windows based on user address
@@ -163,10 +212,23 @@ class CartsController < ApplicationController
     @proceed_link = cart_checkout_path
     # continue button text
     @next_button_text = "Checkout"
-    if @order_prep.delivery_start_time.nil?
-      @button_disabled = true
+    if !@user_addresses.blank?
+      if !@selected_user_address.delivery_zone_id.nil?
+        if @order_prep.delivery_start_time.nil?
+          @button_disabled = true
+        else
+          @button_disabled = false
+        end
+      end
+      if !@selected_user_address.shipping_zone_id.nil?
+        if @order_prep.delivery_fee.nil?
+          @button_disabled = true
+        else
+          @button_disabled = false
+        end
+      end
     else
-      @button_disabled = false
+      @button_disabled = true
     end
     
     if !@order_prep.delivery_start_time.nil?
@@ -398,8 +460,13 @@ class CartsController < ApplicationController
     # create user subscription if this is first purchase and has not been created yet
     if @user_subscription.blank?
       @user_address = UserAddress.where(account_id: current_user.account_id, current_delivery_location: true).first
-      @subscription = Subscription.where(subscription_level_group: @user_address.delivery_zone.subscription_level_group,
-                                          deliveries_included: 0).first
+      if !@user_address.delivery_zone_id.nil?
+        @subscription = Subscription.where(subscription_level_group: @user_address.delivery_zone.subscription_level_group,
+                                            deliveries_included: 0).first
+      elsif !@user_address.shipping_zone_id.nil?
+        @subscription = Subscription.where(subscription_level_group: @user_address.shipping_zone.subscription_level_group,
+                                            deliveries_included: 0).first
+      end
       @user_subscription = UserSubscription.create(user_id: @user.id,
                                                     subscription_id: @subscription.id,
                                                     auto_renew_subscription_id: @subscription.id,

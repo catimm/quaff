@@ -1,35 +1,10 @@
-<% if !user_signed_in? %>
-	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
-		<div class="row cart-review-delivery-cost-message">
-			<div class="col-xs-12 no-padding">
-				<h3><%= link_to "Create an account", account_personal_path %> to see personalized, projected drink ratings. It's free!</h3>
-			</div>
-		</div>
-	</div>
-<% elsif current_user.unregistered == true %>
-	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
-		<div class="row cart-review-delivery-cost-message">
-			<div class="col-xs-12 no-padding">
-				<h3><%= link_to "Create an account", account_personal_path %> to see personalized, projected drink ratings. It's free!</h3>
-			</div>
-		</div>
-	</div>
-<% elsif current_user.projected_ratings_complete != true %>
-	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
-		<div class="row cart-review-delivery-cost-message">
-			<div class="col-xs-12 no-padding">
-				<h3><%= link_to "Choose your favorite drink styles", delivery_settings_drink_styles_path %> 
-							to see a personalized, projected drink rating.
-				</h3>
-			</div>
-		</div>
-	</div>
-	
-<% elsif current_user.subscription_status != "subscribed" %>
+<% if !user_signed_in? || current_user.subscription_status != "subscribed" %>
 	<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 text-center no-padding" id="delivery-cost-message-holder">
 		<div class="row cart-review-delivery-cost-message">
 			<div class="col-xs-12">
-				<h3>Want FREE Delivery?<br>Sign up for <%= link_to "Knird Preferred", knird_preferred_membership_path %>!</h3>
+				<h4>Standard local delivery: $5</h4>
+				<h4>In-state shipping: $9; Out-of-state shipping: $15</h4>
+				<h5>Local & in-state min purhcase: $20; Out-of-state min purchase: $50</h5>
 			</div>
 		</div>
 	</div>

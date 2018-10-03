@@ -17,6 +17,7 @@
 #  reserved_delivery_time_option_id :integer
 #  delivery_start_time              :datetime
 #  delivery_end_time                :datetime
+#  shipping_zone_id                 :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

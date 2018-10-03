@@ -166,4 +166,33 @@ $(function () {
 		});
 	});
 	
+	// add inventory to cart for nonsubscribed customer
+	$(document).on('click', '.nonsubscriber-change-package-quantity', function () {
+		var quantity = $(this).attr('data-value');
+		var this_id = $(this).parent('.stock-order-quantity-dropdown').siblings('.stock-order-button').attr('id');
+		
+		if ($(this).siblings('.nonsubscriber-change-quantity').hasClass("selected")) {
+			$(this).siblings('.nonsubscriber-change-quantity').removeClass("selected");
+		}
+
+		$.ajax({
+		  type: "POST",
+		  url: "/stock/add_package_to_customer_cart/" + this_id + "/" + quantity
+		});
+	});
+	
+	// add inventory to delivery request for subscribed customer
+	$(document).on('click', '.subscriber-change-package-quantity', function () {
+		var quantity = $(this).attr('data-value');
+		var this_id = $(this).parent('.stock-order-quantity-dropdown').siblings('.stock-order-button').attr('id');
+		
+		if ($(this).siblings('.subscriber-change-quantity').hasClass("selected")) {
+			$(this).siblings('.subscriber-change-quantity').removeClass("selected");
+		}
+		
+		$.ajax({
+		  type: "POST",
+		  url: "/stock/add_package_to_subscriber_delivery/" + this_id + "/" + quantity
+		});
+	});
 });

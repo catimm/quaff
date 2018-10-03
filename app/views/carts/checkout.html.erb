@@ -18,26 +18,44 @@
 	</div>
 	<div class="row no-margin">
 		<div class="col-xs-12 col-sm-9"  id="review-summary-holder">
-			<h5 class="review-table-header" style="margin-bottom:5px;">Delivery details</h5>
-			<div class="delivery-time-reserved-option-tile chosen">
-				<div class="row no-margin">
-					<div class="col-xs-2 no-padding">
-						<div class="check-mark-holder">
-							<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+			<% if !@order_prep.delivery_zone_id.nil? %>
+				<h5 class="review-table-header" style="margin-bottom:5px;">Delivery details</h5>
+				<div class="delivery-time-reserved-option-tile chosen">
+					<div class="row no-margin">
+						<div class="col-xs-2 no-padding">
+							<div class="check-mark-holder">
+								<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+							</div>
+						</div>
+						<div class="col-xs-3 padding-10 no-padding-right">
+							<h5 class="address-name">Location:&nbsp; 
+								<span><%= @selected_user_address.address_name %></span>
+							</h5>			
+						</div>
+						<div class="col-xs-7">
+							<h4 class="delivery-time-option-text">
+								<%= @order_prep.delivery_start_time.strftime("%A, %b %e, %l%P") %> &mdash; <%= @order_prep.delivery_end_time.strftime("%l%P") %>
+							</h4>
 						</div>
 					</div>
-					<div class="col-xs-3 padding-10 no-padding-right">
-						<h5 class="address-name">Location:&nbsp; 
-							<span><%= @selected_user_address.address_name %></span>
-						</h5>			
-					</div>
-					<div class="col-xs-7">
-						<h4 class="delivery-time-option-text">
-							<%= @order_prep.delivery_start_time.strftime("%A, %b %e, %l%P") %> &mdash; <%= @order_prep.delivery_end_time.strftime("%l%P") %>
-						</h4>
+				</div>
+			<% elsif !@order_prep.shipping_zone_id.nil? %>
+				<h5 class="review-table-header" style="margin-bottom:5px;">Shipment details</h5>
+				<div class="delivery-time-reserved-option-tile chosen">
+					<div class="row no-margin">
+						<div class="col-xs-2 no-padding">
+							<div class="check-mark-holder">
+								<i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i>
+							</div>
+						</div>
+						<div class="col-xs-3 padding-10 no-padding-right">
+							<h5 class="address-name">Location:&nbsp; 
+								<span><%= @selected_user_address.address_name %></span>
+							</h5>			
+						</div>
 					</div>
 				</div>
-			</div>
+			<% end %>
 			<%= render 'review_summary_final'%>
 		</div>
 		<% if @user.unregistered == true %>

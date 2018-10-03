@@ -16,14 +16,16 @@
 #  moved_to_cellar_supply :boolean
 #  size_format_id         :integer
 #  inventory_id           :integer
+#  special_package_id     :integer
 #
 
 class AccountDelivery < ApplicationRecord
   belongs_to :account
-  belongs_to :beer
+  belongs_to :beer, optional: true
   belongs_to :delivery
   belongs_to :size_format
   belongs_to :inventory
+  belongs_to :special_package, optional: true
   
   has_many :user_deliveries
   

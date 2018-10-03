@@ -46,50 +46,98 @@ class ProcessConfirmedOrderJob < ActiveJob::Base
        
        # push all related drinks into AccountDelivery and UserDelivery tables
        @order_prep_drinks.each_with_index do |drink, index|
-         #Rails.logger.debug("Drink info: #{drink.inspect}")
-         # first create AccountDelivery
-         @new_account_delivery = AccountDelivery.new(account_id: drink.account_id,
-                                                      beer_id: drink.inventory.beer_id,
-                                                      quantity: drink.quantity,
-                                                      delivery_id: @new_delivery.id,
-                                                      drink_price: drink.drink_price,
-                                                      size_format_id: drink.inventory.size_format_id,
-                                                      inventory_id: drink.inventory.id )
-        #Rails.logger.debug("New Acct Delivery: #{@new_account_delivery.inspect}")
-         if @new_account_delivery.save
-           # first remove from inventory
-           @inventory = Inventory.find_by_id(drink.inventory.id)
-           @inventory.increment!(:reserved, drink.quantity)
-           @inventory.decrement!(:stock, drink.quantity)
-           # then add to User Delivery table
-           @projected_rating = ProjectedRating.where(user_id: drink.user_id, beer_id: drink.inventory.beer_id).first
-           UserDelivery.create(user_id: drink.user_id,
-                                account_delivery_id: @new_account_delivery.id,
-                                delivery_id: @new_delivery.id,
-                                quantity: drink.quantity,
-                                projected_rating: @projected_rating.projected_rating,
-                                times_rated: 0,
-                                drink_category: drink.inventory.drink_category)
-         
-            # put data into json for user confirmation email
-            # find if drinks is odd/even
-            if index.odd?
-              @odd = false # easier to make this backwards than change sparkpost email logic....
-            else  
-              @odd = true
+        if !drink.inventory_id.blank?
+           #Rails.logger.debug("Drink info: #{drink.inspect}")
+           # first create AccountDelivery
+           @new_account_delivery = AccountDelivery.new(account_id: drink.account_id,
+                                                        beer_id: drink.inventory.beer_id,
+                                                        quantity: drink.quantity,
+                                                        delivery_id: @new_delivery.id,
+                                                        drink_price: drink.drink_price,
+                                                        size_format_id: drink.inventory.size_format_id,
+                                                        inventory_id: drink.inventory.id )
+          #Rails.logger.debug("New Acct Delivery: #{@new_account_delivery.inspect}")
+           if @new_account_delivery.save
+             # first remove from inventory
+             @inventory = Inventory.find_by_id(drink.inventory.id)
+             @inventory.increment!(:reserved, drink.quantity)
+             @inventory.decrement!(:stock, drink.quantity)
+             # then add to User Delivery table
+             #@projected_rating = ProjectedRating.where(user_id: drink.user_id, beer_id: drink.inventory.beer_id).first
+             UserDelivery.create(user_id: drink.user_id,
+                                  account_delivery_id: @new_account_delivery.id,
+                                  delivery_id: @new_delivery.id,
+                                  quantity: drink.quantity,
+                                  projected_rating: 8,
+                                  times_rated: 0,
+                                  drink_category: drink.inventory.drink_category)
+           
+              # put data into json for user confirmation email
+              # find if drinks is odd/even
+              if index.odd?
+                @odd = false # easier to make this backwards than change sparkpost email logic....
+              else  
+                @odd = true
+              end
+              @drink_account_data = ({:maker => drink.inventory.beer.brewery.short_brewery_name,
+                                      :drink => drink.inventory.beer.beer_name,
+                                      :drink_type => drink.inventory.beer.beer_type.beer_type_short_name,
+                                      :format => drink.inventory.size_format.format_name,
+                                      :projected_rating => 8,
+                                      :quantity => drink.quantity,
+                                      :odd => @odd}).as_json
+              # Rails.logger.debug("Email data: #{@drink_account_data.inspect}")
+              # push this array into overall email array
+              @email_drink_array << @drink_account_data
+           end
+        else # drink is actually a package
+          # get special package drinks
+          @special_package_drinks = SpecialPackageDrink.where(special_package_id: drink.special_package_id)
+          @special_package_drinks.each do |package_drink|
+            # first create AccountDelivery
+             @new_account_delivery = AccountDelivery.new(account_id: drink.account_id,
+                                                          beer_id: package_drink.inventory.beer_id,
+                                                          quantity: package_drink.quantity,
+                                                          delivery_id: @new_delivery.id,
+                                                          drink_price: package_drink.inventory.drink_price_four_five,
+                                                          size_format_id: package_drink.inventory.size_format_id,
+                                                          inventory_id: package_drink.inventory_id )
+            #Rails.logger.debug("New Acct Delivery: #{@new_account_delivery.inspect}")
+             if @new_account_delivery.save
+               # first remove from inventory
+               @inventory = Inventory.find_by_id(package_drink.inventory_id)
+               @inventory.increment!(:reserved, package_drink.quantity)
+               @inventory.decrement!(:stock, package_drink.quantity)
+               # then add to User Delivery table
+               #@projected_rating = ProjectedRating.where(user_id: drink.user_id, beer_id: drink.inventory.beer_id).first
+               UserDelivery.create(user_id: drink.user_id,
+                                    account_delivery_id: @new_account_delivery.id,
+                                    delivery_id: @new_delivery.id,
+                                    quantity: package_drink.quantity,
+                                    projected_rating: 8,
+                                    times_rated: 0,
+                                    drink_category: package_drink.inventory.drink_category)
+             
+                # put data into json for user confirmation email
+                # find if drinks is odd/even
+                if index.odd?
+                  @odd = false # easier to make this backwards than change sparkpost email logic....
+                else  
+                  @odd = true
+                end
+                @drink_account_data = ({:maker => package_drink.inventory.beer.brewery.short_brewery_name,
+                                        :drink => package_drink.inventory.beer.beer_name,
+                                        :drink_type => package_drink.inventory.beer.beer_type.beer_type_short_name,
+                                        :format => package_drink.inventory.size_format.format_name,
+                                        :projected_rating => 8,
+                                        :quantity => package_drink.quantity,
+                                        :odd => @odd}).as_json
+                # Rails.logger.debug("Email data: #{@drink_account_data.inspect}")
+                # push this array into overall email array
+                @email_drink_array << @drink_account_data
             end
-            @drink_account_data = ({:maker => drink.inventory.beer.brewery.short_brewery_name,
-                                    :drink => drink.inventory.beer.beer_name,
-                                    :drink_type => drink.inventory.beer.beer_type.beer_type_short_name,
-                                    :format => drink.inventory.size_format.format_name,
-                                    :projected_rating => @projected_rating.projected_rating,
-                                    :quantity => drink.quantity,
-                                    :odd => @odd}).as_json
-            # Rails.logger.debug("Email data: #{@drink_account_data.inspect}")
-            # push this array into overall email array
-            @email_drink_array << @drink_account_data
-         end
-
+          end
+        end
        end # end of cycle through drinks
        #Rails.logger.debug("Email drink array: #{@email_drink_array.inspect}")
        @order_prep.update(status: "complete")

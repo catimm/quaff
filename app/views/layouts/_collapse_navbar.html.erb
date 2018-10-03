@@ -1,5 +1,51 @@
-
-    <ul class="nav navbar-nav" id="navbar-holder">
-    	<%= render 'layouts/collapse_navbar_dropdown' %>   	
-    </ul> 
+<ul class="nav navbar-nav" id="navbar-holder">
+	<% if user_signed_in? %>
+		<% if current_user.unregistered != true %>
+			<li class="navLinks dropdown">
+		      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+		      <ul class="dropdown-menu">
+		        
+		        <li class="dropdown-header">Knird Info</li>
+		        <li class="dropdown-link"><%= link_to "Current Stock", stocks_path %></li>
+		        <% if current_user.subscription_status != "subscribed" %>
+		        	<li class="dropdown-link"><%= link_to "Knird Preferred", knird_preferred_membership_path %></li>
+		        <% end %>
+		        
+		        <li class="dropdown-header">My Activity</li>
+		        <li class="dropdown-link"><%= link_to "Orders", user_orders_path %></li>
+		        <li class="dropdown-link"><%= link_to "Ratings", recent_user_ratings_path %></li>
+				
+				<li class="dropdown-header">My Settings</li>
+				<li class="dropdown-link"><%= link_to "Account", account_overview_path %></li>
+				<% if current_user.subscription_status == "subscribed" %>
+		        	<li class="dropdown-link"><%= link_to "Delivery", delivery_settings_path %></li>
+		        <% elsif current_user.unregistered != true %>
+		        	<li class="dropdown-link"><%= link_to "Drink Styles", delivery_settings_drink_styles_path %></li>
+		        <% end %>
+				
+		        <% if current_user.role_id == 1 %>
+		            <li class="dropdown-header">Admin links</li>
+		            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+		            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_index_path %></li>
+		            <li class="dropdown-link"><%= link_to "Knird Inventory", admin_inventory_path(0) %></li>
+		            <li class="dropdown-link"><%= link_to "Disti Inventory", admin_disti_inventory_path(1) %></li>
+					<li class="dropdown-link"><%= link_to "Invite", new_user_invitation_path %></li>
+		            <li class="dropdown-link"><%= link_to "Recommendations", admin_recommendations_path %></li> 
+			    <% elsif current_user.role_id == 2 %>
+			    	<li class="dropdown-header">Admin links</li>
+		            <li class="dropdown-link"><%= link_to "Breweries", admin_breweries_path %></li>
+		            <li class="dropdown-link"><%= link_to "Fulfillment", admin_fulfillment_path(current_user.id) %></li>
+			    <% end %>
+			    
+			    <li role="separator" class="divider"></li>
+			    <li class="dropdown-logout"><%= link_to "Log out", destroy_user_session_path, method: :delete  %></li>
+		      </ul>
+		    </li>
+		<% else %>
+			<li class="navLinks log-in"> <%= link_to "Log in", new_user_session_path %></li>
+		<% end %>   	
+	<% else %>
+		<li class="navLinks log-in"> <%= link_to "Log in", new_user_session_path %></li>
+	<% end %>   	
+</ul> 
 

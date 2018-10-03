@@ -47,6 +47,7 @@ class Inventory < ApplicationRecord
   has_many :account_deliveries, :through => :inventory_transactions
   has_many :order_drink_preps
   has_many :account_deliveries
+  has_many :special_package_drinks
   
   #scope small cooler drinks
   scope :small_cooler_drinks, -> { 

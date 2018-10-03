@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180827234723) do
+ActiveRecord::Schema.define(version: 20180926000635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20180827234723) do
     t.boolean "moved_to_cellar_supply"
     t.integer "size_format_id"
     t.integer "inventory_id"
+    t.integer "special_package_id"
   end
 
   create_table "accounts", id: :serial, force: :cascade do |t|
@@ -725,6 +726,7 @@ ActiveRecord::Schema.define(version: 20180827234723) do
     t.decimal "drink_price", precision: 6, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "special_package_id"
   end
 
   create_table "order_preps", force: :cascade do |t|
@@ -742,6 +744,7 @@ ActiveRecord::Schema.define(version: 20180827234723) do
     t.integer "reserved_delivery_time_option_id"
     t.datetime "delivery_start_time"
     t.datetime "delivery_end_time"
+    t.integer "shipping_zone_id"
   end
 
   create_table "pending_credits", id: :serial, force: :cascade do |t|
@@ -879,6 +882,25 @@ ActiveRecord::Schema.define(version: 20180827234723) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "special_package_drinks", force: :cascade do |t|
+    t.integer "special_package_id"
+    t.integer "inventory_id"
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "special_packages", force: :cascade do |t|
+    t.string "title"
+    t.decimal "retail_cost", precision: 5, scale: 2
+    t.decimal "actual_cost", precision: 5, scale: 2
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "package_image"
+    t.string "review_title"
   end
 
   create_table "subscriptions", id: :serial, force: :cascade do |t|

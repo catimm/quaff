@@ -43,9 +43,14 @@ class UserAddress < ApplicationRecord
     if !@delivery_zone.blank?
       self.update(delivery_zone_id: @delivery_zone.id)
     else
-      @zip_start = self.zip.slice(0..2)
-      @shipping_zone = ShippingZone.find_by_zip_start(@zip_start)
-      self.update(shipping_zone_id: @shipping_zone.id)
+      @zip_short = self.zip.slice(0..2)
+      Rails.logger.debug("Zip short: #{@zip_short.inspect}")
+      @shipping_zone = ShippingZone.where('zip_start <= ? AND zip_end >= ?', @zip_short, @zip_short).first
+      if !@shipping_zone.blank?
+        self.update(shipping_zone_id: @shipping_zone.id)
+      else
+        self.update(shipping_zone_id: 1000)
+      end
     end
   end
   

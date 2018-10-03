@@ -1,7 +1,14 @@
-<nav class="navbar navbar-default" role="navigation" id="index_homeNavbar">  
-    <div class="container">
-    	<ul class="nav navbar-nav navbar-right">            
-		     <li class="navLinks"> <%= link_to "Log in", new_user_session_path, class: 'btn btn-default btn-success formButton-home-login-button' %></li>	          	
-        </ul>
-    </div> <!-- /.container -->  
+<nav class="navbar navbar-default navbar-fixed-top common_navbar" role="navigation">
+	<div class="container no-padding">
+		<div class="row no-margin">   
+        	<div class="col-xs-10 col-sm-10 text-left mobile-logo-holder navbar-header" id="home-navbar">
+                <%= link_to "Knird", root_path, id: "logo", class:"navbar-brand brand visible-sm visible-md visible-lg brand-font" %>
+                <%= link_to "K", root_path, id: "logo", class:"navbar-brand brand visible-xs brand-font" %>
+        	</div>
+			 <div class="col-xs-2 col-sm-2 col-md-1 no-padding">
+				<!-- Collect the nav links, forms, and other content for toggling -->
+           		 <%= render 'layouts/collapse_navbar' %>
+			 </div>  <!-- /.nav links -->
+        </div> <!-- /.row -->
+    </div> <!-- /.container -->
 </nav>

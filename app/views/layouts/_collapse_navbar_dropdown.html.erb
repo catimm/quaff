@@ -5,9 +5,6 @@
         
         <li class="dropdown-header">Knird Info</li>
         <li class="dropdown-link"><%= link_to "Current Stock", stocks_path %></li>
-        <% if current_user.subscription_status != "subscribed" %>
-        	<li class="dropdown-link"><%= link_to "Knird Preferred", knird_preferred_membership_path %></li>
-        <% end %>
         
         <li class="dropdown-header">My Activity</li>
         <li class="dropdown-link"><%= link_to "Orders", user_orders_path %></li>

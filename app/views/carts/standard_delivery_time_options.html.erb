@@ -12,11 +12,6 @@
 		</div>
 	</div>
 	<div class="row no-margin">
-		<div class="col-xs-12 no-padding">
-			<h1 class="standard-delivery-header">Standard Delivery options ($<%= @standard_delivery_price %>)</h1>
-		</div>
-	</div>
-	<div class="row no-margin">
 		<div class="col-xs-12 col-sm-9 no-padding">
 			<% if @full_address_check.blank? %>
 				<div class="row no-margin">
@@ -35,33 +30,62 @@
 					</div>
 				</div>
 			<% else %>
-				<div class="row no-margin" id="standard-delivery-time-options-holder">
-					<%= render 'standard_delivery_time_options_results' %>
-				</div>
-				<div class="row no-margin">
-					<div class="col-xs-12">
-						<h4 class="choose-delivery-time-text">Need more options?</h4>
-					</div>
-					<div class="col-xs-12 col-sm-5 col-md-4">
-						<div class="add-location-address-holder">
-							<h6 class="add-location-direction-text">view Reserved delivery options</h6>
-							<%= link_to reserved_delivery_time_options_path, class: 'btn btn-success add-location' do %>
-								<i class="fa fa-calendar-check-o" aria-hidden="true"> Reserved Delivery</i>
-							<% end %>
+				<% if @subscription_level == 1 %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h1 class="standard-delivery-header">Standard Delivery options ($<%= @standard_delivery_price %>)</h1>
 						</div>
 					</div>
-					<div class="col-xs-12 col-sm-1 text-center">
-						<h6 class="knird-live-signup-or">or</h6>
+					<div class="row no-margin" id="standard-delivery-time-options-holder">
+						<%= render 'standard_delivery_time_options_results' %>
 					</div>
-					<div class="col-xs-12 col-sm-5 col-md-4">
-						<div class="add-location-address-holder">
-							<h6 class="add-location-direction-text">add a new delivery location</h6>
-							<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
-								<i class="fa fa-plus"> location</i>
-							<% end %>
+					<div class="row no-margin">
+						<div class="col-xs-12">
+							<h4 class="choose-delivery-time-text">Need more options?</h4>
+						</div>
+						<div class="col-xs-12 col-sm-5 col-md-4">
+							<div class="add-location-address-holder">
+								<h6 class="add-location-direction-text">view Reserved delivery options</h6>
+								<%= link_to reserved_delivery_time_options_path, class: 'btn btn-success add-location' do %>
+									<i class="fa fa-calendar-check-o" aria-hidden="true"> Reserved Delivery</i>
+								<% end %>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-1 text-center">
+							<h6 class="knird-live-signup-or">or</h6>
+						</div>
+						<div class="col-xs-12 col-sm-5 col-md-4">
+							<div class="add-location-address-holder">
+								<h6 class="add-location-direction-text">add a new delivery location</h6>
+								<%= link_to new_user_address_path(@user.account_id), class: 'btn btn-success add-location' do %>
+									<i class="fa fa-plus"> location</i>
+								<% end %>
+							</div>
 						</div>
 					</div>
-				</div>
+				<% elsif @subscription_level == 2 %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h1 class="standard-delivery-header">Flat rate for in-state shipping is $9</h1>
+						</div>
+						<% if !@special_packages.nil? %>
+							<div class="col-xs-12">
+								<h4 class="choose-delivery-time-text">Congrats, you earned a $5 credit for purchasing a special package!</h4>
+							</div>
+						<% end %>
+					</div>
+				<% else %>
+					<div class="row no-margin">
+						<div class="col-xs-12 no-padding">
+							<h1 class="standard-delivery-header">Flat rate for out-of-state shipping is $15</h1>
+						</div>
+						<% if !@special_packages.nil? %>
+							<div class="col-xs-12">
+								<h4 class="choose-delivery-time-text">Congrats, you earned a $5 credit for purchasing a special package!</h4>
+							</div>
+						<% end %>
+					</div>
+				<% end %>
 			<% end %>
 		</div>
 		<div class="col-xs-12 col-sm-3 no-padding" id="checkout-summary-holder">

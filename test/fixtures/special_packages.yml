@@ -1,0 +1,28 @@
+# == Schema Information
+#
+# Table name: special_packages
+#
+#  id            :integer          not null, primary key
+#  title         :string
+#  retail_cost   :decimal(5, 2)
+#  actual_cost   :decimal(5, 2)
+#  quantity      :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  package_image :string
+#  review_title  :string
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  retail_cost: 9.99
+  actual_cost: 9.99
+  quantity: 1
+
+two:
+  title: MyString
+  retail_cost: 9.99
+  actual_cost: 9.99
+  quantity: 1

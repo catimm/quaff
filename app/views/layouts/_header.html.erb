@@ -20,7 +20,14 @@
 				<% end %>
 	         </div>
 			 <div class="col-xs-1 col-md-3 no-padding text-right">
-				<% if user_signed_in? %>
+				<% if !user_signed_in? %>
+					<%= link_to cart_review_path do %>
+						<i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i> 
+					<% end %>
+		    		<div class="customer-cart-indicator-holder" id="customer-cart-indicator-holder">
+						<%= render 'layouts/customer_cart_addition_indicator' %>
+					</div>
+				<% else %>
 			    	<% if current_user.subscription_status == "not subscribed" %>
 			    		<%= link_to cart_review_path do %>
 							<i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i> 
