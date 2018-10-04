@@ -1,4 +1,4 @@
-<% @drink_count = package.special_package_drinks.count %>
+<% @drink_count = package.special_package_drinks.sum(:quantity)  %>
 <div class="delivery-info-box drinks">
 	<p>drinks</p>
 	<h4 class="delivery-preference-prompt"><%= @drink_count %></h4>
