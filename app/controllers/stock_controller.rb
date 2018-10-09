@@ -569,7 +569,7 @@ class StockController < ApplicationController
   
   def specials
     # get list of special packages
-    @special_packages = SpecialPackage.where('quantity > ?', 0)
+    @special_packages = SpecialPackage.where('quantity > ?', 0).order(id: :asc)
     
     if user_signed_in?
       # determine if account has multiple users and add appropriate CSS class tags
