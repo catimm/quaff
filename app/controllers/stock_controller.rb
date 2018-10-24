@@ -1,7 +1,12 @@
 class StockController < ApplicationController
   
   def index
-    @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    if user_signed_in?
+      @delivery_preferences = DeliveryPreference.find_by_user_id(current_user.id)
+    else
+      @delivery_preferences = nil
+    end
+    
     if !@delivery_preferences.blank?
       if @delivery_preferences.beer_chosen == true
         redirect_to beer_stock_path

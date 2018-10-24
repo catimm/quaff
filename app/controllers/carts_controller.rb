@@ -3,8 +3,12 @@ class CartsController < ApplicationController
    require "stripe"
    
   def review
-    @order_prep = OrderPrep.where(account_id: current_user.account_id, status: "order in process").first
-
+    if user_signed_in?
+      @order_prep = OrderPrep.where(account_id: current_user.account_id, status: "order in process").first
+    else
+      @order_prep = nil
+    end
+    
     if !@order_prep.blank?
       @order_prep_drinks = OrderDrinkPrep.where(order_prep_id: @order_prep.id)
       
@@ -133,7 +137,7 @@ class CartsController < ApplicationController
     @order_prep = OrderPrep.where(account_id: current_user.account_id, status: "order in process").first
     @order_prep_drinks = OrderDrinkPrep.where(order_prep_id: @order_prep.id)
     @total_drink_count = @order_prep_drinks.sum(:quantity)
-    @special_packages = @order_prep_drinks.where.not(special_package_id: nil)
+    @special_packages = @order_prep_drinks.where(user_id: @user.id).where.not(special_package_id: nil)
     
     # get customer's addresses
     @user_addresses = UserAddress.where(account_id: current_user.account_id)
@@ -165,15 +169,15 @@ class CartsController < ApplicationController
         @subscription_level = @shipping_zone.subscription_level_group
         if @subscription_level == 2
           if !@special_packages.nil?
-            @standard_delivery_price = 4
+            @standard_delivery_price = 5
           else
-            @standard_delivery_price = 9
+            @standard_delivery_price = 10
           end
         else
           if !@special_packages.nil?
-            @standard_delivery_price = 10
+            @standard_delivery_price = 20
           else
-            @standard_delivery_price = 15
+            @standard_delivery_price = 25
           end
         end
         
